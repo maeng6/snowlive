@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>591302786053-59d3lm2fkcvj54o7e4kjpvtljqg2ja79.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.591302786053-59d3lm2fkcvj54o7e4kjpvtljqg2ja79</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>591302786053-1ei8td6j12ea8t3n12m2gkgvcmngtna8.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDud4jDe4AZUL9wO-RibFJ47JM-gixPB5o</string>
+	<key>GCM_SENDER_ID</key>
+	<string>591302786053</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.snowlive3</string>
+	<key>PROJECT_ID</key>
+	<string>snowlive-cf446</string>
+	<key>STORAGE_BUCKET</key>
+	<string>snowlive-cf446.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:591302786053:ios:40c93f4078545b86efb06c</string>
+</dict>
+</plist>

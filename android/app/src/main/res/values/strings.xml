@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">snowlive</string>
+    <string name="facebook_app_id">800346431212759</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">12931cb5692f4ac0f07d146dda19ca2f</string>
+</resources>
