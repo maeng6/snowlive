@@ -31,11 +31,11 @@ class MyApp extends StatelessWidget {
             color: Colors.black,
                 fontSize: 20
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
           elevation: 0.0,
         ),
         buttonTheme: ButtonThemeData(
-          buttonColor: Colors.white
+          buttonColor: Colors.transparent
         )
       ),
         home: SplashScreen()
