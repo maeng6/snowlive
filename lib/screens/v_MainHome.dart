@@ -13,8 +13,7 @@ class MainHome extends StatelessWidget {
     BottomNavigationBarController _bottomNavigationBarController = Get.find<BottomNavigationBarController>();
     //TODO: Dependency Injection************************************************
 
-    return Obx(
-      () => SafeArea(
+    return SafeArea(
           child: Scaffold(
               backgroundColor: Color(0xFFF2F4F6),
               appBar: PreferredSize(
@@ -108,7 +107,7 @@ class MainHome extends StatelessWidget {
                 showSelectedLabels: false,
               )),
               body: Obx(()=>_bottomNavigationBarController.currentPage))
-      ));
+      );
   }
 }
 
