@@ -7,7 +7,8 @@ class UserModel {
     this.uid,
     this.userEmail,
     this.favoriteResort,
-    this.instantResort
+    this.instantResort,
+    this.profileImageUrl
 });
 
   final auth = FirebaseAuth.instance;
@@ -16,6 +17,7 @@ class UserModel {
   String? userEmail;
   int? favoriteResort;
   int? instantResort;
+  String? profileImageUrl;
   DocumentReference? reference;
 
   UserModel.fromJson(dynamic json, this.reference){
@@ -23,6 +25,7 @@ class UserModel {
     userEmail = json['userEmail'];
     favoriteResort = json['favoriteResort'];
     instantResort = json['instantResort'];
+    profileImageUrl = json['profileImageUrl'];
   }
 
   UserModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)

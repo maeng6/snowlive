@@ -1,11 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_bottomNavigationBar.dart';
-import 'package:snowlive3/controller/vm_resortModelController.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
-import '../controller/vm_loadingPage.dart';
+import 'package:snowlive3/controller/vm_loginController.dart';
 
 class MainHome extends StatelessWidget {
   const MainHome({Key? key}) : super(key: key);
@@ -13,14 +9,11 @@ class MainHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //TODO: Dependency Injection************************************************
-    Get.put(UserModelController(),permanent: true);
-    Get.put(ResortModelController(),permanent: true);
     Get.put(BottomNavigationBarController(),permanent: true);
     BottomNavigationBarController _bottomNavigationBarController = Get.find<BottomNavigationBarController>();
     //TODO: Dependency Injection************************************************
 
-    return Obx(()=>
-        SafeArea(
+    return SafeArea(
             child: Scaffold(
                 appBar: AppBar(
                   iconTheme: IconThemeData(size: 30, color: Colors.black),
@@ -31,8 +24,7 @@ class MainHome extends StatelessWidget {
                         color: Colors.black,
                       ),
                       onTap: () {
-                        FirebaseAuth.instance.signOut();
-                        Get.to(()=>LoadingPage());
+                        LoginController().signOut();
                       },
                     )
                   ],
@@ -44,7 +36,8 @@ class MainHome extends StatelessWidget {
                   backgroundColor: Colors.white,
                   elevation: 0.0,
                 ),
-                bottomNavigationBar: BottomNavigationBar(
+                bottomNavigationBar: Obx(()=>BottomNavigationBar(
+
                   currentIndex: _bottomNavigationBarController.currentIndex.value,
                   onTap: _bottomNavigationBarController.changePage,
                   items: [
@@ -56,10 +49,10 @@ class MainHome extends StatelessWidget {
                   selectedItemColor: Colors.blue,
                   unselectedItemColor: Colors.grey,
                   showUnselectedLabels: true,
-                ),
-                body: _bottomNavigationBarController.currentPage
-            )),
-    );
+                )),
+                body: Obx(()=>_bottomNavigationBarController.currentPage)
+            ));
+
   }
 }
 

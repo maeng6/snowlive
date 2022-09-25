@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:snowlive3/screens/v_loginpage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 class LoginController extends GetxController {
-
   final auth = FirebaseAuth.instance;
   final ref = FirebaseFirestore.instance;
   late FacebookAuth facebookAuth = FacebookAuth.instance;
@@ -14,39 +15,42 @@ class LoginController extends GetxController {
 
   Future<void> signInWithGoogle() async {
     CustomFullScreenDialog.showDialog();
-    GoogleSignInAccount? googleSignInAccount =
-    await googleSignIn.signIn();
+    GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
     if (googleSignInAccount == null) {
       CustomFullScreenDialog.cancelDialog();
     } else {
       GoogleSignInAuthentication googleSignInAuthentication =
-      await googleSignInAccount.authentication;
+          await googleSignInAccount.authentication;
       OAuthCredential oAuthCredential = GoogleAuthProvider.credential(
           accessToken: googleSignInAuthentication.accessToken,
           idToken: googleSignInAuthentication.idToken);
       await auth.signInWithCredential(oAuthCredential);
       CustomFullScreenDialog.cancelDialog();
     }
+    CustomFullScreenDialog.cancelDialog();
   }
 
   Future<void> signInWithFacebook() async {
     CustomFullScreenDialog.showDialog();
-    final LoginResult loginResult =
-    await facebookAuth.login();
-    if(loginResult == null){
+    final LoginResult loginResult = await facebookAuth.login();
+    if (loginResult == null) {
       CustomFullScreenDialog.cancelDialog();
-    } else{
+    } else {
       OAuthCredential facebookAuthCredential =
-      FacebookAuthProvider.credential(loginResult.accessToken!.token);
+          FacebookAuthProvider.credential(loginResult.accessToken!.token);
       await auth.signInWithCredential(facebookAuthCredential);
       CustomFullScreenDialog.cancelDialog();
-
-
     }
+    CustomFullScreenDialog.cancelDialog();
+  }
+
+  Future<void> signOut() async {
+    FirebaseAuth.instance.signOut();
+    await FlutterSecureStorage().delete(key: 'login');
+    Get.to(() => LoginPage());
   }
 
   Future<void> createUserDoc(index) async {
-
     final User? user = auth.currentUser;
     final uid = user!.uid;
     final email = user.providerData[0].email;
@@ -57,7 +61,8 @@ class LoginController extends GetxController {
       'displayName': displayName,
       'uid': uid,
       'favoriteResort': index,
-      'instantResort': index
+      'instantResort': index,
+      'profileImageUrl' : ''
     });
   } //유저 정보와 선택한 리조트 정보 파베에 저장하기
 

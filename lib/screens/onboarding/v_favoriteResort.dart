@@ -6,6 +6,8 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/onboarding/v_setNickname.dart';
+import 'package:snowlive3/screens/onboarding/v_setProfileImage.dart';
+import 'package:snowlive3/screens/v_MainHome.dart';
 import '../../model/m_resortModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
@@ -34,7 +36,10 @@ class _FavoriteResortState extends State<FavoriteResort> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          leading: Icon(Icons.arrow_back),
+          leading: GestureDetector(
+            child: Icon(Icons.arrow_back),
+            onTap: ()=> Get.back(result: ()=>SetProfileImage()),
+          ),
         ),
         body: Container(
           color: Colors.white,
@@ -73,7 +78,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
               ),
               Expanded(
                 child: ListView.builder(
-                    itemCount: 14,
+                    itemCount: 13,
                     itemBuilder: (context, index) {
                       return Column(
                         children: [
@@ -91,9 +96,10 @@ class _FavoriteResortState extends State<FavoriteResort> {
                   onPressed: () async {
                     CustomFullScreenDialog.showDialog();
                     await userModelController.updateFavoriteResort(favoriteResort);
+                    print('즐겨찾는 리조트 업뎃완료');
                     await resortModelController.getSelectedResort(userModelController.favoriteResort!);
                     CustomFullScreenDialog.cancelDialog();
-                    Get.to(SetNickname());
+                    Get.offAll(()=>MainHome());
                   },
                   child: Text(
                     '다음',

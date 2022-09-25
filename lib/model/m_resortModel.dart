@@ -34,17 +34,6 @@ class ResortModel {
 List<ResortModel> resortList = [
   ResortModel(
     index:0,
-    resortName: '베어스타운',
-    resortUrl: 'https://bearstown.com/',
-    webcamUrl: 'https://www.jisanresort.co.kr/w/ski/slopes/webcam.asp',
-    naverUrl: 'https://weather.naver.com/today/02650320?cpName=KMA',
-    latitude: 37.7967269,
-    longitude: 127.248291,
-    nX: 64,
-    nY: 131,
-  ),//1
-  ResortModel(
-    index:1,
     resortName: '지산리조트',
     resortUrl: 'https://www.jisanresort.co.kr/',
     webcamUrl: '',
@@ -55,7 +44,7 @@ List<ResortModel> resortList = [
     nY: 120,
   ),//2
   ResortModel(
-    index:2,
+    index:1,
     resortName: '곤지암리조트',
     resortUrl: 'https://konjiamresort.co.kr/',
     webcamUrl: '',
@@ -66,7 +55,7 @@ List<ResortModel> resortList = [
     nY: 121,
   ),//3
   ResortModel(
-    index:3,
+    index:2,
     resortName: '비발디파크',
     resortUrl: 'https://www.sonohotelsresorts.com/daemyung.vp.skiworld.index.ds/',
     webcamUrl: 'https://www.sonohotelsresorts.com/daemyung.vp.utill.09_02_02_01.ds/dmparse.dm?areaType=S',
@@ -77,7 +66,7 @@ List<ResortModel> resortList = [
     nY: 129,
   ),//4
   ResortModel(
-    index:4,
+    index:3,
     resortName: '엘리시안강촌',
     resortUrl: 'https://elysian.co.kr/',
     webcamUrl: 'https://www.elysian.co.kr/gangchon/ski/ski_slope03.asp',
@@ -88,7 +77,7 @@ List<ResortModel> resortList = [
     nY: 132,
   ),//5
   ResortModel(
-    index:5,
+    index:4,
     resortName: '웰리힐리파크',
     resortUrl: 'https://www.wellihillipark.com/',
     webcamUrl: '',
@@ -99,7 +88,7 @@ List<ResortModel> resortList = [
     nY: 126,
   ),//6
   ResortModel(
-    index:6,
+    index:5,
     resortName: '휘닉스평창',
     resortUrl: 'https://phoenixhnr.co.kr/',
     webcamUrl: 'https://phoenixhnr.co.kr/page/pyeongchang/guide/operation/sketchMovie',
@@ -110,7 +99,7 @@ List<ResortModel> resortList = [
     nY: 128,
   ),//7
   ResortModel(
-    index:7,
+    index:6,
     resortName: '용평리조트',
     resortUrl: 'https://www.yongpyong.co.kr/',
     webcamUrl: 'https://www.yongpyong.co.kr/kor/guide/realTimeNews/ypResortWebcam.do',
@@ -121,7 +110,7 @@ List<ResortModel> resortList = [
     nY: 130,
   ),//8
   ResortModel(
-    index:8,
+    index:7,
     resortName: '오투리조트',
     resortUrl: 'https://www.o2resort.com/',
     webcamUrl: '',
@@ -132,7 +121,7 @@ List<ResortModel> resortList = [
     nY: 119,
   ),//9
   ResortModel(
-    index:9,
+    index:8,
     resortName: '오크밸리리조트',
     resortUrl: 'http://www.oakvalley.co.kr/',
     webcamUrl: 'http://www.oakvalley.co.kr/oak_new/new_ski04.asp',
@@ -143,7 +132,7 @@ List<ResortModel> resortList = [
     nY: 122,
   ),//10
   ResortModel(
-    index:10,
+    index:9,
     resortName: '알펜시아',
     resortUrl: 'https://www.alpensia.com/',
     webcamUrl: 'https://www.alpensia.com/guide/web-cam.do',
@@ -154,7 +143,7 @@ List<ResortModel> resortList = [
     nY: 130,
   ),//11
   ResortModel(
-    index:11,
+    index:10,
     resortName: '하이원리조트',
     resortUrl: 'https://www.high1.com/',
     webcamUrl: 'https://www.high1.com/ski/slopeView.do?key=748&mode=p',
@@ -165,7 +154,7 @@ List<ResortModel> resortList = [
     nY: 120,
   ),//12
   ResortModel(
-    index:12,
+    index:11,
     resortName: '무주덕유산리조트',
     resortUrl: 'https://www.mdysresort.com/',
     webcamUrl: 'https://www.mdysresort.com/guide/webcam.asp',
@@ -176,7 +165,7 @@ List<ResortModel> resortList = [
     nY: 93,
   ),//13
   ResortModel(
-    index:13,
+    index:12,
     resortName: '에덴벨리리조트',
     resortUrl: 'http://www.edenvalley.co.kr/',
     webcamUrl: '',
@@ -185,7 +174,7 @@ List<ResortModel> resortList = [
     longitude: 128.9844681,
     nX: 95,
     nY: 80,
-  ),//14
+  ),//13
 ];
 
 List<String?> resortNameList = [
@@ -202,7 +191,6 @@ List<String?> resortNameList = [
   resortList[10].resortName,
   resortList[11].resortName,
   resortList[12].resortName,
-  resortList[13].resortName,
 ];
 
 

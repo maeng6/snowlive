@@ -32,11 +32,11 @@ class WeatherModel{
 
   Future<Map> parseWeatherData(int nX, int nY) async {
     var getWeatherJson = await getJsonData(nX,nY);
-    var getMaxMinTempJson = await getMaxMinJsonData(nX,nY);
     this.temp = getWeatherJson['response']['body']['items']['item'][3]['obsrValue'];
     this.rain = getWeatherJson["response"]["body"]["items"]["item"][2]["obsrValue"];
     this.wind = getWeatherJson["response"]["body"]["items"]["item"][7]["obsrValue"];
     this.wet = getWeatherJson["response"]["body"]["items"]["item"][1]["obsrValue"];
+    var getMaxMinTempJson = await getMaxMinJsonData(nX,nY);
     this.maxTemp = getMaxMinTempJson["response"]["body"]["items"]["item"][157]["fcstValue"];
     this.minTemp = getMaxMinTempJson["response"]["body"]["items"]["item"][48]["fcstValue"];
     Map<String, dynamic> weatherInfoMap = {
@@ -78,11 +78,9 @@ class WeatherModel{
   Future<dynamic> getMaxMinJsonData(int nX, int nY) async{
 
     maxminWeatherDate();
+
     var date = baseDate_2am;
     var time = baseTime_2am;
-    print(date);
-    print(time);
-
     http.Response response = await http.get(
         Uri.parse('http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst'
             '?serviceKey=$apiKey'
@@ -97,6 +95,8 @@ class WeatherModel{
       String jsonData = response.body;
       var parsingData = jsonDecode(jsonData);
       return parsingData;
+    } else{
+
     }
   }
   Future<dynamic> getJsonData(int nX, int nY) async{

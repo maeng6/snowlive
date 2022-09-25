@@ -24,8 +24,10 @@ class ResortModelController extends GetxController{
   RxString? _resortWet=''.obs;
   RxString? _resortMaxTemp=''.obs;
   RxString? _resortMinTemp=''.obs;
+  RxBool isLoading = false.obs;
 
   Future<void> getSelectedResort(int resortNum) async{
+    isLoading.value = true;
     ResortModel resortModel = ResortModel();
     WeatherModel weatherModel = WeatherModel();
     ResortModel selectedResort = resortModel.resortModelSelection(resortNum);
@@ -43,10 +45,9 @@ class ResortModelController extends GetxController{
     this._resortRain!.value= weatherInfo['rain'];
     this._resortWind!.value= weatherInfo['wind'];
     this._resortWet!.value= weatherInfo['wet'];
-    this._resortWet!.value= weatherInfo['wet'];
-    this._resortWet!.value= weatherInfo['wet'];
     this._resortMaxTemp!.value= weatherInfo['maxTemp'];
     this._resortMinTemp!.value= weatherInfo['minTemp'];
+    isLoading.value = false;
 
   }
 
