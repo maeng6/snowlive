@@ -17,7 +17,6 @@ class ResortHome extends StatelessWidget {
       Get.find<GetDateTimeController>();
 
   //TODO: Dependency Injection**************************************************
-  bool isWaiting = false;
 
   @override
   Widget build(BuildContext context) {

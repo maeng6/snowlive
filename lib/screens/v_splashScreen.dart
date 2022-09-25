@@ -6,28 +6,33 @@ import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_loadingPage.dart';
 import 'package:snowlive3/controller/vm_splashController.dart';
 
+import '../controller/vm_getDateTimeController.dart';
+import '../controller/vm_resortModelController.dart';
+import '../controller/vm_userModelController.dart';
+
 class SplashScreen extends StatelessWidget {
   SplashScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return AnimatedSplashScreen(
-      curve: Curves.easeInCirc,
-      splashTransition: SplashTransition.fadeTransition,
-      splashIconSize: double.maxFinite,
-      duration: 1500,
+        curve: Curves.easeInCirc,
+        splashTransition: SplashTransition.fadeTransition,
+        splashIconSize: double.maxFinite,
+        duration: 1500,
         //TODO: Dependency Injection********************************************
-      splash: GetBuilder(
-        init: Get.put(SplashController()),
-        builder: (SplashController controller) {
-       return ExtendedImage.network(
-          '${controller.url}',
-          fit: BoxFit.fitHeight,
-          cache:true,
-        );
-      },
-      ),
-      nextScreen: LoadingPage()
+        splash: GetBuilder(
+          init: Get.put(SplashController()),
+          builder: (SplashController controller) {
+            return ExtendedImage.network(
+              '${controller.url}',
+              fit: BoxFit.fitHeight,
+              cache: true,
+            );
+          },
+        ),
+        nextScreen: LoadingPage()
     );
   }
 }

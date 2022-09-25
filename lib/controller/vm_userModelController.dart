@@ -14,12 +14,14 @@ class UserModelController extends GetxController{
   RxInt? _favoriteResort = 0.obs;
   RxInt? _instantResort = 0.obs;
   int? _favoriteSaved=0;
+  RxString? _profileImageUrl=''.obs;
 
   String? get uid => _uid!.value;
   String? get userEmial => _userEmail!.value;
   int? get favoriteResort => _favoriteResort!.value;
   int? get instantResort  => _instantResort!.value;
   int? get favoriteSaved => _favoriteSaved;
+  String? get profileImageUrl => _profileImageUrl!.value;
 
   @override
   void onInit()  {
@@ -35,17 +37,35 @@ class UserModelController extends GetxController{
   }
 
   Future<void> getCurrentUser() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String uid = FirebaseAuth.instance.currentUser!.uid;
-    UserModel userModel = await UserModel().getUserModel(uid);
-    this._uid!.value = userModel.uid!;
-    this._userEmail!.value = userModel.userEmail!;
-    this._favoriteResort!.value = userModel.favoriteResort!;
-    this._instantResort!.value = userModel.instantResort!;
-    await prefs.setInt('favoriteResort', userModel.favoriteResort!);
-    print('${prefs.getInt('favoriteResort')}');
+    if(FirebaseAuth.instance.currentUser != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+      UserModel userModel = await UserModel().getUserModel(uid);
+      this._uid!.value = userModel.uid!;
+      this._userEmail!.value = userModel.userEmail!;
+      this._favoriteResort!.value = userModel.favoriteResort!;
+      this._instantResort!.value = userModel.instantResort!;
+      this._profileImageUrl!.value = userModel.profileImageUrl!;
+      await prefs.setInt('favoriteResort', userModel.favoriteResort!);
+    } else {}
   }
 
+  Future<void> updateProfileImageUrl(url) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'profileImageUrl': url,
+    });
+    await getCurrentUser();
+  } //선택한 리조트를 파베유저문서에 업데이트
+  Future<void> updateNickname(index) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'displayName': index,
+    });
+    await getCurrentUser();
+  } //선택한 리조트를 파베유저문서에 업데이트
   Future<void> updateFavoriteResort(index) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
