@@ -29,8 +29,8 @@ Widget clothWebGridView() {
       child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              mainAxisSpacing: 30,
-              crossAxisSpacing: 20,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
               childAspectRatio: 0.681),
           itemCount: clothBrandNameList.length,
           itemBuilder: (BuildContext context, int index) {
@@ -42,7 +42,7 @@ Widget clothWebGridView() {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        constraints: BoxConstraints(maxWidth: 150, minHeight: 150, minWidth: 150) ,
+                        constraints: BoxConstraints(maxWidth: 173, minHeight: 203, minWidth: 100) ,
                           decoration: BoxDecoration(
                             boxShadow:[
                           BoxShadow(
