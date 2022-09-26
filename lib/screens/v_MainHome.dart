@@ -1,28 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:snowlive3/controller/vm_bottomNavigationBar.dart';
-import 'package:snowlive3/controller/vm_loginController.dart';
+import 'package:snowlive3/screens/resort/v_resortHome.dart';
+import 'brand/v_brandHome.dart';
+import 'more/v_moreTab.dart';
+import 'more/v_weatherPage.dart';
 
-class MainHome extends StatelessWidget {
-  const MainHome({Key? key}) : super(key: key);
+class MainHome extends StatefulWidget {
+
+  @override
+  State<MainHome> createState() => _MainHomeState();
+}
+
+class _MainHomeState extends State<MainHome> {
+  int _currentPage=0;
+
+  void changePage(pageIndex){
+    setState(() {
+      _currentPage =pageIndex;
+    });
+}
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Dependency Injection************************************************
-    Get.put(BottomNavigationBarController(), permanent: true);
-    BottomNavigationBarController _bottomNavigationBarController =
-        Get.find<BottomNavigationBarController>();
-    //TODO: Dependency Injection************************************************
 
     return SafeArea(
         child: Scaffold(
-            bottomNavigationBar: Obx(
-                  () => BottomNavigationBar(
+            bottomNavigationBar: BottomNavigationBar(
                 backgroundColor: Colors.white,
                 elevation: 10,
                 type: BottomNavigationBarType.fixed,
-                currentIndex: _bottomNavigationBarController.currentIndex.value,
-                onTap: _bottomNavigationBarController.changePage,
+                currentIndex: _currentPage,
+                onTap:  changePage,
                 items: [
                   BottomNavigationBarItem(
                     icon: Image.asset(
@@ -69,7 +76,15 @@ class MainHome extends StatelessWidget {
                 showUnselectedLabels: false,
                 showSelectedLabels: false,
               ),
-            ),
-            body: Obx(() => _bottomNavigationBarController.currentPage)));
+            body: IndexedStack(
+              index: _currentPage,
+              children: [
+                ResortHome(),
+                BrandWebBody(),
+                WeatherPage(),
+                MoreTab()
+              ],
+            )
+        ));
   }
 }
