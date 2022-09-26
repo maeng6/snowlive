@@ -10,6 +10,7 @@ class UserModelController extends GetxController{
   final auth = FirebaseAuth.instance;
 
   RxString? _uid = ''.obs;
+  RxString? _displayName = ''.obs;
   RxString? _userEmail = ''.obs;
   RxInt? _favoriteResort = 0.obs;
   RxInt? _instantResort = 0.obs;
@@ -17,6 +18,7 @@ class UserModelController extends GetxController{
   RxString? _profileImageUrl=''.obs;
 
   String? get uid => _uid!.value;
+  String? get displayName => _displayName!.value;
   String? get userEmial => _userEmail!.value;
   int? get favoriteResort => _favoriteResort!.value;
   int? get instantResort  => _instantResort!.value;
@@ -42,6 +44,7 @@ class UserModelController extends GetxController{
       String uid = FirebaseAuth.instance.currentUser!.uid;
       UserModel userModel = await UserModel().getUserModel(uid);
       this._uid!.value = userModel.uid!;
+      this._displayName!.value = userModel.displayName!;
       this._userEmail!.value = userModel.userEmail!;
       this._favoriteResort!.value = userModel.favoriteResort!;
       this._instantResort!.value = userModel.instantResort!;

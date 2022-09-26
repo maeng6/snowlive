@@ -5,6 +5,7 @@ class UserModel {
 
   UserModel({
     this.uid,
+    this.displayName,
     this.userEmail,
     this.favoriteResort,
     this.instantResort,
@@ -14,6 +15,7 @@ class UserModel {
   final auth = FirebaseAuth.instance;
   final ref = FirebaseFirestore.instance;
   String? uid;
+  String? displayName;
   String? userEmail;
   int? favoriteResort;
   int? instantResort;
@@ -22,6 +24,7 @@ class UserModel {
 
   UserModel.fromJson(dynamic json, this.reference){
     uid = json['uid'];
+    displayName = json['displayName'];
     userEmail = json['userEmail'];
     favoriteResort = json['favoriteResort'];
     instantResort = json['instantResort'];

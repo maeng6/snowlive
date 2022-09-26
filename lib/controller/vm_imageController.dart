@@ -20,18 +20,19 @@ class ImageController extends GetxController {
   UserModelController _userModelController = Get.find<UserModelController>();
   //TODO : ****************************************************************
 
-  Future getSingleImage(ImageSource) async {
+  Future<XFile?> getSingleImage(ImageSource) async {
 
     final ImagePicker _picker = ImagePicker();
     final XFile? image =
         await _picker.pickImage(imageQuality: 10, source: ImageSource);
     if (image != null) {
-      String profileImageUrl = await setNewImage(image);
-      _userModelController.updateProfileImageUrl(profileImageUrl);
+      //String profileImageUrl = await setNewImage(image);
+      //_userModelController.updateProfileImageUrl(profileImageUrl);
+      return image;
     }else {
       CustomFullScreenDialog.cancelDialog();
     }
-    Image.file(File(image!.path));
+    return image;
   }
 
   Future<String> setNewImage(XFile newImage) async {
@@ -48,6 +49,4 @@ class ImageController extends GetxController {
     }
     return downloadUrl;
   }
-
-
 }

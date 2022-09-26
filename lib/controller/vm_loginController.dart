@@ -50,6 +50,14 @@ class LoginController extends GetxController {
     Get.to(() => LoginPage());
   }
 
+  void deleteUser(uid) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('user');
+    users.doc(uid).delete();
+    User user = FirebaseAuth.instance.currentUser!;
+    user.delete();
+    await signOut(); // 위(2번 로그아웃 샘플코드)에서 정의한 함수입니다.
+  }
+
   Future<void> createUserDoc(index) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;

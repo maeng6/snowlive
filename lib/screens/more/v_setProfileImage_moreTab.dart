@@ -6,29 +6,22 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
+import 'package:snowlive3/screens/more/v_moreTab.dart';
 import 'package:snowlive3/screens/onboarding/v_favoriteResort.dart';
 import 'package:snowlive3/screens/onboarding/v_setNickname.dart';
 
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
-class SetProfileImage extends StatefulWidget {
-  SetProfileImage({Key? key}) : super(key: key);
+class SetProfileImageMoreTab extends StatefulWidget {
+  SetProfileImageMoreTab({Key? key}) : super(key: key);
 
   @override
-  State<SetProfileImage> createState() => _SetProfileImageState();
+  State<SetProfileImageMoreTab> createState() => _SetProfileImageMoreTabState();
 }
 
-class _SetProfileImageState extends State<SetProfileImage> {
+class _SetProfileImageMoreTabState extends State<SetProfileImageMoreTab> {
   bool profileImage = false;
-  XFile? _imageFile;
-
-  @override
-  void initState() {
-    _imageFile = null;
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +51,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                     height: 30,
                   ),
                   Text(
-                    '프로필 이미지를\n업로드해 주세요.',
+                    '변경할 프로필 이미지를\n업로드해 주세요.',
                     style: TextStyle(fontSize: 23, fontWeight: FontWeight.w700),
                   ),
                 ],
@@ -66,20 +59,13 @@ class _SetProfileImageState extends State<SetProfileImage> {
               SizedBox(
                 height: 15,
               ),
-              Text(
-                '프로필 이미지를 나중에 업로드하길 원하시면,\n건너뛰기 버튼을 눌러주세요.',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
-                ),
-              ),
               SizedBox(
                 height: 40,
               ),
               (profileImage) //이 값이 true이면 이미지업로드가 된 상태이므로, 미리보기 띄움
                   ? Center(
                       child: GestureDetector(
-                        onTap: () {
+                        onTap: (){
                           showMaterialModalBottomSheet(
                             context: context,
                             builder: (context) => Container(
@@ -89,8 +75,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                   Text(
                                     '업로드 방법을 선택해주세요.',
                                     style: TextStyle(
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.w700),
+                                        fontSize: 23, fontWeight: FontWeight.w700),
                                   ),
                                   Text(
                                     '프로필 이미지를 나중에 업로드하길 원하시면,\n건너뛰기 버튼을 눌러주세요.',
@@ -100,24 +85,22 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                     ),
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       ElevatedButton(
                                         onPressed: () async {
                                           CustomFullScreenDialog.showDialog();
                                           try {
-                                            _imageFile = await _imageController
-                                                .getSingleImage(
-                                                    ImageSource.gallery);
-                                            CustomFullScreenDialog
-                                                .cancelDialog();
+                                            await _imageController
+                                                .getSingleImage(ImageSource.gallery);
+                                            CustomFullScreenDialog.cancelDialog();
+                                            print(
+                                                _userModelController.profileImageUrl);
                                             profileImage = true;
                                             setState(() {});
                                             Navigator.pop(context);
                                           } catch (e) {
-                                            CustomFullScreenDialog
-                                                .cancelDialog();
+                                            CustomFullScreenDialog.cancelDialog();
                                           }
                                         },
                                         child: Text(
@@ -125,120 +108,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                           style: TextStyle(color: Colors.white),
                                         ),
                                         style: TextButton.styleFrom(
-                                            splashFactory:
-                                                InkRipple.splashFactory,
-                                            minimumSize: Size(170, 56),
-                                            backgroundColor: Color(0xff555555)),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () async {
-                                          CustomFullScreenDialog.showDialog();
-                                          try {
-                                            _imageFile = await _imageController
-                                                .getSingleImage(
-                                                    ImageSource.camera);
-                                            CustomFullScreenDialog
-                                                .cancelDialog();
-                                            profileImage = true;
-                                            setState(() {});
-                                            Navigator.pop(context);
-                                          } catch (e) {
-                                            CustomFullScreenDialog
-                                                .cancelDialog();
-                                          }
-                                        },
-                                        child: Text(
-                                          '사진 촬영',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        style: TextButton.styleFrom(
-                                            splashFactory:
-                                                InkRipple.splashFactory,
-                                            minimumSize: Size(170, 56),
-                                            backgroundColor: Color(0xff2C97FB)),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                        child: Stack(
-                            children: [
-                          Container(
-                            width: 130,
-                            height: 130,
-                            child: CircleAvatar(
-                              backgroundColor: Colors.grey[100],
-                              backgroundImage: FileImage(File(_imageFile!.path)),
-                            ),
-                          ),
-                              Positioned(
-                                  left: 100,
-                                  child: GestureDetector(
-                                      child: Icon(Icons.cancel),
-                                    onTap: (){
-                                      profileImage = false;
-                                      setState(() {});
-                                    },
-                                  )
-                              ),
-                        ]),
-                      ),
-                    )
-                  : Center(
-                      child: GestureDetector(
-                        onTap: () {
-                          showMaterialModalBottomSheet(
-                            context: context,
-                            builder: (context) => Container(
-                              height: 215,
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '업로드 방법을 선택해주세요.',
-                                    style: TextStyle(
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                  Text(
-                                    '프로필 이미지를 나중에 업로드하길 원하시면,\n건너뛰기 버튼을 눌러주세요.',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      ElevatedButton(
-                                        onPressed: () async {
-                                          CustomFullScreenDialog.showDialog();
-                                          try {
-                                            _imageFile = await _imageController
-                                                .getSingleImage(
-                                                    ImageSource.gallery);
-                                            CustomFullScreenDialog
-                                                .cancelDialog();
-                                            print(_userModelController
-                                                .profileImageUrl);
-                                            profileImage = true;
-                                            setState(() {});
-                                            Navigator.pop(context);
-                                          } catch (e) {
-                                            CustomFullScreenDialog
-                                                .cancelDialog();
-                                          }
-                                        },
-                                        child: Text(
-                                          '앨범에서 선택',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        style: TextButton.styleFrom(
-                                            splashFactory:
-                                                InkRipple.splashFactory,
+                                            splashFactory: InkRipple.splashFactory,
                                             minimumSize: Size(170, 56),
                                             backgroundColor: Color(0xff555555)),
                                       ),
@@ -247,16 +117,13 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                           CustomFullScreenDialog.showDialog();
                                           try {
                                             await _imageController
-                                                .getSingleImage(
-                                                    ImageSource.camera);
-                                            CustomFullScreenDialog
-                                                .cancelDialog();
+                                                .getSingleImage(ImageSource.camera);
+                                            CustomFullScreenDialog.cancelDialog();
                                             profileImage = true;
                                             setState(() {});
                                             Navigator.pop(context);
                                           } catch (e) {
-                                            CustomFullScreenDialog
-                                                .cancelDialog();
+                                            CustomFullScreenDialog.cancelDialog();
                                           }
                                         },
                                         child: Text(
@@ -264,8 +131,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                           style: TextStyle(color: Colors.white),
                                         ),
                                         style: TextButton.styleFrom(
-                                            splashFactory:
-                                                InkRipple.splashFactory,
+                                            splashFactory: InkRipple.splashFactory,
                                             minimumSize: Size(170, 56),
                                             backgroundColor: Color(0xff2C97FB)),
                                       ),
@@ -277,33 +143,112 @@ class _SetProfileImageState extends State<SetProfileImage> {
                           );
                         },
                         child: Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                    color: Colors.grey, width: 3)),
-                            child: Image.asset(
-                                    'assets/imgs/profile/profileImage.png'),
-                            ), //이 컨테이너가 이미지업로드 전에 보여주는 아이콘임
+                          child: ExtendedImage.network(
+                            _userModelController.profileImageUrl!,
+                            width: 100,
+                            height: 100,
+                            shape: BoxShape.circle,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Center(
+                      child: GestureDetector(
+                        onTap: (){
+                          showMaterialModalBottomSheet(
+                            context: context,
+                            builder: (context) => Container(
+                              height: 215,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    '업로드 방법을 선택해주세요.',
+                                    style: TextStyle(
+                                        fontSize: 23, fontWeight: FontWeight.w700),
+                                  ),
+                                  Text(
+                                    '프로필 이미지를 나중에 업로드하길 원하시면,\n건너뛰기 버튼을 눌러주세요.',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          CustomFullScreenDialog.showDialog();
+                                          try {
+                                            await _imageController
+                                                .getSingleImage(ImageSource.gallery);
+                                            CustomFullScreenDialog.cancelDialog();
+                                            print(
+                                                _userModelController.profileImageUrl);
+                                            profileImage = true;
+                                            setState(() {});
+                                            Navigator.pop(context);
+                                          } catch (e) {
+                                            CustomFullScreenDialog.cancelDialog();
+                                          }
+                                        },
+                                        child: Text(
+                                          '앨범에서 선택',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        style: TextButton.styleFrom(
+                                            splashFactory: InkRipple.splashFactory,
+                                            minimumSize: Size(170, 56),
+                                            backgroundColor: Color(0xff555555)),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          CustomFullScreenDialog.showDialog();
+                                          try {
+                                            await _imageController
+                                                .getSingleImage(ImageSource.camera);
+                                            CustomFullScreenDialog.cancelDialog();
+                                            profileImage = true;
+                                            setState(() {});
+                                            Navigator.pop(context);
+                                          } catch (e) {
+                                            CustomFullScreenDialog.cancelDialog();
+                                          }
+                                        },
+                                        child: Text(
+                                          '사진 촬영',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        style: TextButton.styleFrom(
+                                            splashFactory: InkRipple.splashFactory,
+                                            minimumSize: Size(170, 56),
+                                            backgroundColor: Color(0xff2C97FB)),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border:
+                                  Border.all(color: Colors.black12, width: 3)),
+                          child: Icon(
+                            Icons.image,
+                            size: 150,
+                          ),
+                        ),//이 컨테이너가 이미지업로드 전에 보여주는 아이콘임
                       ),
                     ),
               Expanded(child: SizedBox()),
               Center(
                 child: ElevatedButton(
-                  onPressed: () async{
-                    if(_imageFile != null) {
-                      CustomFullScreenDialog.showDialog();
-                      String profileImageUrl = await _imageController
-                          .setNewImage(_imageFile!);
-                      await _userModelController.updateProfileImageUrl(
-                          profileImageUrl);
-                      CustomFullScreenDialog.cancelDialog();
-                      Get.to(() => FavoriteResort());
-                    }else {
-                      Get.snackbar('이미지를 선택해주세요.', '다음에 설정하시려면 건너뛰기를 눌러주세요.',
-                          snackPosition: SnackPosition.BOTTOM,
-                          backgroundColor: Colors.white,
-                          duration: Duration(milliseconds: 2000));
-                    }
+                  onPressed: () {
+                    Get.offAll(() => MoreTab());
                   },
                   child: Text(
                     '확인',
@@ -321,10 +266,10 @@ class _SetProfileImageState extends State<SetProfileImage> {
               Center(
                 child: ElevatedButton(
                   onPressed: () async {
-                    Get.to(() => FavoriteResort());
+                    Get.offAll(() => MoreTab());
                   },
                   child: Text(
-                    '건너뛰기',
+                    '취소',
                     style: TextStyle(color: Colors.grey),
                   ),
                   style: TextButton.styleFrom(
