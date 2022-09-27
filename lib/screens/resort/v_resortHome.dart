@@ -14,9 +14,9 @@ class ResortHome extends StatelessWidget {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   ResortModelController _resortModelController =
-      Get.find<ResortModelController>();
+  Get.find<ResortModelController>();
   GetDateTimeController _getDateTimeController =
-      Get.find<GetDateTimeController>();
+  Get.find<GetDateTimeController>();
 
   //TODO: Dependency Injection**************************************************
 
@@ -91,7 +91,7 @@ class ResortHome extends StatelessWidget {
                               ),
                               GestureDetector(
                                 child: Obx(
-                                  () => Text(
+                                      () => Text(
                                     '${_resortModelController.resortName}',
                                     style: TextStyle(
                                         color: Colors.white,
@@ -113,7 +113,7 @@ class ResortHome extends StatelessWidget {
                                                       onTap: () async {
                                                         await _resortModelController
                                                             .getSelectedResort(
-                                                                index);
+                                                            index);
                                                         Navigator.pop(ctx);
                                                       });
                                                 }));
@@ -141,7 +141,7 @@ class ResortHome extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Obx(
-                                    () => Padding(
+                                        () => Padding(
                                       padding: const EdgeInsets.only(
                                           right: 4, left: 20),
                                       child: Text(
@@ -180,12 +180,12 @@ class ResortHome extends StatelessWidget {
                                       ),
                                       Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.end,
+                                        CrossAxisAlignment.end,
                                         children: [
                                           Obx(
-                                            () => Padding(
+                                                () => Padding(
                                               padding:
-                                                  const EdgeInsets.only(right: 3),
+                                              const EdgeInsets.only(right: 3),
                                               child: Text(
                                                 '${_resortModelController.resortWind}',
                                                 style: GoogleFonts.bebasNeue(
@@ -196,7 +196,7 @@ class ResortHome extends StatelessWidget {
                                           ),
                                           Padding(
                                             padding:
-                                                const EdgeInsets.only(bottom: 5),
+                                            const EdgeInsets.only(bottom: 5),
                                             child: Text(
                                               'M/S',
                                               style: GoogleFonts.bebasNeue(
@@ -220,12 +220,12 @@ class ResortHome extends StatelessWidget {
                                       ),
                                       Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.end,
+                                        CrossAxisAlignment.end,
                                         children: [
                                           Obx(
-                                            () => Padding(
+                                                () => Padding(
                                               padding:
-                                                  const EdgeInsets.only(right: 3),
+                                              const EdgeInsets.only(right: 3),
                                               child: Text(
                                                 '${_resortModelController.resortWet}',
                                                 style: GoogleFonts.bebasNeue(
@@ -236,7 +236,7 @@ class ResortHome extends StatelessWidget {
                                           ),
                                           Padding(
                                             padding:
-                                                const EdgeInsets.only(bottom: 5),
+                                            const EdgeInsets.only(bottom: 5),
                                             child: Text(
                                               '%',
                                               style: GoogleFonts.bebasNeue(
@@ -260,12 +260,12 @@ class ResortHome extends StatelessWidget {
                                       ),
                                       Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.end,
+                                        CrossAxisAlignment.end,
                                         children: [
                                           Obx(
-                                            () => Padding(
+                                                () => Padding(
                                               padding:
-                                                  const EdgeInsets.only(right: 3),
+                                              const EdgeInsets.only(right: 3),
                                               child: Text(
                                                 '${_resortModelController.resortRain}',
                                                 style: GoogleFonts.bebasNeue(
@@ -276,7 +276,7 @@ class ResortHome extends StatelessWidget {
                                           ),
                                           Padding(
                                             padding:
-                                                const EdgeInsets.only(bottom: 5),
+                                            const EdgeInsets.only(bottom: 5),
                                             child: Text(
                                               'MM',
                                               style: GoogleFonts.bebasNeue(
@@ -299,7 +299,7 @@ class ResortHome extends StatelessWidget {
                                         height: 6,
                                       ),
                                       Obx(
-                                        () => Row(
+                                            () => Row(
                                           crossAxisAlignment: CrossAxisAlignment.end,
                                           children: [
                                             Text(
@@ -366,7 +366,7 @@ class ResortHome extends StatelessWidget {
                                             minimumSize: Size(80, 30),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(6)),
+                                                BorderRadius.circular(6)),
                                             elevation: 0,
                                             primary: Colors.black26,
                                             padding: EdgeInsets.symmetric(
@@ -400,7 +400,7 @@ class ResortHome extends StatelessWidget {
                                         horizontal: 24, vertical: 12),
                                     child: Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      CrossAxisAlignment.center,
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Expanded(
@@ -420,9 +420,9 @@ class ResortHome extends StatelessWidget {
                                           ),
                                           onPressed: () {
                                             Get.to(Obx(
-                                              () => WebPage(
+                                                  () => WebPage(
                                                 url:
-                                                    '${_resortModelController.naverUrl}',
+                                                '${_resortModelController.naverUrl}',
                                               ),
                                             ));
                                           },
@@ -430,7 +430,7 @@ class ResortHome extends StatelessWidget {
                                               minimumSize: Size(72, 30),
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(6)),
+                                                  BorderRadius.circular(6)),
                                               elevation: 0,
                                               primary: Color(0xFFF2F3F4),
                                               padding: EdgeInsets.symmetric(
@@ -464,7 +464,7 @@ class ResortHome extends StatelessWidget {
                                           decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius:
-                                                  BorderRadius.circular(14)),
+                                              BorderRadius.circular(14)),
                                           width: _size.width * 0.5 - 22,
                                           height: 164,
                                           child: Padding(
@@ -475,9 +475,9 @@ class ResortHome extends StatelessWidget {
                                                 right: 20),
                                             child: Column(
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                              MainAxisAlignment.start,
                                               children: [
                                                 Expanded(
                                                   child: Text(
@@ -487,12 +487,12 @@ class ResortHome extends StatelessWidget {
                                                         fontSize: 18,
                                                         color: Color(0xFF111111),
                                                         fontWeight:
-                                                            FontWeight.bold),
+                                                        FontWeight.bold),
                                                   ),
                                                 ),
                                                 Row(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.end,
+                                                  MainAxisAlignment.end,
                                                   children: [
                                                     Image.asset(
                                                       'assets/imgs/icons/icon_snowLive_link.png',
@@ -520,7 +520,7 @@ class ResortHome extends StatelessWidget {
                                           decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius:
-                                                  BorderRadius.circular(14)),
+                                              BorderRadius.circular(14)),
                                           width: _size.width * 0.5 - 22,
                                           height: 164,
                                           child: Padding(
@@ -531,24 +531,24 @@ class ResortHome extends StatelessWidget {
                                                 right: 20),
                                             child: Column(
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                              MainAxisAlignment.start,
                                               children: [
                                                 Expanded(
                                                   child: Text(
                                                     '리조트\n홈페이지',
                                                     style: TextStyle(
-                                                      height: 1.3,
+                                                        height: 1.3,
                                                         fontSize: 18,
                                                         color: Color(0xFF111111),
                                                         fontWeight:
-                                                            FontWeight.bold),
+                                                        FontWeight.bold),
                                                   ),
                                                 ),
                                                 Row(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.end,
+                                                  MainAxisAlignment.end,
                                                   children: [
                                                     Image.asset(
                                                       'assets/imgs/icons/icon_snowLive_link.png',
