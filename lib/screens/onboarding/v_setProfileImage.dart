@@ -43,7 +43,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           leading: GestureDetector(
-            child: Image.asset('assets/imgs/icons/icon_snowLive_back.png', scale: 4,),
+            child: Image.asset('assets/imgs/icons/icon_snowLive_back.png', scale: 4, width: 26, height: 26,),
             onTap: () => Get.back(result: () => SetNickname()),
           ),
         ),
