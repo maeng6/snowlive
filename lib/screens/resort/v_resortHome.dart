@@ -342,7 +342,8 @@ class ResortHome extends StatelessWidget {
                                   children: [
                                     Image.asset(
                                       'assets/imgs/weather/icon_weather.png',
-                                      scale: 4,
+                                      width: 40,
+                                      height: 40,
                                     ),
                                     Expanded(
                                       child: Padding(

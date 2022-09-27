@@ -43,7 +43,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           leading: GestureDetector(
-            child: Icon(Icons.arrow_back),
+            child: Image.asset('assets/imgs/icons/icon_snowLive_back.png', scale: 4,),
             onTap: () => Get.back(result: () => SetNickname()),
           ),
         ),
@@ -59,18 +59,19 @@ class _SetProfileImageState extends State<SetProfileImage> {
                   ),
                   Text(
                     '프로필 이미지를\n업로드해 주세요.',
-                    style: TextStyle(fontSize: 23, fontWeight: FontWeight.w700),
+                    style:
+                    TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
               SizedBox(
-                height: 15,
+                height: 10,
               ),
               Text(
                 '프로필 이미지를 나중에 업로드하길 원하시면,\n건너뛰기 버튼을 눌러주세요.',
                 style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
+                  color: Color(0xff949494),
+                  fontSize: 14,
                 ),
               ),
               SizedBox(

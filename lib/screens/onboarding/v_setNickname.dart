@@ -37,35 +37,32 @@ class _SetNicknameState extends State<SetNickname> {
           backgroundColor: Colors.white,
           appBar: AppBar(
             leading: GestureDetector(
-              child: Icon(Icons.arrow_back),
+              child: Image.asset('assets/imgs/icons/icon_snowLive_back.png', scale: 4,),
               onTap: () => Get.back(result: () => WelcomePage()),
             ),
           ),
           body: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.only(top: 10, left: 16, right: 16, bottom: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Column(
                   children: [
-                    SizedBox(
-                      height: 30,
-                    ),
                     Text(
                       '스노우라이브\n닉네임을 정해주세요.',
                       style:
-                          TextStyle(fontSize: 23, fontWeight: FontWeight.w700),
+                      TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
                 SizedBox(
-                  height: 15,
+                  height: 10,
                 ),
                 Text(
                   '스노우라이브에서 사용할 닉네임을 정해주시고,\n건너뛰기를 하셔도 언제든지 변경하실 수 있습니다.',
                   style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 12,
+                    color: Color(0xff949494),
+                    fontSize: 14,
                   ),
                 ),
                 SizedBox(
@@ -74,13 +71,28 @@ class _SetNicknameState extends State<SetNickname> {
                 Form(
                   key: _formKey,
                   child: TextFormField(
+                    cursorColor: Color(0xff377EEA),
+                    cursorHeight: 16,
+                    cursorWidth: 2,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: _textEditingController,
+                    strutStyle: StrutStyle(
+                      leading: 0.3
+                    ),
                     decoration: InputDecoration(
-                        hintStyle: TextStyle(color: Colors.grey, fontSize: 13),
+                      errorStyle: TextStyle(
+                        fontSize: 11,
+                      ),
+                        hintStyle: TextStyle(color: Color(0xff949494), fontSize: 16),
                         hintText: '닉네임 입력',
+                        labelText: '닉네임',
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                         border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey))),
+                            borderSide: BorderSide(color: Color(0xFFDCDCDC)),
+                        borderRadius: BorderRadius.circular(6),
+                        ),
+
+                    ),
                     validator: (val) {
                       if (val!.length <= 20 && val.length >= 1) {
                         return null;
@@ -99,7 +111,7 @@ class _SetNicknameState extends State<SetNickname> {
                   padding: const EdgeInsets.only(left: 3),
                   child: Text(
                     '최대 20글자까지 입력 가능합니다.',
-                    style: TextStyle(color: Colors.grey, fontSize: 10),
+                    style: TextStyle(color: Color(0xff949494), fontSize: 11),
                   ),
                 ),
                 Expanded(child: SizedBox()),
@@ -116,8 +128,9 @@ class _SetNicknameState extends State<SetNickname> {
                       } else {
                         Get.snackbar('닉네임 저장 실패', '올바른 닉네임을 입력해주세요.',
                             snackPosition: SnackPosition.BOTTOM,
-                            backgroundColor: Colors.white,
-                            duration: Duration(milliseconds: 1000));
+                            backgroundColor: Colors.black87,
+                            colorText: Colors.white,
+                            duration: Duration(milliseconds: 2000));
                       }
                       setState(() {
                         isLoading = false;
@@ -129,16 +142,21 @@ class _SetNicknameState extends State<SetNickname> {
                     )
                         : Text(
                             '다음',
-                            style: TextStyle(color: Colors.white),
-                          ),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
                     style: TextButton.styleFrom(
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                        elevation: 0,
                         splashFactory: InkRipple.splashFactory,
-                        minimumSize: Size(350, 56),
-                        backgroundColor: Color(0xff2C97FB)),
+                        minimumSize: Size(1000, 56),
+                        backgroundColor: Color(0xff377EEA)),
                   ),
                 ),
                 SizedBox(
-                  height: 5,
+                  height: 12,
                 ),
                 Center(
                   child: ElevatedButton(
@@ -147,17 +165,15 @@ class _SetNicknameState extends State<SetNickname> {
                     },
                     child: Text(
                       '건너뛰기',
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: Color(0xff949494), fontSize: 16, fontWeight: FontWeight.normal),
                     ),
                     style: TextButton.styleFrom(
+                      elevation: 0,
                         splashFactory: InkRipple.splashFactory,
-                        minimumSize: Size(350, 56),
+                        minimumSize: Size(1000, 41),
                         backgroundColor: Colors.white),
                   ),
                 ),
-                SizedBox(
-                  height: 10,
-                )
               ],
             ),
           ),

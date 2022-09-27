@@ -11,11 +11,14 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final Size _size = MediaQuery.of(context).size;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Padding(
-          padding: const EdgeInsets.only(left: 20,right: 20,bottom: 44),
+          padding: const EdgeInsets.only(left: 16,right: 16,bottom: 24),
           child: Container(
             width: double.infinity,
             height: double.infinity,
@@ -26,7 +29,7 @@ class LoginPage extends StatelessWidget {
                 Column(
                   children: [
                     SizedBox(
-                      height: 200,
+                      height: _size.height * 0.23,
                     ),
                     Image.asset('assets/imgs/logos/snowLiveLogo.png',
                       height:73 ,
@@ -41,7 +44,9 @@ class LoginPage extends StatelessWidget {
                       logoAddress: 'assets/imgs/logos/logos_google.png',
                       signInMethod: SignInMethod.google,
                       buttonColor: Color(0xffFFFFFF),
+                      borderColor: Color(0xffDCDCDC),
                       textColor: Colors.black,
+
                     ),
                     SizedBox(
                       height: 10,
@@ -51,6 +56,7 @@ class LoginPage extends StatelessWidget {
                       logoAddress: 'assets/imgs/logos/logos_facebook.png',
                       signInMethod: SignInMethod.facebook,
                       buttonColor: Color(0xff1877F2),
+                      borderColor: Colors.transparent,
                       textColor: Colors.white,
                     ),
                     SizedBox(
@@ -61,8 +67,14 @@ class LoginPage extends StatelessWidget {
                       logoAddress: 'assets/imgs/logos/logos_apple.png',
                       signInMethod: SignInMethod.apple,
                       buttonColor: Color(0xff111111),
+                      borderColor: Colors.transparent,
                       textColor: Colors.white,
                     ),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    Text('로그인 방법을 선택해주세요',
+                    style: TextStyle(fontSize: 14, color: Color(0xFF949494), fontWeight: FontWeight.normal),)
                   ],
                 ),
 
