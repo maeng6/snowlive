@@ -342,20 +342,19 @@ class ResortHome extends StatelessWidget {
                                   children: [
                                     Image.asset(
                                       'assets/imgs/weather/icon_weather.png',
-                                      scale: 4,
+                                      width: 40,
+                                      height: 40,
                                     ),
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(left: 6),
-                                        child: SizedBox(
-                                            width: 188,
-                                            child: Text(
-                                              '야간 라이딩을 즐길 시간',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 13),
-                                            )),
-                                      ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 6),
+                                      child: SizedBox(
+                                          width: 188,
+                                          child: Text(
+                                            '야간 라이딩을 즐길 시간',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 13),
+                                          )),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(right: 20),
@@ -490,13 +489,15 @@ class ResortHome extends StatelessWidget {
                                                         FontWeight.bold),
                                                   ),
                                                 ),
+                                                Expanded(child: Container()),
                                                 Row(
                                                   mainAxisAlignment:
                                                   MainAxisAlignment.end,
                                                   children: [
                                                     Image.asset(
                                                       'assets/imgs/icons/icon_snowLive_link.png',
-                                                      scale: 4,
+                                                      width: 67,
+                                                      height: 26,
                                                     ),
                                                   ],
                                                 ),
@@ -546,13 +547,15 @@ class ResortHome extends StatelessWidget {
                                                         FontWeight.bold),
                                                   ),
                                                 ),
+                                                Expanded(child: Container()),
                                                 Row(
                                                   mainAxisAlignment:
                                                   MainAxisAlignment.end,
                                                   children: [
                                                     Image.asset(
                                                       'assets/imgs/icons/icon_snowLive_link.png',
-                                                      scale: 4,
+                                                      width: 67,
+                                                      height: 26,
                                                     ),
                                                   ],
                                                 ),

@@ -14,6 +14,7 @@ class LoginButton extends StatelessWidget {
   var signInMethod;
   Color? buttonColor;
   Color? textColor;
+  Color? borderColor;
   var loginVal;
 
   LoginButton(
@@ -21,7 +22,8 @@ class LoginButton extends StatelessWidget {
       this.logoAddress,
       this.signInMethod,
       this.buttonColor,
-      this.textColor});
+      this.textColor,
+      this.borderColor});
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +38,9 @@ class LoginButton extends StatelessWidget {
         elevation: 0,
         backgroundColor: buttonColor,
         shape: RoundedRectangleBorder(
-          side: BorderSide(color: Color(0xffDCDCDC)),
+          side: BorderSide(color: borderColor!),
           borderRadius: BorderRadius.all(
-            Radius.circular(4.0),
+            Radius.circular(6),
           ),
         ),
       ),
@@ -74,13 +76,15 @@ class LoginButton extends StatelessWidget {
           if (auth.currentUser == null) {
             Get.snackbar('로그인 취소', '다시 시도해주세요.',
                 snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.white,
-                duration: Duration(milliseconds: 1000));
+                backgroundColor: Colors.black87,
+                colorText: Colors.white,
+                duration: Duration(milliseconds: 2000));
           } else {
             Get.snackbar('로그인 실패', '다시 시도해주세요.',
                 snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.white,
-                duration: Duration(milliseconds: 1000));
+                backgroundColor: Colors.black87,
+                colorText: Colors.white,
+                duration: Duration(milliseconds: 2000));
             print(e);
           }
         }
@@ -91,13 +95,14 @@ class LoginButton extends StatelessWidget {
           Image.asset(
             '$logoAddress',
             height: 20,
+            scale: 1,
           ),
           Container(
             alignment: Alignment.center,
             width: 220,
             child: Text(
               '$buttonText',
-              style: TextStyle(fontSize: 12, color: textColor),
+              style: TextStyle(fontSize: 14, color: textColor, fontWeight: FontWeight.normal),
             ),
           ),
           Opacity(

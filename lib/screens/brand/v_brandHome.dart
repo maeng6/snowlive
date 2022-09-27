@@ -103,66 +103,65 @@ class _BrandWebBodyState extends State<BrandWebBody> {
 
 Widget clothWebGridView(BuildContext context) {
   final Size _size = MediaQuery.of(context).size;
-  return Expanded(
-      child: Padding(
+  return Padding(
     padding: const EdgeInsets.only(left: 16, right: 16),
     child: GridView.builder(
-        padding: EdgeInsets.only(top: 68, bottom: 16),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 12,
-            childAspectRatio: 0.68),
-        itemCount: clothBrandNameList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    Container(
-                        width: _size.width * 0.5 - 22,
-                        decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.all(Radius.circular(6))),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: GestureDetector(
-                              onTap: () => Get.to(WebPage(
-                                  url: '${clothBrandHomeUrlList[index]}')),
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: ExtendedImage.network(
-                                      '${clothBrandImageUrlList[index]}',
-                                      fit: BoxFit.fitHeight,
-                                      cache: true,
-                                    ),
-                                  ),
-                                ],
-                              )),
-                        )),
-                  ],
+    padding: EdgeInsets.only(top: 68, bottom: 16),
+    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 12,
+        childAspectRatio: 0.68),
+    itemCount: clothBrandNameList.length,
+    itemBuilder: (BuildContext context, int index) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                Container(
+                    width: _size.width * 0.5 - 22,
+                    decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.all(Radius.circular(6))),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: GestureDetector(
+                          onTap: () => Get.to(WebPage(
+                              url: '${clothBrandHomeUrlList[index]}')),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: ExtendedImage.network(
+                                  '${clothBrandImageUrlList[index]}',
+                                  fit: BoxFit.fitHeight,
+                                  cache: true,
+                                ),
+                              ),
+                            ],
+                          )),
+                    )),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  '${clothBrandNameList[index]}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      '${clothBrandNameList[index]}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        }),
-  ));
+              ],
+            ),
+          ),
+        ],
+      );
+    }),
+  );
 }
