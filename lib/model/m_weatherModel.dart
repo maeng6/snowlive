@@ -39,6 +39,7 @@ class WeatherModel{
     var getMaxMinTempJson = await getMaxMinJsonData(nX,nY);
     this.maxTemp = getMaxMinTempJson["response"]["body"]["items"]["item"][157]["fcstValue"];
     this.minTemp = getMaxMinTempJson["response"]["body"]["items"]["item"][48]["fcstValue"];
+
     Map<String, dynamic> weatherInfoMap = {
       'temp': this.temp,
       'rain': this.rain,
@@ -65,6 +66,7 @@ class WeatherModel{
       currentBaseTime = DateFormat('HH00').format(_now);
     }
   }
+
   void maxminWeatherDate() {
     if(_now.hour < 2 || _now.hour == 2 && _now.minute < 10){
       baseDate_2am = getYesterdayDate();
@@ -99,12 +101,12 @@ class WeatherModel{
 
     }
   }
+
   Future<dynamic> getJsonData(int nX, int nY) async{
 
     currentWeatherDate();
     var date = currentBaseDate;
     var time = currentBaseTime;
-
     http.Response response = await http.get(
         Uri.parse('https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst'
             '?serviceKey=$apiKey'
@@ -117,7 +119,7 @@ class WeatherModel{
             '&dataType=JSON'));
     if (response.statusCode == 200) {
       String jsonData = response.body;
-      var parsingData = jsonDecode(jsonData);
+      var parsingData = await jsonDecode(jsonData);
       return parsingData;
     }
   }

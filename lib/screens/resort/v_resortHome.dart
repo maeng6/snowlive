@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
 import 'package:snowlive3/model/m_resortModel.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
@@ -9,16 +10,54 @@ import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 
 import '../../controller/vm_loginController.dart';
+import '../../widget/w_fullScreenDialog.dart';
 
-class ResortHome extends StatelessWidget {
+class ResortHome extends StatefulWidget {
+  @override
+  State<ResortHome> createState() => _ResortHomeState();
+}
+
+class _ResortHomeState extends State<ResortHome> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
+
   ResortModelController _resortModelController =
   Get.find<ResortModelController>();
+
   GetDateTimeController _getDateTimeController =
   Get.find<GetDateTimeController>();
-
   //TODO: Dependency Injection**************************************************
+
+  List<bool?> _isChecked = List<bool?>.filled(13, false);
+  List<bool?> _isSelected = List<bool?>.filled(13, false);
+  int? _instantResort;
+
+  CheckboxListTile buildCheckboxListTile(int index) {
+    return CheckboxListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text('${resortNameList[index]}'),
+      activeColor: Color(0xff2C97FB),
+      selected: _isSelected[index]!,
+      selectedTileColor: Color(0xff2C97FB),
+      value: _isChecked[index],
+      onChanged: (bool? value) {
+        setState(() {
+          _isChecked = List<bool?>.filled(13, false);
+          _isSelected = List<bool?>.filled(13, false);
+          _isChecked[index] = value;
+          _isSelected[index] = value;
+          if (value == false) {
+            _instantResort = null;
+          } else {
+            _instantResort = index;
+          }
+        });
+      },
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    );
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -100,24 +139,108 @@ class ResortHome extends StatelessWidget {
                                   ),
                                 ),
                                 onTap: () {
-                                  showDialog(
+                                  showMaterialModalBottomSheet(
+                                    enableDrag: false,
                                       context: context,
-                                      builder: (context) {
-                                        return Dialog(
-                                            child: ListView.builder(
-                                                itemCount: 14,
-                                                itemBuilder: (ctx, index) {
-                                                  return ListTile(
-                                                      title: Text(
-                                                          '${resortNameList[index]}'),
-                                                      onTap: () async {
+                                      builder: (context){
+                                        return Container(
+                                          height: 400,
+                                          child: Column(
+                                            children: [
+                                              Expanded(
+                                                child: ListView.builder(
+                                                    itemCount: 13,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return Column(
+                                                        children: [
+                                                          buildCheckboxListTile(
+                                                              index),
+                                                          Divider(
+                                                            height: 20,
+                                                            thickness: 0.5,
+                                                          ),
+                                                        ],
+                                                      );
+                                                    }),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  ElevatedButton(
+                                                    onPressed: () async {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text(
+                                                      '취소',
+                                                      style: TextStyle(
+                                                          color:
+                                                          Colors.black87),
+                                                    ),
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                        splashFactory:
+                                                        InkRipple
+                                                            .splashFactory,
+                                                        minimumSize:
+                                                        Size(170, 56),
+                                                        backgroundColor:
+                                                        Colors.grey[
+                                                        100]),
+                                                  ),
+                                                  ElevatedButton(
+                                                    onPressed: () async {
+                                                      if (_instantResort !=
+                                                          null) {
+                                                        CustomFullScreenDialog
+                                                            .showDialog();
                                                         await _resortModelController
                                                             .getSelectedResort(
-                                                            index);
-                                                        Navigator.pop(ctx);
-                                                      });
-                                                }));
-                                      });
+                                                            _instantResort!);
+                                                        print(
+                                                            '인스턴트 리조트 불러오기 완료');
+                                                        CustomFullScreenDialog
+                                                            .cancelDialog();
+                                                        Navigator.pop(
+                                                            context);
+                                                      } else {
+                                                        Get.snackbar(
+                                                            '리조트를 선택해주세요.',
+                                                            '변경을 원치않으시면 취소버튼을 눌러주세요.',
+                                                            snackPosition:
+                                                            SnackPosition
+                                                                .BOTTOM,
+                                                            backgroundColor:
+                                                            Colors.white,
+                                                            duration: Duration(
+                                                                milliseconds:
+                                                                2000));
+                                                      }
+                                                    },
+                                                    child: Text(
+                                                      '확인',
+                                                      style: TextStyle(
+                                                          color:
+                                                          Colors.white),
+                                                    ),
+                                                    style: ElevatedButton.styleFrom(
+                                                        splashFactory:
+                                                        InkRipple
+                                                            .splashFactory,
+                                                        minimumSize:
+                                                        Size(170, 56),
+                                                        backgroundColor:
+                                                        Color(
+                                                            0xff2C97FB)),
+                                                  ),
+                                                ],
+                                              ),
+
+
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                  );
                                 },
                               ),
                               SizedBox(

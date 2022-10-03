@@ -10,16 +10,15 @@ List<BrandModel> clothBrandList = [
   BrandModel(
       brandName: 'USS2',
       url: 'http://www.uss2official.co.kr/',
-      imageUrl: 'http://gemini44.img12.kr/main/main_slider01.jpg'), //1
+      imageUrl: 'http://www.uss2official.co.kr/design/gemini44/pcmain_01.jpg'), //1
   BrandModel(
       brandName: 'GAFH',
       url: 'http://gafh.co.kr/',
-      imageUrl: 'http://gafh.co.kr/web/upload/category/editor/2021/07/18/'
-          '60125df0faf34dafb6674b0f5648a0c3.jpg'), //2
+      imageUrl: 'http://gafh.co.kr/lookbook/2223/look53.jpg'), //2
   BrandModel(
       brandName: 'OVYO',
       url: 'http://ovyo.net/',
-      imageUrl: 'http://ovyo.net/shopinfo/img/rider_p/bsw_2022_p.jpg'), //3
+      imageUrl: 'http://ovyo.net/web/product/big/202208/744ee4933795d94d7230be9e55bb31a9.jpg'), //3
   BrandModel(
       brandName: 'BSRABBIT',
       url: 'http://bsrabbit.com/',
