@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'SF-Pro-Text',
+        fontFamily: 'NotoSansKR',
         appBarTheme: AppBarTheme(
           iconTheme: IconThemeData(
             size: 30,
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           ),
           centerTitle: true,
           titleTextStyle: TextStyle(
-            fontFamily: 'SF-Pro-Text',
+            fontFamily: 'NotoSansKR',
             fontWeight: FontWeight.w700,
             color: Colors.black,
                 fontSize: 20
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         ),
         buttonTheme: ButtonThemeData(
           buttonColor: Colors.transparent
-        )
+        ),
       ),
         home: SplashScreen()
     );
