@@ -33,88 +33,98 @@ class _FavoriteResortState extends State<FavoriteResort> {
 
   @override
   Widget build(BuildContext context) {
+
+    final Size _size = MediaQuery.of(context).size;
+
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           leading: GestureDetector(
-            child: Icon(Icons.arrow_back),
+            child: Image.asset('assets/imgs/icons/icon_snowLive_back.png', scale: 4, width: 26, height: 26,),
             onTap: ()=> Get.back(result: ()=>SetProfileImage()),
           ),
         ),
-        body: Container(
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                children: [
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 14),
-                    child: Text(
+        body: Padding(
+          padding: const EdgeInsets.only(top: 10, left: 16, right: 16, bottom: 16),
+          child: Container(
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  children: [
+                    Text(
                       '자주가는 스키장을 \n선택해주세요.',
                       style:
-                          TextStyle(fontSize: 23, fontWeight: FontWeight.w700),
+                      TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0),
-                child: Text(
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
                   '자주가는 스키장은 1개만 선택할 수 있습니다.',
                   style: TextStyle(
-                    fontSize: 12,
+                    color: Color(0xff949494),
+                    fontSize: 14,
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              Expanded(
-                child: ListView.builder(
-                    itemCount: 13,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          buildCheckboxListTile(index),
-                          Divider(
-                            height: 20,
-                            thickness: 0.5,
-                          ),
-                        ],
-                      );
-                    }),
-              ),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    CustomFullScreenDialog.showDialog();
-                    await userModelController.updateFavoriteResort(favoriteResort);
-                    print('즐겨찾는 리조트 업뎃완료');
-                    await resortModelController.getSelectedResort(userModelController.favoriteResort!);
-                    CustomFullScreenDialog.cancelDialog();
-                    Get.offAll(()=>MainHome());
-                  },
-                  child: Text(
-                    '다음',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  style: TextButton.styleFrom(
-                      splashFactory: InkRipple.splashFactory,
-                      minimumSize: Size(350, 56),
-                      backgroundColor: Color(0xff2C97FB)),
+                SizedBox(
+                  height: 40,
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              )
-            ],
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: 13,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            buildCheckboxListTile(index),
+                            Divider(
+                              height: 20,
+                              thickness: 0.5,
+                            ),
+                          ],
+                        );
+                      }),
+                ),
+                Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: [
+                    Container(
+                      width: _size.width,
+                      height: 88,
+                    ),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          CustomFullScreenDialog.showDialog();
+                          await userModelController.updateFavoriteResort(favoriteResort);
+                          print('즐겨찾는 리조트 업뎃완료');
+                          await resortModelController.getSelectedResort(userModelController.favoriteResort!);
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.offAll(()=>MainHome());
+                        },
+                        child: Text(
+                          '다음',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+                        style: TextButton.styleFrom(
+                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                            elevation: 0,
+                            splashFactory: InkRipple.splashFactory,
+                            minimumSize: Size(1000, 56),
+                            backgroundColor: Color(0xff377EEA)),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -123,11 +133,12 @@ class _FavoriteResortState extends State<FavoriteResort> {
 
   CheckboxListTile buildCheckboxListTile(int index) {
     return CheckboxListTile(
-      title: Text('${resortNameList[index]}'),
-      activeColor: Color(0xff2C97FB),
+      title: Text('${resortNameList[index]}', style: TextStyle(fontSize: 16),),
+      activeColor: Color(0xff377EEA),
       selected: _isSelected[index]!,
-      selectedTileColor: Color(0xff2C97FB),
+      selectedTileColor: Color(0xff377EEA),
       value: _isChecked[index],
+      contentPadding: EdgeInsets.symmetric(horizontal: 0),
       onChanged: (bool? value) {
         setState(() {
           _isChecked = List<bool?>.filled(14, false);
@@ -141,7 +152,17 @@ class _FavoriteResortState extends State<FavoriteResort> {
           }
         });
       },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    );
+  }
+
+
+  ListTile buildListTile(int index) {
+    return ListTile(
+      title: Text('${resortNameList[index]}', style: TextStyle(fontSize: 16),),
+      selected: _isSelected[index]!,
+
     );
   }
 }
+
+
