@@ -43,28 +43,26 @@ class _ResortHomeState extends State<ResortHome> {
       contentPadding: EdgeInsets.zero,
       title: Text('${resortNameList[index]}'),
       selected: _isSelected[index]!,
-      onTap: () {
-        setState(() async{
-          Navigator.pop(context);
-          CustomFullScreenDialog.showDialog();
-          _isSelected = List<bool?>.filled(13, false);
-          _isSelected[index] = true;
-          _userModelController.updateInstantResort(index);
-          try {
-            await _resortModelController.getSelectedResort(index);
-            CustomFullScreenDialog.cancelDialog();
-          } catch(e){
-            CustomFullScreenDialog.cancelDialog();
-            Get.snackbar(
-                '현재 날씨를 확인하기 어려워요.',
-                '잠시후에 다시 시도해주세요.',
-                snackPosition: SnackPosition.BOTTOM,
-                margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                backgroundColor: Colors.black87,
-                colorText: Colors.white,
-                duration: Duration(milliseconds: 3000));
-          }
-        });
+      onTap: () async{
+        Navigator.pop(context);
+        CustomFullScreenDialog.showDialog();
+        _isSelected = List<bool?>.filled(13, false);
+        _isSelected[index] = true;
+        _userModelController.updateInstantResort(index);
+        try {
+          await _resortModelController.getSelectedResort(index);
+          CustomFullScreenDialog.cancelDialog();
+        } catch(e){
+          CustomFullScreenDialog.cancelDialog();
+          Get.snackbar(
+              '현재 날씨를 확인하기 어려워요.',
+              '잠시후에 다시 시도해주세요.',
+              snackPosition: SnackPosition.BOTTOM,
+              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+              backgroundColor: Colors.black87,
+              colorText: Colors.white,
+              duration: Duration(milliseconds: 3000));
+        }
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
