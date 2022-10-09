@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -177,7 +178,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                       },
                                       child: Text(
                                         '사진 촬영',
-                                        style: TextStyle(color: Colors.white),
+                                        style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                                       ),
                                       style: TextButton.styleFrom(
                                           splashFactory:
@@ -202,17 +203,18 @@ class _SetProfileImageState extends State<SetProfileImage> {
                   child: Stack(
                       children: [
                         Container(
-                          width: 130,
-                          height: 130,
+                          width: 160,
+                          height: 160,
                           child: CircleAvatar(
                             backgroundColor: Colors.grey[100],
                             backgroundImage: FileImage(File(_imageFile!.path)),
                           ),
                         ),
                         Positioned(
-                            left: 100,
+                          bottom: 13,
+                            right: 8,
                             child: GestureDetector(
-                              child: Icon(Icons.cancel),
+                              child: ExtendedImage.asset('assets/imgs/icons/icon_profile_delete.png', scale: 4),
                               onTap: (){
                                 profileImage = false;
                                 _imageFile = null;
@@ -322,7 +324,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                       },
                                       child: Text(
                                         '사진 촬영',
-                                        style: TextStyle(color: Colors.white),
+                                        style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                                       ),
                                       style: TextButton.styleFrom(
                                           splashFactory:
@@ -344,16 +346,29 @@ class _SetProfileImageState extends State<SetProfileImage> {
                       ),
                     );
                   },
-                  child: Container(
-                    width: 160,
-                    height: 160,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        ),
-                    child: Image.asset(
-                        'assets/imgs/profile/img_profile_default_circle.png',
-                    width: 147,
-                    height: 147,),
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: 160,
+                        height: 160,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            ),
+                        child: Image.asset(
+                            'assets/imgs/profile/img_profile_default_circle.png',
+                        width: 147,
+                        height: 147,),
+                      ),
+                      Positioned(
+                          bottom: 13,
+                          right: 8,
+                          child: GestureDetector(
+                            child: ExtendedImage.asset('assets/imgs/icons/icon_profile_add.png', scale: 4),
+                            onTap: () {
+                            },
+                          )
+                      ),
+                    ],
                   ), //이 컨테이너가 이미지업로드 전에 보여주는 아이콘임
                 ),
               ),

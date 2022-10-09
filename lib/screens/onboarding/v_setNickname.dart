@@ -81,13 +81,14 @@ class _SetNicknameState extends State<SetNickname> {
                       leading: 0.3
                     ),
                     decoration: InputDecoration(
+
                       errorStyle: TextStyle(
-                        fontSize: 11,
+                        fontSize: 12,
                       ),
                         hintStyle: TextStyle(color: Color(0xff949494), fontSize: 16),
-                        hintText: '닉네임 입력',
-                        labelText: '닉네임',
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                        hintText: '활동명 입력',
+                        labelText: '활동명',
+                        contentPadding: EdgeInsets.only(top: 22, bottom: 20, left: 20, right: 20),
                         border: OutlineInputBorder(
                             borderSide: BorderSide(color: Color(0xFFDCDCDC)),
                         borderRadius: BorderRadius.circular(6),
@@ -106,13 +107,13 @@ class _SetNicknameState extends State<SetNickname> {
                   ),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 6,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 3),
+                  padding: const EdgeInsets.only(left: 19),
                   child: Text(
                     '최대 20글자까지 입력 가능합니다.',
-                    style: TextStyle(color: Color(0xff949494), fontSize: 11),
+                    style: TextStyle(color: Color(0xff949494), fontSize: 12),
                   ),
                 ),
                 Expanded(child: SizedBox()),
