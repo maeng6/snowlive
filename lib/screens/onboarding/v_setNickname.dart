@@ -128,7 +128,7 @@ class _SetNicknameState extends State<SetNickname> {
                             .updateNickname(_textEditingController.text);
                         Get.to(() => SetProfileImage());
                       } else {
-                        Get.snackbar('닉네임을 입력해주세요', '나중에 정하시려면 건너뛰기를 눌러주세요',
+                        Get.snackbar('활동명을 입력해주세요', '나중에 정하시려면 건너뛰기를 눌러주세요',
                             snackPosition: SnackPosition.BOTTOM,
                             margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
                             backgroundColor: Colors.black87,
