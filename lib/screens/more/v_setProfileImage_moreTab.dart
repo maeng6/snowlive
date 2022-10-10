@@ -173,6 +173,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                               child: Icon(Icons.cancel),
                               onTap: (){
                                 profileImage = false;
+                                _imageFile = null;
                                 setState(() {});
                               },
                             )

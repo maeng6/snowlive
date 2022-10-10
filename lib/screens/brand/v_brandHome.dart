@@ -95,7 +95,7 @@ class _BrandWebBodyState extends State<BrandWebBody> {
             ],
           ),
         ),
-        body: clothWebGridView(context),
+        body:  clothWebGridView(context),
       ),
     );
   }
