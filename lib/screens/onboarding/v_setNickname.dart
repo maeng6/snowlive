@@ -71,39 +71,43 @@ class _SetNicknameState extends State<SetNickname> {
                 ),
                 Form(
                   key: _formKey,
-                  child: TextFormField(
-                    cursorColor: Color(0xff377EEA),
-                    cursorHeight: 16,
-                    cursorWidth: 2,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    controller: _textEditingController,
-                    strutStyle: StrutStyle(
-                      leading: 0.3
-                    ),
-                    decoration: InputDecoration(
-
-                      errorStyle: TextStyle(
-                        fontSize: 12,
-                      ),
-                        hintStyle: TextStyle(color: Color(0xff949494), fontSize: 16),
-                        hintText: '활동명 입력',
-                        labelText: '활동명',
-                        contentPadding: EdgeInsets.only(top: 22, bottom: 20, left: 20, right: 20),
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFFDCDCDC)),
-                        borderRadius: BorderRadius.circular(6),
+                  child: Container(
+                    child: Center(
+                      child: TextFormField(
+                        cursorColor: Color(0xff377EEA),
+                        cursorHeight: 16,
+                        cursorWidth: 2,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        controller: _textEditingController,
+                        strutStyle: StrutStyle(
+                          leading: 0.3
                         ),
+                        decoration: InputDecoration(
 
+                          errorStyle: TextStyle(
+                            fontSize: 12,
+                          ),
+                            hintStyle: TextStyle(color: Color(0xff949494), fontSize: 16),
+                            hintText: '활동명 입력',
+                            labelText: '활동명',
+                            contentPadding: EdgeInsets.only(top: 22, bottom: 20, left: 20, right: 20),
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide(color: Color(0xFFDCDCDC)),
+                            borderRadius: BorderRadius.circular(6),
+                            ),
+
+                        ),
+                        validator: (val) {
+                          if (val!.length <= 20 && val.length >= 1) {
+                            return null;
+                          } else if (val.length == 0) {
+                            return '닉네임을 입력해주세요.';
+                          } else {
+                            return '최대 글자 수를 초과했습니다.';
+                          }
+                        },
+                      ),
                     ),
-                    validator: (val) {
-                      if (val!.length <= 20 && val.length >= 1) {
-                        return null;
-                      } else if (val.length == 0) {
-                        return '닉네임을 입력해주세요.';
-                      } else {
-                        return '최대 글자 수를 초과했습니다.';
-                      }
-                    },
                   ),
                 ),
                 SizedBox(

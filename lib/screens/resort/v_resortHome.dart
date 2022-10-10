@@ -31,6 +31,13 @@ class _ResortHomeState extends State<ResortHome> {
   List<bool?> _isChecked = List<bool?>.filled(13, false);
   List<bool?> _isSelected = List<bool?>.filled(13, false);
   int? _instantResort;
+  bool _ifWeatherError = false;
+
+  @override
+  void setState(VoidCallback fn) {
+    // TODO: implement setState
+    super.setState(fn);
+  }
 
   CheckboxListTile buildCheckboxListTile(int index) {
     return CheckboxListTile(
@@ -38,7 +45,7 @@ class _ResortHomeState extends State<ResortHome> {
       title: Text('${resortNameList[index]}'),
       activeColor: Color(0xff2C97FB),
       selected: _isSelected[index]!,
-      selectedTileColor: Color(0xff2C97FB),
+      //selectedTileColor: Color(0xff2C97FB),
       value: _isChecked[index],
       onChanged: (bool? value) {
         setState(() {
@@ -57,17 +64,20 @@ class _ResortHomeState extends State<ResortHome> {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
+    _ifWeatherError = false;
 
     return FutureBuilder(
         future: _userModelController.getLocalSave(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          _resortModelController
-              .getSelectedResort(_userModelController.favoriteSaved!);
+          try {
+            _resortModelController
+                .getSelectedResort(_userModelController.favoriteSaved!);
+          }catch(e){
+            _ifWeatherError = true;
+          }
           return Scaffold(
             backgroundColor: Color(0xFFF2F4F6),
             extendBodyBehindAppBar: true,
@@ -110,7 +120,12 @@ class _ResortHomeState extends State<ResortHome> {
               ),
             ),
             body: SingleChildScrollView(
-              child: Container(
+              child:
+              (_ifWeatherError)?
+                  Container(
+                    color: Colors.red,
+                  )
+              :Container(
                 color: Color(0xFFF2F4F6),
                 child: Padding(
                     padding: const EdgeInsets.only(left: 16, top: 68, right: 16),
@@ -144,23 +159,31 @@ class _ResortHomeState extends State<ResortHome> {
                                       context: context,
                                       builder: (context){
                                         return Container(
-                                          height: 400,
+                                          height: 600,
                                           child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
+                                              Text('리조트를 선택해주세요.',
+                                               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                              ),
                                               Expanded(
                                                 child: ListView.builder(
                                                     itemCount: 13,
                                                     itemBuilder:
                                                         (context, index) {
-                                                      return Column(
-                                                        children: [
-                                                          buildCheckboxListTile(
-                                                              index),
-                                                          Divider(
-                                                            height: 20,
-                                                            thickness: 0.5,
-                                                          ),
-                                                        ],
+                                                      return Builder(
+                                                        builder: (context) {
+                                                          return Column(
+                                                            children: [
+                                                              buildCheckboxListTile(
+                                                                  index),
+                                                              Divider(
+                                                                height: 20,
+                                                                thickness: 0.5,
+                                                              ),
+                                                            ],
+                                                          );
+                                                        }
                                                       );
                                                     }),
                                               ),

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,7 +7,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
 import 'package:snowlive3/screens/onboarding/v_favoriteResort.dart';
 import 'package:snowlive3/screens/onboarding/v_setNickname.dart';
-
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
@@ -219,6 +217,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                               child: ExtendedImage.asset('assets/imgs/icons/icon_profile_delete.png', scale: 4),
                               onTap: (){
                                 profileImage = false;
+                                _imageFile = null;
                                 setState(() {});
                               },
                             )

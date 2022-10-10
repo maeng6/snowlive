@@ -76,6 +76,7 @@ class UserModelController extends GetxController{
       'favoriteResort': index,
     });
     await getCurrentUser();
+    await getLocalSave();
   } //선택한 리조트를 파베유저문서에 업데이트
   Future<void> updateInstantResort(index) async {
     final User? user = auth.currentUser;
