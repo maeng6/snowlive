@@ -73,9 +73,6 @@ class _ResortHomeState extends State<ResortHome> {
 
   void _onRefresh() async {
     CustomFullScreenDialog.showDialog();
-    await _resortModelController.getSelectedResort(
-        _userModelController.instantResort!); //1초를 기다린 후 새로고침한다.
-    //이 부분에 새로고침 시 불러올 기능을 구현한다.
     if (mounted) setState(() {});
     try {
       _refreshController.refreshCompleted();

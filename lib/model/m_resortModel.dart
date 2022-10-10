@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ResortData{
-void getResortData() async {
-  await FirebaseFirestore.instance.collection('resort').orderBy('resortName').snapshots().listen((data) {
-    resortList[0].resortName = data.docs[0]['resortName'];
-  });
+  void getResortData() async {
+    await FirebaseFirestore.instance.collection('resort').orderBy('resortName').snapshots().listen((data) {
+      resortList[0].resortName = data.docs[0]['resortName'];
+    });
 
   }
 }
@@ -28,7 +28,8 @@ class ResortModel {
   ResortModel resortModelSelection(int num) {
     ResortModel selectedResort = resortList[num];
     return selectedResort;
-  } //유저가 선택한 리조트 모델 가져오기
+  }//유저가 선택한 리조트 모델 가져오기
+
 }
 
 List<ResortModel> resortList = [
@@ -193,65 +194,50 @@ List<String?> resortNameList = [
   resortList[12].resortName,
 ];
 
+List<String?> naverUrlList = [
+  resortList[0].naverUrl,
+  resortList[1].naverUrl,
+  resortList[2].naverUrl,
+  resortList[3].naverUrl,
+  resortList[4].naverUrl,
+  resortList[5].naverUrl,
+  resortList[6].naverUrl,
+  resortList[7].naverUrl,
+  resortList[8].naverUrl,
+  resortList[9].naverUrl,
+  resortList[10].naverUrl,
+  resortList[11].naverUrl,
+  resortList[12].naverUrl,
+];
 
+List<dynamic> nxList = [
+  resortList[0].nX,
+  resortList[1].nX,
+  resortList[2].nX,
+  resortList[3].nX,
+  resortList[4].nX,
+  resortList[5].nX,
+  resortList[6].nX,
+  resortList[7].nX,
+  resortList[8].nX,
+  resortList[9].nX,
+  resortList[10].nX,
+  resortList[11].nX,
+  resortList[12].nX,
+];
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+List<dynamic> nyList = [
+  resortList[0].nY,
+  resortList[1].nY,
+  resortList[2].nY,
+  resortList[3].nY,
+  resortList[4].nY,
+  resortList[5].nY,
+  resortList[6].nY,
+  resortList[7].nY,
+  resortList[8].nY,
+  resortList[9].nY,
+  resortList[10].nY,
+  resortList[11].nY,
+  resortList[12].nY,
+];

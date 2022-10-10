@@ -12,9 +12,11 @@ class LoadingPage extends StatefulWidget {
 
   @override
   State<LoadingPage> createState() => _LoadingPageState();
+
 }
 
 class _LoadingPageState extends State<LoadingPage> {
+
   @override
   Widget build(BuildContext context) {
     //TODO: Dependency Injection************************************************
@@ -22,6 +24,7 @@ class _LoadingPageState extends State<LoadingPage> {
     Get.put(UserModelController(), permanent: true);
     Get.put(GetDateTimeController(), permanent: true);
     //TODO: Dependency Injection************************************************
+
 
     return FutureBuilder(
       future: FlutterSecureStorage().read(key: 'login'),
