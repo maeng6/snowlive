@@ -4,6 +4,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:snowlive3/screens/v_loginpage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
@@ -42,6 +43,22 @@ class LoginController extends GetxController {
       CustomFullScreenDialog.cancelDialog();
     }
     CustomFullScreenDialog.cancelDialog();
+  }
+
+  Future<UserCredential> signInWithApple() async {
+    final appleCredential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
+
+    final oauthCredential = OAuthProvider("apple.com").credential(
+      idToken: appleCredential.identityToken,
+      accessToken: appleCredential.authorizationCode,
+    );
+
+    return await FirebaseAuth.instance.signInWithCredential(oauthCredential);
   }
 
   Future<void> signOut() async {
