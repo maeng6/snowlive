@@ -83,14 +83,13 @@ class _SetNicknameState extends State<SetNickname> {
                           leading: 0.3
                         ),
                         decoration: InputDecoration(
-
                           errorStyle: TextStyle(
                             fontSize: 12,
                           ),
                             hintStyle: TextStyle(color: Color(0xff949494), fontSize: 16),
                             hintText: '활동명 입력',
                             labelText: '활동명',
-                            contentPadding: EdgeInsets.only(top: 22, bottom: 20, left: 20, right: 20),
+                            contentPadding: EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
                             border: OutlineInputBorder(
                                 borderSide: BorderSide(color: Color(0xFFDCDCDC)),
                             borderRadius: BorderRadius.circular(6),
