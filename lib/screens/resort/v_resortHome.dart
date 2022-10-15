@@ -511,16 +511,31 @@ class _ResortHomeState extends State<ResortHome> {
                                                             CrossAxisAlignment
                                                                 .start,
                                                         children: [
-                                                          Container(
-                                                              width: 113,
-                                                              height: 50,
-                                                              child:
-                                                                  ExtendedImage
-                                                                      .asset(
-                                                                'assets/imgs/logos/weather_logo.png',
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                              )),
+                                                          Row(
+                                                            children: [
+                                                              Container(
+                                                                  width: 113,
+                                                                  height: 50,
+                                                                  child:
+                                                                      ExtendedImage
+                                                                          .asset(
+                                                                    'assets/imgs/logos/weather_logo.png',
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  )),
+                                                              IconButton(
+                                                                  onPressed: (){
+                                                                    Get.to(() => WebPage(
+                                                                      url:
+                                                                      'https://www.weather.go.kr/w/index.do',
+                                                                    ),);
+                                                                  },
+                                                                  icon: Icon(Icons.open_in_new,
+                                                                  size: 20,
+                                                                  )
+                                                              )
+                                                            ],
+                                                          ),
                                                           SizedBox(
                                                             height: 14,
                                                           ),
@@ -544,7 +559,7 @@ class _ResortHomeState extends State<ResortHome> {
                                                             style: TextStyle(
                                                                 color: Colors
                                                                     .grey[800]),
-                                                          )
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
@@ -581,7 +596,7 @@ class _ResortHomeState extends State<ResortHome> {
                                                                   Color(
                                                                       0xff377EEA)),
                                                         ),
-                                                      )
+                                                      ),
                                                     ],
                                                   ));
                                                 },
@@ -594,7 +609,7 @@ class _ResortHomeState extends State<ResortHome> {
                                                                     .circular(
                                                                         6)),
                                                     elevation: 0,
-                                                    primary: Colors.black26,
+                                                    backgroundColor: Colors.black26,
                                                     padding:
                                                         EdgeInsets.symmetric(
                                                             horizontal: 10,
@@ -664,7 +679,7 @@ class _ResortHomeState extends State<ResortHome> {
                                                         BorderRadius.circular(
                                                             6)),
                                                 elevation: 0,
-                                                primary: Color(0xFFF2F3F4),
+                                                backgroundColor: Color(0xFFF2F3F4),
                                                 padding: EdgeInsets.symmetric(
                                                     horizontal: 10,
                                                     vertical: 5),
@@ -751,7 +766,7 @@ class _ResortHomeState extends State<ResortHome> {
                                             Get.to(Obx(
                                               () => WebPage(
                                                 url:
-                                                    '${_resortModelController.resortUrl}',
+                                                    '${_resortModelController.slopeUrl}',
                                               ),
                                             ));
                                           },
@@ -776,7 +791,7 @@ class _ResortHomeState extends State<ResortHome> {
                                                 children: [
                                                   Expanded(
                                                     child: Text(
-                                                      '리조트\n홈페이지',
+                                                      '슬로프\n오픈현황',
                                                       style: TextStyle(
                                                           height: 1.3,
                                                           fontSize: 18,

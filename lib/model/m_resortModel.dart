@@ -14,16 +14,18 @@ class ResortModel {
 
   int? index;
   String? resortName;
+  String? resortAddress;
   String? resortUrl;
   String? webcamUrl;
+  String? slopeUrl;
   String? naverUrl;
   double? latitude;
   double? longitude;
   int? nX;
   int? nY;
 
-  ResortModel({this.index,this.resortName, this.resortUrl, this.webcamUrl,
-    this.naverUrl, this.latitude, this.longitude, this.nX, this.nY});
+  ResortModel({this.index,this.resortName, this.resortAddress, this.resortUrl, this.webcamUrl,
+    this.slopeUrl, this.naverUrl, this.latitude, this.longitude, this.nX, this.nY});
 
   ResortModel resortModelSelection(int num) {
     ResortModel selectedResort = resortList[num];
@@ -36,8 +38,10 @@ List<ResortModel> resortList = [
   ResortModel(
     index:0,
     resortName: '곤지암리조트',
+    resortAddress: '광주시 도척면',
     resortUrl: 'https://konjiamresort.co.kr/',
     webcamUrl: '',
+    slopeUrl: '',
     naverUrl: 'https://weather.naver.com/today/02610330?cpName=KMA',
     latitude: 37.3372414,
     longitude: 127.2953076,
@@ -47,7 +51,9 @@ List<ResortModel> resortList = [
   ResortModel(
     index:1,
     resortName: '무주덕유산리조트',
+    resortAddress: '무주군 설천면',
     resortUrl: 'https://www.mdysresort.com/',
+    slopeUrl: 'https://www.mdysresort.com/convert_main_slope_191223.asp',
     webcamUrl: 'https://www.mdysresort.com/guide/webcam.asp',
     naverUrl: 'https://weather.naver.com/today/13730320?cpName=KMA',
     latitude: 35.8902945,
@@ -58,8 +64,10 @@ List<ResortModel> resortList = [
   ResortModel(
     index:2,
     resortName: '비발디파크',
-    resortUrl: 'https://www.sonohotelsresorts.com/daemyung.vp.skiworld.index.ds/',
+    resortAddress: '홍천군 서면',
+    resortUrl: 'https://www.sonohotelsresorts.com/daemyung.vp.skiworld.index.ds/dmparse.dm',
     webcamUrl: 'https://www.sonohotelsresorts.com/daemyung.vp.utill.09_02_02_01.ds/dmparse.dm?areaType=S',
+    slopeUrl: 'https://www.sonohotelsresorts.com/daemyung.vp.skiworld.04_02_04.ds/dmparse.dm',
     naverUrl: 'https://weather.naver.com/today/01720370?cpName=KMA',
     latitude: 37.6466335,
     longitude: 127.6813286,
@@ -69,8 +77,10 @@ List<ResortModel> resortList = [
   ResortModel(
     index:3,
     resortName: '알펜시아',
+    resortAddress: '평창군 대관령면',
     resortUrl: 'https://www.alpensia.com/',
     webcamUrl: 'https://www.alpensia.com/guide/web-cam.do',
+    slopeUrl: 'https://www.alpensia.com/ski/slope-plan.do',
     naverUrl: 'https://weather.naver.com/today/01760380?cpName=KMA',
     latitude: 37.6580936,
     longitude: 128.6713607,
@@ -80,8 +90,10 @@ List<ResortModel> resortList = [
   ResortModel(
     index:4,
     resortName: '에덴벨리리조트',
+    resortAddress: '양산시 원동면',
     resortUrl: 'http://www.edenvalley.co.kr/',
     webcamUrl: '',
+    slopeUrl: '',
     naverUrl: 'https://weather.naver.com/today/03330320?cpName=KMA',
     latitude: 35.4290765,
     longitude: 128.9844681,
@@ -91,8 +103,10 @@ List<ResortModel> resortList = [
   ResortModel(
     index:5,
     resortName: '엘리시안강촌',
+    resortAddress: '춘천시 남산면',
     resortUrl: 'https://elysian.co.kr/',
     webcamUrl: 'https://www.elysian.co.kr/gangchon/ski/ski_slope03.asp',
+    slopeUrl: 'https://www.elysian.co.kr/gangchon/ski/ski_slope.asp',
     naverUrl: 'https://weather.naver.com/today/01110400?cpName=KMA',
     latitude: 37.8163989,
     longitude: 127.587019,
@@ -102,8 +116,10 @@ List<ResortModel> resortList = [
   ResortModel(
     index:6,
     resortName: '오크밸리리조트',
+    resortAddress: '원주시 지정면',
     resortUrl: 'http://www.oakvalley.co.kr/',
     webcamUrl: 'http://www.oakvalley.co.kr/oak_new/new_ski04.asp',
+    slopeUrl: 'http://www.oakvalley.co.kr/oak_new/new_ski05.asp',
     naverUrl: 'https://weather.naver.com/today/01130330?cpName=KMA',
     latitude: 37.4023124,
     longitude: 127.8122233,
@@ -113,8 +129,10 @@ List<ResortModel> resortList = [
   ResortModel(
     index:7,
     resortName: '오투리조트',
+    resortAddress: '태백시 황지동',
     resortUrl: 'https://www.o2resort.com/',
-    webcamUrl: '',
+    webcamUrl: 'https://www.o2resort.com/SKI/liftInfo.jsp',
+    slopeUrl: 'https://www.o2resort.com/SKI/slopeOpen.jsp',
     naverUrl: 'https://weather.naver.com/today/01190101?cpName=KMA',
     latitude: 37.1773859,
     longitude: 128.9478083,
@@ -124,8 +142,10 @@ List<ResortModel> resortList = [
   ResortModel(
     index:8,
     resortName: '용평리조트',
+    resortAddress: '평창군 대관령면',
     resortUrl: 'https://www.yongpyong.co.kr/',
     webcamUrl: 'https://www.yongpyong.co.kr/kor/guide/realTimeNews/ypResortWebcam.do',
+    slopeUrl: 'https://www.yongpyong.co.kr/kor/skiNboard/slope/openStatusBoard.do',
     naverUrl: 'https://weather.naver.com/today/01760380?cpName=KMA',
     latitude: 37.6450087,
     longitude: 128.6829718,
@@ -135,8 +155,10 @@ List<ResortModel> resortList = [
   ResortModel(
     index:9,
     resortName: '웰리힐리파크',
+    resortAddress: '횡성군 둔내면',
     resortUrl: 'https://www.wellihillipark.com/',
-    webcamUrl: '',
+    webcamUrl: 'https://www.wellihillipark.com/home/customer/webcam',
+    slopeUrl: 'https://www.wellihillipark.com/snowpark/ski-school/schedule/open-slope',
     naverUrl: 'https://weather.naver.com/today/01730330?cpName=KMA',
     latitude: 37.4856398,
     longitude: 128.2474111,
@@ -146,8 +168,10 @@ List<ResortModel> resortList = [
   ResortModel(
     index:10,
     resortName: '지산리조트',
+    resortAddress: '이천시 마장면',
     resortUrl: 'https://www.jisanresort.co.kr/',
-    webcamUrl: '',
+    webcamUrl: 'https://www.jisanresort.co.kr/w/ski/slopes/webcam.asp',
+    slopeUrl: 'https://www.jisanresort.co.kr/w/ski/slopes/info.asp',
     naverUrl: 'https://weather.naver.com/today/02500340?cpName=KMA',
     latitude: 37.2172859,
     longitude: 127.3448223,
@@ -157,8 +181,10 @@ List<ResortModel> resortList = [
   ResortModel(
     index:11,
     resortName: '하이원리조트',
+    resortAddress: '정선군 고한읍',
     resortUrl: 'https://www.high1.com/',
     webcamUrl: 'https://www.high1.com/ski/slopeView.do?key=748&mode=p',
+    slopeUrl: 'https://www.high1.com/ski/slopeView.do?key=748&mode=p',
     naverUrl: 'https://weather.naver.com/today/01770253?cpName=KMA',
     latitude: 37.2074566,
     longitude: 128.8253198,
@@ -168,8 +194,10 @@ List<ResortModel> resortList = [
   ResortModel(
     index:12,
     resortName: '휘닉스평창',
+    resortAddress: '평창군 봉평면',
     resortUrl: 'https://phoenixhnr.co.kr/',
     webcamUrl: 'https://phoenixhnr.co.kr/page/pyeongchang/guide/operation/sketchMovie',
+    slopeUrl: 'https://phoenixhnr.co.kr/static/pyeongchang/snowpark/slope-lift',
     naverUrl: 'https://weather.naver.com/today/01760340?cpName=KMA',
     latitude: 37.5817875,
     longitude: 128.3208284,
@@ -194,6 +222,22 @@ List<String?> resortNameList = [
   resortList[12].resortName,
 ];
 
+List<String?> resortAddressList = [
+  resortList[0].resortAddress,
+  resortList[1].resortAddress,
+  resortList[2].resortAddress,
+  resortList[3].resortAddress,
+  resortList[4].resortAddress,
+  resortList[5].resortAddress,
+  resortList[6].resortAddress,
+  resortList[7].resortAddress,
+  resortList[8].resortAddress,
+  resortList[9].resortAddress,
+  resortList[10].resortAddress,
+  resortList[11].resortAddress,
+  resortList[12].resortAddress,
+];
+
 List<String?> naverUrlList = [
   resortList[0].naverUrl,
   resortList[1].naverUrl,
@@ -208,6 +252,38 @@ List<String?> naverUrlList = [
   resortList[10].naverUrl,
   resortList[11].naverUrl,
   resortList[12].naverUrl,
+];
+
+List<String?> webcamUrlList = [
+  resortList[0].webcamUrl,
+  resortList[1].webcamUrl,
+  resortList[2].webcamUrl,
+  resortList[3].webcamUrl,
+  resortList[4].webcamUrl,
+  resortList[5].webcamUrl,
+  resortList[6].webcamUrl,
+  resortList[7].webcamUrl,
+  resortList[8].webcamUrl,
+  resortList[9].webcamUrl,
+  resortList[10].webcamUrl,
+  resortList[11].webcamUrl,
+  resortList[12].webcamUrl,
+];
+
+List<String?> slopeUrlList = [
+  resortList[0].slopeUrl,
+  resortList[1].slopeUrl,
+  resortList[2].slopeUrl,
+  resortList[3].slopeUrl,
+  resortList[4].slopeUrl,
+  resortList[5].slopeUrl,
+  resortList[6].slopeUrl,
+  resortList[7].slopeUrl,
+  resortList[8].slopeUrl,
+  resortList[9].slopeUrl,
+  resortList[10].slopeUrl,
+  resortList[11].slopeUrl,
+  resortList[12].slopeUrl,
 ];
 
 List<dynamic> nxList = [
