@@ -73,13 +73,6 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
               SizedBox(
                 height: 10,
               ),
-              Text(
-                '프로필 이미지를 나중에 업로드하길 원하시면,\n건너뛰기 버튼을 눌러주세요.',
-                style: TextStyle(
-                  color: Color(0xff949494),
-                  fontSize: 14,
-                ),
-              ),
               SizedBox(
                 height: _size.height *0.14,
               ),

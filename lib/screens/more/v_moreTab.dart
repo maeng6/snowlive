@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_loginController.dart';
+import 'package:snowlive3/screens/more/v_contactUsPage.dart';
+import 'package:snowlive3/screens/more/v_licenseListPage.dart';
 import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
 import 'package:snowlive3/screens/onboarding/v_favoriteResort.dart';
 import 'package:snowlive3/screens/onboarding/v_setProfileImage.dart';
@@ -276,8 +278,7 @@ class _MoreTabState extends State<MoreTab> {
                     style: TextStyle(color: Color(0xFF949494), fontSize: 13),
                   ),
                   currentAccountPicture: (_userModelController
-                              .profileImageUrl !=
-                          null)
+                              .profileImageUrl!.isNotEmpty)
                       ? GestureDetector(
                           onTap: () => Get.to(() => SetProfileImage_moreTab()),
                           child: Stack(
@@ -318,10 +319,14 @@ class _MoreTabState extends State<MoreTab> {
                                 ),
                               ),
                               Positioned(
-                                  left: 50,
-                                  child: Icon(
-                                    Icons.image_rounded,
-                                    color: Colors.grey,
+                                  bottom: 10,
+                                  right: 4,
+                                  child: GestureDetector(
+                                    child: ExtendedImage.asset(
+                                        'assets/imgs/icons/icon_profile_add.png',
+                                        height: 22,
+                                        width: 22),
+                                    onTap: () {},
                                   ))
                             ],
                           ),
@@ -329,31 +334,6 @@ class _MoreTabState extends State<MoreTab> {
                   decoration: BoxDecoration(color: Colors.white),
                 ),
                 SizedBox(height: 24),
-                ListTile(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                  minVerticalPadding: 20,
-                  onTap: () {},
-                  title: Text(
-                    '웹캠',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Color(0xFF111111)),
-                  ),
-                  trailing: Image.asset(
-                    'assets/imgs/icons/icon_arrow_g.png',
-                    height: 24,
-                    width: 24,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Divider(
-                    height: 16,
-                    color: Color(0xFFF5F5F5),
-                    thickness: 1,
-                  ),
-                ),
                 ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,
@@ -384,9 +364,38 @@ class _MoreTabState extends State<MoreTab> {
                 ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,
-                  onTap: () {},
+                  onTap: () {
+                    Get.to(()=>LicenseListPage());
+                  },
                   title: Text(
                     '라이선스',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Color(0xFF111111)),
+                  ),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Divider(
+                    height: 16,
+                    color: Color(0xFFF5F5F5),
+                    thickness: 1,
+                  ),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
+                  onTap: () {
+                    Get.to(() => ContactUsPage());
+                  },
+                  title: Text(
+                    'SNOWLIVE',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
