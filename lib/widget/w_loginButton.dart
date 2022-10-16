@@ -88,8 +88,8 @@ class LoginButton extends StatelessWidget {
           Get.offAll(() => WelcomePage());}
         } catch (e) {
           if (auth.currentUser == null) {
-            print('curruentUser = null');
             CustomFullScreenDialog.cancelDialog();
+            print('curruentUser = null');
             Get.snackbar('로그인 취소', '다시 시도해주세요.',
                 snackPosition: SnackPosition.BOTTOM,
                 backgroundColor: Colors.black87,
