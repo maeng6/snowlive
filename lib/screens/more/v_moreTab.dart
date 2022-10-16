@@ -8,7 +8,6 @@ import 'package:snowlive3/screens/onboarding/v_favoriteResort.dart';
 import 'package:snowlive3/screens/onboarding/v_setProfileImage.dart';
 import 'package:snowlive3/screens/resort/v_resortHome.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
-
 import '../../controller/vm_resortModelController.dart';
 import '../../controller/vm_userModelController.dart';
 
@@ -34,147 +33,156 @@ class _MoreTabState extends State<MoreTab> {
 
     return SafeArea(
       child: Scaffold(
-          backgroundColor: Color(0xFFF2F4F6),
+          backgroundColor: Color(0xFFFFFFFF),
           extendBodyBehindAppBar: true,
           body: Container(
             color: Colors.white,
             child: ListView(
               children: [
+                SizedBox(
+                  height: 30,
+                ),
                 UserAccountsDrawerHeader(
+                  margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                   accountName: Row(
                     children: [
                       Text(
                         _userModelController.displayName!,
                         style: TextStyle(
-                            color: Colors.black87, fontWeight: FontWeight.bold),
+                            color: Color(0xFF111111),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
                       ),
                       SizedBox(
-                        width: 7,
+                        width: 2,
                       ),
                       Stack(children: [
                         GestureDetector(
-                          onTap: () {
-                            _textEditingController.clear();
-                            showMaterialModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return Container(
-                                  height: 215,
-                                  child: Column(
-                                    children: [
-                                      Form(
-                                        key: _formKey,
-                                        child: TextFormField(
-                                          autovalidateMode: AutovalidateMode
-                                              .onUserInteraction,
-                                          controller: _textEditingController,
-                                          decoration: InputDecoration(
-                                              hintStyle: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 13),
-                                              hintText:
-                                                  '${_userModelController.displayName}',
-                                              border: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey))),
-                                          validator: (val) {
-                                            if (val!.length <= 20 &&
-                                                val.length >= 1) {
-                                              return null;
-                                            } else if (val.length == 0) {
-                                              return '닉네임을 입력해주세요.';
-                                            } else {
-                                              return '최대 글자 수를 초과했습니다.';
-                                            }
-                                          },
+                            onTap: () {
+                              _textEditingController.clear();
+                              showMaterialModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return Container(
+                                    height: 215,
+                                    child: Column(
+                                      children: [
+                                        Form(
+                                          key: _formKey,
+                                          child: TextFormField(
+                                            autovalidateMode: AutovalidateMode
+                                                .onUserInteraction,
+                                            controller: _textEditingController,
+                                            decoration: InputDecoration(
+                                                hintStyle: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 13),
+                                                hintText:
+                                                    '${_userModelController.displayName}',
+                                                border: OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey))),
+                                            validator: (val) {
+                                              if (val!.length <= 20 &&
+                                                  val.length >= 1) {
+                                                return null;
+                                              } else if (val.length == 0) {
+                                                return '닉네임을 입력해주세요.';
+                                              } else {
+                                                return '최대 글자 수를 초과했습니다.';
+                                              }
+                                            },
+                                          ),
                                         ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          InkWell(
-                                            child: ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text('취소',
-                                                  style: TextStyle(
-                                                      color: Colors.grey)),
-                                              style: TextButton.styleFrom(
-                                                  splashFactory:
-                                                      InkRipple.splashFactory,
-                                                  minimumSize: Size(150, 56),
-                                                  backgroundColor:
-                                                      Colors.white),
-                                            ),
-                                          ),
-                                          InkWell(
-                                            child: ElevatedButton(
-                                              onPressed: () async {
-                                                setState(() {
-                                                  isLoading = true;
-                                                });
-                                                if (_formKey.currentState!
-                                                    .validate()) {
-                                                  await _userModelController
-                                                      .updateNickname(
-                                                          _textEditingController
-                                                              .text);
-                                                  Get.snackbar(
-                                                      '닉네임을 변경하였습니다.', '',
-                                                      snackPosition:
-                                                          SnackPosition.BOTTOM,
-                                                      backgroundColor:
-                                                          Colors.white,
-                                                      duration: Duration(
-                                                          milliseconds: 1000));
+                                        Row(
+                                          children: [
+                                            InkWell(
+                                              child: ElevatedButton(
+                                                onPressed: () {
                                                   Navigator.pop(context);
-                                                } else {
-                                                  Get.snackbar('닉네임 저장 실패',
-                                                      '올바른 닉네임을 입력해주세요.',
-                                                      snackPosition:
-                                                          SnackPosition.BOTTOM,
-                                                      backgroundColor:
-                                                          Colors.white,
-                                                      duration: Duration(
-                                                          milliseconds: 1000));
-                                                }
-                                                setState(() {
-                                                  isLoading = false;
-                                                });
-                                              },
-                                              child: Text(
-                                                '변경',
-                                                style: TextStyle(
-                                                    color: Colors.grey),
+                                                },
+                                                child: Text('취소',
+                                                    style: TextStyle(
+                                                        color: Colors.grey)),
+                                                style: TextButton.styleFrom(
+                                                    splashFactory:
+                                                        InkRipple.splashFactory,
+                                                    minimumSize: Size(150, 56),
+                                                    backgroundColor:
+                                                        Colors.white),
                                               ),
-                                              style: TextButton.styleFrom(
-                                                  splashFactory:
-                                                      InkRipple.splashFactory,
-                                                  minimumSize: Size(150, 56),
-                                                  backgroundColor:
-                                                      Colors.white),
                                             ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          child: Icon(
-                            Icons.edit,
-                            color: Colors.grey,
-                            size: 18,
-                          ),
-                        ),
+                                            InkWell(
+                                              child: ElevatedButton(
+                                                onPressed: () async {
+                                                  setState(() {
+                                                    isLoading = true;
+                                                  });
+                                                  if (_formKey.currentState!
+                                                      .validate()) {
+                                                    await _userModelController
+                                                        .updateNickname(
+                                                            _textEditingController
+                                                                .text);
+                                                    Get.snackbar(
+                                                        '닉네임을 변경하였습니다.', '',
+                                                        snackPosition:
+                                                            SnackPosition
+                                                                .BOTTOM,
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        duration: Duration(
+                                                            milliseconds:
+                                                                1000));
+                                                    Navigator.pop(context);
+                                                  } else {
+                                                    Get.snackbar('닉네임 저장 실패',
+                                                        '올바른 닉네임을 입력해주세요.',
+                                                        snackPosition:
+                                                            SnackPosition
+                                                                .BOTTOM,
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        duration: Duration(
+                                                            milliseconds:
+                                                                1000));
+                                                  }
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                },
+                                                child: Text(
+                                                  '변경',
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                                style: TextButton.styleFrom(
+                                                    splashFactory:
+                                                        InkRipple.splashFactory,
+                                                    minimumSize: Size(150, 56),
+                                                    backgroundColor:
+                                                        Colors.white),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Image.asset(
+                              'assets/imgs/icons/icon_edit_pencil.png',
+                              height: 22,
+                              width: 22,
+                            )),
                       ])
                     ],
                   ),
                   accountEmail: Text(
                     _userModelController.userEmial!,
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(color: Color(0xFF949494), fontSize: 13),
                   ),
                   currentAccountPicture: (_userModelController
                               .profileImageUrl !=
@@ -184,8 +192,8 @@ class _MoreTabState extends State<MoreTab> {
                           child: Stack(
                             children: [
                               Container(
-                                width: 60,
-                                height: 60,
+                                width: 64,
+                                height: 64,
                                 child: CircleAvatar(
                                     backgroundColor: Colors.grey[100],
                                     backgroundImage: NetworkImage(
@@ -193,10 +201,14 @@ class _MoreTabState extends State<MoreTab> {
                                     )),
                               ),
                               Positioned(
-                                  left: 50,
-                                  child: Icon(
-                                    Icons.image_rounded,
-                                    color: Colors.grey,
+                                  bottom: 10,
+                                  right: 4,
+                                  child: GestureDetector(
+                                    child: ExtendedImage.asset(
+                                        'assets/imgs/icons/icon_profile_add.png',
+                                        height: 22,
+                                        width: 22),
+                                    onTap: () {},
                                   ))
                             ],
                           ),
@@ -206,12 +218,12 @@ class _MoreTabState extends State<MoreTab> {
                           child: Stack(
                             children: [
                               Container(
-                                width: 60,
-                                height: 60,
+                                width: 64,
+                                height: 64,
                                 child: CircleAvatar(
                                   backgroundColor: Colors.yellow[100],
                                   backgroundImage: AssetImage(
-                                      'assets/imgs/profile/profileImage.png'),
+                                      'assets/imgs/profile/img_profile_default_circle.png'),
                                 ),
                               ),
                               Positioned(
@@ -225,62 +237,78 @@ class _MoreTabState extends State<MoreTab> {
                         ),
                   decoration: BoxDecoration(color: Colors.white),
                 ),
+                SizedBox(height: 24),
                 ListTile(
-                  onTap: () {},
-                  title: Text(
-                    '날씨',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                ),
-                Divider(
-                  thickness: 1,
-                ),
-                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
                   onTap: () {},
                   title: Text(
                     '웹캠',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Color(0xFF111111)),
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
                 ),
-                Divider(
-                  thickness: 1,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Divider(
+                    height: 16,
+                    color: Color(0xFFF5F5F5),
+                    thickness: 1,
+                  ),
                 ),
                 ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
                   onTap: () {
                     Get.to(() => FavoriteResort());
                   },
                   title: Text(
                     '자주가는 스키장 설정',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Color(0xFF111111)),
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
                 ),
-                Divider(
-                  thickness: 1,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Divider(
+                    height: 16,
+                    color: Color(0xFFF5F5F5),
+                    thickness: 1,
+                  ),
                 ),
                 ListTile(
-                  onTap: () {},
-                  title: Text(
-                    'SnowLive',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                ),
-                Divider(
-                  thickness: 1,
-                ),
-                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
                   onTap: () {},
                   title: Text(
                     '라이선스',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Color(0xFF111111)),
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
                 ),
                 SizedBox(
-                  height: 50,
+                  height: 100,
                 ),
                 Container(
                   child: Column(
@@ -291,14 +319,14 @@ class _MoreTabState extends State<MoreTab> {
                         height: 38,
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 4,
                       ),
                       Text(
                         'Riding with Snowlive',
                         style: TextStyle(color: Colors.grey),
                       ),
                       SizedBox(
-                        height: 20,
+                        height: 30,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -355,7 +383,10 @@ class _MoreTabState extends State<MoreTab> {
                             },
                             child: Text(
                               '회원탈퇴',
-                              style: TextStyle(color: Colors.black87),
+                              style: TextStyle(
+                                  color: Color(0xFF666666),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
                             ),
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.grey[100],
@@ -413,7 +444,10 @@ class _MoreTabState extends State<MoreTab> {
                             },
                             child: Text(
                               '로그아웃',
-                              style: TextStyle(color: Colors.black87),
+                              style: TextStyle(
+                                  color: Color(0xFF666666),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
                             ),
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.grey[100],

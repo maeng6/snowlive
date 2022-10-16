@@ -57,10 +57,11 @@ class LoginButton extends StatelessWidget {
             CustomFullScreenDialog.cancelDialog();
             loginVal = await FlutterSecureStorage().read(key: 'login');
             //TODO : 기존에 이용하고 있던 유저는 바로 메인홈으로 가도록 구현 필요
+            print('GOOGLE 로그인');
             print('로그인 상태 저장 완료, login : $loginVal');
             Get.offAll(() => WelcomePage());
           } else if (signInMethod == SignInMethod.facebook) {
-            await _loginController.signInWithGoogle();
+            await _loginController.signInWithFacebook();
             await _loginController.createUserDoc(0);
             (auth.currentUser != null)
                 ? await FlutterSecureStorage()
@@ -69,17 +70,33 @@ class LoginButton extends StatelessWidget {
             CustomFullScreenDialog.cancelDialog();
             loginVal = await FlutterSecureStorage().read(key: 'login');
             //TODO : 기존에 이용하고 있던 유저는 바로 메인홈으로 가도록 구현 필요
+            print('FACEBOOK 로그인');
             print('로그인 상태 저장 완료, login : $loginVal');
             Get.offAll(() => WelcomePage());
-          } else {}
+          } else {
+            await _loginController.signInWithApple();
+          await _loginController.createUserDoc(0);
+          (auth.currentUser != null)
+              ? await FlutterSecureStorage()
+              .write(key: 'login', value: auth.currentUser!.displayName)
+              : CustomFullScreenDialog.cancelDialog();
+          CustomFullScreenDialog.cancelDialog();
+          loginVal = await FlutterSecureStorage().read(key: 'login');
+          //TODO : 기존에 이용하고 있던 유저는 바로 메인홈으로 가도록 구현 필요
+            print('APPLE 로그인');
+          print('로그인 상태 저장 완료, login : $loginVal');
+          Get.offAll(() => WelcomePage());}
         } catch (e) {
           if (auth.currentUser == null) {
+            print('curruentUser = null');
+            CustomFullScreenDialog.cancelDialog();
             Get.snackbar('로그인 취소', '다시 시도해주세요.',
                 snackPosition: SnackPosition.BOTTOM,
                 backgroundColor: Colors.black87,
                 colorText: Colors.white,
                 duration: Duration(milliseconds: 2000));
           } else {
+            CustomFullScreenDialog.cancelDialog();
             Get.snackbar('로그인 실패', '다시 시도해주세요.',
                 snackPosition: SnackPosition.BOTTOM,
                 backgroundColor: Colors.black87,
