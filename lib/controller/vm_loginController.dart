@@ -15,7 +15,6 @@ class LoginController extends GetxController {
   late GoogleSignIn googleSignIn = GoogleSignIn();
 
   Future<void> signInWithGoogle() async {
-    CustomFullScreenDialog.showDialog();
     GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
     if (googleSignInAccount == null) {
       CustomFullScreenDialog.cancelDialog();
@@ -32,7 +31,6 @@ class LoginController extends GetxController {
   }
 
   Future<void> signInWithFacebook() async {
-    CustomFullScreenDialog.showDialog();
     final LoginResult loginResult = await facebookAuth.login();
     if (loginResult == null) {
       CustomFullScreenDialog.cancelDialog();
