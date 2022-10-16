@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/onboarding/v_setNickname.dart';
 import 'package:snowlive3/screens/onboarding/v_setProfileImage.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import '../../model/m_resortModel.dart';
@@ -35,6 +34,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
   Widget build(BuildContext context) {
 
     final Size _size = MediaQuery.of(context).size;
+    bool? isSelected=_isChecked.contains(true);
 
     return SafeArea(
       child: Scaffold(
@@ -99,13 +99,20 @@ class _FavoriteResortState extends State<FavoriteResort> {
                     Center(
                       child: ElevatedButton(
                         onPressed: () async {
-                          CustomFullScreenDialog.showDialog();
-                          await userModelController.updateFavoriteResort(favoriteResort);
-                          await userModelController.updateInstantResort(favoriteResort);
-                          print('즐겨찾는 리조트 업뎃완료');
-                          await resortModelController.getSelectedResort(userModelController.favoriteResort!);
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.offAll(()=>MainHome());
+                          if(isSelected) {
+                            CustomFullScreenDialog.showDialog();
+                            await userModelController.updateFavoriteResort(
+                                favoriteResort);
+                            await userModelController.updateInstantResort(
+                                favoriteResort);
+                            print('즐겨찾는 리조트 업뎃완료');
+                            await resortModelController.getSelectedResort(
+                                userModelController.favoriteResort!);
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.offAll(() => MainHome());
+                          }else{
+                            null;
+                          }
                         },
                         child: Text(
                           '다음',
@@ -119,7 +126,10 @@ class _FavoriteResortState extends State<FavoriteResort> {
                             elevation: 0,
                             splashFactory: InkRipple.splashFactory,
                             minimumSize: Size(1000, 56),
-                            backgroundColor: Color(0xff377EEA)),
+                            backgroundColor:
+                            (isSelected)
+                            ? Color(0xff377EEA)
+                          : Color(0xffDEDEDE))
                       ),
                     ),
                   ],

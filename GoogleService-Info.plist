@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>591302786053-59d3lm2fkcvj54o7e4kjpvtljqg2ja79.apps.googleusercontent.com</string>
+	<string>591302786053-c7ne6ak4v1ettfqqtnsjsf8rehntkdsp.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.591302786053-59d3lm2fkcvj54o7e4kjpvtljqg2ja79</string>
+	<string>com.googleusercontent.apps.591302786053-c7ne6ak4v1ettfqqtnsjsf8rehntkdsp</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>591302786053-1ei8td6j12ea8t3n12m2gkgvcmngtna8.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.snowlive3</string>
+	<string>com.snowlive</string>
 	<key>PROJECT_ID</key>
 	<string>snowlive-cf446</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:591302786053:ios:40c93f4078545b86efb06c</string>
+	<string>1:591302786053:ios:1ff67b60fddd69f7efb06c</string>
 </dict>
 </plist>
