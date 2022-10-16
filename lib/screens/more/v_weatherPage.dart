@@ -35,7 +35,8 @@ class WeatherPage extends StatelessWidget {
   }
 
   ListView resortListView(Size _size) {
-    return ListView.builder(
+    return ListView.separated(
+      itemCount: resortList.length,
       itemBuilder: (BuildContext context, int index){
         return Container(
           padding: EdgeInsets.only(left: 16, right: 16),
@@ -49,101 +50,111 @@ class WeatherPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    child: Text(
-                      '${resortNameList[index]}',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Text(
-                      '${resortAddressList[index]}',
-                      style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.normal,
-                        color: Colors.grey
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  OutlinedButton(
-                    onPressed: (){
-                      Get.to(() => WebPage(
-                        url:
-                        '${webcamUrlList[index]}',
-                      ),
-                      );
-                    },
-                    child: Text('웹캠',
-                      style: TextStyle(
-                          color: Colors.black54,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7)))
+                    child: RichText(
+                        text: TextSpan(
+                            text: '${resortNameList[index]}',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black
+                            ),
+                            children: [
+                              TextSpan(
+                                text: ' ${resortAddressList[index]}',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                ),
+                              )
+                            ]
+                        )
                     ),
                   ),
                   SizedBox(
-                    width: 5,
+                    height: 5,
                   ),
-                  OutlinedButton(
-                    onPressed: (){
-                      Get.to(() => WebPage(
-                        url:
-                        '${slopeUrlList[index]}',
+                  Row(
+                    children: [
+                      OutlinedButton(
+                        onPressed: (){
+                          Get.to(() => WebPage(
+                            url:
+                            '${webcamUrlList[index]}',
+                          ),
+                          );
+                        },
+                        child: Text('웹캠',
+                          style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7)))
+                        ),
                       ),
-                      );
-                    },
-                    child: Text('슬로프',
-                      style: TextStyle(
-                          color: Colors.black54,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold
+                      SizedBox(
+                        width: 5,
                       ),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7)))
-                    ),
+                      OutlinedButton(
+                        onPressed: (){
+                          Get.to(() => WebPage(
+                            url:
+                            '${slopeUrlList[index]}',
+                          ),
+                          );
+                        },
+                        child: Text('슬로프',
+                          style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7)))
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      OutlinedButton(
+                        onPressed: (){
+                          Get.to(() => WebPage(
+                            url:
+                            '${naverUrlList[index]}',
+                          ),
+                          );
+                        },
+                        child: Text('네이버 날씨',
+                          style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7)))
+                        ),
+                      )
+                    ],
                   ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  OutlinedButton(
-                    onPressed: (){
-                      Get.to(() => WebPage(
-                        url:
-                        '${naverUrlList[index]}',
-                      ),
-                      );
-                    },
-                    child: Text('네이버 날씨',
-                      style: TextStyle(
-                          color: Colors.black54,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7)))
-                    ),
-                  )
                 ],
               ),
             ],
           ),
         );
       },
-      itemCount: resortList.length
+      separatorBuilder: (BuildContext context, int index) {
+        return Divider(
+          height: 35,
+          color: Colors.grey,
+        );
+      },
   );
   }
 }
