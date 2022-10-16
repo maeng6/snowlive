@@ -15,7 +15,6 @@ class BrandWebBody extends StatefulWidget {
 }
 
 class _BrandWebBodyState extends State<BrandWebBody> {
-
   List<String> labels = ['의류', '장비'];
   int counter = 0;
   bool isBrand = true;
@@ -49,23 +48,23 @@ class _BrandWebBodyState extends State<BrandWebBody> {
                             '의류',
                             style: TextStyle(
                                 color: (isBrand)
-                                    ?Color(0xFFFFFFFF)
-                                    :Color(0xFF111111),
-                                fontWeight: FontWeight.bold, fontSize: 15),
+                                    ? Color(0xFFFFFFFF)
+                                    : Color(0xFF111111),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15),
                           ),
                           onPressed: () {
-                            isBrand= true;
+                            isBrand = true;
                             print('브랜드페이지로 전환');
                             setState(() {});
                           },
                           style: ElevatedButton.styleFrom(
                             minimumSize: Size(54, 32),
                             backgroundColor: (isBrand)
-                                ?Color(0xFF111111)
-                                :Color(0xFFFFFFFF),
+                                ? Color(0xFF111111)
+                                : Color(0xFFFFFFFF),
                             shape: RoundedRectangleBorder(
-                                borderRadius:
-                                BorderRadius.circular(8)),
+                                borderRadius: BorderRadius.circular(8)),
                             elevation: 0,
                           ),
                         ),
@@ -77,22 +76,21 @@ class _BrandWebBodyState extends State<BrandWebBody> {
                             '샵',
                             style: TextStyle(
                                 color: (isBrand)
-                                    ?Color(0xFF111111)
-                                    :Color(0xFFFFFFFF)),
+                                    ? Color(0xFF111111)
+                                    : Color(0xFFFFFFFF)),
                           ),
                           onPressed: () {
-                            isBrand= false;
+                            isBrand = false;
                             print('샵페이지로 전환');
                             setState(() {});
                           },
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(54, 32),
                               backgroundColor: (isBrand)
-                                  ?Color(0xFFFFFFFF)
-                                  :Color(0xFF111111),
+                                  ? Color(0xFFFFFFFF)
+                                  : Color(0xFF111111),
                               shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(6)),
+                                  borderRadius: BorderRadius.circular(6)),
                               elevation: 0,
                               textStyle: TextStyle(
                                 fontSize: 15,
@@ -120,14 +118,11 @@ class _BrandWebBodyState extends State<BrandWebBody> {
             ],
           ),
         ),
-        body:   (isBrand)
-            ?clothWebGridView(context)
-            :shopWebGridView(context),
+        body: (isBrand) ? clothWebGridView(context) : shopWebGridView(context),
       ),
     );
   }
 }
-
 
 Widget clothWebGridView(BuildContext context) {
   final Size _size = MediaQuery.of(context).size;
@@ -137,9 +132,9 @@ Widget clothWebGridView(BuildContext context) {
         padding: EdgeInsets.only(top: 68, bottom: 16),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
-            mainAxisSpacing: 16,
+            mainAxisSpacing: 30,
             crossAxisSpacing: 12,
-            childAspectRatio: 1),
+            childAspectRatio: 0.8),
         itemCount: clothBrandList.length,
         itemBuilder: (BuildContext context, int index) {
           return Column(
@@ -148,18 +143,21 @@ Widget clothWebGridView(BuildContext context) {
             children: [
               Expanded(
                 child: GestureDetector(
-                  onTap: () =>
-                      Get.to(()=>WebPage(
-                          url: '${clothBrandHomeUrlList[index]}')),
+                  onTap: () => Get.to(
+                      () => WebPage(url: '${clothBrandHomeUrlList[index]}')),
                   child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4),
                       width: _size.width * 0.3,
                       decoration: BoxDecoration(
-                        border: Border.all(width: 1,color: Color(0xFFDEDEDE)),
+                        border: Border.all(width: 1, color: Color(0xFFF5F5F5)),
                         shape: BoxShape.circle,
-                        color: Colors.transparent,),
-                      child: ExtendedImage.asset(
-                        '${clothBrandImageAssetList[index]}',
+                        color: Color(0xFFF5F5F5),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: ExtendedImage.asset(
+                          '${clothBrandImageAssetList[index]}',
+                          width: 20,
+                        ),
                       )),
                 ),
               ),
@@ -168,9 +166,9 @@ Widget clothWebGridView(BuildContext context) {
                 child: Text(
                   '${clothBrandNameList[index]}',
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: Color(0xFF111111)),
                 ),
               ),
             ],
@@ -178,55 +176,56 @@ Widget clothWebGridView(BuildContext context) {
         }),
   );
 }
+
 Widget shopWebGridView(BuildContext context) {
   final Size _size = MediaQuery.of(context).size;
   return Padding(
     padding: const EdgeInsets.only(left: 16, right: 16),
     child: GridView.builder(
-    padding: EdgeInsets.only(top: 68, bottom: 16),
-    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        mainAxisSpacing: 30,
-        crossAxisSpacing: 12,
-        childAspectRatio: 0.8
-    ),
-    itemCount: shopNameList.length,
-    itemBuilder: (BuildContext context, int index) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () =>
-                  Get.to(()=>WebPage(
-                      url: '${shopHomeUrlList[index]}')),
-              child: Container(
-                  width: _size.width * 0.3,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Color(0xFFDEDEDE)),
-                    shape: BoxShape.circle,
-                    color: Colors.white,),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ExtendedImage.asset(
-                      '${shopImageAssetList[index]}',
-                        width: 20,),
-                  )),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 6),
-            child: Text(
-              '${shopNameList[index]}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
+        padding: EdgeInsets.only(top: 68, bottom: 16),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 30,
+            crossAxisSpacing: 12,
+            childAspectRatio: 0.8),
+        itemCount: shopNameList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () =>
+                      Get.to(() => WebPage(url: '${shopHomeUrlList[index]}')),
+                  child: Container(
+                      width: _size.width * 0.3,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Color(0xFFF5F5F5)),
+                        shape: BoxShape.circle,
+                        color: Color(0xFFF5F5F5),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: ExtendedImage.asset(
+                          '${shopImageAssetList[index]}',
+                          width: 20,
+                        ),
+                      )),
+                ),
               ),
-            ),
-          ),
-        ],
-      );
-    }),
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Text(
+                  '${shopNameList[index]}',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: Color(0xFF111111)),
+                ),
+              ),
+            ],
+          );
+        }),
   );
 }
