@@ -77,7 +77,7 @@ class _ResortHomeState extends State<ResortHome> {
     try {
       _refreshController.refreshCompleted();
       CustomFullScreenDialog.cancelDialog();
-    } catch(e){
+    } catch (e) {
       CustomFullScreenDialog.cancelDialog();
     }
   }
@@ -89,8 +89,8 @@ class _ResortHomeState extends State<ResortHome> {
     return FutureBuilder(
         future: _userModelController.getLocalSave(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            _resortModelController
-                .getSelectedResort(_userModelController.favoriteSaved!);
+          _resortModelController
+              .getSelectedResort(_userModelController.favoriteSaved!);
           return Scaffold(
             backgroundColor: Color(0xFFF2F4F6),
             extendBodyBehindAppBar: true,
@@ -146,486 +146,439 @@ class _ResortHomeState extends State<ResortHome> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
-                                      color: Color(0xff32314D)),
-                                  alignment: Alignment.center,
-                                  width: double.infinity,
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 40,
-                                      ),
-                                      GestureDetector(
-                                        child: Obx(
-                                          () => Text(
-                                            '${_resortModelController.resortName}',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 23),
-                                          ),
-                                        ),
-                                        onTap: () {
-                                          showMaterialModalBottomSheet(
-                                              enableDrag: false,
-                                              context: context,
-                                              builder: (context) {
-                                                return Container(
-                                                  height: 600,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        '리조트를 선택해주세요.',
-                                                        style: TextStyle(
-                                                            fontSize: 20,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      Expanded(
-                                                        child: ListView.builder(
-                                                            itemCount: 13,
-                                                            itemBuilder:
-                                                                (context,
-                                                                    index) {
-                                                              return Builder(
-                                                                  builder:
-                                                                      (context) {
-                                                                return Column(
-                                                                  children: [
-                                                                    buildResortListTile(
-                                                                        index),
-                                                                    Divider(
-                                                                      height:
-                                                                          20,
-                                                                      thickness:
-                                                                          0.5,
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              });
-                                                            }),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              });
-                                        },
-                                      ),
-                                      SizedBox(
-                                        height: 4,
-                                      ),
-                                      SizedBox(
-                                        height: 18,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: Color(0xff32314D)),
+                            alignment: Alignment.center,
+                            width: double.infinity,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 40,
+                                ),
+                                GestureDetector(
+                                  child: Obx(
+                                    () => Text(
+                                      '${_resortModelController.resortName}',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 23),
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    showMaterialModalBottomSheet(
+                                        enableDrag: false,
+                                        context: context,
+                                        builder: (context) {
+                                          return Container(
+                                            height: 600,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '리조트를 선택해주세요.',
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Expanded(
+                                                  child: ListView.builder(
+                                                      itemCount: 13,
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        return Builder(
+                                                            builder: (context) {
+                                                          return Column(
+                                                            children: [
+                                                              buildResortListTile(
+                                                                  index),
+                                                              Divider(
+                                                                height: 20,
+                                                                thickness: 0.5,
+                                                              ),
+                                                            ],
+                                                          );
+                                                        });
+                                                      }),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                SizedBox(
+                                  height: 18,
+                                  child: Text(
+                                    '${_getDateTimeController.date}',
+                                    style: TextStyle(
+                                        color: Colors.white54,
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 14),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 26,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Obx(
+                                      () => Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 4, left: 20),
                                         child: Text(
-                                          '${_getDateTimeController.date}',
-                                          style: TextStyle(
-                                              color: Colors.white54,
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 14),
+                                          '${_resortModelController.resortTemp!}', //u00B0
+                                          style: GoogleFonts.bebasNeue(
+                                              fontSize: 110,
+                                              color: Colors.white),
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 26,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 14),
+                                      child: Text(
+                                        '\u00B0',
+                                        style: GoogleFonts.bebasNeue(
+                                            fontSize: 60, color: Colors.white),
                                       ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Obx(
-                                            () => Padding(
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 24,
+                                ),
+                                //실시간 날씨
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Text(
+                                          '바람',
+                                          style: TextStyle(
+                                              color: Colors.white60,
+                                              fontSize: 13),
+                                        ),
+                                        SizedBox(
+                                          height: 6,
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Obx(
+                                              () => Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 3),
+                                                child: Text(
+                                                  '${_resortModelController.resortWind}',
+                                                  style: GoogleFonts.bebasNeue(
+                                                      fontSize: 28,
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
                                               padding: const EdgeInsets.only(
-                                                  right: 4, left: 20),
+                                                  bottom: 5),
                                               child: Text(
-                                                '${_resortModelController.resortTemp!}', //u00B0
+                                                'M/S',
                                                 style: GoogleFonts.bebasNeue(
-                                                    fontSize: 110,
+                                                    fontSize: 16,
                                                     color: Colors.white),
                                               ),
                                             ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 14),
-                                            child: Text(
-                                              '\u00B0',
-                                              style: GoogleFonts.bebasNeue(
-                                                  fontSize: 60,
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 24,
-                                      ),
-                                      //실시간 날씨
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '바람',
-                                                style: TextStyle(
-                                                    color: Colors.white60,
-                                                    fontSize: 13),
-                                              ),
-                                              SizedBox(
-                                                height: 6,
-                                              ),
-                                              Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Obx(
-                                                    () => Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 3),
-                                                      child: Text(
-                                                        '${_resortModelController.resortWind}',
-                                                        style: GoogleFonts
-                                                            .bebasNeue(
-                                                                fontSize: 28,
-                                                                color: Colors
-                                                                    .white),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            bottom: 5),
-                                                    child: Text(
-                                                      'M/S',
-                                                      style:
-                                                          GoogleFonts.bebasNeue(
-                                                              fontSize: 16,
-                                                              color:
-                                                                  Colors.white),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '습도',
-                                                style: TextStyle(
-                                                    color: Colors.white60,
-                                                    fontSize: 13),
-                                              ),
-                                              SizedBox(
-                                                height: 6,
-                                              ),
-                                              Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Obx(
-                                                    () => Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 3),
-                                                      child: Text(
-                                                        '${_resortModelController.resortWet}',
-                                                        style: GoogleFonts
-                                                            .bebasNeue(
-                                                                fontSize: 28,
-                                                                color: Colors
-                                                                    .white),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            bottom: 5),
-                                                    child: Text(
-                                                      '%',
-                                                      style:
-                                                          GoogleFonts.bebasNeue(
-                                                              fontSize: 16,
-                                                              color:
-                                                                  Colors.white),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '강수',
-                                                style: TextStyle(
-                                                    color: Colors.white60,
-                                                    fontSize: 13),
-                                              ),
-                                              SizedBox(
-                                                height: 6,
-                                              ),
-                                              Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Obx(
-                                                    () => Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 3),
-                                                      child: Text(
-                                                        '${_resortModelController.resortRain}',
-                                                        style: GoogleFonts
-                                                            .bebasNeue(
-                                                                fontSize: 28,
-                                                                color: Colors
-                                                                    .white),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            bottom: 5),
-                                                    child: Text(
-                                                      'MM',
-                                                      style:
-                                                          GoogleFonts.bebasNeue(
-                                                              fontSize: 16,
-                                                              color:
-                                                                  Colors.white),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '최저/최고기온',
-                                                style: TextStyle(
-                                                    color: Colors.white60,
-                                                    fontSize: 13),
-                                              ),
-                                              SizedBox(
-                                                height: 6,
-                                              ),
-                                              Obx(
-                                                () => Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.end,
-                                                  children: [
-                                                    Text(
-                                                      '${_resortModelController.resortMinTemp}',
-                                                      style:
-                                                          GoogleFonts.bebasNeue(
-                                                              fontSize: 28,
-                                                              color:
-                                                                  Colors.white),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 5,
-                                                              left: 3,
-                                                              right: 2),
-                                                      child: Text(
-                                                        '/',
-                                                        style: GoogleFonts
-                                                            .bebasNeue(
-                                                                fontSize: 16,
-                                                                color: Colors
-                                                                    .white),
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      '${_resortModelController.resortMaxTemp}',
-                                                      style:
-                                                          GoogleFonts.bebasNeue(
-                                                              fontSize: 28,
-                                                              color:
-                                                                  Colors.white),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 30,
-                                      ),
-                                      Divider(
-                                        thickness: 1,
-                                        color: Colors.black12,
-                                        height: 0,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 20, top: 8, bottom: 10),
-                                        child: Row(
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          '습도',
+                                          style: TextStyle(
+                                              color: Colors.white60,
+                                              fontSize: 13),
+                                        ),
+                                        SizedBox(
+                                          height: 6,
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
                                           children: [
-                                            Image.asset(
-                                              'assets/imgs/weather/icon_weather.png',
-                                              width: 40,
-                                              height: 40,
+                                            Obx(
+                                              () => Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 3),
+                                                child: Text(
+                                                  '${_resortModelController.resortWet}',
+                                                  style: GoogleFonts.bebasNeue(
+                                                      fontSize: 28,
+                                                      color: Colors.white),
+                                                ),
+                                              ),
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 6),
-                                              child: SizedBox(
-                                                  width: 188,
-                                                  child: Text(
-                                                    '야간 라이딩을 즐길 시간',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 13),
-                                                  )),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 20),
-                                              child: ElevatedButton(
-                                                child: Text('기상청 제공'),
-                                                onPressed: () {
-                                                  Get.dialog(AlertDialog(
-                                                    content: Container(
-                                                      height: 300,
-                                                      width: 322,
-                                                      color: Colors.white,
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              Container(
-                                                                  width: 113,
-                                                                  height: 50,
-                                                                  child:
-                                                                      ExtendedImage
-                                                                          .asset(
-                                                                    'assets/imgs/logos/weather_logo.png',
-                                                                    fit: BoxFit
-                                                                        .cover,
-                                                                  )),
-                                                              IconButton(
-                                                                  onPressed: (){
-                                                                    Get.to(() => WebPage(
-                                                                      url:
-                                                                      'https://www.weather.go.kr/w/index.do',
-                                                                    ),);
-                                                                  },
-                                                                  icon: Icon(Icons.open_in_new,
-                                                                  size: 20,
-                                                                  )
-                                                              )
-                                                            ],
-                                                          ),
-                                                          SizedBox(
-                                                            height: 14,
-                                                          ),
-                                                          Text(
-                                                            '날씨 데이터는 기상청에서 제공하는 '
-                                                            '데이터를 사용하고 있어요.',
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 24),
-                                                          ),
-                                                          SizedBox(
-                                                            height: 14,
-                                                          ),
-                                                          Text(
-                                                            '기상청에서 제공해주는 실시간 데이터를 사용해'
-                                                            '각 리조트별 날씨정보를 제공하고있어요. '
-                                                            '추후 더 자세한 날씨 데이터를 제공하기 위해 '
-                                                            '업데이트 할 예정이니, 많은 이용 부탁드려요.',
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .grey[800]),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    actions: [
-                                                      Center(
-                                                        child: ElevatedButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          child: Text(
-                                                            '확인',
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 16),
-                                                          ),
-                                                          style: TextButton.styleFrom(
-                                                              shape: const RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              6))),
-                                                              elevation: 0,
-                                                              splashFactory:
-                                                                  InkRipple
-                                                                      .splashFactory,
-                                                              minimumSize: Size(
-                                                                  1000, 56),
-                                                              backgroundColor:
-                                                                  Color(
-                                                                      0xff377EEA)),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ));
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                    minimumSize: Size(80, 30),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        6)),
-                                                    elevation: 0,
-                                                    backgroundColor: Colors.black26,
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10,
-                                                            vertical: 5),
-                                                    textStyle: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.normal)),
+                                                  bottom: 5),
+                                              child: Text(
+                                                '%',
+                                                style: GoogleFonts.bebasNeue(
+                                                    fontSize: 16,
+                                                    color: Colors.white),
                                               ),
                                             ),
                                           ],
+                                        )
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          '강수',
+                                          style: TextStyle(
+                                              color: Colors.white60,
+                                              fontSize: 13),
+                                        ),
+                                        SizedBox(
+                                          height: 6,
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Obx(
+                                              () => Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 3),
+                                                child: Text(
+                                                  '${_resortModelController.resortRain}',
+                                                  style: GoogleFonts.bebasNeue(
+                                                      fontSize: 28,
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 5),
+                                              child: Text(
+                                                'MM',
+                                                style: GoogleFonts.bebasNeue(
+                                                    fontSize: 16,
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          '최저/최고기온',
+                                          style: TextStyle(
+                                              color: Colors.white60,
+                                              fontSize: 13),
+                                        ),
+                                        SizedBox(
+                                          height: 6,
+                                        ),
+                                        Obx(
+                                          () => Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                '${_resortModelController.resortMinTemp}',
+                                                style: GoogleFonts.bebasNeue(
+                                                    fontSize: 28,
+                                                    color: Colors.white),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 5,
+                                                    left: 3,
+                                                    right: 2),
+                                                child: Text(
+                                                  '/',
+                                                  style: GoogleFonts.bebasNeue(
+                                                      fontSize: 16,
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                              Text(
+                                                '${_resortModelController.resortMaxTemp}',
+                                                style: GoogleFonts.bebasNeue(
+                                                    fontSize: 28,
+                                                    color: Colors.white),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                Divider(
+                                  thickness: 1,
+                                  color: Colors.black12,
+                                  height: 0,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20, top: 8, bottom: 10),
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/imgs/weather/icon_weather.png',
+                                        width: 40,
+                                        height: 40,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 6),
+                                        child: SizedBox(
+                                            width: 188,
+                                            child: Text(
+                                              '야간 라이딩을 즐길 시간',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 13),
+                                            )),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 20),
+                                        child: ElevatedButton(
+                                          child: Text('기상청 제공'),
+                                          onPressed: () {
+                                            Get.dialog(AlertDialog(
+                                              content: Container(
+                                                height: 300,
+                                                width: 322,
+                                                color: Colors.white,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                            width: 113,
+                                                            height: 50,
+                                                            child: ExtendedImage
+                                                                .asset(
+                                                              'assets/imgs/logos/weather_logo.png',
+                                                              fit: BoxFit.cover,
+                                                            )),
+                                                        IconButton(
+                                                            onPressed: () {
+                                                              Get.to(
+                                                                () => WebPage(
+                                                                  url:
+                                                                      'https://www.weather.go.kr/w/index.do',
+                                                                ),
+                                                              );
+                                                            },
+                                                            icon: Icon(
+                                                              Icons.open_in_new,
+                                                              size: 20,
+                                                            ))
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 14,
+                                                    ),
+                                                    Text(
+                                                      '날씨 데이터는 기상청에서 제공하는 '
+                                                      '데이터를 사용하고 있어요.',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 24),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 14,
+                                                    ),
+                                                    Text(
+                                                      '기상청에서 제공해주는 실시간 데이터를 사용해'
+                                                      '각 리조트별 날씨정보를 제공하고있어요. '
+                                                      '추후 더 자세한 날씨 데이터를 제공하기 위해 '
+                                                      '업데이트 할 예정이니, 많은 이용 부탁드려요.',
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.grey[800]),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              actions: [
+                                                Center(
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text(
+                                                      '확인',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16),
+                                                    ),
+                                                    style: TextButton.styleFrom(
+                                                        shape: const RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            6))),
+                                                        elevation: 0,
+                                                        splashFactory: InkRipple
+                                                            .splashFactory,
+                                                        minimumSize:
+                                                            Size(1000, 56),
+                                                        backgroundColor:
+                                                            Color(0xff377EEA)),
+                                                  ),
+                                                ),
+                                              ],
+                                            ));
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                              minimumSize: Size(80, 30),
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(6)),
+                                              elevation: 0,
+                                              backgroundColor: Colors.black26,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 10, vertical: 5),
+                                              textStyle: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight:
+                                                      FontWeight.normal)),
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
+                              ],
+                            ),
+                          ),
                           Column(
                             children: [
                               SizedBox(
@@ -679,7 +632,8 @@ class _ResortHomeState extends State<ResortHome> {
                                                         BorderRadius.circular(
                                                             6)),
                                                 elevation: 0,
-                                                backgroundColor: Color(0xFFF2F3F4),
+                                                backgroundColor:
+                                                    Color(0xFFF2F3F4),
                                                 padding: EdgeInsets.symmetric(
                                                     horizontal: 10,
                                                     vertical: 5),
