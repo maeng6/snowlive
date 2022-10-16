@@ -1,4 +1,4 @@
-package com.example.snowlive3
+package com.snowlive
 
 import io.flutter.embedding.android.FlutterActivity
 
