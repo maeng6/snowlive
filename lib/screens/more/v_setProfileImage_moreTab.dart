@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
+import 'package:snowlive3/screens/more/v_moreTab.dart';
 import 'package:snowlive3/screens/onboarding/v_favoriteResort.dart';
 import 'package:snowlive3/screens/onboarding/v_setNickname.dart';
 
@@ -23,6 +24,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
 
   bool profileImage = false;
   XFile? _imageFile;
+  bool _isSelected = true;
 
   @override
   void initState() {
@@ -36,27 +38,19 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
 
     Size _size = MediaQuery.of(context).size;
 
-
     //TODO : ****************************************************************
     Get.put(ImageController(), permanent: true);
     UserModelController _userModelController = Get.find<UserModelController>();
     ImageController _imageController = Get.find<ImageController>();
     //TODO : ****************************************************************
 
+
+    _isSelected = _userModelController.profileImageUrl!.isNotEmpty;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          leading: GestureDetector(
-            child: Image.asset(
-              'assets/imgs/icons/icon_snowLive_back.png',
-              scale: 4,
-              width: 26,
-              height: 26,
-            ),
-            onTap: () => Get.back(result: () => SetNickname()),
-          ),
-        ),
+        appBar: AppBar(),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -83,7 +77,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                     showMaterialModalBottomSheet(
                       context: context,
                       builder: (context) => Container(
-                        height: 249,
+                        height: 200,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -103,14 +97,6 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF111111)),
-                                  ),
-                                  SizedBox(height: 14,),
-                                  Text(
-                                    '프로필 이미지를 나중에 업로드하길 원하시면,\n건너뛰기 버튼을 눌러주세요.',
-                                    style: TextStyle(
-                                      color: Color(0xff666666),
-                                      fontSize: 14,
-                                    ),
                                   ),
                                   SizedBox(height: 30,),
                                 ],
@@ -229,7 +215,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                     showMaterialModalBottomSheet(
                       context: context,
                       builder: (context) => Container(
-                        height: 249,
+                        height: 200,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -250,15 +236,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF111111)),
                                   ),
-                                  SizedBox(height: 14,),
-                                  Text(
-                                    '프로필 이미지를 나중에 업로드하길 원하시면,\n건너뛰기 버튼을 눌러주세요.',
-                                    style: TextStyle(
-                                      color: Color(0xff666666),
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  SizedBox(height: 30,),
+                                  SizedBox(height: 44,),
                                 ],
                               ),
                             ),
@@ -346,17 +324,32 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                   },
                   child: Stack(
                     children: [
+                      if(_isSelected)
                       Container(
                         width: 160,
                         height: 160,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                         ),
-                        child: Image.asset(
-                          'assets/imgs/profile/img_profile_default_circle.png',
-                          width: 147,
-                          height: 147,),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.grey[100],
+                          backgroundImage:
+                          NetworkImage(_userModelController.profileImageUrl!),
+                        ),
                       ),
+                      if(!_isSelected)
+                        Container(
+                          width: 160,
+                          height: 160,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.grey[100],
+                            backgroundImage:
+                            AssetImage('assets/imgs/profile/img_profile_default_circle.png'),
+                          ),
+                        ),
                       Positioned(
                           bottom: 13,
                           right: 8,
@@ -381,12 +374,9 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                       await _userModelController.updateProfileImageUrl(
                           profileImageUrl);
                       CustomFullScreenDialog.cancelDialog();
-                      Navigator.pop(context);
+                      Get.offAll(()=>MoreTab());
                     }else {
-                      Get.snackbar('이미지를 선택해주세요.', '다음에 설정하시려면 돌아가기를 눌러주세요.',
-                          snackPosition: SnackPosition.BOTTOM,
-                          backgroundColor: Colors.white,
-                          duration: Duration(milliseconds: 2000));
+                      null;
                     }
                   },
                   child: Text(
@@ -402,7 +392,10 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                       elevation: 0,
                       splashFactory: InkRipple.splashFactory,
                       minimumSize: Size(1000, 56),
-                      backgroundColor: Color(0xff377EEA)),
+                      backgroundColor:
+                      (_imageFile != null)
+                      ? Color(0xff377EEA)
+                      : Color(0xffDEDEDE)),
                 ),
               ),
 
