@@ -69,26 +69,76 @@ class WeatherPage extends StatelessWidget {
                   ),
                 ],
               ),
-              OutlinedButton(
-                  onPressed: (){
-                    Get.to(() => WebPage(
+              Row(
+                children: [
+                  OutlinedButton(
+                    onPressed: (){
+                      Get.to(() => WebPage(
+                        url:
+                        '${webcamUrlList[index]}',
+                      ),
+                      );
+                    },
+                    child: Text('웹캠',
+                      style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7)))
+                    ),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  OutlinedButton(
+                    onPressed: (){
+                      Get.to(() => WebPage(
+                        url:
+                        '${slopeUrlList[index]}',
+                      ),
+                      );
+                    },
+                    child: Text('슬로프',
+                      style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7)))
+                    ),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  OutlinedButton(
+                    onPressed: (){
+                      Get.to(() => WebPage(
                         url:
                         '${naverUrlList[index]}',
                       ),
-                    );
-                  },
-                  child: Text('네이버 날씨',
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold
-                  ),
-                  ),
-                style: OutlinedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7)))
-                ),
-              )
+                      );
+                    },
+                    child: Text('네이버 날씨',
+                      style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7)))
+                    ),
+                  )
+                ],
+              ),
             ],
           ),
         );
