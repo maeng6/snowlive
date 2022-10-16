@@ -139,7 +139,7 @@ Widget clothWebGridView(BuildContext context) {
             crossAxisCount: 3,
             mainAxisSpacing: 16,
             crossAxisSpacing: 12,
-            childAspectRatio: 0.68),
+            childAspectRatio: 1),
         itemCount: clothBrandList.length,
         itemBuilder: (BuildContext context, int index) {
           return Column(
@@ -152,10 +152,10 @@ Widget clothWebGridView(BuildContext context) {
                       Get.to(()=>WebPage(
                           url: '${clothBrandHomeUrlList[index]}')),
                   child: Container(
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.symmetric(horizontal: 4),
                       width: _size.width * 0.3,
                       decoration: BoxDecoration(
-                        border: Border.all(width: 1,color: Colors.grey),
+                        border: Border.all(width: 1,color: Color(0xFFDEDEDE)),
                         shape: BoxShape.circle,
                         color: Colors.transparent,),
                       child: ExtendedImage.asset(
@@ -186,9 +186,10 @@ Widget shopWebGridView(BuildContext context) {
     padding: EdgeInsets.only(top: 68, bottom: 16),
     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        mainAxisSpacing: 16,
+        mainAxisSpacing: 30,
         crossAxisSpacing: 12,
-        childAspectRatio: 0.68),
+        childAspectRatio: 0.8
+    ),
     itemCount: shopNameList.length,
     itemBuilder: (BuildContext context, int index) {
       return Column(
@@ -201,19 +202,21 @@ Widget shopWebGridView(BuildContext context) {
                   Get.to(()=>WebPage(
                       url: '${shopHomeUrlList[index]}')),
               child: Container(
-                padding: EdgeInsets.all(10),
                   width: _size.width * 0.3,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 1,color: Colors.grey),
+                    border: Border.all(width: 1, color: Color(0xFFDEDEDE)),
                     shape: BoxShape.circle,
-                      color: Colors.transparent,),
-                  child: ExtendedImage.asset(
-                    '${shopImageAssetList[index]}',
+                    color: Colors.white,),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: ExtendedImage.asset(
+                      '${shopImageAssetList[index]}',
+                        width: 20,),
                   )),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 5),
+            padding: const EdgeInsets.only(top: 6),
             child: Text(
               '${shopNameList[index]}',
               style: TextStyle(

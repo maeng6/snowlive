@@ -84,14 +84,6 @@ class _MoreTabState extends State<MoreTab> {
                                                 fontWeight: FontWeight.bold,
                                                 color: Color(0xFF111111)),
                                           ),
-                                          // SizedBox(height: 14,),
-                                          // Text(
-                                          //   '프로필 이미지를 나중에 업로드하길 원하시면,\n건너뛰기 버튼을 눌러주세요.',
-                                          //   style: TextStyle(
-                                          //     color: Color(0xff666666),
-                                          //     fontSize: 14,
-                                          //   ),
-                                          // ),
                                           SizedBox(
                                             height: 18,
                                           ),

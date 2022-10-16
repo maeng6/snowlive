@@ -101,21 +101,6 @@ class _ResortHomeState extends State<ResortHome> {
                 children: [
                   AppBar(
                     iconTheme: IconThemeData(size: 26, color: Colors.black87),
-                    actions: [
-                      GestureDetector(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 13),
-                          child: Image.asset(
-                            'assets/imgs/icons/icon_snowLive_menu.png',
-                            width: 26,
-                            height: 26,
-                          ),
-                        ),
-                        onTap: () {
-                          LoginController().signOut();
-                        },
-                      )
-                    ],
                     centerTitle: false,
                     titleSpacing: 0,
                     title: Padding(
@@ -442,22 +427,27 @@ class _ResortHomeState extends State<ResortHome> {
                                   padding: const EdgeInsets.only(
                                       left: 20, top: 8, bottom: 10),
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Image.asset(
-                                        'assets/imgs/weather/icon_weather.png',
-                                        width: 40,
-                                        height: 40,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 6),
-                                        child: SizedBox(
-                                            width: 188,
-                                            child: Text(
-                                              '야간 라이딩을 즐길 시간',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 13),
-                                            )),
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            'assets/imgs/weather/icon_weather.png',
+                                            width: 40,
+                                            height: 40,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 6),
+                                            child: SizedBox(
+                                                width: 188,
+                                                child: Text(
+                                                  '야간 라이딩을 즐길 시간',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 13),
+                                                )),
+                                          ),
+                                        ],
                                       ),
                                       Padding(
                                         padding:
@@ -683,7 +673,8 @@ class _ResortHomeState extends State<ResortHome> {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
                                                 children: [
-                                                  Expanded(
+                                                  Container(
+                                                    padding: EdgeInsets.only(bottom: 30),
                                                     child: Text(
                                                       '실시간\n웹캠',
                                                       style: TextStyle(
@@ -743,7 +734,8 @@ class _ResortHomeState extends State<ResortHome> {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
                                                 children: [
-                                                  Expanded(
+                                                  Container(
+                                                    padding: EdgeInsets.only(bottom: 30),
                                                     child: Text(
                                                       '슬로프\n오픈현황',
                                                       style: TextStyle(
