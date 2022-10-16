@@ -25,6 +25,7 @@ class _SetNicknameState extends State<SetNickname> {
 
   //TODO: Dependency Injection********************************************
   UserModelController userModelController = Get.find<UserModelController>();
+
   //TODO: Dependency Injection********************************************
 
   @override
@@ -37,22 +38,27 @@ class _SetNicknameState extends State<SetNickname> {
           backgroundColor: Colors.white,
           appBar: AppBar(
             leading: GestureDetector(
-              child: Image.asset('assets/imgs/icons/icon_snowLive_back.png', scale: 4, width: 26,
-                height: 26,),
+              child: Image.asset(
+                'assets/imgs/icons/icon_snowLive_back.png',
+                scale: 4,
+                width: 26,
+                height: 26,
+              ),
               onTap: () => Get.back(result: () => WelcomePage()),
             ),
           ),
           body: Padding(
-            padding: const EdgeInsets.only(top: 10, left: 16, right: 16, bottom: 16),
+            padding:
+                const EdgeInsets.only(top: 10, left: 16, right: 16, bottom: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Column(
                   children: [
                     Text(
-                      '스노우라이브\n닉네임을 정해주세요.',
+                      '스노우라이브\n활동명을 정해주세요.',
                       style:
-                      TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -60,7 +66,7 @@ class _SetNicknameState extends State<SetNickname> {
                   height: 10,
                 ),
                 Text(
-                  '스노우라이브에서 사용할 닉네임을 정해주시고,\n건너뛰기를 하셔도 언제든지 변경하실 수 있습니다.',
+                  '스노우라이브에서 사용할 활동명을 정해주시고,\n건너뛰기를 하셔도 언제든지 변경하실 수 있습니다.',
                   style: TextStyle(
                     color: Color(0xff949494),
                     fontSize: 14,
@@ -74,27 +80,31 @@ class _SetNicknameState extends State<SetNickname> {
                   child: Container(
                     child: Center(
                       child: TextFormField(
+                        textAlignVertical: TextAlignVertical.center,
                         cursorColor: Color(0xff377EEA),
                         cursorHeight: 16,
                         cursorWidth: 2,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         controller: _textEditingController,
-                        strutStyle: StrutStyle(
-                          leading: 0.3
-                        ),
+                        strutStyle: StrutStyle(leading: 0.3),
                         decoration: InputDecoration(
                           errorStyle: TextStyle(
                             fontSize: 12,
                           ),
-                            hintStyle: TextStyle(color: Color(0xff949494), fontSize: 16),
-                            hintText: '활동명 입력',
-                            labelText: '활동명',
-                            contentPadding: EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFFDCDCDC)),
+                          hintStyle:
+                              TextStyle(color: Color(0xff949494), fontSize: 16),
+                          hintText: '활동명 입력',
+                          labelText: '활동명',
+                          contentPadding: EdgeInsets.only(
+                              top: 20, bottom: 20, left: 20, right: 20),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xFFDEDEDE)),
                             borderRadius: BorderRadius.circular(6),
-                            ),
-
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                            borderRadius: BorderRadius.circular(6),
+                          )
                         ),
                         validator: (val) {
                           if (val!.length <= 20 && val.length >= 1) {
@@ -131,9 +141,11 @@ class _SetNicknameState extends State<SetNickname> {
                             .updateNickname(_textEditingController.text);
                         Get.to(() => SetProfileImage());
                       } else {
-                        Get.snackbar('활동명을 입력해주세요', '나중에 정하시려면 건너뛰기를 눌러주세요',
+                        Get.snackbar(
+                            '활동명을 입력해주세요', '나중에 정하시려면 건너뛰기를 눌러주세요',
                             snackPosition: SnackPosition.BOTTOM,
-                            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                            margin: EdgeInsets.only(
+                                right: 20, left: 20, bottom: 12),
                             backgroundColor: Colors.black87,
                             colorText: Colors.white,
                             duration: Duration(milliseconds: 3000));
@@ -144,21 +156,27 @@ class _SetNicknameState extends State<SetNickname> {
                     },
                     child: (isLoading)
                         ? CircularProgressIndicator(
-                      color: Colors.white,
-                    )
-                        : Text(
-                            '다음',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
-                    ),
+                            color: Colors.white,
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: Text(
+                              '다음',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16),
+                            ),
+                          ),
                     style: TextButton.styleFrom(
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(6))),
                         elevation: 0,
                         splashFactory: InkRipple.splashFactory,
                         minimumSize: Size(1000, 56),
-                        backgroundColor: _formKey.isBlank == null ? Color(0xffDEDEDE) : Color(0xff377EEA)),
+                        backgroundColor: _formKey.isBlank == null
+                            ? Color(0xffDEDEDE)
+                            : Color(0xff377EEA)),
                   ),
                 ),
                 SizedBox(
@@ -169,12 +187,19 @@ class _SetNicknameState extends State<SetNickname> {
                     onPressed: () async {
                       Get.to(() => SetProfileImage());
                     },
-                    child: Text(
-                      '건너뛰기',
-                      style: TextStyle(color: Color(0xff949494), fontSize: 16, fontWeight: FontWeight.normal),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text(
+                        '건너뛰기',
+                        style: TextStyle(
+                            fontFamily: 'NotoSansKR',
+                            color: Color(0xff949494),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w300),
+                      ),
                     ),
                     style: TextButton.styleFrom(
-                      elevation: 0,
+                        elevation: 0,
                         splashFactory: InkRipple.splashFactory,
                         minimumSize: Size(1000, 41),
                         backgroundColor: Colors.white),
