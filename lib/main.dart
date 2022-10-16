@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           centerTitle: true,
           titleTextStyle: TextStyle(
             fontFamily: 'NotoSansKR',
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w600,
             color: Colors.black,
                 fontSize: 20
           ),

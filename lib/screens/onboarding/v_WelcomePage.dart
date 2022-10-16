@@ -51,12 +51,15 @@ class WelcomePage extends StatelessWidget {
                     onPressed: () async {
                       Get.to(() => SetNickname());
                     },
-                    child: Text(
-                      '다음',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text(
+                        '다음',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
+                      ),
                     ),
                     style: TextButton.styleFrom(
                         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),

@@ -111,6 +111,14 @@ flutter:
           weight: 500
         - asset: assets/fonts/SF-Pro-Text-Black.otf
           weight: 400
+   - family: NotoSansKR
+     fonts:
+        - asset: assets/fonts/NotoSansKR-Black.otf
+          weight: 800
+        - asset: assets/fonts/NotoSansKR-Bold.otf
+          weight: 600
+        - asset: assets/fonts/NotoSansKR-Light.otf
+          weight: 200
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
