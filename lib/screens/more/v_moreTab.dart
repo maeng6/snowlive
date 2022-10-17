@@ -364,11 +364,61 @@ class _MoreTabState extends State<MoreTab> {
                 ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,
+                  onTap: () {},
+                  title: Text(
+                    '개인정보처리방침',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Color(0xFF111111)),
+                  ),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Divider(
+                    height: 16,
+                    color: Color(0xFFF5F5F5),
+                    thickness: 1,
+                  ),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
+                  onTap: () {},
+                  title: Text(
+                    '서비스이용약관',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Color(0xFF111111)),
+                  ),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Divider(
+                    height: 16,
+                    color: Color(0xFFF5F5F5),
+                    thickness: 1,
+                  ),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
                   onTap: () {
                     Get.to(()=>LicenseListPage());
                   },
                   title: Text(
-                    '라이선스',
+                    '오픈소스라이선스',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
