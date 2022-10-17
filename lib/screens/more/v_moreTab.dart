@@ -487,6 +487,7 @@ class _MoreTabState extends State<MoreTab> {
                                                 Expanded(
                                                   child: ElevatedButton(
                                                     onPressed: () {
+                                                      print(_userModelController.uid);
                                                       _loginController.deleteUser(
                                                           _userModelController.uid);
                                                     },

@@ -44,7 +44,6 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
     ImageController _imageController = Get.find<ImageController>();
     //TODO : ****************************************************************
 
-
     _isSelected = _userModelController.profileImageUrl!.isNotEmpty;
 
     return SafeArea(
@@ -116,16 +115,12 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                           _imageFile = await _imageController
                                               .getSingleImage(
                                               ImageSource.gallery);
-                                          CustomFullScreenDialog
-                                              .cancelDialog();
-                                          print(_userModelController
-                                              .profileImageUrl);
+                                          CustomFullScreenDialog.cancelDialog();
                                           profileImage = true;
                                           setState(() {});
                                           Navigator.pop(context);
                                         } catch (e) {
-                                          CustomFullScreenDialog
-                                              .cancelDialog();
+                                          CustomFullScreenDialog.cancelDialog();
                                         }
                                       },
                                       child: Text(
@@ -147,17 +142,15 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                       onPressed: () async {
                                         CustomFullScreenDialog.showDialog();
                                         try {
-                                          await _imageController
+                                          _imageFile = await _imageController
                                               .getSingleImage(
                                               ImageSource.camera);
-                                          CustomFullScreenDialog
-                                              .cancelDialog();
+                                          CustomFullScreenDialog.cancelDialog();
                                           profileImage = true;
                                           setState(() {});
                                           Navigator.pop(context);
                                         } catch (e) {
-                                          CustomFullScreenDialog
-                                              .cancelDialog();
+                                          CustomFullScreenDialog.cancelDialog();
                                         }
                                       },
                                       child: Text(
@@ -285,7 +278,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                       onPressed: () async {
                                         CustomFullScreenDialog.showDialog();
                                         try {
-                                          await _imageController
+                                          _imageFile = await _imageController
                                               .getSingleImage(
                                               ImageSource.camera);
                                           CustomFullScreenDialog
@@ -374,7 +367,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                       await _userModelController.updateProfileImageUrl(
                           profileImageUrl);
                       CustomFullScreenDialog.cancelDialog();
-                      Get.offAll(()=>MoreTab());
+                      Navigator.pop(context);
                     }else {
                       null;
                     }

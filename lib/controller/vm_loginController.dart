@@ -62,15 +62,18 @@ class LoginController extends GetxController {
   Future<void> signOut() async {
     FirebaseAuth.instance.signOut();
     await FlutterSecureStorage().delete(key: 'login');
-    Get.to(() => LoginPage());
+    Get.offAll(() => LoginPage());
   }
 
   void deleteUser(uid) async {
+    CustomFullScreenDialog.showDialog();
     CollectionReference users = FirebaseFirestore.instance.collection('user');
-    users.doc(uid).delete();
+    await users.doc(uid).delete();
     User user = FirebaseAuth.instance.currentUser!;
-    user.delete();
-    await signOut(); // 위(2번 로그아웃 샘플코드)에서 정의한 함수입니다.
+    await user.delete();
+    await signOut();
+    print('유저 삭제 완료');
+    CustomFullScreenDialog.cancelDialog();
   }
 
   Future<void> createUserDoc(index) async {
@@ -85,7 +88,8 @@ class LoginController extends GetxController {
       'uid': uid,
       'favoriteResort': index,
       'instantResort': index,
-      'profileImageUrl' : ''
+      'profileImageUrl' : '',
+      'exist' : true
     });
   } //유저 정보와 선택한 리조트 정보 파베에 저장하기
 
