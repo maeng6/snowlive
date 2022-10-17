@@ -153,7 +153,7 @@ Widget clothWebGridView(BuildContext context) {
                         color: Color(0xFFF5F5F5),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: ExtendedImage.asset(
                           '${clothBrandImageAssetList[index]}',
                           width: 20,
@@ -206,7 +206,7 @@ Widget shopWebGridView(BuildContext context) {
                         color: Color(0xFFF5F5F5),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: ExtendedImage.asset(
                           '${shopImageAssetList[index]}',
                           width: 20,
