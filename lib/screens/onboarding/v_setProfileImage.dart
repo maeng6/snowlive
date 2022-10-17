@@ -353,6 +353,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                               CustomFullScreenDialog
                                                   .showDialog();
                                               try {
+                                                _imageFile =
                                                 await _imageController
                                                     .getSingleImage(
                                                         ImageSource.camera);

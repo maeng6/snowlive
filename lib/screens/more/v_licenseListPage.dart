@@ -59,7 +59,10 @@ class LicenseListPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Icon(Icons.arrow_forward_ios)
+                  Image.asset('assets/imgs/icons/icon_arrow_g.png',
+                  height: 24,
+                    width: 24,
+                  )
                 ],
               ),
             ),
