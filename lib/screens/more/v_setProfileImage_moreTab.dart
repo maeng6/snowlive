@@ -43,11 +43,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
     ImageController _imageController = Get.find<ImageController>();
     //TODO : ****************************************************************
 
-<<<<<<< HEAD
-    _isSelected = _userModelController.profileImageUrl!.isNotEmpty;
 
-=======
->>>>>>> master
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
