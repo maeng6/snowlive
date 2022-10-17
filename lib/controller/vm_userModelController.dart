@@ -16,6 +16,7 @@ class UserModelController extends GetxController{
   RxInt? _instantResort = 0.obs;
   int? _favoriteSaved=0;
   RxString? _profileImageUrl=''.obs;
+  RxBool? _exist = false.obs;
 
   String? get uid => _uid!.value;
   String? get displayName => _displayName!.value;
@@ -24,6 +25,7 @@ class UserModelController extends GetxController{
   int? get instantResort  => _instantResort!.value;
   int? get favoriteSaved => _favoriteSaved;
   String? get profileImageUrl => _profileImageUrl!.value;
+  bool? get exist => _exist!.value;
 
   @override
   void onInit()  {
@@ -49,6 +51,7 @@ class UserModelController extends GetxController{
       this._favoriteResort!.value = userModel.favoriteResort!;
       this._instantResort!.value = userModel.instantResort!;
       this._profileImageUrl!.value = userModel.profileImageUrl!;
+      this._exist!.value = userModel.exist!;
       await prefs.setInt('favoriteResort', userModel.favoriteResort!);
     } else {}
   }
