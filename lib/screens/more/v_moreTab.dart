@@ -6,8 +6,8 @@ import 'package:snowlive3/controller/vm_loginController.dart';
 import 'package:snowlive3/screens/more/v_contactUsPage.dart';
 import 'package:snowlive3/screens/more/v_licenseListPage.dart';
 import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
-import 'package:snowlive3/screens/more/v_terms_of_service.dart';
 import 'package:snowlive3/screens/onboarding/v_favoriteResort.dart';
+import 'package:snowlive3/screens/v_webPage.dart';
 import '../../controller/vm_userModelController.dart';
 
 class MoreTab extends StatefulWidget {
@@ -364,10 +364,37 @@ class _MoreTabState extends State<MoreTab> {
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,
                   onTap: () {
-                    Get.to(()=>TermsOfService());
+                    Get.to(()=>WebPage(url: 'https://sites.google.com/view/snowlive-termsofservice/%ED%99%88',));
                   },
                   title: Text(
-                    '서비스약관',
+                    '이용약관',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Color(0xFF111111)),
+                  ),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Divider(
+                    height: 16,
+                    color: Color(0xFFF5F5F5),
+                    thickness: 1,
+                  ),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
+                  onTap: () {
+                    Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88',));
+                  },
+                  title: Text(
+                    '개인정보처리방침',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
