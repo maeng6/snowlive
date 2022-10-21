@@ -23,6 +23,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
 
   bool profileImage = false;
   XFile? _imageFile;
+  bool _isSelected = true;
 
   @override
   void initState() {
@@ -42,6 +43,8 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
     UserModelController _userModelController = Get.find<UserModelController>();
     ImageController _imageController = Get.find<ImageController>();
     //TODO : ****************************************************************
+
+    _isSelected = _userModelController.profileImageUrl!.isNotEmpty;
 
 
     return SafeArea(
@@ -317,6 +320,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                   },
                   child: Stack(
                     children: [
+                      if(_isSelected)
                       Container(
                         width: 160,
                         height: 160,
@@ -329,6 +333,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                           NetworkImage(_userModelController.profileImageUrl!),
                         ),
                       ),
+                        if(!_isSelected)
                         Container(
                           width: 160,
                           height: 160,
