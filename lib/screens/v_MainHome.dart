@@ -82,7 +82,7 @@ class _MainHomeState extends State<MainHome> {
                 ResortHome(),
                 BrandWebBody(),
                 WeatherPage(),
-                MoreTab()
+                MoreTab(),
               ],
             )
         ));

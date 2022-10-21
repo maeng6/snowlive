@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
-import 'package:snowlive3/screens/more/v_moreTab.dart';
 import 'package:snowlive3/screens/onboarding/v_favoriteResort.dart';
 import 'package:snowlive3/screens/onboarding/v_setNickname.dart';
 
@@ -24,7 +23,6 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
 
   bool profileImage = false;
   XFile? _imageFile;
-  bool _isSelected = true;
 
   @override
   void initState() {
@@ -38,13 +36,13 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
 
     Size _size = MediaQuery.of(context).size;
 
+
     //TODO : ****************************************************************
     Get.put(ImageController(), permanent: true);
     UserModelController _userModelController = Get.find<UserModelController>();
     ImageController _imageController = Get.find<ImageController>();
     //TODO : ****************************************************************
 
-    _isSelected = _userModelController.profileImageUrl!.isNotEmpty;
 
     return SafeArea(
       child: Scaffold(
@@ -317,7 +315,6 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                   },
                   child: Stack(
                     children: [
-                      if(_isSelected)
                       Container(
                         width: 160,
                         height: 160,
@@ -330,7 +327,6 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                           NetworkImage(_userModelController.profileImageUrl!),
                         ),
                       ),
-                      if(!_isSelected)
                         Container(
                           width: 160,
                           height: 160,
