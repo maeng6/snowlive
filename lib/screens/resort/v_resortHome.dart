@@ -55,6 +55,7 @@ class _ResortHomeState extends State<ResortHome> {
         try {
           await _resortModelController.getSelectedResort(index);
           print('${_resortModelController.webcamUrl}');
+          setState(() { });
           CustomFullScreenDialog.cancelDialog();
         } catch (e) {
           CustomFullScreenDialog.cancelDialog();
@@ -106,7 +107,7 @@ class _ResortHomeState extends State<ResortHome> {
             future: _userModelController.getLocalSave(),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               _resortModelController
-                  .getSelectedResort(_userModelController.favoriteSaved!);
+                  .getSelectedResort(_userModelController.instantResort!);
               _userModelController.updateInstantResort(_userModelController.favoriteResort);
               return Scaffold(
                 backgroundColor: Color(0xFFF2F4F6),
@@ -739,9 +740,142 @@ class _ResortHomeState extends State<ResortHome> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 12,
-                                      ),
+                                      (_resortModelController.webcamUrl != '')
+                                      ?Column(
+                                        children: [
+                                          SizedBox(height: 12,),
+                                          Container(
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(14)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 24, vertical: 12),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      '실시간 웹캠',
+                                                      style: TextStyle(
+                                                          fontSize: 18,
+                                                          color: Color(0xFF111111),
+                                                          fontWeight: FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                  ElevatedButton(
+                                                    child: Text(
+                                                      '보러가기',
+                                                      style: TextStyle(
+                                                          color: Color(0xFF666666)),
+                                                    ),
+                                                    onPressed: () {
+                                                      Get.to(Obx(
+                                                        () => WebPage(
+                                                          url:
+                                                              '${_resortModelController.webcamUrl}',
+                                                        ),
+                                                      ));
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                        minimumSize: Size(72, 30),
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                    6)),
+                                                        elevation: 0,
+                                                        backgroundColor:
+                                                            Color(0xFFF2F3F4),
+                                                        padding: EdgeInsets.symmetric(
+                                                            horizontal: 10,
+                                                            vertical: 5),
+                                                        textStyle: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight: FontWeight.bold,
+                                                        )),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 12,
+                                          ),
+                                        ],
+                                      )
+                                      :SizedBox(height: 12,),
+                                      (_resortModelController.slopeUrl != '')
+                                      ?Column(
+                                        children: [
+                                          Container(
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(14)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 24, vertical: 12),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      '슬로프 현황',
+                                                      style: TextStyle(
+                                                          fontSize: 18,
+                                                          color: Color(0xFF111111),
+                                                          fontWeight: FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                  ElevatedButton(
+                                                    child: Text(
+                                                      '보러가기',
+                                                      style: TextStyle(
+                                                          color: Color(0xFF666666)),
+                                                    ),
+                                                    onPressed: () {
+                                                      Get.to(Obx(
+                                                        () => WebPage(
+                                                          url:
+                                                              '${_resortModelController.slopeUrl}',
+                                                        ),
+                                                      ));
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                        minimumSize: Size(72, 30),
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                    6)),
+                                                        elevation: 0,
+                                                        backgroundColor:
+                                                            Color(0xFFF2F3F4),
+                                                        padding: EdgeInsets.symmetric(
+                                                            horizontal: 10,
+                                                            vertical: 5),
+                                                        textStyle: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight: FontWeight.bold,
+                                                        )),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 12,
+                                          ),
+                                        ],
+                                      ):SizedBox(height: 12,),
                                       Container(
                                         width: double.infinity,
                                         height: 522,
