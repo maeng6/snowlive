@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -5,6 +7,7 @@ import 'package:snowlive3/controller/vm_getDateTimeController.dart';
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_resortModelController.dart';
 import '../../controller/vm_userModelController.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class Comments_resortMain extends StatefulWidget {
   const Comments_resortMain({Key? key}) : super(key: key);
@@ -14,6 +17,8 @@ class Comments_resortMain extends StatefulWidget {
 }
 
 class _Comments_resortMainState extends State<Comments_resortMain> {
+
+
   @override
   Widget build(BuildContext context) {
     //TODO: Dependency Injection**************************************************
@@ -26,6 +31,7 @@ class _Comments_resortMainState extends State<Comments_resortMain> {
     GetDateTimeController _getDateTimeController =
     Get.find<GetDateTimeController>();
 //TODO: Dependency Injection**************************************************
+
 
     return StreamBuilder(
       stream: FirebaseFirestore.instance
@@ -48,8 +54,9 @@ class _Comments_resortMainState extends State<Comments_resortMain> {
         }
         final chatDocs = snapshot.data!.docs;
         return ListView.builder(
+          physics: NeverScrollableScrollPhysics(),
           reverse: false,
-          itemCount: chatDocs.length,
+          itemCount: 4,
           itemBuilder: (context, index) {
             return Container(
               color: Colors.white,
@@ -62,11 +69,17 @@ class _Comments_resortMainState extends State<Comments_resortMain> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if(chatDocs[index]['profileImageUrl'] != "")
                       CircleAvatar(
                           radius: 15,
                           backgroundColor: Colors.transparent,
                           backgroundImage: NetworkImage(
                               chatDocs[index]['profileImageUrl'])),
+                      if(chatDocs[index]['profileImageUrl'] == "")
+                      CircleAvatar(
+                          radius: 15,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: AssetImage('assets/imgs/profile/img_profile_default_circle.png')),
                       SizedBox(width: 10),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,

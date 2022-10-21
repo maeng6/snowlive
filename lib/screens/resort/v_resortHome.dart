@@ -7,7 +7,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
 import 'package:snowlive3/model/m_resortModel.dart';
-import 'package:snowlive3/screens/comments/v_comments_resortMain.dart';
+import 'package:snowlive3/screens/comments/v_comments_resortHome.dart';
 import 'package:snowlive3/screens/comments/v_comments_screen.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
