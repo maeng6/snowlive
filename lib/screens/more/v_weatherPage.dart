@@ -40,6 +40,7 @@ class WeatherPage extends StatelessWidget {
 
   ListView resortListView(Size _size) {
     return ListView.separated(
+      padding: EdgeInsets.only(top: 60, bottom: 40),
       itemCount: resortList.length,
       itemBuilder: (BuildContext context, int index) {
         return Container(
