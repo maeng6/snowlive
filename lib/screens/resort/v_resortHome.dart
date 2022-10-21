@@ -77,7 +77,9 @@ class _ResortHomeState extends State<ResortHome> {
 
   void _onRefresh() async {
     CustomFullScreenDialog.showDialog();
-    if (mounted) setState(() {});
+    if (mounted) setState(() {
+      _userModelController.updateInstantResort(_userModelController.favoriteResort);
+    });
     try {
       _refreshController.refreshCompleted();
       CustomFullScreenDialog.cancelDialog();
