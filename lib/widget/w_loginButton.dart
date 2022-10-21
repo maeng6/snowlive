@@ -60,6 +60,8 @@ class LoginButton extends StatelessWidget {
             try {
               if (_userModelController.exist! == true) {
                 print('기존회원 메인홈 이동');
+                await FlutterSecureStorage()
+                    .write(key: 'login', value: auth.currentUser!.displayName);
                 await _userModelController.getCurrentUser();
                 CustomFullScreenDialog.cancelDialog();
                 Get.offAll(() => MainHome());
@@ -93,6 +95,8 @@ class LoginButton extends StatelessWidget {
             await _loginController.signInWithFacebook();
             if( _userModelController.exist! == true) {
               print('기존회원 메인홈 이동');
+              await FlutterSecureStorage()
+                  .write(key: 'login', value: auth.currentUser!.displayName);
               await _userModelController.getCurrentUser();
               CustomFullScreenDialog.cancelDialog();
               Get.offAll(()=>MainHome());
@@ -113,6 +117,8 @@ class LoginButton extends StatelessWidget {
             await _loginController.signInWithApple();
             if( _userModelController.exist! == true) {
               print('기존회원 메인홈 이동');
+              await FlutterSecureStorage()
+                  .write(key: 'login', value: auth.currentUser!.displayName);
               await _userModelController.getCurrentUser();
               CustomFullScreenDialog.cancelDialog();
               Get.offAll(()=>MainHome());
