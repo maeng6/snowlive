@@ -6,11 +6,8 @@ import 'package:snowlive3/controller/vm_loginController.dart';
 import 'package:snowlive3/screens/more/v_contactUsPage.dart';
 import 'package:snowlive3/screens/more/v_licenseListPage.dart';
 import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
+import 'package:snowlive3/screens/more/v_terms_of_service.dart';
 import 'package:snowlive3/screens/onboarding/v_favoriteResort.dart';
-import 'package:snowlive3/screens/onboarding/v_setProfileImage.dart';
-import 'package:snowlive3/screens/resort/v_resortHome.dart';
-import 'package:snowlive3/screens/v_MainHome.dart';
-import '../../controller/vm_resortModelController.dart';
 import '../../controller/vm_userModelController.dart';
 
 class MoreTab extends StatefulWidget {
@@ -283,14 +280,16 @@ class _MoreTabState extends State<MoreTab> {
                           onTap: () => Get.to(() => SetProfileImage_moreTab()),
                           child: Stack(
                             children: [
-                              Container(
-                                width: 64,
-                                height: 64,
-                                child: CircleAvatar(
-                                    backgroundColor: Colors.grey[100],
-                                    backgroundImage: NetworkImage(
-                                      _userModelController.profileImageUrl!,
-                                    )),
+                              Obx(()=>
+                                Container(
+                                      width: 64,
+                                      height: 64,
+                                      child: CircleAvatar(
+                                          backgroundColor: Colors.grey[100],
+                                          backgroundImage: NetworkImage(
+                                            _userModelController.profileImageUrl!,
+                                          )),
+                                    ),
                               ),
                               Positioned(
                                   bottom: 10,
@@ -365,10 +364,37 @@ class _MoreTabState extends State<MoreTab> {
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,
                   onTap: () {
+                    Get.to(()=>TermsOfService());
+                  },
+                  title: Text(
+                    '서비스약관',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Color(0xFF111111)),
+                  ),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Divider(
+                    height: 16,
+                    color: Color(0xFFF5F5F5),
+                    thickness: 1,
+                  ),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
+                  onTap: () {
                     Get.to(()=>LicenseListPage());
                   },
                   title: Text(
-                    '라이선스',
+                    '오픈소스라이선스',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
