@@ -28,7 +28,10 @@ class WeatherPage extends StatelessWidget {
           ),
         ),
       ),
-      body: resortListView(_size),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
+        child: resortListView(_size),
+      ),
     );
 
 
@@ -39,7 +42,6 @@ class WeatherPage extends StatelessWidget {
       itemCount: resortList.length,
       itemBuilder: (BuildContext context, int index){
         return Container(
-          padding: EdgeInsets.only(left: 16, right: 16),
           height: _size.width * 0.2,
           color: Colors.transparent,
           child: Row(
