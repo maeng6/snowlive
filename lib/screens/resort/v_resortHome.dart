@@ -54,6 +54,7 @@ class _ResortHomeState extends State<ResortHome> {
         await _userModelController.updateInstantResort(index);
         try {
           await _resortModelController.getSelectedResort(index);
+          print('${_resortModelController.webcamUrl}');
           CustomFullScreenDialog.cancelDialog();
         } catch (e) {
           CustomFullScreenDialog.cancelDialog();
@@ -740,139 +741,6 @@ class _ResortHomeState extends State<ResortHome> {
                                       ),
                                       SizedBox(
                                         height: 12,
-                                      ),
-                                      Container(
-                                        width: double.infinity,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                Get.to(Obx(
-                                                  () => WebPage(
-                                                    url:
-                                                        '${_resortModelController.webcamUrl}',
-                                                  ),
-                                                ));
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(14)),
-                                                width: _size.width * 0.5 - 22,
-                                                height: 164,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      top: 22,
-                                                      left: 22,
-                                                      bottom: 20,
-                                                      right: 20),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      Container(
-                                                        padding: EdgeInsets.only(
-                                                            bottom: 30),
-                                                        child: Text(
-                                                          '실시간\n웹캠',
-                                                          style: TextStyle(
-                                                              height: 1.3,
-                                                              fontSize: 18,
-                                                              color:
-                                                                  Color(0xFF111111),
-                                                              fontWeight:
-                                                                  FontWeight.bold),
-                                                        ),
-                                                      ),
-                                                      Expanded(child: Container()),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment.end,
-                                                        children: [
-                                                          Image.asset(
-                                                            'assets/imgs/icons/icon_snowLive_link.png',
-                                                            width: 67,
-                                                            height: 26,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),//실시간웹캠
-                                            SizedBox(
-                                              width: 12,
-                                            ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                Get.to(Obx(
-                                                  () => WebPage(
-                                                    url:
-                                                        '${_resortModelController.slopeUrl}',
-                                                  ),
-                                                ));
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(14)),
-                                                width: _size.width * 0.5 - 22,
-                                                height: 164,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      top: 22,
-                                                      left: 22,
-                                                      bottom: 20,
-                                                      right: 20),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      Container(
-                                                        padding: EdgeInsets.only(
-                                                            bottom: 30),
-                                                        child: Text(
-                                                          '슬로프\n오픈현황',
-                                                          style: TextStyle(
-                                                              height: 1.3,
-                                                              fontSize: 18,
-                                                              color:
-                                                                  Color(0xFF111111),
-                                                              fontWeight:
-                                                                  FontWeight.bold),
-                                                        ),
-                                                      ),
-                                                      Expanded(child: Container()),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment.end,
-                                                        children: [
-                                                          Image.asset(
-                                                            'assets/imgs/icons/icon_snowLive_link.png',
-                                                            width: 67,
-                                                            height: 26,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),//슬로프오픈현황
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 16,
                                       ),
                                       Container(
                                         width: double.infinity,
