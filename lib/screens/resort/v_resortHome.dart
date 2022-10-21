@@ -76,9 +76,8 @@ class _ResortHomeState extends State<ResortHome> {
       RefreshController(initialRefresh: false);
 
   void _onRefresh() async {
-    CustomFullScreenDialog.showDialog();
+    await _userModelController.updateInstantResort(_userModelController.favoriteResort);
     if (mounted) setState(() {
-      _userModelController.updateInstantResort(_userModelController.favoriteResort);
     });
     try {
       _refreshController.refreshCompleted();
@@ -872,11 +871,9 @@ class _ResortHomeState extends State<ResortHome> {
                                               ),
                                             ),
                                           ),
-                                          SizedBox(
-                                            height: 12,
-                                          ),
                                         ],
-                                      ):SizedBox(height: 12,),
+                                      )
+                                          :SizedBox(height: 12,),
                                       Container(
                                         width: double.infinity,
                                         height: 522,
