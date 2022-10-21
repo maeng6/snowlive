@@ -54,6 +54,8 @@ class _ResortHomeState extends State<ResortHome> {
         await _userModelController.updateInstantResort(index);
         try {
           await _resortModelController.getSelectedResort(index);
+          print('${_resortModelController.webcamUrl}');
+          setState(() { });
           CustomFullScreenDialog.cancelDialog();
         } catch (e) {
           CustomFullScreenDialog.cancelDialog();
@@ -105,7 +107,7 @@ class _ResortHomeState extends State<ResortHome> {
             future: _userModelController.getLocalSave(),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               _resortModelController
-                  .getSelectedResort(_userModelController.favoriteSaved!);
+                  .getSelectedResort(_userModelController.instantResort!);
               _userModelController.updateInstantResort(_userModelController.favoriteResort);
               return Scaffold(
                 backgroundColor: Color(0xFFF2F4F6),
@@ -738,142 +740,142 @@ class _ResortHomeState extends State<ResortHome> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 12,
-                                      ),
-                                      Container(
-                                        width: double.infinity,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                Get.to(Obx(
-                                                  () => WebPage(
-                                                    url:
-                                                        '${_resortModelController.webcamUrl}',
+                                      (_resortModelController.webcamUrl != '')
+                                      ?Column(
+                                        children: [
+                                          SizedBox(height: 12,),
+                                          Container(
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(14)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 24, vertical: 12),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      '실시간 웹캠',
+                                                      style: TextStyle(
+                                                          fontSize: 18,
+                                                          color: Color(0xFF111111),
+                                                          fontWeight: FontWeight.bold),
+                                                    ),
                                                   ),
-                                                ));
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(14)),
-                                                width: _size.width * 0.5 - 22,
-                                                height: 164,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      top: 22,
-                                                      left: 22,
-                                                      bottom: 20,
-                                                      right: 20),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      Container(
-                                                        padding: EdgeInsets.only(
-                                                            bottom: 30),
-                                                        child: Text(
-                                                          '실시간\n웹캠',
-                                                          style: TextStyle(
-                                                              height: 1.3,
-                                                              fontSize: 18,
-                                                              color:
-                                                                  Color(0xFF111111),
-                                                              fontWeight:
-                                                                  FontWeight.bold),
+                                                  ElevatedButton(
+                                                    child: Text(
+                                                      '보러가기',
+                                                      style: TextStyle(
+                                                          color: Color(0xFF666666)),
+                                                    ),
+                                                    onPressed: () {
+                                                      Get.to(Obx(
+                                                        () => WebPage(
+                                                          url:
+                                                              '${_resortModelController.webcamUrl}',
                                                         ),
-                                                      ),
-                                                      Expanded(child: Container()),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment.end,
-                                                        children: [
-                                                          Image.asset(
-                                                            'assets/imgs/icons/icon_snowLive_link.png',
-                                                            width: 67,
-                                                            height: 26,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
+                                                      ));
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                        minimumSize: Size(72, 30),
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                    6)),
+                                                        elevation: 0,
+                                                        backgroundColor:
+                                                            Color(0xFFF2F3F4),
+                                                        padding: EdgeInsets.symmetric(
+                                                            horizontal: 10,
+                                                            vertical: 5),
+                                                        textStyle: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight: FontWeight.bold,
+                                                        )),
                                                   ),
-                                                ),
+                                                ],
                                               ),
-                                            ),//실시간웹캠
-                                            SizedBox(
-                                              width: 12,
                                             ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                Get.to(Obx(
-                                                  () => WebPage(
-                                                    url:
-                                                        '${_resortModelController.slopeUrl}',
+                                          ),
+                                          SizedBox(
+                                            height: 12,
+                                          ),
+                                        ],
+                                      )
+                                      :SizedBox(height: 12,),
+                                      (_resortModelController.slopeUrl != '')
+                                      ?Column(
+                                        children: [
+                                          Container(
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(14)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 24, vertical: 12),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      '슬로프 현황',
+                                                      style: TextStyle(
+                                                          fontSize: 18,
+                                                          color: Color(0xFF111111),
+                                                          fontWeight: FontWeight.bold),
+                                                    ),
                                                   ),
-                                                ));
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(14)),
-                                                width: _size.width * 0.5 - 22,
-                                                height: 164,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      top: 22,
-                                                      left: 22,
-                                                      bottom: 20,
-                                                      right: 20),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      Container(
-                                                        padding: EdgeInsets.only(
-                                                            bottom: 30),
-                                                        child: Text(
-                                                          '슬로프\n오픈현황',
-                                                          style: TextStyle(
-                                                              height: 1.3,
-                                                              fontSize: 18,
-                                                              color:
-                                                                  Color(0xFF111111),
-                                                              fontWeight:
-                                                                  FontWeight.bold),
+                                                  ElevatedButton(
+                                                    child: Text(
+                                                      '보러가기',
+                                                      style: TextStyle(
+                                                          color: Color(0xFF666666)),
+                                                    ),
+                                                    onPressed: () {
+                                                      Get.to(Obx(
+                                                        () => WebPage(
+                                                          url:
+                                                              '${_resortModelController.slopeUrl}',
                                                         ),
-                                                      ),
-                                                      Expanded(child: Container()),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment.end,
-                                                        children: [
-                                                          Image.asset(
-                                                            'assets/imgs/icons/icon_snowLive_link.png',
-                                                            width: 67,
-                                                            height: 26,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
+                                                      ));
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                        minimumSize: Size(72, 30),
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                    6)),
+                                                        elevation: 0,
+                                                        backgroundColor:
+                                                            Color(0xFFF2F3F4),
+                                                        padding: EdgeInsets.symmetric(
+                                                            horizontal: 10,
+                                                            vertical: 5),
+                                                        textStyle: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight: FontWeight.bold,
+                                                        )),
                                                   ),
-                                                ),
+                                                ],
                                               ),
-                                            ),//슬로프오픈현황
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 16,
-                                      ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 12,
+                                          ),
+                                        ],
+                                      ):SizedBox(height: 12,),
                                       Container(
                                         width: double.infinity,
                                         height: 522,

@@ -185,7 +185,9 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                           height: 160,
                           child: CircleAvatar(
                             backgroundColor: Colors.grey[100],
-                            backgroundImage: FileImage(File(_imageFile!.path)),
+                            backgroundImage:
+                            (_imageFile == null)? null :
+                            FileImage(File(_imageFile!.path)),
                           ),
                         ),
                         Positioned(
