@@ -32,7 +32,7 @@ class WeatherPage extends StatelessWidget {
       ),
       body: Padding(
         padding:
-            const EdgeInsets.only(top: 30, left: 16, right: 16, bottom: 40),
+            const EdgeInsets.only(top: 20, left: 16, right: 16),
         child: resortListView(_size),
       ),
     );
@@ -75,6 +75,11 @@ class WeatherPage extends StatelessWidget {
                   Row(
                     children: [
                       TextButton(
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      alignment: Alignment.centerRight,
+        ),
                           onPressed: () {},
                           child: Text(
                             '라이브톡',
@@ -89,7 +94,7 @@ class WeatherPage extends StatelessWidget {
                 ],
               ),
               SizedBox(
-                height: 20,
+                height: 16,
               ),
               Row(
                 children: [
