@@ -104,7 +104,7 @@ List<ResortModel> resortList = [
     index:5,
     resortName: '엘리시안강촌',
     resortAddress: '춘천시 남산면',
-    resortUrl: 'https://elysian.co.kr/',
+    resortUrl: 'https://m.elysian.co.kr/',
     webcamUrl: 'https://www.elysian.co.kr/gangchon/ski/ski_slope03.asp',
     slopeUrl: 'https://www.elysian.co.kr/gangchon/ski/ski_slope.asp',
     naverUrl: 'https://weather.naver.com/today/01110400?cpName=KMA',

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:snowlive3/screens/comments/comments.dart';
+import 'package:snowlive3/screens/comments/comments_screen.dart';
 import 'package:snowlive3/screens/resort/v_resortHome.dart';
 import 'brand/v_brandHome.dart';
 import 'more/v_moreTab.dart';
@@ -71,6 +73,15 @@ class _MainHomeState extends State<MainHome> {
                         'assets/imgs/icons/icon_more_on.png',
                         scale: 4),
                     label: 'More',
+                  ),BottomNavigationBarItem(
+                    icon: Image.asset(
+                      'assets/imgs/icons/icon_more_off.png',
+                      scale: 4,
+                    ),
+                    activeIcon: Image.asset(
+                        'assets/imgs/icons/icon_more_on.png',
+                        scale: 4),
+                    label: 'More',
                   ),
                 ],
                 showUnselectedLabels: false,
@@ -82,7 +93,8 @@ class _MainHomeState extends State<MainHome> {
                 ResortHome(),
                 BrandWebBody(),
                 WeatherPage(),
-                MoreTab()
+                MoreTab(),
+                CommentsScreen()
               ],
             )
         ));
