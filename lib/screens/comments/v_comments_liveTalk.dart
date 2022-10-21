@@ -22,7 +22,6 @@ class _Comments_liveTalkState extends State<Comments_liveTalk> {
     UserModelController _userModelController = Get.find<UserModelController>();
     ResortModelController _resortModelController =
         Get.find<ResortModelController>();
-    Get.put(CommentModelController(), permanent: true);
     CommentModelController _commentModelController =
         Get.find<CommentModelController>();
     GetDateTimeController _getDateTimeController =

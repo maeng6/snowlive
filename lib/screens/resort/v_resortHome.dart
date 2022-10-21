@@ -108,7 +108,6 @@ class _ResortHomeState extends State<ResortHome> {
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               _resortModelController
                   .getSelectedResort(_userModelController.instantResort!);
-              _userModelController.updateInstantResort(_userModelController.favoriteResort);
               return Scaffold(
                 backgroundColor: Color(0xFFF2F4F6),
                 extendBodyBehindAppBar: true,
