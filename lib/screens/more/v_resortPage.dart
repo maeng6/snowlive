@@ -85,7 +85,7 @@ class WeatherPage extends StatelessWidget {
                       alignment: Alignment.centerRight,
         ),
                           onPressed: () {
-                            Get.to(()=>CommentScreen_LiveTalk_resortTab(index: index));
+                            Get.to(()=>CommentScreen_LiveTalk_resortTab(index: index,resortName: resortNameList[index],));
                           },
                           child: Text(
                             '라이브톡',

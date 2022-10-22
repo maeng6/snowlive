@@ -6,9 +6,10 @@ import '../../controller/vm_commentController.dart';
 
 
 class CommentScreen_LiveTalk_resortTab extends StatefulWidget {
-  CommentScreen_LiveTalk_resortTab({Key? key,this.index}) : super(key: key);
+  CommentScreen_LiveTalk_resortTab({Key? key,required this.index, required this.resortName}) : super(key: key);
 
   int? index;
+  String? resortName;
 
   @override
   _CommentScreen_LiveTalk_resortTabState createState() => _CommentScreen_LiveTalk_resortTabState();
@@ -32,7 +33,28 @@ class _CommentScreen_LiveTalk_resortTabState extends State<CommentScreen_LiveTal
           titleSpacing: 0,
           title: Padding(
             padding: const EdgeInsets.only(left: 12),
-            child: Text('라이브 톡')
+            child: RichText(
+                text: TextSpan(
+                    text:  '라이브 톡',
+                    style: TextStyle(
+                        letterSpacing: 1.0,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Colors.black87
+                    ),
+                    children: [
+                      TextSpan(
+                        text: ' ${widget.resortName}',
+                        style: TextStyle(
+                            letterSpacing: 1.0,
+                            fontSize: 12,
+                            color: Colors.grey[400],
+                            fontWeight: FontWeight.bold
+                        ),
+                      )
+                    ]
+                )
+            ),
           ),
           backgroundColor: Colors.white,
           elevation: 0.0,

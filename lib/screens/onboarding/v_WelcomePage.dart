@@ -17,7 +17,7 @@ class _WelcomePageState extends State<WelcomePage> {
     {
       "id": 0,
       "value": false,
-      "title": "(필수) 스노우라이브 이용약관",
+      "title": "(필수) 스노우라이브 이용약관 동의",
       "url": 'https://sites.google.com/view/snowlive-termsofservice/%ED%99%88',
     },
     {
