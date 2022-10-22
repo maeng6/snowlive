@@ -9,14 +9,14 @@ import '../../controller/vm_resortModelController.dart';
 import '../../controller/vm_userModelController.dart';
 
 
-class Comments_resortHome extends StatefulWidget {
-  const Comments_resortHome({Key? key}) : super(key: key);
+class CommentTile_resortHome extends StatefulWidget {
+  const CommentTile_resortHome({Key? key}) : super(key: key);
 
   @override
-  State<Comments_resortHome> createState() => _Comments_resortHomeState();
+  State<CommentTile_resortHome> createState() => _CommentTile_resortHomeState();
 }
 
-class _Comments_resortHomeState extends State<Comments_resortHome> {
+class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
 
 
   @override

@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
-import 'package:snowlive3/screens/comments/v_new_comments.dart';
+import 'package:snowlive3/screens/comments/v_newComment.dart';
 
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_resortModelController.dart';
 import '../../controller/vm_userModelController.dart';
 
-class Comments_liveTalk extends StatefulWidget {
-  const Comments_liveTalk({Key? key}) : super(key: key);
+class CommentTile_liveTalk_resortHome extends StatefulWidget {
+  const CommentTile_liveTalk_resortHome({Key? key}) : super(key: key);
 
 
   @override
-  State<Comments_liveTalk> createState() => _Comments_liveTalkState();
+  State<CommentTile_liveTalk_resortHome> createState() => _CommentTile_liveTalk_resortHomeState();
 
 }
 
-class _Comments_liveTalkState extends State<Comments_liveTalk> {
+class _CommentTile_liveTalk_resortHomeState extends State<CommentTile_liveTalk_resortHome> {
 
 
   @override

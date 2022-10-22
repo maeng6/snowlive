@@ -5,14 +5,14 @@ import 'package:snowlive3/controller/vm_commentController.dart';
 import '../../controller/vm_resortModelController.dart';
 import '../../controller/vm_userModelController.dart';
 
-class NewComments extends StatefulWidget {
-  const NewComments({Key? key}) : super(key: key);
+class NewComment extends StatefulWidget {
+  const NewComment({Key? key}) : super(key: key);
 
   @override
-  _NewCommentsState createState() => _NewCommentsState();
+  _NewCommentState createState() => _NewCommentState();
 }
 
-class _NewCommentsState extends State<NewComments> {
+class _NewCommentState extends State<NewComment> {
   final _controller = TextEditingController();
   var _newComment = '';
 

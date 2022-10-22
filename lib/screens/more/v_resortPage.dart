@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/model/m_resortModel.dart';
-import 'package:snowlive3/screens/comments/v_comments_screen_resortTab.dart';
+import 'package:snowlive3/screens/comments/v_commentScreen_liveTalk_resortTab.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
 
-import '../comments/v_comments_resortTab.dart';
+import '../comments/v_commentTile_liveTalk_resortTab.dart';
 
 class WeatherPage extends StatelessWidget {
   const WeatherPage({Key? key}) : super(key: key);
@@ -85,7 +85,7 @@ class WeatherPage extends StatelessWidget {
                       alignment: Alignment.centerRight,
         ),
                           onPressed: () {
-                            Get.to(()=>CommentsScreen_resortTab(index: index));
+                            Get.to(()=>CommentScreen_LiveTalk_resortTab(index: index));
                           },
                           child: Text(
                             '라이브톡',

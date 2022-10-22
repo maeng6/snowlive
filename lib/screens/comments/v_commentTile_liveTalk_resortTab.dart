@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
-import 'package:snowlive3/screens/comments/v_new_comments.dart';
+import 'package:snowlive3/screens/comments/v_newComment.dart';
 
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_resortModelController.dart';
 import '../../controller/vm_userModelController.dart';
 
-class Comments_resortTab extends StatefulWidget {
-  Comments_resortTab({Key? key,this.index}) : super(key: key);
+class CommentTile_liveTalk_resortTab extends StatefulWidget {
+  CommentTile_liveTalk_resortTab({Key? key,this.index}) : super(key: key);
 
   int? index;
 
   @override
-  State<Comments_resortTab> createState() => _Comments_resortTabState();
+  State<CommentTile_liveTalk_resortTab> createState() => _CommentTile_liveTalk_resortTabState();
 }
 
-class _Comments_resortTabState extends State<Comments_resortTab> {
+class _CommentTile_liveTalk_resortTabState extends State<CommentTile_liveTalk_resortTab> {
   @override
   Widget build(BuildContext context) {
     //TODO: Dependency Injection**************************************************

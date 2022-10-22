@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:snowlive3/screens/comments/v_comments_liveTalk.dart';
-import 'package:snowlive3/screens/comments/v_comments_resortHome.dart';
-import 'package:snowlive3/screens/comments/v_new_comments.dart';
+import 'package:snowlive3/screens/comments/v_commentTile_liveTalk_resortTab.dart';
+import 'package:snowlive3/screens/comments/v_newComment.dart';
 
 import '../../controller/vm_commentController.dart';
 
 
-class CommentsScreen extends StatefulWidget {
-  const CommentsScreen({Key? key}) : super(key: key);
+class CommentScreen_LiveTalk_resortTab extends StatefulWidget {
+  CommentScreen_LiveTalk_resortTab({Key? key,this.index}) : super(key: key);
+
+  int? index;
 
   @override
-  _CommentsScreenState createState() => _CommentsScreenState();
+  _CommentScreen_LiveTalk_resortTabState createState() => _CommentScreen_LiveTalk_resortTabState();
 }
 
-class _CommentsScreenState extends State<CommentsScreen> {
+class _CommentScreen_LiveTalk_resortTabState extends State<CommentScreen_LiveTalk_resortTab> {
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +41,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
               margin: EdgeInsets.only(top: 20),
                 child:Column(
                   children: [
-                    Expanded(child: Comments_liveTalk()),
-                    NewComments(),
+                    Expanded(child: CommentTile_liveTalk_resortTab(index: widget.index,)),
+                    NewComment(),
                   ],
                 )
               ),
