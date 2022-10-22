@@ -11,11 +11,15 @@ import '../../controller/vm_userModelController.dart';
 class Comments_liveTalk extends StatefulWidget {
   const Comments_liveTalk({Key? key}) : super(key: key);
 
+
   @override
   State<Comments_liveTalk> createState() => _Comments_liveTalkState();
+
 }
 
 class _Comments_liveTalkState extends State<Comments_liveTalk> {
+
+
   @override
   Widget build(BuildContext context) {
     //TODO: Dependency Injection**************************************************
@@ -66,11 +70,17 @@ class _Comments_liveTalkState extends State<Comments_liveTalk> {
                     Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if(chatDocs[index]['profileImageUrl'] != "")
                          CircleAvatar(
                                   radius: 15,
                                   backgroundColor: Colors.transparent,
                                   backgroundImage: NetworkImage(
                                       chatDocs[index]['profileImageUrl'])),
+                          if(chatDocs[index]['profileImageUrl'] == "")
+                            CircleAvatar(
+                                radius: 15,
+                                backgroundColor: Colors.transparent,
+                                backgroundImage: AssetImage('assets/imgs/profile/img_profile_default_circle.png')),
                           SizedBox(width: 10),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,

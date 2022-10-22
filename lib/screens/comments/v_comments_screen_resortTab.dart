@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:snowlive3/screens/comments/v_comments_liveTalk.dart';
-import 'package:snowlive3/screens/comments/v_comments_resortMain.dart';
 import 'package:snowlive3/screens/comments/v_comments_resortTab.dart';
 import 'package:snowlive3/screens/comments/v_new_comments.dart';
 
