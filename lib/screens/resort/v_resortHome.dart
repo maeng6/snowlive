@@ -76,6 +76,7 @@ class _ResortHomeState extends State<ResortHome> {
       RefreshController(initialRefresh: false);
 
   void _onRefresh() async {
+    CustomFullScreenDialog.showDialog();
     await _userModelController.updateInstantResort(_userModelController.favoriteResort);
     if (mounted) setState(() {
     });
@@ -873,7 +874,10 @@ class _ResortHomeState extends State<ResortHome> {
                                           ),
                                         ],
                                       )
-                                          :SizedBox(height: 12,),
+                                          :SizedBox(height: 0,),
+                                      (_resortModelController.webcamUrl != '' && _resortModelController.slopeUrl !='')
+                                      ?SizedBox(height: 12,)
+                                      :SizedBox(height: 0,),
                                       Container(
                                         width: double.infinity,
                                         height: 522,

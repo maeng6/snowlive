@@ -45,11 +45,11 @@ class _NewCommentState extends State<NewComment> {
             ),
           ),
           IconButton(
-            onPressed: () {
+            onPressed: () async{
               _newComment.trim().isEmpty
                   ? null
                   : FocusScope.of(context).unfocus();
-              _commentModelController.sendMessage(
+              await _commentModelController.sendMessage(
                   displayName: _userModelController.displayName,
                   uid: _userModelController.uid,
                   profileImageUrl: _userModelController.profileImageUrl,

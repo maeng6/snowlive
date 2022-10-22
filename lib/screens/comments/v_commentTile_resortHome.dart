@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_resortModelController.dart';
 import '../../controller/vm_userModelController.dart';
+import '../../widget/w_fullScreenDialog.dart';
 
 
 class CommentTile_resortHome extends StatefulWidget {
@@ -53,11 +55,13 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
           );
         }
         final chatDocs = snapshot.data!.docs;
+
         return ListView.builder(
           physics: NeverScrollableScrollPhysics(),
           reverse: false,
           itemCount: chatDocs.length,
           itemBuilder: (context, index) {
+            String _time = _commentModelController.getAgoTime(chatDocs[index].get('timeStamp'));
             return Container(
               color: Colors.white,
               child: Column(
@@ -93,7 +97,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                               ),
                               SizedBox(width: 5),
                               Text(
-                                '1시간전',
+                                '$_time',
                                 style: TextStyle(fontSize: 10),
                               ),
                               if (chatDocs[index].get('uid') == _userModelController.uid)
@@ -103,13 +107,97 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                   height: 20,
                                   child: IconButton(
                                     onPressed: () async {
-                                      await FirebaseFirestore.instance
-                                          .collection('comment')
-                                          .doc('resort')
-                                          .collection(
-                                          '${_userModelController.instantResort.toString()}')
-                                          .doc(_userModelController.uid)
-                                          .delete();
+                                      showMaterialModalBottomSheet(
+                                          context: context,
+                                          builder: (context) {
+                                            return Container(
+                                              color: Colors.white,
+                                              height: 180,
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 30,
+                                                    ),
+                                                    Text('삭제하시겠습니까?',
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Color(0xFF111111)),),
+                                                    SizedBox(
+                                                      height: 30,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment.spaceEvenly,
+                                                      children: [
+                                                        Expanded(
+                                                          child: ElevatedButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(context);
+                                                            },
+                                                            child: Text('취소',
+                                                              style: TextStyle(
+                                                                  color: Colors.white,
+                                                                  fontSize: 15,
+                                                                  fontWeight: FontWeight.bold),),
+                                                            style: TextButton.styleFrom(
+                                                                splashFactory:
+                                                                InkRipple.splashFactory,
+                                                                elevation: 0,
+                                                                minimumSize: Size(100, 56),
+                                                                backgroundColor:
+                                                                Color(0xff555555),
+                                                                padding: EdgeInsets.symmetric(
+                                                                    horizontal: 0)),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Expanded(
+                                                          child: ElevatedButton(
+                                                            onPressed: () async{
+                                                              CustomFullScreenDialog.showDialog();
+                                                              await FirebaseFirestore.instance
+                                                                  .collection('comment')
+                                                                  .doc('resort')
+                                                                  .collection(
+                                                                  '${_userModelController.instantResort.toString()}')
+                                                                  .doc(_userModelController.uid)
+                                                                  .delete();
+                                                              print('댓글 삭제 완료');
+                                                              Navigator.pop(context);
+                                                              CustomFullScreenDialog.cancelDialog();
+                                                            },
+                                                            child: Text('확인',
+                                                              style: TextStyle(
+                                                                  color: Colors.white,
+                                                                  fontSize: 15,
+                                                                  fontWeight: FontWeight.bold),),
+                                                            style: TextButton.styleFrom(
+                                                                splashFactory:
+                                                                InkRipple.splashFactory,
+                                                                elevation: 0,
+                                                                minimumSize: Size(100, 56),
+                                                                backgroundColor:
+                                                                Color(0xff2C97FB),
+                                                                padding: EdgeInsets.symmetric(
+                                                                    horizontal: 0)),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          });
+
+
                                     },
                                     icon: Icon(Icons.cancel,
                                       size:10 ,),
