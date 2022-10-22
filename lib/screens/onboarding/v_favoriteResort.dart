@@ -115,7 +115,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
                           }
                         },
                         child: Text(
-                          '다음',
+                          '가입완료',
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
