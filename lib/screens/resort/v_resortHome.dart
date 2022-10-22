@@ -925,7 +925,7 @@ class _ResortHomeState extends State<ResortHome> {
                                                   ],
                                                 ),
                                                 Expanded(
-                                                    child: Comments_resortMain()
+                                                    child: Comments_resortHome()
                                                 )
                                               ],
                                             )

@@ -9,14 +9,14 @@ import '../../controller/vm_resortModelController.dart';
 import '../../controller/vm_userModelController.dart';
 
 
-class Comments_resortMain extends StatefulWidget {
-  const Comments_resortMain({Key? key}) : super(key: key);
+class Comments_resortHome extends StatefulWidget {
+  const Comments_resortHome({Key? key}) : super(key: key);
 
   @override
-  State<Comments_resortMain> createState() => _Comments_resortMainState();
+  State<Comments_resortHome> createState() => _Comments_resortHomeState();
 }
 
-class _Comments_resortMainState extends State<Comments_resortMain> {
+class _Comments_resortHomeState extends State<Comments_resortHome> {
 
 
   @override
@@ -56,7 +56,7 @@ class _Comments_resortMainState extends State<Comments_resortMain> {
         return ListView.builder(
           physics: NeverScrollableScrollPhysics(),
           reverse: false,
-          itemCount: 4,
+          itemCount: chatDocs.length,
           itemBuilder: (context, index) {
             return Container(
               color: Colors.white,
@@ -70,16 +70,16 @@ class _Comments_resortMainState extends State<Comments_resortMain> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if(chatDocs[index]['profileImageUrl'] != "")
-                      CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Colors.transparent,
-                          backgroundImage: NetworkImage(
-                              chatDocs[index]['profileImageUrl'])),
+                        CircleAvatar(
+                            radius: 15,
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: NetworkImage(
+                                chatDocs[index]['profileImageUrl'])),
                       if(chatDocs[index]['profileImageUrl'] == "")
-                      CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Colors.transparent,
-                          backgroundImage: AssetImage('assets/imgs/profile/img_profile_default_circle.png')),
+                        CircleAvatar(
+                            radius: 15,
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: AssetImage('assets/imgs/profile/img_profile_default_circle.png')),
                       SizedBox(width: 10),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
