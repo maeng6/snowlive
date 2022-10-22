@@ -7,7 +7,7 @@ import 'package:snowlive3/controller/vm_getDateTimeController.dart';
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_resortModelController.dart';
 import '../../controller/vm_userModelController.dart';
-import 'package:timeago/timeago.dart' as timeago;
+
 
 class Comments_resortMain extends StatefulWidget {
   const Comments_resortMain({Key? key}) : super(key: key);
