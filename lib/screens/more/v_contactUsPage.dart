@@ -5,48 +5,60 @@ class ContactUsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size _size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.green[800],
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('우리는...'),
         backgroundColor: Colors.white,
       ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
-              height: 20,
-            ),
-            Image.asset('assets/imgs/logos/134_logo.png',
-            scale: 4.5,
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Text('134 CREATIVE LAB',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold
-            ),
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Text('E-mail : 134creativelab@gmail.com',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold
+              Padding(
+                padding: const EdgeInsets.only(top: 200),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/imgs/logos/snowLiveLogo.png',
+                        width: _size.width / 2,
+                      ),
+                    ],
+                  ),
               ),
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Text('Copyright by 134CreativeLab 2022. All right reserved.',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 60),
+              child: Column(
+                children: [
+                  Text('134creativelab@gmail.com',
+                    style: TextStyle(
+                        color: Color(0xFF111111),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600
+                    ),
+                  ),
+                  SizedBox(
+                    height: 6,
+                  ),
+                  Text('Copyright by 134CreativeLab 2022.',
+                    style: TextStyle(
+                        color: Color(0xFF111111),
+                        fontWeight: FontWeight.w300,
+                        fontSize: 14,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 2,
+                  ),
+                  Text('All right reserved.',
+                    style: TextStyle(
+                      color: Color(0xFF111111),
+                      fontWeight: FontWeight.w300,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

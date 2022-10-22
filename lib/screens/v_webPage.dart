@@ -25,15 +25,18 @@ class _WebPageState extends State<WebPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('SNOWLIVE',
+          title: Text(' ',
           style: Theme.of(context).appBarTheme.titleTextStyle,),
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-              },
-            icon: Icon(Icons.arrow_back,
-            color: Colors.black,
+          leading: GestureDetector(
+            child: Image.asset(
+              'assets/imgs/icons/icon_snowLive_back.png',
+              scale: 4,
+              width: 26,
+              height: 26,
             ),
+            onTap: () {
+              Navigator.pop(context);
+            },
           ),
           backgroundColor: Colors.white,
         ),
