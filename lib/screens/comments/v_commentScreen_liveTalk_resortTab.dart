@@ -48,8 +48,8 @@ class _CommentScreen_LiveTalk_resortTabState extends State<CommentScreen_LiveTal
                         style: TextStyle(
                             letterSpacing: 1.0,
                             fontSize: 12,
-                            color: Colors.grey[400],
-                            fontWeight: FontWeight.bold
+                            fontWeight: FontWeight.w300,
+                            color: Color(0xFF949494)
                         ),
                       )
                     ]

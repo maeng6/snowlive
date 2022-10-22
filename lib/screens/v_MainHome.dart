@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:snowlive3/screens/resort/v_resortHome.dart';
 import 'brand/v_brandHome.dart';
 import 'more/v_moreTab.dart';
-import 'more/v_resortPage.dart';
+import 'more/v_resortTab.dart';
 
 class MainHome extends StatefulWidget {
 
