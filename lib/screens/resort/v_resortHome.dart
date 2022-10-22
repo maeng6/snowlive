@@ -495,7 +495,7 @@ class _ResortHomeState extends State<ResortHome> {
                                                 padding:
                                                     const EdgeInsets.only(left: 6),
                                                 child: SizedBox(
-                                                    width: 188,
+                                                    width: 170,
                                                     child: Text(
                                                       '야간 라이딩을 즐길 시간',
                                                       style: TextStyle(
