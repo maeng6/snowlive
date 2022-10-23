@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -74,16 +76,22 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if(chatDocs[index]['profileImageUrl'] != "")
-                        CircleAvatar(
-                            radius: 15,
-                            backgroundColor: Colors.transparent,
-                            backgroundImage: NetworkImage(
-                                chatDocs[index]['profileImageUrl'])),
+                       ExtendedImage.network(chatDocs[index]['profileImageUrl'],
+                         cache: true,
+                       shape: BoxShape.circle,
+                         borderRadius: BorderRadius.circular(20),
+                         width: 32,
+                         height: 32,
+                         fit: BoxFit.cover,
+                       ),
                       if(chatDocs[index]['profileImageUrl'] == "")
-                        CircleAvatar(
-                            radius: 15,
-                            backgroundColor: Colors.transparent,
-                            backgroundImage: AssetImage('assets/imgs/profile/img_profile_default_circle.png')),
+                        ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
+                          shape: BoxShape.circle,
+                          borderRadius: BorderRadius.circular(20),
+                          width: 32,
+                          height: 32,
+                          fit: BoxFit.cover,
+                        ),
                       SizedBox(width: 10),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -100,109 +108,6 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                 '$_time',
                                 style: TextStyle(fontSize: 10),
                               ),
-                              if (chatDocs[index].get('uid') == _userModelController.uid)
-                                SizedBox(
-
-                                  width: 20,
-                                  height: 20,
-                                  child: IconButton(
-                                    onPressed: () async {
-                                      showMaterialModalBottomSheet(
-                                          context: context,
-                                          builder: (context) {
-                                            return Container(
-                                              color: Colors.white,
-                                              height: 180,
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    SizedBox(
-                                                      height: 30,
-                                                    ),
-                                                    Text('삭제하시겠습니까?',
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Color(0xFF111111)),),
-                                                    SizedBox(
-                                                      height: 30,
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment.spaceEvenly,
-                                                      children: [
-                                                        Expanded(
-                                                          child: ElevatedButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(context);
-                                                            },
-                                                            child: Text('취소',
-                                                              style: TextStyle(
-                                                                  color: Colors.white,
-                                                                  fontSize: 15,
-                                                                  fontWeight: FontWeight.bold),),
-                                                            style: TextButton.styleFrom(
-                                                                splashFactory:
-                                                                InkRipple.splashFactory,
-                                                                elevation: 0,
-                                                                minimumSize: Size(100, 56),
-                                                                backgroundColor:
-                                                                Color(0xff555555),
-                                                                padding: EdgeInsets.symmetric(
-                                                                    horizontal: 0)),
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Expanded(
-                                                          child: ElevatedButton(
-                                                            onPressed: () async{
-                                                              CustomFullScreenDialog.showDialog();
-                                                              await FirebaseFirestore.instance
-                                                                  .collection('comment')
-                                                                  .doc('resort')
-                                                                  .collection(
-                                                                  '${_userModelController.instantResort.toString()}')
-                                                                  .doc(_userModelController.uid)
-                                                                  .delete();
-                                                              print('댓글 삭제 완료');
-                                                              Navigator.pop(context);
-                                                              CustomFullScreenDialog.cancelDialog();
-                                                            },
-                                                            child: Text('확인',
-                                                              style: TextStyle(
-                                                                  color: Colors.white,
-                                                                  fontSize: 15,
-                                                                  fontWeight: FontWeight.bold),),
-                                                            style: TextButton.styleFrom(
-                                                                splashFactory:
-                                                                InkRipple.splashFactory,
-                                                                elevation: 0,
-                                                                minimumSize: Size(100, 56),
-                                                                backgroundColor:
-                                                                Color(0xff2C97FB),
-                                                                padding: EdgeInsets.symmetric(
-                                                                    horizontal: 0)),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          });
-
-
-                                    },
-                                    icon: Icon(Icons.cancel,
-                                      size:10 ,),
-                                  ),
-                                )
                             ],
                           ),
                           Row(

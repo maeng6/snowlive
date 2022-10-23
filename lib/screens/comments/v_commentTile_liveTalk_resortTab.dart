@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -70,18 +71,23 @@ class _CommentTile_liveTalk_resortTabState extends State<CommentTile_liveTalk_re
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (chatDocs[index]['profileImageUrl'] != "")
-                          CircleAvatar(
-                              radius: 18,
-                              backgroundColor: Colors.transparent,
-                              backgroundImage: NetworkImage(
-                                  chatDocs[index]['profileImageUrl'])),
-                        if (chatDocs[index]['profileImageUrl'] == "")
-                          CircleAvatar(
-                              radius: 18,
-                              backgroundColor: Colors.transparent,
-                              backgroundImage: AssetImage(
-                                  'assets/imgs/profile/img_profile_default_circle.png')),
+                        if(chatDocs[index]['profileImageUrl'] != "")
+                          ExtendedImage.network(chatDocs[index]['profileImageUrl'],
+                            cache: true,
+                            shape: BoxShape.circle,
+                            borderRadius: BorderRadius.circular(20),
+                            width: 32,
+                            height: 32,
+                            fit: BoxFit.cover,
+                          ),
+                        if(chatDocs[index]['profileImageUrl'] == "")
+                          ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
+                            shape: BoxShape.circle,
+                            borderRadius: BorderRadius.circular(20),
+                            width: 32,
+                            height: 32,
+                            fit: BoxFit.cover,
+                          ),
                         SizedBox(width: 10),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.start,
