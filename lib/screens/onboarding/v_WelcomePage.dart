@@ -11,7 +11,6 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-
   List multipleSelected = [];
   List checkListItems = [
     {
@@ -24,14 +23,13 @@ class _WelcomePageState extends State<WelcomePage> {
       "id": 1,
       "value": false,
       "title": "(필수) 개인정보 수집 및 이용동의",
-      "url": "https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88"
+      "url":
+          "https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88"
     },
   ];
 
-
   @override
   Widget build(BuildContext context) {
-
     bool? _isCheckedAll = multipleSelected.length.isEqual(2);
 
     return SafeArea(
@@ -63,39 +61,61 @@ class _WelcomePageState extends State<WelcomePage> {
                   height: 10,
                 ),
                 Text(
-                  '원활한 스노우라이브 사용을 위하여\n아래의 약관동의 및 회원가입이 필요합니다.\n스노우라이브와 함께 즐거운 라이딩을 만들어봐요!',
+                  '스노우라이브의 모든 기능을 편리하게 사용하시기 위해\n아래의 약관동의 및 회원가입이 필요합니다.\n아래 약관에 동의 부탁드립니다.',
                   style: TextStyle(
                     color: Color(0xff949494),
                     fontSize: 14,
                   ),
                 ),
-                SizedBox(
-                  height: 40,
+                Expanded(
+                  child: Container()
                 ),
-                Column(
-                  children:
-                  List.generate(
-                    checkListItems.length, (index) =>
-                      CheckboxListTile(
-                        title: Text(checkListItems[index]["title"], style: TextStyle(fontSize: 16),),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 36),
+                  child: Column(
+                    children: List.generate(
+                      checkListItems.length,
+                      (index) => CheckboxListTile(
+                        dense: true,
+                        visualDensity: VisualDensity(vertical: 1),
+                        title: Transform.translate(
+                          offset: Offset(-16,0),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 2),
+                            child: Text(
+                              checkListItems[index]["title"],
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ),
+                        ),
                         activeColor: Color(0xff377EEA),
                         selectedTileColor: Color(0xff377EEA),
                         controlAffinity: ListTileControlAffinity.leading,
                         secondary: IconButton(
-                          onPressed: (){
-                            Get.to(()=>WebPage(url: checkListItems[index]["url"],));
+                          padding: EdgeInsets.all(0),
+                          onPressed: () {
+                            Get.to(() => WebPage(
+                                  url: checkListItems[index]["url"],
+                                ));
                           },
-                          icon: Image.asset(
-                            'assets/imgs/icons/icon_arrow_g.png',
-                            height: 24,
-                            width: 24,
-                          ),),
+                          icon: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Image.asset(
+                                'assets/imgs/icons/icon_arrow_g.png',
+                                height: 24,
+                                width: 24,
+                              ),
+                            ],
+                          ),
+                        ),
                         value: checkListItems[index]["value"],
-                        contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                        contentPadding: EdgeInsets.zero,
                         onChanged: (value) {
                           setState(() {
                             checkListItems[index]["value"] = value;
-                            if (multipleSelected.contains(checkListItems[index])) {
+                            if (multipleSelected
+                                .contains(checkListItems[index])) {
                               multipleSelected.remove(checkListItems[index]);
                             } else {
                               multipleSelected.add(checkListItems[index]);
@@ -103,15 +123,15 @@ class _WelcomePageState extends State<WelcomePage> {
                           });
                         },
                       ),
+                    ),
                   ),
                 ),
-                Expanded(child: SizedBox()),
                 Center(
                   child: ElevatedButton(
                     onPressed: () async {
-                      if(_isCheckedAll){
+                      if (_isCheckedAll) {
                         Get.to(() => SetNickname());
-                      }else{
+                      } else {
                         null;
                       }
                     },
@@ -126,14 +146,14 @@ class _WelcomePageState extends State<WelcomePage> {
                       ),
                     ),
                     style: TextButton.styleFrom(
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(6))),
                         elevation: 0,
                         splashFactory: InkRipple.splashFactory,
                         minimumSize: Size(1000, 56),
-                        backgroundColor:
-                        (_isCheckedAll)
-                        ? Color(0xff377EEA)
-                        : Color(0xffDEDEDE)),
+                        backgroundColor: (_isCheckedAll)
+                            ? Color(0xff377EEA)
+                            : Color(0xffDEDEDE)),
                   ),
                 ),
               ],
@@ -144,5 +164,3 @@ class _WelcomePageState extends State<WelcomePage> {
     );
   }
 }
-
-
