@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,16 +64,21 @@ class LoginPage extends StatelessWidget {
                     SizedBox(
                       height: 10,
                     ),
-                    LoginButton(
+                    (Platform.isIOS)
+                    ?LoginButton(
                       buttonText: 'Apple로 로그인하기',
                       logoAddress: 'assets/imgs/logos/logos_apple.png',
                       signInMethod: SignInMethod.apple,
                       buttonColor: Color(0xff111111),
                       borderColor: Colors.transparent,
                       textColor: Colors.white,
-                    ),
+                    )
+                    :SizedBox(height: 0,),
                     SizedBox(
-                      height: 24,
+                      height:
+                      (Platform.isIOS)
+                      ? 24
+                      : 12,
                     ),
                     Text('로그인 방법을 선택해주세요',
                     style: TextStyle(fontSize: 14, color: Color(0xFF949494), fontWeight: FontWeight.normal),)
