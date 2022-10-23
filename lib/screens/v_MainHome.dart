@@ -84,7 +84,7 @@ class _MainHomeState extends State<MainHome> {
               children: [
                 ResortHome(),
                 BrandWebBody(),
-                WeatherPage(),
+                resortPage(),
                 MoreTab(),
               ],
             )
