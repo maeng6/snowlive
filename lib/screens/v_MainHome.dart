@@ -13,9 +13,12 @@ class MainHome extends StatefulWidget {
 class _MainHomeState extends State<MainHome> {
   int _currentPage=0;
 
+
   void changePage(pageIndex){
     setState(() {
       _currentPage =pageIndex;
+      var controller = PrimaryScrollController.of(context);
+      controller?.jumpTo(0);
     });
 }
 

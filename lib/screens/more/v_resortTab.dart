@@ -9,7 +9,8 @@ import 'package:snowlive3/screens/v_webPage.dart';
 import '../comments/v_commentTile_liveTalk_resortTab.dart';
 
 class WeatherPage extends StatelessWidget {
-  const WeatherPage({Key? key}) : super(key: key);
+  WeatherPage({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -106,16 +107,22 @@ class WeatherPage extends StatelessWidget {
                 children: [
                   OutlinedButton(
                     onPressed: () {
+                      if(webcamUrlList[index]!.isNotEmpty){
                       Get.to(
                         () => WebPage(
                           url: '${webcamUrlList[index]}',
                         ),
-                      );
+                      );}else{
+                        null;
+                      }
                     },
                     child: Text(
                       '실시간 웹캠',
                       style: TextStyle(
-                          color: Color(0xFF555555),
+                          color:
+                          (slopeUrlList[index]!.isNotEmpty)
+                          ? Color(0xFF555555)
+                          : Color(0xFFCACACA),
                           fontSize: 13,
                           fontWeight: FontWeight.bold),
                     ),
@@ -131,16 +138,22 @@ class WeatherPage extends StatelessWidget {
                   ),
                   OutlinedButton(
                     onPressed: () {
+                      if(slopeUrlList[index]!.isNotEmpty){
                       Get.to(
                         () => WebPage(
                           url: '${slopeUrlList[index]}',
                         ),
-                      );
+                      );}else{
+                        null;
+                      }
                     },
                     child: Text(
                       '슬로프 현황',
                       style: TextStyle(
-                          color: Color(0xFF555555),
+                          color:
+                          (slopeUrlList[index]!.isNotEmpty)
+                          ? Color(0xFF555555)
+                          : Color(0xFFCACACA),
                           fontSize: 13,
                           fontWeight: FontWeight.bold),
                     ),
