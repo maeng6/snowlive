@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -91,6 +94,20 @@ class _ResortHomeState extends State<ResortHome> {
   @override
   Widget build(BuildContext context) {
 
+    SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top],
+    ); // 상단 StatusBar 생성
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.white, // Color for Android
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness:
+        (Platform.isAndroid)
+        ?Brightness.light
+          :Brightness.dark //ios:dark, android:light
+    ));
+
     //TODO: Dependency Injection**************************************************
     Get.put(CommentModelController(), permanent: true);
     CommentModelController _commentModelController =
@@ -119,6 +136,7 @@ class _ResortHomeState extends State<ResortHome> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       AppBar(
+                        systemOverlayStyle: SystemUiOverlayStyle.dark,
                         iconTheme: IconThemeData(size: 26, color: Colors.black87),
                         centerTitle: false,
                         titleSpacing: 0,

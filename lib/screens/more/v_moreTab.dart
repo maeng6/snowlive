@@ -543,7 +543,6 @@ class _MoreTabState extends State<MoreTab> {
                                                       print(_userModelController.uid);
                                                       _loginController.deleteUser(
                                                           _userModelController.uid);
-
                                                     },
                                                     child: Text('확인',
                                                       style: TextStyle(
