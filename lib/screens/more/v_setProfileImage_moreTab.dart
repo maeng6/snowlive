@@ -321,19 +321,19 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                   child: Stack(
                     children: [
                       if(_isSelected)
-                      Container(
-                        width: 160,
-                        height: 160,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
+                        Container(
+                          width: 160,
+                          height: 160,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.grey[100],
+                            backgroundImage:
+                            NetworkImage(_userModelController.profileImageUrl!),
+                          ),
                         ),
-                        child: CircleAvatar(
-                          backgroundColor: Colors.grey[100],
-                          backgroundImage:
-                          NetworkImage(_userModelController.profileImageUrl!),
-                        ),
-                      ),
-                        if(!_isSelected)
+                      if(!_isSelected)
                         Container(
                           width: 160,
                           height: 160,
@@ -390,8 +390,8 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                       minimumSize: Size(1000, 56),
                       backgroundColor:
                       (_imageFile != null)
-                      ? Color(0xff377EEA)
-                      : Color(0xffDEDEDE)),
+                          ? Color(0xff377EEA)
+                          : Color(0xffDEDEDE)),
                 ),
               ),
 
