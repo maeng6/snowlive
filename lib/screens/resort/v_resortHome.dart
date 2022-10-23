@@ -932,7 +932,7 @@ class _ResortHomeState extends State<ResortHome> {
                                                                 color: Color(0xFF666666)),
                                                           ),
                                                           onPressed: () {
-                                                          Get.to(()=> CommentScreen_LiveTalk_resortHome(resortName: _resortModelController.resortName,));
+                                                          Get.to(()=> CommentScreen_LiveTalk_resortHome(index: _resortModelController.instantIndex, resortName: _resortModelController.resortName,));
                                                           },
                                                           style: ElevatedButton.styleFrom(
                                                               minimumSize: Size(72, 30),

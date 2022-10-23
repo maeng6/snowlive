@@ -6,7 +6,9 @@ import '../../controller/vm_resortModelController.dart';
 import '../../controller/vm_userModelController.dart';
 
 class NewComment extends StatefulWidget {
-  const NewComment({Key? key}) : super(key: key);
+   NewComment({Key? key,this.index}) : super(key: key);
+
+   int? index;
 
   @override
   _NewCommentState createState() => _NewCommentState();
@@ -57,7 +59,7 @@ class _NewCommentState extends State<NewComment> {
                               displayName: _userModelController.displayName,
                               uid: _userModelController.uid,
                               profileImageUrl: _userModelController.profileImageUrl,
-                              instantResort: _userModelController.instantResort,
+                              instantResort: widget.index,
                               comment: _newComment);
                           _controller.clear();
                           setState(() {

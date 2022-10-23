@@ -84,7 +84,7 @@ class _CommentScreen_LiveTalk_resortTabState extends State<CommentScreen_LiveTal
                           ),
                         ),
                         Expanded(child: CommentTile_liveTalk_resortTab(index: widget.index,)),
-                        NewComment(),
+                        NewComment(index: widget.index),
                       ],
                     )
                   ),

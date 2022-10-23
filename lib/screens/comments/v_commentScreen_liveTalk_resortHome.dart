@@ -7,10 +7,11 @@ import 'package:snowlive3/screens/comments/v_newComment.dart';
 import '../../controller/vm_commentController.dart';
 
 class CommentScreen_LiveTalk_resortHome extends StatefulWidget {
-  CommentScreen_LiveTalk_resortHome({Key? key, required this.resortName})
+  CommentScreen_LiveTalk_resortHome({Key? key,required this.index, required this.resortName})
       : super(key: key);
 
   String? resortName;
+  int? index;
 
   @override
   _CommentScreen_LiveTalk_resortHomeState createState() =>
@@ -84,7 +85,7 @@ class _CommentScreen_LiveTalk_resortHomeState
                       ),
                     ),
                     Expanded(child: CommentTile_liveTalk_resortHome()),
-                    NewComment(),
+                    NewComment(index: widget.index,),
                   ],
                 )),
           ),
