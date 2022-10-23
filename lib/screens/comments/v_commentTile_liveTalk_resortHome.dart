@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
+import 'package:snowlive3/model/m_commentModel.dart';
 import 'package:snowlive3/screens/comments/v_newComment.dart';
 
 import '../../controller/vm_commentController.dart';
@@ -21,18 +22,23 @@ class CommentTile_liveTalk_resortHome extends StatefulWidget {
 
 class _CommentTile_liveTalk_resortHomeState
     extends State<CommentTile_liveTalk_resortHome> {
+
+
+  //TODO: Dependency Injection**************************************************
+  UserModelController _userModelController = Get.find<UserModelController>();
+  ResortModelController _resortModelController =
+  Get.find<ResortModelController>();
+  CommentModelController _commentModelController =
+  Get.find<CommentModelController>();
+  GetDateTimeController _getDateTimeController =
+  Get.find<GetDateTimeController>();
+//TODO: Dependency Injection**************************************************
+
+
+
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
-    //TODO: Dependency Injection**************************************************
-    UserModelController _userModelController = Get.find<UserModelController>();
-    ResortModelController _resortModelController =
-        Get.find<ResortModelController>();
-    CommentModelController _commentModelController =
-        Get.find<CommentModelController>();
-    GetDateTimeController _getDateTimeController =
-        Get.find<GetDateTimeController>();
-//TODO: Dependency Injection**************************************************
 
     return StreamBuilder(
       stream: FirebaseFirestore.instance
@@ -295,3 +301,4 @@ class _CommentTile_liveTalk_resortHomeState
     );
   }
 }
+
