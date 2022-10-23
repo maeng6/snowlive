@@ -15,10 +15,10 @@ class NewComment extends StatefulWidget {
 class _NewCommentState extends State<NewComment> {
   final _controller = TextEditingController();
   var _newComment = '';
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-
 //TODO: Dependency Injection**************************************************
     UserModelController _userModelController = Get.find<UserModelController>();
     ResortModelController _resortModelController =
@@ -27,41 +27,84 @@ class _NewCommentState extends State<NewComment> {
         Get.find<CommentModelController>();
 //TODO: Dependency Injection**************************************************
 
-    return Container(
-      margin: EdgeInsets.only(top: 8),
-      padding: EdgeInsets.all(8),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextFormField(
-              maxLines: null,
-              controller: _controller,
-              decoration: InputDecoration(labelText: '댓글 남기기...'),
-              onChanged: (value) {
-                setState(() {
-                  _newComment = value;
-                });
-              },
-            ),
+    return Column(
+      children: [
+        Divider(
+          thickness: 1,
+          color: Color(0xFFECECEC),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
           ),
-          IconButton(
-            onPressed: () async{
-              _newComment.trim().isEmpty
-                  ? null
-                  : FocusScope.of(context).unfocus();
-              await _commentModelController.sendMessage(
-                  displayName: _userModelController.displayName,
-                  uid: _userModelController.uid,
-                  profileImageUrl: _userModelController.profileImageUrl,
-                  instantResort: _userModelController.instantResort,
-                  comment: _newComment);
-              _controller.clear();
-            },
-            icon: Icon(Icons.send),
-            color: Colors.blue,
+          margin: EdgeInsets.only(bottom: 8),
+          padding: EdgeInsets.all(8),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  key: _formKey,
+                  cursorColor: Color(0xff377EEA),
+                  controller: _controller,
+                  strutStyle: StrutStyle(leading: 0.3),
+                  decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        onPressed: () async {
+                          _newComment.trim().isEmpty
+                              ? null
+                              : FocusScope.of(context).unfocus();
+                          await _commentModelController.sendMessage(
+                              displayName: _userModelController.displayName,
+                              uid: _userModelController.uid,
+                              profileImageUrl: _userModelController.profileImageUrl,
+                              instantResort: _userModelController.instantResort,
+                              comment: _newComment);
+                          _controller.clear();
+                          setState(() {
+                          });
+                        },
+                        icon: (_controller.text.trim().isEmpty)
+                            ? Image.asset(
+                                'assets/imgs/icons/icon_livetalk_send_g.png',
+                                width: 27,
+                                height: 27,
+                              )
+                            : Image.asset(
+                                'assets/imgs/icons/icon_livetalk_send.png',
+                                width: 27,
+                                height: 27,
+                              ),
+                      ),
+                      errorStyle: TextStyle(
+                        fontSize: 12,
+                      ),
+                      hintStyle: TextStyle(color: Color(0xff949494), fontSize: 14),
+                      hintText: '라이브톡 남기기',
+                      contentPadding:
+                          EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFFF3726)),
+                        borderRadius: BorderRadius.circular(6),
+                      )),
+                  onChanged: (value) {
+                    setState(() {
+                      _newComment = value;
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

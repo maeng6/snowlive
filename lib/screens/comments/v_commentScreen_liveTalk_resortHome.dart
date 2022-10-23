@@ -6,72 +6,90 @@ import 'package:snowlive3/screens/comments/v_newComment.dart';
 
 import '../../controller/vm_commentController.dart';
 
-
 class CommentScreen_LiveTalk_resortHome extends StatefulWidget {
-   CommentScreen_LiveTalk_resortHome({Key? key,required this.resortName}) : super(key: key);
+  CommentScreen_LiveTalk_resortHome({Key? key, required this.resortName})
+      : super(key: key);
 
-   String? resortName;
+  String? resortName;
 
   @override
-  _CommentScreen_LiveTalk_resortHomeState createState() => _CommentScreen_LiveTalk_resortHomeState();
+  _CommentScreen_LiveTalk_resortHomeState createState() =>
+      _CommentScreen_LiveTalk_resortHomeState();
 }
 
-class _CommentScreen_LiveTalk_resortHomeState extends State<CommentScreen_LiveTalk_resortHome> {
-
+class _CommentScreen_LiveTalk_resortHomeState
+    extends State<CommentScreen_LiveTalk_resortHome> {
   @override
   Widget build(BuildContext context) {
-
-
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         FocusScope.of(context).unfocus();
       },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar:   AppBar(
-          iconTheme: IconThemeData(size: 26, color: Colors.black87),
-          centerTitle: true,
-          titleSpacing: 0,
-          title: Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child:RichText(
-                text: TextSpan(
-                    text:  '라이브 톡',
-                    style: TextStyle(
-                      letterSpacing: 1.0,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.black87
-                    ),
-                    children: [
-                      TextSpan(
-                        text: ' ${widget.resortName}',
-                        style: TextStyle(
-                          letterSpacing: 1.0,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w300,
-                            color: Color(0xFF949494)
-                        ),
-                      )
-                    ]
-                )
+      child: Container(
+        color: Colors.white,
+        child: SafeArea(
+          top: false,
+          bottom: true,
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              leading: GestureDetector(
+                child: Image.asset(
+                  'assets/imgs/icons/icon_snowLive_back.png',
+                  scale: 4,
+                  width: 26,
+                  height: 26,
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              iconTheme: IconThemeData(size: 26, color: Colors.black87),
+              centerTitle: true,
+              titleSpacing: 0,
+              title: Padding(
+                padding: const EdgeInsets.only(left: 0),
+                child: Text(
+                  '라이브톡',
+                  style: TextStyle(
+                      letterSpacing: 0.6,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Color(0xFF111111)),
+                ),
+              ),
+              backgroundColor: Colors.white,
+              elevation: 0.0,
             ),
-          ),
-          backgroundColor: Colors.white,
-          elevation: 0.0,
-        ),
-        body:  Container(
-              margin: EdgeInsets.only(top: 20),
-                child:Column(
+            body: Container(
+                margin: EdgeInsets.only(top: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16, left: 16, bottom: 16),
+                      child: Container(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 5, right: 6),
+                          child: Text(
+                            ' ${widget.resortName}',
+                            style: TextStyle(
+                                letterSpacing: 0.4,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF949494)),
+                          ),
+                        ),
+                      ),
+                    ),
                     Expanded(child: CommentTile_liveTalk_resortHome()),
                     NewComment(),
                   ],
-                )
-              ),
-
+                )),
+          ),
+        ),
       ),
-
     );
   }
 }
