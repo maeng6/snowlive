@@ -8,12 +8,14 @@ import 'package:snowlive3/screens/v_webPage.dart';
 
 import '../comments/v_commentTile_liveTalk_resortTab.dart';
 
-class WeatherPage extends StatelessWidget {
-  const WeatherPage({Key? key}) : super(key: key);
+class resortTab extends StatelessWidget {
+  resortTab({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+    final double _statusBarSize = MediaQuery.of(context).padding.top;
     return Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
@@ -35,7 +37,7 @@ class WeatherPage extends StatelessWidget {
       ),
       body: Padding(
         padding:
-            const EdgeInsets.only(top: 20, left: 16, right: 16),
+             EdgeInsets.only(top: _statusBarSize, left: 16, right: 16),
         child: resortListView(_size),
       ),
     );
@@ -43,7 +45,7 @@ class WeatherPage extends StatelessWidget {
 
   ListView resortListView(Size _size) {
     return ListView.separated(
-      padding: EdgeInsets.only(top: 60, bottom: 40),
+      padding: EdgeInsets.only(top: 68, bottom: 40),
       itemCount: resortList.length,
       itemBuilder: (BuildContext context, int index) {
         return Container(
@@ -106,16 +108,22 @@ class WeatherPage extends StatelessWidget {
                 children: [
                   OutlinedButton(
                     onPressed: () {
+                      if(webcamUrlList[index]!.isNotEmpty){
                       Get.to(
                         () => WebPage(
                           url: '${webcamUrlList[index]}',
                         ),
-                      );
+                      );}else{
+                        null;
+                      }
                     },
                     child: Text(
                       '실시간 웹캠',
                       style: TextStyle(
-                          color: Color(0xFF555555),
+                          color:
+                          (slopeUrlList[index]!.isNotEmpty)
+                          ? Color(0xFF555555)
+                          : Color(0xFFCACACA),
                           fontSize: 13,
                           fontWeight: FontWeight.bold),
                     ),
@@ -131,16 +139,22 @@ class WeatherPage extends StatelessWidget {
                   ),
                   OutlinedButton(
                     onPressed: () {
+                      if(slopeUrlList[index]!.isNotEmpty){
                       Get.to(
                         () => WebPage(
                           url: '${slopeUrlList[index]}',
                         ),
-                      );
+                      );}else{
+                        null;
+                      }
                     },
                     child: Text(
                       '슬로프 현황',
                       style: TextStyle(
-                          color: Color(0xFF555555),
+                          color:
+                          (slopeUrlList[index]!.isNotEmpty)
+                          ? Color(0xFF555555)
+                          : Color(0xFFCACACA),
                           fontSize: 13,
                           fontWeight: FontWeight.bold),
                     ),
