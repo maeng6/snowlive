@@ -8,13 +8,14 @@ import 'package:snowlive3/screens/v_webPage.dart';
 
 import '../comments/v_commentTile_liveTalk_resortTab.dart';
 
-class resortPage extends StatelessWidget {
-  resortPage({Key? key}) : super(key: key);
+class resortTab extends StatelessWidget {
+  resortTab({Key? key}) : super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+    final double _statusBarSize = MediaQuery.of(context).padding.top;
     return Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
@@ -36,7 +37,7 @@ class resortPage extends StatelessWidget {
       ),
       body: Padding(
         padding:
-            const EdgeInsets.only(top: 20, left: 16, right: 16),
+             EdgeInsets.only(top: _statusBarSize, left: 16, right: 16),
         child: resortListView(_size),
       ),
     );
@@ -44,7 +45,7 @@ class resortPage extends StatelessWidget {
 
   ListView resortListView(Size _size) {
     return ListView.separated(
-      padding: EdgeInsets.only(top: 60, bottom: 40),
+      padding: EdgeInsets.only(top: 68, bottom: 40),
       itemCount: resortList.length,
       itemBuilder: (BuildContext context, int index) {
         return Container(

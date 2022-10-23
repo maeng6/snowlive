@@ -27,107 +27,108 @@ class _BrandWebBodyState extends State<BrandWebBody> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        extendBodyBehindAppBar: true,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(58),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              AppBar(
-                iconTheme: IconThemeData(size: 26, color: Colors.black87),
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child: Row(
-                      children: [
-                        ElevatedButton(
-                          child: Text(
-                            '의류',
-                            style: TextStyle(
-                                color: (isBrand)
-                                    ? Color(0xFFFFFFFF)
-                                    : Color(0xFF111111),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15),
-                          ),
-                          onPressed: () {
-                            isBrand = true;
-                            print('브랜드페이지로 전환');
-                            setState(() {});
-                          },
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: Size(54, 32),
-                            backgroundColor: (isBrand)
-                                ? Color(0xFF111111)
-                                : Color(0xFFFFFFFF),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                            elevation: 0,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 3,
-                        ),
-                        ElevatedButton(
-                          child: Text(
-                            '샵',
-                            style: TextStyle(
-                                color: (isBrand)
-                                    ? Color(0xFF111111)
-                                    : Color(0xFFFFFFFF)),
-                          ),
-                          onPressed: () {
-                            isBrand = false;
-                            print('샵페이지로 전환');
-                            setState(() {});
-                          },
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(54, 32),
-                              backgroundColor: (isBrand)
+    final double _statusBarSize = MediaQuery.of(context).padding.top;
+    return Scaffold(
+      backgroundColor: Colors.white,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(58),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            AppBar(
+              iconTheme: IconThemeData(size: 26, color: Colors.black87),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Row(
+                    children: [
+                      ElevatedButton(
+                        child: Text(
+                          '의류',
+                          style: TextStyle(
+                              color: (isBrand)
                                   ? Color(0xFFFFFFFF)
                                   : Color(0xFF111111),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6)),
-                              elevation: 0,
-                              textStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              )),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15),
                         ),
-                      ],
-                    ),
+                        onPressed: () {
+                          isBrand = true;
+                          print('브랜드페이지로 전환');
+                          setState(() {});
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(54, 32),
+                          backgroundColor: (isBrand)
+                              ? Color(0xFF111111)
+                              : Color(0xFFFFFFFF),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          elevation: 0,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 3,
+                      ),
+                      ElevatedButton(
+                        child: Text(
+                          '샵',
+                          style: TextStyle(
+                              color: (isBrand)
+                                  ? Color(0xFF111111)
+                                  : Color(0xFFFFFFFF)),
+                        ),
+                        onPressed: () {
+                          isBrand = false;
+                          print('샵페이지로 전환');
+                          setState(() {});
+                        },
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: Size(54, 32),
+                            backgroundColor: (isBrand)
+                                ? Color(0xFFFFFFFF)
+                                : Color(0xFF111111),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6)),
+                            elevation: 0,
+                            textStyle: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ),
+                    ],
                   ),
-                ],
-                centerTitle: false,
-                titleSpacing: 0,
-                title: Padding(
-                    padding: const EdgeInsets.only(left: 16),
-                    child: Text(
-                      '브랜드',
-                      style: GoogleFonts.notoSans(
-                          color: Color(0xFF111111),
-                          fontWeight: FontWeight.w900,
-                          fontSize: 23),
-                    )),
-                backgroundColor: Colors.white,
-                elevation: 0.0,
-              )
-            ],
-          ),
+                ),
+              ],
+              centerTitle: false,
+              titleSpacing: 0,
+              title: Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Text(
+                    '브랜드',
+                    style: GoogleFonts.notoSans(
+                        color: Color(0xFF111111),
+                        fontWeight: FontWeight.w900,
+                        fontSize: 23),
+                  )),
+              backgroundColor: Colors.white,
+              elevation: 0.0,
+            )
+          ],
         ),
-        body: (isBrand) ? clothWebGridView(context) : shopWebGridView(context),
       ),
+      body:
+      (isBrand) ? clothWebGridView(context) : shopWebGridView(context),
     );
   }
 }
 
 Widget clothWebGridView(BuildContext context) {
+  final double _statusBarSize = MediaQuery.of(context).padding.top;
   final Size _size = MediaQuery.of(context).size;
   return Padding(
-    padding: const EdgeInsets.only(left: 16, right: 16),
+    padding:  EdgeInsets.only(left: 16, right: 16,top:_statusBarSize ),
     child: GridView.builder(
         padding: EdgeInsets.only(top: 68, bottom: 16),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
