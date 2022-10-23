@@ -905,14 +905,14 @@ class _ResortHomeState extends State<ResortHome> {
                                           :SizedBox(height: 0,),
                                           Container(
                                             width: double.infinity,
-                                            height: 522,
+                                            height: 140,
                                             decoration: BoxDecoration(
                                                 color: Colors.white,
                                                 borderRadius:
                                                 BorderRadius.circular(14)),
                                             child: Padding(
                                                 padding: const EdgeInsets.symmetric(
-                                                    horizontal: 22, vertical: 22),
+                                                    horizontal: 22, vertical: 12),
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [

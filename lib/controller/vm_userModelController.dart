@@ -63,7 +63,17 @@ class UserModelController extends GetxController{
       'profileImageUrl': url,
     });
     await getCurrentUser();
-  } //선택한 리조트를 파베유저문서에 업데이트
+  }
+
+  Future<void> deleteProfileImageUrl() async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'profileImageUrl': '',
+    });
+    await getCurrentUser();
+  }
+
   Future<void> updateNickname(index) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;

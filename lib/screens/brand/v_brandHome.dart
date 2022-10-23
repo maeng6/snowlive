@@ -179,9 +179,10 @@ Widget clothWebGridView(BuildContext context) {
 }
 
 Widget shopWebGridView(BuildContext context) {
+  final double _statusBarSize = MediaQuery.of(context).padding.top;
   final Size _size = MediaQuery.of(context).size;
   return Padding(
-    padding: const EdgeInsets.only(left: 16, right: 16),
+    padding: EdgeInsets.only(left: 16, right: 16,top: _statusBarSize ),
     child: GridView.builder(
         padding: EdgeInsets.only(top: 68, bottom: 16),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

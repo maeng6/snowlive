@@ -64,7 +64,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
           children: [
             CarouselSlider.builder(
              options: CarouselOptions(
-               height: 200,
+               height: 66,
                viewportFraction: 1,
                reverse: false,
                enableInfiniteScroll: false,
@@ -128,7 +128,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                         maxWidth: 250
                                     ),
                                     child: Text(chatDocs[index].get('comment'),
-                                      maxLines:2,
+                                      maxLines:1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
@@ -139,7 +139,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                         ],
                       ),
                       SizedBox(
-                        height: 8,
+                        height: 2,
                       ),
                       Divider(
                         color: Color(0xFFF5F5F5),
