@@ -38,6 +38,7 @@ class _ResortHomeState extends State<ResortHome> {
   List<bool?> _isSelected = List<bool?>.filled(13, false);
   bool _ifWeatherError = false;
 
+
   @override
   void setState(VoidCallback fn) {
     // TODO: implement setState
@@ -152,6 +153,17 @@ class _ResortHomeState extends State<ResortHome> {
                         ),
                         backgroundColor: Color(0xFFF2F4F6),
                         elevation: 0.0,
+                        actions: [
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(()=> CommentScreen_LiveTalk_resortHome(index: _resortModelController.instantIndex, resortName: _resortModelController.resortName,));
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 14),
+                              child: Image.asset('assets/imgs/icons/icon_snowLive_livetalk.png', width: 26, height: 26,),
+                            ),
+                          )
+                        ],
                       )
                     ],
                   ),
@@ -164,7 +176,7 @@ class _ResortHomeState extends State<ResortHome> {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: _statusBarSize+68,
+                          height: _statusBarSize+64,
                         ),
                         Container(
                           color: Color(0xFFF2F4F6),
@@ -172,8 +184,22 @@ class _ResortHomeState extends State<ResortHome> {
                               padding:
                                    EdgeInsets.only(left: 16, right: 16),
                               child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Container(
+                                    padding: EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 17),
+                                      width: double.infinity,
+                                      height: 72,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                          BorderRadius.circular(14)),
+                                      child: CommentTile_resortHome()
+                                  ),
+                                  SizedBox(
+                                    height: 12,
+                                  ),
                                   Container(
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(14),
@@ -193,12 +219,15 @@ class _ResortHomeState extends State<ResortHome> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
-                                                Text(
-                                                  '${_resortModelController.resortName}',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 23),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(left: 10),
+                                                  child: Text(
+                                                    '${_resortModelController.resortName}',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 23),
+                                                  ),
                                                 ),
                                                 SizedBox(
                                                   width: 2,
@@ -278,17 +307,33 @@ class _ResortHomeState extends State<ResortHome> {
                                           height: 4,
                                         ),
                                         SizedBox(
-                                          height: 18,
-                                          child: Text(
-                                            '${_getDateTimeController.date}',
-                                            style: TextStyle(
-                                                color: Colors.white54,
-                                                fontWeight: FontWeight.normal,
-                                                fontSize: 14),
+                                          height: 30,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: 16),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  '${_getDateTimeController.date}',
+                                                  style: TextStyle(
+                                                      color: Colors.white54,
+                                                      fontWeight: FontWeight.normal,
+                                                      fontSize: 14),
+                                                ),
+                                                Transform.translate(
+                                                  offset: Offset(0,-2),
+                                                  child: Image.asset(
+                                                    'assets/imgs/weather/icon_weather.png',
+                                                    width: 40,
+                                                    height: 40,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                         SizedBox(
-                                          height: 26,
+                                          height: 24,
                                         ),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -297,7 +342,7 @@ class _ResortHomeState extends State<ResortHome> {
                                             Obx(
                                               () => Padding(
                                                 padding: const EdgeInsets.only(
-                                                    right: 4, left: 20),
+                                                    right: 4, left: 24),
                                                 child: Text(
                                                   '${_resortModelController.resortTemp!}', //u00B0
                                                   style: GoogleFonts.bebasNeue(
@@ -317,7 +362,7 @@ class _ResortHomeState extends State<ResortHome> {
                                           ],
                                         ),
                                         SizedBox(
-                                          height: 24,
+                                          height: 20,
                                         ),
                                         //실시간 날씨
                                         Row(
@@ -494,204 +539,338 @@ class _ResortHomeState extends State<ResortHome> {
                                             ),
                                           ],
                                         ),
-                                        SizedBox(
-                                          height: 30,
-                                        ),
-                                        Divider(
-                                          thickness: 1,
-                                          color: Colors.black12,
-                                          height: 0,
-                                        ),
                                         Padding(
                                           padding: const EdgeInsets.only(
-                                              left: 20, top: 8, bottom: 10),
+                                              left: 20, top: 36, bottom: 18, right: 20),
                                           child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Image.asset(
-                                                    'assets/imgs/weather/icon_weather.png',
-                                                    width: 40,
-                                                    height: 40,
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(left: 6),
-                                                    child: SizedBox(
-                                                        width: 170,
-                                                        child: Text(
-                                                          '야간 라이딩을 즐길 시간',
-                                                          style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 13),
-                                                        )),
-                                                  ),
-                                                ],
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.only(right: 16),
-                                                child: ElevatedButton(
-                                                  child: Text('기상청 제공'),
-                                                  onPressed: () {
-                                                    Get.dialog(AlertDialog(
-                                                      contentPadding: EdgeInsets.only(
-                                                          bottom: 0,
-                                                          left: 20,
-                                                          right: 20,
-                                                          top: 30),
-                                                      elevation: 0,
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                  10.0)),
-                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                      content: Container(
-                                                        height: 230,
-                                                        width: _size.width * 0.8,
-                                                        color: Colors.white,
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment.start,
-                                                          children: [
-                                                            Container(
-                                                                width: 113,
-                                                                height: 50,
+                                              ElevatedButton(
+                                                child: Text('기상청 제공'),
+                                                onPressed: () {
+                                                  Get.dialog(AlertDialog(
+                                                    contentPadding: EdgeInsets.only(
+                                                        bottom: 0,
+                                                        left: 20,
+                                                        right: 20,
+                                                        top: 30),
+                                                    elevation: 0,
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                10.0)),
+                                                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                    content: Container(
+                                                      height: 260,
+                                                      width: _size.width * 0.8,
+                                                      color: Colors.white,
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment.start,
+                                                        children: [
+                                                          Container(
+                                                              width: 113,
+                                                              height: 50,
+                                                              child: Transform.translate(
+                                                                offset: Offset(-8,0),
                                                                 child: ExtendedImage
                                                                     .asset(
                                                                   'assets/imgs/logos/weather_logo.png',
                                                                   fit: BoxFit.cover,
-                                                                )),
-                                                            SizedBox(
-                                                              height: 14,
-                                                            ),
-                                                            Text(
-                                                              '날씨 데이터는 기상청에서 제공하는 '
-                                                              '데이터를 사용하고 있어요.',
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight.w600,
-                                                                  fontSize: 20),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 14,
-                                                            ),
-                                                            Text(
-                                                              '기상청에서 제공해주는 실시간 데이터를 사용해'
-                                                              '각 리조트별 날씨정보를 제공하고있어요. '
-                                                              '추후 더 자세한 날씨 데이터를 제공하기 위해 '
-                                                              '업데이트 할 예정이니, 많은 이용 부탁드려요.',
+                                                                ),
+                                                              )),
+                                                          SizedBox(
+                                                            height: 14,
+                                                          ),
+                                                          Text(
+                                                            '날씨는 기상청에서 제공하는 '
+                                                            '데이터를 사용하고 있어요.',
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight.w600,
+                                                                fontSize: 20),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 14,
+                                                          ),
+                                                          Text(
+                                                            '기상청에서 제공해주는 실시간 데이터를 사용해'
+                                                            '각 리조트별 날씨정보를 제공하고있어요. '
+                                                            '추후 더 자세한 날씨 데이터를 제공하기 위해 '
+                                                            '업데이트 할 예정이니, 많은 이용 부탁드려요.',
+                                                            style: TextStyle(
+                                                                color:
+                                                                    Color(0xFF666666),
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight.w300),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    actions: [
+                                                      Center(
+                                                        child: ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                          },
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    bottom: 1),
+                                                            child: Text(
+                                                              '확인',
                                                               style: TextStyle(
                                                                   color:
-                                                                      Color(0xFF666666),
-                                                                  fontSize: 14,
+                                                                      Colors.white,
                                                                   fontWeight:
-                                                                      FontWeight.w300),
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 15),
                                                             ),
-                                                          ],
+                                                          ),
+                                                          style: TextButton.styleFrom(
+                                                              shape: const RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              6))),
+                                                              elevation: 0,
+                                                              splashFactory:
+                                                                  InkRipple
+                                                                      .splashFactory,
+                                                              minimumSize:
+                                                                  Size(1000, 50),
+                                                              backgroundColor:
+                                                                  Color(
+                                                                      0xff377EEA)),
                                                         ),
                                                       ),
-                                                      actions: [
-                                                        Center(
-                                                          child: ElevatedButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(context);
-                                                            },
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      bottom: 1),
-                                                              child: Text(
-                                                                '확인',
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        Colors.white,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontSize: 15),
+                                                      Center(
+                                                        child: ElevatedButton(
+                                                          onPressed: () {
+                                                            Get.to(
+                                                                  () => WebPage(
+                                                                url:
+                                                                'https://www.weather.go.kr/w/index.do',
                                                               ),
+                                                            );
+                                                          },
+                                                          child: Padding(
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                top: 16),
+                                                            child: Text(
+                                                              '기상청 홈페이지',
+                                                              style: TextStyle(
+                                                                  color:
+                                                                  Color(0xff949494),
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .w300,
+                                                                  fontSize: 15),
                                                             ),
-                                                            style: TextButton.styleFrom(
-                                                                shape: const RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.all(
-                                                                            Radius.circular(
-                                                                                6))),
-                                                                elevation: 0,
-                                                                splashFactory:
-                                                                    InkRipple
-                                                                        .splashFactory,
-                                                                minimumSize:
-                                                                    Size(1000, 50),
-                                                                backgroundColor:
-                                                                    Color(
-                                                                        0xff377EEA)),
                                                           ),
+                                                          style: TextButton.styleFrom(
+                                                              shape: const RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                  BorderRadius.all(
+                                                                      Radius.circular(
+                                                                          6))),
+                                                              elevation: 0,
+                                                              splashFactory:
+                                                              InkRipple
+                                                                  .splashFactory,
+                                                              minimumSize:
+                                                              Size(1000, 50),
+                                                              backgroundColor:
+                                                              Color(
+                                                                  0xffFFFFFF)),
                                                         ),
-                                                        Center(
-                                                          child: ElevatedButton(
-                                                            onPressed: () {
-                                                              Get.to(
-                                                                    () => WebPage(
-                                                                  url:
-                                                                  'https://www.weather.go.kr/w/index.do',
+                                                      ),
+                                                    ],
+                                                  ));
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    minimumSize: Size(_size.width/2 - 51, 40),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(6)),
+                                                    elevation: 0,
+                                                    backgroundColor: Colors.black12,
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 14, vertical: 5),
+                                                    textStyle: TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                            FontWeight.normal)),
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              ElevatedButton(
+                                                child: Text('새로고침'),
+                                                onPressed: () {
+                                                  Get.dialog(AlertDialog(
+                                                    contentPadding: EdgeInsets.only(
+                                                        bottom: 0,
+                                                        left: 20,
+                                                        right: 20,
+                                                        top: 30),
+                                                    elevation: 0,
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0)),
+                                                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                    content: Container(
+                                                      height: 260,
+                                                      width: _size.width * 0.8,
+                                                      color: Colors.white,
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                        children: [
+                                                          Container(
+                                                              width: 113,
+                                                              height: 50,
+                                                              child: Transform.translate(
+                                                                offset: Offset(-8,0),
+                                                                child: ExtendedImage
+                                                                    .asset(
+                                                                  'assets/imgs/logos/weather_logo.png',
+                                                                  fit: BoxFit.cover,
                                                                 ),
-                                                              );
-                                                            },
-                                                            child: Padding(
-                                                              padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  top: 16),
-                                                              child: Text(
-                                                                '기상청 홈페이지',
-                                                                style: TextStyle(
-                                                                    color:
-                                                                    Color(0xff949494),
-                                                                    fontWeight:
-                                                                    FontWeight
-                                                                        .w300,
-                                                                    fontSize: 15),
-                                                              ),
-                                                            ),
-                                                            style: TextButton.styleFrom(
-                                                                shape: const RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                    BorderRadius.all(
-                                                                        Radius.circular(
-                                                                            6))),
-                                                                elevation: 0,
-                                                                splashFactory:
-                                                                InkRipple
-                                                                    .splashFactory,
-                                                                minimumSize:
-                                                                Size(1000, 50),
-                                                                backgroundColor:
-                                                                Color(
-                                                                    0xffFFFFFF)),
+                                                              )),
+                                                          SizedBox(
+                                                            height: 14,
                                                           ),
+                                                          Text(
+                                                            '날씨는 기상청에서 제공하는 '
+                                                                '데이터를 사용하고 있어요.',
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                FontWeight.w600,
+                                                                fontSize: 20),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 14,
+                                                          ),
+                                                          Text(
+                                                            '기상청에서 제공해주는 실시간 데이터를 사용해'
+                                                                '각 리조트별 날씨정보를 제공하고있어요. '
+                                                                '추후 더 자세한 날씨 데이터를 제공하기 위해 '
+                                                                '업데이트 할 예정이니, 많은 이용 부탁드려요.',
+                                                            style: TextStyle(
+                                                                color:
+                                                                Color(0xFF666666),
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                FontWeight.w300),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    actions: [
+                                                      Center(
+                                                        child: ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                          },
+                                                          child: Padding(
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                bottom: 1),
+                                                            child: Text(
+                                                              '확인',
+                                                              style: TextStyle(
+                                                                  color:
+                                                                  Colors.white,
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                                  fontSize: 15),
+                                                            ),
+                                                          ),
+                                                          style: TextButton.styleFrom(
+                                                              shape: const RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                  BorderRadius.all(
+                                                                      Radius.circular(
+                                                                          6))),
+                                                              elevation: 0,
+                                                              splashFactory:
+                                                              InkRipple
+                                                                  .splashFactory,
+                                                              minimumSize:
+                                                              Size(1000, 50),
+                                                              backgroundColor:
+                                                              Color(
+                                                                  0xff377EEA)),
                                                         ),
-                                                      ],
-                                                    ));
-                                                  },
-                                                  style: ElevatedButton.styleFrom(
-                                                      minimumSize: Size(80, 30),
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(6)),
-                                                      elevation: 0,
-                                                      backgroundColor: Colors.black26,
-                                                      padding: EdgeInsets.symmetric(
-                                                          horizontal: 10, vertical: 5),
-                                                      textStyle: TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.normal)),
-                                                ),
+                                                      ),
+                                                      Center(
+                                                        child: ElevatedButton(
+                                                          onPressed: () {
+                                                            Get.to(
+                                                                  () => WebPage(
+                                                                url:
+                                                                'https://www.weather.go.kr/w/index.do',
+                                                              ),
+                                                            );
+                                                          },
+                                                          child: Padding(
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                top: 16),
+                                                            child: Text(
+                                                              '기상청 홈페이지',
+                                                              style: TextStyle(
+                                                                  color:
+                                                                  Color(0xff949494),
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .w300,
+                                                                  fontSize: 15),
+                                                            ),
+                                                          ),
+                                                          style: TextButton.styleFrom(
+                                                              shape: const RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                  BorderRadius.all(
+                                                                      Radius.circular(
+                                                                          6))),
+                                                              elevation: 0,
+                                                              splashFactory:
+                                                              InkRipple
+                                                                  .splashFactory,
+                                                              minimumSize:
+                                                              Size(1000, 50),
+                                                              backgroundColor:
+                                                              Color(
+                                                                  0xffFFFFFF)),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ));
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    minimumSize: Size(_size.width/2 - 51, 40),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(6)),
+                                                    elevation: 0,
+                                                    backgroundColor: Colors.black12,
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 14, vertical: 5),
+                                                    textStyle: TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                        FontWeight.normal)),
                                               ),
                                             ],
                                           ),
@@ -701,267 +880,106 @@ class _ResortHomeState extends State<ResortHome> {
                                   ),
                                   Column(
                                     children: [
+                                      SizedBox(height: 12,),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                            BorderRadius.circular(14)),
+                                        height: 101,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(right: 32, left: 32, top: 22, bottom: 18),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Get.to(Obx(
+                                                        () => WebPage(
+                                                      url:
+                                                      '${_resortModelController.naverUrl}',
+                                                    ),
+                                                  ));
+                                                },
+                                                child: Column(
+                                                  children: [
+                                                    Image.asset('assets/imgs/icons/icon_home_naver.png',
+                                                      width: 34,
+                                                      height: 34,),
+                                                    SizedBox(height: 4,),
+                                                    Text('네이버 날씨', style: TextStyle(
+                                                        fontWeight: FontWeight.w400,
+                                                        fontSize: 12,
+                                                        color: Color(0xFF111111)
+                                                    ),),
+                                                  ],
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Get.to(Obx(
+                                                        () => WebPage(
+                                                      url:
+                                                      '${_resortModelController.webcamUrl}',
+                                                    ),
+                                                  ));
+                                                },
+                                                child: Column(
+                                                  children: [
+                                                    (_resortModelController.webcamUrl != '')
+                                                        ? Image.asset('assets/imgs/icons/icon_home_livecam.png',
+                                                      width: 34,
+                                                      height: 34,)
+                                                        : Image.asset('assets/imgs/icons/icon_home_livecam_off.png',
+                                                      width: 34,
+                                                      height: 34,),
+                                                    SizedBox(height: 4,),
+                                                    Text('실시간 웹캠', style: TextStyle(
+                                                        fontWeight: FontWeight.w400,
+                                                        fontSize: 12,
+                                                        color:
+                                                        (_resortModelController.webcamUrl != '')
+                                                            ? Color(0xFF111111) : Color(0xFFC8C8C8)
+                                                    ),),
+                                                  ],
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Get.to(Obx(
+                                                        () => WebPage(
+                                                      url:
+                                                      '${_resortModelController.slopeUrl}',
+                                                    ),
+                                                  ));
+                                                },
+                                                child: Column(
+                                                  children: [
+                                                    (_resortModelController.slopeUrl != '')
+                                                        ? Image.asset('assets/imgs/icons/icon_home_slope.png',
+                                                      width: 34,
+                                                      height: 34,)
+                                                        : Image.asset('assets/imgs/icons/icon_home_slope_off.png',
+                                                      width: 34,
+                                                      height: 34,),
+                                                    SizedBox(height: 4,),
+                                                    Text('슬로프 현황', style: TextStyle(
+                                                        fontWeight: FontWeight.w400,
+                                                        fontSize: 12,
+                                                        color:
+                                                        (_resortModelController.slopeUrl != '')
+                                                            ? Color(0xFF111111) : Color(0xFFC8C8C8)
+                                                    ),),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                       SizedBox(
                                         height: 12,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                                        children: [
-                                          Container(
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(14)),
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 24, vertical: 12),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      '네이버 날씨',
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          color: Color(0xFF111111),
-                                                          fontWeight: FontWeight.bold),
-                                                    ),
-                                                  ),
-                                                  ElevatedButton(
-                                                    child: Text(
-                                                      '보러가기',
-                                                      style: TextStyle(
-                                                          color: Color(0xFF666666)),
-                                                    ),
-                                                    onPressed: () {
-                                                      Get.to(Obx(
-                                                        () => WebPage(
-                                                          url:
-                                                              '${_resortModelController.naverUrl}',
-                                                        ),
-                                                      ));
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                        minimumSize: Size(72, 30),
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                    6)),
-                                                        elevation: 0,
-                                                        backgroundColor:
-                                                            Color(0xFFF2F3F4),
-                                                        padding: EdgeInsets.symmetric(
-                                                            horizontal: 10,
-                                                            vertical: 5),
-                                                        textStyle: TextStyle(
-                                                          fontSize: 13,
-                                                          fontWeight: FontWeight.bold,
-                                                        )),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          (_resortModelController.webcamUrl != '')
-                                          ?Column(
-                                            children: [
-                                              SizedBox(height: 12,),
-                                              Container(
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(14)),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(
-                                                      horizontal: 24, vertical: 12),
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.center,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '실시간 웹캠',
-                                                          style: TextStyle(
-                                                              fontSize: 18,
-                                                              color: Color(0xFF111111),
-                                                              fontWeight: FontWeight.bold),
-                                                        ),
-                                                      ),
-                                                      ElevatedButton(
-                                                        child: Text(
-                                                          '보러가기',
-                                                          style: TextStyle(
-                                                              color: Color(0xFF666666)),
-                                                        ),
-                                                        onPressed: () {
-                                                          Get.to(Obx(
-                                                            () => WebPage(
-                                                              url:
-                                                                  '${_resortModelController.webcamUrl}',
-                                                            ),
-                                                          ));
-                                                        },
-                                                        style: ElevatedButton.styleFrom(
-                                                            minimumSize: Size(72, 30),
-                                                            shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                        6)),
-                                                            elevation: 0,
-                                                            backgroundColor:
-                                                                Color(0xFFF2F3F4),
-                                                            padding: EdgeInsets.symmetric(
-                                                                horizontal: 10,
-                                                                vertical: 5),
-                                                            textStyle: TextStyle(
-                                                              fontSize: 13,
-                                                              fontWeight: FontWeight.bold,
-                                                            )),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 12,
-                                              ),
-                                            ],
-                                          )
-                                          :SizedBox(height: 12,),
-                                          (_resortModelController.slopeUrl != '')
-                                          ?Column(
-                                            children: [
-                                              Container(
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(14)),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(
-                                                      horizontal: 24, vertical: 12),
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.center,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '슬로프 현황',
-                                                          style: TextStyle(
-                                                              fontSize: 18,
-                                                              color: Color(0xFF111111),
-                                                              fontWeight: FontWeight.bold),
-                                                        ),
-                                                      ),
-                                                      ElevatedButton(
-                                                        child: Text(
-                                                          '보러가기',
-                                                          style: TextStyle(
-                                                              color: Color(0xFF666666)),
-                                                        ),
-                                                        onPressed: () {
-                                                          Get.to(Obx(
-                                                            () => WebPage(
-                                                              url:
-                                                                  '${_resortModelController.slopeUrl}',
-                                                            ),
-                                                          ));
-                                                        },
-                                                        style: ElevatedButton.styleFrom(
-                                                            minimumSize: Size(72, 30),
-                                                            shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                        6)),
-                                                            elevation: 0,
-                                                            backgroundColor:
-                                                                Color(0xFFF2F3F4),
-                                                            padding: EdgeInsets.symmetric(
-                                                                horizontal: 10,
-                                                                vertical: 5),
-                                                            textStyle: TextStyle(
-                                                              fontSize: 13,
-                                                              fontWeight: FontWeight.bold,
-                                                            )),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                              :SizedBox(height: 0,),
-                                          (_resortModelController.webcamUrl != '' && _resortModelController.slopeUrl !='')
-                                          ?SizedBox(height: 12,)
-                                          :SizedBox(height: 0,),
-                                          Container(
-                                            width: double.infinity,
-                                            height: 140,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                BorderRadius.circular(14)),
-                                            child: Padding(
-                                                padding: const EdgeInsets.symmetric(
-                                                    horizontal: 22, vertical: 12),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Text('라이브 톡',
-                                                          style: TextStyle(
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: 20
-                                                          ),
-                                                        ),
-                                                        ElevatedButton(
-                                                          child: Text(
-                                                            '더보기',
-                                                            style: TextStyle(
-                                                                color: Color(0xFF666666)),
-                                                          ),
-                                                          onPressed: () {
-                                                          Get.to(()=> CommentScreen_LiveTalk_resortHome(index: _resortModelController.instantIndex, resortName: _resortModelController.resortName,));
-                                                          },
-                                                          style: ElevatedButton.styleFrom(
-                                                              minimumSize: Size(72, 30),
-                                                              shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                  BorderRadius.circular(
-                                                                      6)),
-                                                              elevation: 0,
-                                                              backgroundColor:
-                                                              Color(0xFFF2F3F4),
-                                                              padding: EdgeInsets.symmetric(
-                                                                  horizontal: 10,
-                                                                  vertical: 5),
-                                                              textStyle: TextStyle(
-                                                                fontSize: 13,
-                                                                fontWeight: FontWeight.bold,
-                                                              )),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Expanded(
-                                                        child: CommentTile_resortHome()
-                                                    )
-                                                  ],
-                                                )
-                                            )
-                                          )
-                                        ],
-                                      ),
+                                      )
                                     ],
                                   ),
                                 ],
