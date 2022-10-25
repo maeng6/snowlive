@@ -15,14 +15,14 @@ import 'package:snowlive3/screens/v_MainHome.dart';
 import '../../model/m_resortModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
-class FavoriteResort extends StatefulWidget {
-  FavoriteResort({Key? key}) : super(key: key);
+class FavoriteResort_moreTab extends StatefulWidget {
+  FavoriteResort_moreTab({Key? key}) : super(key: key);
 
   @override
-  State<FavoriteResort> createState() => _FavoriteResortState();
+  State<FavoriteResort_moreTab> createState() => _FavoriteResort_moreTabState();
 }
 
-class _FavoriteResortState extends State<FavoriteResort> {
+class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
 
   //TODO: Dependency Injection********************************************
   UserModelController userModelController = Get.find<UserModelController>();
@@ -59,8 +59,19 @@ class _FavoriteResortState extends State<FavoriteResort> {
     return Scaffold(backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(0),
+        preferredSize: Size.fromHeight(58),
         child: AppBar(
+          leading: GestureDetector(
+            child: Image.asset(
+              'assets/imgs/icons/icon_snowLive_back.png',
+              scale: 4,
+              width: 26,
+              height: 26,
+            ),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
           backgroundColor: Colors.white,
           elevation: 0.0,
           centerTitle: false,
@@ -149,7 +160,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
                         }
                       },
                       child: Text(
-                        '가입완료',
+                        '선택완료',
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
