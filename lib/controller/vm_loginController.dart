@@ -67,11 +67,18 @@ class LoginController extends GetxController {
 
   void deleteUser(uid) async {
     CustomFullScreenDialog.showDialog();
-    CollectionReference users = FirebaseFirestore.instance.collection('user');
-    await users.doc(uid).delete();
-    User user = FirebaseAuth.instance.currentUser!;
-    await user.delete();
-    await signOut();
+    try {
+      CollectionReference users = FirebaseFirestore.instance.collection('user');
+      await users.doc(uid).delete();
+      User user = FirebaseAuth.instance.currentUser!;
+      await user.delete();
+      await signOut();
+      CustomFullScreenDialog.cancelDialog();
+    }catch(e){
+      User user = FirebaseAuth.instance.currentUser!;
+      await user.delete();
+      CustomFullScreenDialog.cancelDialog();
+    }
     CustomFullScreenDialog.cancelDialog();
   }
 

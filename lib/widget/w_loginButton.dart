@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:snowlive3/controller/vm_loadingPage.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/onboarding/v_WelcomePage.dart';
 import 'package:snowlive3/controller/vm_loginController.dart';
@@ -59,80 +60,50 @@ class LoginButton extends StatelessWidget {
             await _loginController.signInWithGoogle();
             try {
               if (_userModelController.exist! == true) {
-                print('기존회원 메인홈 이동');
-                await FlutterSecureStorage()
-                    .write(key: 'login', value: auth.currentUser!.displayName);
+                print('기존회원 이동');
                 await _userModelController.getCurrentUser();
                 CustomFullScreenDialog.cancelDialog();
-                Get.offAll(() => MainHome());
+                Get.offAll(() => LoadingPage());
               } else {
                 print('신규회원 온보딩코스 진입');
                 await _loginController.createUserDoc(0);
-                (auth.currentUser != null)
-                    ? await FlutterSecureStorage()
-                    .write(key: 'login', value: auth.currentUser!.displayName)
-                    : CustomFullScreenDialog.cancelDialog();
                 CustomFullScreenDialog.cancelDialog();
-                loginVal = await FlutterSecureStorage().read(key: 'login');
                 print('Google 로그인');
-                print('로그인 상태 저장 완료, login : $loginVal');
                 Get.offAll(() => WelcomePage());
               }
             }catch(e){
               print('catch 신규회원 온보딩코스 진입');
               await _loginController.createUserDoc(0);
-              (auth.currentUser != null)
-                  ? await FlutterSecureStorage()
-                  .write(key: 'login', value: auth.currentUser!.displayName)
-                  : CustomFullScreenDialog.cancelDialog();
               CustomFullScreenDialog.cancelDialog();
-              loginVal = await FlutterSecureStorage().read(key: 'login');
               print('Google 로그인');
-              print('로그인 상태 저장 완료, login : $loginVal');
               Get.offAll(() => WelcomePage());
             }
           } else if (signInMethod == SignInMethod.facebook) {
             await _loginController.signInWithFacebook();
             if( _userModelController.exist! == true) {
               print('기존회원 메인홈 이동');
-              await FlutterSecureStorage()
-                  .write(key: 'login', value: auth.currentUser!.displayName);
               await _userModelController.getCurrentUser();
               CustomFullScreenDialog.cancelDialog();
               Get.offAll(()=>MainHome());
             }else{
               print('신규회원 온보딩코스 진입');
               await _loginController.createUserDoc(0);
-              (auth.currentUser != null)
-                  ? await FlutterSecureStorage()
-                  .write(key: 'login', value: auth.currentUser!.displayName)
-                  : CustomFullScreenDialog.cancelDialog();
               CustomFullScreenDialog.cancelDialog();
-              loginVal = await FlutterSecureStorage().read(key: 'login');
               print('Facebook 로그인');
-              print('로그인 상태 저장 완료, login : $loginVal');
               Get.offAll(() => WelcomePage());
             }
           } else {
             await _loginController.signInWithApple();
             if( _userModelController.exist! == true) {
               print('기존회원 메인홈 이동');
-              await FlutterSecureStorage()
-                  .write(key: 'login', value: auth.currentUser!.displayName);
               await _userModelController.getCurrentUser();
               CustomFullScreenDialog.cancelDialog();
               Get.offAll(()=>MainHome());
             }else{
               print('신규회원 온보딩코스 진입');
               await _loginController.createUserDoc(0);
-              (auth.currentUser != null)
-                  ? await FlutterSecureStorage()
-                  .write(key: 'login', value: auth.currentUser!.displayName)
-                  : CustomFullScreenDialog.cancelDialog();
               CustomFullScreenDialog.cancelDialog();
-              loginVal = await FlutterSecureStorage().read(key: 'login');
               print('Apple 로그인');
-              print('로그인 상태 저장 완료, login : $loginVal');
               Get.offAll(() => WelcomePage());
             }
           }

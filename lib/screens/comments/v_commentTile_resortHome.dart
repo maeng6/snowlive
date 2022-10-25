@@ -64,7 +64,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
           children: [
             CarouselSlider.builder(
              options: CarouselOptions(
-               height: 66,
+               height: 40,
                viewportFraction: 1,
                reverse: false,
                enableInfiniteScroll: false,
@@ -76,34 +76,38 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                 String _time = _commentModelController.getAgoTime(chatDocs[index].get('timeStamp'));
                 return Container(
                   width: MediaQuery.of(context).size.width,
+                  height: 40,
                   color: Colors.white,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        height: 8,
-                      ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if(chatDocs[index]['profileImageUrl'] != "")
-                           ExtendedImage.network(chatDocs[index]['profileImageUrl'],
-                             cache: true,
-                           shape: BoxShape.circle,
-                             borderRadius: BorderRadius.circular(20),
-                             width: 32,
-                             height: 32,
-                             fit: BoxFit.cover,
+                           Transform.translate(
+                             offset: Offset(0,4),
+                             child: ExtendedImage.network(chatDocs[index]['profileImageUrl'],
+                               cache: true,
+                             shape: BoxShape.circle,
+                               borderRadius: BorderRadius.circular(20),
+                               width: 32,
+                               height: 32,
+                               fit: BoxFit.cover,
+                             ),
                            ),
                           if(chatDocs[index]['profileImageUrl'] == "")
-                            ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
-                              shape: BoxShape.circle,
-                              borderRadius: BorderRadius.circular(20),
-                              width: 32,
-                              height: 32,
-                              fit: BoxFit.cover,
+                            Transform.translate(
+                              offset: Offset(0,4),
+                              child: ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
+                                shape: BoxShape.circle,
+                                borderRadius: BorderRadius.circular(20),
+                                width: 32,
+                                height: 32,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          SizedBox(width: 10),
+                          SizedBox(width: 12),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,12 +116,18 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                 children: [
                                   Text(
                                     chatDocs[index].get('displayName'),
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        color: Color(0xFF111111)),
                                   ),
                                   SizedBox(width: 5),
                                   Text(
                                     '$_time',
-                                    style: TextStyle(fontSize: 10),
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFF949494),
+                                        fontWeight: FontWeight.w300),
                                   ),
                                 ],
                               ),
@@ -137,13 +147,6 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                             ],
                           ),
                         ],
-                      ),
-                      SizedBox(
-                        height: 2,
-                      ),
-                      Divider(
-                        color: Color(0xFFF5F5F5),
-                        thickness: 1,
                       ),
                     ],
                   ),

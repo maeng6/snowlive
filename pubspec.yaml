@@ -122,6 +122,8 @@ flutter:
           weight: 600
         - asset: assets/fonts/NotoSansKR-Light.otf
           weight: 200
+        - asset: assets/fonts/NotoSansKR-Regular.otf
+          weight: 400
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

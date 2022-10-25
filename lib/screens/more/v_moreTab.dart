@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_loginController.dart';
 import 'package:snowlive3/screens/more/v_contactUsPage.dart';
+import 'package:snowlive3/screens/more/v_favoriteResort_moreTab.dart';
 import 'package:snowlive3/screens/more/v_licenseListPage.dart';
 import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
 import 'package:snowlive3/screens/onboarding/v_favoriteResort.dart';
@@ -357,7 +358,7 @@ class _MoreTabState extends State<MoreTab> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
                 onTap: () {
-                  Get.to(() => FavoriteResort());
+                  Get.to(() => FavoriteResort_moreTab());
                 },
                 title: Text(
                   '자주가는 스키장 설정',
@@ -560,7 +561,6 @@ class _MoreTabState extends State<MoreTab> {
                                               Expanded(
                                                 child: ElevatedButton(
                                                   onPressed: () {
-                                                    print(_userModelController.uid);
                                                     _loginController.deleteUser(
                                                         _userModelController.uid);
                                                   },
