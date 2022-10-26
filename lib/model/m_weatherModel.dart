@@ -142,7 +142,7 @@ class WeatherModel {
       );
     } else if (pty == 0 && currentBaseTime <= 2400 || currentBaseTime > 1800 || currentBaseTime > 0100 || currentBaseTime <= 0600) {
       return Image.asset(
-        'assets/imgs/weather/icon_weather_rain.png',
+        'assets/imgs/weather/icon_weather.png',
         width: 40,
         height: 40,
       );
@@ -187,6 +187,28 @@ class WeatherModel {
         width: 40,
         height: 40,
       );
+    }
+  }
+
+  Future<dynamic> getWeatherColor() async {
+    if (pty == 0 && currentBaseTime <= 1800 || currentBaseTime > 0600) {
+      return Color(0xFF3D83ED);
+    } else if (pty == 0 && currentBaseTime <= 2400 || currentBaseTime > 1800 || currentBaseTime > 0100 || currentBaseTime <= 0600) {
+      return Color(0xFF32314D);
+    } else if (pty == 1) {
+      return Color(0xFF3F668A);
+    } else if (pty == 2) {
+      return Color(0xFF3F668A);
+    } else if (pty == 3) {
+      return Color(0xFFC4D9ED);
+    } else if (pty == 5) {
+      return Color(0xFF3F668A);
+    } else if (pty == 6) {
+      return Color(0xFF3F668A);
+    } else if (pty == 7) {
+      return Color(0xFFC4D9ED);
+    } else {
+      return Color(0xFF3D83ED);
     }
   }
 }

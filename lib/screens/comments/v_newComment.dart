@@ -51,7 +51,7 @@ class _NewCommentState extends State<NewComment> {
                   decoration: InputDecoration(
                       suffixIcon: IconButton(
                         onPressed: () async {
-                          _newComment.trim().isEmpty
+                          _controller.text.trim().isEmpty
                               ? null
                               : FocusScope.of(context).unfocus();
                           await _commentModelController.sendMessage(
