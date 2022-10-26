@@ -7,36 +7,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:591302786053:android:0ece89ecb58785ffefb06c",
+        "mobilesdk_app_id": "1:591302786053:android:7fbcee13bb3c99fcefb06c",
         "android_client_info": {
-          "package_name": "com.example.snowlive3"
+          "package_name": "com.snowlive"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "591302786053-1ei8td6j12ea8t3n12m2gkgvcmngtna8.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.snowlive3",
-            "certificate_hash": "22c8486646027fc7210149ded9a3273f7aa18ab6"
-          }
-        },
-        {
-          "client_id": "591302786053-5uuq72gtr6gvtpohabnbqooa38b4k637.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.snowlive3",
-            "certificate_hash": "34532642415d56c18ccb99cca2ab20b92e11a5a7"
-          }
-        },
-        {
-          "client_id": "591302786053-7to0rqs68esoqfsnvf8pcjdjlal4rmdr.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.snowlive3",
-            "certificate_hash": "1017b4cc1f005914800782623fffedd132ccbcc5"
-          }
-        },
         {
           "client_id": "591302786053-00vgr3cbc493jnfvja51rbht7l9hk93k.apps.googleusercontent.com",
           "client_type": 3

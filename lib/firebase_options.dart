@@ -48,17 +48,17 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyDz-PHqOm8BA3WCf77je9YgmNNl2sXWiOs',
-    appId: '1:591302786053:web:c7ccd3eba3684bd4efb06c',
+    appId: '1:591302786053:web:fd1a1e296d44a6e1efb06c',
     messagingSenderId: '591302786053',
     projectId: 'snowlive-cf446',
     authDomain: 'snowlive-cf446.firebaseapp.com',
     storageBucket: 'snowlive-cf446.appspot.com',
-    measurementId: 'G-33JEWR46YW',
+    measurementId: 'G-ZNTCBJMNZB',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDn5b_h-FOnbikjhthJaHmY_YxCWBPdxyQ',
-    appId: '1:591302786053:android:0ece89ecb58785ffefb06c',
+    appId: '1:591302786053:android:7fbcee13bb3c99fcefb06c',
     messagingSenderId: '591302786053',
     projectId: 'snowlive-cf446',
     storageBucket: 'snowlive-cf446.appspot.com',
@@ -66,12 +66,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDud4jDe4AZUL9wO-RibFJ47JM-gixPB5o',
-    appId: '1:591302786053:ios:40c93f4078545b86efb06c',
+    appId: '1:591302786053:ios:1ff67b60fddd69f7efb06c',
     messagingSenderId: '591302786053',
     projectId: 'snowlive-cf446',
     storageBucket: 'snowlive-cf446.appspot.com',
     androidClientId: '591302786053-1ei8td6j12ea8t3n12m2gkgvcmngtna8.apps.googleusercontent.com',
-    iosClientId: '591302786053-59d3lm2fkcvj54o7e4kjpvtljqg2ja79.apps.googleusercontent.com',
-    iosBundleId: 'com.example.snowlive3',
+    iosClientId: '591302786053-c7ne6ak4v1ettfqqtnsjsf8rehntkdsp.apps.googleusercontent.com',
+    iosBundleId: 'com.snowlive',
   );
 }

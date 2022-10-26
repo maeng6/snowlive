@@ -1,69 +1,95 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:snowlive3/controller/vm_bottomNavigationBar.dart';
-import 'package:snowlive3/controller/vm_resortModelController.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
-import '../controller/vm_loadingPage.dart';
+import 'dart:io';
 
-class MainHome extends StatelessWidget {
-  const MainHome({Key? key}) : super(key: key);
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:snowlive3/screens/resort/v_resortHome.dart';
+import 'brand/v_brandHome.dart';
+import 'more/v_moreTab.dart';
+import 'more/v_resortTab.dart';
+
+class MainHome extends StatefulWidget {
+
+  @override
+  State<MainHome> createState() => _MainHomeState();
+}
+
+class _MainHomeState extends State<MainHome> {
+  int _currentPage=0;
+
+
+  void changePage(pageIndex){
+    setState(() {
+      _currentPage =pageIndex;
+      var controller = PrimaryScrollController.of(context);
+      controller?.jumpTo(0);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Dependency Injection************************************************
-    Get.put(UserModelController(),permanent: true);
-    Get.put(ResortModelController(),permanent: true);
-    Get.put(BottomNavigationBarController(),permanent: true);
-    BottomNavigationBarController _bottomNavigationBarController = Get.find<BottomNavigationBarController>();
-    //TODO: Dependency Injection************************************************
 
-    return Obx(()=>
-        SafeArea(
-            child: Scaffold(
-                appBar: AppBar(
-                  iconTheme: IconThemeData(size: 30, color: Colors.black),
-                  actions: [
-                    GestureDetector(
-                      child: Icon(
-                        Icons.logout,
-                        color: Colors.black,
-                      ),
-                      onTap: () {
-                        FirebaseAuth.instance.signOut();
-                        Get.to(()=>LoadingPage());
-                      },
-                    )
-                  ],
-                  centerTitle: true,
-                  title: Text(
-                    'SNOWLIVE',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  backgroundColor: Colors.white,
-                  elevation: 0.0,
-                ),
-                bottomNavigationBar: BottomNavigationBar(
-                  currentIndex: _bottomNavigationBarController.currentIndex.value,
-                  onTap: _bottomNavigationBarController.changePage,
-                  items: [
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.home_outlined), label: 'Home'),
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.snowboarding_outlined), label: 'Brand'),
-                  ],
-                  selectedItemColor: Colors.blue,
-                  unselectedItemColor: Colors.grey,
-                  showUnselectedLabels: true,
-                ),
-                body: _bottomNavigationBarController.currentPage
-            )),
+    return Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.white,
+          elevation: 10,
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _currentPage,
+          onTap:  changePage,
+          items: [
+            BottomNavigationBarItem(
+              icon: Image.asset(
+                'assets/imgs/icons/icon_home_off.png',
+                scale: 4,
+              ),
+              activeIcon: Image.asset(
+                'assets/imgs/icons/icon_home_on.png',
+                scale: 4,
+              ),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Image.asset(
+                'assets/imgs/icons/icon_brand_off.png',
+                scale: 4,
+              ),
+              activeIcon: Image.asset(
+                  'assets/imgs/icons/icon_brand_on.png',
+                  scale: 4),
+              label: 'Brand',
+            ),
+            BottomNavigationBarItem(
+              icon: Image.asset(
+                'assets/imgs/icons/icon_weather_off.png',
+                scale: 4,
+              ),
+              activeIcon: Image.asset(
+                  'assets/imgs/icons/icon_weather_on.png',
+                  scale: 4),
+              label: 'Weather',
+            ),
+            BottomNavigationBarItem(
+              icon: Image.asset(
+                'assets/imgs/icons/icon_more_off.png',
+                scale: 4,
+              ),
+              activeIcon: Image.asset(
+                  'assets/imgs/icons/icon_more_on.png',
+                  scale: 4),
+              label: 'More',
+            ),
+          ],
+          showUnselectedLabels: false,
+          showSelectedLabels: false,
+        ),
+        body: IndexedStack(
+          index: _currentPage,
+          children: [
+            ResortHome(),
+            BrandWebBody(),
+            resortTab(),
+            MoreTab(),
+          ],
+        )
     );
   }
 }
-
-
-
-
-

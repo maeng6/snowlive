@@ -1,11 +1,17 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/screens/v_splashScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
   await Firebase.initializeApp();
   HttpOverrides.global = MyHttpOverrides();
   runApp(MyApp());
@@ -17,8 +23,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'SF-Pro-Text',
+        fontFamily: 'NotoSansKR',
         appBarTheme: AppBarTheme(
           iconTheme: IconThemeData(
             size: 30,
@@ -26,17 +33,17 @@ class MyApp extends StatelessWidget {
           ),
           centerTitle: true,
           titleTextStyle: TextStyle(
-            fontFamily: 'SF-Pro-Text',
-            fontWeight: FontWeight.w700,
+            fontFamily: 'NotoSansKR',
+            fontWeight: FontWeight.w600,
             color: Colors.black,
                 fontSize: 20
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
           elevation: 0.0,
         ),
         buttonTheme: ButtonThemeData(
-          buttonColor: Colors.white
-        )
+          buttonColor: Colors.transparent
+        ),
       ),
         home: SplashScreen()
     );

@@ -11,23 +11,24 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return AnimatedSplashScreen(
-      curve: Curves.easeInCirc,
-      splashTransition: SplashTransition.fadeTransition,
-      splashIconSize: double.maxFinite,
-      duration: 1500,
+        curve: Curves.easeInCirc,
+        splashTransition: SplashTransition.fadeTransition,
+        splashIconSize: double.maxFinite,
+        duration: 1500,
         //TODO: Dependency Injection********************************************
-      splash: GetBuilder(
-        init: Get.put(SplashController()),
-        builder: (SplashController controller) {
-       return ExtendedImage.network(
-          '${controller.url}',
-          fit: BoxFit.fitHeight,
-          cache:true,
-        );
-      },
-      ),
-      nextScreen: LoadingPage()
+        splash: GetBuilder(
+          init: Get.put(SplashController()),
+          builder: (SplashController controller) {
+            return ExtendedImage.network(
+              '${controller.url}',
+              fit: BoxFit.fitHeight,
+              cache: true,
+            );
+          },
+        ),
+        nextScreen: LoadingPage()
     );
   }
 }
