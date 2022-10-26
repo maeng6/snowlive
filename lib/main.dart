@@ -8,11 +8,6 @@ import 'package:snowlive3/screens/v_splashScreen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.white,
-        statusBarIconBrightness: Brightness.dark
-  ));
-
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
