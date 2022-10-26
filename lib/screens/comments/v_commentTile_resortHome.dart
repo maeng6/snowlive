@@ -61,10 +61,12 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
         final chatDocs = snapshot.data!.docs;
 
         return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CarouselSlider.builder(
              options: CarouselOptions(
-               height: 40,
+               height: 44,
                viewportFraction: 1,
                reverse: false,
                enableInfiniteScroll: false,
@@ -76,7 +78,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                 String _time = _commentModelController.getAgoTime(chatDocs[index].get('timeStamp'));
                 return Container(
                   width: MediaQuery.of(context).size.width,
-                  height: 40,
+                  height: 44,
                   color: Colors.white,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
