@@ -560,8 +560,8 @@ class _MoreTabState extends State<MoreTab> {
                                               ),
                                               Expanded(
                                                 child: ElevatedButton(
-                                                  onPressed: () {
-                                                    _loginController.deleteUser(
+                                                  onPressed: () async{
+                                                    await _loginController.deleteUser(
                                                         _userModelController.uid);
                                                   },
                                                   child: Text('확인',
@@ -655,8 +655,8 @@ class _MoreTabState extends State<MoreTab> {
                                               ),
                                               Expanded(
                                                 child: ElevatedButton(
-                                                  onPressed: () {
-                                                    _loginController.signOut();
+                                                  onPressed: () async{
+                                                    await _loginController.signOut();
                                                   },
                                                   child: Text('확인',
                                                     style: TextStyle(

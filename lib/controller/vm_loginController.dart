@@ -72,7 +72,7 @@ class LoginController extends GetxController {
     Get.offAll(() => LoginPage());
   }
 
-  void deleteUser(uid) async {
+  Future<void> deleteUser(uid) async {
     CustomFullScreenDialog.showDialog();
     try {
       CollectionReference users = FirebaseFirestore.instance.collection('user');
