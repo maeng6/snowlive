@@ -40,7 +40,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top],
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
     ); // 상단 StatusBar 생성
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
         statusBarColor: Colors.white, // Color for Android

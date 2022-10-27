@@ -38,7 +38,7 @@ class _SetNicknameState extends State<SetNickname> {
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top],
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
     ); // 상단 StatusBar 생성
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(
@@ -54,8 +54,19 @@ class _SetNicknameState extends State<SetNickname> {
       child: Scaffold(backgroundColor: Colors.white,
         extendBodyBehindAppBar: true,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(0),
+          preferredSize: Size.fromHeight(58),
           child: AppBar(
+            leading: GestureDetector(
+              child: Image.asset(
+                'assets/imgs/icons/icon_snowLive_back.png',
+                scale: 4,
+                width: 26,
+                height: 26,
+              ),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
             backgroundColor: Colors.white,
             elevation: 0.0,
             centerTitle: false,

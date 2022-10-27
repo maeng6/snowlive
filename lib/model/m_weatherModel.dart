@@ -21,6 +21,9 @@ class WeatherModel {
   var maxTemp;
   var minTemp;
   var pty;
+  Widget? weatherIcons;
+  Color? weatherColors;
+
 
   //오늘 날짜 19900418 형태로 리턴
   String getSystemTime() {
@@ -35,6 +38,7 @@ class WeatherModel {
 
   Future<Map> parseWeatherData(int nX, int nY) async {
     var getWeatherJson = await getJsonData(nX, nY);
+
     this.temp =
         getWeatherJson['response']['body']['items']['item'][3]['obsrValue'];
     this.rain =
@@ -60,7 +64,12 @@ class WeatherModel {
       'minTemp': this.minTemp,
       'pty': this.pty
     };
+
+    this.weatherIcons = getWeatherIcon();
+    this.weatherColors = getWeatherColor();
+
     return weatherInfoMap;
+
   }
 
   void currentWeatherDate() {
@@ -133,14 +142,14 @@ class WeatherModel {
     }
   }
 
-  Future<Widget> getWeatherIcon() async {
-    if (pty == 0 && currentBaseTime <= 1800 || currentBaseTime > 0600) {
+  Widget getWeatherIcon() {
+    if (pty == 0 &&  _now.hour <= 1800 || _now.hour > 0600) {
       return Image.asset(
-        'assets/imgs/weather/icon_weather_sun.png',
+        'assets/imgs/icons/icon_weather_sun.png',
         width: 40,
         height: 40,
       );
-    } else if (pty == 0 && currentBaseTime <= 2400 || currentBaseTime > 1800 || currentBaseTime > 0100 || currentBaseTime <= 0600) {
+    } else if (pty == 0 && _now.hour <= 2400 || _now.hour > 1800 || _now.hour > 0100 || _now.hour <= 0600) {
       return Image.asset(
         'assets/imgs/weather/icon_weather.png',
         width: 40,
@@ -148,31 +157,31 @@ class WeatherModel {
       );
     } else if (pty == 1) {
       return Image.asset(
-        'assets/imgs/weather/icon_weather_rain.png',
+        'assets/imgs/icons/icon_weather_rain.png',
         width: 40,
         height: 40,
       );
     } else if (pty == 2) {
       return Image.asset(
-        'assets/imgs/weather/icon_weather_rain.png',
+        'assets/imgs/icons/icon_weather_rain.png',
         width: 40,
         height: 40,
       );
     } else if (pty == 3) {
       return Image.asset(
-        'assets/imgs/weather/icon_weather_snow.png',
+        'assets/imgs/icons/icon_weather_snow.png',
         width: 40,
         height: 40,
       );
     } else if (pty == 5) {
       return Image.asset(
-        'assets/imgs/weather/icon_weather_rain.png',
+        'assets/imgs/icons/icon_weather_rain.png',
         width: 40,
         height: 40,
       );
     } else if (pty == 6) {
       return Image.asset(
-        'assets/imgs/weather/icon_weather_rain.png',
+        'assets/imgs/icons/icon_weather_rain.png',
         width: 40,
         height: 40,
       );
@@ -190,10 +199,10 @@ class WeatherModel {
     }
   }
 
-  Future<dynamic> getWeatherColor() async {
-    if (pty == 0 && currentBaseTime <= 1800 || currentBaseTime > 0600) {
+  dynamic getWeatherColor() {
+    if (pty == 0 && _now.hour <= 1800 || _now.hour > 0600) {
       return Color(0xFF3D83ED);
-    } else if (pty == 0 && currentBaseTime <= 2400 || currentBaseTime > 1800 || currentBaseTime > 0100 || currentBaseTime <= 0600) {
+    } else if (pty == 0 && _now.hour <= 2400 || _now.hour > 1800 || _now.hour > 0100 || _now.hour <= 0600) {
       return Color(0xFF32314D);
     } else if (pty == 1) {
       return Color(0xFF3F668A);

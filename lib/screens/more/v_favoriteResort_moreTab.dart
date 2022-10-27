@@ -43,7 +43,7 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top],
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
     ); // 상단 StatusBar 생성
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(

@@ -21,6 +21,17 @@ class LicenseDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GestureDetector(
+          child: Image.asset(
+            'assets/imgs/icons/icon_snowLive_back.png',
+            scale: 4,
+            width: 26,
+            height: 26,
+          ),
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text('$licenseName $version'),
         centerTitle: false,
       ),

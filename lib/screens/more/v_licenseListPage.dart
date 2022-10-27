@@ -17,9 +17,20 @@ class LicenseListPage extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        leading: GestureDetector(
+          child: Image.asset(
+            'assets/imgs/icons/icon_snowLive_back.png',
+            scale: 4,
+            width: 26,
+            height: 26,
+          ),
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
         elevation: 0.0,
-        centerTitle: false,
         titleSpacing: 0,
+        centerTitle: true,
         title: Padding(
           padding: const EdgeInsets.only(left: 16),
           child: Text('오픈소스라이선스',

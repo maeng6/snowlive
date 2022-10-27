@@ -59,8 +59,19 @@ class _FavoriteResortState extends State<FavoriteResort> {
     return Scaffold(backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(0),
+        preferredSize: Size.fromHeight(58),
         child: AppBar(
+          leading: GestureDetector(
+            child: Image.asset(
+              'assets/imgs/icons/icon_snowLive_back.png',
+              scale: 4,
+              width: 26,
+              height: 26,
+            ),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
           backgroundColor: Colors.white,
           elevation: 0.0,
           centerTitle: false,
@@ -141,7 +152,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
                           await resortModelController.getSelectedResort(
                               userModelController.favoriteResort!);
                           await FlutterSecureStorage()
-                              .write(key: 'login', value: auth.currentUser!.displayName);
+                              .write(key: 'uid', value: auth.currentUser!.uid);
                           CustomFullScreenDialog.cancelDialog();
                           Get.offAll(() => MainHome());
                         }else{

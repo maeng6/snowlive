@@ -29,6 +29,8 @@ class ResortModelController extends GetxController{
   RxString? _resortMaxTemp=''.obs;
   RxString? _resortMinTemp=''.obs;
   RxBool isLoading = false.obs;
+  dynamic _weatherIcons;
+  dynamic _weatherColors;
 
   Future<void> getSelectedResort(int resortNum) async{
     isLoading.value = true;
@@ -47,12 +49,15 @@ class ResortModelController extends GetxController{
     this._nX!.value = selectedResort.nX!;
     this._nY!.value = selectedResort.nY!;
     Map weatherInfo = await weatherModel.parseWeatherData(_nX!.value,_nY!.value);
+    this._weatherIcons = weatherModel.weatherIcons;
+    this._weatherColors = weatherModel.weatherColors;
     this._resortTemp!.value= weatherInfo['temp'];
     this._resortRain!.value= weatherInfo['rain'];
     this._resortWind!.value= weatherInfo['wind'];
     this._resortWet!.value= weatherInfo['wet'];
     this._resortMaxTemp!.value= weatherInfo['maxTemp'];
     this._resortMinTemp!.value= weatherInfo['minTemp'];
+
     isLoading.value = false;
 
   }
@@ -72,5 +77,7 @@ class ResortModelController extends GetxController{
   String? get resortWet => _resortWet!.value;
   String? get resortMaxTemp => _resortMaxTemp!.value;
   String? get resortMinTemp => _resortMinTemp!.value;
+  dynamic get weatherIcons => _weatherIcons;
+  dynamic get weatherColors => _weatherColors;
 
 }

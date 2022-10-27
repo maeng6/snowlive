@@ -9,6 +9,17 @@ class ContactUsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: GestureDetector(
+          child: Image.asset(
+            'assets/imgs/icons/icon_snowLive_back.png',
+            scale: 4,
+            width: 26,
+            height: 26,
+          ),
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
         backgroundColor: Colors.white,
       ),
       body: Center(
