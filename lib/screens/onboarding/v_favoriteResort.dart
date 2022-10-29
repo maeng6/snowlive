@@ -43,7 +43,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top],
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
     ); // 상단 StatusBar 생성
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(
@@ -119,15 +119,18 @@ class _FavoriteResortState extends State<FavoriteResort> {
               ),
               Expanded(
                 child: ListView.builder(
+                  padding: EdgeInsets.only(top: 0),
+                  shrinkWrap: true,
                     itemCount: 13,
                     itemBuilder: (context, index) {
                       return Column(
                         children: [
                           buildCheckboxListTile(index),
+
                           Divider(
                             height: 20,
                             thickness: 0.5,
-                          ),
+                          )
                         ],
                       );
                     }),

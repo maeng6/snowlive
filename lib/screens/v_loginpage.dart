@@ -115,7 +115,12 @@ class LoginPage extends StatelessWidget {
                     : 12,
                   ),
                   Text('로그인 방법을 선택해주세요',
-                  style: TextStyle(fontSize: 14, color: Color(0xFF949494), fontWeight: FontWeight.normal),)
+                  style: TextStyle(fontSize: 14, color: Color(0xFF949494), fontWeight: FontWeight.normal),),
+                  SizedBox(
+                   height: (Platform.isIOS)
+                        ? 24
+                        : 0,
+                  )
                 ],
               ),
 
