@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -25,12 +27,14 @@ class _MoreTabState extends State<MoreTab> {
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
 
+  //TODO: Dependency Injection**************************************************
+  UserModelController _userModelController = Get.find<UserModelController>();
+  LoginController _loginController = Get.find<LoginController>();
+  //TODO: Dependency Injection**************************************************
+
+
   @override
   Widget build(BuildContext context) {
-    //TODO: Dependency Injection**************************************************
-    UserModelController _userModelController = Get.find<UserModelController>();
-    LoginController _loginController = Get.find<LoginController>();
-    //TODO: Dependency Injection**************************************************
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -300,17 +304,16 @@ class _MoreTabState extends State<MoreTab> {
                         onTap: () => Get.to(() => SetProfileImage_moreTab()),
                         child: Stack(
                           children: [
-                            Obx(()=>
-                              Container(
-                                    width: 64,
-                                    height: 64,
-                                    child: CircleAvatar(
-                                        backgroundColor: Colors.grey[100],
-                                        backgroundImage: NetworkImage(
-                                          _userModelController.profileImageUrl!,
-                                        )),
-                                  ),
-                            ),
+                            Obx(() =>
+                                  Container(
+                                        width: 64,
+                                        height: 64,
+                                        child: CircleAvatar(
+                                            backgroundColor: Colors.grey[100],
+                                            backgroundImage: NetworkImage(
+                                              _userModelController.profileImageUrl!,
+                                            )),
+                                      )),
                             Positioned(
                                 bottom: 10,
                                 right: 4,

@@ -170,56 +170,12 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                       Expanded(
                                         child: ElevatedButton(
                                           onPressed: () async {
-                                            CustomFullScreenDialog
-                                                .showDialog();
+                                            CustomFullScreenDialog.showDialog();
                                             try {
                                               _imageFile =
-                                                  await _imageController
-                                                      .getSingleImage(
-                                                          ImageSource
-                                                              .gallery);
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                              print(_userModelController
-                                                  .profileImageUrl);
-                                              profileImage = true;
-                                              setState(() {});
-                                              Navigator.pop(context);
-                                            } catch (e) {
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                            }
-                                          },
-                                          child: Text(
-                                            '앨범에서 선택',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                              splashFactory:
-                                                  InkRipple.splashFactory,
-                                              elevation: 0,
-                                              minimumSize: Size(100, 56),
-                                              backgroundColor:
-                                                  Color(0xff555555),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 0)),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            CustomFullScreenDialog
-                                                .showDialog();
-                                            try {
                                               await _imageController
                                                   .getSingleImage(
-                                                      ImageSource.camera);
+                                                  ImageSource.camera);
                                               CustomFullScreenDialog
                                                   .cancelDialog();
                                               profileImage = true;
@@ -239,11 +195,51 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                           ),
                                           style: TextButton.styleFrom(
                                               splashFactory:
-                                                  InkRipple.splashFactory,
+                                              InkRipple.splashFactory,
                                               elevation: 0,
                                               minimumSize: Size(100, 56),
                                               backgroundColor:
-                                                  Color(0xff2C97FB),
+                                              Color(0xff555555),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 0)),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            CustomFullScreenDialog.showDialog();
+                                            try {
+                                              _imageFile =
+                                              await _imageController
+                                                  .getSingleImage(
+                                                  ImageSource.gallery);
+                                              CustomFullScreenDialog
+                                                  .cancelDialog();
+                                              profileImage = true;
+                                              setState(() {});
+                                              Navigator.pop(context);
+                                            } catch (e) {
+                                              CustomFullScreenDialog
+                                                  .cancelDialog();
+                                            }
+                                          },
+                                          child: Text(
+                                            '앨범에서 선택',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          style: TextButton.styleFrom(
+                                              splashFactory:
+                                              InkRipple.splashFactory,
+                                              elevation: 0,
+                                              minimumSize: Size(100, 56),
+                                              backgroundColor:
+                                              Color(0xff2C97FB),
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 0)),
                                         ),
@@ -341,57 +337,12 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                       Expanded(
                                         child: ElevatedButton(
                                           onPressed: () async {
-                                            CustomFullScreenDialog
-                                                .showDialog();
-                                            try {
-                                              _imageFile =
-                                                  await _imageController
-                                                      .getSingleImage(
-                                                          ImageSource
-                                                              .gallery);
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                              print(_userModelController
-                                                  .profileImageUrl);
-                                              profileImage = true;
-                                              setState(() {});
-                                              Navigator.pop(context);
-                                            } catch (e) {
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                            }
-                                          },
-                                          child: Text(
-                                            '앨범에서 선택',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                              splashFactory:
-                                                  InkRipple.splashFactory,
-                                              elevation: 0,
-                                              minimumSize: Size(100, 56),
-                                              backgroundColor:
-                                                  Color(0xff555555),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 0)),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            CustomFullScreenDialog
-                                                .showDialog();
+                                            CustomFullScreenDialog.showDialog();
                                             try {
                                               _imageFile =
                                               await _imageController
                                                   .getSingleImage(
-                                                      ImageSource.camera);
+                                                  ImageSource.camera);
                                               CustomFullScreenDialog
                                                   .cancelDialog();
                                               profileImage = true;
@@ -411,11 +362,51 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                           ),
                                           style: TextButton.styleFrom(
                                               splashFactory:
-                                                  InkRipple.splashFactory,
+                                              InkRipple.splashFactory,
                                               elevation: 0,
                                               minimumSize: Size(100, 56),
                                               backgroundColor:
-                                                  Color(0xff2C97FB),
+                                              Color(0xff555555),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 0)),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            CustomFullScreenDialog.showDialog();
+                                            try {
+                                              _imageFile =
+                                              await _imageController
+                                                  .getSingleImage(
+                                                  ImageSource.gallery);
+                                              CustomFullScreenDialog
+                                                  .cancelDialog();
+                                              profileImage = true;
+                                              setState(() {});
+                                              Navigator.pop(context);
+                                            } catch (e) {
+                                              CustomFullScreenDialog
+                                                  .cancelDialog();
+                                            }
+                                          },
+                                          child: Text(
+                                            '앨범에서 선택',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          style: TextButton.styleFrom(
+                                              splashFactory:
+                                              InkRipple.splashFactory,
+                                              elevation: 0,
+                                              minimumSize: Size(100, 56),
+                                              backgroundColor:
+                                              Color(0xff2C97FB),
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 0)),
                                         ),
