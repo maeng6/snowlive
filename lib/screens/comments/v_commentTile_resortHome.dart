@@ -47,36 +47,36 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
           );
         }
         final chatDocs = snapshot.data!.docs;
+        Size _size = MediaQuery.of(context).size;
 
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CarouselSlider.builder(
-             options: CarouselOptions(
-               height: 44,
-               viewportFraction: 1,
-               reverse: false,
-               enableInfiniteScroll: false,
-               autoPlay: true,
-               autoPlayInterval: Duration(seconds: 3)
-             ),
-              itemCount: chatDocs.length,
-              itemBuilder: (context, index, pageViewIndex) {
-                String _time = _commentModelController.getAgoTime(chatDocs[index].get('timeStamp'));
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 44,
-                  color: Colors.white,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        return CarouselSlider.builder(
+         options: CarouselOptions(
+           height: 44,
+           viewportFraction: 1,
+           reverse: false,
+           enableInfiniteScroll: false,
+           autoPlay: true,
+           autoPlayInterval: Duration(seconds: 4)
+         ),
+          itemCount: chatDocs.length,
+          itemBuilder: (context, index, pageViewIndex) {
+            String _time = _commentModelController.getAgoTime(chatDocs[index].get('timeStamp'));
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              height: 44,
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if(chatDocs[index]['profileImageUrl'] != "")
                            Transform.translate(
-                             offset: Offset(0,4),
+                             offset: Offset(0,6),
                              child: ExtendedImage.network(chatDocs[index]['profileImageUrl'],
                                cache: true,
                              shape: BoxShape.circle,
@@ -88,7 +88,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                            ),
                           if(chatDocs[index]['profileImageUrl'] == "")
                             Transform.translate(
-                              offset: Offset(0,4),
+                              offset: Offset(0,6),
                               child: ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
                                 shape: BoxShape.circle,
                                 borderRadius: BorderRadius.circular(20),
@@ -125,7 +125,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                 children: [
                                   Container(
                                     constraints: BoxConstraints(
-                                        maxWidth: 250
+                                        maxWidth: _size.width - 160
                                     ),
                                     child: Text(chatDocs[index].get('comment'),
                                       maxLines:1,
@@ -140,10 +140,10 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                       ),
                     ],
                   ),
-                );
-              },
-            ),
-          ],
+                ],
+              ),
+            );
+          },
         );
       },
     );
