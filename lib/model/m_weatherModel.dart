@@ -139,4 +139,87 @@ class WeatherModel {
       return parsingData;
     }
   }
+
+  Color? getWeatherColor(String pty) {
+    String _timeString = DateFormat('HH').format(_now);
+    int _timeInt = int.parse(_timeString);
+    if (pty == '0') {
+      if (_timeInt < 7 || _timeInt > 19) {
+        return Color(0xFF32314D);
+      }else {
+        return Color(0xFF3D83ED);
+      }
+    } else if (pty == '1') {
+      return Color(0xFF3F668A);
+    } else if (pty == '2') {
+      return Color(0xFF3F668A);
+    } else if (pty == '3') {
+      return Color(0xFFC4D9ED);
+    } else if (pty == '5') {
+      return Color(0xFF3F668A);
+    } else if (pty == '6') {
+      return Color(0xFF3F668A);
+    } else if (pty == '7') {
+      return Color(0xFFC4D9ED);
+    }
+  }
+
+  Widget? getWeatherIcon(String pty) {
+    String _timeString = DateFormat('HH').format(_now);
+    int _timeInt = int.parse(_timeString);
+    if (pty == '0'){
+      if(_timeInt < 7 || _timeInt > 19){
+        return Image.asset(
+          'assets/imgs/weather/icon_weather.png',
+          width: 40,
+          height: 40,
+        );
+      }else{
+        return Image.asset(
+          'assets/imgs/icons/icon_weather_sun.png',
+          width: 40,
+          height: 40,
+        );
+      }
+    } else if(pty == '1'){
+      return Image.asset(
+        'assets/imgs/icons/icon_weather_rain.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (pty == '2') {
+      return Image.asset(
+        'assets/imgs/icons/icon_weather_rain.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (pty == '3') {
+      return Image.asset(
+        'assets/imgs/icons/icon_weather_snow.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (pty == '5') {
+      return Image.asset(
+        'assets/imgs/icons/icon_weather_rain.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (pty == '6') {
+      return Image.asset(
+        'assets/imgs/icons/icon_weather_rain.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (pty == '7') {
+      return Image.asset(
+        'assets/imgs/weather/icon_weather_snow.png',
+        width: 40,
+        height: 40,
+      );
+    }
+  }
+
 }
+
+

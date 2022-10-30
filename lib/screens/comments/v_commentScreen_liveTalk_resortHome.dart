@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:snowlive3/screens/comments/v_commentTile_liveTalk_resortHome.dart';
-import 'package:snowlive3/screens/comments/v_commentTile_resortHome.dart';
 import 'package:snowlive3/screens/comments/v_newComment.dart';
-
-import '../../controller/vm_commentController.dart';
 
 class CommentScreen_LiveTalk_resortHome extends StatefulWidget {
   CommentScreen_LiveTalk_resortHome({Key? key,required this.index, required this.resortName})

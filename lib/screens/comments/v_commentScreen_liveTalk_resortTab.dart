@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:snowlive3/screens/comments/v_commentTile_liveTalk_resortTab.dart';
 import 'package:snowlive3/screens/comments/v_newComment.dart';
 
-import '../../controller/vm_commentController.dart';
-
-
 class CommentScreen_LiveTalk_resortTab extends StatefulWidget {
   CommentScreen_LiveTalk_resortTab({Key? key,required this.index, required this.resortName}) : super(key: key);
 

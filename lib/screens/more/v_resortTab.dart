@@ -6,11 +6,8 @@ import 'package:snowlive3/model/m_resortModel.dart';
 import 'package:snowlive3/screens/comments/v_commentScreen_liveTalk_resortTab.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
 
-import '../comments/v_commentTile_liveTalk_resortTab.dart';
-
 class resortTab extends StatelessWidget {
   resortTab({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {

@@ -1,12 +1,10 @@
 import 'dart:io';
-
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
@@ -18,7 +16,6 @@ import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import '../../controller/vm_commentController.dart';
 import '../../widget/w_fullScreenDialog.dart';
-import '../comments/v_newComment.dart';
 
 class ResortHome extends StatefulWidget {
   @override
@@ -37,92 +34,6 @@ class _ResortHomeState extends State<ResortHome> {
   //TODO: Dependency Injection**************************************************
 
   List<bool?> _isSelected = List<bool?>.filled(13, false);
-  bool _ifWeatherError = false;
-  var _now = DateTime.now();
-
-
-  // 날씨 아이콘!!
-  Widget? getWeatherIcon() {
-    String _timeString = DateFormat('HH').format(_now);
-    int _timeInt = int.parse(_timeString);
-    if (_resortModelController.resortPty == '0'){
-      if(_timeInt < 7 || _timeInt > 19){
-        return Image.asset(
-          'assets/imgs/weather/icon_weather.png',
-          width: 40,
-          height: 40,
-        );
-      }else{
-        return Image.asset(
-          'assets/imgs/icons/icon_weather_sun.png',
-          width: 40,
-          height: 40,
-        );
-      }
-    } else if(_resortModelController.resortPty == '1'){
-      return Image.asset(
-        'assets/imgs/icons/icon_weather_rain.png',
-        width: 40,
-        height: 40,
-      );
-    } else if (_resortModelController.resortPty == '2') {
-      return Image.asset(
-        'assets/imgs/icons/icon_weather_rain.png',
-        width: 40,
-        height: 40,
-      );
-    } else if (_resortModelController.resortPty == '3') {
-      return Image.asset(
-        'assets/imgs/icons/icon_weather_snow.png',
-        width: 40,
-        height: 40,
-      );
-    } else if (_resortModelController.resortPty == '5') {
-      return Image.asset(
-        'assets/imgs/icons/icon_weather_rain.png',
-        width: 40,
-        height: 40,
-      );
-    } else if (_resortModelController.resortPty == '6') {
-      return Image.asset(
-        'assets/imgs/icons/icon_weather_rain.png',
-        width: 40,
-        height: 40,
-      );
-    } else if (_resortModelController.resortPty == '7') {
-      return Image.asset(
-        'assets/imgs/weather/icon_weather_snow.png',
-        width: 40,
-        height: 40,
-      );
-    }
-  }
-  // 날씨 색깔!!
-  Color? getWeatherColor() {
-    String _timeString = DateFormat('HH').format(_now);
-    int _timeInt = int.parse(_timeString);
-    if (_resortModelController.resortPty == '0') {
-      if (_timeInt < 7 || _timeInt > 19) {
-        return Color(0xFF32314D);
-      }else {
-        return Color(0xFF3D83ED);
-      }
-    } else if (_resortModelController.resortPty == '1') {
-      return Color(0xFF3F668A);
-    } else if (_resortModelController.resortPty == '2') {
-      return Color(0xFF3F668A);
-    } else if (_resortModelController.resortPty == '3') {
-      return Color(0xFFC4D9ED);
-    } else if (_resortModelController.resortPty == '5') {
-      return Color(0xFF3F668A);
-    } else if (_resortModelController.resortPty == '6') {
-      return Color(0xFF3F668A);
-    } else if (_resortModelController.resortPty == '7') {
-      return Color(0xFFC4D9ED);
-    }
-  }
-
-
 
   @override
   void setState(VoidCallback fn) {
@@ -197,14 +108,11 @@ class _ResortHomeState extends State<ResortHome> {
 
     //TODO: Dependency Injection**************************************************
     Get.put(CommentModelController(), permanent: true);
-    CommentModelController _commentModelController =
-    Get.find<CommentModelController>();
     //TODO: Dependency Injection**************************************************
 
     final Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
 
-    _ifWeatherError = false;
     return WillPopScope(
       onWillPop: () async => false,
       child: GestureDetector(
@@ -273,7 +181,7 @@ class _ResortHomeState extends State<ResortHome> {
                                 Container(
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(14),
-                                      color: getWeatherColor()),
+                                      color: _resortModelController.weatherColors),
                                   alignment: Alignment.center,
                                   width: double.infinity,
                                   child: Column(
@@ -392,7 +300,7 @@ class _ResortHomeState extends State<ResortHome> {
                                               ),
                                               Transform.translate(
                                                 offset: Offset(0,-2),
-                                                child: getWeatherIcon()
+                                                child: _resortModelController.weatherIcons
                                               ),
                                             ],
                                           ),

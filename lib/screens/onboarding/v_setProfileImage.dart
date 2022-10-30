@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
 import 'package:snowlive3/screens/onboarding/v_favoriteResort.dart';
-import 'package:snowlive3/screens/onboarding/v_setNickname.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
@@ -96,7 +95,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
             Column(
               children: [
                 Text(
-                  '프로필 이미지를\n업로드해 주세요.',
+                  '프로필 이미지를\n선택해 주세요.',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -105,7 +104,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
               height: 10,
             ),
             Text(
-              '프로필 이미지를 나중에 업로드하길 원하시면,\n건너뛰기 버튼을 눌러주세요.',
+              '프로필 이미지를 나중에 설정 하시려면,\n건너뛰기 버튼을 눌러주세요.',
               style: TextStyle(
                 color: Color(0xff949494),
                 fontSize: 14,
@@ -149,7 +148,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                         height: 14,
                                       ),
                                       Text(
-                                        '프로필 이미지를 나중에 업로드하길 원하시면,\n건너뛰기 버튼을 눌러주세요.',
+                                        '프로필 이미지를 나중에 설정 하시려면,\n건너뛰기 버튼을 눌러주세요.',
                                         style: TextStyle(
                                           color: Color(0xff666666),
                                           fontSize: 14,
@@ -320,7 +319,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                         height: 14,
                                       ),
                                       Text(
-                                        '프로필 이미지를 나중에 업로드하길 원하시면,\n건너뛰기 버튼을 눌러주세요.',
+                                        '프로필 이미지를 나중에 설정 하시려면,\n건너뛰기 버튼을 눌러주세요.',
                                         style: TextStyle(
                                           color: Color(0xff666666),
                                           fontSize: 14,

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,9 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
-import 'package:snowlive3/screens/onboarding/v_favoriteResort.dart';
-import 'package:snowlive3/screens/onboarding/v_setNickname.dart';
-
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
@@ -99,7 +95,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
             Column(
               children: [
                 Text(
-                  '변경할 프로필 이미지를\n업로드해 주세요.',
+                  '프로필 이미지를\n선택해 주세요.',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
               ],

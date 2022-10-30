@@ -5,7 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
-
 import '../widget/w_fullScreenDialog.dart';
 
 class ImageController extends GetxController {
@@ -23,8 +22,6 @@ class ImageController extends GetxController {
     final XFile? image =
         await _picker.pickImage(imageQuality: 10, source: ImageSource);
     if (image != null) {
-      //String profileImageUrl = await setNewImage(image);
-      //_userModelController.updateProfileImageUrl(profileImageUrl);
       return image;
     }else {
       CustomFullScreenDialog.cancelDialog();
@@ -33,7 +30,6 @@ class ImageController extends GetxController {
   }
 
   Future<String> setNewImage(XFile newImage) async {
-    var unixTimestamp = DateTime.now().millisecond;
     String? uid = _userModelController.uid;
     var metaData = SettableMetadata(contentType: 'image/jpeg');
     String downloadUrl = '';

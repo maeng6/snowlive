@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/onboarding/v_WelcomePage.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/screens/v_loginpage.dart';
 

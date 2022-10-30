@@ -27,7 +27,6 @@ class _BrandWebBodyState extends State<BrandWebBody> {
 
   @override
   Widget build(BuildContext context) {
-    final double _statusBarSize = MediaQuery.of(context).padding.top;
     return Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,

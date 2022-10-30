@@ -3,8 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/model/m_commentModel.dart';
 
-import '../widget/w_fullScreenDialog.dart';
-
 class CommentModelController extends GetxController {
   RxString? _uid = ''.obs;
   RxString? _displayName = ''.obs;

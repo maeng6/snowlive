@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/model/m_resortModel.dart';
-import 'package:snowlive3/model/m_userModel.dart';
 import 'package:snowlive3/model/m_weatherModel.dart';
 
 class ResortModelController extends GetxController{
@@ -30,6 +28,8 @@ class ResortModelController extends GetxController{
   RxString? _resortMinTemp=''.obs;
   RxBool isLoading = false.obs;
   RxString? _resortPty=''.obs;
+  dynamic _weatherColors;
+  dynamic _weatherIcons;
 
 
   Future<void> getSelectedResort(int resortNum) async{
@@ -56,6 +56,8 @@ class ResortModelController extends GetxController{
     this._resortMaxTemp!.value= weatherInfo['maxTemp'];
     this._resortMinTemp!.value= weatherInfo['minTemp'];
     this._resortPty!.value= weatherInfo['pty'];
+    this._weatherColors = weatherModel.getWeatherColor(this._resortPty!.value);
+    this._weatherIcons = weatherModel.getWeatherIcon(this._resortPty!.value);
 
     isLoading.value = false;
 
@@ -77,6 +79,8 @@ class ResortModelController extends GetxController{
   String? get resortMaxTemp => _resortMaxTemp!.value;
   String? get resortMinTemp => _resortMinTemp!.value;
   String? get resortPty => _resortPty!.value;
+  dynamic get weatherColors => _weatherColors;
+  dynamic get weatherIcons => _weatherIcons;
 
 }
 

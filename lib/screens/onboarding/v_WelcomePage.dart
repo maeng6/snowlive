@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -53,8 +52,6 @@ class _WelcomePageState extends State<WelcomePage> {
     bool? _isCheckedAll = multipleSelected.length.isEqual(2);
     final double _statusBarSize = MediaQuery.of(context).padding.top;
 
-
-
     return WillPopScope(
       onWillPop: () {
         return Future(() => false);
@@ -100,7 +97,7 @@ class _WelcomePageState extends State<WelcomePage> {
               Column(
                 children: [
                   Text(
-                    '스노우라이브에 오신걸 \n환영합니다.',
+                    '스노우라이브에 오신 것을 \n환영합니다.',
                     style:
                         TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
@@ -110,7 +107,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 height: 10,
               ),
               Text(
-                '스노우라이브의 모든 기능을 편리하게 사용하시기 위해\n아래의 약관동의 및 회원가입이 필요합니다.\n아래 약관에 동의 부탁드립니다.',
+                '스노우라이브의 모든 기능을 편리하게 사용하시기 위해\n아래의 약관동의 및 회원가입을 진행해 주세요.',
                 style: TextStyle(
                   color: Color(0xff949494),
                   fontSize: 14,

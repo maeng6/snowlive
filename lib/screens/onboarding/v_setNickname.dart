@@ -103,7 +103,7 @@ class _SetNicknameState extends State<SetNickname> {
                 height: 10,
               ),
               Text(
-                '스노우라이브에서 사용할 활동명을 정해주시고,\n건너뛰기를 하셔도 언제든지 변경하실 수 있습니다.',
+                '스노우라이브에서 사용할 활동명을 설정해 주세요.\n활동명은 언제든지 변경할 수 있습니다.',
                 style: TextStyle(
                   color: Color(0xff949494),
                   fontSize: 14,
@@ -146,9 +146,9 @@ class _SetNicknameState extends State<SetNickname> {
                         if (val!.length <= 20 && val.length >= 1) {
                           return null;
                         } else if (val.length == 0) {
-                          return '닉네임을 입력해주세요.';
+                          return '활동명을 입력해주세요.';
                         } else {
-                          return '최대 글자 수를 초과했습니다.';
+                          return '최대 입력 가능한 글자 수를 초과했습니다.';
                         }
                       },
                     ),
@@ -161,7 +161,7 @@ class _SetNicknameState extends State<SetNickname> {
               Padding(
                 padding: const EdgeInsets.only(left: 19),
                 child: Text(
-                  '최대 20글자까지 입력 가능합니다.',
+                  '최대 20자까지 입력 가능합니다.',
                   style: TextStyle(color: Color(0xff949494), fontSize: 12),
                 ),
               ),
@@ -179,7 +179,7 @@ class _SetNicknameState extends State<SetNickname> {
                             .updateNickname(_textEditingController.text);
                         Get.to(() => SetProfileImage());
                       } else {
-                        Get.snackbar('활동명을 입력해주세요', '나중에 정하시려면 건너뛰기를 눌러주세요',
+                        Get.snackbar('활동명을 입력해주세요', '나중에 설정하시려면 건너뛰기를 눌러주세요',
                             snackPosition: SnackPosition.BOTTOM,
                             margin:
                                 EdgeInsets.only(right: 20, left: 20, bottom: 12),

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +9,6 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/onboarding/v_setProfileImage.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import '../../model/m_resortModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
@@ -98,7 +96,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
               Column(
                 children: [
                   Text(
-                    '자주가는 스키장을 \n선택해주세요.',
+                    '자주가는 리조트 \n선택해주세요.',
                     style:
                     TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
@@ -108,7 +106,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
                 height: 10,
               ),
               Text(
-                '자주가는 스키장은 1개만 선택할 수 있습니다.',
+                '자주가는 리조트는 1개만 선택할 수 있습니다.',
                 style: TextStyle(
                   color: Color(0xff949494),
                   fontSize: 14,

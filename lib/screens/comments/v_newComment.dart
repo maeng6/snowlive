@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_commentController.dart';
-import '../../controller/vm_resortModelController.dart';
 import '../../controller/vm_userModelController.dart';
 
 class NewComment extends StatefulWidget {
@@ -22,8 +21,6 @@ class _NewCommentState extends State<NewComment> {
   Widget build(BuildContext context) {
 //TODO: Dependency Injection**************************************************
     UserModelController _userModelController = Get.find<UserModelController>();
-    ResortModelController _resortModelController =
-        Get.find<ResortModelController>();
     CommentModelController _commentModelController =
         Get.find<CommentModelController>();
 //TODO: Dependency Injection**************************************************
