@@ -51,7 +51,9 @@ class LicenseListPage extends StatelessWidget {
               Get.to(()=>LicenseDetailPage(
                 license: licenseList[index],
                 version: versionList[index],
-                licenseName: licenseNameList[index],));
+                licenseName: licenseNameList[index],
+                repository: repositoryList[index],
+              ));
             },
             child: Container(
               padding: EdgeInsets.only(left: 16, right: 16),
