@@ -30,11 +30,12 @@ class _MoreTabState extends State<MoreTab> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   LoginController _loginController = Get.find<LoginController>();
-  //TODO: Dependency Injection**************************************************
 
+  //TODO: Dependency Injection**************************************************
 
   @override
   Widget build(BuildContext context) {
+    Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -62,6 +63,9 @@ class _MoreTabState extends State<MoreTab> {
           color: Colors.white,
           child: ListView(
             children: [
+              SizedBox(
+                height: 30,
+              ),
               UserAccountsDrawerHeader(
                 margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                 accountName: Row(
@@ -85,11 +89,15 @@ class _MoreTabState extends State<MoreTab> {
                               isScrollControlled: true,
                               builder: (BuildContext context) {
                                 return SingleChildScrollView(
-                                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                  padding: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context)
+                                          .viewInsets
+                                          .bottom),
                                   child: Container(
                                     height: 300,
                                     child: Padding(
-                                      padding: EdgeInsets.only (left: 20, right: 20),
+                                      padding:
+                                          EdgeInsets.only(left: 20, right: 20),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -112,60 +120,74 @@ class _MoreTabState extends State<MoreTab> {
                                           Container(
                                             height: 130,
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
                                               children: [
                                                 Form(
                                                   key: _formKey,
                                                   child: TextFormField(
-                                                    cursorColor: Color(0xff377EEA),
+                                                    cursorColor:
+                                                        Color(0xff377EEA),
                                                     cursorHeight: 16,
                                                     cursorWidth: 2,
-                                                    autovalidateMode: AutovalidateMode
-                                                        .onUserInteraction,
+                                                    autovalidateMode:
+                                                        AutovalidateMode
+                                                            .onUserInteraction,
                                                     controller:
                                                         _textEditingController,
-                                                    strutStyle:
-                                                        StrutStyle(leading: 0.3),
+                                                    strutStyle: StrutStyle(
+                                                        leading: 0.3),
                                                     decoration: InputDecoration(
-                                                      errorStyle: TextStyle(
-                                                        fontSize: 12,
-                                                      ),
-                                                      hintStyle: TextStyle(
-                                                          color: Color(0xff949494),
-                                                          fontSize: 16),
-                                                      hintText: '활동명 입력',
-                                                      labelText: '활동명',
-                                                      contentPadding: EdgeInsets.only(
-                                                          top: 20,
-                                                          bottom: 20,
-                                                          left: 20,
-                                                          right: 20),
-                                                      border: OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: Color(0xFFDEDEDE)),
-                                                        borderRadius:
-                                                            BorderRadius.circular(6),
-                                                      ),
-                                                      enabledBorder: OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: Color(0xFFDEDEDE)),
-                                                        borderRadius:
-                                                        BorderRadius.circular(6),
-                                                      ),
-                                                      errorBorder: OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                          color: Color(0xFFFF3726)
+                                                        errorStyle: TextStyle(
+                                                          fontSize: 12,
                                                         ),
-                                                        borderRadius:
-                                                        BorderRadius.circular(6),
-                                                      )
-                                                    ),
+                                                        hintStyle: TextStyle(
+                                                            color: Color(
+                                                                0xff949494),
+                                                            fontSize: 16),
+                                                        hintText: '활동명 입력',
+                                                        labelText: '활동명',
+                                                        contentPadding:
+                                                            EdgeInsets.only(
+                                                                top: 20,
+                                                                bottom: 20,
+                                                                left: 20,
+                                                                right: 20),
+                                                        border:
+                                                            OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: Color(
+                                                                  0xFFDEDEDE)),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(6),
+                                                        ),
+                                                        enabledBorder:
+                                                            OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: Color(
+                                                                  0xFFDEDEDE)),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(6),
+                                                        ),
+                                                        errorBorder:
+                                                            OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: Color(
+                                                                  0xFFFF3726)),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(6),
+                                                        )),
                                                     validator: (val) {
                                                       if (val!.length <= 20 &&
                                                           val.length >= 1) {
                                                         return null;
-                                                      } else if (val.length == 0) {
+                                                      } else if (val.length ==
+                                                          0) {
                                                         return '닉네임을 입력해주세요.';
                                                       } else {
                                                         return '최대 글자 수를 초과했습니다.';
@@ -177,10 +199,15 @@ class _MoreTabState extends State<MoreTab> {
                                                   height: 6,
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsets.only(left: 19),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 19),
                                                   child: Text(
                                                     '최대 20글자까지 입력 가능합니다.',
-                                                    style: TextStyle(color: Color(0xff949494), fontSize: 12),
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xff949494),
+                                                        fontSize: 12),
                                                   ),
                                                 ),
                                               ],
@@ -234,21 +261,41 @@ class _MoreTabState extends State<MoreTab> {
                                                                     .text);
                                                         Get.snackbar(
                                                             '닉네임을 변경하였습니다.', '',
-                                                            snackPosition: SnackPosition.BOTTOM,
-                                                            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                                            backgroundColor: Colors.black87,
-                                                            colorText: Colors.white,
-                                                            duration: Duration(milliseconds: 3000));
+                                                            snackPosition:
+                                                                SnackPosition
+                                                                    .BOTTOM,
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    right: 20,
+                                                                    left: 20,
+                                                                    bottom: 12),
+                                                            backgroundColor:
+                                                                Colors.black87,
+                                                            colorText:
+                                                                Colors.white,
+                                                            duration: Duration(
+                                                                milliseconds:
+                                                                    3000));
                                                         Navigator.pop(context);
                                                       } else {
                                                         Get.snackbar(
                                                             '닉네임 저장 실패',
                                                             '올바른 닉네임을 입력해주세요.',
-                                                            snackPosition: SnackPosition.BOTTOM,
-                                                            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                                            backgroundColor: Colors.black87,
-                                                            colorText: Colors.white,
-                                                            duration: Duration(milliseconds: 3000));
+                                                            snackPosition:
+                                                                SnackPosition
+                                                                    .BOTTOM,
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    right: 20,
+                                                                    left: 20,
+                                                                    bottom: 12),
+                                                            backgroundColor:
+                                                                Colors.black87,
+                                                            colorText:
+                                                                Colors.white,
+                                                            duration: Duration(
+                                                                milliseconds:
+                                                                    3000));
                                                       }
                                                       setState(() {
                                                         isLoading = false;
@@ -294,26 +341,40 @@ class _MoreTabState extends State<MoreTab> {
                     ])
                   ],
                 ),
-                accountEmail: Text(
-                  _userModelController.userEmial!,
-                  style: TextStyle(color: Color(0xFF949494), fontSize: 13),
+                accountEmail: Stack(
+                  children: [
+                    Text(
+                      _userModelController.userEmial!,
+                      style: TextStyle(color: Color(0xFF949494), fontSize: 13),
+                    ),
+                    Align(
+                      alignment: AlignmentDirectional.bottomStart,
+                      child: Transform.translate(
+                        offset: Offset(-16, 5),
+                        child: Container(
+                          width: _size.width +32,
+                          height: 10,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
                 currentAccountPicture: (_userModelController
-                            .profileImageUrl!.isNotEmpty)
+                        .profileImageUrl!.isNotEmpty)
                     ? GestureDetector(
                         onTap: () => Get.to(() => SetProfileImage_moreTab()),
                         child: Stack(
                           children: [
-                            Obx(() =>
-                                  Container(
-                                        width: 64,
-                                        height: 64,
-                                        child: CircleAvatar(
-                                            backgroundColor: Colors.grey[100],
-                                            backgroundImage: NetworkImage(
-                                              _userModelController.profileImageUrl!,
-                                            )),
+                            Obx(() => Container(
+                                  width: 64,
+                                  height: 64,
+                                  child: CircleAvatar(
+                                      backgroundColor: Colors.grey[100],
+                                      backgroundImage: NetworkImage(
+                                        _userModelController.profileImageUrl!,
                                       )),
+                                )),
                             Positioned(
                                 bottom: 10,
                                 right: 4,
@@ -355,7 +416,7 @@ class _MoreTabState extends State<MoreTab> {
                       ),
                 decoration: BoxDecoration(color: Colors.white),
               ),
-              SizedBox(height: 24),
+              SizedBox(height: 6),
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
@@ -366,7 +427,7 @@ class _MoreTabState extends State<MoreTab> {
                   '자주가는 스키장 설정',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: 15,
                       color: Color(0xFF111111)),
                 ),
                 trailing: Image.asset(
@@ -375,25 +436,20 @@ class _MoreTabState extends State<MoreTab> {
                   width: 24,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Divider(
-                  height: 16,
-                  color: Color(0xFFF5F5F5),
-                  thickness: 1,
-                ),
-              ),
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
                 onTap: () {
-                  Get.to(()=>WebPage(url: 'https://sites.google.com/view/snowlive-termsofservice/%ED%99%88',));
+                  Get.to(() => WebPage(
+                        url:
+                            'https://sites.google.com/view/snowlive-termsofservice/%ED%99%88',
+                      ));
                 },
                 title: Text(
                   '이용약관',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: 15,
                       color: Color(0xFF111111)),
                 ),
                 trailing: Image.asset(
@@ -402,66 +458,45 @@ class _MoreTabState extends State<MoreTab> {
                   width: 24,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Divider(
-                  height: 16,
-                  color: Color(0xFFF5F5F5),
-                  thickness: 1,
-                ),
-              ),
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
                 onTap: () {
-                  Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88',));
+                  Get.to(() => WebPage(
+                        url:
+                            'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88',
+                      ));
                 },
                 title: Text(
                   '개인정보처리방침',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: 15,
                       color: Color(0xFF111111)),
                 ),
                 trailing: Image.asset(
                   'assets/imgs/icons/icon_arrow_g.png',
                   height: 24,
                   width: 24,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Divider(
-                  height: 16,
-                  color: Color(0xFFF5F5F5),
-                  thickness: 1,
                 ),
               ),
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
                 onTap: () {
-                  Get.to(()=>LicenseListPage());
+                  Get.to(() => LicenseListPage());
                 },
                 title: Text(
                   '오픈소스라이선스',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: 15,
                       color: Color(0xFF111111)),
                 ),
                 trailing: Image.asset(
                   'assets/imgs/icons/icon_arrow_g.png',
                   height: 24,
                   width: 24,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Divider(
-                  height: 16,
-                  color: Color(0xFFF5F5F5),
-                  thickness: 1,
                 ),
               ),
               ListTile(
@@ -474,7 +509,7 @@ class _MoreTabState extends State<MoreTab> {
                   'SNOWLIVE',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: 15,
                       color: Color(0xFF111111)),
                 ),
                 trailing: Image.asset(
@@ -484,26 +519,11 @@ class _MoreTabState extends State<MoreTab> {
                 ),
               ),
               SizedBox(
-                height: 100,
+                height: _size.height / 7,
               ),
               Container(
                 child: Column(
                   children: [
-                    Image.asset(
-                      'assets/imgs/logos/snowliveLogo_black.png',
-                      width: 112,
-                      height: 38,
-                    ),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    Text(
-                      'Riding with Snowlive',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -516,19 +536,24 @@ class _MoreTabState extends State<MoreTab> {
                                     color: Colors.white,
                                     height: 180,
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20.0),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           SizedBox(
                                             height: 30,
                                           ),
-                                          Text('정말 탈퇴하시겠습니까?',
+                                          Text(
+                                            '정말 탈퇴하시겠습니까?',
                                             style: TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold,
-                                                color: Color(0xFF111111)),),
+                                                color: Color(0xFF111111)),
+                                          ),
                                           SizedBox(
                                             height: 30,
                                           ),
@@ -541,20 +566,25 @@ class _MoreTabState extends State<MoreTab> {
                                                   onPressed: () {
                                                     Navigator.pop(context);
                                                   },
-                                                  child: Text('취소',
+                                                  child: Text(
+                                                    '취소',
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 15,
-                                                        fontWeight: FontWeight.bold),),
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
                                                   style: TextButton.styleFrom(
-                                                      splashFactory:
-                                                      InkRipple.splashFactory,
+                                                      splashFactory: InkRipple
+                                                          .splashFactory,
                                                       elevation: 0,
-                                                      minimumSize: Size(100, 56),
+                                                      minimumSize:
+                                                          Size(100, 56),
                                                       backgroundColor:
-                                                      Color(0xff555555),
-                                                      padding: EdgeInsets.symmetric(
-                                                          horizontal: 0)),
+                                                          Color(0xff555555),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 0)),
                                                 ),
                                               ),
                                               SizedBox(
@@ -562,24 +592,31 @@ class _MoreTabState extends State<MoreTab> {
                                               ),
                                               Expanded(
                                                 child: ElevatedButton(
-                                                  onPressed: () async{
-                                                    await _loginController.deleteUser(
-                                                        _userModelController.uid);
+                                                  onPressed: () async {
+                                                    await _loginController
+                                                        .deleteUser(
+                                                            _userModelController
+                                                                .uid);
                                                   },
-                                                  child: Text('확인',
+                                                  child: Text(
+                                                    '확인',
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 15,
-                                                        fontWeight: FontWeight.bold),),
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
                                                   style: TextButton.styleFrom(
-                                                      splashFactory:
-                                                      InkRipple.splashFactory,
+                                                      splashFactory: InkRipple
+                                                          .splashFactory,
                                                       elevation: 0,
-                                                      minimumSize: Size(100, 56),
+                                                      minimumSize:
+                                                          Size(100, 56),
                                                       backgroundColor:
-                                                      Color(0xff2C97FB),
-                                                      padding: EdgeInsets.symmetric(
-                                                          horizontal: 0)),
+                                                          Color(0xff2C97FB),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 0)),
                                                 ),
                                               ),
                                             ],
@@ -590,17 +627,21 @@ class _MoreTabState extends State<MoreTab> {
                                   );
                                 });
                           },
-                          child: Text(
-                            '회원탈퇴',
-                            style: TextStyle(
-                                color: Color(0xFF666666),
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 2),
+                            child: Text(
+                              '회원탈퇴',
+                              style: TextStyle(
+                                  color: Color(0xFF949494),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey[100],
+                              side: BorderSide(color: Colors.black12),
+                              backgroundColor: Colors.transparent,
                               elevation: 0,
-                              minimumSize: Size(170, 50)),
+                              minimumSize: Size(_size.width / 2 - 26, 46)),
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -611,19 +652,24 @@ class _MoreTabState extends State<MoreTab> {
                                     color: Colors.white,
                                     height: 180,
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           SizedBox(
                                             height: 30,
                                           ),
-                                          Text('로그아웃 하시겠습니까?',
+                                          Text(
+                                            '로그아웃 하시겠습니까?',
                                             style: TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold,
-                                                color: Color(0xFF111111)),),
+                                                color: Color(0xFF111111)),
+                                          ),
                                           SizedBox(
                                             height: 30,
                                           ),
@@ -636,20 +682,25 @@ class _MoreTabState extends State<MoreTab> {
                                                   onPressed: () {
                                                     Navigator.pop(context);
                                                   },
-                                                  child: Text('취소',
+                                                  child: Text(
+                                                    '취소',
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 15,
-                                                        fontWeight: FontWeight.bold),),
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
                                                   style: TextButton.styleFrom(
-                                                      splashFactory:
-                                                      InkRipple.splashFactory,
+                                                      splashFactory: InkRipple
+                                                          .splashFactory,
                                                       elevation: 0,
-                                                      minimumSize: Size(100, 56),
+                                                      minimumSize:
+                                                          Size(100, 56),
                                                       backgroundColor:
-                                                      Color(0xff555555),
-                                                      padding: EdgeInsets.symmetric(
-                                                          horizontal: 0)),
+                                                          Color(0xff555555),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 0)),
                                                 ),
                                               ),
                                               SizedBox(
@@ -657,23 +708,29 @@ class _MoreTabState extends State<MoreTab> {
                                               ),
                                               Expanded(
                                                 child: ElevatedButton(
-                                                  onPressed: () async{
-                                                    await _loginController.signOut();
+                                                  onPressed: () async {
+                                                    await _loginController
+                                                        .signOut();
                                                   },
-                                                  child: Text('확인',
+                                                  child: Text(
+                                                    '확인',
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 15,
-                                                        fontWeight: FontWeight.bold),),
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
                                                   style: TextButton.styleFrom(
-                                                      splashFactory:
-                                                      InkRipple.splashFactory,
+                                                      splashFactory: InkRipple
+                                                          .splashFactory,
                                                       elevation: 0,
-                                                      minimumSize: Size(100, 56),
+                                                      minimumSize:
+                                                          Size(100, 56),
                                                       backgroundColor:
-                                                      Color(0xff2C97FB),
-                                                      padding: EdgeInsets.symmetric(
-                                                          horizontal: 0)),
+                                                          Color(0xff2C97FB),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 0)),
                                                 ),
                                               ),
                                             ],
@@ -684,17 +741,21 @@ class _MoreTabState extends State<MoreTab> {
                                   );
                                 });
                           },
-                          child: Text(
-                            '로그아웃',
-                            style: TextStyle(
-                                color: Color(0xFF666666),
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 2),
+                            child: Text(
+                              '로그아웃',
+                              style: TextStyle(
+                                  color: Color(0xFF949494),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey[100],
+                              side: BorderSide(color: Colors.black12),
+                              backgroundColor: Colors.transparent,
                               elevation: 0,
-                              minimumSize: Size(170, 50)),
+                              minimumSize: Size(_size.width / 2 - 26, 46)),
                         ),
                       ],
                     ),

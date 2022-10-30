@@ -56,11 +56,11 @@ class _MainHomeState extends State<MainHome> {
             ),
             BottomNavigationBarItem(
               icon: Image.asset(
-                'assets/imgs/icons/icon_weather_off.png',
+                'assets/imgs/icons/icon_resort_off.png',
                 scale: 4,
               ),
               activeIcon: Image.asset(
-                  'assets/imgs/icons/icon_weather_on.png',
+                  'assets/imgs/icons/icon_resort_on.png',
                   scale: 4),
               label: 'Weather',
             ),
