@@ -87,7 +87,7 @@ class LoginButton extends StatelessWidget {
               print('기존회원 메인홈 이동');
               await _userModelController.getCurrentUser(auth.currentUser!.uid);
               CustomFullScreenDialog.cancelDialog();
-              Get.offAll(()=>MainHome());
+              Get.offAll(()=>LoadingPage());
             }else{
               print('신규회원 온보딩코스 진입');
               await _loginController.createUserDoc(0);
@@ -103,7 +103,7 @@ class LoginButton extends StatelessWidget {
               print('기존회원 메인홈 이동');
               await _userModelController.getCurrentUser(auth.currentUser!.uid);
               CustomFullScreenDialog.cancelDialog();
-              Get.offAll(()=>MainHome());
+              Get.offAll(()=>LoadingPage());
             }else{
               print('신규회원 온보딩코스 진입');
               await _loginController.createUserDoc(0);

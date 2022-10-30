@@ -96,7 +96,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
               Column(
                 children: [
                   Text(
-                    '자주가는 리조트 \n선택해주세요.',
+                    '자주가는 리조트를 \n선택해주세요.',
                     style:
                     TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
