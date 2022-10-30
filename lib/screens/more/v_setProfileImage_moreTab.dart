@@ -155,6 +155,46 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                             CustomFullScreenDialog.showDialog();
                                             try {
                                               _imageFile =
+                                              await _imageController
+                                                  .getSingleImage(
+                                                  ImageSource.camera);
+                                              CustomFullScreenDialog
+                                                  .cancelDialog();
+                                              profileImage = true;
+                                              setState(() {});
+                                              Navigator.pop(context);
+                                            } catch (e) {
+                                              CustomFullScreenDialog
+                                                  .cancelDialog();
+                                            }
+                                          },
+                                          child: Text(
+                                            '사진 촬영',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          style: TextButton.styleFrom(
+                                              splashFactory:
+                                              InkRipple.splashFactory,
+                                              elevation: 0,
+                                              minimumSize: Size(100, 56),
+                                              backgroundColor:
+                                              Color(0xff555555),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 0)),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            CustomFullScreenDialog.showDialog();
+                                            try {
+                                              _imageFile =
                                                   await _imageController
                                                       .getSingleImage(
                                                           ImageSource.gallery);
@@ -181,51 +221,12 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                               elevation: 0,
                                               minimumSize: Size(100, 56),
                                               backgroundColor:
-                                                  Color(0xff555555),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 0)),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            CustomFullScreenDialog.showDialog();
-                                            try {
-                                              _imageFile =
-                                                  await _imageController
-                                                      .getSingleImage(
-                                                          ImageSource.camera);
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                              profileImage = true;
-                                              setState(() {});
-                                              Navigator.pop(context);
-                                            } catch (e) {
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                            }
-                                          },
-                                          child: Text(
-                                            '사진 촬영',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                              splashFactory:
-                                                  InkRipple.splashFactory,
-                                              elevation: 0,
-                                              minimumSize: Size(100, 56),
-                                              backgroundColor:
                                                   Color(0xff2C97FB),
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 0)),
                                         ),
                                       ),
+
                                     ],
                                   ),
                                 ),
@@ -312,51 +313,9 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                             CustomFullScreenDialog.showDialog();
                                             try {
                                               _imageFile =
-                                                  await _imageController
-                                                      .getSingleImage(
-                                                          ImageSource.gallery);
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                              print(_userModelController
-                                                  .profileImageUrl);
-                                              profileImage = true;
-                                              setState(() {});
-                                              Navigator.pop(context);
-                                            } catch (e) {
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                            }
-                                          },
-                                          child: Text(
-                                            '앨범에서 선택',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                              splashFactory:
-                                                  InkRipple.splashFactory,
-                                              elevation: 0,
-                                              minimumSize: Size(100, 56),
-                                              backgroundColor:
-                                                  Color(0xff555555),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 0)),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            CustomFullScreenDialog.showDialog();
-                                            try {
-                                              _imageFile =
-                                                  await _imageController
-                                                      .getSingleImage(
-                                                          ImageSource.camera);
+                                              await _imageController
+                                                  .getSingleImage(
+                                                  ImageSource.camera);
                                               CustomFullScreenDialog
                                                   .cancelDialog();
                                               profileImage = true;
@@ -376,11 +335,51 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                           ),
                                           style: TextButton.styleFrom(
                                               splashFactory:
-                                                  InkRipple.splashFactory,
+                                              InkRipple.splashFactory,
                                               elevation: 0,
                                               minimumSize: Size(100, 56),
                                               backgroundColor:
-                                                  Color(0xff2C97FB),
+                                              Color(0xff555555),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 0)),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            CustomFullScreenDialog.showDialog();
+                                            try {
+                                              _imageFile =
+                                              await _imageController
+                                                  .getSingleImage(
+                                                  ImageSource.gallery);
+                                              CustomFullScreenDialog
+                                                  .cancelDialog();
+                                              profileImage = true;
+                                              setState(() {});
+                                              Navigator.pop(context);
+                                            } catch (e) {
+                                              CustomFullScreenDialog
+                                                  .cancelDialog();
+                                            }
+                                          },
+                                          child: Text(
+                                            '앨범에서 선택',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          style: TextButton.styleFrom(
+                                              splashFactory:
+                                              InkRipple.splashFactory,
+                                              elevation: 0,
+                                              minimumSize: Size(100, 56),
+                                              backgroundColor:
+                                              Color(0xff2C97FB),
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 0)),
                                         ),
@@ -449,6 +448,12 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                         .updateProfileImageUrl(profileImageUrl);
                     CustomFullScreenDialog.cancelDialog();
                     Navigator.pop(context);
+                    Get.snackbar('프로필 이미지', '선택한 이미지로 변경이 완료되었습니다.',
+                        margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.black87,
+                        colorText: Colors.white,
+                        duration: Duration(milliseconds: 3000));
                   } else {
                     null;
                   }
@@ -469,6 +474,40 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                     backgroundColor: (_imageFile != null)
                         ? Color(0xff377EEA)
                         : Color(0xffDEDEDE)),
+              ),
+            ),
+            SizedBox(
+              height: 12,
+            ),
+            Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                    CustomFullScreenDialog.showDialog();
+                    await _userModelController
+                        .deleteProfileImageUrl();
+                    CustomFullScreenDialog.cancelDialog();
+                    Navigator.pop(context);
+                    Get.snackbar('프로필 이미지', '기본 이미지로 변경이 완료되었습니다.',
+                        margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.black87,
+                        colorText: Colors.white,
+                        duration: Duration(milliseconds: 3000));
+
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Text(
+                    '기본 이미지로 변경',
+                    style: TextStyle(fontFamily: 'NotoSansKR', color: Color(0xff949494), fontSize: 16, fontWeight: FontWeight.w300),
+
+                  ),
+                ),
+                style: TextButton.styleFrom(
+                    elevation: 0,
+                    splashFactory: InkRipple.splashFactory,
+                    minimumSize: Size(1000, 41),
+                    backgroundColor: Colors.white),
               ),
             ),
           ],
