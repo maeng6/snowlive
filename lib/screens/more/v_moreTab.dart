@@ -347,17 +347,6 @@ class _MoreTabState extends State<MoreTab> {
                       _userModelController.userEmial!,
                       style: TextStyle(color: Color(0xFF949494), fontSize: 13),
                     ),
-                    Align(
-                      alignment: AlignmentDirectional.bottomStart,
-                      child: Transform.translate(
-                        offset: Offset(-16, 5),
-                        child: Container(
-                          width: _size.width +32,
-                          height: 10,
-                          color: Colors.white,
-                        ),
-                      ),
-                    )
                   ],
                 ),
                 currentAccountPicture: (_userModelController
