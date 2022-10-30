@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 class LicenseDetailPage extends StatelessWidget {
   const LicenseDetailPage({Key? key,
-    required this.licenseName, required this.version, required this.license}) : super(key: key);
+    required this.licenseName, required this.version, required this.license, required this.repository,}) : super(key: key);
 
   final String? licenseName;
   final String? version;
   final String? license;
+  final String? repository;
 
   String _bodyText(){
     return license!.split('\n').map((line) {
@@ -39,7 +40,15 @@ class LicenseDetailPage extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: SingleChildScrollView(
           child: Container(
-            child: Text(_bodyText()),
+            child: Column(
+              children: [
+                Text('$repository'),
+                SizedBox(
+                  height: 30,
+                ),
+                Text(_bodyText()),
+              ],
+            ),
           ),
         ),
       )
