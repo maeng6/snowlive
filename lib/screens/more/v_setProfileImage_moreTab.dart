@@ -482,17 +482,115 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                    CustomFullScreenDialog.showDialog();
-                    await _userModelController
-                        .deleteProfileImageUrl();
-                    CustomFullScreenDialog.cancelDialog();
-                    Navigator.pop(context);
-                    Get.snackbar('프로필 이미지', '기본 이미지로 변경이 완료되었습니다.',
-                        margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Colors.black87,
-                        colorText: Colors.white,
-                        duration: Duration(milliseconds: 3000));
+                  showMaterialModalBottomSheet(
+                      context: context,
+                      builder:  (context) => Container(
+                        height: 200,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24.0),
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 30,
+                                  ),
+                                  Text(
+                                    '기본 이미지로 변경하시겠습니까?',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF111111)),
+                                  ),
+                                  SizedBox(
+                                    height: 44,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20),
+                              child: Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        '취소',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      style: TextButton.styleFrom(
+                                          splashFactory:
+                                          InkRipple.splashFactory,
+                                          elevation: 0,
+                                          minimumSize: Size(100, 56),
+                                          backgroundColor:
+                                          Color(0xff555555),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 0)),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        CustomFullScreenDialog.showDialog();
+                                        await _userModelController
+                                            .deleteProfileImageUrl();
+                                        CustomFullScreenDialog.cancelDialog();
+                                        Navigator.pop(context);
+                                        Get.snackbar('프로필 이미지', '기본 이미지로 변경이 완료되었습니다.',
+                                            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                            snackPosition: SnackPosition.BOTTOM,
+                                            backgroundColor: Colors.black87,
+                                            colorText: Colors.white,
+                                            duration: Duration(milliseconds: 3000));
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        '변경하기',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      style: TextButton.styleFrom(
+                                          splashFactory:
+                                          InkRipple.splashFactory,
+                                          elevation: 0,
+                                          minimumSize: Size(100, 56),
+                                          backgroundColor:
+                                          Color(0xff2C97FB),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 0)),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            )
+                          ],
+                        ),
+                      ),
+                  );
 
                 },
                 child: Padding(
