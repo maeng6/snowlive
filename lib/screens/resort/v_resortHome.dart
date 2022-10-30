@@ -1045,8 +1045,37 @@ class _ResortHomeState extends State<ResortHome> {
                                             horizontal: 14, vertical: 5),
                                       ),
                                     ),
-                                    SizedBox(
-                                      height: 20,
+                                    Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom:24.0),
+                                            child: Column(
+                                              children: [
+                                                Text('Copyright by 134CreativeLab 2022.',
+                                                  style: TextStyle(
+                                                    color: Color(0xFFc8c8c8),
+                                                    fontWeight: FontWeight.normal,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 2,
+                                                ),
+                                                Text('All right reserved.',
+                                                  style: TextStyle(
+                                                    color: Color(0xFFc8c8c8),
+                                                    fontWeight: FontWeight.normal,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
