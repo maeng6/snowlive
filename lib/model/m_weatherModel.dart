@@ -21,8 +21,7 @@ class WeatherModel {
   var maxTemp;
   var minTemp;
   var pty;
-  Widget? weatherIcons;
-  Color? weatherColors;
+
 
 
   //오늘 날짜 19900418 형태로 리턴
@@ -47,13 +46,14 @@ class WeatherModel {
         getWeatherJson["response"]["body"]["items"]["item"][7]["obsrValue"];
     this.wet =
         getWeatherJson["response"]["body"]["items"]["item"][1]["obsrValue"];
+    this.pty =
+    getWeatherJson['response']['body']['items']['item'][0]['obsrValue'];
     var getMaxMinTempJson = await getMaxMinJsonData(nX, nY);
     this.maxTemp = getMaxMinTempJson["response"]["body"]["items"]["item"][157]
         ["fcstValue"];
     this.minTemp =
         getMaxMinTempJson["response"]["body"]["items"]["item"][48]["fcstValue"];
-    this.pty =
-        getWeatherJson['response']['body']['items']['item'][0]['obsrValue'];
+
 
     Map<String, dynamic> weatherInfoMap = {
       'temp': this.temp,
@@ -65,8 +65,6 @@ class WeatherModel {
       'pty': this.pty
     };
 
-    this.weatherIcons = getWeatherIcon();
-    this.weatherColors = getWeatherColor();
 
     return weatherInfoMap;
 
@@ -139,85 +137,6 @@ class WeatherModel {
       String jsonData = response.body;
       var parsingData = await jsonDecode(jsonData);
       return parsingData;
-    }
-  }
-
-  Widget getWeatherIcon() {
-    if (pty == 0 &&  _now.hour <= 1800 || _now.hour > 0600) {
-      return Image.asset(
-        'assets/imgs/icons/icon_weather_sun.png',
-        width: 40,
-        height: 40,
-      );
-    } else if (pty == 0 && _now.hour <= 2400 || _now.hour > 1800 || _now.hour > 0100 || _now.hour <= 0600) {
-      return Image.asset(
-        'assets/imgs/weather/icon_weather.png',
-        width: 40,
-        height: 40,
-      );
-    } else if (pty == 1) {
-      return Image.asset(
-        'assets/imgs/icons/icon_weather_rain.png',
-        width: 40,
-        height: 40,
-      );
-    } else if (pty == 2) {
-      return Image.asset(
-        'assets/imgs/icons/icon_weather_rain.png',
-        width: 40,
-        height: 40,
-      );
-    } else if (pty == 3) {
-      return Image.asset(
-        'assets/imgs/icons/icon_weather_snow.png',
-        width: 40,
-        height: 40,
-      );
-    } else if (pty == 5) {
-      return Image.asset(
-        'assets/imgs/icons/icon_weather_rain.png',
-        width: 40,
-        height: 40,
-      );
-    } else if (pty == 6) {
-      return Image.asset(
-        'assets/imgs/icons/icon_weather_rain.png',
-        width: 40,
-        height: 40,
-      );
-    } else if (pty == 7) {
-      return Image.asset(
-        'assets/imgs/weather/icon_weather_snow.png',
-        width: 40,
-        height: 40,
-      );
-    } else {
-      return Container(
-        width: 40,
-        height: 40,
-      );
-    }
-  }
-
-  dynamic getWeatherColor() {
-    if (pty == 0 && _now.hour <= 1800 || _now.hour > 0600) {
-      return Color(0xFF3D83ED);
-    } else if (pty == 0 && _now.hour <= 2400 || _now.hour > 1800 || _now.hour > 0100 || _now.hour <= 0600) {
-      return Color(0xFF32314D);
-    } else if (pty == 1) {
-      return Color(0xFF3F668A);
-    } else if (pty == 2) {
-      return Color(0xFF3F668A);
-    } else if (pty == 3) {
-      return Color(0xFFC4D9ED);
-    } else if (pty == 5) {
-      return Color(0xFF3F668A);
-    } else if (pty == 6) {
-      return Color(0xFF3F668A);
-    } else if (pty == 7) {
-      return Color(0xFFC4D9ED);
-    } else {
-      return Color(0xFF3D83ED);
     }
   }
 }

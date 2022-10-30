@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
@@ -37,6 +38,90 @@ class _ResortHomeState extends State<ResortHome> {
 
   List<bool?> _isSelected = List<bool?>.filled(13, false);
   bool _ifWeatherError = false;
+  var _now = DateTime.now();
+
+
+  // 날씨 아이콘!!
+  Widget? getWeatherIcon() {
+    String _timeString = DateFormat('HH').format(_now);
+    int _timeInt = int.parse(_timeString);
+    if (_resortModelController.resortPty == '0'){
+      if(_timeInt < 7 || _timeInt > 19){
+        return Image.asset(
+          'assets/imgs/weather/icon_weather.png',
+          width: 40,
+          height: 40,
+        );
+      }else{
+        return Image.asset(
+          'assets/imgs/icons/icon_weather_sun.png',
+          width: 40,
+          height: 40,
+        );
+      }
+    } else if(_resortModelController.resortPty == '1'){
+      return Image.asset(
+        'assets/imgs/icons/icon_weather_rain.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (_resortModelController.resortPty == '2') {
+      return Image.asset(
+        'assets/imgs/icons/icon_weather_rain.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (_resortModelController.resortPty == '3') {
+      return Image.asset(
+        'assets/imgs/icons/icon_weather_snow.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (_resortModelController.resortPty == '5') {
+      return Image.asset(
+        'assets/imgs/icons/icon_weather_rain.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (_resortModelController.resortPty == '6') {
+      return Image.asset(
+        'assets/imgs/icons/icon_weather_rain.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (_resortModelController.resortPty == '7') {
+      return Image.asset(
+        'assets/imgs/weather/icon_weather_snow.png',
+        width: 40,
+        height: 40,
+      );
+    }
+  }
+  // 날씨 색깔!!
+  Color? getWeatherColor() {
+    String _timeString = DateFormat('HH').format(_now);
+    int _timeInt = int.parse(_timeString);
+    if (_resortModelController.resortPty == '0') {
+      if (_timeInt < 7 || _timeInt > 19) {
+        return Color(0xFF32314D);
+      }else {
+        return Color(0xFF3D83ED);
+      }
+    } else if (_resortModelController.resortPty == '1') {
+      return Color(0xFF3F668A);
+    } else if (_resortModelController.resortPty == '2') {
+      return Color(0xFF3F668A);
+    } else if (_resortModelController.resortPty == '3') {
+      return Color(0xFFC4D9ED);
+    } else if (_resortModelController.resortPty == '5') {
+      return Color(0xFF3F668A);
+    } else if (_resortModelController.resortPty == '6') {
+      return Color(0xFF3F668A);
+    } else if (_resortModelController.resortPty == '7') {
+      return Color(0xFFC4D9ED);
+    }
+  }
+
 
 
   @override
@@ -94,6 +179,7 @@ class _ResortHomeState extends State<ResortHome> {
 
   @override
   Widget build(BuildContext context) {
+
 
     SystemChrome.setEnabledSystemUIMode(
         SystemUiMode.manual,
@@ -187,7 +273,7 @@ class _ResortHomeState extends State<ResortHome> {
                                 Container(
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(14),
-                                      color: _resortModelController.weatherColors),
+                                      color: getWeatherColor()),
                                   alignment: Alignment.center,
                                   width: double.infinity,
                                   child: Column(
@@ -306,7 +392,7 @@ class _ResortHomeState extends State<ResortHome> {
                                               ),
                                               Transform.translate(
                                                 offset: Offset(0,-2),
-                                                child: _resortModelController.weatherIcons
+                                                child: getWeatherIcon()
                                               ),
                                             ],
                                           ),
