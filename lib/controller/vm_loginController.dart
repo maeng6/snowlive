@@ -66,6 +66,12 @@ class LoginController extends GetxController {
     this.loginUid = await FlutterSecureStorage().read(key: 'uid');
   }
 
+  Future<void> loginFail() async {
+    await FlutterSecureStorage()
+        .write(key: 'login', value: 'false');
+    await FlutterSecureStorage().delete(key: 'uid');
+  }
+
   Future<void> getLoginAgainUser() async{
 
   }
@@ -94,11 +100,8 @@ class LoginController extends GetxController {
       await FlutterSecureStorage().delete(key: 'uid');
       CustomFullScreenDialog.cancelDialog();
     }catch(e){
-      User user = FirebaseAuth.instance.currentUser!;
-      await user.delete();
-      await FlutterSecureStorage().delete(key: 'login');
-      await FlutterSecureStorage().delete(key: 'uid');
       CustomFullScreenDialog.cancelDialog();
+      Get.back();
     }
     CustomFullScreenDialog.cancelDialog();
   }

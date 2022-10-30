@@ -346,7 +346,9 @@ class _ResortHomeState extends State<ResortHome> {
                                             () => Padding(
                                               padding: const EdgeInsets.only(
                                                   right: 4, left: 12),
-                                              child: Text(
+                                              child:
+                                              (_resortModelController.isLoading == true)? CircularProgressIndicator()
+                                              :Text(
                                                 '${_resortModelController.resortTemp!}', //u00B0
                                                 style: GoogleFonts.bebasNeue(
                                                     fontSize: 110,
