@@ -39,7 +39,7 @@ class _LoadingPageState extends State<LoadingPage> {
         print('uid : ${_logInController.loginUid}');
         print('login ? : ${_logInController.loginKey}');
         if (snapshot.connectionState == ConnectionState.done &&
-            _logInController.loginKey=='true' && _logInController.loginUid!.isNotEmpty) {
+            _logInController.loginKey=='true' && _logInController.loginUid!=null) {
           return FutureBuilder(
               future: _userModelController.getCurrentUser(_logInController.loginUid),
               builder: (context, AsyncSnapshot<dynamic> snapshot){
@@ -52,8 +52,16 @@ class _LoadingPageState extends State<LoadingPage> {
               }
           );
         }  else if (snapshot.connectionState == ConnectionState.done &&
-            _logInController.loginKey=='false' && _logInController.loginUid!.isNotEmpty) {
+            _logInController.loginKey=='false' && _logInController.loginUid!=null) {
           return LoginPage();
+        } else if(snapshot.connectionState == ConnectionState.done &&
+            _logInController.loginKey=='true' && _logInController.loginUid != null){
+          return FutureBuilder(
+              future: _logInController.loginFail(),
+              builder: (context, AsyncSnapshot<dynamic> snapshot){
+                return LoginPage();
+              }
+          );
         }
         return LoginPage();
       },
