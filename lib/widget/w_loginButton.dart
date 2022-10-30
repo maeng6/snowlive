@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_loadingPage.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
@@ -56,10 +57,12 @@ class LoginButton extends StatelessWidget {
         try {
           if (signInMethod == SignInMethod.google) {
             await _loginController.signInWithGoogle();
+            await FlutterSecureStorage()
+                .write(key: 'login', value: 'true');
             try {
               if (_userModelController.exist! == true) {
                 print('기존회원 이동');
-                await _userModelController.getCurrentUser();
+                await _userModelController.getCurrentUser(auth.currentUser!.uid);
                 CustomFullScreenDialog.cancelDialog();
                 Get.offAll(() => LoadingPage());
               } else {
@@ -78,9 +81,11 @@ class LoginButton extends StatelessWidget {
             }
           } else if (signInMethod == SignInMethod.facebook) {
             await _loginController.signInWithFacebook();
+            await FlutterSecureStorage()
+                .write(key: 'login', value: 'true');
             if( _userModelController.exist! == true) {
               print('기존회원 메인홈 이동');
-              await _userModelController.getCurrentUser();
+              await _userModelController.getCurrentUser(auth.currentUser!.uid);
               CustomFullScreenDialog.cancelDialog();
               Get.offAll(()=>MainHome());
             }else{
@@ -92,9 +97,11 @@ class LoginButton extends StatelessWidget {
             }
           } else {
             await _loginController.signInWithApple();
+            await FlutterSecureStorage()
+                .write(key: 'login', value: 'true');
             if( _userModelController.exist! == true) {
               print('기존회원 메인홈 이동');
-              await _userModelController.getCurrentUser();
+              await _userModelController.getCurrentUser(auth.currentUser!.uid);
               CustomFullScreenDialog.cancelDialog();
               Get.offAll(()=>MainHome());
             }else{

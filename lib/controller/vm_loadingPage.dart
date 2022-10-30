@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
+import 'package:snowlive3/controller/vm_loginController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/screens/v_loginpage.dart';
+import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key? key}) : super(key: key);
@@ -21,36 +23,37 @@ class _LoadingPageState extends State<LoadingPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('1');
     //TODO: Dependency Injection************************************************
     Get.put(ResortModelController(), permanent: true);
+    ResortModelController _resortModelController = ResortModelController();
     Get.put(UserModelController(), permanent: true);
+    UserModelController _userModelController = UserModelController();
     Get.put(GetDateTimeController(), permanent: true);
+    LoginController _logInController = LoginController();
     //TODO: Dependency Injection************************************************
 
-
     return FutureBuilder(
-      future: FlutterSecureStorage().read(key: 'login'),
+      future: _logInController.loginAgain(),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
-        print('login상태냐?? -> ${snapshot.hasData}');
+        print('uid : ${_logInController.loginUid}');
+        print('login ? : ${_logInController.loginKey}');
         if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.hasData == true) {
-          print('1');
-          return MainHome();
-        } else {
-          if(FirebaseAuth.instance.currentUser != null) {
-            print(FirebaseAuth.instance.currentUser != null);
-            return FutureBuilder(
-                future:FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser!.uid).delete(),
-                builder: (context, AsyncSnapshot<dynamic> snapshot){
+            _logInController.loginKey=='true' && _logInController.loginUid!.isNotEmpty) {
+          return FutureBuilder(
+              future: _userModelController.getCurrentUser(_logInController.loginUid),
+              builder: (context, AsyncSnapshot<dynamic> snapshot){
                   return FutureBuilder(
-                      future: FirebaseAuth.instance.currentUser!.delete(),
+                      future: _resortModelController.getSelectedResort(_userModelController.favoriteResort),
                       builder: (context, AsyncSnapshot<dynamic> snapshot){
-                        return LoginPage();
+                          return MainHome();
                       }
                   );
-                }
-            );
-          }else LoginPage();
+              }
+          );
+        }  else if (snapshot.connectionState == ConnectionState.done &&
+            _logInController.loginKey=='false' && _logInController.loginUid!.isNotEmpty) {
+          return LoginPage();
         }
         return LoginPage();
       },

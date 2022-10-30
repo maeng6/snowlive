@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snowlive3/model/m_userModel.dart';
@@ -28,9 +29,10 @@ class UserModelController extends GetxController{
   bool? get exist => _exist!.value;
 
   @override
-  void onInit()  {
+  void onInit()  async{
     // TODO: implement onInit
-     getCurrentUser();
+    String? loginUid = await FlutterSecureStorage().read(key: 'uid');
+    getCurrentUser(loginUid);
     super.onInit();
   }
 
@@ -40,10 +42,10 @@ class UserModelController extends GetxController{
     this._favoriteSaved = localFavorite;
   }
 
-  Future<void> getCurrentUser() async{
+  Future<void> getCurrentUser(uid) async{
     if(FirebaseAuth.instance.currentUser != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String uid = FirebaseAuth.instance.currentUser!.uid;
+      //String uid = FirebaseAuth.instance.currentUser!.uid;
       UserModel userModel = await UserModel().getUserModel(uid);
       this._uid!.value = userModel.uid!;
       this._displayName!.value = userModel.displayName!;
@@ -62,7 +64,7 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(uid).update({
       'profileImageUrl': url,
     });
-    await getCurrentUser();
+    await getCurrentUser(auth.currentUser!.uid);
   }
 
   Future<void> deleteProfileImageUrl() async {
@@ -71,7 +73,7 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(uid).update({
       'profileImageUrl': '',
     });
-    await getCurrentUser();
+    await getCurrentUser(auth.currentUser!.uid);
   }
 
   Future<void> updateNickname(index) async {
@@ -80,7 +82,7 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(uid).update({
       'displayName': index,
     });
-    await getCurrentUser();
+    await getCurrentUser(auth.currentUser!.uid);
   } //선택한 리조트를 파베유저문서에 업데이트
   Future<void> updateFavoriteResort(index) async {
     final User? user = auth.currentUser;
@@ -88,7 +90,7 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(uid).update({
       'favoriteResort': index,
     });
-    await getCurrentUser();
+    await getCurrentUser(auth.currentUser!.uid);
     await getLocalSave();
   } //선택한 리조트를 파베유저문서에 업데이트
   Future<void> updateInstantResort(index) async {
@@ -97,6 +99,6 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(uid).update({
       'instantResort': index,
     });
-    await getCurrentUser();
+    await getCurrentUser(auth.currentUser!.uid);
   } //선택한 리조트를 파베유저문서에 업데이트
 }

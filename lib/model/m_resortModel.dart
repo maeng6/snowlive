@@ -27,8 +27,8 @@ class ResortModel {
   ResortModel({this.index,this.resortName, this.resortAddress, this.resortUrl, this.webcamUrl,
     this.slopeUrl, this.naverUrl, this.latitude, this.longitude, this.nX, this.nY});
 
-  ResortModel resortModelSelection(int num) {
-    ResortModel selectedResort = resortList[num];
+  ResortModel resortModelSelection(int? num) {
+    ResortModel selectedResort = resortList[num!];
     return selectedResort;
   }//유저가 선택한 리조트 모델 가져오기
 

@@ -32,7 +32,7 @@ class ResortModelController extends GetxController{
   dynamic _weatherIcons;
 
 
-  Future<void> getSelectedResort(int resortNum) async{
+  Future<void> getSelectedResort(int? resortNum) async{
     isLoading.value = true;
     ResortModel resortModel = ResortModel();
     WeatherModel weatherModel = WeatherModel();
