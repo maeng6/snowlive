@@ -33,8 +33,7 @@ class resortTab extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding:
-             EdgeInsets.only(top: _statusBarSize, left: 16, right: 16),
+        padding: EdgeInsets.only(top: _statusBarSize, left: 16, right: 16),
         child: resortListView(_size),
       ),
     );
@@ -42,11 +41,16 @@ class resortTab extends StatelessWidget {
 
   ListView resortListView(Size _size) {
     return ListView.separated(
-      padding: EdgeInsets.only(top: 68, bottom: 40),
+      padding: EdgeInsets.only(top: 68, bottom: 20),
       itemCount: resortList.length,
       itemBuilder: (BuildContext context, int index) {
         return Container(
-          color: Colors.transparent,
+          height: 160,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            color: Color(0xffF2F3F4),
+          ),
+          padding: EdgeInsets.only(left: 20, right: 20, top: 24, bottom: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -54,37 +58,45 @@ class resortTab extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        '${resortNameList[index]}',
-                        style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF111111)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 6),
-                        child: Text(
-                          '${resortAddressList[index]}',
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${resortNameList[index]}',
                           style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w300,
-                              color: Color(0xFF949494)),
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF111111)),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            '${resortAddressList[index]}',
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w300,
+                                color: Color(0xFF949494)),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Row(
                     children: [
                       TextButton(
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      alignment: Alignment.centerRight,
-        ),
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            alignment: Alignment.centerRight,
+                          ),
                           onPressed: () {
-                            Get.to(()=>CommentScreen_LiveTalk_resortTab(index: index,resortName: resortNameList[index],));
+                            Get.to(() => CommentScreen_LiveTalk_resortTab(
+                                  index: index,
+                                  resortName: resortNameList[index],
+                                ));
                           },
                           child: Text(
                             '라이브톡',
@@ -93,7 +105,11 @@ class resortTab extends StatelessWidget {
                                 fontSize: 13,
                                 color: Color(0xFF111111)),
                           )),
-                      ExtendedImage.asset('assets/imgs/icons/icon_arrow_b_s.png', width: 20, height: 20,)
+                      ExtendedImage.asset(
+                        'assets/imgs/icons/icon_arrow_b_s.png',
+                        width: 20,
+                        height: 20,
+                      )
                     ],
                   )
                 ],
@@ -105,65 +121,73 @@ class resortTab extends StatelessWidget {
                 children: [
                   OutlinedButton(
                     onPressed: () {
-                      if(webcamUrlList[index]!.isNotEmpty){
-                      Get.to(
-                        () => WebPage(
-                          url: '${webcamUrlList[index]}',
-                        ),
-                      );}else{
+                      if (webcamUrlList[index]!.isNotEmpty) {
+                        Get.to(
+                          () => WebPage(
+                            url: '${webcamUrlList[index]}',
+                          ),
+                        );
+                      } else {
                         null;
                       }
                     },
                     child: Text(
                       '실시간 웹캠',
                       style: TextStyle(
-                          color:
-                          (slopeUrlList[index]!.isNotEmpty)
-                          ? Color(0xFF555555)
-                          : Color(0xFFCACACA),
+                          color: (slopeUrlList[index]!.isNotEmpty)
+                              ? Color(0xFF555555)
+                              : Color(0xFF949494).withOpacity(0.4),
                           fontSize: 13,
                           fontWeight: FontWeight.bold),
                     ),
                     style: OutlinedButton.styleFrom(
-                        minimumSize: Size(_size.width / 3 - 18, 40),
+                        backgroundColor: (slopeUrlList[index]!.isNotEmpty)
+                            ? Colors.white
+                            : Color(0xffDFDFDF).withOpacity(0.5),
+                        side: BorderSide(color: Colors.transparent),
+                        minimumSize: Size(_size.width / 3 - 29, 40),
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(6)))),
                   ),
                   SizedBox(
-                    width: 11,
+                    width: 8,
                   ),
                   OutlinedButton(
                     onPressed: () {
-                      if(slopeUrlList[index]!.isNotEmpty){
-                      Get.to(
-                        () => WebPage(
-                          url: '${slopeUrlList[index]}',
-                        ),
-                      );}else{
+                      if (slopeUrlList[index]!.isNotEmpty) {
+                        Get.to(
+                          () => WebPage(
+                            url: '${slopeUrlList[index]}',
+                          ),
+                        );
+                      } else {
                         null;
                       }
                     },
                     child: Text(
                       '슬로프 현황',
                       style: TextStyle(
-                          color:
-                          (slopeUrlList[index]!.isNotEmpty)
-                          ? Color(0xFF555555)
-                          : Color(0xFFCACACA),
+                          color: (slopeUrlList[index]!.isNotEmpty)
+                              ? Color(0xFF555555)
+                              : Color(0xFF949494).withOpacity(0.4),
                           fontSize: 13,
                           fontWeight: FontWeight.bold),
                     ),
-                    style: OutlinedButton.styleFrom(
-                        minimumSize: Size(_size.width / 3 - 18, 40),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: (slopeUrlList[index]!.isNotEmpty)
+                            ? Colors.white
+                            : Color(0xffDFDFDF).withOpacity(0.5),
+                        side: BorderSide(color: Colors.transparent),
+                        minimumSize: Size(_size.width / 3 - 29, 40),
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(6)))),
                   ),
                   SizedBox(
-                    width: 11,
+                    width: 8,
                   ),
                   OutlinedButton(
                     onPressed: () {
@@ -180,9 +204,11 @@ class resortTab extends StatelessWidget {
                           fontSize: 13,
                           fontWeight: FontWeight.bold),
                     ),
-                    style: OutlinedButton.styleFrom(
-                        minimumSize: Size(_size.width / 3 - 18, 40),
+                    style: ElevatedButton.styleFrom(
+                        side: BorderSide(color: Colors.transparent),
+                        minimumSize: Size(_size.width / 3 - 30, 40),
                         padding: EdgeInsets.symmetric(horizontal: 10),
+                        backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(6)))),
@@ -194,10 +220,8 @@ class resortTab extends StatelessWidget {
         );
       },
       separatorBuilder: (BuildContext context, int index) {
-        return Divider(
-          height: 50,
-          thickness: 1,
-          color: Color(0xFFefefef),
+        return Container(
+          height: 14,
         );
       },
     );

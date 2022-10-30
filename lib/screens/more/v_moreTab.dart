@@ -64,7 +64,7 @@ class _MoreTabState extends State<MoreTab> {
           child: ListView(
             children: [
               SizedBox(
-                height: 30,
+                height: 24,
               ),
               UserAccountsDrawerHeader(
                 margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
