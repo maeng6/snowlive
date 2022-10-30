@@ -176,38 +176,38 @@ class WeatherModel {
         );
       }else{
         return Image.asset(
-          'assets/imgs/icons/icon_weather_sun.png',
+          'assets/imgs/weather/icon_weather_sun.png',
           width: 40,
           height: 40,
         );
       }
     } else if(pty == '1'){
       return Image.asset(
-        'assets/imgs/icons/icon_weather_rain.png',
+        'assets/imgs/weather/icon_weather_rain.png',
         width: 40,
         height: 40,
       );
     } else if (pty == '2') {
       return Image.asset(
-        'assets/imgs/icons/icon_weather_rain.png',
+        'assets/imgs/weather/icon_weather_rain.png',
         width: 40,
         height: 40,
       );
     } else if (pty == '3') {
       return Image.asset(
-        'assets/imgs/icons/icon_weather_snow.png',
+        'assets/imgs/weather/icon_weather_snow.png',
         width: 40,
         height: 40,
       );
     } else if (pty == '5') {
       return Image.asset(
-        'assets/imgs/icons/icon_weather_rain.png',
+        'assets/imgs/weather/icon_weather_rain.png',
         width: 40,
         height: 40,
       );
     } else if (pty == '6') {
       return Image.asset(
-        'assets/imgs/icons/icon_weather_rain.png',
+        'assets/imgs/weather/icon_weather_rain.png',
         width: 40,
         height: 40,
       );
