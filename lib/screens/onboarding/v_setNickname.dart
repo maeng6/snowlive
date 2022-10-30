@@ -34,24 +34,23 @@ class _SetNicknameState extends State<SetNickname> {
 
   @override
   Widget build(BuildContext context) {
-
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
       overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
     ); // 상단 StatusBar 생성
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(
-            statusBarColor: Colors.white, // Color for Android
-            statusBarIconBrightness: Brightness.dark,
-            statusBarBrightness:
-            (Platform.isAndroid)
-                ?Brightness.light
-                :Brightness.dark //ios:dark, android:light
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.white, // Color for Android
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: (Platform.isAndroid)
+            ? Brightness.light
+            : Brightness.dark //ios:dark, android:light
         ));
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(backgroundColor: Colors.white,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        resizeToAvoidBottomInset: false,
         extendBodyBehindAppBar: true,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(58),
@@ -84,8 +83,11 @@ class _SetNicknameState extends State<SetNickname> {
           ),
         ),
         body: Padding(
-          padding:
-               EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),
+          padding: EdgeInsets.only(
+              top: _statusBarSize + 58,
+              left: 16,
+              right: 16,
+              bottom: _statusBarSize),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -93,8 +95,7 @@ class _SetNicknameState extends State<SetNickname> {
                 children: [
                   Text(
                     '스노우라이브\n활동명을 정해주세요.',
-                    style:
-                        TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -124,24 +125,23 @@ class _SetNicknameState extends State<SetNickname> {
                       controller: _textEditingController,
                       strutStyle: StrutStyle(leading: 0.3),
                       decoration: InputDecoration(
-                        errorStyle: TextStyle(
-                          fontSize: 12,
-                        ),
-                        hintStyle:
-                            TextStyle(color: Color(0xff949494), fontSize: 16),
-                        hintText: '활동명 입력',
-                        labelText: '활동명',
-                        contentPadding: EdgeInsets.only(
-                            top: 20, bottom: 20, left: 20, right: 20),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFFDEDEDE)),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFFDEDEDE)),
-                          borderRadius: BorderRadius.circular(6),
-                        )
-                      ),
+                          errorStyle: TextStyle(
+                            fontSize: 12,
+                          ),
+                          hintStyle:
+                              TextStyle(color: Color(0xff949494), fontSize: 16),
+                          hintText: '활동명 입력',
+                          labelText: '활동명',
+                          contentPadding: EdgeInsets.only(
+                              top: 20, bottom: 20, left: 20, right: 20),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                            borderRadius: BorderRadius.circular(6),
+                          )),
                       validator: (val) {
                         if (val!.length <= 20 && val.length >= 1) {
                           return null;
@@ -167,52 +167,54 @@ class _SetNicknameState extends State<SetNickname> {
               ),
               Expanded(child: SizedBox()),
               Center(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    if (_formKey.currentState!.validate()) {
-                      await userModelController
-                          .updateNickname(_textEditingController.text);
-                      Get.to(() => SetProfileImage());
-                    } else {
-                      Get.snackbar(
-                          '활동명을 입력해주세요', '나중에 정하시려면 건너뛰기를 눌러주세요',
-                          snackPosition: SnackPosition.BOTTOM,
-                          margin: EdgeInsets.only(
-                              right: 20, left: 20, bottom: 12),
-                          backgroundColor: Colors.black87,
-                          colorText: Colors.white,
-                          duration: Duration(milliseconds: 3000));
-                    }
-                    setState(() {
-                      isLoading = false;
-                    });
-                  },
-                  child: (isLoading)
-                      ? CircularProgressIndicator(
-                          color: Colors.white,
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: Text(
-                            '다음',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom,top: 30),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      if (_formKey.currentState!.validate()) {
+                        await userModelController
+                            .updateNickname(_textEditingController.text);
+                        Get.to(() => SetProfileImage());
+                      } else {
+                        Get.snackbar('활동명을 입력해주세요', '나중에 정하시려면 건너뛰기를 눌러주세요',
+                            snackPosition: SnackPosition.BOTTOM,
+                            margin:
+                                EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                            backgroundColor: Colors.black87,
+                            colorText: Colors.white,
+                            duration: Duration(milliseconds: 3000));
+                      }
+                      setState(() {
+                        isLoading = false;
+                      });
+                    },
+                    child: (isLoading)
+                        ? CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: Text(
+                              '다음',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16),
+                            ),
                           ),
-                        ),
-                  style: TextButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(6))),
-                      elevation: 0,
-                      splashFactory: InkRipple.splashFactory,
-                      minimumSize: Size(1000, 56),
-                      backgroundColor: _formKey.isBlank == null
-                          ? Color(0xffDEDEDE)
-                          : Color(0xff377EEA)),
+                    style: TextButton.styleFrom(
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(6))),
+                        elevation: 0,
+                        splashFactory: InkRipple.splashFactory,
+                        minimumSize: Size(1000, 56),
+                        backgroundColor: _formKey.isBlank == null
+                            ? Color(0xffDEDEDE)
+                            : Color(0xff377EEA)),
+                  ),
                 ),
               ),
               SizedBox(
