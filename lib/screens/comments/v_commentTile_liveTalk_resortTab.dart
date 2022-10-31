@@ -82,6 +82,7 @@ class _CommentTile_liveTalk_resortTabState
     Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: StreamBuilder<QuerySnapshot>(
         stream: _stream,
         builder: (context, snapshot) {
