@@ -18,6 +18,7 @@ class SetNickname extends StatefulWidget {
 class _SetNicknameState extends State<SetNickname> {
   TextEditingController _textEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  var _nickName;
 
   bool isLoading = false;
 
@@ -175,9 +176,8 @@ class _SetNicknameState extends State<SetNickname> {
                         isLoading = true;
                       });
                       if (_formKey.currentState!.validate()) {
-                        await userModelController
-                            .updateNickname(_textEditingController.text);
-                        Get.to(() => SetProfileImage());
+                        _nickName = _textEditingController.text;
+                        Get.to(() => SetProfileImage(nickName: _nickName,));
                       } else {
 
                       }

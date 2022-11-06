@@ -37,7 +37,6 @@ class LoginButton extends StatelessWidget {
     //TODO: Dependency Injection************************************************
     Get.put(LoginController());
     LoginController _loginController = Get.find<LoginController>();
-    UserModelController _userModelController = Get.find<UserModelController>();
     //TODO: Dependency Injection************************************************
 
     return ElevatedButton(
@@ -59,7 +58,6 @@ class LoginButton extends StatelessWidget {
             await _loginController.signInWithGoogle();
             try {
                 print('신규회원 온보딩코스 진입');
-                await _loginController.createUserDoc(0);
                 CustomFullScreenDialog.cancelDialog();
                 print('Google 로그인');
                 Get.offAll(() => WelcomePage());

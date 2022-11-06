@@ -77,7 +77,6 @@ class LoginController extends GetxController {
   Future<void> signOut_welcome() async {
     User user = FirebaseAuth.instance.currentUser!;
     await user.delete();
-    await FlutterSecureStorage().delete(key: 'uid');
     Get.offAll(() => LoginPage());
   }
 
@@ -93,7 +92,7 @@ class LoginController extends GetxController {
       CustomFullScreenDialog.cancelDialog();
     }catch(e){
       CustomFullScreenDialog.cancelDialog();
-      Get.back();
+      Get.offAll(()=>LoginPage());
     }
     CustomFullScreenDialog.cancelDialog();
   }

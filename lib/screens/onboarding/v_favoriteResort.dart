@@ -10,11 +10,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
+import '../../controller/vm_loginController.dart';
 import '../../model/m_resortModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
 class FavoriteResort extends StatefulWidget {
-  FavoriteResort({Key? key}) : super(key: key);
+  FavoriteResort({Key? key,required this.getNickname, required this.getProfileImageUrl}) : super(key: key);
+
+  var getNickname;
+  String? getProfileImageUrl;
 
   @override
   State<FavoriteResort> createState() => _FavoriteResortState();
@@ -25,6 +29,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
   //TODO: Dependency Injection********************************************
   UserModelController userModelController = Get.find<UserModelController>();
   ResortModelController resortModelController = Get.find<ResortModelController>();
+  LoginController _loginController = Get.find<LoginController>();
   //TODO: Dependency Injection********************************************
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -145,6 +150,11 @@ class _FavoriteResortState extends State<FavoriteResort> {
                       onPressed: () async {
                         if(isSelected) {
                           CustomFullScreenDialog.showDialog();
+                          await _loginController.createUserDoc(0);
+                          await userModelController
+                              .updateNickname(widget.getNickname);
+                          await userModelController
+                              .updateProfileImageUrl(widget.getProfileImageUrl);
                           await userModelController.updateFavoriteResort(
                               favoriteResort);
                           await userModelController.updateInstantResort(

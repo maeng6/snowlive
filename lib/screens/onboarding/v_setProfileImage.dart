@@ -12,7 +12,10 @@ import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
 class SetProfileImage extends StatefulWidget {
-  SetProfileImage({Key? key}) : super(key: key);
+  SetProfileImage({Key? key,required this.nickName}) : super(key: key);
+
+  String? _profileImageUrl;
+  var nickName;
 
   @override
   State<SetProfileImage> createState() => _SetProfileImageState();
@@ -455,12 +458,10 @@ class _SetProfileImageState extends State<SetProfileImage> {
                 onPressed: () async {
                   if (_imageFile != null) {
                     CustomFullScreenDialog.showDialog();
-                    String profileImageUrl =
+                    String _profileImageUrl =
                         await _imageController.setNewImage(_imageFile!);
-                    await _userModelController
-                        .updateProfileImageUrl(profileImageUrl);
                     CustomFullScreenDialog.cancelDialog();
-                    Get.to(() => FavoriteResort());
+                    Get.to(() => FavoriteResort(getNickname: widget.nickName,getProfileImageUrl: _profileImageUrl,));
                   } else {
                     Get.snackbar('이미지를 선택해주세요.', '다음에 설정하시려면 건너뛰기를 눌러주세요.',
                         snackPosition: SnackPosition.BOTTOM,
@@ -496,7 +497,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  Get.to(() => FavoriteResort());
+                  Get.to(() => FavoriteResort(getNickname: widget.nickName,getProfileImageUrl: '',));
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 4),
