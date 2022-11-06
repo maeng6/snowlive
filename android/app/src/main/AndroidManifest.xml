@@ -3,7 +3,7 @@
    <application
 
        android:usesCleartextTraffic="true"
-        android:label="Snowlive"
+        android:label="스노우라이브"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

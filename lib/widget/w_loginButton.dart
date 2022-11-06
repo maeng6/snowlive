@@ -8,6 +8,7 @@ import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/onboarding/v_WelcomePage.dart';
 import 'package:snowlive3/controller/vm_loginController.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
+import 'package:snowlive3/screens/v_loginpage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 enum SignInMethod { google, facebook, apple }
@@ -56,38 +57,51 @@ class LoginButton extends StatelessWidget {
         try {
           if (signInMethod == SignInMethod.google) {
             await _loginController.signInWithGoogle();
+            if(auth.currentUser != null){
             try {
                 print('신규회원 온보딩코스 진입');
                 CustomFullScreenDialog.cancelDialog();
                 print('Google 로그인');
                 Get.offAll(() => WelcomePage());
               } catch(e){
+            }}
+            else{
+              CustomFullScreenDialog.cancelDialog();
+              Get.back();
             }
-          } else if (signInMethod == SignInMethod.facebook) {
+          }
+          else if (signInMethod == SignInMethod.facebook) {
             await _loginController.signInWithFacebook();
+            if(auth.currentUser != null){
             try {
               print('신규회원 온보딩코스 진입');
-              await _loginController.createUserDoc(0);
               CustomFullScreenDialog.cancelDialog();
               print('Google 로그인');
               Get.offAll(() => WelcomePage());
             } catch(e){
-            }
-          } else {
-            await _loginController.signInWithApple();
-            await _loginController.createUserDoc(0);
+            }}
+            else{
               CustomFullScreenDialog.cancelDialog();
-            print('Apple 로그인');
-              Get.offAll(()=>WelcomePage());
+              Get.back();
+            }
+          }
+          else {
+              await _loginController.signInWithApple();
+              if(auth.currentUser != null){
+              try {
+              CustomFullScreenDialog.cancelDialog();
+              print('Apple 로그인');
+              Get.offAll(() => WelcomePage());
+            }catch(e){
+            }}
+            else {
+              CustomFullScreenDialog.cancelDialog();
+              Get.back();
+            }
           }
         } catch (e) {
-          if (auth.currentUser == null) {
-            CustomFullScreenDialog.cancelDialog();
-            print('curruentUser = null');
-          } else {
-            CustomFullScreenDialog.cancelDialog();
-            print(e);
-          }
+          CustomFullScreenDialog.cancelDialog();
+          Get.back();
         }
       },
       child: Row(
