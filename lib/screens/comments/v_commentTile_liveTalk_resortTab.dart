@@ -4,9 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:snowlive3/controller/vm_getDateTimeController.dart';
 import '../../controller/vm_commentController.dart';
-import '../../controller/vm_resortModelController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
@@ -26,12 +24,8 @@ class _CommentTile_liveTalk_resortTabState
 
     //TODO: Dependency Injection**************************************************
     UserModelController _userModelController = Get.find<UserModelController>();
-    ResortModelController _resortModelController =
-        Get.find<ResortModelController>();
     CommentModelController _commentModelController =
         Get.find<CommentModelController>();
-    GetDateTimeController _getDateTimeController =
-        Get.find<GetDateTimeController>();
 //TODO: Dependency Injection**************************************************
 
 
@@ -79,8 +73,6 @@ class _CommentTile_liveTalk_resortTabState
 
   @override
   Widget build(BuildContext context) {
-    Size _size = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: StreamBuilder<QuerySnapshot>(

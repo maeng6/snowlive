@@ -1,8 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -66,7 +63,7 @@ class _MoreTabState extends State<MoreTab> {
               SizedBox(
                 height: 24,
               ),
-              UserAccountsDrawerHeader(
+              Obx(() => UserAccountsDrawerHeader(
                 margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                 accountName: Row(
                   children: [
@@ -355,7 +352,7 @@ class _MoreTabState extends State<MoreTab> {
                         onTap: () => Get.to(() => SetProfileImage_moreTab()),
                         child: Stack(
                           children: [
-                            Obx(() => Container(
+                             Container(
                                   width: 64,
                                   height: 64,
                                   child: CircleAvatar(
@@ -363,17 +360,14 @@ class _MoreTabState extends State<MoreTab> {
                                       backgroundImage: NetworkImage(
                                         _userModelController.profileImageUrl!,
                                       )),
-                                )),
+                                ),
                             Positioned(
                                 bottom: 10,
                                 right: 4,
-                                child: GestureDetector(
-                                  child: ExtendedImage.asset(
-                                      'assets/imgs/icons/icon_profile_add.png',
-                                      height: 22,
-                                      width: 22),
-                                  onTap: () {},
-                                ))
+                                child: ExtendedImage.asset(
+                                    'assets/imgs/icons/icon_profile_add.png',
+                                    height: 22,
+                                    width: 22))
                           ],
                         ),
                       )
@@ -404,7 +398,7 @@ class _MoreTabState extends State<MoreTab> {
                         ),
                       ),
                 decoration: BoxDecoration(color: Colors.white),
-              ),
+              )),
               SizedBox(height: 6),
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
