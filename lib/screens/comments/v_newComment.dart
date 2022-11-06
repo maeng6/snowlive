@@ -35,7 +35,7 @@ class _NewCommentState extends State<NewComment> {
           decoration: BoxDecoration(
             color: Colors.white,
           ),
-          margin: EdgeInsets.only(bottom: 8),
+          margin: EdgeInsets.only(bottom: 2),
           padding: EdgeInsets.all(8),
           child: Row(
             children: [
@@ -102,6 +102,10 @@ class _NewCommentState extends State<NewComment> {
             ],
           ),
         ),
+        Text('심한 욕설이나 폭언은 관리자에 의해 삭제될 수 있습니다.', style: TextStyle(
+          fontSize: 12, color: Color(0xFFC8C8C8),
+        ),),
+        SizedBox(height: 16,)
       ],
     );
   }
