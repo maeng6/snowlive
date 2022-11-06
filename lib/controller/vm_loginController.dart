@@ -13,7 +13,6 @@ class LoginController extends GetxController {
   final ref = FirebaseFirestore.instance;
   late FacebookAuth facebookAuth = FacebookAuth.instance;
   late GoogleSignIn googleSignIn = GoogleSignIn();
-  String? loginKey='false';
   String? loginUid;
 
   Future<void> signInWithGoogle() async {
@@ -62,7 +61,6 @@ class LoginController extends GetxController {
   }
 
   Future<void> loginAgain() async {
-    this.loginKey = await FlutterSecureStorage().read(key: 'login');
     this.loginUid = await FlutterSecureStorage().read(key: 'uid');
   }
 
@@ -76,12 +74,6 @@ class LoginController extends GetxController {
 
   }
 
-  Future<void> signOut() async {
-    await FirebaseAuth.instance.signOut();
-    await FlutterSecureStorage().write(key: 'login', value: 'false');
-    Get.offAll(() => LoginPage());
-  }
-
   Future<void> signOut_welcome() async {
     User user = FirebaseAuth.instance.currentUser!;
     await user.delete();
@@ -92,12 +84,12 @@ class LoginController extends GetxController {
   Future<void> deleteUser(uid) async {
     CustomFullScreenDialog.showDialog();
     try {
+      await FlutterSecureStorage().delete(key: 'uid');
       CollectionReference users = FirebaseFirestore.instance.collection('user');
       await users.doc(uid).delete();
       User user = FirebaseAuth.instance.currentUser!;
       await user.delete();
-      await signOut();
-      await FlutterSecureStorage().delete(key: 'uid');
+      Get.offAll(() => LoginPage());
       CustomFullScreenDialog.cancelDialog();
     }catch(e){
       CustomFullScreenDialog.cancelDialog();

@@ -179,13 +179,7 @@ class _SetNicknameState extends State<SetNickname> {
                             .updateNickname(_textEditingController.text);
                         Get.to(() => SetProfileImage());
                       } else {
-                        Get.snackbar('활동명을 입력해주세요', '나중에 설정하시려면 건너뛰기를 눌러주세요',
-                            snackPosition: SnackPosition.BOTTOM,
-                            margin:
-                                EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                            backgroundColor: Colors.black87,
-                            colorText: Colors.white,
-                            duration: Duration(milliseconds: 3000));
+
                       }
                       setState(() {
                         isLoading = false;
@@ -215,32 +209,6 @@ class _SetNicknameState extends State<SetNickname> {
                             ? Color(0xffDEDEDE)
                             : Color(0xff377EEA)),
                   ),
-                ),
-              ),
-              SizedBox(
-                height: 12,
-              ),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    Get.to(() => SetProfileImage());
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Text(
-                      '건너뛰기',
-                      style: TextStyle(
-                          fontFamily: 'NotoSansKR',
-                          color: Color(0xff949494),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w300),
-                    ),
-                  ),
-                  style: TextButton.styleFrom(
-                      elevation: 0,
-                      splashFactory: InkRipple.splashFactory,
-                      minimumSize: Size(1000, 41),
-                      backgroundColor: Colors.white),
                 ),
               ),
             ],

@@ -45,7 +45,7 @@ class resortTab extends StatelessWidget {
       itemCount: resortList.length,
       itemBuilder: (BuildContext context, int index) {
         return Container(
-          height: 160,
+          height: 164,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(6),
             color: Color(0xffF2F3F4),

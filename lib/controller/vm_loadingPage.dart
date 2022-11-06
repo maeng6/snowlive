@@ -9,7 +9,6 @@ import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/screens/v_loginpage.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key? key}) : super(key: key);
@@ -23,7 +22,6 @@ class _LoadingPageState extends State<LoadingPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('1');
     //TODO: Dependency Injection************************************************
     Get.put(ResortModelController(), permanent: true);
     ResortModelController _resortModelController = ResortModelController();
@@ -37,9 +35,8 @@ class _LoadingPageState extends State<LoadingPage> {
       future: _logInController.loginAgain(),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         print('uid : ${_logInController.loginUid}');
-        print('login ? : ${_logInController.loginKey}');
         if (snapshot.connectionState == ConnectionState.done &&
-            _logInController.loginKey=='true' && _logInController.loginUid!=null) {
+             _logInController.loginUid!=null) {
           return FutureBuilder(
               future: _userModelController.getCurrentUser(_logInController.loginUid),
               builder: (context, AsyncSnapshot<dynamic> snapshot){
@@ -52,18 +49,9 @@ class _LoadingPageState extends State<LoadingPage> {
               }
           );
         }  else if (snapshot.connectionState == ConnectionState.done &&
-            _logInController.loginKey=='false' && _logInController.loginUid!=null) {
+             _logInController.loginUid==null) {
           return LoginPage();
-        } else if(snapshot.connectionState == ConnectionState.done &&
-            _logInController.loginKey=='true' && _logInController.loginUid != null){
-          return FutureBuilder(
-              future: _logInController.loginFail(),
-              builder: (context, AsyncSnapshot<dynamic> snapshot){
-                return LoginPage();
-              }
-          );
-        }
-        return LoginPage();
+        } return LoginPage();
       },
     );
   }

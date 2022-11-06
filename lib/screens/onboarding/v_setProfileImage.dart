@@ -104,7 +104,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
               height: 10,
             ),
             Text(
-              '프로필 이미지를 나중에 설정 하시려면,\n건너뛰기 버튼을 눌러주세요.',
+              '스노우라이브에서 사용할 프로필 이미지를 설정해 주세요.\n프로필 이미지는 언제든지 변경할 수 있습니다.',
               style: TextStyle(
                 color: Color(0xff949494),
                 fontSize: 14,
@@ -501,7 +501,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 4),
                   child: Text(
-                    '건너뛰기',
+                    '기본 이미지로 설정',
                     style: TextStyle(fontFamily: 'NotoSansKR', color: Color(0xff949494), fontSize: 16, fontWeight: FontWeight.w300),
 
                   ),

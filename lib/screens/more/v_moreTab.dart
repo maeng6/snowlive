@@ -8,6 +8,7 @@ import 'package:snowlive3/screens/more/v_contactUsPage.dart';
 import 'package:snowlive3/screens/more/v_favoriteResort_moreTab.dart';
 import 'package:snowlive3/screens/more/v_licenseListPage.dart';
 import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
+import 'package:snowlive3/screens/more/v_setting_moreTab.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
 import '../../controller/vm_userModelController.dart';
 
@@ -27,7 +28,6 @@ class _MoreTabState extends State<MoreTab> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   LoginController _loginController = Get.find<LoginController>();
-
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -399,7 +399,7 @@ class _MoreTabState extends State<MoreTab> {
                       ),
                 decoration: BoxDecoration(color: Colors.white),
               )),
-              SizedBox(height: 6),
+              SizedBox(height: 16),
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
@@ -407,7 +407,7 @@ class _MoreTabState extends State<MoreTab> {
                   Get.to(() => FavoriteResort_moreTab());
                 },
                 title: Text(
-                  '자주가는 스키장 설정',
+                  '자주가는 스키장',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
@@ -501,253 +501,25 @@ class _MoreTabState extends State<MoreTab> {
                   width: 24,
                 ),
               ),
-              SizedBox(
-                height: _size.height / 7,
-              ),
-              Container(
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            showMaterialModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return Container(
-                                    color: Colors.white,
-                                    height: 180,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                          Text(
-                                            '정말 탈퇴하시겠습니까?',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFF111111)),
-                                          ),
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Expanded(
-                                                child: ElevatedButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text(
-                                                    '취소',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  style: TextButton.styleFrom(
-                                                      splashFactory: InkRipple
-                                                          .splashFactory,
-                                                      elevation: 0,
-                                                      minimumSize:
-                                                          Size(100, 56),
-                                                      backgroundColor:
-                                                          Color(0xff555555),
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 0)),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              Expanded(
-                                                child: ElevatedButton(
-                                                  onPressed: () async {
-                                                    await _loginController
-                                                        .deleteUser(
-                                                            _userModelController
-                                                                .uid);
-                                                  },
-                                                  child: Text(
-                                                    '확인',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  style: TextButton.styleFrom(
-                                                      splashFactory: InkRipple
-                                                          .splashFactory,
-                                                      elevation: 0,
-                                                      minimumSize:
-                                                          Size(100, 56),
-                                                      backgroundColor:
-                                                          Color(0xff2C97FB),
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 0)),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 2),
-                            child: Text(
-                              '회원탈퇴',
-                              style: TextStyle(
-                                  color: Color(0xFF949494),
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                              side: BorderSide(color: Colors.black12),
-                              backgroundColor: Colors.transparent,
-                              elevation: 0,
-                              minimumSize: Size(_size.width / 2 - 26, 46)),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            showMaterialModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return Container(
-                                    color: Colors.white,
-                                    height: 180,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                          Text(
-                                            '로그아웃 하시겠습니까?',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFF111111)),
-                                          ),
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Expanded(
-                                                child: ElevatedButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text(
-                                                    '취소',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  style: TextButton.styleFrom(
-                                                      splashFactory: InkRipple
-                                                          .splashFactory,
-                                                      elevation: 0,
-                                                      minimumSize:
-                                                          Size(100, 56),
-                                                      backgroundColor:
-                                                          Color(0xff555555),
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 0)),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              Expanded(
-                                                child: ElevatedButton(
-                                                  onPressed: () async {
-                                                    await _loginController
-                                                        .signOut();
-                                                  },
-                                                  child: Text(
-                                                    '확인',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  style: TextButton.styleFrom(
-                                                      splashFactory: InkRipple
-                                                          .splashFactory,
-                                                      elevation: 0,
-                                                      minimumSize:
-                                                          Size(100, 56),
-                                                      backgroundColor:
-                                                          Color(0xff2C97FB),
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 0)),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 2),
-                            child: Text(
-                              '로그아웃',
-                              style: TextStyle(
-                                  color: Color(0xFF949494),
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                              side: BorderSide(color: Colors.black12),
-                              backgroundColor: Colors.transparent,
-                              elevation: 0,
-                              minimumSize: Size(_size.width / 2 - 26, 46)),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    )
-                  ],
+              ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                minVerticalPadding: 20,
+                onTap: () {
+                  Get.to(()=>setting_moreTab());
+                },
+                title: Text(
+                  '설정',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: Color(0xFF111111)),
                 ),
-              )
+                trailing: Image.asset(
+                  'assets/imgs/icons/icon_arrow_g.png',
+                  height: 24,
+                  width: 24,
+                ),
+              ),
             ],
           ),
         ));

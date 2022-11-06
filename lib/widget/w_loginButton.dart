@@ -57,77 +57,37 @@ class LoginButton extends StatelessWidget {
         try {
           if (signInMethod == SignInMethod.google) {
             await _loginController.signInWithGoogle();
-            await FlutterSecureStorage()
-                .write(key: 'login', value: 'true');
             try {
-              if (_userModelController.exist! == true) {
-                print('기존회원 이동');
-                await _userModelController.getCurrentUser(auth.currentUser!.uid);
-                CustomFullScreenDialog.cancelDialog();
-                Get.offAll(() => LoadingPage());
-              } else {
                 print('신규회원 온보딩코스 진입');
                 await _loginController.createUserDoc(0);
                 CustomFullScreenDialog.cancelDialog();
                 print('Google 로그인');
                 Get.offAll(() => WelcomePage());
-              }
-            }catch(e){
-              print('catch 신규회원 온보딩코스 진입');
+              } catch(e){
+            }
+          } else if (signInMethod == SignInMethod.facebook) {
+            await _loginController.signInWithFacebook();
+            try {
+              print('신규회원 온보딩코스 진입');
               await _loginController.createUserDoc(0);
               CustomFullScreenDialog.cancelDialog();
               print('Google 로그인');
               Get.offAll(() => WelcomePage());
-            }
-          } else if (signInMethod == SignInMethod.facebook) {
-            await _loginController.signInWithFacebook();
-            await FlutterSecureStorage()
-                .write(key: 'login', value: 'true');
-            if( _userModelController.exist! == true) {
-              print('기존회원 메인홈 이동');
-              await _userModelController.getCurrentUser(auth.currentUser!.uid);
-              CustomFullScreenDialog.cancelDialog();
-              Get.offAll(()=>LoadingPage());
-            }else{
-              print('신규회원 온보딩코스 진입');
-              await _loginController.createUserDoc(0);
-              CustomFullScreenDialog.cancelDialog();
-              print('Facebook 로그인');
-              Get.offAll(() => WelcomePage());
+            } catch(e){
             }
           } else {
             await _loginController.signInWithApple();
-            await FlutterSecureStorage()
-                .write(key: 'login', value: 'true');
-            if( _userModelController.exist! == true) {
-              print('기존회원 메인홈 이동');
-              await _userModelController.getCurrentUser(auth.currentUser!.uid);
+            await _loginController.createUserDoc(0);
               CustomFullScreenDialog.cancelDialog();
-              Get.offAll(()=>LoadingPage());
-            }else{
-              print('신규회원 온보딩코스 진입');
-              await _loginController.createUserDoc(0);
-              CustomFullScreenDialog.cancelDialog();
-              print('Apple 로그인');
-              Get.offAll(() => WelcomePage());
-            }
+            print('Apple 로그인');
+              Get.offAll(()=>WelcomePage());
           }
         } catch (e) {
           if (auth.currentUser == null) {
             CustomFullScreenDialog.cancelDialog();
             print('curruentUser = null');
-            Get.snackbar('로그인 취소', '다시 시도해주세요.',
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.black87,
-                colorText: Colors.white,
-                duration: Duration(milliseconds: 2000));
           } else {
             CustomFullScreenDialog.cancelDialog();
-            Get.snackbar('로그인 실패', '다시 시도해주세요.',
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.black87,
-                colorText: Colors.white,
-                duration: Duration(milliseconds: 2000));
             print(e);
           }
         }

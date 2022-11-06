@@ -8,11 +8,6 @@ class ShopModel{
 
 List<ShopModel> shopList = [
   ShopModel(
-      shopName: '쇼군',
-      url: 'http://www.shogunshop.com/',
-      imageAsset: 'assets/imgs/logos/shop/shogun_logo.png'
-  ),
-  ShopModel(
     shopName: '원에잇',
     url: 'https://one8.co.kr/',
       imageAsset: 'assets/imgs/logos/shop/one8_logo.png'
@@ -70,7 +65,6 @@ List<String?> shopNameList = [
   shopList[6].shopName,
   shopList[7].shopName,
   shopList[8].shopName,
-  shopList[9].shopName,
 ];
 
 
@@ -84,7 +78,6 @@ List<String?> shopHomeUrlList = [
   shopList[6].url,
   shopList[7].url,
   shopList[8].url,
-  shopList[9].url,
 ];
 List<String?> shopImageAssetList = [
   shopList[0].imageAsset,
@@ -96,7 +89,6 @@ List<String?> shopImageAssetList = [
   shopList[6].imageAsset,
   shopList[7].imageAsset,
   shopList[8].imageAsset,
-  shopList[9].imageAsset,
 ];
 
 
