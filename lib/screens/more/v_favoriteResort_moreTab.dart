@@ -117,6 +117,8 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
               ),
               Expanded(
                 child: ListView.builder(
+                    padding: EdgeInsets.only(top: 0),
+                    shrinkWrap: true,
                     itemCount: 13,
                     itemBuilder: (context, index) {
                       return Column(
