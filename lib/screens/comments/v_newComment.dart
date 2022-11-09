@@ -102,7 +102,7 @@ class _NewCommentState extends State<NewComment> {
             ],
           ),
         ),
-        Text('심한 욕설이나 폭언은 관리자에 의해 삭제될 수 있습니다.', style: TextStyle(
+        Text('운영자가 실시간으로 악성댓글을 관리합니다.', style: TextStyle(
           fontSize: 12, color: Color(0xFFC8C8C8),
         ),),
         SizedBox(height: 16,)
