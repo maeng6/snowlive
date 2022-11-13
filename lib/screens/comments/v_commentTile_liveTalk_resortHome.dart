@@ -38,6 +38,7 @@ class _CommentTile_liveTalk_resortHomeState
 
   @override
   void initState() {
+    _updateMethod();
     // TODO: implement initState
     super.initState();
     _stream = newStream();
@@ -55,6 +56,10 @@ class _CommentTile_liveTalk_resortHomeState
         }
       });
     });
+  }
+
+  _updateMethod() async {
+    await _userModelController.updateRepoUidList();
   }
 
 
@@ -99,12 +104,15 @@ class _CommentTile_liveTalk_resortHomeState
                         .getAgoTime(chatDocs[index].get('timeStamp'));
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Container(
+                      child: Obx(()=>Container(
                         color: Colors.white,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+                          children: [ (_userModelController.repoUidList!
+                              .contains(chatDocs[index].get('uid')))
+                              ? Text(
+                              '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.')
+                              : Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 if(chatDocs[index]['profileImageUrl'] != "")
@@ -145,7 +153,124 @@ class _CommentTile_liveTalk_resortHomeState
                                               fontSize: 13,
                                               color: Color(0xFF949494),
                                               fontWeight: FontWeight.w300),
+                                        ),
+                                        (chatDocs[index]['uid']!=_userModelController.uid)
+                                            ?GestureDetector(
+                                          onTap: () => showMaterialModalBottomSheet(
+                                              enableDrag: false,
+                                              context: context,
+                                              builder: (context) {
+                                                return Container(
+                                                  height: 400,
+                                                  child: Column(
+                                                    children: [
+                                                      GestureDetector(
+                                                        child: ListTile(
+                                                          contentPadding:
+                                                          EdgeInsets.zero,
+                                                          title: Text('신고하기'),
+                                                          //selected: _isSelected[index]!,
+                                                          onTap: () async {
+                                                            Get.dialog(AlertDialog(
+                                                              content: Text('이 회원을 신고하시겠습니까?'),
+                                                              actions: [
+                                                                Row(
+                                                                  children: [
+                                                                    TextButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                        },
+                                                                        child: Text(
+                                                                            '취소')),
+                                                                    TextButton(
+                                                                        onPressed:
+                                                                            () async{
+                                                                          var repoUid =
+                                                                          chatDocs[index]
+                                                                              .get('uid');
+                                                                          await _userModelController.repoUpdate(repoUid);
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                        },
+                                                                        child: Text(
+                                                                            '신고'))
+                                                                  ],
+                                                                )
+                                                              ],
+                                                            ));
+
+                                                          },
+                                                          shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                  10)),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        child: ListTile(
+                                                          contentPadding:
+                                                          EdgeInsets.zero,
+                                                          title:
+                                                          Text('이 회원의 글 모두 숨기기'),
+                                                          //selected: _isSelected[index]!,
+                                                          onTap: () async {
+                                                            Get.dialog(AlertDialog(
+                                                              content: Text(
+                                                                  '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.'),
+                                                              actions: [
+                                                                Row(
+                                                                  children: [
+                                                                    TextButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                        },
+                                                                        child: Text(
+                                                                            '취소')),
+                                                                    TextButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          var repoUid =
+                                                                          chatDocs[index]
+                                                                              .get('uid');
+                                                                          _userModelController.updateRepoUid(repoUid);
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                        },
+                                                                        child: Text(
+                                                                            '확인'))
+                                                                  ],
+                                                                )
+                                                              ],
+                                                            ));
+                                                          },
+                                                          shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                  10)),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              }),
+                                          child: Icon(
+                                            Icons.more_vert,
+                                            color: Color(0xFF949494),
+                                          ),
                                         )
+                                            : Container()
                                       ],
                                     ),
                                     SizedBox(
@@ -325,7 +450,7 @@ class _CommentTile_liveTalk_resortHomeState
                             ),
                           ],
                       ),
-                      ),
+                      )),
                     );
 
                   },
