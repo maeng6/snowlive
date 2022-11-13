@@ -17,7 +17,7 @@ class UserModelController extends GetxController{
   RxInt? _instantResort = 0.obs;
   int? _favoriteSaved=0;
   RxString? _profileImageUrl=''.obs;
-  RxBool? _exist = false.obs;
+  RxList? _repoUidList=[].obs;
 
   String? get uid => _uid!.value;
   String? get displayName => _displayName!.value;
@@ -26,6 +26,9 @@ class UserModelController extends GetxController{
   int? get instantResort  => _instantResort!.value;
   int? get favoriteSaved => _favoriteSaved;
   String? get profileImageUrl => _profileImageUrl!.value;
+  List? get repoUidList => _repoUidList;
+
+
 
   @override
   void onInit()  async{
@@ -63,6 +66,46 @@ class UserModelController extends GetxController{
       'profileImageUrl': url,
     });
     await getCurrentUser(auth.currentUser!.uid);
+  }
+
+  Future<void> repoUpdate(uid) async {
+
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(uid);
+
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+
+    int repoCount = documentSnapshot.get('repoCount');
+    int repoCountPlus = repoCount +1;
+
+    await ref.collection('user').doc(uid).update({
+      'repoCount': repoCountPlus,
+    });
+
+  }
+
+  Future<void> updateRepoUid(uid) async {
+    final  userMe = auth.currentUser!.uid;
+    await ref.collection('user').doc(userMe).update({
+      'repoUidList': FieldValue.arrayUnion([uid])
+    });
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(userMe);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List repoUidList = documentSnapshot.get('repoUidList');
+    this._repoUidList!.value = repoUidList;
+  }
+
+  Future<void> updateRepoUidList() async {
+    final  userMe = auth.currentUser!.uid;
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(userMe);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List repoUidList = documentSnapshot.get('repoUidList');
+    this._repoUidList!.value = repoUidList;
   }
 
   Future<void> deleteProfileImageUrl() async {

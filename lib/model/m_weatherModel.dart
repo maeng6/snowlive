@@ -21,6 +21,7 @@ class WeatherModel {
   var maxTemp;
   var minTemp;
   var pty;
+  var sky;
 
 
 
@@ -53,6 +54,8 @@ class WeatherModel {
         ["fcstValue"];
     this.minTemp =
         getMaxMinTempJson["response"]["body"]["items"]["item"][48]["fcstValue"];
+    this.sky =
+    getMaxMinTempJson["response"]["body"]["items"]["item"][114]["fcstValue"];
 
 
     Map<String, dynamic> weatherInfoMap = {
@@ -62,7 +65,8 @@ class WeatherModel {
       'wet': this.wet,
       'maxTemp': this.maxTemp,
       'minTemp': this.minTemp,
-      'pty': this.pty
+      'pty': this.pty,
+      'sky': this.sky
     };
 
 
@@ -140,14 +144,18 @@ class WeatherModel {
     }
   }
 
-  Color? getWeatherColor(String pty) {
+  Color? getWeatherColor(String pty, String sky) {
     String _timeString = DateFormat('HH').format(_now);
     int _timeInt = int.parse(_timeString);
-    if (pty == '0') {
+    if (pty == '0' ) {
       if (_timeInt < 7 || _timeInt > 19) {
         return Color(0xFF32314D);
       }else {
-        return Color(0xFF3D83ED);
+        if( sky == '4' ){
+          return Color(0xFF707C87);
+        } else{
+          return Color(0xFF3D83ED);
+        }
       }
     } else if (pty == '1') {
       return Color(0xFF3F668A);
@@ -164,7 +172,7 @@ class WeatherModel {
     }
   }
 
-  Widget? getWeatherIcon(String pty) {
+  Widget? getWeatherIcon(String pty, String sky) {
     String _timeString = DateFormat('HH').format(_now);
     int _timeInt = int.parse(_timeString);
     if (pty == '0'){
@@ -175,11 +183,20 @@ class WeatherModel {
           height: 40,
         );
       }else{
-        return Image.asset(
-          'assets/imgs/weather/icon_weather_sun.png',
-          width: 40,
-          height: 40,
-        );
+        if(sky == '4' ){
+          return Image.asset(
+            'assets/imgs/weather/icon_weather_cloud.png',
+            width: 40,
+            height: 40,
+          );
+        } else{
+          return Image.asset(
+            'assets/imgs/weather/icon_weather_sun.png',
+            width: 40,
+            height: 40,
+          );
+        }
+
       }
     } else if(pty == '1'){
       return Image.asset(

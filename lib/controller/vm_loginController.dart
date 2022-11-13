@@ -110,8 +110,12 @@ class LoginController extends GetxController {
       'favoriteResort': index,
       'instantResort': index,
       'profileImageUrl' : '',
-      'exist' : true
+      'exist' : true,
+      'repoCount' : 0,
+      'repoUidList' : List.empty()
     });
+
+
   } //유저 정보와 선택한 리조트 정보 파베에 저장하기
 
 }
