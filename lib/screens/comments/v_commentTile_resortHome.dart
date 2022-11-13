@@ -15,6 +15,20 @@ class CommentTile_resortHome extends StatefulWidget {
 
 class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
 
+  //TODO: Dependency Injection**************************************************
+  UserModelController _userModelController = Get.find<UserModelController>();
+  //TODO: Dependency Injection**************************************************
+
+  @override
+  void initState() {
+    _updateMethod();
+    // TODO: implement initState
+    super.initState();
+  }
+
+  _updateMethod() async {
+    await _userModelController.updateRepoUidList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,10 +82,14 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  Obx(()=> Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
+                    children: [(_userModelController.repoUidList!
+                        .contains(chatDocs[index].get('uid')))
+                        ? Text(
+                        '이 게시글은 회원님의 요청에 의해 \n숨김 처리되었습니다.')
+                        :
+                    Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if(chatDocs[index]['profileImageUrl'] != "")
@@ -139,7 +157,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                         ],
                       ),
                     ],
-                  ),
+                  )),
                 ],
               ),
             );
