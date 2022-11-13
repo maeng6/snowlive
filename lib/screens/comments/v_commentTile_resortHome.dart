@@ -86,8 +86,17 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [(_userModelController.repoUidList!
                         .contains(chatDocs[index].get('uid')))
-                        ? Text(
-                        '이 게시글은 회원님의 요청에 의해 \n숨김 처리되었습니다.')
+                        ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Text('이 게시글은 회원님의 요청에 의해 \n숨김 처리되었습니다.',
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 12,
+                              color: Color(0xffc8c8c8)
+                          ),),
+                      ),
+                    )
                         :
                     Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
