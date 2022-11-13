@@ -132,7 +132,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                       Text(
                                         '업로드 방법을 선택해주세요.',
                                         style: TextStyle(
-                                            fontSize: 20,
+                                            fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xFF111111)),
                                       ),
@@ -290,12 +290,12 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                       Text(
                                         '업로드 방법을 선택해주세요.',
                                         style: TextStyle(
-                                            fontSize: 20,
+                                            fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xFF111111)),
                                       ),
                                       SizedBox(
-                                        height: 44,
+                                        height: 30,
                                       ),
                                     ],
                                   ),

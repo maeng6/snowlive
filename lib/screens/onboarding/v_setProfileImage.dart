@@ -143,15 +143,15 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                       Text(
                                         '업로드 방법을 선택해주세요.',
                                         style: TextStyle(
-                                            fontSize: 20,
+                                            fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xFF111111)),
                                       ),
                                       SizedBox(
-                                        height: 14,
+                                        height: 8,
                                       ),
                                       Text(
-                                        '프로필 이미지를 나중에 설정 하시려면,\n건너뛰기 버튼을 눌러주세요.',
+                                        '프로필 이미지를 나중에 설정 하시려면,\n기본 이미지로 설정해주세요.',
                                         style: TextStyle(
                                           color: Color(0xff666666),
                                           fontSize: 14,
@@ -310,15 +310,15 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                       Text(
                                         '업로드 방법을 선택해주세요.',
                                         style: TextStyle(
-                                            fontSize: 20,
+                                            fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xFF111111)),
                                       ),
                                       SizedBox(
-                                        height: 14,
+                                        height: 8,
                                       ),
                                       Text(
-                                        '프로필 이미지를 나중에 설정 하시려면,\n건너뛰기 버튼을 눌러주세요.',
+                                        '프로필 이미지를 나중에 설정 하시려면,\n기본 이미지로 설정해주세요.',
                                         style: TextStyle(
                                           color: Color(0xff666666),
                                           fontSize: 14,
@@ -463,7 +463,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                     CustomFullScreenDialog.cancelDialog();
                     Get.to(() => FavoriteResort(getNickname: widget.nickName,getProfileImageUrl: _profileImageUrl,));
                   } else {
-                    Get.snackbar('이미지를 선택해주세요.', '다음에 설정하시려면 건너뛰기를 눌러주세요.',
+                    Get.snackbar('이미지를 선택해주세요.', '다음에 설정하시려면 기본 이미지로 설정해주세요.',
                         snackPosition: SnackPosition.BOTTOM,
                         margin: EdgeInsets.only(
                             right: 20, left: 20, bottom: 12),

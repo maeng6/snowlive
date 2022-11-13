@@ -57,7 +57,7 @@ class setting_moreTab extends StatelessWidget {
                             Text(
                               '정말 탈퇴하시겠습니까?',
                               style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xFF111111)),
                             ),

@@ -107,12 +107,12 @@ class _MoreTabState extends State<MoreTab> {
                                           Text(
                                             '변경할 활동명을 입력해주세요.',
                                             style: TextStyle(
-                                                fontSize: 20,
+                                                fontSize: 18,
                                                 fontWeight: FontWeight.bold,
                                                 color: Color(0xFF111111)),
                                           ),
                                           SizedBox(
-                                            height: 18,
+                                            height: 24,
                                           ),
                                           Container(
                                             height: 130,
