@@ -70,19 +70,22 @@ class UserModelController extends GetxController{
 
   Future<void> repoUpdate(uid) async {
 
-    DocumentReference<Map<String, dynamic>> documentReference =
-    ref.collection('user').doc(uid);
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
 
-    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-    await documentReference.get();
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
 
-    int repoCount = documentSnapshot.get('repoCount');
-    int repoCountPlus = repoCount +1;
+      int repoCount = documentSnapshot.get('repoCount');
+      int repoCountPlus = repoCount + 1;
 
-    await ref.collection('user').doc(uid).update({
-      'repoCount': repoCountPlus,
-    });
-
+      await ref.collection('user').doc(uid).update({
+        'repoCount': repoCountPlus,
+      });
+    }catch(e){
+      print('탈퇴한 회원');
+    }
   }
 
   Future<void> updateRepoUid(uid) async {
