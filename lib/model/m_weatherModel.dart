@@ -148,7 +148,7 @@ class WeatherModel {
     String _timeString = DateFormat('HH').format(_now);
     int _timeInt = int.parse(_timeString);
     if (pty == '0' ) {
-      if (_timeInt < 7 || _timeInt > 19) {
+      if (_timeInt < 7 || _timeInt > 17) {
         return Color(0xFF32314D);
       }else {
         if( sky == '4' ){
@@ -176,7 +176,7 @@ class WeatherModel {
     String _timeString = DateFormat('HH').format(_now);
     int _timeInt = int.parse(_timeString);
     if (pty == '0'){
-      if(_timeInt < 7 || _timeInt > 19){
+      if(_timeInt < 7 || _timeInt > 17){
         return Image.asset(
           'assets/imgs/weather/icon_weather.png',
           width: 40,

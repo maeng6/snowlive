@@ -588,7 +588,7 @@ class _ResortHomeState extends State<ResortHome> {
                                                 padding:
                                                     EdgeInsets.only(bottom: 2),
                                                 child: Text(
-                                                  'My리조트',
+                                                  '자주가는 리조트 보기',
                                                   style: TextStyle(
                                                       color: Colors.white
                                                           .withOpacity(0.8),
