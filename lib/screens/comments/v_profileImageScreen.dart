@@ -16,27 +16,12 @@ class ProfileImagePage extends StatefulWidget {
 class _ProfileImagePageState extends State<ProfileImagePage> {
   @override
   Widget build(BuildContext context) {
-
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
-    ); // 상단 StatusBar 생성
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(
-            statusBarColor: Colors.white, // Color for Android
-            statusBarIconBrightness: Brightness.dark,
-            statusBarBrightness:
-            (Platform.isAndroid)
-                ?Brightness.light
-                :Brightness.dark //ios:dark, android:light
-        ));
-
     return Scaffold(
       backgroundColor: Colors.black,
-      extendBodyBehindAppBar: false,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(58),
         child: AppBar(
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
           leading: GestureDetector(
             child: Icon(Icons.close,
             color: Colors.white,
@@ -52,10 +37,13 @@ class _ProfileImagePageState extends State<ProfileImagePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if(widget.CommentProfileUrl != '')
-          ExtendedImage.network(widget.CommentProfileUrl),
+          InteractiveViewer(
+              minScale: 1,
+              maxScale: 10,
+              child: ExtendedImage.network(widget.CommentProfileUrl)),
           if(widget.CommentProfileUrl == '')
             ExtendedImage.asset(
-              'assets/imgs/profile/img_profile_default.png',
+              'assets/imgs/profile/img_profile_default_.png',
             ),
         ],
       ),

@@ -125,12 +125,6 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                                 borderSide: BorderSide(color: Color(0xFFDEDEDE)),
                                 borderRadius: BorderRadius.circular(6),
                               )),
-                          validator: (val) {
-                            if(!val!.contains('@')){
-                              return '올바른 이메일 주소 형식을 입력해 주세요';
-                            }
-                            return null;
-                          },
                         ),
                       ),
                     ),
@@ -140,6 +134,7 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                     Container(
                       child: Center(
                         child: TextFormField(
+                          obscureText: true,
                           textAlignVertical: TextAlignVertical.center,
                           cursorColor: Color(0xff377EEA),
                           cursorHeight: 16,
@@ -165,12 +160,6 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                                 borderSide: BorderSide(color: Color(0xFFDEDEDE)),
                                 borderRadius: BorderRadius.circular(6),
                               )),
-                          validator: (val) {
-                            if(val!.length < 8){
-                              return '최소 8자 이상 입력해 주세요';
-                            }
-                            return null;
-                          },
                         ),
                       ),
                     ),
@@ -228,6 +217,8 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                     Center(
                       child: GestureDetector(
                         onTap: (){
+                          _textEditingController.clear();
+                          _textEditingController2.clear();
                           Get.to(()=>EmailSignupPage());
                         },
                         child: Text('새 이메일 주소로 회원가입',

@@ -18,6 +18,8 @@ class _EmailSignupPageState extends State<EmailSignupPage> {
 
   TextEditingController _textEditingController = TextEditingController();
   TextEditingController _textEditingController2 = TextEditingController();
+  TextEditingController _textEditingController3 = TextEditingController();
+
 
   final _formKey = GlobalKey<FormState>();
 
@@ -138,6 +140,7 @@ class _EmailSignupPageState extends State<EmailSignupPage> {
                     Container(
                       child: Center(
                         child: TextFormField(
+                          obscureText: true,
                           textAlignVertical: TextAlignVertical.center,
                           cursorColor: Color(0xff377EEA),
                           cursorHeight: 16,
@@ -151,7 +154,7 @@ class _EmailSignupPageState extends State<EmailSignupPage> {
                               ),
                               hintStyle:
                               TextStyle(color: Color(0xff949494), fontSize: 16),
-                              hintText: '비밀번호 입력',
+                              hintText: '비밀번호 입력 (8자 이상)',
                               labelText: '비밀번호',
                               contentPadding: EdgeInsets.only(
                                   top: 20, bottom: 20, left: 20, right: 20),
@@ -166,6 +169,47 @@ class _EmailSignupPageState extends State<EmailSignupPage> {
                           validator: (val) {
                             if(val!.length < 8){
                               return '최소 8자 이상 입력해 주세요';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      child: Center(
+                        child: TextFormField(
+                          obscureText: true,
+                          textAlignVertical: TextAlignVertical.center,
+                          cursorColor: Color(0xff377EEA),
+                          cursorHeight: 16,
+                          cursorWidth: 2,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          controller: _textEditingController3,
+                          strutStyle: StrutStyle(leading: 0.3),
+                          decoration: InputDecoration(
+                              errorStyle: TextStyle(
+                                fontSize: 12,
+                              ),
+                              hintStyle:
+                              TextStyle(color: Color(0xff949494), fontSize: 16),
+                              hintText: '비밀번호를 한 번 더 입력해 주세요',
+                              labelText: '비밀번호 확인',
+                              contentPadding: EdgeInsets.only(
+                                  top: 20, bottom: 20, left: 20, right: 20),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                borderRadius: BorderRadius.circular(6),
+                              )),
+                          validator: (val) {
+                            if(val != _textEditingController2.text || val!.length < 8){
+                              return '비밀번호가 일치하지 않습니다.';
                             }
                             return null;
                           },
@@ -188,7 +232,7 @@ class _EmailSignupPageState extends State<EmailSignupPage> {
                         }
                         try{
                           await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                              email: _textEditingController.text, password: _textEditingController2.text);
+                              email: _textEditingController.text, password: _textEditingController3.text);
                           CustomFullScreenDialog.cancelDialog();
                           Navigator.pop(context);
                         }catch(e){
@@ -204,7 +248,7 @@ class _EmailSignupPageState extends State<EmailSignupPage> {
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 4),
                         child: Text(
-                          '가입 완료 후 로그인 페이지로 이동',
+                          '가입 완료 후 로그인하러 가기',
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
