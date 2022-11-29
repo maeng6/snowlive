@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:snowlive3/screens/v_loginpage.dart';
+import 'package:snowlive3/screens/login/v_loginpage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 class LoginController extends GetxController {

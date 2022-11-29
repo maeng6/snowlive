@@ -3,7 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:snowlive3/screens/login/v_email_login.dart';
 import 'package:snowlive3/widget/w_loginButton.dart';
 
 final auth = FirebaseAuth.instance;
@@ -113,8 +115,18 @@ class LoginPage extends StatelessWidget {
                     ? 24
                     : 12,
                   ),
-                  Text('로그인 방법을 선택해주세요',
-                  style: TextStyle(fontSize: 14, color: Color(0xFF949494), fontWeight: FontWeight.normal),),
+                  GestureDetector(
+                    onTap: (){
+                      Get.to(()=>EmailLoginPage());
+                    },
+                    child: Text('다른 방법으로 시작하기',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF949494),
+                        fontWeight: FontWeight.normal,
+                    decoration: TextDecoration.underline
+                    ),),
+                  ),
                   SizedBox(
                    height: (Platform.isIOS)
                         ? 24

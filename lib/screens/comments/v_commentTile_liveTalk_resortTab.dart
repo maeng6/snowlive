@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
@@ -122,23 +123,33 @@ class _CommentTile_liveTalk_resortTabState
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                               if (chatDocs[index]['profileImageUrl'] != "")
-                                ExtendedImage.network(
-                                  chatDocs[index]['profileImageUrl'],
-                                  cache: true,
-                                  shape: BoxShape.circle,
-                                  borderRadius: BorderRadius.circular(20),
-                                  width: 32,
-                                  height: 32,
-                                  fit: BoxFit.cover,
+                                GestureDetector(
+                                  onTap: (){
+                                    Get.to(()=>ProfileImagePage(CommentProfileUrl: chatDocs[index]['profileImageUrl'],));
+                                  },
+                                  child: ExtendedImage.network(
+                                    chatDocs[index]['profileImageUrl'],
+                                    cache: true,
+                                    shape: BoxShape.circle,
+                                    borderRadius: BorderRadius.circular(20),
+                                    width: 32,
+                                    height: 32,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               if (chatDocs[index]['profileImageUrl'] == "")
-                                ExtendedImage.asset(
-                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                  shape: BoxShape.circle,
-                                  borderRadius: BorderRadius.circular(20),
-                                  width: 32,
-                                  height: 32,
-                                  fit: BoxFit.cover,
+                                GestureDetector(
+                                  onTap: (){
+                                    Get.to(()=>ProfileImagePage(CommentProfileUrl: ''));
+                                  },
+                                  child: ExtendedImage.asset(
+                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                    shape: BoxShape.circle,
+                                    borderRadius: BorderRadius.circular(20),
+                                    width: 32,
+                                    height: 32,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               SizedBox(width: 10),
                               Column(

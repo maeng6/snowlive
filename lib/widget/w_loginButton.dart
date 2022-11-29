@@ -8,7 +8,7 @@ import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/onboarding/v_WelcomePage.dart';
 import 'package:snowlive3/controller/vm_loginController.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
-import 'package:snowlive3/screens/v_loginpage.dart';
+import 'package:snowlive3/screens/login/v_loginpage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 enum SignInMethod { google, facebook, apple }
