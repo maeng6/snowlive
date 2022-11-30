@@ -135,7 +135,7 @@ class _EmailSignupPageState extends State<EmailSignupPage> {
                       ),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 30,
                     ),
                     Container(
                       child: Center(
@@ -176,7 +176,7 @@ class _EmailSignupPageState extends State<EmailSignupPage> {
                       ),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 30,
                     ),
                     Container(
                       child: Center(
@@ -268,11 +268,6 @@ class _EmailSignupPageState extends State<EmailSignupPage> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: (Platform.isIOS)
-                    ? 24
-                    : 0,
-              )
             ],
           ),
         ),
