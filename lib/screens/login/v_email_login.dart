@@ -129,7 +129,7 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                       ),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 30,
                     ),
                     Container(
                       child: Center(
@@ -211,33 +211,34 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                               ? Color(0xffDEDEDE)
                               : Color(0xff377EEA)),
                     ),
+
                     SizedBox(
-                      height: 20,
+                      height: 12,
                     ),
                     Center(
-                      child: GestureDetector(
-                        onTap: (){
-                          _textEditingController.clear();
-                          _textEditingController2.clear();
-                          Get.to(()=>EmailSignupPage());
+                      child: ElevatedButton(
+                        onPressed: () async {_textEditingController.clear();
+                        _textEditingController2.clear();
+                        Get.to(()=>EmailSignupPage());
                         },
-                        child: Text('새 이메일 주소로 회원가입',
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF949494),
-                              fontWeight: FontWeight.normal,
-                              decoration: TextDecoration.underline
-                          ),),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Text(
+                            '새 이메일 주소로 회원가입',
+                            style: TextStyle(fontFamily: 'NotoSansKR', color: Color(0xff949494), fontSize: 16, fontWeight: FontWeight.w300),
+
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                            elevation: 0,
+                            splashFactory: InkRipple.splashFactory,
+                            minimumSize: Size(1000, 41),
+                            backgroundColor: Colors.white),
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(
-                height: (Platform.isIOS)
-                    ? 24
-                    : 0,
-              )
             ],
           ),
         ),

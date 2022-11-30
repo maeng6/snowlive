@@ -33,19 +33,18 @@ class _ProfileImagePageState extends State<ProfileImagePage> {
           elevation: 0.0,
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if(widget.CommentProfileUrl != '')
-          InteractiveViewer(
-              minScale: 1,
-              maxScale: 10,
-              child: ExtendedImage.network(widget.CommentProfileUrl)),
-          if(widget.CommentProfileUrl == '')
-            ExtendedImage.asset(
-              'assets/imgs/profile/img_profile_default_.png',
-            ),
-        ],
+      body: InteractiveViewer(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if(widget.CommentProfileUrl != '')
+            ExtendedImage.network(widget.CommentProfileUrl),
+            if(widget.CommentProfileUrl == '')
+              ExtendedImage.asset(
+                'assets/imgs/profile/img_profile_default_.png',
+              ),
+          ],
+        ),
       ),
     );
   }
