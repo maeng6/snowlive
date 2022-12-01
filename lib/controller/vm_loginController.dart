@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
@@ -88,6 +89,7 @@ class LoginController extends GetxController {
       await users.doc(uid).delete();
       User user = FirebaseAuth.instance.currentUser!;
       await user.delete();
+      FirebaseStorage.instance.refFromURL('$uid.jpg').delete();
       Get.offAll(() => LoginPage());
       CustomFullScreenDialog.cancelDialog();
     }catch(e){

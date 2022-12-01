@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
@@ -35,6 +37,7 @@ class _SetNicknameState extends State<SetNickname> {
 
   @override
   Widget build(BuildContext context) {
+    final FirebaseAuth auth = FirebaseAuth.instance;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
@@ -172,6 +175,8 @@ class _SetNicknameState extends State<SetNickname> {
                   padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom,top: 30),
                   child: ElevatedButton(
                     onPressed: () async {
+                      await FlutterSecureStorage()
+                          .write(key: 'uid', value: auth.currentUser!.uid);
                       setState(() {
                         isLoading = true;
                       });
