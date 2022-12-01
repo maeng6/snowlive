@@ -134,7 +134,7 @@ class resortTab extends StatelessWidget {
                     child: Text(
                       '실시간 웹캠',
                       style: TextStyle(
-                          color: (slopeUrlList[index]!.isNotEmpty)
+                          color: (webcamUrlList[index]!.isNotEmpty)
                               ? Color(0xFF555555)
                               : Color(0xFF949494).withOpacity(0.4),
                           fontSize: 13,
