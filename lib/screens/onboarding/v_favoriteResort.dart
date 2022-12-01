@@ -162,8 +162,6 @@ class _FavoriteResortState extends State<FavoriteResort> {
                           print('즐겨찾는 리조트 업뎃완료');
                           await resortModelController.getSelectedResort(
                               userModelController.favoriteResort!);
-                          await FlutterSecureStorage()
-                              .write(key: 'uid', value: auth.currentUser!.uid);
                           CustomFullScreenDialog.cancelDialog();
                           Get.offAll(() => MainHome());
                         }else{

@@ -197,7 +197,7 @@ class _CommentTile_liveTalk_resortHomeState
                                                   Container(
                                                     constraints: BoxConstraints(
                                                         maxWidth:
-                                                            _size.width - 78),
+                                                            _size.width - 98),
                                                     child: Text(
                                                       chatDocs[index]
                                                           .get('comment'),
