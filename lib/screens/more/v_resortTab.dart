@@ -141,7 +141,7 @@ class resortTab extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     style: OutlinedButton.styleFrom(
-                        backgroundColor: (slopeUrlList[index]!.isNotEmpty)
+                        backgroundColor: (webcamUrlList[index]!.isNotEmpty)
                             ? Colors.white
                             : Color(0xffDFDFDF).withOpacity(0.5),
                         side: BorderSide(color: Colors.transparent),
