@@ -47,18 +47,9 @@ class _ResortHomeState extends State<ResortHome> {
         _isSelected = List<bool?>.filled(13, false);
         _isSelected[index] = true;
         await _userModelController.updateInstantResort(index);
-        try {
           await _resortModelController.getSelectedResort(index);
           print('${_resortModelController.webcamUrl}');
           setState(() {});
-        } catch (e) {
-          Get.snackbar('현재 날씨를 확인하기 어려워요.', '잠시후에 다시 시도해주세요.',
-              snackPosition: SnackPosition.BOTTOM,
-              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-              backgroundColor: Colors.black87,
-              colorText: Colors.white,
-              duration: Duration(milliseconds: 3000));
-        }
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );

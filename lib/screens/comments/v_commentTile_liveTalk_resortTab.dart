@@ -291,7 +291,7 @@ class _CommentTile_liveTalk_resortTabState
                                                                           'comment')
                                                                       .doc('resort')
                                                                       .collection(
-                                                                          '${_userModelController.instantResort.toString()}')
+                                                                          '${widget.index}')
                                                                       .doc(
                                                                           _userModelController
                                                                               .uid)

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/model/m_resortModel.dart';
 import 'package:snowlive3/model/m_weatherModel.dart';
@@ -35,32 +36,43 @@ class ResortModelController extends GetxController{
 
   Future<void> getSelectedResort(int? resortNum) async{
     isLoading.value = true;
-    ResortModel resortModel = ResortModel();
-    WeatherModel weatherModel = WeatherModel();
-    ResortModel selectedResort = resortModel.resortModelSelection(resortNum);
-    this._index!.value = selectedResort.index!;
-    this._instantIndex!.value = selectedResort.index!;
-    this._resortName.value = selectedResort.resortName!;
-    this._resortUrl!.value = selectedResort.resortUrl!;
-    this._webcamUrl!.value = selectedResort.webcamUrl!;
-    this._naverUrl!.value= selectedResort.naverUrl!;
-    this._slopeUrl!.value= selectedResort.slopeUrl!;
-    this._latitude!.value= selectedResort.latitude!;
-    this._longitude!.value = selectedResort.longitude!;
-    this._nX!.value = selectedResort.nX!;
-    this._nY!.value = selectedResort.nY!;
-    Map weatherInfo = await weatherModel.parseWeatherData(_nX!.value,_nY!.value);
-    this._resortTemp!.value= weatherInfo['temp'];
-    this._resortRain!.value= weatherInfo['rain'];
-    this._resortWind!.value= weatherInfo['wind'];
-    this._resortWet!.value= weatherInfo['wet'];
-    this._resortMaxTemp!.value= weatherInfo['maxTemp'];
-    this._resortMinTemp!.value= weatherInfo['minTemp'];
-    this._resortPty!.value= weatherInfo['pty'];
-    this._resortSky!.value= weatherInfo['sky'];
-    this._weatherColors = weatherModel.getWeatherColor(this._resortPty!.value, this._resortSky!.value);
-    this._weatherIcons = weatherModel.getWeatherIcon(this._resortPty!.value, this._resortSky!.value);
-
+    try {
+      ResortModel resortModel = ResortModel();
+      WeatherModel weatherModel = WeatherModel();
+      ResortModel selectedResort = resortModel.resortModelSelection(resortNum);
+      this._index!.value = selectedResort.index!;
+      this._instantIndex!.value = selectedResort.index!;
+      this._resortName.value = selectedResort.resortName!;
+      this._resortUrl!.value = selectedResort.resortUrl!;
+      this._webcamUrl!.value = selectedResort.webcamUrl!;
+      this._naverUrl!.value = selectedResort.naverUrl!;
+      this._slopeUrl!.value = selectedResort.slopeUrl!;
+      this._latitude!.value = selectedResort.latitude!;
+      this._longitude!.value = selectedResort.longitude!;
+      this._nX!.value = selectedResort.nX!;
+      this._nY!.value = selectedResort.nY!;
+      Map weatherInfo = await weatherModel.parseWeatherData(
+          _nX!.value, _nY!.value);
+      this._resortTemp!.value = weatherInfo['temp'];
+      this._resortRain!.value = weatherInfo['rain'];
+      this._resortWind!.value = weatherInfo['wind'];
+      this._resortWet!.value = weatherInfo['wet'];
+      this._resortMaxTemp!.value = weatherInfo['maxTemp'];
+      this._resortMinTemp!.value = weatherInfo['minTemp'];
+      this._resortPty!.value = weatherInfo['pty'];
+      this._resortSky!.value = weatherInfo['sky'];
+      this._weatherColors = weatherModel.getWeatherColor(
+          this._resortPty!.value, this._resortSky!.value);
+      this._weatherIcons = weatherModel.getWeatherIcon(
+          this._resortPty!.value, this._resortSky!.value);
+    }catch(e){
+      Get.snackbar('현재 날씨를 확인하기 어려워요.', '잠시후에 다시 시도해주세요.',
+          snackPosition: SnackPosition.BOTTOM,
+          margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+          backgroundColor: Colors.black87,
+          colorText: Colors.white,
+          duration: Duration(milliseconds: 3000));
+    }
     isLoading.value = false;
 
   }
