@@ -65,6 +65,125 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(uid).update({
       'profileImageUrl': url,
     });
+    try{
+    try{
+    await ref.collection('comment').doc('resort').collection('0').doc(uid).update({
+      'profileImageUrl': url
+    });} catch(e){print(e);}
+    try{
+      await ref.collection('comment').doc('resort').collection('1').doc(uid).update({
+        'profileImageUrl': url
+      });} catch(e){print(e);}
+    try{
+      await ref.collection('comment').doc('resort').collection('2').doc(uid).update({
+        'profileImageUrl': url
+      });} catch(e){print(e);}
+    try{
+      await ref.collection('comment').doc('resort').collection('3').doc(uid).update({
+        'profileImageUrl': url
+      });} catch(e){print(e);}
+    try{
+      await ref.collection('comment').doc('resort').collection('4').doc(uid).update({
+        'profileImageUrl': url
+      });} catch(e){print(e);}
+    try{
+      await ref.collection('comment').doc('resort').collection('5').doc(uid).update({
+        'profileImageUrl': url
+      });} catch(e){print(e);}
+    try{
+      await ref.collection('comment').doc('resort').collection('6').doc(uid).update({
+        'profileImageUrl': url
+      });} catch(e){print(e);}
+    try{
+      await ref.collection('comment').doc('resort').collection('7').doc(uid).update({
+        'profileImageUrl': url
+      });} catch(e){print(e);}
+    try{
+      await ref.collection('comment').doc('resort').collection('8').doc(uid).update({
+        'profileImageUrl': url
+      });} catch(e){print(e);}
+    try{
+      await ref.collection('comment').doc('resort').collection('9').doc(uid).update({
+        'profileImageUrl': url
+      });} catch(e){print(e);}
+    try{
+      await ref.collection('comment').doc('resort').collection('10').doc(uid).update({
+        'profileImageUrl': url
+      });} catch(e){print(e);}
+    try{
+      await ref.collection('comment').doc('resort').collection('11').doc(uid).update({
+        'profileImageUrl': url
+      });} catch(e){print(e);}
+    try{
+      await ref.collection('comment').doc('resort').collection('12').doc(uid).update({
+        'profileImageUrl': url
+      });} catch(e){print(e);}
+
+    }catch(e){print(e);}
+    await getCurrentUser(auth.currentUser!.uid);
+  }
+
+  Future<void> deleteProfileImageUrl() async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'profileImageUrl': '',
+    });
+    try{
+      try{
+        await ref.collection('comment').doc('resort').collection('0').doc(uid).update({
+          'profileImageUrl': ''
+        });} catch(e){print(e);}
+      try{
+        await ref.collection('comment').doc('resort').collection('1').doc(uid).update({
+          'profileImageUrl': ''
+        });} catch(e){print(e);}
+      try{
+        await ref.collection('comment').doc('resort').collection('2').doc(uid).update({
+          'profileImageUrl': ''
+        });} catch(e){print(e);}
+      try{
+        await ref.collection('comment').doc('resort').collection('3').doc(uid).update({
+          'profileImageUrl': ''
+        });} catch(e){print(e);}
+      try{
+        await ref.collection('comment').doc('resort').collection('4').doc(uid).update({
+          'profileImageUrl': ''
+        });} catch(e){print(e);}
+      try{
+        await ref.collection('comment').doc('resort').collection('5').doc(uid).update({
+          'profileImageUrl': ''
+        });} catch(e){print(e);}
+      try{
+        await ref.collection('comment').doc('resort').collection('6').doc(uid).update({
+          'profileImageUrl': ''
+        });} catch(e){print(e);}
+      try{
+        await ref.collection('comment').doc('resort').collection('7').doc(uid).update({
+          'profileImageUrl': ''
+        });} catch(e){print(e);}
+      try{
+        await ref.collection('comment').doc('resort').collection('8').doc(uid).update({
+          'profileImageUrl': ''
+        });} catch(e){print(e);}
+      try{
+        await ref.collection('comment').doc('resort').collection('9').doc(uid).update({
+          'profileImageUrl': ''
+        });} catch(e){print(e);}
+      try{
+        await ref.collection('comment').doc('resort').collection('10').doc(uid).update({
+          'profileImageUrl': ''
+        });} catch(e){print(e);}
+      try{
+        await ref.collection('comment').doc('resort').collection('11').doc(uid).update({
+          'profileImageUrl': ''
+        });} catch(e){print(e);}
+      try{
+        await ref.collection('comment').doc('resort').collection('12').doc(uid).update({
+          'profileImageUrl': ''
+        });} catch(e){print(e);}
+
+    }catch(e){print(e);}
     await getCurrentUser(auth.currentUser!.uid);
   }
 
@@ -109,15 +228,6 @@ class UserModelController extends GetxController{
     await documentReference.get();
     List repoUidList = documentSnapshot.get('repoUidList');
     this._repoUidList!.value = repoUidList;
-  }
-
-  Future<void> deleteProfileImageUrl() async {
-    final User? user = auth.currentUser;
-    final uid = user!.uid;
-    await ref.collection('user').doc(uid).update({
-      'profileImageUrl': '',
-    });
-    await getCurrentUser(auth.currentUser!.uid);
   }
 
   Future<void> updateNickname(index) async {
