@@ -442,10 +442,8 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                 onPressed: () async {
                   if (_imageFile != null) {
                     CustomFullScreenDialog.showDialog();
-                    String profileImageUrl =
-                        await _imageController.setNewImage(_imageFile!);
-                    await _userModelController
-                        .updateProfileImageUrl(profileImageUrl);
+                    //String profileImageUrl = await _imageController.setNewImage(_imageFile!);
+                    //await _userModelController.updateProfileImageUrl(profileImageUrl);
                     CustomFullScreenDialog.cancelDialog();
                     Navigator.pop(context);
                     Get.snackbar('프로필 이미지', '선택한 이미지로 변경이 완료되었습니다.',

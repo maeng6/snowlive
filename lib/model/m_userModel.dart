@@ -10,7 +10,8 @@ class UserModel {
     this.favoriteResort,
     this.instantResort,
     this.profileImageUrl,
-    this.exist
+    this.exist,
+    this.commentCount
 });
 
   final auth = FirebaseAuth.instance;
@@ -20,6 +21,7 @@ class UserModel {
   String? userEmail;
   int? favoriteResort;
   int? instantResort;
+  int? commentCount;
   String? profileImageUrl;
   bool? exist;
   DocumentReference? reference;
@@ -31,6 +33,7 @@ class UserModel {
     favoriteResort = json['favoriteResort'];
     instantResort = json['instantResort'];
     profileImageUrl = json['profileImageUrl'];
+    commentCount = json['commentCount'];
     exist = json['exist'];
 
   }

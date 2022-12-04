@@ -301,7 +301,7 @@ class _CommentTile_liveTalk_resortHomeState
                                                                   onPressed:
                                                                       () async {
                                                                     CustomFullScreenDialog.showDialog();
-                                                                    await FirebaseFirestore.instance.collection('comment').doc('resort').collection('${_userModelController.instantResort.toString()}').doc(_userModelController.uid).delete();
+                                                                    await FirebaseFirestore.instance.collection('comment').doc('resort').collection('${_userModelController.instantResort.toString()}').doc('${_userModelController.uid}${chatDocs[index]['commentCount']}').delete();
                                                                     print('댓글 삭제 완료');
                                                                     Navigator.pop(context);
                                                                     CustomFullScreenDialog.cancelDialog();

@@ -174,7 +174,7 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                     ],
                   ),
                   SizedBox(
-                    height: _size.height - 605,
+                    height: _size.height - 504-_statusBarSize*2-58,
                   ),
                   Padding(
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom,top: 30),
@@ -188,6 +188,7 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                                   email: _textEditingController.text, password: _textEditingController2.text);
                              CustomFullScreenDialog.cancelDialog();
                              if(credential.user != null){
+                            print(auth.currentUser!.providerData[0].providerId);
                                 Get.offAll(()=>WelcomePage());
                               }
                             }catch(e){
