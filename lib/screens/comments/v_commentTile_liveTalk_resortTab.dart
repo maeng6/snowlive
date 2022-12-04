@@ -197,153 +197,66 @@ class _CommentTile_liveTalk_resortTabState
                                   SizedBox(
                                     height: 8,
                                   ),
-                                  if (chatDocs[index].get('uid') ==
-                                      _userModelController.uid)
-                                    TextButton(
-                                        style: TextButton.styleFrom(
-                                          minimumSize: Size.zero,
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.only(
+                                            top: 2),
+                                        child: IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(
+                                            Icons.favorite_border,
+                                            size: 16,
+                                            color:
+                                            Color(0xFF949494),
+                                          ),
                                           padding: EdgeInsets.zero,
-                                          tapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
+                                          constraints:
+                                          BoxConstraints(),
                                         ),
-                                        onPressed: () async {
-                                          showMaterialModalBottomSheet(
-                                              context: context,
-                                              builder: (context) {
-                                                return Container(
-                                                  color: Colors.white,
-                                                  height: 180,
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                            horizontal: 20.0),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment.start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.start,
-                                                      children: [
-                                                        SizedBox(
-                                                          height: 30,
-                                                        ),
-                                                        Text(
-                                                          '삭제하시겠습니까?',
-                                                          style: TextStyle(
-                                                              fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight.bold,
-                                                              color: Color(
-                                                                  0xFF111111)),
-                                                        ),
-                                                        SizedBox(
-                                                          height: 30,
-                                                        ),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceEvenly,
-                                                          children: [
-                                                            Expanded(
-                                                              child: ElevatedButton(
-                                                                onPressed: () {
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                },
-                                                                child: Text(
-                                                                  '취소',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize: 15,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
-                                                                style: TextButton.styleFrom(
-                                                                    splashFactory:
-                                                                        InkRipple
-                                                                            .splashFactory,
-                                                                    elevation: 0,
-                                                                    minimumSize:
-                                                                        Size(100,
-                                                                            56),
-                                                                    backgroundColor:
-                                                                        Color(
-                                                                            0xff555555),
-                                                                    padding: EdgeInsets
-                                                                        .symmetric(
-                                                                            horizontal:
-                                                                                0)),
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            Expanded(
-                                                              child: ElevatedButton(
-                                                                onPressed:
-                                                                    () async {
-                                                                  CustomFullScreenDialog
-                                                                      .showDialog();
-                                                                  await FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'comment')
-                                                                      .doc('resort')
-                                                                      .collection(
-                                                                          '${widget.index}')
-                                                                      .doc(
-                                                                      '${_userModelController
-                                                                          .uid}${chatDocs[index]['commentCount']}')
-                                                                      .delete();
-                                                                  print('댓글 삭제 완료');
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                  CustomFullScreenDialog
-                                                                      .cancelDialog();
-                                                                },
-                                                                child: Text(
-                                                                  '확인',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize: 15,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
-                                                                style: TextButton.styleFrom(
-                                                                    splashFactory:
-                                                                        InkRipple
-                                                                            .splashFactory,
-                                                                    elevation: 0,
-                                                                    minimumSize:
-                                                                        Size(100,
-                                                                            56),
-                                                                    backgroundColor:
-                                                                        Color(
-                                                                            0xff2C97FB),
-                                                                    padding: EdgeInsets
-                                                                        .symmetric(
-                                                                            horizontal:
-                                                                                0)),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              });
-                                        },
-                                        child: Text(
-                                          '삭제',
-                                          style: TextStyle(
-                                              color: Color(0xFF949494),
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.normal),
-                                        )),
+                                      ),
+                                      Text(
+                                        '6',
+                                        style: TextStyle(
+                                            fontWeight:
+                                            FontWeight.bold,
+                                            fontSize: 13,
+                                            color:
+                                            Color(0xFF949494)),
+                                      ),
+                                      SizedBox(
+                                        width: 16,
+                                      ),
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.only(
+                                            top: 2),
+                                        child: IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(
+                                            Icons
+                                                .mode_comment_outlined,
+                                            size: 16,
+                                            color:
+                                            Color(0xFF949494),
+                                          ),
+                                          padding: EdgeInsets.zero,
+                                          constraints:
+                                          BoxConstraints(),
+                                        ),
+                                      ),
+                                      Text(
+                                        '6',
+                                        style: TextStyle(
+                                            fontWeight:
+                                            FontWeight.bold,
+                                            fontSize: 13,
+                                            color:
+                                            Color(0xFF949494)),
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                         ],
@@ -538,7 +451,185 @@ class _CommentTile_liveTalk_resortTabState
                                   ),
                                 ),
                               )
-                                  : Container()
+                                  : GestureDetector(
+                                onTap: () => showMaterialModalBottomSheet(
+                                    enableDrag: false,
+                                    context: context,
+                                    builder: (context) {
+                                      return Container(
+                                        height: 130,
+                                        child: Padding(
+                                          padding:
+                                          const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
+                                          child: Column(
+                                            children: [
+                                              GestureDetector(
+                                                child: ListTile(
+                                                  contentPadding:
+                                                  EdgeInsets.zero,
+                                                  title: Text('삭제하기',
+                                                    style:
+                                                    TextStyle(
+                                                      fontSize:
+                                                      15,
+                                                      fontWeight:
+                                                      FontWeight.bold,
+                                                    ),),
+                                                  //selected: _isSelected[index]!,
+                                                  onTap: () async {
+
+                                                    showMaterialModalBottomSheet(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return Container(
+                                                            color: Colors.white,
+                                                            height: 180,
+                                                            child: Padding(
+                                                              padding:
+                                                              const EdgeInsets.symmetric(
+                                                                  horizontal: 20.0),
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                CrossAxisAlignment.start,
+                                                                mainAxisAlignment:
+                                                                MainAxisAlignment.start,
+                                                                children: [
+                                                                  SizedBox(
+                                                                    height: 30,
+                                                                  ),
+                                                                  Text(
+                                                                    '삭제하시겠습니까?',
+                                                                    style: TextStyle(
+                                                                        fontSize: 20,
+                                                                        fontWeight:
+                                                                        FontWeight.bold,
+                                                                        color: Color(
+                                                                            0xFF111111)),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 30,
+                                                                  ),
+                                                                  Row(
+                                                                    mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceEvenly,
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child: ElevatedButton(
+                                                                          onPressed: () {
+                                                                            Navigator.pop(
+                                                                                context);
+                                                                          },
+                                                                          child: Text(
+                                                                            '취소',
+                                                                            style: TextStyle(
+                                                                                color: Colors
+                                                                                    .white,
+                                                                                fontSize: 15,
+                                                                                fontWeight:
+                                                                                FontWeight
+                                                                                    .bold),
+                                                                          ),
+                                                                          style: TextButton.styleFrom(
+                                                                              splashFactory:
+                                                                              InkRipple
+                                                                                  .splashFactory,
+                                                                              elevation: 0,
+                                                                              minimumSize:
+                                                                              Size(100,
+                                                                                  56),
+                                                                              backgroundColor:
+                                                                              Color(
+                                                                                  0xff555555),
+                                                                              padding: EdgeInsets
+                                                                                  .symmetric(
+                                                                                  horizontal:
+                                                                                  0)),
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width: 10,
+                                                                      ),
+                                                                      Expanded(
+                                                                        child: ElevatedButton(
+                                                                          onPressed:
+                                                                              () async {
+                                                                            CustomFullScreenDialog
+                                                                                .showDialog();
+                                                                            await FirebaseFirestore
+                                                                                .instance
+                                                                                .collection(
+                                                                                'comment')
+                                                                                .doc('resort')
+                                                                                .collection(
+                                                                                '${widget.index}')
+                                                                                .doc(
+                                                                                '${_userModelController
+                                                                                    .uid}${chatDocs[index]['commentCount']}')
+                                                                                .delete();
+                                                                            print('댓글 삭제 완료');
+                                                                            Navigator.pop(
+                                                                                context);
+                                                                            CustomFullScreenDialog
+                                                                                .cancelDialog();
+                                                                          },
+                                                                          child: Text(
+                                                                            '확인',
+                                                                            style: TextStyle(
+                                                                                color: Colors
+                                                                                    .white,
+                                                                                fontSize: 15,
+                                                                                fontWeight:
+                                                                                FontWeight
+                                                                                    .bold),
+                                                                          ),
+                                                                          style: TextButton.styleFrom(
+                                                                              splashFactory:
+                                                                              InkRipple
+                                                                                  .splashFactory,
+                                                                              elevation: 0,
+                                                                              minimumSize:
+                                                                              Size(100,
+                                                                                  56),
+                                                                              backgroundColor:
+                                                                              Color(
+                                                                                  0xff2C97FB),
+                                                                              padding: EdgeInsets
+                                                                                  .symmetric(
+                                                                                  horizontal:
+                                                                                  0)),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          );
+                                                        });
+                                                  },
+                                                  shape:
+                                                  RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius
+                                                          .circular(
+                                                          10)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 22),
+                                  child: Icon(
+                                    Icons.more_vert,
+                                    color: Color(0xFFdedede),
+                                  ),
+                                ),
+                              )
                             ],
                           ),
                       Divider(
