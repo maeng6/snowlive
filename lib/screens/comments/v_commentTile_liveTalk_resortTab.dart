@@ -293,8 +293,8 @@ class _CommentTile_liveTalk_resortTabState
                                                                       .collection(
                                                                           '${widget.index}')
                                                                       .doc(
-                                                                          _userModelController
-                                                                              .uid)
+                                                                      '${_userModelController
+                                                                          .uid}${chatDocs[index]['commentCount']}')
                                                                       .delete();
                                                                   print('댓글 삭제 완료');
                                                                   Navigator.pop(
