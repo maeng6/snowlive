@@ -59,6 +59,7 @@ class LoginButton extends StatelessWidget {
             await _loginController.signInWithGoogle();
             if(auth.currentUser != null){
             try {
+              print(auth.currentUser!.providerData[0].providerId);
                 print('신규회원 온보딩코스 진입');
                 CustomFullScreenDialog.cancelDialog();
                 print('Google 로그인');
@@ -74,6 +75,7 @@ class LoginButton extends StatelessWidget {
             await _loginController.signInWithFacebook();
             if(auth.currentUser != null){
             try {
+              print(auth.currentUser!.providerData[0].providerId);
               print('신규회원 온보딩코스 진입');
               CustomFullScreenDialog.cancelDialog();
               print('Google 로그인');
@@ -90,6 +92,7 @@ class LoginButton extends StatelessWidget {
               if(auth.currentUser != null){
               try {
               CustomFullScreenDialog.cancelDialog();
+              print(auth.currentUser!.providerData[0].providerId);
               print('Apple 로그인');
               Get.offAll(() => WelcomePage());
             }catch(e){

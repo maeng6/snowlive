@@ -8,12 +8,14 @@ class CommentModel {
       this.profileImageUrl,
       this.instantResort,
       this.comment,
-      this.timeStamp});
+      this.timeStamp,
+      this.commentCount});
 
   String? displayName;
   String? uid;
   String? profileImageUrl;
   int? instantResort;
+  int? commentCount;
   String? comment;
   DocumentReference? reference;
   Timestamp? timeStamp;
@@ -26,6 +28,7 @@ class CommentModel {
 
   CommentModel.fromJson(dynamic json, this.reference) {
     comment = json['comment'];
+    commentCount = json['commentCount'];
     displayName = json['displayName'];
     instantResort = json['instantResort'];
     profileImageUrl = json['profileImageUrl'];
@@ -37,12 +40,12 @@ class CommentModel {
   CommentModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
       : this.fromJson(snapshot.data(), snapshot.reference);
 
-  Future<CommentModel> getCommentModel(String uid,int instantResort) async {
+  Future<CommentModel> getCommentModel(String uid,int instantResort,commentCount) async {
     DocumentReference<Map<String, dynamic>> documentReference = ref
         .collection('comment')
         .doc('resort')
         .collection('${instantResort.toString()}')
-        .doc(uid);
+        .doc('$uid$commentCount');
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await documentReference.get();
 
@@ -51,13 +54,13 @@ class CommentModel {
   }
 
   Future<void> uploadComment(
-      {displayName, uid, profileImageUrl, instantResort, comment, timeStamp}) async{
+      {displayName, uid, profileImageUrl, instantResort, comment, timeStamp,commentCount}) async{
 
     await ref
         .collection('comment')
         .doc('resort')
         .collection('${instantResort.toString()}')
-        .doc(uid)
+        .doc('$uid$commentCount')
         .set({
       'comment': comment,
       'displayName': displayName,
@@ -65,6 +68,7 @@ class CommentModel {
       'profileImageUrl': profileImageUrl,
       'timeStamp': timeStamp,
       'uid': uid,
+      'commentCount' : commentCount
     });
   }
 

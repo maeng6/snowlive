@@ -224,7 +224,7 @@ class _EmailSignupPageState extends State<EmailSignupPage> {
                     ),
                   ),
                   SizedBox(
-                    height: _size.height - 640,
+                    height: _size.height - 542-_statusBarSize*2-58,
                   ),
                   Padding(
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom,top: 30),

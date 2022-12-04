@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_loginController.dart';
 import 'package:snowlive3/screens/onboarding/v_setNickname.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
+
+import '../login/v_loginpage.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -69,7 +72,11 @@ class _WelcomePageState extends State<WelcomePage> {
                 height: 26,
               ),
               onTap: () {
-                LoginController().signOut_welcome();
+                if(FirebaseAuth.instance.currentUser!.providerData[0].providerId =='password') {
+                  Get.offAll(() => LoginPage());
+                }else {
+                  LoginController().signOut_welcome();
+                }
               },
             ),
             backgroundColor: Colors.white,

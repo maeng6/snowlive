@@ -15,15 +15,18 @@ class UserModelController extends GetxController{
   RxString? _userEmail = ''.obs;
   RxInt? _favoriteResort = 0.obs;
   RxInt? _instantResort = 0.obs;
+  RxInt? _commentCount = 0.obs;
   int? _favoriteSaved=0;
   RxString? _profileImageUrl=''.obs;
   RxList? _repoUidList=[].obs;
+
 
   String? get uid => _uid!.value;
   String? get displayName => _displayName!.value;
   String? get userEmial => _userEmail!.value;
   int? get favoriteResort => _favoriteResort!.value;
   int? get instantResort  => _instantResort!.value;
+  int? get commentCount  => _commentCount!.value;
   int? get favoriteSaved => _favoriteSaved;
   String? get profileImageUrl => _profileImageUrl!.value;
   List? get repoUidList => _repoUidList;
@@ -54,6 +57,7 @@ class UserModelController extends GetxController{
       this._userEmail!.value = userModel.userEmail!;
       this._favoriteResort!.value = userModel.favoriteResort!;
       this._instantResort!.value = userModel.instantResort!;
+      this._commentCount!.value = userModel.commentCount!;
       this._profileImageUrl!.value = userModel.profileImageUrl!;
       await prefs.setInt('favoriteResort', userModel.favoriteResort!);
     } else {}
@@ -255,4 +259,13 @@ class UserModelController extends GetxController{
     });
     await getCurrentUser(auth.currentUser!.uid);
   } //선택한 리조트를 파베유저문서에 업데이트
+
+  Future<void> updateCommentCount(index) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'commentCount': index+1,
+    });
+    await getCurrentUser(auth.currentUser!.uid);
+  }
 }

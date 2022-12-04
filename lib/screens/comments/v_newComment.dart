@@ -51,12 +51,14 @@ class _NewCommentState extends State<NewComment> {
                           _controller.text.trim().isEmpty
                               ? null
                               : FocusScope.of(context).unfocus();
+                          await _userModelController.updateCommentCount(_userModelController.commentCount);
                           await _commentModelController.sendMessage(
                               displayName: _userModelController.displayName,
                               uid: _userModelController.uid,
                               profileImageUrl: _userModelController.profileImageUrl,
                               instantResort: widget.index,
-                              comment: _newComment);
+                              comment: _newComment,
+                              commentCount: _userModelController.commentCount);
                           _controller.clear();
                           setState(() {
                           });
