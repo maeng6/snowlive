@@ -115,7 +115,8 @@ class LoginController extends GetxController {
       'exist' : true,
       'repoCount' : 0,
       'repoUidList' : List.empty(),
-      'commentCount' : 0
+      'commentCount' : 0,
+      'resortNickname' : ''
     });
 
 

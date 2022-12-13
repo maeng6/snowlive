@@ -159,6 +159,8 @@ class _FavoriteResortState extends State<FavoriteResort> {
                               favoriteResort);
                           await userModelController.updateInstantResort(
                               favoriteResort);
+                          await userModelController.updateResortNickname(
+                              favoriteResort);
                           print('즐겨찾는 리조트 업뎃완료');
                           await resortModelController.getSelectedResort(
                               userModelController.favoriteResort!);

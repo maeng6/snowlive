@@ -31,6 +31,7 @@ class _CommentTile_liveTalk_resortHomeState
 
   var _stream;
   bool _isVisible = false;
+  bool _openReply = false;
 
   ScrollController _scrollController = ScrollController();
 
@@ -55,15 +56,17 @@ class _CommentTile_liveTalk_resortHomeState
     });
   }
 
+  void jumpToBottom () {
+    _scrollController.jumpTo(0);
+  }
+
   _updateMethod() async {
     await _userModelController.updateRepoUidList();
   }
 
   Stream<QuerySnapshot> newStream() {
     return FirebaseFirestore.instance
-        .collection('comment')
-        .doc('resort')
-        .collection('${_userModelController.instantResort.toString()}')
+        .collection('liveTalk')
         .orderBy('timeStamp', descending: true)
         .limit(100)
         .snapshots();
@@ -103,7 +106,7 @@ class _CommentTile_liveTalk_resortHomeState
                 return Scrollbar(
                   child: ListView.builder(
                     controller: _scrollController,
-                    reverse: false,
+                    reverse: true,
                     itemCount: chatDocs.length,
                     itemBuilder: (context, index) {
                       String _time = _commentModelController
@@ -195,7 +198,8 @@ class _CommentTile_liveTalk_resortHomeState
                                                     Row(
                                                       children: [
                                                         Text(
-                                                          chatDocs[index].get('displayName'),
+                                                          chatDocs[index].get(
+                                                              'displayName'),
                                                           style: TextStyle(
                                                               fontWeight:
                                                                   FontWeight
@@ -204,7 +208,19 @@ class _CommentTile_liveTalk_resortHomeState
                                                               color: Color(
                                                                   0xFF111111)),
                                                         ),
-                                                        SizedBox(width: 5),
+                                                        SizedBox(width: 6),
+                                                        Text(
+                                                          chatDocs[index].get(
+                                                              'resortNickname'),
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300,
+                                                              fontSize: 13,
+                                                              color: Color(
+                                                                  0xFF949494)),
+                                                        ),
+                                                        SizedBox(width: 4),
                                                         Text(
                                                           '$_time',
                                                           style: TextStyle(
@@ -288,7 +304,11 @@ class _CommentTile_liveTalk_resortHomeState
                                                               const EdgeInsets
                                                                   .only(top: 2),
                                                           child: IconButton(
-                                                            onPressed: () {},
+                                                            onPressed: () {
+                                                              _openReply = !_openReply;
+                                                              setState(() {});
+                                                              print(_openReply);
+                                                            },
                                                             icon: Icon(
                                                               Icons
                                                                   .mode_comment_outlined,
@@ -619,9 +639,9 @@ class _CommentTile_liveTalk_resortHomeState
                                     reverse: false,
                                     itemCount: replyDocs.length,
                                     itemBuilder: (context, index) {
-                                      String _time =
-                                          _commentModelController.getAgoTime(
-                                              replyDocs[index].get('timeStamp'));
+                                      String _time = _commentModelController
+                                          .getAgoTime(replyDocs[index]
+                                              .get('timeStamp'));
                                       return Padding(
                                         padding: const EdgeInsets.only(
                                             left: 20, top: 24),
@@ -634,7 +654,7 @@ class _CommentTile_liveTalk_resortHomeState
                                                   (_userModelController
                                                           .repoUidList!
                                                           .contains(
-                                                      replyDocs[index]
+                                                              replyDocs[index]
                                                                   .get('uid')))
                                                       ? Center(
                                                           child: Padding(
@@ -698,8 +718,10 @@ class _CommentTile_liveTalk_resortHomeState
                                                                           .cover,
                                                                     ),
                                                                   ),
-                                                                if (chatDocs[index]
-                                                                        ['profileImageUrl'] ==
+                                                                if (chatDocs[
+                                                                            index]
+                                                                        [
+                                                                        'profileImageUrl'] ==
                                                                     "")
                                                                   GestureDetector(
                                                                     onTap: () {
@@ -735,7 +757,8 @@ class _CommentTile_liveTalk_resortHomeState
                                                                     Row(
                                                                       children: [
                                                                         Text(
-                                                                          replyDocs[index].get('displayName'),
+                                                                          replyDocs[index]
+                                                                              .get('displayName'),
                                                                           style: TextStyle(
                                                                               fontWeight: FontWeight.bold,
                                                                               fontSize: 14,
@@ -743,7 +766,7 @@ class _CommentTile_liveTalk_resortHomeState
                                                                         ),
                                                                         SizedBox(
                                                                             width:
-                                                                                5),
+                                                                                6),
                                                                         Text(
                                                                           '$_time',
                                                                           style: TextStyle(
@@ -1048,8 +1071,11 @@ class _CommentTile_liveTalk_resortHomeState
                                                                     child:
                                                                         Padding(
                                                                       padding: const EdgeInsets
-                                                                              .only(bottom: 22),
-                                                                      child:                                                  Icon(
+                                                                              .only(
+                                                                          bottom:
+                                                                              22),
+                                                                      child:
+                                                                          Icon(
                                                                         Icons
                                                                             .more_vert,
                                                                         color: Color(
@@ -1068,12 +1094,22 @@ class _CommentTile_liveTalk_resortHomeState
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  NewReply(),
-                                  TextButton(onPressed: (){}, child: Text('답글 숨기기',
-                                  style: TextStyle(fontWeight:FontWeight.bold, fontSize: 13, color: Color(0xFF949494)),)),
-                                  Divider(
-                                    color: Color(0xFFF5F5F5),
-                                    thickness: 1,
+                                  if (_openReply == true)
+                                    Column(
+                                      children: [
+                                        NewReply(),
+                                        TextButton(
+                                            onPressed: () {},
+                                            child: Text(
+                                              '답글 숨기기',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 13,
+                                                  color: Color(0xFF949494)),
+                                            )),
+                                      ],
+                                    ),
+                                  SizedBox(
                                     height: 20,
                                   ),
                                 ],
@@ -1093,7 +1129,7 @@ class _CommentTile_liveTalk_resortHomeState
             _scrollController.animateTo(0,
                 duration: Duration(milliseconds: 200), curve: Curves.easeIn);
           },
-          child: Icon(Icons.arrow_upward_outlined),
+          child: Icon(Icons.arrow_downward_outlined),
         ),
       ),
     );

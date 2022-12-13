@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snowlive3/screens/comments/v_commentScreen_liveTalk_resortHome.dart';
 import 'package:snowlive3/screens/resort/v_resortHome.dart';
 import 'brand/v_brandHome.dart';
 import 'more/v_moreTab.dart';
@@ -56,11 +57,11 @@ class _MainHomeState extends State<MainHome> {
             ),
             BottomNavigationBarItem(
               icon: Image.asset(
-                'assets/imgs/icons/icon_resort_off.png',
+                'assets/imgs/icons/icon_snowLive_livetalk.png',
                 scale: 4,
               ),
               activeIcon: Image.asset(
-                  'assets/imgs/icons/icon_resort_on.png',
+                  'assets/imgs/icons/icon_snowLive_livetalk.png',
                   scale: 4),
               label: 'Weather',
             ),
@@ -83,7 +84,7 @@ class _MainHomeState extends State<MainHome> {
           children: [
             ResortHome(),
             BrandWebBody(),
-            resortTab(),
+            CommentScreen_LiveTalk_resortHome(),
             MoreTab(),
           ],
         )

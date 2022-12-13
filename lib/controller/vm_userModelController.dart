@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snowlive3/model/m_userModel.dart';
 
+import '../model/m_resortModel.dart';
+
 class UserModelController extends GetxController{
 
   final ref = FirebaseFirestore.instance;
@@ -19,6 +21,7 @@ class UserModelController extends GetxController{
   int? _favoriteSaved=0;
   RxString? _profileImageUrl=''.obs;
   RxList? _repoUidList=[].obs;
+  RxString? _resortNickname =''.obs;
 
 
   String? get uid => _uid!.value;
@@ -30,7 +33,7 @@ class UserModelController extends GetxController{
   int? get favoriteSaved => _favoriteSaved;
   String? get profileImageUrl => _profileImageUrl!.value;
   List? get repoUidList => _repoUidList;
-
+  String? get resortNickname => _resortNickname!.value;
 
 
   @override
@@ -59,6 +62,7 @@ class UserModelController extends GetxController{
       this._instantResort!.value = userModel.instantResort!;
       this._commentCount!.value = userModel.commentCount!;
       this._profileImageUrl!.value = userModel.profileImageUrl!;
+      this._resortNickname!.value = userModel.resortNickname!;
       await prefs.setInt('favoriteResort', userModel.favoriteResort!);
     } else {}
   }
@@ -241,7 +245,8 @@ class UserModelController extends GetxController{
       'displayName': index,
     });
     await getCurrentUser(auth.currentUser!.uid);
-  } //선택한 리조트를 파베유저문서에 업데이트
+  }
+  //선택한 리조트를 파베유저문서에 업데이트
   Future<void> updateFavoriteResort(index) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
@@ -268,4 +273,13 @@ class UserModelController extends GetxController{
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
+
+  Future<void> updateResortNickname(index) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'resortNickname': nicknameList[index],
+    });
+    await getCurrentUser(auth.currentUser!.uid);
+  } //선택한 리조트를 파베유저문서에 업데이트
 }

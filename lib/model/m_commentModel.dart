@@ -6,20 +6,20 @@ class CommentModel {
       {this.displayName,
       this.uid,
       this.profileImageUrl,
-      this.instantResort,
       this.comment,
       this.timeStamp,
-      this.commentCount});
+      this.commentCount,
+      this.resortNickname});
 
   String? displayName;
   String? uid;
   String? profileImageUrl;
-  int? instantResort;
   int? commentCount;
   String? comment;
   DocumentReference? reference;
   Timestamp? timeStamp;
   late String agoTime;
+  String? resortNickname;
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseFirestore.instance;
@@ -30,21 +30,19 @@ class CommentModel {
     comment = json['comment'];
     commentCount = json['commentCount'];
     displayName = json['displayName'];
-    instantResort = json['instantResort'];
     profileImageUrl = json['profileImageUrl'];
     timeStamp = json['timeStamp'];
     uid = json['uid'];
+    resortNickname = json['resortNickname'];
 
   }
 
   CommentModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
       : this.fromJson(snapshot.data(), snapshot.reference);
 
-  Future<CommentModel> getCommentModel(String uid,int instantResort,commentCount) async {
+  Future<CommentModel> getCommentModel(String uid,commentCount) async {
     DocumentReference<Map<String, dynamic>> documentReference = ref
-        .collection('comment')
-        .doc('resort')
-        .collection('${instantResort.toString()}')
+        .collection('liveTalk')
         .doc('$uid$commentCount');
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await documentReference.get();
@@ -54,21 +52,19 @@ class CommentModel {
   }
 
   Future<void> uploadComment(
-      {displayName, uid, profileImageUrl, instantResort, comment, timeStamp,commentCount}) async{
+      {displayName, uid, profileImageUrl, comment, timeStamp,commentCount, resortNickname}) async{
 
     await ref
-        .collection('comment')
-        .doc('resort')
-        .collection('${instantResort.toString()}')
+        .collection('liveTalk')
         .doc('$uid$commentCount')
         .set({
       'comment': comment,
       'displayName': displayName,
-      'instantResort': instantResort,
       'profileImageUrl': profileImageUrl,
       'timeStamp': timeStamp,
       'uid': uid,
-      'commentCount' : commentCount
+      'commentCount' : commentCount,
+    'resortNickname' : resortNickname
     });
   }
 

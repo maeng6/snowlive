@@ -11,7 +11,8 @@ class UserModel {
     this.instantResort,
     this.profileImageUrl,
     this.exist,
-    this.commentCount
+    this.commentCount,
+    this.resortNickname
 });
 
   final auth = FirebaseAuth.instance;
@@ -25,6 +26,7 @@ class UserModel {
   String? profileImageUrl;
   bool? exist;
   DocumentReference? reference;
+  String? resortNickname;
 
   UserModel.fromJson(dynamic json, this.reference){
     uid = json['uid'];
@@ -35,7 +37,7 @@ class UserModel {
     profileImageUrl = json['profileImageUrl'];
     commentCount = json['commentCount'];
     exist = json['exist'];
-
+    resortNickname = json['resortNickname'];
   }
 
   UserModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)

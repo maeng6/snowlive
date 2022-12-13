@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/model/m_resortModel.dart';
-import 'package:snowlive3/screens/comments/v_commentScreen_liveTalk_resortTab.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
 
-class resortTab extends StatelessWidget {
-  resortTab({Key? key}) : super(key: key);
+class ResortTab extends StatelessWidget {
+  ResortTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -84,34 +83,6 @@ class resortTab extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Row(
-                    children: [
-                      TextButton(
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            alignment: Alignment.centerRight,
-                          ),
-                          onPressed: () {
-                            Get.to(() => CommentScreen_LiveTalk_resortTab(
-                                  index: index,
-                                  resortName: resortNameList[index],
-                                ));
-                          },
-                          child: Text(
-                            '라이브톡',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13,
-                                color: Color(0xFF111111)),
-                          )),
-                      ExtendedImage.asset(
-                        'assets/imgs/icons/icon_arrow_b_s.png',
-                        width: 20,
-                        height: 20,
-                      )
-                    ],
-                  )
                 ],
               ),
               SizedBox(

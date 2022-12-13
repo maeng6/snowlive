@@ -23,9 +23,10 @@ class ResortModel {
   double? longitude;
   int? nX;
   int? nY;
+  String? resortNickname;
 
   ResortModel({this.index,this.resortName, this.resortAddress, this.resortUrl, this.webcamUrl,
-    this.slopeUrl, this.naverUrl, this.latitude, this.longitude, this.nX, this.nY});
+    this.slopeUrl, this.naverUrl, this.latitude, this.longitude, this.nX, this.nY, this.resortNickname});
 
   ResortModel resortModelSelection(int? num) {
     ResortModel selectedResort = resortList[num!];
@@ -47,6 +48,7 @@ List<ResortModel> resortList = [
     longitude: 127.2953076,
     nX: 66,
     nY: 121,
+    resortNickname: '곤지암',
   ),//곤지암
   ResortModel(
     index:1,
@@ -60,6 +62,7 @@ List<ResortModel> resortList = [
     longitude: 127.7375075,
     nX: 75,
     nY: 93,
+    resortNickname: '무주',
   ),//무주
   ResortModel(
     index:2,
@@ -73,6 +76,7 @@ List<ResortModel> resortList = [
     longitude: 127.6813286,
     nX: 72,
     nY: 129,
+    resortNickname: '비발디',
   ),//비발디
   ResortModel(
     index:3,
@@ -86,6 +90,7 @@ List<ResortModel> resortList = [
     longitude: 128.6713607,
     nX: 89,
     nY: 130,
+    resortNickname: '알펜시아',
   ),//알펜
   ResortModel(
     index:4,
@@ -99,6 +104,7 @@ List<ResortModel> resortList = [
     longitude: 128.9844681,
     nX: 95,
     nY: 80,
+    resortNickname: '에덴벨리',
   ),//에덴
   ResortModel(
     index:5,
@@ -112,6 +118,7 @@ List<ResortModel> resortList = [
     longitude: 127.587019,
     nX: 71,
     nY: 132,
+    resortNickname: '강촌',
   ),//엘리시안
   ResortModel(
     index:6,
@@ -125,6 +132,7 @@ List<ResortModel> resortList = [
     longitude: 127.8122233,
     nX: 75,
     nY: 122,
+    resortNickname: '오크밸리',
   ),//오크
   ResortModel(
     index:7,
@@ -138,6 +146,7 @@ List<ResortModel> resortList = [
     longitude: 128.9478083,
     nX: 95,
     nY: 119,
+    resortNickname: '오투',
   ),//오투
   ResortModel(
     index:8,
@@ -151,6 +160,7 @@ List<ResortModel> resortList = [
     longitude: 128.6829718,
     nX: 89,
     nY: 130,
+    resortNickname: '용평',
   ),//용평
   ResortModel(
     index:9,
@@ -164,6 +174,7 @@ List<ResortModel> resortList = [
     longitude: 128.2474111,
     nX: 81,
     nY: 126,
+    resortNickname: '웰리힐리',
   ),//웰리힐리
   ResortModel(
     index:10,
@@ -177,6 +188,7 @@ List<ResortModel> resortList = [
     longitude: 127.3448223,
     nX: 66,
     nY: 120,
+    resortNickname: '지산',
   ),//지산
   ResortModel(
     index:11,
@@ -190,6 +202,7 @@ List<ResortModel> resortList = [
     longitude: 128.8253198,
     nX: 92,
     nY: 120,
+    resortNickname: '하이원',
   ),//하이원
   ResortModel(
     index:12,
@@ -203,6 +216,7 @@ List<ResortModel> resortList = [
     longitude: 128.3208284,
     nX: 84,
     nY: 128,
+    resortNickname: '휘닉스',
   ),//휘닉스
 ];
 
@@ -316,4 +330,21 @@ List<dynamic> nyList = [
   resortList[10].nY,
   resortList[11].nY,
   resortList[12].nY,
+];
+
+
+List<dynamic> nicknameList = [
+  resortList[0].resortNickname,
+  resortList[1].resortNickname,
+  resortList[2].resortNickname,
+  resortList[3].resortNickname,
+  resortList[4].resortNickname,
+  resortList[5].resortNickname,
+  resortList[6].resortNickname,
+  resortList[7].resortNickname,
+  resortList[8].resortNickname,
+  resortList[9].resortNickname,
+  resortList[10].resortNickname,
+  resortList[11].resortNickname,
+  resortList[12].resortNickname,
 ];

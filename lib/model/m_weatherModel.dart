@@ -162,13 +162,13 @@ class WeatherModel {
     } else if (pty == '2') {
       return Color(0xFF3F668A);
     } else if (pty == '3') {
-      return Color(0xFFC4D9ED);
+      return Color(0xFF9BBFE1);
     } else if (pty == '5') {
       return Color(0xFF3F668A);
     } else if (pty == '6') {
-      return Color(0xFF3F668A);
+      return Color(0xFF9BBFE1);
     } else if (pty == '7') {
-      return Color(0xFFC4D9ED);
+      return Color(0xFF9BBFE1);
     }
   }
 
@@ -236,7 +236,6 @@ class WeatherModel {
       );
     }
   }
-
 }
 
 

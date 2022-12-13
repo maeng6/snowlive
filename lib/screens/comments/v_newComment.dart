@@ -4,9 +4,7 @@ import 'package:snowlive3/controller/vm_commentController.dart';
 import '../../controller/vm_userModelController.dart';
 
 class NewComment extends StatefulWidget {
-   NewComment({Key? key,this.index}) : super(key: key);
-
-   int? index;
+   NewComment({Key? key}) : super(key: key);
 
   @override
   _NewCommentState createState() => _NewCommentState();
@@ -27,16 +25,12 @@ class _NewCommentState extends State<NewComment> {
 
     return Column(
       children: [
-        Divider(
-          thickness: 1,
-          color: Color(0xFFECECEC),
-        ),
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
           ),
           margin: EdgeInsets.only(bottom: 2),
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
           child: Row(
             children: [
               Expanded(
@@ -56,9 +50,9 @@ class _NewCommentState extends State<NewComment> {
                               displayName: _userModelController.displayName,
                               uid: _userModelController.uid,
                               profileImageUrl: _userModelController.profileImageUrl,
-                              instantResort: widget.index,
                               comment: _newComment,
-                              commentCount: _userModelController.commentCount);
+                              commentCount: _userModelController.commentCount,
+                          resortNickname: _userModelController.resortNickname);
                           _controller.clear();
                           setState(() {
                           });

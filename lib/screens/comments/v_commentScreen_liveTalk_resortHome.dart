@@ -3,11 +3,9 @@ import 'package:snowlive3/screens/comments/v_commentTile_liveTalk_resortHome.dar
 import 'package:snowlive3/screens/comments/v_newComment.dart';
 
 class CommentScreen_LiveTalk_resortHome extends StatefulWidget {
-  CommentScreen_LiveTalk_resortHome({Key? key,required this.index, required this.resortName})
+  CommentScreen_LiveTalk_resortHome({Key? key})
       : super(key: key);
 
-  String? resortName;
-  int? index;
 
   @override
   _CommentScreen_LiveTalk_resortHomeState createState() =>
@@ -30,18 +28,6 @@ class _CommentScreen_LiveTalk_resortHomeState
           child: Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
-              leading: GestureDetector(
-                child: Image.asset(
-                  'assets/imgs/icons/icon_snowLive_back.png',
-                  scale: 4,
-                  width: 26,
-                  height: 26,
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-              iconTheme: IconThemeData(size: 26, color: Colors.black87),
               centerTitle: true,
               titleSpacing: 0,
               title: Padding(
@@ -64,24 +50,8 @@ class _CommentScreen_LiveTalk_resortHomeState
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16, left: 16, bottom: 16),
-                      child: Container(
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 5, right: 6),
-                          child: Text(
-                            ' ${widget.resortName}',
-                            style: TextStyle(
-                                letterSpacing: 0.4,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF949494)),
-                          ),
-                        ),
-                      ),
-                    ),
                     Expanded(child: CommentTile_liveTalk_resortHome()),
-                    NewComment(index: widget.index,),
+                    NewComment(),
                   ],
                 )),
           ),

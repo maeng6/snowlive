@@ -26,6 +26,12 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
     super.initState();
   }
 
+  @override
+  void setState(VoidCallback fn) {
+    // TODO: implement setState
+    setState(fn);
+  }
+
   _updateMethod() async {
     await _userModelController.updateRepoUidList();
   }
@@ -42,9 +48,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
 
     return StreamBuilder(
       stream: FirebaseFirestore.instance
-          .collection('comment')
-          .doc('resort')
-          .collection('${_userModelController.instantResort.toString()}')
+          .collection('liveTalk')
           .orderBy('timeStamp', descending: true)
           .limit(4)
           .snapshots(),
@@ -67,7 +71,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
          options: CarouselOptions(
            height: 44,
            viewportFraction: 1,
-           reverse: false,
+           reverse: true,
            enableInfiniteScroll: false,
            autoPlay: true,
            autoPlayInterval: Duration(seconds: 4)
@@ -138,7 +142,15 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                         fontSize: 14,
                                         color: Color(0xFF111111)),
                                   ),
-                                  SizedBox(width: 5),
+                                  SizedBox(width: 6),
+                                  Text(
+                                    chatDocs[index].get('resortNickname'),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 13,
+                                        color: Color(0xFF949494)),
+                                  ),
+                                  SizedBox(width: 4),
                                   Text(
                                     '$_time',
                                     style: TextStyle(

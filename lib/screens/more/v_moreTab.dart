@@ -7,6 +7,7 @@ import 'package:snowlive3/controller/vm_loginController.dart';
 import 'package:snowlive3/screens/more/v_contactUsPage.dart';
 import 'package:snowlive3/screens/more/v_favoriteResort_moreTab.dart';
 import 'package:snowlive3/screens/more/v_licenseListPage.dart';
+import 'package:snowlive3/screens/more/v_resortTab.dart';
 import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
 import 'package:snowlive3/screens/more/v_setting_moreTab.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
@@ -408,6 +409,25 @@ class _MoreTabState extends State<MoreTab> {
                 },
                 title: Text(
                   '자주가는 스키장',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: Color(0xFF111111)),
+                ),
+                trailing: Image.asset(
+                  'assets/imgs/icons/icon_arrow_g.png',
+                  height: 24,
+                  width: 24,
+                ),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                minVerticalPadding: 20,
+                onTap: () {
+                  Get.to(() => ResortTab());
+                },
+                title: Text(
+                  '리조트 모아보기',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,

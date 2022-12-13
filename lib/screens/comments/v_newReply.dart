@@ -52,9 +52,9 @@ class _NewCommentState extends State<NewReply> {
                               displayName: _userModelController.displayName,
                               uid: _userModelController.uid,
                               profileImageUrl: _userModelController.profileImageUrl,
-                              instantResort: widget.index,
                               comment: _newComment,
-                              commentCount: _userModelController.commentCount);
+                              commentCount: _userModelController.commentCount,
+                          resortNickname: _userModelController.resortNickname);
                           _controller.clear();
                           setState(() {
                           });
