@@ -48,10 +48,9 @@ class _ReplyScreenState extends State<ReplyScreen> {
 //TODO: Dependency Injection**************************************************
 
   var _replyStream;
-  bool _isVisible = false;
-
 
   ScrollController _scrollController = ScrollController();
+
 
   @override
   void initState() {
@@ -59,19 +58,6 @@ class _ReplyScreenState extends State<ReplyScreen> {
     // TODO: implement initState
     super.initState();
     _replyStream = replyNewStream();
-    _scrollController.addListener(() {
-      setState(() {
-        if (_scrollController.position.userScrollDirection ==
-            ScrollDirection.reverse) {
-          _isVisible = true;
-        } else if (_scrollController.position.userScrollDirection ==
-            ScrollDirection.forward ||
-            _scrollController.position.pixels <=
-                _scrollController.position.maxScrollExtent) {
-          _isVisible = false;
-        }
-      });
-    });
   }
 
   _updateMethod() async {
@@ -83,7 +69,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
         .collection('liveTalk')
         .doc('${widget.replyUid}${widget.replyCount}')
         .collection('reply')
-        .orderBy('timeStamp', descending: true)
+        .orderBy('timeStamp', descending: false)
         .limit(500)
         .snapshots();
   }
@@ -124,6 +110,15 @@ class _ReplyScreenState extends State<ReplyScreen> {
               child: StreamBuilder<QuerySnapshot>(
                 stream: _replyStream,
                 builder: (context, snapshot2) {
+                  if (!snapshot2.hasData) {
+                    return Container(
+                      color: Colors.white,
+                    );
+                  } else if (snapshot2.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
                   final replyDocs = snapshot2.data!.docs;
                   String _commentTimeStamp = _commentModelController
                       .getAgoTime(widget.commentTime);
@@ -291,7 +286,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                 Expanded(
                                   child: ListView.builder(
                                     shrinkWrap: true,
-                                    reverse: true,
+                                    reverse: false,
                                     itemCount: replyDocs.length,
                                     itemBuilder: (context, index) {
                                       String _time = _replyModelController
