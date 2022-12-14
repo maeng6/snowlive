@@ -7,8 +7,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_commentController.dart';
 import 'package:snowlive3/controller/vm_replyModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/comments/v_commentScreen_liveTalk_resortHome.dart';
-import 'package:snowlive3/screens/comments/v_newReply.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
@@ -35,6 +33,10 @@ class ReplyScreen extends StatefulWidget {
 }
 
 class _ReplyScreenState extends State<ReplyScreen> {
+
+  final _controller = TextEditingController();
+  var _newReply = '';
+  final _formKey = GlobalKey<FormState>();
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
@@ -82,7 +84,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
         .doc('${widget.replyUid}${widget.replyCount}')
         .collection('reply')
         .orderBy('timeStamp', descending: true)
-        .limit(100)
+        .limit(500)
         .snapshots();
   }
 
@@ -285,7 +287,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                 ),
                                 (replyDocs.length > 0)
                                 ?Text('답글 ${replyDocs.length}개')
-                                :Text('첫 댓글을 남겨주세요!'),
+                                :Text('첫 답글을 남겨주세요!'),
                                 Expanded(
                                   child: ListView.builder(
                                     shrinkWrap: true,
@@ -756,9 +758,88 @@ class _ReplyScreenState extends State<ReplyScreen> {
                             ),
                           ),
                         )),
-                        NewReply(
-                            replyLocationUid: widget.replyUid,
-                            replyLocationUidCount: widget.replyCount),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          margin: EdgeInsets.only(bottom: 2),
+                          padding: EdgeInsets.only(top: 10, bottom: 6),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  key: _formKey,
+                                  cursorColor: Color(0xff377EEA),
+                                  controller: _controller,
+                                  strutStyle: StrutStyle(leading: 0.3),
+                                  decoration: InputDecoration(
+                                      suffixIcon: IconButton(
+                                        onPressed: () async {
+                                          _controller.text.trim().isEmpty
+                                              ? null
+                                              : FocusScope.of(context).unfocus();
+                                          _controller.clear();
+                                          CustomFullScreenDialog.showDialog();
+                                          try{
+                                            await _userModelController.updateCommentCount(_userModelController.commentCount);
+                                            await _commentModelController.replyCountUpdate('${widget.replyUid}${widget.replyCount}');
+                                            await _replyModelController.sendReply(
+                                                displayName: _userModelController.displayName,
+                                                uid: _userModelController.uid,
+                                                replyLocationUid: widget.replyUid,
+                                                profileImageUrl: _userModelController.profileImageUrl,
+                                                reply: _newReply,
+                                                replyLocationUidCount: widget.replyCount,
+                                                commentCount: _userModelController.commentCount);
+                                            setState(() {
+                                            });}catch(e){}
+                                          CustomFullScreenDialog.cancelDialog();
+                                        },
+                                        icon: (_controller.text.trim().isEmpty)
+                                            ? Image.asset(
+                                          'assets/imgs/icons/icon_livetalk_send_g.png',
+                                          width: 27,
+                                          height: 27,
+                                        )
+                                            : Image.asset(
+                                          'assets/imgs/icons/icon_livetalk_send.png',
+                                          width: 27,
+                                          height: 27,
+                                        ),
+                                      ),
+                                      errorStyle: TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                      hintStyle: TextStyle(color: Color(0xff949494), fontSize: 14),
+                                      hintText: '답글 남기기',
+                                      contentPadding:
+                                      EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Color(0xFFFF3726)),
+                                        borderRadius: BorderRadius.circular(6),
+                                      )),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _newReply = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text('운영자가 실시간으로 악성댓글을 관리합니다.', style: TextStyle(
+                          fontSize: 12, color: Color(0xFFC8C8C8),
+                        ),),
+                        SizedBox(height: 16,),
                       ],
                     ),
                   );

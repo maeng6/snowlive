@@ -50,7 +50,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
       stream: FirebaseFirestore.instance
           .collection('liveTalk')
           .orderBy('timeStamp', descending: true)
-          .limit(4)
+          .limit(10)
           .snapshots(),
       builder: (context,
           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {

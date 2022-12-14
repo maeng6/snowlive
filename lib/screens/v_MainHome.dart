@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:snowlive3/screens/comments/v_commentScreen_liveTalk_resortHome.dart';
+import 'package:snowlive3/screens/comments/v_liveTalk_Screen.dart';
 import 'package:snowlive3/screens/resort/v_resortHome.dart';
 import 'brand/v_brandHome.dart';
 import 'more/v_moreTab.dart';
@@ -90,7 +90,7 @@ class _MainHomeState extends State<MainHome> {
           children: [
                 ResortHome(),
                 BrandWebBody(),
-                CommentScreen_LiveTalk_resortHome(),
+                CommentTile_liveTalk_resortHome(),
                 MoreTab(),
           ],
         )
