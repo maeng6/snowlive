@@ -6,31 +6,26 @@ import 'package:snowlive3/model/m_commentModel.dart';
 class CommentModelController extends GetxController {
   RxString? _uid = ''.obs;
   RxString? _displayName = ''.obs;
-  RxInt? _instantResort = 0.obs;
   RxInt? _commentCount = 0.obs;
   RxString? _profileImageUrl = ''.obs;
   RxString? _comment = ''.obs;
   Timestamp? _timeStamp;
   RxString? _agoTime = ''.obs;
   RxString? _resortNickname = ''.obs;
+  RxInt? _likeCount = 0.obs;
+  RxInt? _replyCount = 0.obs;
+
 
   String? get uid => _uid!.value;
-
   String? get displayName => _displayName!.value;
-
-  int? get instantResort => _instantResort!.value;
-
   int? get commentCount => _commentCount!.value;
-
   String? get profileImageUrl => _profileImageUrl!.value;
-
   String? get comment => _comment!.value;
-
   Timestamp? get timeStamp => _timeStamp;
-
   String? get agoTime => _agoTime!.value;
-
   String? get resortNickname => _resortNickname!.value;
+  int? get likeCount => _likeCount!.value;
+  int? get replyCount => _replyCount!.value;
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
@@ -41,7 +36,9 @@ class CommentModelController extends GetxController {
       required profileImageUrl,
       required comment,
       required commentCount,
-      required resortNickname}) async {
+      required resortNickname,
+      required likeCount,
+      required replyCount}) async {
     await CommentModel().uploadComment(
       comment: comment,
       displayName: displayName,
@@ -50,6 +47,8 @@ class CommentModelController extends GetxController {
       commentCount: commentCount,
       uid: uid,
       resortNickname: resortNickname,
+      likeCount: likeCount,
+      replyCount: replyCount
     );
     CommentModel commentModel =
         await CommentModel().getCommentModel(uid, commentCount);
@@ -60,7 +59,91 @@ class CommentModelController extends GetxController {
     this._timeStamp = commentModel.timeStamp!;
     this._commentCount!.value = commentModel.commentCount!;
     this._resortNickname!.value = commentModel.resortNickname!;
+    this._likeCount!.value = commentModel.likeCount!;
+    this._replyCount!.value = commentModel.replyCount!;
   }
+
+  Future<void> likeUpdate(uid) async {
+
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('liveTalk').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int likeCount = documentSnapshot.get('likeCount');
+      int likeCountPlus = likeCount + 1;
+
+      await ref.collection('liveTalk').doc(uid).update({
+        'likeCount': likeCountPlus,
+      });
+    }catch(e){
+      print('탈퇴한 회원');
+    }
+  }
+
+  Future<void> likeDelete(uid) async {
+
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('liveTalk').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int likeCount = documentSnapshot.get('likeCount');
+      int likeCountMinus = likeCount - 1;
+
+      await ref.collection('liveTalk').doc(uid).update({
+        'likeCount': likeCountMinus,
+      });
+    }catch(e){
+      print('탈퇴한 회원');
+    }
+  }
+
+  Future<void> replyCountUpdate(uid) async {
+
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('liveTalk').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int replyCount = documentSnapshot.get('replyCount');
+      int replyCountPlus = replyCount + 1;
+
+      await ref.collection('liveTalk').doc(uid).update({
+        'replyCount': replyCountPlus,
+      });
+    }catch(e){
+      print('탈퇴한 회원');
+    }
+  }
+
+  Future<void> replyCountDelete(uid) async {
+
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('liveTalk').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int replyCount = documentSnapshot.get('replyCount');
+      int replyCountMinus = replyCount - 1;
+
+      await ref.collection('liveTalk').doc(uid).update({
+        'replyCount': replyCountMinus,
+      });
+    }catch(e){
+      print('탈퇴한 회원');
+    }
+  }
+
+
 
   String getAgoTime(timestamp) {
     String time = CommentModel().getAgo(timestamp);

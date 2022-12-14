@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_commentController.dart';
+import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../controller/vm_userModelController.dart';
 
 class NewComment extends StatefulWidget {
@@ -45,6 +46,9 @@ class _NewCommentState extends State<NewComment> {
                           _controller.text.trim().isEmpty
                               ? null
                               : FocusScope.of(context).unfocus();
+                          _controller.clear();
+                          CustomFullScreenDialog.showDialog();
+                          try{
                           await _userModelController.updateCommentCount(_userModelController.commentCount);
                           await _commentModelController.sendMessage(
                               displayName: _userModelController.displayName,
@@ -52,10 +56,12 @@ class _NewCommentState extends State<NewComment> {
                               profileImageUrl: _userModelController.profileImageUrl,
                               comment: _newComment,
                               commentCount: _userModelController.commentCount,
-                          resortNickname: _userModelController.resortNickname);
-                          _controller.clear();
+                          resortNickname: _userModelController.resortNickname,
+                              likeCount: _commentModelController.likeCount,
+                              replyCount: _commentModelController.replyCount);
                           setState(() {
-                          });
+                          });}catch(e){}
+                          CustomFullScreenDialog.cancelDialog();
                         },
                         icon: (_controller.text.trim().isEmpty)
                             ? Image.asset(

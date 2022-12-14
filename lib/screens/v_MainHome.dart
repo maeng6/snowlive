@@ -14,12 +14,16 @@ class MainHome extends StatefulWidget {
 class _MainHomeState extends State<MainHome> {
   int _currentPage=0;
 
+  PageController _pageController = PageController();
 
-  void changePage(pageIndex){
+
+  void _onItemTapped(int index) {
+    _pageController.jumpToPage(index);
+  }
+
+  void changePage(int index){
     setState(() {
-      _currentPage =pageIndex;
-      var controller = PrimaryScrollController.of(context);
-      controller?.jumpTo(0);
+      _currentPage = index;
     });
   }
 
@@ -32,7 +36,7 @@ class _MainHomeState extends State<MainHome> {
           elevation: 10,
           type: BottomNavigationBarType.fixed,
           currentIndex: _currentPage,
-          onTap:  changePage,
+          onTap:  _onItemTapped,
           items: [
             BottomNavigationBarItem(
               icon: Image.asset(
@@ -79,13 +83,15 @@ class _MainHomeState extends State<MainHome> {
           showUnselectedLabels: false,
           showSelectedLabels: false,
         ),
-        body: IndexedStack(
-          index: _currentPage,
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: changePage,
+          physics: NeverScrollableScrollPhysics(),
           children: [
-            ResortHome(),
-            BrandWebBody(),
-            CommentScreen_LiveTalk_resortHome(),
-            MoreTab(),
+                ResortHome(),
+                BrandWebBody(),
+                CommentScreen_LiveTalk_resortHome(),
+                MoreTab(),
           ],
         )
     );

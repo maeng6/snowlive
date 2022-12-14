@@ -21,18 +21,20 @@ class UserModelController extends GetxController{
   int? _favoriteSaved=0;
   RxString? _profileImageUrl=''.obs;
   RxList? _repoUidList=[].obs;
+  RxList? _likeUidList=[].obs;
   RxString? _resortNickname =''.obs;
 
 
   String? get uid => _uid!.value;
   String? get displayName => _displayName!.value;
-  String? get userEmial => _userEmail!.value;
+  String? get userEmail => _userEmail!.value;
   int? get favoriteResort => _favoriteResort!.value;
   int? get instantResort  => _instantResort!.value;
   int? get commentCount  => _commentCount!.value;
   int? get favoriteSaved => _favoriteSaved;
   String? get profileImageUrl => _profileImageUrl!.value;
   List? get repoUidList => _repoUidList;
+  List? get likeUidList => _likeUidList;
   String? get resortNickname => _resortNickname!.value;
 
 
@@ -73,61 +75,6 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(uid).update({
       'profileImageUrl': url,
     });
-    try{
-    try{
-    await ref.collection('comment').doc('resort').collection('0').doc(uid).update({
-      'profileImageUrl': url
-    });} catch(e){print(e);}
-    try{
-      await ref.collection('comment').doc('resort').collection('1').doc(uid).update({
-        'profileImageUrl': url
-      });} catch(e){print(e);}
-    try{
-      await ref.collection('comment').doc('resort').collection('2').doc(uid).update({
-        'profileImageUrl': url
-      });} catch(e){print(e);}
-    try{
-      await ref.collection('comment').doc('resort').collection('3').doc(uid).update({
-        'profileImageUrl': url
-      });} catch(e){print(e);}
-    try{
-      await ref.collection('comment').doc('resort').collection('4').doc(uid).update({
-        'profileImageUrl': url
-      });} catch(e){print(e);}
-    try{
-      await ref.collection('comment').doc('resort').collection('5').doc(uid).update({
-        'profileImageUrl': url
-      });} catch(e){print(e);}
-    try{
-      await ref.collection('comment').doc('resort').collection('6').doc(uid).update({
-        'profileImageUrl': url
-      });} catch(e){print(e);}
-    try{
-      await ref.collection('comment').doc('resort').collection('7').doc(uid).update({
-        'profileImageUrl': url
-      });} catch(e){print(e);}
-    try{
-      await ref.collection('comment').doc('resort').collection('8').doc(uid).update({
-        'profileImageUrl': url
-      });} catch(e){print(e);}
-    try{
-      await ref.collection('comment').doc('resort').collection('9').doc(uid).update({
-        'profileImageUrl': url
-      });} catch(e){print(e);}
-    try{
-      await ref.collection('comment').doc('resort').collection('10').doc(uid).update({
-        'profileImageUrl': url
-      });} catch(e){print(e);}
-    try{
-      await ref.collection('comment').doc('resort').collection('11').doc(uid).update({
-        'profileImageUrl': url
-      });} catch(e){print(e);}
-    try{
-      await ref.collection('comment').doc('resort').collection('12').doc(uid).update({
-        'profileImageUrl': url
-      });} catch(e){print(e);}
-
-    }catch(e){print(e);}
     await getCurrentUser(auth.currentUser!.uid);
   }
 
@@ -137,61 +84,6 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(uid).update({
       'profileImageUrl': '',
     });
-    try{
-      try{
-        await ref.collection('comment').doc('resort').collection('0').doc(uid).update({
-          'profileImageUrl': ''
-        });} catch(e){print(e);}
-      try{
-        await ref.collection('comment').doc('resort').collection('1').doc(uid).update({
-          'profileImageUrl': ''
-        });} catch(e){print(e);}
-      try{
-        await ref.collection('comment').doc('resort').collection('2').doc(uid).update({
-          'profileImageUrl': ''
-        });} catch(e){print(e);}
-      try{
-        await ref.collection('comment').doc('resort').collection('3').doc(uid).update({
-          'profileImageUrl': ''
-        });} catch(e){print(e);}
-      try{
-        await ref.collection('comment').doc('resort').collection('4').doc(uid).update({
-          'profileImageUrl': ''
-        });} catch(e){print(e);}
-      try{
-        await ref.collection('comment').doc('resort').collection('5').doc(uid).update({
-          'profileImageUrl': ''
-        });} catch(e){print(e);}
-      try{
-        await ref.collection('comment').doc('resort').collection('6').doc(uid).update({
-          'profileImageUrl': ''
-        });} catch(e){print(e);}
-      try{
-        await ref.collection('comment').doc('resort').collection('7').doc(uid).update({
-          'profileImageUrl': ''
-        });} catch(e){print(e);}
-      try{
-        await ref.collection('comment').doc('resort').collection('8').doc(uid).update({
-          'profileImageUrl': ''
-        });} catch(e){print(e);}
-      try{
-        await ref.collection('comment').doc('resort').collection('9').doc(uid).update({
-          'profileImageUrl': ''
-        });} catch(e){print(e);}
-      try{
-        await ref.collection('comment').doc('resort').collection('10').doc(uid).update({
-          'profileImageUrl': ''
-        });} catch(e){print(e);}
-      try{
-        await ref.collection('comment').doc('resort').collection('11').doc(uid).update({
-          'profileImageUrl': ''
-        });} catch(e){print(e);}
-      try{
-        await ref.collection('comment').doc('resort').collection('12').doc(uid).update({
-          'profileImageUrl': ''
-        });} catch(e){print(e);}
-
-    }catch(e){print(e);}
     await getCurrentUser(auth.currentUser!.uid);
   }
 
@@ -236,6 +128,43 @@ class UserModelController extends GetxController{
     await documentReference.get();
     List repoUidList = documentSnapshot.get('repoUidList');
     this._repoUidList!.value = repoUidList;
+  }
+
+  Future<void> updateLikeUid(uid) async {
+    final  userMe = auth.currentUser!.uid;
+    await ref.collection('user').doc(userMe).update({
+      'likeUidList': FieldValue.arrayUnion([uid])
+    });
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(userMe);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List likeUidList = documentSnapshot.get('likeUidList');
+    this._likeUidList!.value = likeUidList;
+  }
+
+  Future<void> deleteLikeUid(uid) async {
+    final  userMe = auth.currentUser!.uid;
+    await ref.collection('user').doc(userMe).update({
+      'likeUidList': FieldValue.arrayRemove([uid])
+    });
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(userMe);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List likeUidList = documentSnapshot.get('likeUidList');
+    this._likeUidList!.value = likeUidList;
+  }
+
+
+  Future<void> updateLikeUidList() async {
+    final  userMe = auth.currentUser!.uid;
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(userMe);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List likeUidList = documentSnapshot.get('likeUidList');
+    this._likeUidList!.value = likeUidList;
   }
 
   Future<void> updateNickname(index) async {

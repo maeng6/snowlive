@@ -2,8 +2,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:snowlive3/controller/vm_loginController.dart';
 import 'package:snowlive3/screens/more/v_contactUsPage.dart';
 import 'package:snowlive3/screens/more/v_favoriteResort_moreTab.dart';
 import 'package:snowlive3/screens/more/v_licenseListPage.dart';
@@ -28,12 +26,10 @@ class _MoreTabState extends State<MoreTab> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
-  LoginController _loginController = Get.find<LoginController>();
   //TODO: Dependency Injection**************************************************
 
   @override
   Widget build(BuildContext context) {
-    Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -342,7 +338,7 @@ class _MoreTabState extends State<MoreTab> {
                 accountEmail: Stack(
                   children: [
                     Text(
-                      _userModelController.userEmial!,
+                      _userModelController.userEmail!,
                       style: TextStyle(color: Color(0xFF949494), fontSize: 13),
                     ),
                   ],

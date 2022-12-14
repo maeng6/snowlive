@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_commentController.dart';
+import 'package:snowlive3/controller/vm_replyModelController.dart';
+import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../controller/vm_userModelController.dart';
 
 class NewReply extends StatefulWidget {
-  NewReply({Key? key,this.index}) : super(key: key);
+  NewReply({Key? key,
+    required this.replyLocationUid,
+    required this.replyLocationUidCount}) : super(key: key);
 
-  int? index;
+  String? replyLocationUid; //내가 대댓글을 남기는 댓글 작성자의 UID
+  int? replyLocationUidCount; //내가 대댓글을 남기는 댓글 작성자 UID의 넘버
 
   @override
-  _NewCommentState createState() => _NewCommentState();
+  _NewReplyState createState() => _NewReplyState();
 }
 
-class _NewCommentState extends State<NewReply> {
+class _NewReplyState extends State<NewReply> {
   final _controller = TextEditingController();
-  var _newComment = '';
+  var _newReply = '';
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
 //TODO: Dependency Injection**************************************************
     UserModelController _userModelController = Get.find<UserModelController>();
+    ReplyModelController _replyModelController =
+    Get.find<ReplyModelController>();
     CommentModelController _commentModelController =
     Get.find<CommentModelController>();
 //TODO: Dependency Injection**************************************************
@@ -47,17 +54,22 @@ class _NewCommentState extends State<NewReply> {
                           _controller.text.trim().isEmpty
                               ? null
                               : FocusScope.of(context).unfocus();
+                          _controller.clear();
+                          CustomFullScreenDialog.showDialog();
+                          try{
                           await _userModelController.updateCommentCount(_userModelController.commentCount);
-                          await _commentModelController.sendMessage(
+                          await _commentModelController.replyCountUpdate('${widget.replyLocationUid}${widget.replyLocationUidCount}');
+                          await _replyModelController.sendReply(
                               displayName: _userModelController.displayName,
                               uid: _userModelController.uid,
+                              replyLocationUid: widget.replyLocationUid,
                               profileImageUrl: _userModelController.profileImageUrl,
-                              comment: _newComment,
-                              commentCount: _userModelController.commentCount,
-                          resortNickname: _userModelController.resortNickname);
-                          _controller.clear();
+                              reply: _newReply,
+                              replyLocationUidCount: widget.replyLocationUidCount,
+                              commentCount: _userModelController.commentCount);
                           setState(() {
-                          });
+                          });}catch(e){}
+                          CustomFullScreenDialog.cancelDialog();
                         },
                         icon: (_controller.text.trim().isEmpty)
                             ? Image.asset(
@@ -92,7 +104,7 @@ class _NewCommentState extends State<NewReply> {
                       )),
                   onChanged: (value) {
                     setState(() {
-                      _newComment = value;
+                      _newReply = value;
                     });
                   },
                 ),
@@ -100,6 +112,10 @@ class _NewCommentState extends State<NewReply> {
             ],
           ),
         ),
+        Text('운영자가 실시간으로 악성댓글을 관리합니다.', style: TextStyle(
+          fontSize: 12, color: Color(0xFFC8C8C8),
+        ),),
+        SizedBox(height: 16,)
       ],
     );
   }

@@ -7,6 +7,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
+import 'package:snowlive3/controller/vm_replyModelController.dart';
 import 'package:snowlive3/model/m_resortModel.dart';
 import 'package:snowlive3/screens/comments/v_commentTile_resortHome.dart';
 import 'package:snowlive3/screens/comments/v_commentScreen_liveTalk_resortHome.dart';
@@ -20,7 +21,12 @@ class ResortHome extends StatefulWidget {
   State<ResortHome> createState() => _ResortHomeState();
 }
 
-class _ResortHomeState extends State<ResortHome> {
+class _ResortHomeState extends State<ResortHome>
+    with AutomaticKeepAliveClientMixin{
+
+  @override
+  bool get wantKeepAlive => true;
+
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
 
@@ -74,6 +80,7 @@ class _ResortHomeState extends State<ResortHome> {
 
     //TODO: Dependency Injection**************************************************
     Get.put(CommentModelController(), permanent: true);
+    Get.put(ReplyModelController(), permanent: true);
     //TODO: Dependency Injection**************************************************
 
     final Size _size = MediaQuery.of(context).size;
