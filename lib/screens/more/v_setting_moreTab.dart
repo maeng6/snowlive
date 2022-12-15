@@ -102,11 +102,13 @@ class setting_moreTab extends StatelessWidget {
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: () async {
+                                      try{
+                                        await _imageController.deleteProfileImage();
+                                      }catch(e){print('프사 없음');}
                                       await _loginController
                                           .deleteUser(
                                           _userModelController
                                               .uid);
-                                      await _imageController.deleteProfileImage();
                                     },
                                     child: Text(
                                       '확인',
