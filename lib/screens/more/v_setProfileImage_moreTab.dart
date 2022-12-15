@@ -551,6 +551,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                         CustomFullScreenDialog.showDialog();
                                         await _userModelController
                                             .deleteProfileImageUrl();
+                                        await _imageController.deleteProfileImage();
                                         CustomFullScreenDialog.cancelDialog();
                                         Navigator.pop(context);
                                         Get.snackbar('프로필 이미지', '기본 이미지로 변경이 완료되었습니다.',

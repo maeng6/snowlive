@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:snowlive3/controller/vm_imageController.dart';
 
 import '../../controller/vm_loginController.dart';
 import '../../controller/vm_userModelController.dart';
@@ -13,6 +14,7 @@ class setting_moreTab extends StatelessWidget {
     //TODO: Dependency Injection**************************************************
     UserModelController _userModelController = Get.find<UserModelController>();
     LoginController _loginController = Get.find<LoginController>();
+    ImageController _imageController = Get.find<ImageController>();
     //TODO: Dependency Injection**************************************************
     return Scaffold(
       backgroundColor: Colors.white,
@@ -104,6 +106,7 @@ class setting_moreTab extends StatelessWidget {
                                           .deleteUser(
                                           _userModelController
                                               .uid);
+                                      await _imageController.deleteProfileImage();
                                     },
                                     child: Text(
                                       '확인',

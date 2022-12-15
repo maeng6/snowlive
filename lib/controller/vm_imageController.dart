@@ -46,8 +46,7 @@ class ImageController extends GetxController {
 
   Future<void> deleteProfileImage() async{
     String? uid = _userModelController.uid;
-    Reference ref = FirebaseStorage.instance.ref('images/profile/$uid.jpg');
-    await ref.delete();
+    await FirebaseStorage.instance.ref().child('images/profile/$uid.jpg').delete();
 
 }
 
