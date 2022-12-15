@@ -35,6 +35,7 @@ class _CommentTile_liveTalk_resortHomeState
 
   var _stream;
   bool _isVisible = false;
+  bool _firstPress = true;
 
   ScrollController _scrollController = ScrollController();
 
@@ -299,14 +300,18 @@ class _CommentTile_liveTalk_resortHomeState
                                                                         onPressed: () async{
                                                                           var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
                                                                           print(likeUid);
-                                                                          await _userModelController.deleteLikeUid(likeUid);
-                                                                          await _commentModelController.likeDelete(likeUid);
+
+                                                                          if(_firstPress){
+                                                                            _firstPress = false;
+                                                                            await _userModelController.deleteLikeUid(likeUid);
+                                                                            await _commentModelController.likeDelete(likeUid);
+                                                                            _firstPress = true;
+                                                                          }
+
                                                                         },
                                                                         icon: Icon(Icons.favorite, size: 16, color: Colors.red,),
-                                                                        padding:
-                                                                        EdgeInsets.zero,
-                                                                        constraints:
-                                                                        BoxConstraints(),
+                                                                        padding: EdgeInsets.zero,
+                                                                        constraints: BoxConstraints(),
                                                                       ),
                                                                     )
                                                                     :Padding(
@@ -318,8 +323,13 @@ class _CommentTile_liveTalk_resortHomeState
                                                                         onPressed: () async{
                                                                           var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
                                                                           print(likeUid);
-                                                                          await _userModelController.updateLikeUid(likeUid);
-                                                                          await _commentModelController.likeUpdate(likeUid);
+
+                                                                          if(_firstPress){
+                                                                            _firstPress = false;
+                                                                            await _userModelController.updateLikeUid(likeUid);
+                                                                            await _commentModelController.likeUpdate(likeUid);
+                                                                            _firstPress = true;
+                                                                          }
 
                                                                         },
                                                                         icon: Icon(Icons.favorite_border, size: 16, color: Color(0xFF949494),),
@@ -359,7 +369,7 @@ class _CommentTile_liveTalk_resortHomeState
                                                                         },
                                                                         icon: Icon(
                                                                           Icons
-                                                                              .mode_comment_outlined,
+                                                                              .insert_comment_outlined,
                                                                           size: 16,
                                                                           color: Color(
                                                                               0xFF949494),
@@ -370,18 +380,41 @@ class _CommentTile_liveTalk_resortHomeState
                                                                             BoxConstraints(),
                                                                       ),
                                                                     ),
-                                                                    Text(
-                                                                      '${chatDocs[index]['replyCount']}',
-                                                                      style: TextStyle(
-                                                                          fontWeight:
-                                                                              FontWeight
-                                                                                  .bold,
-                                                                          fontSize: 13,
-                                                                          color: Color(
-                                                                              0xFF949494)),
-                                                                    ),
+                                                                    // Text(
+                                                                    //   '${chatDocs[index]['replyCount']}',
+                                                                    //   style: TextStyle(
+                                                                    //       fontWeight:
+                                                                    //           FontWeight
+                                                                    //               .bold,
+                                                                    //       fontSize: 13,
+                                                                    //       color: Color(
+                                                                    //           0xFF949494)),
+                                                                    // ),
                                                                   ],
                                                                 ),
+                                                                SizedBox(
+                                                                  height: 15,
+                                                                ),
+                                                                (chatDocs[index]['replyCount'] > 0)
+                                                                    ?GestureDetector(
+                                                                      child: Text('답글 ${chatDocs[index]['replyCount']}개',
+                                                                  style: TextStyle(
+                                                                        color: Colors.blue,
+                                                                        fontWeight: FontWeight.bold
+                                                                  ),
+                                                                ),
+                                                                  onTap: (){
+                                                                    Get.to(()=>ReplyScreen(
+                                                                      replyUid: chatDocs[index]['uid'],
+                                                                      replyCount: chatDocs[index]['commentCount'],
+                                                                      replyImage: chatDocs[index]['profileImageUrl'],
+                                                                      replyDisplayName: chatDocs[index]['displayName'],
+                                                                      replyResortNickname: chatDocs[index]['resortNickname'],
+                                                                      comment: chatDocs[index]['comment'],
+                                                                      commentTime: chatDocs[index]['timeStamp'],));
+                                                                  },
+                                                                    )
+                                                                    :Container(),
                                                               ],
                                                             ),
                                                           ],
