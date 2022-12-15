@@ -414,6 +414,8 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                       color: Color(0xFF949494),
                                                                       fontWeight: FontWeight.w300),
                                                                 ),
+                                                                SizedBox(
+                                                                    width: 1),
                                                                 Text(
                                                                   '· $_time',
                                                                   style: TextStyle(
