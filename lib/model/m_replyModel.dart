@@ -11,6 +11,7 @@ class ReplyModel {
         this.commentCount,
         this.timeStamp,
         this.replyLocationUidCount,
+        this.replyResortNickname
       });
 
   String? displayName;
@@ -23,6 +24,7 @@ class ReplyModel {
   DocumentReference? reference;
   Timestamp? timeStamp;
   late String agoTime;
+  String? replyResortNickname;
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseFirestore.instance;
@@ -38,13 +40,13 @@ class ReplyModel {
     uid = json['uid'];
     commentCount = json['commentCount'];
     replyLocationUid = json['replyLocationUid'];
-
+    replyResortNickname = json['replyResortNickname'];
   }
 
   ReplyModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
       : this.fromJson(snapshot.data(), snapshot.reference);
 
-  Future<ReplyModel> getReplyModel(String uid, String replyLocationUid, commentCount, replyLocationUidCount) async {
+  Future<ReplyModel> getReplyModel(String uid, String replyLocationUid, commentCount, replyLocationUidCount, replyResortNickname) async {
     DocumentReference<Map<String, dynamic>> documentReference = ref
         .collection('liveTalk')
         .doc('$replyLocationUid$replyLocationUidCount')
@@ -58,7 +60,7 @@ class ReplyModel {
   }
 
   Future<void> uploadReply(
-      {displayName, uid, replyLocationUid, profileImageUrl, reply, timeStamp,replyLocationUidCount, commentCount}) async{
+      {displayName, uid, replyLocationUid, profileImageUrl, reply, timeStamp,replyLocationUidCount, commentCount, replyResortNickname}) async{
 
     await ref
         .collection('liveTalk')
@@ -71,7 +73,8 @@ class ReplyModel {
       'profileImageUrl': profileImageUrl,
       'timeStamp': timeStamp,
       'uid': uid,
-      'commentCount' : commentCount
+      'commentCount' : commentCount,
+      'replyResortNickname' : replyResortNickname,
     });
   }
 

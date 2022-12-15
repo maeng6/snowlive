@@ -536,6 +536,7 @@ class _MoreTabState extends State<MoreTab> {
                   width: 24,
                 ),
               ),
+              SizedBox(height: 36),
             ],
           ),
         ));

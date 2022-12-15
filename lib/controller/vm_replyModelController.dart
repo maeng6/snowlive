@@ -14,6 +14,8 @@ class ReplyModelController extends GetxController {
   RxString? _reply = ''.obs;
   Timestamp? _timeStamp;
   RxString? _agoTime =''.obs;
+  RxString? _replyResortNickname = ''.obs;
+
 
   String? get uid => _uid!.value;
   String? get replyLocationUid => _replyLocationUid!.value;
@@ -24,6 +26,7 @@ class ReplyModelController extends GetxController {
   String? get reply => _reply!.value;
   Timestamp? get timeStamp => _timeStamp;
   String? get agoTime => _agoTime!.value;
+  String? get replyResortNickname => _replyResortNickname!.value;
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
@@ -32,6 +35,7 @@ class ReplyModelController extends GetxController {
       {required displayName,
         required uid,
         required replyLocationUid,
+        required replyResortNickname,
         required profileImageUrl,
         required reply,
         required commentCount,
@@ -41,17 +45,19 @@ class ReplyModelController extends GetxController {
       reply: reply,
       replyLocationUid: replyLocationUid,
       displayName: displayName,
+      replyResortNickname: replyResortNickname,
       profileImageUrl: profileImageUrl,
       timeStamp: Timestamp.now(),
       replyLocationUidCount: replyLocationUidCount,
       commentCount: commentCount,
       uid: uid,
     );
-    ReplyModel replyModel = await ReplyModel().getReplyModel(uid,replyLocationUid,replyLocationUidCount, commentCount);
+    ReplyModel replyModel = await ReplyModel().getReplyModel(uid,replyLocationUid,replyLocationUidCount, commentCount, replyResortNickname);
     this._uid!.value = replyModel.uid!;
     this._commentCount!.value = replyModel.commentCount!;
     this._replyLocationUid!.value = replyModel.replyLocationUid!;
     this._displayName!.value = replyModel.displayName!;
+    this._replyResortNickname!.value = replyModel.replyResortNickname!;
     this._profileImageUrl!.value = replyModel.profileImageUrl!;
     this._reply!.value = replyModel.reply!;
     this._timeStamp = replyModel.timeStamp!;

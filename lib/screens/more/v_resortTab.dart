@@ -15,19 +15,29 @@ class ResortTab extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-        centerTitle: false,
-        titleSpacing: 0,
-        title: Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Text(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(58),
+        child: AppBar(
+          leading: GestureDetector(
+            child: Image.asset(
+              'assets/imgs/icons/icon_snowLive_back.png',
+              scale: 4,
+              width: 26,
+              height: 26,
+            ),
+            onTap: () {
+              Get.back();
+            },
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0.0,
+          titleSpacing: 0,
+          title: Text(
             '리조트',
             style: GoogleFonts.notoSans(
                 color: Color(0xFF111111),
                 fontWeight: FontWeight.w900,
-                fontSize: 23),
+                fontSize: 20),
           ),
         ),
       ),

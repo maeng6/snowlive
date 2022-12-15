@@ -32,6 +32,7 @@ class _ProfileImagePageState extends State<ProfileImagePage> {
         ),
       ),
       body: InteractiveViewer(
+        maxScale: 7,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

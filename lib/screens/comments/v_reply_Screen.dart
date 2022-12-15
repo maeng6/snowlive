@@ -3,6 +3,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_commentController.dart';
 import 'package:snowlive3/controller/vm_replyModelController.dart';
@@ -96,26 +97,39 @@ class _ReplyScreenState extends State<ReplyScreen> {
           bottom: true,
           child: Scaffold(
             backgroundColor: Colors.white,
-            appBar: AppBar(
-              title: Padding(
-                padding: const EdgeInsets.only(left: 0),
-                child: Column(
-                  children: [
-                    Text(
-                      '답글',
-                      style: TextStyle(
-                          letterSpacing: 0.6,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Color(0xFF111111)),
-                    ),
-                  ],
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(58),
+              child: AppBar(
+                leading: GestureDetector(
+                  child: Image.asset(
+                    'assets/imgs/icons/icon_snowLive_back.png',
+                    scale: 4,
+                    width: 26,
+                    height: 26,
+                  ),
+                  onTap: () {
+                    Get.back();
+                  },
                 ),
+                title: Padding(
+                  padding: const EdgeInsets.only(left: 0),
+                  child: Column(
+                    children: [
+                      Text(
+                        '답글',
+                        style: GoogleFonts.notoSans(
+                            color: Color(0xFF111111),
+                            fontWeight: FontWeight.w900,
+                            fontSize: 20),
+                      ),
+                    ],
+                  ),
+                ),
+                centerTitle: true,
+                titleSpacing: 0,
+                backgroundColor: Colors.white,
+                elevation: 0.0,
               ),
-              centerTitle: true,
-              titleSpacing: 0,
-              backgroundColor: Colors.white,
-              elevation: 0.0,
             ),
             body: Container(
               margin: EdgeInsets.only(top: 10),
@@ -160,62 +174,60 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                   ),
                                 )
                                     : Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        if (widget.replyImage !=
-                                            "")
-                                          GestureDetector(
-                                            onTap: () {
-                                              Get.to(() =>
-                                                  ProfileImagePage(
-                                                    CommentProfileUrl:
-                                                    widget.replyImage,
-                                                  ));
-                                            },
-                                            child:
-                                            ExtendedImage.network(
-                                              widget.replyImage,
-                                              cache: true,
-                                              shape: BoxShape.circle,
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  20),
-                                              width: 32,
-                                              height: 32,
-                                              fit: BoxFit.cover,
+                                        if (widget.replyImage != "")
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 5),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Get.to(() =>
+                                                    ProfileImagePage(
+                                                      CommentProfileUrl:
+                                                      widget.replyImage,
+                                                    ));
+                                              },
+                                              child:
+                                              ExtendedImage.network(widget.replyImage,
+                                                cache: true,
+                                                shape: BoxShape.circle,
+                                                borderRadius:
+                                                BorderRadius.circular(20),
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                           ),
-                                        if (widget.replyImage ==
-                                            "")
-                                          GestureDetector(
-                                            onTap: () {
-                                              Get.to(() =>
-                                                  ProfileImagePage(
-                                                      CommentProfileUrl:
-                                                      ''));
-                                            },
-                                            child: ExtendedImage.asset(
-                                              'assets/imgs/profile/img_profile_default_circle.png',
-                                              shape: BoxShape.circle,
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  20),
-                                              width: 32,
-                                              height: 32,
-                                              fit: BoxFit.cover,
+                                        if (widget.replyImage == "")
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 5),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Get.to(() =>
+                                                    ProfileImagePage(
+                                                        CommentProfileUrl:
+                                                        ''));
+                                              },
+                                              child: ExtendedImage.asset(
+                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                shape: BoxShape.circle,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    20),
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                           ),
                                         SizedBox(width: 10),
                                         Column(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Row(
                                               children: [
@@ -240,9 +252,9 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                       color: Color(
                                                           0xFF949494)),
                                                 ),
-                                                SizedBox(width: 4),
+                                                SizedBox(width: 1),
                                                 Text(
-                                                  '$_commentTimeStamp',
+                                                  '· $_commentTimeStamp',
                                                   style: TextStyle(
                                                       fontSize: 13,
                                                       color: Color(
@@ -260,20 +272,14 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                               constraints:
                                               BoxConstraints(
                                                   maxWidth:
-                                                  _size.width -
-                                                      98),
+                                                  _size.width - 80),
                                               child: Text(
                                                 widget.comment,
                                                 maxLines: 1000,
-                                                overflow:
-                                                TextOverflow
-                                                    .ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
-                                                    color: Color(
-                                                        0xFF111111),
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .normal,
+                                                    color: Color(0xFF111111),
+                                                    fontWeight: FontWeight.normal,
                                                     fontSize: 13),
                                               ),
                                             ),
@@ -287,9 +293,13 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                   ],
                                 ),
                                 (replyDocs.length == 0)
-                                ?Padding(
-                                  padding: const EdgeInsets.only(top: 50),
-                                  child: Text('첫 답글을 남겨주세요!'),
+                                ? Padding(
+                                  padding: const EdgeInsets.only(top: 24, left: 42),
+                                  child: Text('첫 답글을 남겨주세요!', style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.normal,
+                                    color: Color(0xFF949494)
+                                  ),),
                                 )
                                 :Expanded(
                                   child: Scrollbar(
@@ -304,18 +314,15 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                             .get('timeStamp'));
                                         return Padding(
                                           padding: const EdgeInsets.only(
-                                              left: 20, top: 24),
+                                              left: 42, top: 24),
                                           child: Obx(() => Container(
                                             color: Colors.white,
                                             child: Column(
                                               crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                               children: [
-                                                (_userModelController
-                                                    .repoUidList!
-                                                    .contains(
-                                                    replyDocs[index]
-                                                        .get('uid')))
+                                                (_userModelController.repoUidList!.contains(
+                                                    replyDocs[index].get('uid')))
                                                     ? Center(
                                                   child: Padding(
                                                     padding:
@@ -336,99 +343,79 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                   ),
                                                 )
                                                     : Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     Row(
-                                                      crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        if (replyDocs[
-                                                        index]
-                                                        [
-                                                        'profileImageUrl'] !=
-                                                            "")
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              Get.to(() =>
-                                                                  ProfileImagePage(
-                                                                    CommentProfileUrl:
-                                                                    replyDocs[index]['profileImageUrl'],
-                                                                  ));
-                                                            },
-                                                            child: ExtendedImage
-                                                                .network(
-                                                              replyDocs[
-                                                              index]
-                                                              [
-                                                              'profileImageUrl'],
-                                                              cache:
-                                                              true,
-                                                              shape: BoxShape
-                                                                  .circle,
-                                                              borderRadius:
-                                                              BorderRadius.circular(
-                                                                  20),
-                                                              width: 26,
-                                                              height:
-                                                              26,
-                                                              fit: BoxFit
-                                                                  .cover,
+                                                        if (replyDocs[index]['profileImageUrl'] != "")
+                                                          Padding(
+                                                            padding: EdgeInsets.only(top: 4),
+                                                            child: GestureDetector(
+                                                              onTap: () {
+                                                                Get.to(() =>
+                                                                    ProfileImagePage(
+                                                                      CommentProfileUrl:
+                                                                      replyDocs[index]['profileImageUrl'],
+                                                                    ));
+                                                              },
+                                                              child: ExtendedImage.network(
+                                                                replyDocs[index]['profileImageUrl'],
+                                                                cache: true,
+                                                                shape: BoxShape.circle,
+                                                                borderRadius: BorderRadius.circular(20),
+                                                                width: 26,
+                                                                height: 26,
+                                                                fit: BoxFit.cover,
+                                                              ),
                                                             ),
                                                           ),
-                                                        if (replyDocs[
-                                                        index]
-                                                        [
-                                                        'profileImageUrl'] ==
-                                                            "")
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              Get.to(() =>
-                                                                  ProfileImagePage(
-                                                                      CommentProfileUrl: ''));
-                                                            },
-                                                            child: ExtendedImage
-                                                                .asset(
-                                                              'assets/imgs/profile/img_profile_default_circle.png',
-                                                              shape: BoxShape
-                                                                  .circle,
-                                                              borderRadius:
-                                                              BorderRadius.circular(
-                                                                  20),
-                                                              width: 26,
-                                                              height:
-                                                              26,
-                                                              fit: BoxFit
-                                                                  .cover,
+                                                        if (replyDocs[index]['profileImageUrl'] == "")
+                                                          Padding(
+                                                            padding: EdgeInsets.only(top:4),
+                                                            child: GestureDetector(
+                                                              onTap: () {
+                                                                Get.to(() =>
+                                                                    ProfileImagePage(
+                                                                        CommentProfileUrl: ''));
+                                                              },
+                                                              child: ExtendedImage.asset(
+                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                shape: BoxShape.circle,
+                                                                borderRadius: BorderRadius.circular(20),
+                                                                width: 26,
+                                                                height: 26,
+                                                                fit: BoxFit.cover,
+                                                              ),
                                                             ),
                                                           ),
                                                         SizedBox(
                                                             width: 10),
                                                         Column(
-                                                          mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
                                                             Row(
                                                               children: [
                                                                 Text(
-                                                                  replyDocs[index]
-                                                                      .get('displayName'),
+                                                                  replyDocs[index].get('displayName'),
                                                                   style: TextStyle(
                                                                       fontWeight: FontWeight.bold,
                                                                       fontSize: 14,
                                                                       color: Color(0xFF111111)),
                                                                 ),
                                                                 SizedBox(
-                                                                    width:
-                                                                    6),
+                                                                    width: 6),
                                                                 Text(
-                                                                  '$_time',
+                                                                  replyDocs[index].get('replyResortNickname'),
+                                                                  style: TextStyle(
+                                                                      fontSize: 13,
+                                                                      color: Color(0xFF949494),
+                                                                      fontWeight: FontWeight.w300),
+                                                                ),
+                                                                Text(
+                                                                  '· $_time',
                                                                   style: TextStyle(
                                                                       fontSize: 13,
                                                                       color: Color(0xFF949494),
@@ -443,7 +430,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                               children: [
                                                                 Container(
                                                                   constraints:
-                                                                  BoxConstraints(maxWidth: _size.width - 98),
+                                                                  BoxConstraints(maxWidth: _size.width - 140),
                                                                   child:
                                                                   Text(
                                                                     replyDocs[index].get('reply'),
@@ -466,10 +453,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                         ),
                                                       ],
                                                     ),
-                                                    (replyDocs[index][
-                                                    'uid'] !=
-                                                        _userModelController
-                                                            .uid)
+                                                    (replyDocs[index]['uid'] != _userModelController.uid)
                                                         ? GestureDetector(
                                                       onTap: () => showMaterialModalBottomSheet(
                                                           enableDrag: false,
@@ -765,9 +749,6 @@ class _ReplyScreenState extends State<ReplyScreen> {
                           ),
                         )),
                         SizedBox(
-                          height: 10,
-                        ),
-                        SizedBox(
                           height: 20,
                         ),
                         Container(
@@ -775,7 +756,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                             color: Colors.white,
                           ),
                           margin: EdgeInsets.only(bottom: 2),
-                          padding: EdgeInsets.only(top: 10, bottom: 6),
+                          padding: EdgeInsets.only(bottom: 6),
                           child: Row(
                             children: [
                               Expanded(
@@ -796,6 +777,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                             await _userModelController.updateCommentCount(_userModelController.commentCount);
                                             await _commentModelController.replyCountUpdate('${widget.replyUid}${widget.replyCount}');
                                             await _replyModelController.sendReply(
+                                                replyResortNickname: _userModelController.resortNickname,
                                                 displayName: _userModelController.displayName,
                                                 uid: _userModelController.uid,
                                                 replyLocationUid: widget.replyUid,

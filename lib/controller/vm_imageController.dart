@@ -21,7 +21,7 @@ class ImageController extends GetxController {
 
     final ImagePicker _picker = ImagePicker();
     final XFile? image =
-        await _picker.pickImage(imageQuality: 10, source: ImageSource);
+        await _picker.pickImage(imageQuality: 50, source: ImageSource);
     if (image != null) {
       return image;
     }else {

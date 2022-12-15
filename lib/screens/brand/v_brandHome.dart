@@ -109,7 +109,7 @@ class _BrandWebBodyState extends State<BrandWebBody> {
                     style: GoogleFonts.notoSans(
                         color: Color(0xFF111111),
                         fontWeight: FontWeight.w900,
-                        fontSize: 23),
+                        fontSize: 22),
                   )),
               backgroundColor: Colors.white,
               elevation: 0.0,

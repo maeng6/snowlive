@@ -13,7 +13,7 @@ class UserModel {
     this.exist,
     this.commentCount,
     this.resortNickname
-});
+  });
 
   final auth = FirebaseAuth.instance;
   final ref = FirebaseFirestore.instance;
@@ -41,7 +41,7 @@ class UserModel {
   }
 
   UserModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
-  :this.fromJson(snapshot.data(), snapshot.reference);
+      :this.fromJson(snapshot.data(), snapshot.reference);
 
   Future<UserModel> getUserModel(String uid) async {
     DocumentReference<Map<String, dynamic>> documentReference =
