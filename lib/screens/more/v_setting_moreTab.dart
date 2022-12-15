@@ -12,6 +12,7 @@ class setting_moreTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //TODO: Dependency Injection**************************************************
+    Get.put(ImageController(), permanent: true);
     UserModelController _userModelController = Get.find<UserModelController>();
     LoginController _loginController = Get.find<LoginController>();
     ImageController _imageController = Get.find<ImageController>();
