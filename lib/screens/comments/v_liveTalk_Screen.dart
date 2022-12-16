@@ -755,6 +755,11 @@ class _CommentTile_liveTalk_resortHomeState
                           cursorColor: Color(0xff377EEA),
                           controller: _controller,
                           strutStyle: StrutStyle(leading: 0.3),
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          textInputAction: TextInputAction.newline,
                           decoration: InputDecoration(
                               suffixIcon: IconButton(
                                 onPressed: () async {

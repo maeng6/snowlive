@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/screens/more/v_contactUsPage.dart';
 import 'package:snowlive3/screens/more/v_favoriteResort_moreTab.dart';
 import 'package:snowlive3/screens/more/v_licenseListPage.dart';
+import 'package:snowlive3/screens/more/v_noticeListPage.dart';
 import 'package:snowlive3/screens/more/v_resortTab.dart';
 import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
 import 'package:snowlive3/screens/more/v_setting_moreTab.dart';
@@ -397,6 +398,25 @@ class _MoreTabState extends State<MoreTab> {
                 decoration: BoxDecoration(color: Colors.white),
               )),
               SizedBox(height: 16),
+              ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                minVerticalPadding: 20,
+                onTap: () {
+                  Get.to(() => NoticeList());
+                },
+                title: Text(
+                  '공지사항',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: Color(0xFF111111)),
+                ),
+                trailing: Image.asset(
+                  'assets/imgs/icons/icon_arrow_g.png',
+                  height: 24,
+                  width: 24,
+                ),
+              ),
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,

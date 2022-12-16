@@ -10,6 +10,8 @@ import 'package:snowlive3/controller/vm_getDateTimeController.dart';
 import 'package:snowlive3/controller/vm_replyModelController.dart';
 import 'package:snowlive3/model/m_resortModel.dart';
 import 'package:snowlive3/screens/comments/v_commentTile_resortHome.dart';
+import 'package:snowlive3/screens/more/v_noticeListPage.dart';
+import 'package:snowlive3/screens/more/v_noticeTile_resortHome.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
@@ -129,6 +131,15 @@ class _ResortHomeState extends State<ResortHome>
                     children: [
                       SizedBox(
                         height: _statusBarSize + 64,
+                      ),
+                      GestureDetector(
+                        onTap: (){
+                          Get.to(()=>NoticeList());
+                        },
+                        child: NoticeTile_resortHome(),
+                      ),
+                      SizedBox(
+                        height: 12,
                       ),
                       Container(
                         color: Color(0xFFF2F4F6),
