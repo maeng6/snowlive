@@ -146,6 +146,7 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
                           CustomFullScreenDialog.showDialog();
                           await userModelController.updateFavoriteResort(
                               favoriteResort);
+                          await userModelController.updateResortNickname(favoriteResort);
                           await userModelController.updateInstantResort(
                               favoriteResort);
                           print('즐겨찾는 리조트 업뎃완료');
