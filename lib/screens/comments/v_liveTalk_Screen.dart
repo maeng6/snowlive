@@ -762,10 +762,11 @@ class _CommentTile_liveTalk_resortHomeState
                           textInputAction: TextInputAction.newline,
                           decoration: InputDecoration(
                               suffixIcon: IconButton(
+                                splashColor: Colors.transparent,
                                 onPressed: () async {
-                                  _controller.text.trim().isEmpty
-                                      ? null
-                                      : FocusScope.of(context).unfocus();
+                                  if(_controller.text.trim().isEmpty)
+                                  {return ;}
+                                  FocusScope.of(context).unfocus();
                                   _controller.clear();
                                   CustomFullScreenDialog.showDialog();
                                   _scrollController.jumpTo(0);
