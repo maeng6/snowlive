@@ -43,15 +43,6 @@ class _NoticeDetailState extends State<NoticeDetail> {
         elevation: 0.0,
         titleSpacing: 0,
         centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Text('${widget.noticeTile}',
-            style: GoogleFonts.notoSans(
-                color: Color(0xFF111111),
-                fontWeight: FontWeight.w900,
-                fontSize: 20),
-          ),
-        ),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
@@ -76,14 +67,21 @@ class _NoticeDetailState extends State<NoticeDetail> {
           return ListView.builder(
             itemCount: noticeDocs.length,
             itemBuilder: (context, index) {
-              return InkWell(
-                onTap: (){},
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16),
-                  child: Container(
-                    constraints:
-                    BoxConstraints(maxWidth: _size.width - 140),
-                    child:
+              return Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${widget.noticeTile}',
+                      style: GoogleFonts.notoSans(
+                          color: Color(0xFF111111),
+                          fontWeight: FontWeight.w900,
+                          fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Text(
                       noticeDocs[index].get('noticeDetail'),
                       maxLines:
@@ -93,10 +91,21 @@ class _NoticeDetailState extends State<NoticeDetail> {
                       style: TextStyle(
                           color: Color(0xFF111111),
                           fontWeight: FontWeight.normal,
-                          fontSize: 13),
+                          fontSize: 16),
                     ),
-                  ),
-                )
+                    Text(
+                      noticeDocs[index].get('noticeDetail2'),
+                      maxLines:
+                      1000,
+                      overflow:
+                      TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: Color(0xFF111111),
+                          fontWeight: FontWeight.normal,
+                          fontSize: 16),
+                    ),
+                  ],
+                ),
               );
             },
           );
