@@ -151,12 +151,16 @@ class _FavoriteResortState extends State<FavoriteResort> {
                         if(isSelected) {
                           CustomFullScreenDialog.showDialog();
                           await _loginController.createUserDoc(0);
+                          print('1');
                           await userModelController
                               .updateNickname(widget.getNickname);
+                          print('2');
                           await userModelController
                               .updateProfileImageUrl(widget.getProfileImageUrl);
+                          print('3');
                           await userModelController.updateFavoriteResort(
                               favoriteResort);
+                          print('4');
                           await userModelController.updateInstantResort(
                               favoriteResort);
                           await userModelController.updateResortNickname(

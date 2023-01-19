@@ -18,6 +18,7 @@ class UserModelController extends GetxController{
   RxInt? _favoriteResort = 0.obs;
   RxInt? _instantResort = 0.obs;
   RxInt? _commentCount = 0.obs;
+  RxInt? _fleaCount = 0.obs;
   int? _favoriteSaved=0;
   RxString? _profileImageUrl=''.obs;
   RxList? _repoUidList=[].obs;
@@ -31,6 +32,7 @@ class UserModelController extends GetxController{
   int? get favoriteResort => _favoriteResort!.value;
   int? get instantResort  => _instantResort!.value;
   int? get commentCount  => _commentCount!.value;
+  int? get fleaCount  => _fleaCount!.value;
   int? get favoriteSaved => _favoriteSaved;
   String? get profileImageUrl => _profileImageUrl!.value;
   List? get repoUidList => _repoUidList;
@@ -63,6 +65,7 @@ class UserModelController extends GetxController{
       this._favoriteResort!.value = userModel.favoriteResort!;
       this._instantResort!.value = userModel.instantResort!;
       this._commentCount!.value = userModel.commentCount!;
+      this._fleaCount!.value = userModel.fleaCount!;
       this._profileImageUrl!.value = userModel.profileImageUrl!;
       this._resortNickname!.value = userModel.resortNickname!;
       await prefs.setInt('favoriteResort', userModel.favoriteResort!);
@@ -105,6 +108,40 @@ class UserModelController extends GetxController{
     }catch(e){
       print('탈퇴한 회원');
     }
+  }
+
+  Future<void> fleaCountUpdate(uid) async {
+
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int fleaCount = documentSnapshot.get('fleaCount');
+      int fleaCountPlus = fleaCount + 1;
+
+      await ref.collection('user').doc(uid).update({
+        'fleaCount': fleaCountPlus,
+      });
+      this._fleaCount!.value = fleaCountPlus;
+    }catch(e){
+      await ref.collection('user').doc(uid).update({
+        'fleaCount': 1,
+      });
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int fleaCount = documentSnapshot.get('fleaCount');
+
+      this._fleaCount!.value = fleaCount;
+
+    }
+
   }
 
   Future<void> updateRepoUid(uid) async {

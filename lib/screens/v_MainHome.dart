@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:snowlive3/screens/comments/v_liveTalk_Screen.dart';
 import 'package:snowlive3/screens/resort/v_resortHome.dart';
 import 'brand/v_brandHome.dart';
+import 'fleaMarket/v_fleaMarket_Screen.dart';
 import 'more/v_moreTab.dart';
 
 class MainHome extends StatefulWidget {
@@ -60,6 +61,17 @@ class _MainHomeState extends State<MainHome> {
             ),
             BottomNavigationBarItem(
               icon: Image.asset(
+                'assets/imgs/icons/icon_home_off.png',
+                scale: 4,
+              ),
+              activeIcon: Image.asset(
+                'assets/imgs/icons/icon_home_on.png',
+                scale: 4,
+              ),
+              label: 'Flea',
+            ),
+            BottomNavigationBarItem(
+              icon: Image.asset(
                 'assets/imgs/icons/icon_livetalk_off.png',
                 scale: 4,
               ),
@@ -89,6 +101,7 @@ class _MainHomeState extends State<MainHome> {
           children: [
                 ResortHome(),
                 BrandWebBody(),
+                FleaMarketScreen(),
                 CommentTile_liveTalk_resortHome(),
                 MoreTab(),
           ],

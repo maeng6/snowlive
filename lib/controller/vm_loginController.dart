@@ -114,6 +114,7 @@ class LoginController extends GetxController {
       'profileImageUrl' : '',
       'exist' : true,
       'repoCount' : 0,
+      'fleaCount' : 0,
       'repoUidList' : List.empty(),
       'commentCount' : 0,
       'resortNickname' : ''
