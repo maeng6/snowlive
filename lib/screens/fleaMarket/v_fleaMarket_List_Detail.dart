@@ -2,16 +2,26 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:snowlive3/controller/vm_fleaMarketController.dart';
+import 'package:snowlive3/controller/vm_userModelController.dart';
 
 class FleaMarket_List_Detail extends StatefulWidget {
-  const FleaMarket_List_Detail({Key? key}) : super(key: key);
+  FleaMarket_List_Detail({Key? key}) : super(key: key);
+
 
   @override
   State<FleaMarket_List_Detail> createState() => _FleaMarket_List_DetailState();
 }
 
 class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
+
+  //TODO: Dependency Injection**************************************************
+  UserModelController _userModelController = Get.find<UserModelController>();
+  FleaModelController _fleaModelController = Get.find<FleaModelController>();
+//TODO: Dependency Injection**************************************************
+
+
+
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;

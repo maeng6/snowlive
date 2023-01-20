@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
 import '../../model/m_brandModel.dart';
@@ -32,6 +33,11 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    //TODO : ****************************************************************
+    Get.put(FleaModelController(), permanent: true);
+    //TODO : ****************************************************************
+
     print(isTap);
     return Scaffold(
       backgroundColor: Colors.white,

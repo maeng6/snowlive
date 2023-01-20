@@ -82,7 +82,6 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
     print(_imageFiles);
     //TODO : ****************************************************************
     Get.put(ImageController(), permanent: true);
-    Get.put(FleaModelController(), permanent: true);
     UserModelController _userModelController = Get.find<UserModelController>();
     FleaModelController _fleaModelController = Get.find<FleaModelController>();
     ImageController _imageController = Get.find<ImageController>();
