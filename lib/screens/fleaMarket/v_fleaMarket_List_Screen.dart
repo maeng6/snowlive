@@ -136,10 +136,10 @@ class _FleaMarket_List_ScreenState
                                         : Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
+                                            if(List.from(chatDocs[index]['itemImagesUrls']).isNotEmpty)
                                               Padding(
                                                 padding: EdgeInsets.only(top: 5),
-                                                child: ExtendedImage
-                                                    .network(
+                                                child: ExtendedImage.network(
                                                   chatDocs[index]['itemImagesUrls'][0],
                                                   cache: true,
                                                   shape:
@@ -150,7 +150,20 @@ class _FleaMarket_List_ScreenState
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
-                                            SizedBox(width: 10),
+                                            if(List.from(chatDocs[index]['itemImagesUrls']).isEmpty)
+                                            Padding(
+                                              padding: EdgeInsets.only(top: 5),
+                                              child: ExtendedImage.asset(
+                                                'assets/imgs/profile/img_profile_default_.png',
+                                                shape:
+                                                BoxShape.rectangle,
+                                                borderRadius: BorderRadius.circular(5),
+                                                width: 100,
+                                                height: 100,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                              SizedBox(width: 10),
                                             Column(
                                               mainAxisAlignment:
                                               MainAxisAlignment
@@ -171,7 +184,7 @@ class _FleaMarket_List_ScreenState
                                                     SizedBox(
                                                         width: 6),
                                                     Text(
-                                                      chatDocs[index].get('displayName'),
+                                                      chatDocs[index].get('title'),
                                                       style: TextStyle(
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: 14,

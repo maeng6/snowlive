@@ -5,6 +5,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
+import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_My_Screen.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
 import '../../model/m_brandModel.dart';
 import '../../model/m_shopModel.dart';
@@ -77,7 +78,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                 ),
                 ElevatedButton(
                   child: Text(
-                    '판매목록',
+                    '상품목록',
                     style: TextStyle(
                         color: isTap[0]
                             ? Color(0xFFFFFFFF)
@@ -109,7 +110,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                 ),
                 ElevatedButton(
                   child: Text(
-                    '판매내역',
+                    '내글보기',
                     style: TextStyle(
                         color: isTap[1]
                             ? Color(0xFFFFFFFF)
@@ -173,7 +174,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
             if(isTap[0]==true)
               Expanded(child: FleaMarket_List_Screen()),
             if(isTap[1]==true)
-              Expanded(child: FleaMarket_List_Screen()),
+              Expanded(child: FleaMarket_My_Screen()),
             if(isTap[2]==true)
               Expanded(child: FleaMarket_List_Screen())
           ],

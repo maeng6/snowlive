@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -98,7 +100,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(58),
             child: AppBar(
-              title: Text('스노우마켓 글쓰기'),
+              title: Text('내 물건 팔기'),
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
@@ -133,7 +135,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                             fleaCount: _userModelController.fleaCount,
                             resortNickname: _userModelController.resortNickname
                         );
-
+                        Navigator.pop(context);
                         CustomFullScreenDialog.cancelDialog();
                       }
                       _imageController.imagesUrlList.clear();
@@ -408,11 +410,23 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                       cursorWidth: 2,
                       controller: _itemPriceTextEditingController,
                       keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+                      inputFormatters: [
+                        CurrencyTextInputFormatter(
+                          locale: 'ko',
+                          decimalDigits: 0,
+                          symbol: '',
+                        ),
+                      ],
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        prefixIcon: Icon(Icons.attach_money_sharp),
                         hintText: '판매가격',
+                        prefixIcon: Image.asset('assets/imgs/icons/icon_won.png',
+                         color:
+                         (_itemPriceTextEditingController.text.trim().isEmpty)
+                         ? Colors.grey[350]
+                         : Colors.black87,
+                        ),
+                        prefixIconConstraints: BoxConstraints(maxWidth: 20),
                       ),
                       validator: (val) {
                         if (val!.length <= 8 && val.length >= 1) {
