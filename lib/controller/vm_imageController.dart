@@ -33,8 +33,10 @@ class ImageController extends GetxController {
 
   Future<List<XFile>> getMultiImage(ImageSource) async {
 
+
+    List<XFile> selectedImages = [];
     final ImagePicker _picker = ImagePicker();
-    final List<XFile> selectedImages =
+    selectedImages =
         await _picker.pickMultiImage(maxWidth: 640, maxHeight: 280, imageQuality: 100);
     if (selectedImages != null) {
       return selectedImages;

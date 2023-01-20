@@ -204,7 +204,7 @@ class _FleaMarket_My_ScreenState
                                                       maxWidth:
                                                       _size.width - 106),
                                                   child: Text(
-                                                    chatDocs[index].get('price') + ' 원',
+                                                    chatDocs[index].get('price').toString() + ' 원',
                                                     maxLines: 1000,
                                                     overflow: TextOverflow.ellipsis,
                                                     style: TextStyle(

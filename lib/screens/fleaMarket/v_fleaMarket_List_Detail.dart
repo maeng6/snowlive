@@ -21,9 +21,10 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
 //TODO: Dependency Injection**************************************************
 
 
-
   @override
   Widget build(BuildContext context) {
+    String _time = _fleaModelController
+        .getAgoTime(_fleaModelController.timeStamp);
     Size _size = MediaQuery.of(context).size;
     return Container(
       color: Colors.white,
@@ -56,10 +57,9 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
           options: CarouselOptions(
           height: 200,
               viewportFraction: 1,
-              reverse: true,
               enableInfiniteScroll: false,
              ),
-          itemCount: 3,
+          itemCount: _fleaModelController.itemImagesUrls!.length,
           itemBuilder: (context, index, pageViewIndex) {
             return Container(
               width: MediaQuery.of(context).size.width,
@@ -74,7 +74,15 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.asset('assets/imgs/splash_screen/splash1.png',)
+                          if(_fleaModelController.itemImagesUrls!.isEmpty)
+                            Image.asset('assets/imgs/profile/img_profile_default_.png'),
+                          Container(
+                            height:200,
+                            child: ExtendedImage.network(
+                              _fleaModelController.itemImagesUrls![index],
+                              fit: BoxFit.fitWidth,
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -91,6 +99,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if(_fleaModelController.profileImageUrl!.isEmpty)
                           ExtendedImage.asset(
                               'assets/imgs/profile/img_profile_default_circle.png',
                               shape: BoxShape.circle,
@@ -100,6 +109,16 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                               height: 32,
                               fit: BoxFit.cover,
                             ),
+                        if(_fleaModelController.profileImageUrl!.isNotEmpty)
+                          ExtendedImage.network(
+                            '${_fleaModelController.profileImageUrl}',
+                            shape: BoxShape.circle,
+                            borderRadius:
+                            BorderRadius.circular(20),
+                            width: 32,
+                            height: 32,
+                            fit: BoxFit.cover,
+                          ),
                         SizedBox(width: 12),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -110,7 +129,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                 Row(
                                   children: [
                                     Text(
-                                      '닉네임',
+                                      '${_fleaModelController.displayName}',
                                       //chatDocs[index].get('displayName'),
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
@@ -119,7 +138,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                     ),
                                     SizedBox(width: 6),
                                     Text(
-                                      '시간',
+                                      '$_time',
                                       style: TextStyle(
                                           fontSize: 13,
                                           color: Color(0xFF949494),
@@ -141,27 +160,27 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                 children: [
                   ListTile(
                     leading: Text('카테고리'),
-                    title: Text('데크'),
+                    title: Text('${_fleaModelController.category}'),
                   ),
                   ListTile(
                     leading: Text('제품명'),
-                    title: Text('보드보드'),
+                    title: Text('${_fleaModelController.itemName}'),
                   ),
                   ListTile(
                     leading: Text('가격'),
-                    title: Text('1,000원'),
+                    title: Text('${_fleaModelController.price}'),
                   ),
                   ListTile(
                     leading: Text('거래지역'),
-                    title: Text('휘닉스평창'),
+                    title: Text('${_fleaModelController.location}'),
                   ),
                   ListTile(
                     leading: Text('거래방식'),
-                    title: Text('직거래'),
+                    title: Text('${_fleaModelController.method}'),
                   ),
                   ListTile(
                     title: Text('상세설명'),
-                    subtitle: Text('설명'),
+                    subtitle: Text('${_fleaModelController.description}'),
                   )
                 ]
               ),

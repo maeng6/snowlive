@@ -128,7 +128,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                             title: _titleTextEditingController.text,
                             category: SelectedCategory,
                             itemName: _itemNameTextEditingController.text,
-                            price: _itemPriceTextEditingController.text,
+                            price: int.parse(_itemPriceTextEditingController.text),
                             location: SelectedLocation,
                             method: SelectedMethod,
                             description: _itemDescribTextEditingController.text,
@@ -188,11 +188,21 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                     try {
                                       _imageFiles = await _imageController
                                           .getMultiImage(ImageSource.gallery);
-                                      CustomFullScreenDialog.cancelDialog();
-                                      fleaImageSelected = true;
-                                      imageLength = _imageFiles.length;
-                                      setState(() {});
-                                      print(_imageFiles);
+                                      if(_imageFiles.length <= 5){
+                                        CustomFullScreenDialog.cancelDialog();
+                                        fleaImageSelected = true;
+                                        imageLength = _imageFiles.length;
+                                        setState(() {});
+                                        print(_imageFiles);
+                                      }else{
+                                        CustomFullScreenDialog.cancelDialog();
+                                        Get.dialog(
+                                            AlertDialog(
+                                              title: Text('사진 개수 초과'),
+                                        )
+                                        );
+                                      }
+
                                     } catch (e) {
                                       CustomFullScreenDialog.cancelDialog();
                                     }
@@ -411,11 +421,11 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                       controller: _itemPriceTextEditingController,
                       keyboardType: TextInputType.number,
                       inputFormatters: [
-                        CurrencyTextInputFormatter(
-                          locale: 'ko',
-                          decimalDigits: 0,
-                          symbol: '',
-                        ),
+                        // CurrencyTextInputFormatter(
+                        //   locale: 'ko',
+                        //   decimalDigits: 0,
+                        //   symbol: '',
+                        // ),
                       ],
                       decoration: InputDecoration(
                         border: InputBorder.none,
