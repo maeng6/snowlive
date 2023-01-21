@@ -2,8 +2,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Chatroom_Buy.dart';
+import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 class FleaMarket_List_Detail extends StatefulWidget {
   FleaMarket_List_Detail({Key? key}) : super(key: key);
@@ -18,6 +21,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   FleaModelController _fleaModelController = Get.find<FleaModelController>();
+  FleaChatModelController _fleaChatModelController = Get.find<FleaChatModelController>();
 //TODO: Dependency Injection**************************************************
 
 
@@ -187,10 +191,38 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
               SizedBox(
                 height: 20,
               ),
+              if(_fleaModelController.uid != _userModelController.uid && !_userModelController.fleaChatUidList!.contains(_fleaModelController.uid))
               TextButton(
-                onPressed: () {  },
+                onPressed: () async{
+                    CustomFullScreenDialog.showDialog();
+                    await _userModelController.updatefleaChatUid(_fleaModelController.uid);
+                    await _userModelController.fleaChatCountUpdate(_userModelController.uid);
+                    await _userModelController.updatefleaChatRoom('${_fleaModelController.uid}${_fleaModelController.fleaCount}');
+                    await _fleaChatModelController.createChatroom(
+                        uid: _userModelController.uid,
+                        otherUid: _fleaModelController.uid,
+                        timeStamp: _time,
+                        fleaChatCount: _userModelController.fleaChatCount,
+                        otherProfileImageUrl: _fleaModelController.profileImageUrl,
+                        otherResortNickname: _fleaModelController.resortNickname,
+                        otherDisplayName: _fleaModelController.displayName,
+                        displayName: _userModelController.displayName,
+                        profileImageUrl: _userModelController.profileImageUrl,
+                        resortNickname: _userModelController.resortNickname);
+                    CustomFullScreenDialog.cancelDialog();
+                    Get.off(()=>FleaChatroom_Buy());
+
+                },
                 child: Text('메세지 보내기'),
-              )
+              ),
+              if(_fleaModelController.uid != _userModelController.uid && _userModelController.fleaChatUidList!.contains(_fleaModelController.uid))
+                TextButton(
+                    onPressed: () {},
+                    child: Text('채팅방으 이동')),
+              if(_fleaModelController.uid == _userModelController.uid)
+                TextButton(
+                onPressed: (){},
+                child: Text('수정하기'))
           ],
           ),
         ),
