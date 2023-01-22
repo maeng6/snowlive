@@ -81,7 +81,7 @@ class FleaChatModelController extends GetxController {
     this._comment!.value = fleaChatModel.comment!;
     this._timeStamp = fleaChatModel.timeStamp!;
     this._resortNickname!.value = fleaChatModel.resortNickname!;
-    this._myUid!.value = fleaChatModel.myUid!;
+    this._myUid.value = fleaChatModel.myUid!;
   }
 
   Future<void> createChatroom(

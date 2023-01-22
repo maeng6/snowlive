@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -56,7 +57,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
               elevation: 0.0,
             ),
           ),
-          body: Column(
+          body: Obx(() => Column(
             children: [
               CarouselSlider.builder(
           options: CarouselOptions(
@@ -192,13 +193,16 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
               SizedBox(
                 height: 20,
               ),
+              if(_fleaModelController.uid != _userModelController.uid && _userModelController.fleaChatUidList!.contains(_fleaModelController.uid))
+                TextButton(
+                    onPressed: () {},
+                    child: Text('채팅방으로 이동')),
               if(_fleaModelController.uid != _userModelController.uid && !_userModelController.fleaChatUidList!.contains(_fleaModelController.uid))
               TextButton(
                 onPressed: () async{
                     CustomFullScreenDialog.showDialog();
                     await _userModelController.updatefleaChatUid(_fleaModelController.uid);
                     await _userModelController.fleaChatCountUpdate(_userModelController.uid);
-                    await _userModelController.updatefleaChatRoom('${_fleaModelController.uid}${_fleaModelController.fleaCount}');
                     await _fleaChatModelController.createChatroom(
                         uid: _userModelController.uid,
                         otherUid: _fleaModelController.uid,
@@ -214,12 +218,8 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                     Get.off(()=>FleaChatroom_Buy());
 
                 },
-                child: Text('메세지 보내기'),
+                child: Text('메시지 보내기'),
               ),
-              if(_fleaModelController.uid != _userModelController.uid && _userModelController.fleaChatUidList!.contains(_fleaModelController.uid))
-                TextButton(
-                    onPressed: () {},
-                    child: Text('채팅방으 이동')),
               if(_fleaModelController.uid == _userModelController.uid)
                 TextButton(
                 onPressed: (){
@@ -227,7 +227,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                 },
                 child: Text('수정하기'))
           ],
-          ),
+          ),)
         ),
       ),
     );

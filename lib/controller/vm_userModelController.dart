@@ -24,7 +24,6 @@ class UserModelController extends GetxController{
   RxList? _repoUidList=[].obs;
   RxList? _likeUidList=[].obs;
   RxList? _fleaChatUidList=[].obs;
-  RxList? _fleaChatRoomList=[].obs;
   RxString? _resortNickname =''.obs;
   RxInt? _fleaChatCount = 0.obs;
 
@@ -41,7 +40,6 @@ class UserModelController extends GetxController{
   List? get repoUidList => _repoUidList;
   List? get likeUidList => _likeUidList;
   List? get fleaChatUidList => _fleaChatUidList;
-  List? get fleaChatRoomList => _fleaChatRoomList;
   String? get resortNickname => _resortNickname!.value;
   int? get fleaChatCount => _fleaChatCount!.value;
 
@@ -231,31 +229,6 @@ class UserModelController extends GetxController{
     List fleaChatUidList = documentSnapshot.get('fleaChatUidList');
     this._fleaChatUidList!.value = fleaChatUidList;
   }
-
-  Future<void> updatefleaChatRoom(uid) async {
-    final  userMe = auth.currentUser!.uid;
-    await ref.collection('user').doc(userMe).update({
-      'fleaChatRoomList': FieldValue.arrayUnion([uid])
-    });
-    DocumentReference<Map<String, dynamic>> documentReference =
-    ref.collection('user').doc(userMe);
-    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-    await documentReference.get();
-    List fleaChatRoomList = documentSnapshot.get('fleaChatRoomList');
-    this._fleaChatRoomList!.value = fleaChatRoomList;
-  }
-
-  Future<void> updatefleaChatRoomList() async {
-    final  userMe = auth.currentUser!.uid;
-    DocumentReference<Map<String, dynamic>> documentReference =
-    ref.collection('user').doc(userMe);
-    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-    await documentReference.get();
-    List fleaChatRoomList = documentSnapshot.get('fleaChatRoomList');
-    this._fleaChatRoomList!.value = fleaChatRoomList;
-  }
-
-
 
 
   Future<void> updateLikeUid(uid) async {
