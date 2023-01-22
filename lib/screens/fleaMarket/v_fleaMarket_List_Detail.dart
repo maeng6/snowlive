@@ -6,6 +6,7 @@ import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Chatroom_Buy.dart';
+import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_ModifyPage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 class FleaMarket_List_Detail extends StatefulWidget {
@@ -221,7 +222,9 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                     child: Text('채팅방으 이동')),
               if(_fleaModelController.uid == _userModelController.uid)
                 TextButton(
-                onPressed: (){},
+                onPressed: (){
+                  Get.to(()=>FleaMarket_ModifyPage());
+                },
                 child: Text('수정하기'))
           ],
           ),

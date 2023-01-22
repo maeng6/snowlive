@@ -101,6 +101,41 @@ class FleaModel {
       'soldOut': false,
     });
   }
+
+  Future<void> updateFleaItem(
+      {required displayName,
+        required uid,
+        required profileImageUrl,
+        required itemImagesUrls,
+        required title,
+        required category,
+        required itemName,
+        required price,
+        required location,
+        required method,
+        required description,
+        timeStamp,
+        required fleaCount,
+        required resortNickname}) async {
+    await ref.collection('fleaMarket').doc('$uid#$fleaCount').set({
+      'displayName': displayName,
+      'uid': uid,
+      'profileImageUrl': profileImageUrl,
+      'itemImagesUrls': itemImagesUrls,
+      'title': title,
+      'category': category,
+      'itemName': itemName,
+      'price': price,
+      'location': location,
+      'method': method,
+      'description': description,
+      'timeStamp': Timestamp.now(),
+      'fleaCount': fleaCount,
+      'resortNickname': resortNickname,
+      'soldOut': false,
+    });
+  }
+
 }
 
 List<dynamic> fleaCategoryList = ['데크', '바인딩', '부츠', '의류', '기타'];

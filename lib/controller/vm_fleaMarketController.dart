@@ -75,19 +75,49 @@ class FleaModelController extends GetxController {
 
   Future<void> uploadFleaItem(
       {required displayName,
-      required uid,
-      required profileImageUrl,
-      required itemImagesUrls,
-      required title,
-      required category,
-      required itemName,
-      required price,
-      required location,
-      required method,
-      required description,
-      required fleaCount,
-      required resortNickname}) async {
+        required uid,
+        required profileImageUrl,
+        required itemImagesUrls,
+        required title,
+        required category,
+        required itemName,
+        required price,
+        required location,
+        required method,
+        required description,
+        required fleaCount,
+        required resortNickname}) async {
     await FleaModel().uploadFleaItem(
+        displayName: displayName,
+        uid: uid,
+        profileImageUrl: profileImageUrl,
+        itemImagesUrls: itemImagesUrls,
+        title: title,
+        category: category,
+        itemName: itemName,
+        price: price,
+        location: location,
+        method: method,
+        description: description,
+        fleaCount: fleaCount,
+        resortNickname: resortNickname);
+  }
+
+  Future<void> updateFleaItem(
+      {required displayName,
+        required uid,
+        required profileImageUrl,
+        required itemImagesUrls,
+        required title,
+        required category,
+        required itemName,
+        required price,
+        required location,
+        required method,
+        required description,
+        required fleaCount,
+        required resortNickname}) async {
+    await FleaModel().updateFleaItem(
         displayName: displayName,
         uid: uid,
         profileImageUrl: profileImageUrl,
