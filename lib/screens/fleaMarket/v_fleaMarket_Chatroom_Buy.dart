@@ -3,12 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_chat_bubble/bubble_type.dart';
+import 'package:flutter_chat_bubble/chat_bubble.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_10.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/comments/v_reply_Screen.dart';
+import 'package:snowlive3/screens/v_MainHome.dart';
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
@@ -96,6 +100,21 @@ class _FleaChatroom_BuyState
                   icon: Icon(Icons.arrow_back),
 
                 ),
+                actions: [
+                  TextButton(
+                      onPressed: () async{
+                        await _fleaChatModelController
+                            .deleteChatroom(
+                            '${_fleaChatModelController.uid}${_fleaChatModelController.fleaChatCount}'
+                        );
+                        await _fleaChatModelController
+                            .deleteChatUidListBuy(
+                            _fleaChatModelController.otherUid
+                        );
+                        Get.to(()=>MainHome());
+                      },
+                      child: Text('채팅방 나가기'))
+                ],
                 titleSpacing: 0,
                 title: Padding(
                   padding: const EdgeInsets.only(left: 16),
@@ -136,154 +155,186 @@ class _FleaChatroom_BuyState
                           itemBuilder: (context, index) {
                             String _time = _fleaChatModelController
                                 .getAgoTime(chatDocs[index].get('timeStamp'));
+                            bool _isMe = _userModelController.uid == chatDocs[index]['myUid'];
                             return Padding(
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Container(
-                                color: Colors.white,
-                                child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            if (chatDocs[index][
-                                            'profileImageUrl'] != "")
-                                              Padding(
-                                                padding: EdgeInsets.only(top: 5),
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    Get.to(() =>
-                                                        ProfileImagePage(
-                                                          CommentProfileUrl:
-                                                          chatDocs[index]
-                                                          ['profileImageUrl'],
-                                                        ));
-                                                  },
-                                                  child: ExtendedImage.network(
-                                                    chatDocs[index]['profileImageUrl'],
-                                                    cache: true,
-                                                    shape:
-                                                    BoxShape.circle,
-                                                    borderRadius:
-                                                    BorderRadius
-                                                        .circular(
-                                                        20),
-                                                    width: 32,
-                                                    height: 32,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                            if (chatDocs[index][
-                                            'profileImageUrl'] == "")
-                                              Padding(
-                                                padding: EdgeInsets.only(top: 5),
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    Get.to(() =>
-                                                        ProfileImagePage(
-                                                            CommentProfileUrl:
-                                                            ''));
-                                                  },
-                                                  child: ExtendedImage
-                                                      .asset(
-                                                    'assets/imgs/profile/img_profile_default_circle.png',
-                                                    shape:
-                                                    BoxShape.circle,
-                                                    borderRadius:
-                                                    BorderRadius
-                                                        .circular(
-                                                        20),
-                                                    width: 32,
-                                                    height: 32,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                            SizedBox(width: 10),
-                                            Column(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .start,
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      chatDocs[index].get('displayName'),
-                                                      style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                          fontSize: 14,
-                                                          color: Color(0xFF111111)),
-                                                    ),
-                                                    SizedBox(
-                                                        width: 6),
-                                                    Text(
-                                                      chatDocs[index].get(
-                                                          'resortNickname'),
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .w300,
-                                                          fontSize:
-                                                          13,
-                                                          color: Color(
-                                                              0xFF949494)),
-                                                    ),
-                                                    SizedBox(
-                                                        width: 1),
-                                                    Text(
-                                                      '· $_time',
-                                                      style: TextStyle(
-                                                          fontSize:
-                                                          13,
-                                                          color: Color(
-                                                              0xFF949494),
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .w300),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: 2,
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Container(
-                                                      constraints: BoxConstraints(
-                                                          maxWidth:
-                                                          _size.width - 106),
-                                                      child: Text(
-                                                        chatDocs[index].get('comment'),
-                                                        maxLines: 1000,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        style: TextStyle(
-                                                            color: Color(0xFF111111),
-                                                            fontWeight: FontWeight.normal,
-                                                            fontSize: 13),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: 8,
-                                                ),
-                                              ],
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child:
+                                Container(
+                                  color: Colors.white,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    _isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                    _isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                    children: [
+                                      if (chatDocs[index][
+                                      'profileImageUrl'] != "")
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 5),
+                                          child:
+                                          !_isMe
+                                              ? GestureDetector(
+                                            onTap: () {
+                                              Get.to(() =>
+                                                  ProfileImagePage(
+                                                    CommentProfileUrl:
+                                                    chatDocs[index]
+                                                    ['profileImageUrl'],
+                                                  ));
+                                            },
+                                            child: ExtendedImage.network(
+                                              chatDocs[index]['profileImageUrl'],
+                                              cache: true,
+                                              shape:
+                                              BoxShape.circle,
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(
+                                                  20),
+                                              width: 32,
+                                              height: 32,
+                                              fit: BoxFit.cover,
                                             ),
-                                          ],
+                                          )
+                                              : null,
                                         ),
 
-                                    SizedBox(
-                                      height: 36,
-                                    ),
-                                  ],
-                                ),
-                              )
+                                      if (chatDocs[index][
+                                      'profileImageUrl'] == "")
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 5),
+                                          child:
+                                          !_isMe
+                                              ? GestureDetector(
+                                            onTap: () {
+                                              Get.to(() =>
+                                                  ProfileImagePage(
+                                                      CommentProfileUrl:
+                                                      ''));
+                                            },
+                                            child: ExtendedImage
+                                                .asset(
+                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                              shape:
+                                              BoxShape.circle,
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(
+                                                  20),
+                                              width: 32,
+                                              height: 32,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
+                                              :null,
+                                        ),
+                                      SizedBox(width: 10),
+                                      Column(
+                                        mainAxisAlignment:
+                                        _isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                        _isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                        children: [
+                                          if(!_isMe)
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  chatDocs[index].get('displayName'),
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 14,
+                                                      color: Color(0xFF111111)),
+                                                ),
+                                                SizedBox(
+                                                    width: 6),
+                                                Text(
+                                                  chatDocs[index].get(
+                                                      'resortNickname'),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                      FontWeight
+                                                          .w300,
+                                                      fontSize:
+                                                      13,
+                                                      color: Color(
+                                                          0xFF949494)),
+                                                ),
+                                                SizedBox(
+                                                    width: 1),
+                                              ],
+                                            ),
+                                          if(_isMe)
+                                            SizedBox(
+                                              height: 2,
+                                            ),
+                                          Row(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 30),
+                                                child: Container(
+                                                  child:
+                                                  _isMe ? Text(
+                                                    '$_time   ',
+                                                    style: TextStyle(
+                                                        fontSize:
+                                                        10,
+                                                        color: Color(
+                                                            0xFF949494),
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .w300),
+                                                  ) : null,
+                                                ),
+                                              ),
+                                              ChatBubble(
+                                                clipper:
+                                                _isMe ? ChatBubbleClipper10(type: BubbleType.sendBubble)
+                                                    : ChatBubbleClipper10(type: BubbleType.receiverBubble),
+                                                backGroundColor: _isMe ? Colors.yellow : Colors.black38,
+                                                elevation: 0,
+                                                child: Container(
+                                                  constraints: BoxConstraints(
+                                                      maxWidth:
+                                                      _size.width - 106),
+                                                  child: Text(
+                                                    chatDocs[index].get('comment'),
+                                                    maxLines: 1000,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                        color:
+                                                        _isMe ? Color(0xFF111111) : Colors.white,
+                                                        fontWeight: FontWeight.normal,
+                                                        fontSize: 13),
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 30),
+                                                child: Container(
+                                                  child:
+                                                  !_isMe ? Text(
+                                                    '   $_time',
+                                                    style: TextStyle(
+                                                        fontSize:
+                                                        10,
+                                                        color: Color(
+                                                            0xFF949494),
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .w300),
+                                                  ) : null,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 8,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
                             );
                           },
                         ),
@@ -354,7 +405,7 @@ class _FleaChatroom_BuyState
                               ),
                               hintStyle: TextStyle(
                                   color: Color(0xff949494), fontSize: 14),
-                              hintText: '채팅 남기기',
+                              hintText: '메시지 보내기',
                               contentPadding: EdgeInsets.only(
                                   top: 10, bottom: 10, left: 16, right: 16),
                               border: OutlineInputBorder(
@@ -380,13 +431,6 @@ class _FleaChatroom_BuyState
                         ),
                       ),
                     ],
-                  ),
-                ),
-                Text(
-                  '운영자가 실시간으로 악성댓글을 관리합니다.',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFFC8C8C8),
                   ),
                 ),
                 SizedBox(

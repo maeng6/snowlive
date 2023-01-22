@@ -199,7 +199,7 @@ class _FleaMarket_Chatroom_List_BuyState extends State<FleaMarket_Chatroom_List_
                                                 SizedBox(
                                                     width: 1),
                                                 Text(
-                                                  '· $_time',
+                                                  '· $_time 개설',
                                                   style: TextStyle(
                                                       fontSize:
                                                       13,

@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/model/m_commentModel.dart';
 import 'package:snowlive3/model/m_fleaChatModel.dart';
+import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 class FleaChatModelController extends GetxController {
   RxString? _uid = ''.obs;
@@ -18,6 +21,7 @@ class FleaChatModelController extends GetxController {
   RxString? _otherResortNickname = ''.obs;
   RxString? _otherDisplayName = ''.obs;
   RxString _myUid = ''.obs;
+  RxList? _chatUidList = [].obs;
 
 
   String? get uid => _uid!.value;
@@ -32,6 +36,7 @@ class FleaChatModelController extends GetxController {
   String? get otherProfileImageUrl => _otherProfileImageUrl!.value;
   String? get otherResortNickname => _otherResortNickname!.value;
   String? get otherDisplayName => _otherDisplayName!.value;
+  List? get chatUidList => _chatUidList;
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
@@ -116,6 +121,45 @@ class FleaChatModelController extends GetxController {
     this._profileImageUrl!.value = fleaChatModel.profileImageUrl!;
     this._resortNickname!.value = fleaChatModel.resortNickname!;
 
+  }
+
+  Future<void> deleteChatroom(chatroomUid) async {
+    CustomFullScreenDialog.showDialog();
+    try {
+      CollectionReference chatRoom = FirebaseFirestore.instance.collection('fleaChat');
+      await chatRoom.doc(chatroomUid).delete();
+      CustomFullScreenDialog.cancelDialog();
+    }catch(e){
+      CustomFullScreenDialog.cancelDialog();
+    }
+    CustomFullScreenDialog.cancelDialog();
+  }
+
+  Future<void> deleteChatUidListSell(uid) async {
+    final  userMe = auth.currentUser!.uid;
+    await ref.collection('user').doc(uid).update({
+      'fleaChatUidList': FieldValue.arrayRemove([userMe])
+    });
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(uid);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List chatUidList = documentSnapshot.get('fleaChatUidList');
+    this._chatUidList!.value = chatUidList;
+  }
+
+  Future<void> deleteChatUidListBuy(uid) async {
+    final  userMe = auth.currentUser!.uid;
+    print(uid);
+    await ref.collection('user').doc(userMe).update({
+      'fleaChatUidList': FieldValue.arrayRemove([uid])
+    });
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(userMe);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List chatUidList = documentSnapshot.get('fleaChatUidList');
+    this._chatUidList!.value = chatUidList;
   }
 
 
