@@ -31,6 +31,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
   bool? isCategorySelected = false;
   bool? isLocationSelected = false;
   bool? isMethodSelected = false;
+  bool? isModifiedImageSelected = false;
   String? SelectedCategory = '';
   String? SelectedLocation = '';
   String? SelectedMethod = '';
@@ -89,6 +90,9 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
     ImageController _imageController = Get.find<ImageController>();
     //TODO : ****************************************************************
 
+    List _imageUrls=[];
+    _imageUrls.addAll(_fleaModelController.itemImagesUrls!);
+
     Size _size = MediaQuery.of(context).size;
     return Container(
       color: Colors.white,
@@ -119,7 +123,8 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                       if(isValid){
                         CustomFullScreenDialog.showDialog();
                         await _imageController.setNewMultiImage(_imageFiles, _userModelController.fleaCount);
-                        await _fleaModelController.uploadFleaItem(
+                        (isModifiedImageSelected==true)
+                        ? await _fleaModelController.uploadFleaItem(
                             displayName: _userModelController.displayName,
                             uid: _userModelController.uid,
                             profileImageUrl: _userModelController.profileImageUrl,
@@ -133,7 +138,8 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                             description: _itemDescribTextEditingController.text,
                             fleaCount: _userModelController.fleaCount,
                             resortNickname: _userModelController.resortNickname
-                        );
+                        )
+                        : await _fleaModelController.updateItemImageUrls(_imageUrls);
                         Navigator.pop(context);
                         CustomFullScreenDialog.cancelDialog();
                       }
@@ -190,6 +196,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                       if(_imageFiles.length <= 5){
                                         CustomFullScreenDialog.cancelDialog();
                                         fleaImageSelected = true;
+                                        isModifiedImageSelected = true;
                                         imageLength = _imageFiles.length;
                                         setState(() {});
                                         print(_imageFiles);
@@ -207,7 +214,9 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                     }
                                   },
                                   icon: Icon(Icons.camera_alt_rounded)),
-                              Text('$imageLength/5'),
+                              (isModifiedImageSelected==true)
+                              ?Text('$imageLength/5')
+                              :Text('${_imageUrls.length}/5'),
                             ],
                           ),
                           decoration: BoxDecoration(border: Border.all()),
@@ -216,7 +225,8 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                       SizedBox(
                         width: 20,
                       ),
-                      Expanded(
+                      (isModifiedImageSelected==true)
+                      ?Expanded(
                         child: SizedBox(
                           height: 100,
                           child: ListView.builder(
@@ -246,6 +256,50 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                             imageLength = _imageFiles.length;
                                             print(_imageFiles);
                                             print(imageLength);
+                                            setState(() {});
+                                          },
+                                          icon: Icon(Icons.cancel)),
+                                    ),
+                                  ]),
+                                  SizedBox(
+                                    width: 10,
+                                  )
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      )
+                          :Expanded(
+                        child: SizedBox(
+                          height: 100,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            itemCount: _imageUrls.length,
+                            itemBuilder: (context, index) {
+                              return Row(
+                                children: [
+                                  Stack(children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.grey)),
+                                      height: 80,
+                                      width: 70,
+                                      child: Image.network(
+                                        '${_imageUrls[index]}',
+                                        fit: BoxFit.fitHeight,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: -10,
+                                      right: -10,
+                                      child: IconButton(
+                                          onPressed: () {
+                                            print(_imageUrls);
+                                            _imageUrls.removeAt(index);
+                                            print(_imageUrls);
+                                            print(_imageUrls.length);
                                             setState(() {});
                                           },
                                           icon: Icon(Icons.cancel)),
