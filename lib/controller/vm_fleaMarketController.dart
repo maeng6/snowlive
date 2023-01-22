@@ -73,6 +73,15 @@ class FleaModelController extends GetxController {
     this._timeStamp = fleaModel.timeStamp!;
   }
 
+  Future<void> updateItemImageUrls(imageUrls) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('fleaMarket').doc('$uid#$fleaCount').update({
+      'itemImagesUrls': imageUrls,
+    });
+    await getCurrentFleaItem(uid: _uid, fleaCount: _fleaCount);
+  }
+
   Future<void> uploadFleaItem(
       {required displayName,
         required uid,
