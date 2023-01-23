@@ -6,30 +6,24 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_10.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_7.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_8.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
-import 'package:snowlive3/screens/comments/v_reply_Screen.dart';
-import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Screen.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
-import '../../controller/vm_commentController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
-class FleaChatroom_Sell extends StatefulWidget {
-  const FleaChatroom_Sell({Key? key}) : super(key: key);
+class FleaChatroom extends StatefulWidget {
+  const FleaChatroom({Key? key}) : super(key: key);
 
   @override
-  State<FleaChatroom_Sell> createState() =>
-      _FleaChatroom_SellState();
+  State<FleaChatroom> createState() =>
+      _FleaChatroomState();
 }
 
-class _FleaChatroom_SellState
-    extends State<FleaChatroom_Sell> {
+class _FleaChatroomState
+    extends State<FleaChatroom> {
   final _controller = TextEditingController();
   var _newComment = '';
   final _formKey = GlobalKey<FormState>();
@@ -43,8 +37,6 @@ class _FleaChatroom_SellState
   var _stream;
   bool _isVisible = false;
   bool _firstPress = true;
-
-
 
   ScrollController _scrollController = ScrollController();
 
@@ -73,7 +65,7 @@ class _FleaChatroom_SellState
   Stream<QuerySnapshot> newStream() {
     return FirebaseFirestore.instance
         .collection('fleaChat')
-        .doc('${_fleaChatModelController.uid}${_fleaChatModelController.fleaChatCount}')
+        .doc('${_fleaChatModelController.uid}#${_fleaChatModelController.otherUid}')
         .collection('messege')
         .orderBy('timeStamp', descending: true)
         .limit(500)
@@ -108,16 +100,37 @@ class _FleaChatroom_SellState
                 actions: [
                   TextButton(
                       onPressed: () async{
-                       await _fleaChatModelController
-                            .deleteChatroom(
-                          '${_fleaChatModelController.uid}${_fleaChatModelController.fleaChatCount}'
-                        );
-                       await _fleaChatModelController
-                           .deleteChatUidListSell(
-                         _fleaChatModelController.uid
-                       );
-                       Get.to(()=>MainHome());
+                        CustomFullScreenDialog.showDialog();
+
+                        try{
+                          if(_fleaChatModelController.uid == _userModelController.uid){
+                            await _fleaChatModelController
+                                .deleteChatroom(
+                                '${_fleaChatModelController.uid}#${_fleaChatModelController.otherUid}'
+                            );
+                            await _fleaChatModelController
+                                .deleteChatUidListBuy(
+                                _fleaChatModelController.otherUid
+                            );
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.offAll(()=>MainHome());
+                          }else{
+                            await _fleaChatModelController
+                                .deleteChatroom(
+                                '${_fleaChatModelController.uid}#${_fleaChatModelController.otherUid}'
+                            );
+                            await _fleaChatModelController
+                                .deleteChatUidListSell(
+                                _fleaChatModelController.uid
+                            );
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.offAll(()=>MainHome());
+                          }
+                        }catch(e){
+                          CustomFullScreenDialog.cancelDialog();
+                        }
                       },
+
                       child: Text('채팅방 나가기'))
                 ],
                 titleSpacing: 0,
@@ -160,7 +173,7 @@ class _FleaChatroom_SellState
                           itemBuilder: (context, index) {
                             String _time = _fleaChatModelController
                                 .getAgoTime(chatDocs[index].get('timeStamp'));
-                            bool _isMe = _userModelController.uid == chatDocs[index]['myUid'];
+                            bool _isMe = chatDocs[index]['fixMyUid'] == _userModelController.uid;
                             return Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child:
@@ -210,7 +223,7 @@ class _FleaChatroom_SellState
                                           padding: EdgeInsets.only(top: 5),
                                           child:
                                           !_isMe
-                                          ? GestureDetector(
+                                              ? GestureDetector(
                                             onTap: () {
                                               Get.to(() =>
                                                   ProfileImagePage(
@@ -231,7 +244,7 @@ class _FleaChatroom_SellState
                                               fit: BoxFit.cover,
                                             ),
                                           )
-                                          :null,
+                                              :null,
                                         ),
                                       SizedBox(width: 10),
                                       Column(
@@ -241,37 +254,37 @@ class _FleaChatroom_SellState
                                         _isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                                         children: [
                                           if(!_isMe)
-                                          Row(
-                                            children: [
-                                              Text(
-                                                chatDocs[index].get('displayName'),
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 14,
-                                                    color: Color(0xFF111111)),
-                                              ),
-                                              SizedBox(
-                                                  width: 6),
-                                              Text(
-                                                chatDocs[index].get(
-                                                    'resortNickname'),
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .w300,
-                                                    fontSize:
-                                                    13,
-                                                    color: Color(
-                                                        0xFF949494)),
-                                              ),
-                                              SizedBox(
-                                                  width: 1),
-                                            ],
-                                          ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  chatDocs[index].get('displayName'),
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 14,
+                                                      color: Color(0xFF111111)),
+                                                ),
+                                                SizedBox(
+                                                    width: 6),
+                                                Text(
+                                                  chatDocs[index].get(
+                                                      'resortNickname'),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                      FontWeight
+                                                          .w300,
+                                                      fontSize:
+                                                      13,
+                                                      color: Color(
+                                                          0xFF949494)),
+                                                ),
+                                                SizedBox(
+                                                    width: 1),
+                                              ],
+                                            ),
                                           if(_isMe)
-                                          SizedBox(
-                                            height: 2,
-                                          ),
+                                            SizedBox(
+                                              height: 2,
+                                            ),
                                           Row(
                                             children: [
                                               Padding(
@@ -375,23 +388,25 @@ class _FleaChatroom_SellState
                                   {return ;}
                                   FocusScope.of(context).unfocus();
                                   _controller.clear();
-                                  CustomFullScreenDialog.showDialog();
                                   _scrollController.jumpTo(0);
                                   try {
                                     await _userModelController.updateCommentCount(_userModelController.commentCount);
                                     await _fleaChatModelController.sendMessage(
                                         displayName: _userModelController.displayName,
-                                        uid: _fleaChatModelController.uid,
-                                        myUid: _userModelController.uid,
+                                        uid: (_fleaChatModelController.uid == _userModelController.uid)
+                                        ? _fleaChatModelController.otherUid : _userModelController.uid,
+                                        myUid:
+                                        (_fleaChatModelController.uid == _userModelController.uid)
+                                        ? _userModelController.uid : _fleaChatModelController.uid,
                                         profileImageUrl: _userModelController.profileImageUrl,
                                         comment: _newComment,
                                         commentCount: _userModelController.commentCount,
                                         resortNickname: _userModelController.resortNickname,
-                                        fleaChatCount: _fleaChatModelController.fleaChatCount);
+                                        fleaChatCount: _fleaChatModelController.fleaChatCount,
+                                        fixMyUid: _userModelController.uid);
                                     setState(() {});
                                     print(_userModelController.uid);
                                   } catch (e) {}
-                                  CustomFullScreenDialog.cancelDialog();
                                 },
                                 icon: (_controller.text.trim().isEmpty)
                                     ? Image.asset(

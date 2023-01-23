@@ -16,6 +16,8 @@ class FleaChatModel {
         this.otherResortNickname,
         this.otherDisplayName,
         this.myUid,
+        this.chatUidSumList,
+        this.fixMyUid,
       });
 
   String? displayName;
@@ -33,6 +35,8 @@ class FleaChatModel {
   String? otherResortNickname;
   String? otherDisplayName;
   String? myUid;
+  List? chatUidSumList;
+  String? fixMyUid;
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseFirestore.instance;
@@ -52,29 +56,73 @@ class FleaChatModel {
     otherResortNickname = json['otherResortNickname'];
     otherDisplayName = json['otherDisplayName'];
     myUid = json['myUid'];
+    chatUidSumList = json['chatUidSumList'];
+    fixMyUid = json['fixMyUid'];
 
   }
 
   FleaChatModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
       : this.fromJson(snapshot.data(), snapshot.reference);
 
-  Future<FleaChatModel> getFleaChatModel(String uid,int fleaChatCount) async {
+  Future<FleaChatModel> getFleaChatModel(String uid,String otherUid) async {
     DocumentReference<Map<String, dynamic>> documentReference = ref
         .collection('fleaChat')
-        .doc('$uid$fleaChatCount');
+        .doc('$uid#$otherUid');
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
     await documentReference.get();
-
-    FleaChatModel fleaChatModel = await FleaChatModel.fromSnapShot(documentSnapshot);
+    FleaChatModel fleaChatModel = FleaChatModel.fromSnapShot(documentSnapshot);
     return fleaChatModel;
   }
 
   Future<void> uploadComment(
+      {displayName, uid, myUid, fixMyUid, commentCount, profileImageUrl, comment, timeStamp,fleaChatCount, resortNickname}) async{
+
+    await ref
+        .collection('fleaChat')
+        .doc('$myUid#$uid')
+        .collection('messege')
+        .doc('$fixMyUid$commentCount')
+        .set({
+      'comment': comment,
+      'commentCount' : commentCount,
+      'displayName': displayName,
+      'profileImageUrl': profileImageUrl,
+      'timeStamp': timeStamp,
+      'myUid': myUid,
+      'fleaChatCount' : fleaChatCount,
+      'resortNickname' : resortNickname,
+      'fixMyUid' : fixMyUid,
+    });
+  }
+
+
+
+  Future<void> uploadCommentBuy(
       {displayName, uid, myUid, commentCount, profileImageUrl, comment, timeStamp,fleaChatCount, resortNickname}) async{
 
     await ref
         .collection('fleaChat')
-        .doc('$uid$fleaChatCount')
+        .doc('$myUid#$uid')
+        .collection('messege')
+        .doc('$myUid$commentCount')
+        .set({
+      'comment': comment,
+      'commentCount' : commentCount,
+      'displayName': displayName,
+      'profileImageUrl': profileImageUrl,
+      'timeStamp': timeStamp,
+      'myUid': myUid,
+      'fleaChatCount' : fleaChatCount,
+      'resortNickname' : resortNickname,
+    });
+  }
+
+  Future<void> uploadCommentSell(
+      {displayName, uid, myUid, commentCount, profileImageUrl, comment, timeStamp,fleaChatCount, resortNickname}) async{
+
+    await ref
+        .collection('fleaChat')
+        .doc('$uid#$myUid')
         .collection('messege')
         .doc('$myUid$commentCount')
         .set({
@@ -90,12 +138,12 @@ class FleaChatModel {
   }
 
   Future<void> createChatroom(
-      {uid, otherUid, timeStamp,fleaChatCount, displayName, resortNickname, profileImageUrl,
+      {uid, otherUid, fixMyUid, timeStamp,fleaChatCount, displayName, resortNickname, profileImageUrl,
         otherProfileImageUrl,otherResortNickname,otherDisplayName }) async{
 
     await ref
         .collection('fleaChat')
-        .doc('$uid$fleaChatCount')
+        .doc('$uid#$otherUid')
         .set({
       'timeStamp': Timestamp.now(),
       'uid': uid,
@@ -106,7 +154,8 @@ class FleaChatModel {
       'otherDisplayName' : otherDisplayName,
       'displayName' : displayName,
       'profileImageUrl' : profileImageUrl,
-      'resortNickname' : resortNickname
+      'resortNickname' : resortNickname,
+      'fixMyUid' : fixMyUid
     });
   }
 

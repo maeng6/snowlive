@@ -8,21 +8,20 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
-import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Chatroom_Buy.dart';
-import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Chatroom_Sell.dart';
+import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Chatroom.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Upload.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
-class FleaMarket_Chatroom_List_Sell extends StatefulWidget {
-  const FleaMarket_Chatroom_List_Sell({Key? key}) : super(key: key);
+class FleaMarket_Chatroom_List extends StatefulWidget {
+  const FleaMarket_Chatroom_List({Key? key}) : super(key: key);
 
   @override
-  State<FleaMarket_Chatroom_List_Sell> createState() => _FleaMarket_Chatroom_List_SellState();
+  State<FleaMarket_Chatroom_List> createState() => _FleaMarket_Chatroom_ListState();
 }
 
-class _FleaMarket_Chatroom_List_SellState extends State<FleaMarket_Chatroom_List_Sell> {
+class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   FleaModelController _fleaModelController = Get.find<FleaModelController>();
@@ -44,7 +43,7 @@ class _FleaMarket_Chatroom_List_SellState extends State<FleaMarket_Chatroom_List
   Stream<QuerySnapshot> newStream() {
     return FirebaseFirestore.instance
         .collection('fleaChat')
-        .where('otherUid', isEqualTo: '${_userModelController.uid}')
+        .where('chatUidSumList', arrayContainsAny: ['${_userModelController.uid}'])
         .limit(500)
         .snapshots();
   }
@@ -93,11 +92,20 @@ class _FleaMarket_Chatroom_List_SellState extends State<FleaMarket_Chatroom_List
                           return GestureDetector(
                             onTap: () async {
                               CustomFullScreenDialog.showDialog();
-                              await _fleaChatModelController.getCurrentFleaChat(
-                                  uid: chatDocs[index].get('uid'),
-                                  fleaChatCount: chatDocs[index].get('fleaChatCount'));
-                              CustomFullScreenDialog.cancelDialog();
-                              Get.to(() => FleaChatroom_Sell());
+
+                              try{
+                                  await _fleaChatModelController.getCurrentFleaChat(
+                                      uid: chatDocs[index].get('uid'),
+                                      otherUid: chatDocs[index].get('otherUid'));
+                                  CustomFullScreenDialog.cancelDialog();
+                                  Get.to(()=>FleaChatroom());
+
+                              }catch(e){
+                                CustomFullScreenDialog.cancelDialog();
+                              }
+
+
+
                             },
                             child: Padding(
                               padding:
@@ -111,60 +119,70 @@ class _FleaMarket_Chatroom_List_SellState extends State<FleaMarket_Chatroom_List
                                     Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        if (chatDocs[index][
-                                        'profileImageUrl'] != "")
+                                       if(chatDocs[index]['uid'] == _userModelController.uid)
                                           Padding(
                                             padding: EdgeInsets.only(top: 5),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                Get.to(() =>
-                                                    ProfileImagePage(
-                                                      CommentProfileUrl:
-                                                      chatDocs[index]
-                                                      ['profileImageUrl'],
-                                                    ));
-                                              },
-                                              child: ExtendedImage.network(
-                                                chatDocs[index]['profileImageUrl'],
-                                                cache: true,
-                                                shape:
-                                                BoxShape.circle,
-                                                borderRadius:
-                                                BorderRadius
-                                                    .circular(
-                                                    20),
-                                                width: 32,
-                                                height: 32,
-                                                fit: BoxFit.cover,
-                                              ),
+                                            child:
+                                            (chatDocs[index]['otherProfileImageUrl'] != '')
+                                            ? ExtendedImage.network(
+                                              chatDocs[index]['otherProfileImageUrl'],
+                                              cache: true,
+                                              shape:
+                                              BoxShape.circle,
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(
+                                                  20),
+                                              width: 32,
+                                              height: 32,
+                                              fit: BoxFit.cover,
+                                            )
+                                            : ExtendedImage.asset(
+                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                              shape:
+                                              BoxShape.circle,
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(
+                                                  20),
+                                              width: 32,
+                                              height: 32,
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
-                                        if (chatDocs[index][
-                                        'profileImageUrl'] == "")
+
+                                        if(chatDocs[index]['uid'] != _userModelController.uid)
                                           Padding(
                                             padding: EdgeInsets.only(top: 5),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                Get.to(() =>
-                                                    ProfileImagePage(
-                                                        CommentProfileUrl:
-                                                        ''));
-                                              },
-                                              child: ExtendedImage
-                                                  .asset(
-                                                'assets/imgs/profile/img_profile_default_circle.png',
-                                                shape:
-                                                BoxShape.circle,
-                                                borderRadius:
-                                                BorderRadius
-                                                    .circular(
-                                                    20),
-                                                width: 32,
-                                                height: 32,
-                                                fit: BoxFit.cover,
-                                              ),
+                                            child:
+                                            (chatDocs[index]['profileImageUrl'] != '')
+                                            ? ExtendedImage.network(
+                                              chatDocs[index]['profileImageUrl'],
+                                              cache: true,
+                                              shape:
+                                              BoxShape.circle,
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(
+                                                  20),
+                                              width: 32,
+                                              height: 32,
+                                              fit: BoxFit.cover,
+                                            )
+                                            : ExtendedImage.asset(
+                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                              shape:
+                                              BoxShape.circle,
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(
+                                                  20),
+                                              width: 32,
+                                              height: 32,
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
+
                                         SizedBox(width: 10),
                                         Column(
                                           mainAxisAlignment:
@@ -176,7 +194,15 @@ class _FleaMarket_Chatroom_List_SellState extends State<FleaMarket_Chatroom_List
                                           children: [
                                             Row(
                                               children: [
-                                                Text(
+                                                (chatDocs[index]['uid'] == _userModelController.uid)
+                                                ? Text(
+                                                  chatDocs[index].get('otherDisplayName'),
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 14,
+                                                      color: Color(0xFF111111)),
+                                                )
+                                                : Text(
                                                   chatDocs[index].get('displayName'),
                                                   style: TextStyle(
                                                       fontWeight: FontWeight.bold,
@@ -185,7 +211,20 @@ class _FleaMarket_Chatroom_List_SellState extends State<FleaMarket_Chatroom_List
                                                 ),
                                                 SizedBox(
                                                     width: 6),
-                                                Text(
+                                                (chatDocs[index]['uid'] != _userModelController.uid)
+                                                ? Text(
+                                                  chatDocs[index].get(
+                                                      'otherResortNickname'),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                      FontWeight
+                                                          .w300,
+                                                      fontSize:
+                                                      13,
+                                                      color: Color(
+                                                          0xFF949494)),
+                                                )
+                                                : Text(
                                                   chatDocs[index].get(
                                                       'resortNickname'),
                                                   style: TextStyle(
@@ -214,6 +253,21 @@ class _FleaMarket_Chatroom_List_SellState extends State<FleaMarket_Chatroom_List
                                             ),
                                             SizedBox(
                                               height: 2,
+                                            ),
+                                            (chatDocs[index]['uid'] == _userModelController.uid)
+                                            ? Text('구매톡',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13
+                                            ),
+                                            )
+                                            : Text('판매톡',
+                                            style: TextStyle(
+                                              color: Colors.blue,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13
+                                              ),
                                             ),
                                             SizedBox(
                                               height: 8,

@@ -22,6 +22,8 @@ class FleaChatModelController extends GetxController {
   RxString? _otherDisplayName = ''.obs;
   RxString _myUid = ''.obs;
   RxList? _chatUidList = [].obs;
+  RxList? _chatUidSumList = [].obs;
+  RxString? _fixMyUid = ''.obs;
 
 
   String? get uid => _uid!.value;
@@ -37,12 +39,15 @@ class FleaChatModelController extends GetxController {
   String? get otherResortNickname => _otherResortNickname!.value;
   String? get otherDisplayName => _otherDisplayName!.value;
   List? get chatUidList => _chatUidList;
+  List? get chatUidSumList => _chatUidSumList;
+  String? get myUid => _myUid.value;
+  String? get fixMyUid => _fixMyUid!.value;
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
 
-  Future<void> getCurrentFleaChat({required uid, required fleaChatCount}) async {
-    FleaChatModel fleaChatModel = await FleaChatModel().getFleaChatModel(uid,fleaChatCount);
+  Future<void> getCurrentFleaChat({required uid, required otherUid}) async {
+    FleaChatModel fleaChatModel = await FleaChatModel().getFleaChatModel(uid,otherUid);
     this._otherDisplayName!.value = fleaChatModel.otherDisplayName!;
     this._uid!.value = fleaChatModel.uid!;
     this._otherUid!.value = fleaChatModel.otherUid!;
@@ -52,7 +57,6 @@ class FleaChatModelController extends GetxController {
     this._timeStamp = fleaChatModel.timeStamp!;
   }
 
-
   Future<void> sendMessage(
       {required displayName,
         required uid,
@@ -61,8 +65,44 @@ class FleaChatModelController extends GetxController {
         required fleaChatCount,
         required resortNickname,
         required commentCount,
-        required myUid,}) async {
+        required myUid,
+        required fixMyUid,
+      }) async {
     await FleaChatModel().uploadComment(
+      comment: comment,
+      displayName: displayName,
+      profileImageUrl: profileImageUrl,
+      timeStamp: Timestamp.now(),
+      fleaChatCount: fleaChatCount,
+      uid: uid,
+      resortNickname: resortNickname,
+      commentCount: commentCount,
+      myUid: myUid,
+      fixMyUid: fixMyUid
+    );
+    FleaChatModel fleaChatModel =
+    await FleaChatModel().getFleaChatModel(uid, myUid);
+    this._uid!.value = fleaChatModel.uid!;
+    this._displayName!.value = fleaChatModel.displayName!;
+    this._profileImageUrl!.value = fleaChatModel.profileImageUrl!;
+    this._comment!.value = fleaChatModel.comment!;
+    this._timeStamp = fleaChatModel.timeStamp!;
+    this._resortNickname!.value = fleaChatModel.resortNickname!;
+    this._myUid.value = fleaChatModel.myUid!;
+    this._fixMyUid!.value = fleaChatModel.fixMyUid!;
+  }
+
+
+  Future<void> sendMessageBuy(
+      {required displayName,
+        required uid,
+        required profileImageUrl,
+        required comment,
+        required fleaChatCount,
+        required resortNickname,
+        required commentCount,
+        required myUid,}) async {
+    await FleaChatModel().uploadCommentBuy(
         comment: comment,
         displayName: displayName,
         profileImageUrl: profileImageUrl,
@@ -74,7 +114,7 @@ class FleaChatModelController extends GetxController {
         myUid: myUid,
     );
     FleaChatModel fleaChatModel =
-    await FleaChatModel().getFleaChatModel(uid, fleaChatCount);
+    await FleaChatModel().getFleaChatModel(uid, myUid);
     this._uid!.value = fleaChatModel.uid!;
     this._displayName!.value = fleaChatModel.displayName!;
     this._profileImageUrl!.value = fleaChatModel.profileImageUrl!;
@@ -83,6 +123,39 @@ class FleaChatModelController extends GetxController {
     this._resortNickname!.value = fleaChatModel.resortNickname!;
     this._myUid.value = fleaChatModel.myUid!;
   }
+
+  Future<void> sendMessageSell(
+      {required displayName,
+        required uid,
+        required profileImageUrl,
+        required comment,
+        required fleaChatCount,
+        required resortNickname,
+        required commentCount,
+        required myUid,}) async {
+    await FleaChatModel().uploadCommentSell(
+      comment: comment,
+      displayName: displayName,
+      profileImageUrl: profileImageUrl,
+      timeStamp: Timestamp.now(),
+      fleaChatCount: fleaChatCount,
+      uid: uid,
+      resortNickname: resortNickname,
+      commentCount: commentCount,
+      myUid: myUid,
+    );
+    FleaChatModel fleaChatModel =
+    await FleaChatModel().getFleaChatModel(uid, myUid);
+    this._uid!.value = fleaChatModel.uid!;
+    this._displayName!.value = fleaChatModel.displayName!;
+    this._profileImageUrl!.value = fleaChatModel.profileImageUrl!;
+    this._comment!.value = fleaChatModel.comment!;
+    this._timeStamp = fleaChatModel.timeStamp!;
+    this._resortNickname!.value = fleaChatModel.resortNickname!;
+    this._myUid.value = fleaChatModel.myUid!;
+  }
+
+
 
   Future<void> createChatroom(
       {required uid,
@@ -94,7 +167,8 @@ class FleaChatModelController extends GetxController {
         required otherDisplayName,
         required displayName,
         required profileImageUrl,
-        required resortNickname
+        required resortNickname,
+        required fixMyUid
       }) async {
     await FleaChatModel().createChatroom(
         fleaChatCount: fleaChatCount,
@@ -107,9 +181,10 @@ class FleaChatModelController extends GetxController {
         displayName: displayName,
         profileImageUrl: profileImageUrl,
         resortNickname: resortNickname,
+        fixMyUid: fixMyUid
     );
     FleaChatModel fleaChatModel =
-    await FleaChatModel().getFleaChatModel(uid, fleaChatCount);
+    await FleaChatModel().getFleaChatModel(uid, otherUid);
     this._uid!.value = fleaChatModel.uid!;
     this._timeStamp = fleaChatModel.timeStamp!;
     this._fleaChatCount!.value = fleaChatModel.fleaChatCount!;
@@ -120,13 +195,28 @@ class FleaChatModelController extends GetxController {
     this._displayName!.value = fleaChatModel.displayName!;
     this._profileImageUrl!.value = fleaChatModel.profileImageUrl!;
     this._resortNickname!.value = fleaChatModel.resortNickname!;
+    this._fixMyUid!.value = fleaChatModel.fixMyUid!;
 
+  }
+
+  Future<void> updateChatUidSumList(uid) async {
+    final  userMe = auth.currentUser!.uid;
+    await ref.collection('fleaChat').doc('$userMe#$uid').update({
+      'chatUidSumList': FieldValue.arrayUnion([uid, userMe])
+    });
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('fleaChat').doc('$userMe#$uid');
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List chatUidSumList = documentSnapshot.get('chatUidSumList');
+    this._chatUidSumList!.value = chatUidSumList;
   }
 
   Future<void> deleteChatroom(chatroomUid) async {
     CustomFullScreenDialog.showDialog();
     try {
-      CollectionReference chatRoom = FirebaseFirestore.instance.collection('fleaChat');
+      CollectionReference chatRoom = FirebaseFirestore
+          .instance.collection('fleaChat');
       await chatRoom.doc(chatroomUid).delete();
       CustomFullScreenDialog.cancelDialog();
     }catch(e){
@@ -134,6 +224,7 @@ class FleaChatModelController extends GetxController {
     }
     CustomFullScreenDialog.cancelDialog();
   }
+
 
   Future<void> deleteChatUidListSell(uid) async {
     final  userMe = auth.currentUser!.uid;

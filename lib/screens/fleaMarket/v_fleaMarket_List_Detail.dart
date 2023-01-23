@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Chatroom_Buy.dart';
+import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Chatroom.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_ModifyPage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
@@ -25,6 +25,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
   FleaModelController _fleaModelController = Get.find<FleaModelController>();
   FleaChatModelController _fleaChatModelController = Get.find<FleaChatModelController>();
 //TODO: Dependency Injection**************************************************
+
 
 
   @override
@@ -57,7 +58,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
               elevation: 0.0,
             ),
           ),
-          body: Obx(() => Column(
+          body: Column(
             children: [
               CarouselSlider.builder(
           options: CarouselOptions(
@@ -193,41 +194,52 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
               SizedBox(
                 height: 20,
               ),
-              if(_fleaModelController.uid != _userModelController.uid && _userModelController.fleaChatUidList!.contains(_fleaModelController.uid))
-                TextButton(
-                    onPressed: () {},
-                    child: Text('채팅방으로 이동')),
-              if(_fleaModelController.uid != _userModelController.uid && !_userModelController.fleaChatUidList!.contains(_fleaModelController.uid))
-              TextButton(
-                onPressed: () async{
-                    CustomFullScreenDialog.showDialog();
-                    await _userModelController.updatefleaChatUid(_fleaModelController.uid);
-                    await _userModelController.fleaChatCountUpdate(_userModelController.uid);
-                    await _fleaChatModelController.createChatroom(
-                        uid: _userModelController.uid,
-                        otherUid: _fleaModelController.uid,
-                        timeStamp: _time,
-                        fleaChatCount: _userModelController.fleaChatCount,
-                        otherProfileImageUrl: _fleaModelController.profileImageUrl,
-                        otherResortNickname: _fleaModelController.resortNickname,
-                        otherDisplayName: _fleaModelController.displayName,
-                        displayName: _userModelController.displayName,
-                        profileImageUrl: _userModelController.profileImageUrl,
-                        resortNickname: _userModelController.resortNickname);
-                    CustomFullScreenDialog.cancelDialog();
-                    Get.off(()=>FleaChatroom_Buy());
 
-                },
-                child: Text('메시지 보내기'),
+              TextButton(
+                  onPressed: () async{
+                    CustomFullScreenDialog.showDialog();
+                    try{
+                      if(_fleaModelController.uid != _userModelController.uid){
+                        await _userModelController.updatefleaChatUid(_fleaModelController.uid);
+                        await _userModelController.fleaChatCountUpdate(_userModelController.uid);
+                        await _fleaChatModelController.createChatroom(
+                            uid: _userModelController.uid,
+                            otherUid: _fleaModelController.uid,
+                            timeStamp: _time,
+                            fleaChatCount: _userModelController.fleaChatCount,
+                            otherProfileImageUrl: _fleaModelController.profileImageUrl,
+                            otherResortNickname: _fleaModelController.resortNickname,
+                            otherDisplayName: _fleaModelController.displayName,
+                            displayName: _userModelController.displayName,
+                            profileImageUrl: _userModelController.profileImageUrl,
+                            resortNickname: _userModelController.resortNickname,
+                            fixMyUid: _userModelController.uid
+                        );
+                        await _fleaChatModelController.updateChatUidSumList(_fleaModelController.uid);
+                        CustomFullScreenDialog.cancelDialog();
+                        return Get.to(()=>FleaChatroom());
+                      }else{
+                        CustomFullScreenDialog.cancelDialog();
+                        return Get.to(()=>FleaMarket_ModifyPage());
+                      }
+                    }catch(e){
+                      print('에러');
+                      CustomFullScreenDialog.cancelDialog();
+                    }
+
+
+
+                  },
+                  child:
+                  (_fleaModelController.uid != _userModelController.uid)
+                  ? Text('메시지 보내기') : Text('수정하기')
+
               ),
-              if(_fleaModelController.uid == _userModelController.uid)
-                TextButton(
-                onPressed: (){
-                  Get.to(()=>FleaMarket_ModifyPage());
-                },
-                child: Text('수정하기'))
+
+
+
           ],
-          ),)
+          ),
         ),
       ),
     );

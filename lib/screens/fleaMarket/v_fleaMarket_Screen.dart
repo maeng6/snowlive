@@ -5,10 +5,9 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
-import 'package:snowlive3/screens/fleaMarket/v_FleaMarket_Chatroom_List_Buy.dart';
-import 'package:snowlive3/screens/fleaMarket/v_FleaMarket_chatroom_List_Sell.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_My_Screen.dart';
+import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_chatroom_List.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
 import '../../model/m_brandModel.dart';
 import '../../model/m_shopModel.dart';
@@ -21,11 +20,10 @@ class FleaMarketScreen extends StatefulWidget {
 }
 
 class _FleaMarketScreenState extends State<FleaMarketScreen> {
-  List<String> labels = ['스노우마켓', '판매내역', '구매채팅', '판매채팅'];
+  List<String> labels = ['스노우마켓', '판매내역','채팅목록', ];
   int counter = 0;
   List<bool> isTap = [
     true,
-    false,
     false,
     false,
   ];
@@ -97,12 +95,10 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                       isTap[0] = true;
                       isTap[1] = false;
                       isTap[2] = false;
-                      isTap[3] = false;
                     });
                     print(isTap);
                   },
                   style: ElevatedButton.styleFrom(
-                    minimumSize: Size(54, 32),
                     backgroundColor: isTap[0]
                         ? Color(0xFF111111)
                         : Color(0xFFFFFFFF),
@@ -128,7 +124,6 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                       isTap[0] = false;
                       isTap[1] = true;
                       isTap[2] = false;
-                      isTap[3] = false;
                     });
                     print(isTap);
                   },
@@ -150,7 +145,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                 ),
                 ElevatedButton(
                   child: Text(
-                    '구매채팅',
+                    '채팅목록',
                     style: TextStyle(
                         color: isTap[2]
                             ? Color(0xFFFFFFFF)
@@ -161,7 +156,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                     setState(() {isTap[0] = false;
                     isTap[1] = false;
                     isTap[2] = true;
-                    isTap[3] = false;
+
                     });
                     print(isTap);
                   },
@@ -181,36 +176,6 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                 SizedBox(
                   width: 3,
                 ),
-                ElevatedButton(
-                  child: Text(
-                    '판매채팅',
-                    style: TextStyle(
-                        color: isTap[3]
-                            ? Color(0xFFFFFFFF)
-                            : Color(0xFF111111)),
-                  ),
-                  onPressed: () {
-                    print('판매내역 페이지로 전환');
-                    setState(() {isTap[0] = false;
-                    isTap[1] = false;
-                    isTap[2] = false;
-                    isTap[3] = true;
-                    });
-                    print(isTap);
-                  },
-                  style: ElevatedButton.styleFrom(
-                      minimumSize: Size(54, 32),
-                      backgroundColor: (isTap[3])
-                          ? Color(0xFF111111)
-                          : Color(0xFFFFFFFF),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      elevation: 0,
-                      textStyle: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      )),
-                ),
               ],
             ),
             if(isTap[0]==true)
@@ -218,9 +183,8 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
             if(isTap[1]==true)
               Expanded(child: FleaMarket_My_Screen()),
             if(isTap[2]==true)
-              Expanded(child: FleaMarket_Chatroom_List_Buy()),
-            if(isTap[3]==true)
-              Expanded(child: FleaMarket_Chatroom_List_Sell())
+              Expanded(child: FleaMarket_Chatroom_List()),
+
           ],
         ),
       ),
