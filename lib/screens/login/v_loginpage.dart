@@ -68,7 +68,7 @@ class LoginPage extends StatelessWidget {
                   SizedBox(
                     height: _size.height * 0.23,
                   ),
-                  Image.asset('assets/imgs/logos/snowLiveLogo.png',
+                  Image.asset('assets/imgs/logos/snowLive_logo_new.png',
                     height:73 ,
                     width: 214,
                   ),
