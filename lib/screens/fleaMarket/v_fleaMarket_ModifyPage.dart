@@ -32,8 +32,8 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
   bool? isLocationSelected = false;
   bool? isMethodSelected = false;
   bool? isModifiedImageSelected = false;
-  String? SelectedCategory = '';
-  String? SelectedLocation = '';
+  RxString? SelectedCategory = ''.obs;
+  RxString? SelectedLocation = ''.obs;
   String? SelectedMethod = '';
   String? title = '';
   final _formKey = GlobalKey<FormState>();
@@ -44,9 +44,10 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
       title: Text('${fleaCategoryList[index]}'),
       onTap: () async {
         isCategorySelected = true;
-        SelectedCategory = fleaCategoryList[index];
+        SelectedCategory!.value = fleaCategoryList[index];
+        print('$isCategorySelected');
+        print('$SelectedCategory');
         Navigator.pop(context);
-        setState(() {});
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
@@ -58,7 +59,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
       title: Text('${fleaLocationList[index]}'),
       onTap: () async {
         isLocationSelected = true;
-        SelectedLocation = fleaLocationList[index];
+        SelectedLocation!.value = fleaLocationList[index];
         Navigator.pop(context);
         setState(() {});
       },
@@ -124,7 +125,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                         CustomFullScreenDialog.showDialog();
                         await _imageController.setNewMultiImage(_imageFiles, _userModelController.fleaCount);
                         (isModifiedImageSelected==true)
-                        ? await _fleaModelController.uploadFleaItem(
+                        ? await _fleaModelController.updateFleaItem(
                             displayName: _userModelController.displayName,
                             uid: _userModelController.uid,
                             profileImageUrl: _userModelController.profileImageUrl,
@@ -425,7 +426,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                               },
                               child: (isCategorySelected!)
                                   ? Text('$SelectedCategory')
-                                  : Text('${_fleaModelController.category}')),
+                                  : Text('$SelectedCategory')),
                         ],
                       ),
                     ),
