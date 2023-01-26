@@ -79,7 +79,7 @@ class FleaModelController extends GetxController {
     await ref.collection('fleaMarket').doc('$uid#$fleaCount').update({
       'itemImagesUrls': imageUrls,
     });
-    await getCurrentFleaItem(uid: _uid, fleaCount: _fleaCount);
+    await getCurrentFleaItem(uid: uid, fleaCount: fleaCount);
   }
 
   Future<void> uploadFleaItem(

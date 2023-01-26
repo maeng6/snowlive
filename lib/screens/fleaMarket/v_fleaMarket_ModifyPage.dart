@@ -8,6 +8,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/model/m_fleaMarketModel.dart';
+import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
+import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
+import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Screen.dart';
 import '../../controller/vm_imageController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
@@ -32,11 +35,12 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
   bool? isLocationSelected = false;
   bool? isMethodSelected = false;
   bool? isModifiedImageSelected = false;
-  String? SelectedCategory = '';
-  String? SelectedLocation = '';
-  String? SelectedMethod = '';
+  RxString? SelectedCategory = ''.obs;
+  RxString? SelectedLocation = ''.obs;
+  RxString? SelectedMethod = ''.obs;
   String? title = '';
   final _formKey = GlobalKey<FormState>();
+  RxList? _imageUrls=[].obs;
 
   ListTile buildCategoryListTile(int index) {
     return ListTile(
@@ -44,9 +48,8 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
       title: Text('${fleaCategoryList[index]}'),
       onTap: () async {
         isCategorySelected = true;
-        SelectedCategory = fleaCategoryList[index];
+        SelectedCategory!.value = fleaCategoryList[index];
         Navigator.pop(context);
-        setState(() {});
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
@@ -58,9 +61,8 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
       title: Text('${fleaLocationList[index]}'),
       onTap: () async {
         isLocationSelected = true;
-        SelectedLocation = fleaLocationList[index];
+        SelectedLocation!.value = fleaLocationList[index];
         Navigator.pop(context);
-        setState(() {});
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
@@ -72,12 +74,22 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
       title: Text('${fleaMethodList[index]}'),
       onTap: () async {
         isMethodSelected = true;
-        SelectedMethod = fleaMethodList[index];
+        SelectedMethod!.value = fleaMethodList[index];
         Navigator.pop(context);
-        setState(() {});
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FleaModelController _fleaModelController = Get.find<FleaModelController>();
+    _imageUrls!.addAll(_fleaModelController.itemImagesUrls!);
+    SelectedCategory = _fleaModelController.category!.obs;
+    SelectedLocation = _fleaModelController.location!.obs;
+    SelectedMethod = _fleaModelController.method!.obs;
   }
 
   @override
@@ -89,9 +101,6 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
     FleaModelController _fleaModelController = Get.find<FleaModelController>();
     ImageController _imageController = Get.find<ImageController>();
     //TODO : ****************************************************************
-
-    List _imageUrls=[];
-    _imageUrls.addAll(_fleaModelController.itemImagesUrls!);
 
     Size _size = MediaQuery.of(context).size;
     return Container(
@@ -124,24 +133,38 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                         CustomFullScreenDialog.showDialog();
                         await _imageController.setNewMultiImage(_imageFiles, _userModelController.fleaCount);
                         (isModifiedImageSelected==true)
-                        ? await _fleaModelController.uploadFleaItem(
+                        ? await _fleaModelController.updateFleaItem(
                             displayName: _userModelController.displayName,
                             uid: _userModelController.uid,
                             profileImageUrl: _userModelController.profileImageUrl,
                             itemImagesUrls: _imageController.imagesUrlList,
                             title: _titleTextEditingController.text,
-                            category: SelectedCategory,
+                            category: SelectedCategory!.value,
                             itemName: _itemNameTextEditingController.text,
                             price: int.parse(_itemPriceTextEditingController.text),
-                            location: SelectedLocation,
-                            method: SelectedMethod,
+                            location: SelectedLocation!.value,
+                            method: SelectedMethod!.value,
                             description: _itemDescribTextEditingController.text,
-                            fleaCount: _userModelController.fleaCount,
+                            fleaCount: _fleaModelController.fleaCount,
                             resortNickname: _userModelController.resortNickname
                         )
-                        : await _fleaModelController.updateItemImageUrls(_imageUrls);
-                        Navigator.pop(context);
+                        : await _fleaModelController.updateFleaItem(
+                            displayName: _userModelController.displayName,
+                            uid: _userModelController.uid,
+                            profileImageUrl: _userModelController.profileImageUrl,
+                            itemImagesUrls: _imageUrls,
+                            title: _titleTextEditingController.text,
+                            category: SelectedCategory!.value,
+                            itemName: _itemNameTextEditingController.text,
+                            price: int.parse(_itemPriceTextEditingController.text),
+                            location: SelectedLocation!.value,
+                            method: SelectedMethod!.value,
+                            description: _itemDescribTextEditingController.text,
+                            fleaCount: _fleaModelController.fleaCount,
+                            resortNickname: _userModelController.resortNickname
+                        );
                         CustomFullScreenDialog.cancelDialog();
+                        Get.to(()=> FleaMarketScreen());
                       }
                       _imageController.imagesUrlList.clear();
 
@@ -216,7 +239,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                   icon: Icon(Icons.camera_alt_rounded)),
                               (isModifiedImageSelected==true)
                               ?Text('$imageLength/5')
-                              :Text('${_imageUrls.length}/5'),
+                              :Text('${_imageUrls!.value.length}/5'),
                             ],
                           ),
                           decoration: BoxDecoration(border: Border.all()),
@@ -273,10 +296,11 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                           :Expanded(
                         child: SizedBox(
                           height: 100,
-                          child: ListView.builder(
+                          child:
+                          Obx(() => ListView.builder(
                             scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
-                            itemCount: _imageUrls.length,
+                            itemCount: _imageUrls!.length,
                             itemBuilder: (context, index) {
                               return Row(
                                 children: [
@@ -287,7 +311,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                       height: 80,
                                       width: 70,
                                       child: Image.network(
-                                        '${_imageUrls[index]}',
+                                        '${_imageUrls![index]}',
                                         fit: BoxFit.fitHeight,
                                       ),
                                     ),
@@ -296,11 +320,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                       right: -10,
                                       child: IconButton(
                                           onPressed: () {
-                                            print(_imageUrls);
-                                            _imageUrls.removeAt(index);
-                                            print(_imageUrls);
-                                            print(_imageUrls.length);
-                                            setState(() {});
+                                            _imageUrls!.removeAt(index);
                                           },
                                           icon: Icon(Icons.cancel)),
                                     ),
@@ -311,7 +331,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                 ],
                               );
                             },
-                          ),
+                          )),
                         ),
                       )
                     ],
@@ -373,7 +393,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                               style:
                               TextStyle(color: Color(0xff949494), fontSize: 12),
                             ),
-                          TextButton(
+                          Obx(() => TextButton(
                               onPressed: () {
                                 showMaterialModalBottomSheet(
                                     enableDrag: false,
@@ -423,9 +443,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                       );
                                     });
                               },
-                              child: (isCategorySelected!)
-                                  ? Text('$SelectedCategory')
-                                  : Text('${_fleaModelController.category}')),
+                              child: Text('${SelectedCategory!.value}'))),
                         ],
                       ),
                     ),
@@ -515,7 +533,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                               style:
                               TextStyle(color: Color(0xff949494), fontSize: 12),
                             ),
-                          TextButton(
+                          Obx(() => TextButton(
                               onPressed: () {
                                 showMaterialModalBottomSheet(
                                     enableDrag: false,
@@ -561,9 +579,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                       );
                                     });
                               },
-                              child: (isLocationSelected!)
-                                  ? Text('$SelectedLocation')
-                                  : Text('${_fleaModelController.location}')),
+                              child:  Text('${SelectedLocation!.value}'))),
                         ],
                       ),
                     ),
@@ -581,7 +597,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                               style:
                               TextStyle(color: Color(0xff949494), fontSize: 12),
                             ),
-                          TextButton(
+                          Obx(() =>  TextButton(
                               onPressed: () {
                                 showMaterialModalBottomSheet(
                                     enableDrag: false,
@@ -627,9 +643,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                       );
                                     });
                               },
-                              child: (isMethodSelected!)
-                                  ? Text('$SelectedMethod')
-                                  : Text('${_fleaModelController.method}')),
+                              child: Text('${SelectedMethod!.value}'))),
                         ],
                       ),
                     ),

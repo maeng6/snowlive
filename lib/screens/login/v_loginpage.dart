@@ -33,12 +33,12 @@ class LoginPage extends StatelessWidget {
                 :Brightness.dark //ios:dark, android:light
         ));
 
-    return Scaffold(backgroundColor: Colors.white,
+    return Scaffold(backgroundColor: Color(0xFFF1F1F3),
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0),
         child: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Color(0xFFF1F1F3),
           elevation: 0.0,
           centerTitle: false,
           titleSpacing: 0,
@@ -59,7 +59,7 @@ class LoginPage extends StatelessWidget {
         child: Container(
           width: double.infinity,
           height: double.infinity,
-          color: Colors.white,
+          color: Color(0xFFF1F1F3),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -68,69 +68,75 @@ class LoginPage extends StatelessWidget {
                   SizedBox(
                     height: _size.height * 0.23,
                   ),
-                  Image.asset('assets/imgs/logos/snowLiveLogo.png',
-                    height:73 ,
-                    width: 214,
+                  Image.asset('assets/imgs/logos/snowlive_logo_new.png',
+                    height:98 ,
+                    width: 236,
                   ),
+                  SizedBox(
+                    height: 14,
+                  ),
+                  Text('RIDING WITH SNOWLIVE', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFFBBBBBB)),)
+
                 ],
               ),
               Column(
                 children: [
-                  LoginButton(
-                    buttonText: 'Google로 로그인하기',
-                    logoAddress: 'assets/imgs/logos/logos_google.png',
-                    signInMethod: SignInMethod.google,
-                    buttonColor: Color(0xffFFFFFF),
-                    borderColor: Color(0xffDCDCDC),
-                    textColor: Colors.black,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      LoginButton(
+                        buttonText: 'Google로 로그인하기',
+                        logoAddress: 'assets/imgs/logos/logos_google.png',
+                        signInMethod: SignInMethod.google,
+                        buttonColor: Color(0xffFFFFFF),
+                        borderColor: Colors.transparent,
+                        textColor: Colors.black,
 
+                      ),
+                      SizedBox(
+                        width: 12,
+                      ),
+                      LoginButton(
+                        buttonText: 'Facebook으로 로그인하기',
+                        logoAddress: 'assets/imgs/logos/logos_facebook.png',
+                        signInMethod: SignInMethod.facebook,
+                        buttonColor: Color(0xff1877F2),
+                        borderColor: Colors.transparent,
+                        textColor: Colors.white,
+                      ),
+                      SizedBox(
+                        width: 12,
+                      ),
+                      (Platform.isIOS)
+                      ?LoginButton(
+                        buttonText: 'Apple로 로그인하기',
+                        logoAddress: 'assets/imgs/logos/logos_apple.png',
+                        signInMethod: SignInMethod.apple,
+                        buttonColor: Color(0xff111111),
+                        borderColor: Colors.transparent,
+                        textColor: Colors.white,
+                      )
+                      :SizedBox(width: 0,),
+                    ],
                   ),
                   SizedBox(
-                    height: 10,
-                  ),
-                  LoginButton(
-                    buttonText: 'Facebook으로 로그인하기',
-                    logoAddress: 'assets/imgs/logos/logos_facebook.png',
-                    signInMethod: SignInMethod.facebook,
-                    buttonColor: Color(0xff1877F2),
-                    borderColor: Colors.transparent,
-                    textColor: Colors.white,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  (Platform.isIOS)
-                  ?LoginButton(
-                    buttonText: 'Apple로 로그인하기',
-                    logoAddress: 'assets/imgs/logos/logos_apple.png',
-                    signInMethod: SignInMethod.apple,
-                    buttonColor: Color(0xff111111),
-                    borderColor: Colors.transparent,
-                    textColor: Colors.white,
-                  )
-                  :SizedBox(height: 0,),
-                  SizedBox(
-                    height:
-                    (Platform.isIOS)
-                    ? 24
-                    : 12,
+                    height: 40,
                   ),
                   GestureDetector(
                     onTap: (){
                       Get.to(()=>EmailLoginPage());
                     },
-                    child: Text('다른 방법으로 시작하기',
+                    child: Text('이메일로 로그인하기',
                     style: TextStyle(
                         fontSize: 14,
                         color: Color(0xFF949494),
                         fontWeight: FontWeight.normal,
-                    decoration: TextDecoration.underline
                     ),),
                   ),
                   SizedBox(
                    height: (Platform.isIOS)
-                        ? 24
-                        : 0,
+                        ? 64
+                        : 40,
                   )
                 ],
               ),

@@ -117,7 +117,7 @@ class FleaModel {
         timeStamp,
         required fleaCount,
         required resortNickname}) async {
-    await ref.collection('fleaMarket').doc('$uid#$fleaCount').set({
+    await ref.collection('fleaMarket').doc('$uid#$fleaCount').update({
       'displayName': displayName,
       'uid': uid,
       'profileImageUrl': profileImageUrl,
