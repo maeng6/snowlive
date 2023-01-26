@@ -42,14 +42,12 @@ class LoginButton extends StatelessWidget {
 
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
+        fixedSize: const Size(58, 58),
         padding: EdgeInsets.only(top: 15, bottom: 15),
         elevation: 0,
         backgroundColor: buttonColor,
-        shape: RoundedRectangleBorder(
+        shape: CircleBorder(
           side: BorderSide(color: borderColor!),
-          borderRadius: BorderRadius.all(
-            Radius.circular(6),
-          ),
         ),
       ),
       onPressed: () async {
@@ -114,21 +112,7 @@ class LoginButton extends StatelessWidget {
             '$logoAddress',
             height: 20,
             scale: 1,
-          ),
-          Container(
-            alignment: Alignment.center,
-            width: 220,
-            child: Text(
-              '$buttonText',
-              style: TextStyle(fontSize: 14, color: textColor, fontWeight: FontWeight.normal),
-            ),
-          ),
-          Opacity(
-              opacity: 0.0,
-              child: Image.asset(
-                '$logoAddress',
-                height: 20,
-              )),
+          )
         ],
       ),
     );
