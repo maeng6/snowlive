@@ -42,6 +42,7 @@ class _FleaMarket_My_ScreenState
     return FirebaseFirestore.instance
         .collection('fleaMarket')
         .where("uid", isEqualTo: "${_userModelController.uid}")
+        .orderBy('timeStamp', descending: true)
         .limit(500)
         .snapshots();
   }

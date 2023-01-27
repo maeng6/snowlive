@@ -44,6 +44,7 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
     return FirebaseFirestore.instance
         .collection('fleaChat')
         .where('chatUidSumList', arrayContainsAny: ['${_userModelController.uid}'])
+        .orderBy('timeStamp', descending: true)
         .limit(500)
         .snapshots();
   }
