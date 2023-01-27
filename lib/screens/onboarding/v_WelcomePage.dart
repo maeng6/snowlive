@@ -79,19 +79,27 @@ class _WelcomePageState extends State<WelcomePage> {
                 }
               },
             ),
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: 20),
+                child: Image.asset(
+                  'assets/imgs/icons/icon_onb_indicator1.png',
+                  scale: 4,
+                  width: 56,
+                  height: 8,
+                ),
+              ),
+            ],
             backgroundColor: Colors.white,
             elevation: 0.0,
             centerTitle: false,
             titleSpacing: 0,
-            title: Padding(
-              padding: const EdgeInsets.only(left: 16),
-              child: Text(
-                '',
-                style: GoogleFonts.notoSans(
-                    color: Color(0xFF111111),
-                    fontWeight: FontWeight.w900,
-                    fontSize: 23),
-              ),
+            title: Text(
+              '',
+              style: GoogleFonts.notoSans(
+                  color: Color(0xFF111111),
+                  fontWeight: FontWeight.w900,
+                  fontSize: 23),
             ),
           ),
         ),
@@ -104,7 +112,7 @@ class _WelcomePageState extends State<WelcomePage> {
               Column(
                 children: [
                   Text(
-                    '스노우라이브에 오신 것을 \n환영합니다.',
+                    '스노우라이브\n서비스 이용 동의',
                     style:
                         TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),

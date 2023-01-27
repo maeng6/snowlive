@@ -87,9 +87,13 @@ class _FirstPageState extends State<FirstPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Image.asset('assets/imgs/icons/icon_onboarding.png',
+                  scale: 4, width: 73, height: 73,),
                   Text(
-                    '스노우라이브에 오신 것을 \n환영합니다.',
+                    '스노우라이브 시작 전\n간단한 정보를 입력해주세요.',
                     style:
                         TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
@@ -99,7 +103,7 @@ class _FirstPageState extends State<FirstPage> {
                 height: 10,
               ),
               Text(
-                '스노우라이브의 모든 기능을 편리하게 사용하시기 위해\n아래의 약관동의 및 회원가입을 진행해 주세요.',
+                '몇 가지 간단한 정보를 입력해 주시면,\n나에게 더 맞는 스노우라이브를 이용하실 수 있습니다.',
                 style: TextStyle(
                   color: Color(0xff949494),
                   fontSize: 14,

@@ -11,6 +11,8 @@ import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/screens/login/v_loginpage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
+import '../screens/onboarding/v_FirstPage.dart';
+
 enum SignInMethod { google, facebook, apple }
 
 class LoginButton extends StatelessWidget {
@@ -61,7 +63,7 @@ class LoginButton extends StatelessWidget {
                 print('신규회원 온보딩코스 진입');
                 CustomFullScreenDialog.cancelDialog();
                 print('Google 로그인');
-                Get.offAll(() => WelcomePage());
+                Get.offAll(() => FirstPage());
               } catch(e){
             }}
             else{
@@ -77,7 +79,7 @@ class LoginButton extends StatelessWidget {
               print('신규회원 온보딩코스 진입');
               CustomFullScreenDialog.cancelDialog();
               print('Google 로그인');
-              Get.offAll(() => WelcomePage());
+              Get.offAll(() => FirstPage());
             } catch(e){
             }}
             else{
@@ -92,7 +94,7 @@ class LoginButton extends StatelessWidget {
               CustomFullScreenDialog.cancelDialog();
               print(auth.currentUser!.providerData[0].providerId);
               print('Apple 로그인');
-              Get.offAll(() => WelcomePage());
+              Get.offAll(() => FirstPage());
             }catch(e){
             }}
             else {

@@ -70,6 +70,17 @@ class _SetNicknameState extends State<SetNickname> {
                 Navigator.pop(context);
               },
             ),
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: 20),
+                child: Image.asset(
+                  'assets/imgs/icons/icon_onb_indicator2.png',
+                  scale: 4,
+                  width: 56,
+                  height: 8,
+                ),
+              ),
+            ],
             backgroundColor: Colors.white,
             elevation: 0.0,
             centerTitle: false,

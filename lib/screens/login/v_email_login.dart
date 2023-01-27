@@ -11,6 +11,8 @@ import 'package:snowlive3/screens/login/v_loginpage.dart';
 import 'package:snowlive3/screens/onboarding/v_WelcomePage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
+import '../onboarding/v_FirstPage.dart';
+
 class EmailLoginPage extends StatefulWidget {
   const EmailLoginPage({Key? key}) : super(key: key);
 
@@ -189,7 +191,7 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                              CustomFullScreenDialog.cancelDialog();
                              if(credential.user != null){
                             print(auth.currentUser!.providerData[0].providerId);
-                                Get.offAll(()=>WelcomePage());
+                                Get.offAll(()=>FirstPage());
                               }
                             }catch(e){
                               CustomFullScreenDialog.cancelDialog();
