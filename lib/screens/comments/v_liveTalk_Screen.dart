@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/comments/v_reply_Screen.dart';
 import '../../controller/vm_commentController.dart';
@@ -450,7 +449,7 @@ class _CommentTile_liveTalk_resortHomeState
                                                   (chatDocs[index]['uid'] != _userModelController.uid)
                                                       ? GestureDetector(
                                                           onTap: () =>
-                                                              showMaterialModalBottomSheet(
+                                                              showModalBottomSheet(
                                                                   enableDrag: false,
                                                                   context: context,
                                                                   builder:
@@ -604,7 +603,7 @@ class _CommentTile_liveTalk_resortHomeState
                                                         )
                                                       : GestureDetector(
                                                           onTap: () =>
-                                                              showMaterialModalBottomSheet(
+                                                              showModalBottomSheet(
                                                                   enableDrag:
                                                                       false,
                                                                   context:
@@ -639,7 +638,7 @@ class _CommentTile_liveTalk_resortHomeState
                                                                                 //selected: _isSelected[index]!,
                                                                                 onTap: () async {
                                                                                   Navigator.pop(context);
-                                                                                  showMaterialModalBottomSheet(
+                                                                                  showModalBottomSheet(
                                                                                       context: context,
                                                                                       builder: (context) {
                                                                                         return Container(

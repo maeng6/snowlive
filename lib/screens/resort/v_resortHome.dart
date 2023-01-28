@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
 import 'package:snowlive3/controller/vm_replyModelController.dart';
 import 'package:snowlive3/model/m_resortModel.dart';
@@ -198,7 +197,7 @@ class _ResortHomeState extends State<ResortHome>
                                             ),
                                           ),
                                           onTap: () {
-                                            showMaterialModalBottomSheet(
+                                            showModalBottomSheet(
                                                 enableDrag: false,
                                                 context: context,
                                                 builder: (context) {

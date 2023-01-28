@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
 import 'package:snowlive3/screens/onboarding/v_favoriteResort.dart';
 import '../../controller/vm_userModelController.dart';
@@ -131,7 +130,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                 ? Center(
                     child: GestureDetector(
                       onTap: () {
-                        showMaterialModalBottomSheet(
+                        showModalBottomSheet(
                           context: context,
                           builder: (context) => Container(
                             height: 249,
@@ -298,7 +297,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                 : Center(
                     child: GestureDetector(
                       onTap: () {
-                        showMaterialModalBottomSheet(
+                        showModalBottomSheet(
                           context: context,
                           builder: (context) => Container(
                             height: 249,

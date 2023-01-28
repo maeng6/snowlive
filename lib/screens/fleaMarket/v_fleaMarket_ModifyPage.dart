@@ -1,15 +1,10 @@
 import 'dart:io';
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/model/m_fleaMarketModel.dart';
-import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
-import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Screen.dart';
 import '../../controller/vm_imageController.dart';
 import '../../controller/vm_userModelController.dart';
@@ -395,7 +390,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                             ),
                           Obx(() => TextButton(
                               onPressed: () {
-                                showMaterialModalBottomSheet(
+                                showModalBottomSheet(
                                     enableDrag: false,
                                     context: context,
                                     builder: (context) {
@@ -535,7 +530,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                             ),
                           Obx(() => TextButton(
                               onPressed: () {
-                                showMaterialModalBottomSheet(
+                                showModalBottomSheet(
                                     enableDrag: false,
                                     context: context,
                                     builder: (context) {
@@ -599,7 +594,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                             ),
                           Obx(() =>  TextButton(
                               onPressed: () {
-                                showMaterialModalBottomSheet(
+                                showModalBottomSheet(
                                     enableDrag: false,
                                     context: context,
                                     builder: (context) {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
 
 import '../../controller/vm_loginController.dart';
@@ -39,7 +38,7 @@ class setting_moreTab extends StatelessWidget {
             contentPadding: EdgeInsets.symmetric(horizontal: 16),
             minVerticalPadding: 20,
             onTap: () {
-              showMaterialModalBottomSheet(
+              showModalBottomSheet(
                   context: context,
                   builder: (context) {
                     return Container(

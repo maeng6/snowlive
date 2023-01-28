@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
@@ -110,7 +109,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                 ? Center(
                     child: GestureDetector(
                       onTap: () {
-                        showMaterialModalBottomSheet(
+                        showModalBottomSheet(
                           context: context,
                           builder: (context) => Container(
                             height: 200,
@@ -268,7 +267,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                 : Center(
                     child: GestureDetector(
                       onTap: () {
-                        showMaterialModalBottomSheet(
+                        showModalBottomSheet(
                           context: context,
                           builder: (context) => Container(
                             height: 200,
@@ -480,7 +479,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  showMaterialModalBottomSheet(
+                  showModalBottomSheet(
                       context: context,
                       builder:  (context) => Container(
                         height: 200,
