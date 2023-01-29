@@ -29,6 +29,13 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
   ];
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
+
+  @override
   void setState(VoidCallback fn) {
     // TODO: implement setState
     super.setState(fn);

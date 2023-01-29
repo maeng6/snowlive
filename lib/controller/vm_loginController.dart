@@ -117,7 +117,11 @@ class LoginController extends GetxController {
       'fleaCount' : 0,
       'repoUidList' : List.empty(),
       'commentCount' : 0,
-      'resortNickname' : ''
+      'resortNickname' : '',
+      'phoneAuth' : false,
+      'phoneNum' : '',
+      'resistDate' : Timestamp.now(),
+      'likeUidList' : []
     });
 
 

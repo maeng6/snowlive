@@ -13,7 +13,11 @@ class UserModel {
     this.exist,
     this.commentCount,
     this.fleaCount,
-    this.resortNickname
+    this.resortNickname,
+    this.phoneAuth,
+    this.phoneNum,
+    this.likeUidList,
+    this.resistDate
   });
 
   final auth = FirebaseAuth.instance;
@@ -29,6 +33,10 @@ class UserModel {
   bool? exist;
   DocumentReference? reference;
   String? resortNickname;
+  bool? phoneAuth;
+  String? phoneNum;
+  List? likeUidList;
+  Timestamp? resistDate;
 
   UserModel.fromJson(dynamic json, this.reference) {
       uid = json['uid'];
@@ -41,7 +49,10 @@ class UserModel {
       fleaCount = json['fleaCount'];
       exist = json['exist'];
       resortNickname = json['resortNickname'];
-
+      phoneAuth = json['phoneAuth'];
+      phoneNum = json['phoneNum'];
+      likeUidList = json['likeUidList'];
+      resistDate = json['resistDate'];
 
   }
 

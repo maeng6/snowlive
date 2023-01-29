@@ -483,8 +483,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                     CustomFullScreenDialog.showDialog();
                     try{
                       if(_fleaModelController.uid != _userModelController.uid){
-                        await _userModelController.updatefleaChatUid(_fleaModelController.uid);
-                        await _userModelController.fleaChatCountUpdate(_userModelController.uid);
+                        await _fleaChatModelController.setNewChatUid(_fleaModelController.uid);
                         await _fleaChatModelController.createChatroom(
                             uid: _userModelController.uid,
                             otherUid: _fleaModelController.uid,

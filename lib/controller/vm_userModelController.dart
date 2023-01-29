@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,6 +27,9 @@ class UserModelController extends GetxController{
   RxList? _fleaChatUidList=[].obs;
   RxString? _resortNickname =''.obs;
   RxInt? _fleaChatCount = 0.obs;
+  RxString? _phoneNum=''.obs;
+  RxBool? _phoneAuth=false.obs;
+  Timestamp? _resistDate;
 
 
   String? get uid => _uid!.value;
@@ -42,13 +46,20 @@ class UserModelController extends GetxController{
   List? get fleaChatUidList => _fleaChatUidList;
   String? get resortNickname => _resortNickname!.value;
   int? get fleaChatCount => _fleaChatCount!.value;
+  String? get phoneNum => _phoneNum!.value;
+  bool? get phoneAuth => _phoneAuth!.value;
+  Timestamp? get resistDate => _resistDate;
 
 
   @override
   void onInit()  async{
     // TODO: implement onInit
     String? loginUid = await FlutterSecureStorage().read(key: 'uid');
-    getCurrentUser(loginUid);
+      getCurrentUser(loginUid).catchError((e){
+        setNewField();
+      }).catchError((){
+        print('로그인 전');
+      });
     super.onInit();
   }
 
@@ -72,9 +83,28 @@ class UserModelController extends GetxController{
       this._fleaCount!.value = userModel.fleaCount!;
       this._profileImageUrl!.value = userModel.profileImageUrl!;
       this._resortNickname!.value = userModel.resortNickname!;
+      this._phoneNum!.value = userModel.phoneNum!;
+      this._phoneAuth!.value = userModel.phoneAuth!;
+      this._likeUidList!.value = userModel.likeUidList!;
+      this._resistDate = userModel.resistDate!;
       await prefs.setInt('favoriteResort', userModel.favoriteResort!);
     } else {}
   }
+
+  Future<void> setNewField() async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'fleaCount': 0,
+      'phoneAuth' : false,
+      'phoneNum' : '',
+      'likeUidList' : [],
+      'resistDate' : Timestamp.fromDate(DateTime(1990))
+    });
+    await getCurrentUser(auth.currentUser!.uid);
+  }
+
+
 
   Future<void> updateProfileImageUrl(url) async {
     final User? user = auth.currentUser;
@@ -148,39 +178,6 @@ class UserModelController extends GetxController{
 
   }
 
-  Future<void> fleaChatCountUpdate(uid) async {
-
-    try {
-      DocumentReference<Map<String, dynamic>> documentReference =
-      ref.collection('user').doc(uid);
-
-      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-      await documentReference.get();
-
-      int fleaChatCount = documentSnapshot.get('fleaChatCount');
-      int fleaChatCountPlus = fleaChatCount + 1;
-
-      await ref.collection('user').doc(uid).update({
-        'fleaChatCount': fleaChatCountPlus,
-      });
-      this._fleaChatCount!.value = fleaChatCountPlus;
-    }catch(e){
-      await ref.collection('user').doc(uid).update({
-        'fleaChatCount': 1,
-      });
-      DocumentReference<Map<String, dynamic>> documentReference =
-      ref.collection('user').doc(uid);
-
-      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-      await documentReference.get();
-
-      int fleaChatCount = documentSnapshot.get('fleaChatCount');
-
-      this._fleaChatCount!.value = fleaChatCount;
-
-    }
-
-  }
 
 
 
@@ -205,19 +202,6 @@ class UserModelController extends GetxController{
     await documentReference.get();
     List repoUidList = documentSnapshot.get('repoUidList');
     this._repoUidList!.value = repoUidList;
-  }
-
-  Future<void> updatefleaChatUid(uid) async {
-    final  userMe = auth.currentUser!.uid;
-    await ref.collection('user').doc(userMe).update({
-      'fleaChatUidList': FieldValue.arrayUnion([uid])
-    });
-    DocumentReference<Map<String, dynamic>> documentReference =
-    ref.collection('user').doc(userMe);
-    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-    await documentReference.get();
-    List fleaChatUidList = documentSnapshot.get('fleaChatUidList');
-    this._fleaChatUidList!.value = fleaChatUidList;
   }
 
   Future<void> updatefleaChatUidList() async {
@@ -313,3 +297,50 @@ class UserModelController extends GetxController{
     await getCurrentUser(auth.currentUser!.uid);
   } //선택한 리조트를 파베유저문서에 업데이트
 }
+
+// Future<void> updatefleaChatUid(uid) async {
+//   final  userMe = auth.currentUser!.uid;
+//   await ref.collection('user').doc(userMe).update({
+//     'fleaChatUidList': FieldValue.arrayUnion([uid])
+//   });
+//   DocumentReference<Map<String, dynamic>> documentReference =
+//   ref.collection('user').doc(userMe);
+//   final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+//   await documentReference.get();
+//   List fleaChatUidList = documentSnapshot.get('fleaChatUidList');
+//   this._fleaChatUidList!.value = fleaChatUidList;
+// }
+
+// Future<void> fleaChatCountUpdate(uid) async {
+//
+//   try {
+//     DocumentReference<Map<String, dynamic>> documentReference =
+//     ref.collection('user').doc(uid);
+//
+//     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+//     await documentReference.get();
+//
+//     int fleaChatCount = documentSnapshot.get('fleaChatCount');
+//     int fleaChatCountPlus = fleaChatCount + 1;
+//
+//     await ref.collection('user').doc(uid).update({
+//       'fleaChatCount': fleaChatCountPlus,
+//     });
+//     this._fleaChatCount!.value = fleaChatCountPlus;
+//   }catch(e){
+//     await ref.collection('user').doc(uid).update({
+//       'fleaChatCount': 1,
+//     });
+//     DocumentReference<Map<String, dynamic>> documentReference =
+//     ref.collection('user').doc(uid);
+//
+//     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+//     await documentReference.get();
+//
+//     int fleaChatCount = documentSnapshot.get('fleaChatCount');
+//
+//     this._fleaChatCount!.value = fleaChatCount;
+//
+//   }
+//
+// }

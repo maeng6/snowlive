@@ -18,6 +18,7 @@ class FleaChatModel {
         this.myUid,
         this.chatUidSumList,
         this.fixMyUid,
+        this.chatRoomName,
       });
 
   String? displayName;
@@ -37,6 +38,7 @@ class FleaChatModel {
   String? myUid;
   List? chatUidSumList;
   String? fixMyUid;
+  String? chatRoomName;
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseFirestore.instance;
@@ -58,6 +60,7 @@ class FleaChatModel {
     myUid = json['myUid'];
     chatUidSumList = json['chatUidSumList'];
     fixMyUid = json['fixMyUid'];
+    chatRoomName = json['chatRoomName'];
 
   }
 
@@ -138,13 +141,14 @@ class FleaChatModel {
   }
 
   Future<void> createChatroom(
-      {uid, otherUid, fixMyUid, timeStamp,fleaChatCount, displayName, resortNickname, profileImageUrl,
+      { uid, otherUid, fixMyUid, timeStamp,fleaChatCount, displayName, resortNickname, profileImageUrl,
         otherProfileImageUrl,otherResortNickname,otherDisplayName }) async{
 
     await ref
         .collection('fleaChat')
         .doc('$uid#$otherUid')
         .set({
+      'chatRoomName' : '$uid#$otherUid',
       'timeStamp': Timestamp.now(),
       'uid': uid,
       'otherUid' : otherUid,

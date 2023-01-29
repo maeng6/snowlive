@@ -24,6 +24,7 @@ class FleaChatModelController extends GetxController {
   RxList? _chatUidList = [].obs;
   RxList? _chatUidSumList = [].obs;
   RxString? _fixMyUid = ''.obs;
+  RxString? _chatRoomName = ''.obs;
 
 
   String? get uid => _uid!.value;
@@ -42,6 +43,7 @@ class FleaChatModelController extends GetxController {
   List? get chatUidSumList => _chatUidSumList;
   String? get myUid => _myUid.value;
   String? get fixMyUid => _fixMyUid!.value;
+  String? get chatRoomName => _chatRoomName!.value;
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
@@ -168,7 +170,7 @@ class FleaChatModelController extends GetxController {
         required displayName,
         required profileImageUrl,
         required resortNickname,
-        required fixMyUid
+        required fixMyUid,
       }) async {
     await FleaChatModel().createChatroom(
         fleaChatCount: fleaChatCount,
@@ -181,7 +183,7 @@ class FleaChatModelController extends GetxController {
         displayName: displayName,
         profileImageUrl: profileImageUrl,
         resortNickname: resortNickname,
-        fixMyUid: fixMyUid
+        fixMyUid: fixMyUid,
     );
     FleaChatModel fleaChatModel =
     await FleaChatModel().getFleaChatModel(uid, otherUid);
@@ -196,8 +198,35 @@ class FleaChatModelController extends GetxController {
     this._profileImageUrl!.value = fleaChatModel.profileImageUrl!;
     this._resortNickname!.value = fleaChatModel.resortNickname!;
     this._fixMyUid!.value = fleaChatModel.fixMyUid!;
+    this._chatRoomName!.value = fleaChatModel.chatRoomName!;
 
   }
+
+  Future<void> setNewChatUid(otherUid) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).collection('$uid#$otherUid').doc(otherUid).set({
+      'chatCount': 0,
+    });
+    await ref.collection('user').doc(otherUid).collection('$uid#$otherUid').doc(uid).set({
+      'chatCount': 0,
+    });
+  }
+
+  Future<void> deleteChatUid({required chatRoomName,required myUid,required otherUid}) async {
+    try {
+      CollectionReference myChatUidColRef = FirebaseFirestore
+          .instance.collection('user').doc(myUid).collection(chatRoomName);
+      await myChatUidColRef.doc(otherUid).delete();
+      CollectionReference otherChatUidColRef = FirebaseFirestore
+          .instance.collection('user').doc(otherUid).collection(chatRoomName);
+      await otherChatUidColRef.doc(otherUid).delete();
+    }catch(e){
+      CustomFullScreenDialog.cancelDialog();
+    }
+  }
+
+
 
   Future<void> updateChatUidSumList(uid) async {
     final  userMe = auth.currentUser!.uid;
