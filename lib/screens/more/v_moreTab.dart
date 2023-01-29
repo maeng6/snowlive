@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:snowlive3/screens/fleaMarket/v_phone_Auth_Screen.dart';
 import 'package:snowlive3/screens/more/v_contactUsPage.dart';
 import 'package:snowlive3/screens/more/v_favoriteResort_moreTab.dart';
 import 'package:snowlive3/screens/more/v_licenseListPage.dart';
@@ -676,6 +677,25 @@ class _MoreTabState extends State<MoreTab> {
                 ),
               ),
               SizedBox(height: 36),
+              ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                minVerticalPadding: 20,
+                onTap: () {
+                  Get.to(() => PhoneAuthScreen());
+                },
+                title: Text(
+                  '테스트',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: Color(0xFF111111)),
+                ),
+                trailing: Image.asset(
+                  'assets/imgs/icons/icon_arrow_g.png',
+                  height: 24,
+                  width: 24,
+                ),
+              ),
             ],
           ),
         ));
