@@ -32,6 +32,7 @@ class ResortModelController extends GetxController{
   RxString? _resortSky=''.obs;
   dynamic _weatherColors;
   dynamic _weatherIcons;
+  RxString? _resortLogo=''.obs;
 
 
   Future<void> getSelectedResort(int? resortNum) async{
@@ -65,6 +66,7 @@ class ResortModelController extends GetxController{
           this._resortPty!.value, this._resortSky!.value);
       this._weatherIcons = weatherModel.getWeatherIcon(
           this._resortPty!.value, this._resortSky!.value);
+      this._resortLogo!.value = selectedResort.resortLogo!;
     }catch(e){
     }
     isLoading.value = false;
@@ -88,6 +90,7 @@ class ResortModelController extends GetxController{
   String? get resortMinTemp => _resortMinTemp!.value;
   String? get resortPty => _resortPty!.value;
   String? get resortSky => _resortSky!.value;
+  String? get resortLogo => _resortLogo!.value;
   dynamic get weatherColors => _weatherColors;
   dynamic get weatherIcons => _weatherIcons;
 

@@ -75,7 +75,7 @@ class _WebPageState extends State<WebPage> {
       ),
 
       body:Padding(
-        padding:  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),
+        padding:  EdgeInsets.only(top: _statusBarSize+58),
         child: WebView(
           initialUrl: '${widget.url}',
           javascriptMode: JavascriptMode.unrestricted,

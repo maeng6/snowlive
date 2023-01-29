@@ -13,7 +13,7 @@ class ResortTab extends StatelessWidget {
     Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFFF1F1F3),
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(58),
@@ -29,7 +29,7 @@ class ResortTab extends StatelessWidget {
               Get.back();
             },
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: Color(0xFFF1F1F3),
           elevation: 0.0,
           titleSpacing: 0,
           title: Text(
@@ -42,7 +42,7 @@ class ResortTab extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: _statusBarSize, left: 16, right: 16),
+        padding: EdgeInsets.only(top: _statusBarSize, left: 30, right: 30),
         child: resortListView(_size),
       ),
     );
@@ -54,126 +54,58 @@ class ResortTab extends StatelessWidget {
       itemCount: resortList.length,
       itemBuilder: (BuildContext context, int index) {
         return Container(
-          height: 164,
+          width: 330,
+          height: 345,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
-            color: Color(0xffF2F3F4),
+            borderRadius: BorderRadius.circular(18),
+            color: Color(0xffFFFFFF),
           ),
-          padding: EdgeInsets.only(left: 20, right: 20, top: 24, bottom: 24),
+          padding: EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Image.asset(
+                    '${resortLogoList[index]}',
+                    scale: 4,
+                    width: 200,
+                    height: 68,
+                  ),
+                  SizedBox(
+                    height: 18,
+                  ),
+                  Text(
+                    '${resortNameList[index]}',
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF111111)),
+                  ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${resortNameList[index]}',
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF111111)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 2),
-                          child: Text(
-                            '${resortAddressList[index]}',
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w300,
-                                color: Color(0xFF949494)),
-                          ),
-                        ),
-                      ],
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      '${resortAddressList[index]}',
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w300,
+                          color: Color(0xFF949494)),
                     ),
                   ),
                 ],
               ),
-              SizedBox(
-                height: 16,
-              ),
-              Row(
+              Column(
                 children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      if (webcamUrlList[index]!.isNotEmpty) {
-                        Get.to(
-                          () => WebPage(
-                            url: '${webcamUrlList[index]}',
-                          ),
-                        );
-                      } else {
-                        null;
-                      }
-                    },
-                    child: Text(
-                      '실시간 웹캠',
-                      style: TextStyle(
-                          color: (webcamUrlList[index]!.isNotEmpty)
-                              ? Color(0xFF555555)
-                              : Color(0xFF949494).withOpacity(0.4),
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                        backgroundColor: (webcamUrlList[index]!.isNotEmpty)
-                            ? Colors.white
-                            : Color(0xffDFDFDF).withOpacity(0.5),
-                        side: BorderSide(color: Colors.transparent),
-                        minimumSize: Size(_size.width / 3 - 29, 40),
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(6)))),
-                  ),
                   SizedBox(
-                    width: 8,
-                  ),
-                  OutlinedButton(
-                    onPressed: () {
-                      if (slopeUrlList[index]!.isNotEmpty) {
-                        Get.to(
-                          () => WebPage(
-                            url: '${slopeUrlList[index]}',
-                          ),
-                        );
-                      } else {
-                        null;
-                      }
-                    },
-                    child: Text(
-                      '슬로프 현황',
-                      style: TextStyle(
-                          color: (slopeUrlList[index]!.isNotEmpty)
-                              ? Color(0xFF555555)
-                              : Color(0xFF949494).withOpacity(0.4),
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: (slopeUrlList[index]!.isNotEmpty)
-                            ? Colors.white
-                            : Color(0xffDFDFDF).withOpacity(0.5),
-                        side: BorderSide(color: Colors.transparent),
-                        minimumSize: Size(_size.width / 3 - 29, 40),
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(6)))),
-                  ),
-                  SizedBox(
-                    width: 8,
+                    height: 48,
                   ),
                   OutlinedButton(
                     onPressed: () {
                       Get.to(
-                        () => WebPage(
+                            () => WebPage(
                           url: '${naverUrlList[index]}',
                         ),
                       );
@@ -181,19 +113,101 @@ class ResortTab extends StatelessWidget {
                     child: Text(
                       '네이버 날씨',
                       style: TextStyle(
-                          color: Color(0xFF555555),
-                          fontSize: 13,
+                          color: Color(0xFF3D83ED),
+                          fontSize: 15,
                           fontWeight: FontWeight.bold),
                     ),
                     style: ElevatedButton.styleFrom(
                         side: BorderSide(color: Colors.transparent),
-                        minimumSize: Size(_size.width / 3 - 30, 40),
+                        minimumSize: Size(_size.width, 44),
                         padding: EdgeInsets.symmetric(horizontal: 10),
-                        backgroundColor: Colors.white,
+                        backgroundColor: Color(0xFFD8E7FD),
                         shape: RoundedRectangleBorder(
                             borderRadius:
-                                BorderRadius.all(Radius.circular(6)))),
-                  )
+                            BorderRadius.all(Radius.circular(6)))),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        OutlinedButton(
+                          onPressed: () {
+                            if (webcamUrlList[index]!.isNotEmpty) {
+                              Get.to(
+                                () => WebPage(
+                                  url: '${webcamUrlList[index]}',
+                                ),
+                              );
+                            } else {
+                              null;
+                            }
+                          },
+                          child: Text(
+                            '실시간 웹캠',
+                            style: TextStyle(
+                                color: (webcamUrlList[index]!.isNotEmpty)
+                                    ? Color(0xFF777777)
+                                    : Color(0xFFc8c8c8),
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                              backgroundColor: (webcamUrlList[index]!.isNotEmpty)
+                                  ? Colors.white
+                                  : Colors.white,
+                              side: BorderSide(color: Colors.transparent),
+                              minimumSize: Size(_size.width / 2 - 68, 44),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(6)))),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          width: 1,
+                          height: 20,
+                          color: Color(0xFFDEDEDE),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        OutlinedButton(
+                          onPressed: () {
+                            if (slopeUrlList[index]!.isNotEmpty) {
+                              Get.to(
+                                () => WebPage(
+                                  url: '${slopeUrlList[index]}',
+                                ),
+                              );
+                            } else {
+                              null;
+                            }
+                          },
+                          child: Text(
+                            '슬로프 현황',
+                            style: TextStyle(
+                                color: (slopeUrlList[index]!.isNotEmpty)
+                                    ? Color(0xFF777777)
+                                    : Color(0xFFc8c8c8),
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: (slopeUrlList[index]!.isNotEmpty)
+                                  ? Colors.white
+                                  : Colors.white,
+                              side: BorderSide(color: Colors.transparent),
+                              minimumSize: Size(_size.width / 2 - 68, 44),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(6)))),
+                        ),
+
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -202,7 +216,7 @@ class ResortTab extends StatelessWidget {
       },
       separatorBuilder: (BuildContext context, int index) {
         return Container(
-          height: 14,
+          height: 18,
         );
       },
     );

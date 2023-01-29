@@ -3,13 +3,12 @@ import 'package:jiffy/jiffy.dart';
 
 class FleaChatModel {
   FleaChatModel(
-      {this.displayName,
-        this.uid,
-        this.profileImageUrl,
+      {this.myDisplayName,
+        this.myProfileImageUrl,
         this.comment,
         this.timeStamp,
         this.commentCount,
-        this.resortNickname,
+        this.myResortNickname,
         this.fleaChatCount,
         this.otherUid,
         this.otherProfileImageUrl,
@@ -21,15 +20,14 @@ class FleaChatModel {
         this.chatRoomName,
       });
 
-  String? displayName;
-  String? uid;
-  String? profileImageUrl;
+  String? myDisplayName;
+  String? myProfileImageUrl;
   int? commentCount;
   String? comment;
   DocumentReference? reference;
   Timestamp? timeStamp;
   late String agoTime;
-  String? resortNickname;
+  String? myResortNickname;
   String? otherUid;
   int? fleaChatCount;
   String? otherProfileImageUrl;
@@ -46,122 +44,105 @@ class FleaChatModel {
   //TODO : 날짜다르면 댓글 리셋
 
   FleaChatModel.fromJson(dynamic json, this.reference) {
-    comment = json['comment'];
-    otherUid = json['otherUid'];
-    fleaChatCount = json['fleaChatCount'];
-    displayName = json['displayName'];
-    profileImageUrl = json['profileImageUrl'];
-    timeStamp = json['timeStamp'];
-    uid = json['uid'];
-    resortNickname = json['resortNickname'];
-    otherProfileImageUrl = json['otherProfileImageUrl'];
-    otherResortNickname = json['otherResortNickname'];
-    otherDisplayName = json['otherDisplayName'];
-    myUid = json['myUid'];
-    chatUidSumList = json['chatUidSumList'];
-    fixMyUid = json['fixMyUid'];
-    chatRoomName = json['chatRoomName'];
+
+    this.chatRoomName = json['chatRoomName'];
+   this.timeStamp = json['timeStamp'];
+   this.otherUid = json['otherUid'];
+   this.otherProfileImageUrl = json['otherProfileImageUrl'];
+   this.otherResortNickname = json['otherResortNickname'];
+   this.otherDisplayName = json['otherDisplayName'];
+   this.myDisplayName = json['myDisplayName'];
+   this.myProfileImageUrl = json['myProfileImageUrl'];
+   this.myResortNickname = json['resortNickname'];
+   this.myUid = json['myUid'];
 
   }
 
   FleaChatModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
       : this.fromJson(snapshot.data(), snapshot.reference);
 
-  Future<FleaChatModel> getFleaChatModel(String uid,String otherUid) async {
+  Future<FleaChatModel> getCuyrrentFleaChatInfo(chatRoomName) async {
     DocumentReference<Map<String, dynamic>> documentReference = ref
         .collection('fleaChat')
-        .doc('$uid#$otherUid');
+        .doc(chatRoomName);
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
     await documentReference.get();
     FleaChatModel fleaChatModel = FleaChatModel.fromSnapShot(documentSnapshot);
     return fleaChatModel;
   }
 
-  Future<void> uploadComment(
-      {displayName, uid, myUid, fixMyUid, commentCount, profileImageUrl, comment, timeStamp,fleaChatCount, resortNickname}) async{
-
-    await ref
-        .collection('fleaChat')
-        .doc('$myUid#$uid')
-        .collection('messege')
-        .doc('$fixMyUid$commentCount')
-        .set({
-      'comment': comment,
-      'commentCount' : commentCount,
-      'displayName': displayName,
-      'profileImageUrl': profileImageUrl,
-      'timeStamp': timeStamp,
-      'myUid': myUid,
-      'fleaChatCount' : fleaChatCount,
-      'resortNickname' : resortNickname,
-      'fixMyUid' : fixMyUid,
-    });
-  }
-
-
-
-  Future<void> uploadCommentBuy(
-      {displayName, uid, myUid, commentCount, profileImageUrl, comment, timeStamp,fleaChatCount, resortNickname}) async{
-
-    await ref
-        .collection('fleaChat')
-        .doc('$myUid#$uid')
-        .collection('messege')
-        .doc('$myUid$commentCount')
-        .set({
-      'comment': comment,
-      'commentCount' : commentCount,
-      'displayName': displayName,
-      'profileImageUrl': profileImageUrl,
-      'timeStamp': timeStamp,
-      'myUid': myUid,
-      'fleaChatCount' : fleaChatCount,
-      'resortNickname' : resortNickname,
-    });
-  }
-
-  Future<void> uploadCommentSell(
-      {displayName, uid, myUid, commentCount, profileImageUrl, comment, timeStamp,fleaChatCount, resortNickname}) async{
-
-    await ref
-        .collection('fleaChat')
-        .doc('$uid#$myUid')
-        .collection('messege')
-        .doc('$myUid$commentCount')
-        .set({
-      'comment': comment,
-      'commentCount' : commentCount,
-      'displayName': displayName,
-      'profileImageUrl': profileImageUrl,
-      'timeStamp': timeStamp,
-      'myUid': myUid,
-      'fleaChatCount' : fleaChatCount,
-      'resortNickname' : resortNickname,
-    });
-  }
 
   Future<void> createChatroom(
-      { uid, otherUid, fixMyUid, timeStamp,fleaChatCount, displayName, resortNickname, profileImageUrl,
-        otherProfileImageUrl,otherResortNickname,otherDisplayName }) async{
+      {required myUid,required otherUid,required myDisplayName,required myResortNickname,required myProfileImageUrl,
+        required otherProfileImageUrl,required otherResortNickname,required otherDisplayName }) async{
+
+    List chatUidSumList =  [myUid,otherUid];
 
     await ref
         .collection('fleaChat')
-        .doc('$uid#$otherUid')
+        .doc('$myUid#$otherUid')
         .set({
-      'chatRoomName' : '$uid#$otherUid',
+      'chatRoomName' : '$myUid#$otherUid',
       'timeStamp': Timestamp.now(),
-      'uid': uid,
+      'myUid': myUid,
       'otherUid' : otherUid,
-      'fleaChatCount' : fleaChatCount,
       'otherProfileImageUrl' : otherProfileImageUrl,
       'otherResortNickname' : otherResortNickname,
       'otherDisplayName' : otherDisplayName,
-      'displayName' : displayName,
-      'profileImageUrl' : profileImageUrl,
-      'resortNickname' : resortNickname,
-      'fixMyUid' : fixMyUid
+      'myDisplayName' : myDisplayName,
+      'myProfileImageUrl' : myProfileImageUrl,
+      'resortNickname' : myResortNickname,
+      'chatUidSumList' : chatUidSumList
+    });
+    await getCuyrrentFleaChatInfo('$myUid#$otherUid');
+
+  }
+
+  Future<void> uploadChat(
+      {required myDisplayName,
+      required myUid,
+      required otherUid,
+      required myProfileImageUrl,
+      required comment,
+      required myResortNickname,
+      required chatCount,
+      required chatRoomName,
+        required timeStamp
+      }) async{
+    await ref
+        .collection('fleaChat')
+        .doc(chatRoomName)
+        .collection(myUid)
+        .doc('$myUid$chatCount')
+        .set({
+      'myDisplayName' : myDisplayName,
+      'senderUid' : myUid,
+      'receiverUid' : otherUid,
+      'myProfileImageUrl' : myProfileImageUrl,
+      'comment' : comment,
+      'myResortNickname' : myResortNickname,
+      'chatCount' : chatCount,
+      'chatRoomName' : chatRoomName,
+      'timeStamp' : timeStamp
+    });
+    await ref
+        .collection('fleaChat')
+        .doc(chatRoomName)
+        .collection(otherUid)
+        .doc('$myUid$chatCount')
+        .set({
+      'myDisplayName' : myDisplayName,
+      'senderUid' : myUid,
+      'receiverUid' : otherUid,
+      'myProfileImageUrl' : myProfileImageUrl,
+      'comment' : comment,
+      'myResortNickname' : myResortNickname,
+      'chatCount' : chatCount,
+      'chatRoomName' : chatRoomName,
+      'timeStamp' : timeStamp
     });
   }
+
 
 
   String getAgo(Timestamp timestamp) {
@@ -170,5 +151,45 @@ class FleaChatModel {
     Jiffy.locale('ko');
     return agoTime;
   }
+
+  // Future<void> uploadCommentBuy(
+  //     {displayName, uid, myUid, commentCount, profileImageUrl, comment, timeStamp,fleaChatCount, resortNickname}) async{
+  //
+  //   await ref
+  //       .collection('fleaChat')
+  //       .doc('$myUid#$uid')
+  //       .collection('messege')
+  //       .doc('$myUid$commentCount')
+  //       .set({
+  //     'comment': comment,
+  //     'commentCount' : commentCount,
+  //     'displayName': displayName,
+  //     'profileImageUrl': profileImageUrl,
+  //     'timeStamp': timeStamp,
+  //     'myUid': myUid,
+  //     'fleaChatCount' : fleaChatCount,
+  //     'resortNickname' : resortNickname,
+  //   });
+  // }
+  //
+  // Future<void> uploadCommentSell(
+  //     {displayName, uid, myUid, commentCount, profileImageUrl, comment, timeStamp,fleaChatCount, resortNickname}) async{
+  //
+  //   await ref
+  //       .collection('fleaChat')
+  //       .doc('$uid#$myUid')
+  //       .collection('$uid')
+  //       .doc('$myUid$commentCount')
+  //       .set({
+  //     'comment': comment,
+  //     'commentCount' : commentCount,
+  //     'displayName': displayName,
+  //     'profileImageUrl': profileImageUrl,
+  //     'timeStamp': timeStamp,
+  //     'myUid': myUid,
+  //     'fleaChatCount' : fleaChatCount,
+  //     'resortNickname' : resortNickname,
+  //   });
+  // }
 
 }

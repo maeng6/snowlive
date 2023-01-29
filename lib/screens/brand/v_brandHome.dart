@@ -171,7 +171,7 @@ Widget clothWebGridView(BuildContext context) {
         padding: EdgeInsets.only(top: 12, bottom: 16),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 1,
-            mainAxisSpacing: 14,
+            mainAxisSpacing: 10,
             childAspectRatio: 5),
         itemCount: clothBrandList.length,
         itemBuilder: (BuildContext context, int index) {
@@ -234,7 +234,6 @@ Widget clothWebGridView(BuildContext context) {
                                 'assets/imgs/icons/icon_arrow_g.png',
                                 height: 24,
                                 width: 24,
-                                opacity: AlwaysStoppedAnimation(.4),
                               ),
                             ],
                           ),
@@ -257,7 +256,7 @@ Widget shopWebGridView(BuildContext context) {
         padding: EdgeInsets.only(top: 12, bottom: 16),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 1,
-            mainAxisSpacing: 14,
+            mainAxisSpacing: 10,
             childAspectRatio: 5),
         itemCount: shopNameList.length,
         itemBuilder: (BuildContext context, int index) {
