@@ -70,7 +70,6 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
           options: CarouselOptions(
               height: 44,
               viewportFraction: 1,
-              reverse: true,
               enableInfiniteScroll: false,
               autoPlay: true,
               autoPlayInterval: Duration(seconds: 4)),

@@ -61,11 +61,11 @@ class _MainHomeState extends State<MainHome> {
             ),
             BottomNavigationBarItem(
               icon: Image.asset(
-                'assets/imgs/icons/icon_home_off.png',
+                'assets/imgs/icons/icon_market_off.png',
                 scale: 4,
               ),
               activeIcon: Image.asset(
-                'assets/imgs/icons/icon_home_on.png',
+                'assets/imgs/icons/icon_market_on.png',
                 scale: 4,
               ),
               label: 'Flea',
