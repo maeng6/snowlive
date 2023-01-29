@@ -31,7 +31,6 @@ class _FleaChatroomState
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   FleaChatModelController _fleaChatModelController = Get.find<FleaChatModelController>();
-
 //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -60,13 +59,11 @@ class _FleaChatroomState
     });
   }
 
-
-
   Stream<QuerySnapshot> newStream() {
     return FirebaseFirestore.instance
         .collection('fleaChat')
-        .doc('${_fleaChatModelController.uid}#${_fleaChatModelController.otherUid}')
-        .collection('messege')
+        .doc('${_fleaChatModelController.chatRoomName}')
+        .collection('${_userModelController.uid}')
         .orderBy('timeStamp', descending: true)
         .limit(500)
         .snapshots();
@@ -75,6 +72,11 @@ class _FleaChatroomState
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+    _fleaChatModelController.getChatCount(
+        myUid: _userModelController.uid,
+        otherUid: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
+            :_fleaChatModelController.otherUid,
+        chatRoomName: _fleaChatModelController.chatRoomName);
 
     return GestureDetector(
       onTap: () {
@@ -101,9 +103,10 @@ class _FleaChatroomState
                   TextButton(
                       onPressed: () async{
                         CustomFullScreenDialog.showDialog();
+                        print(_fleaChatModelController.chatRoomName);
 
                         try{
-                          if(_fleaChatModelController.uid == _userModelController.uid){
+                          if(_fleaChatModelController.myUid == _userModelController.uid){
                             await _fleaChatModelController
                                 .deleteChatroom(
                                 '${_fleaChatModelController.chatRoomName}'
@@ -112,9 +115,6 @@ class _FleaChatroomState
                                 .deleteChatUidListBuy(
                                 _fleaChatModelController.otherUid
                             );
-                            print(_fleaChatModelController.chatRoomName);
-                            print(_userModelController.uid);
-                            print(_fleaChatModelController.otherUid);
                             await _fleaChatModelController.deleteChatUid(
                                 chatRoomName: '${_fleaChatModelController.chatRoomName}',
                               myUid: _userModelController.uid,
@@ -129,7 +129,7 @@ class _FleaChatroomState
                             );
                             await _fleaChatModelController
                                 .deleteChatUidListSell(
-                                _fleaChatModelController.uid
+                                _fleaChatModelController.myUid
                             );
                             await _fleaChatModelController.deleteChatUid(
                                 chatRoomName: '${_fleaChatModelController.chatRoomName}',
@@ -186,7 +186,7 @@ class _FleaChatroomState
                           itemBuilder: (context, index) {
                             String _time = _fleaChatModelController
                                 .getAgoTime(chatDocs[index].get('timeStamp'));
-                            bool _isMe = chatDocs[index]['fixMyUid'] == _userModelController.uid;
+                            bool _isMe = chatDocs[index]['senderUid'] == _userModelController.uid;
                             return Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child:
@@ -199,7 +199,7 @@ class _FleaChatroomState
                                     _isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                                     children: [
                                       if (chatDocs[index][
-                                      'profileImageUrl'] != "")
+                                      'myProfileImageUrl'] != "")
                                         Padding(
                                           padding: EdgeInsets.only(top: 5),
                                           child:
@@ -210,11 +210,11 @@ class _FleaChatroomState
                                                   ProfileImagePage(
                                                     CommentProfileUrl:
                                                     chatDocs[index]
-                                                    ['profileImageUrl'],
+                                                    ['myProfileImageUrl'],
                                                   ));
                                             },
                                             child: ExtendedImage.network(
-                                              chatDocs[index]['profileImageUrl'],
+                                              chatDocs[index]['myProfileImageUrl'],
                                               cache: true,
                                               shape:
                                               BoxShape.circle,
@@ -231,7 +231,7 @@ class _FleaChatroomState
                                         ),
 
                                       if (chatDocs[index][
-                                      'profileImageUrl'] == "")
+                                      'myProfileImageUrl'] == "")
                                         Padding(
                                           padding: EdgeInsets.only(top: 5),
                                           child:
@@ -270,7 +270,7 @@ class _FleaChatroomState
                                             Row(
                                               children: [
                                                 Text(
-                                                  chatDocs[index].get('displayName'),
+                                                  chatDocs[index].get('myDisplayName'),
                                                   style: TextStyle(
                                                       fontWeight: FontWeight.bold,
                                                       fontSize: 14,
@@ -280,7 +280,7 @@ class _FleaChatroomState
                                                     width: 6),
                                                 Text(
                                                   chatDocs[index].get(
-                                                      'resortNickname'),
+                                                      'myResortNickname'),
                                                   style: TextStyle(
                                                       fontWeight:
                                                       FontWeight
@@ -400,26 +400,32 @@ class _FleaChatroomState
                                   if(_controller.text.trim().isEmpty)
                                   {return ;}
                                   FocusScope.of(context).unfocus();
-                                  _controller.clear();
+
                                   _scrollController.jumpTo(0);
                                   try {
-                                    await _userModelController.updateCommentCount(_userModelController.commentCount);
+                                    await _userModelController.updateChatCount(
+                                        myUid: _userModelController.uid,
+                                        otherUid: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
+                                      :_fleaChatModelController.otherUid ,
+                                        chatRoomName: _fleaChatModelController.chatRoomName,
+                                        chatCount: _fleaChatModelController.chatCount,
+                                    );
+                                    await _fleaChatModelController.getChatCount(myUid: _userModelController.uid, chatRoomName: _fleaChatModelController.chatRoomName, otherUid: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
+                                        :_fleaChatModelController.otherUid);
                                     await _fleaChatModelController.sendMessage(
-                                        displayName: _userModelController.displayName,
-                                        uid: (_fleaChatModelController.uid == _userModelController.uid)
-                                        ? _fleaChatModelController.otherUid : _userModelController.uid,
-                                        myUid:
-                                        (_fleaChatModelController.uid == _userModelController.uid)
-                                        ? _userModelController.uid : _fleaChatModelController.uid,
-                                        profileImageUrl: _userModelController.profileImageUrl,
-                                        comment: _newComment,
-                                        commentCount: _userModelController.commentCount,
-                                        resortNickname: _userModelController.resortNickname,
-                                        fleaChatCount: _fleaChatModelController.fleaChatCount,
-                                        fixMyUid: _userModelController.uid);
+                                        myDisplayName: _userModelController.displayName,
+                                        senderUid: _userModelController.uid,
+                                        receiverUid: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
+                                            :_fleaChatModelController.otherUid,
+                                        myProfileImageUrl: _userModelController.profileImageUrl,
+                                        comment: _controller.text,
+                                        myResortNickname: _userModelController.resortNickname,
+                                        chatCount:  _fleaChatModelController.chatCount,
+                                        chatRoomName: _fleaChatModelController.chatRoomName
+                                    );
                                     setState(() {});
-                                    print(_userModelController.uid);
                                   } catch (e) {}
+                                  _controller.clear();
                                 },
                                 icon: (_controller.text.trim().isEmpty)
                                     ? Image.asset(

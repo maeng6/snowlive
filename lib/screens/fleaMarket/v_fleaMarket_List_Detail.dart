@@ -483,21 +483,35 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                     CustomFullScreenDialog.showDialog();
                     try{
                       if(_fleaModelController.uid != _userModelController.uid){
-                        await _fleaChatModelController.setNewChatUid(_fleaModelController.uid);
-                        await _fleaChatModelController.createChatroom(
-                            uid: _userModelController.uid,
+                        if(_userModelController.fleaChatUidList!.contains(_fleaChatModelController.otherUid)){
+
+
+
+
+
+                        } else {
+                          await _fleaChatModelController.setNewChatCountUid(
+                              otherUid: _fleaModelController.uid,
+                              otherDispName: _fleaChatModelController
+                                  .myDisplayName,
+                              myDispName: _userModelController.displayName);
+                          await _fleaChatModelController.createChatroom(
+                            myUid: _userModelController.uid,
                             otherUid: _fleaModelController.uid,
-                            timeStamp: _time,
-                            fleaChatCount: _userModelController.fleaChatCount,
-                            otherProfileImageUrl: _fleaModelController.profileImageUrl,
-                            otherResortNickname: _fleaModelController.resortNickname,
+                            otherProfileImageUrl: _fleaModelController
+                                .profileImageUrl,
+                            otherResortNickname: _fleaModelController
+                                .resortNickname,
                             otherDisplayName: _fleaModelController.displayName,
-                            displayName: _userModelController.displayName,
-                            profileImageUrl: _userModelController.profileImageUrl,
-                            resortNickname: _userModelController.resortNickname,
-                            fixMyUid: _userModelController.uid
-                        );
-                        await _fleaChatModelController.updateChatUidSumList(_fleaModelController.uid);
+                            myDisplayName: _userModelController.displayName,
+                            myProfileImageUrl: _userModelController
+                                .profileImageUrl,
+                            myResortNickname: _userModelController
+                                .resortNickname,
+                          );
+                          await _fleaChatModelController.updateChatUidSumList(
+                              _fleaModelController.uid);
+                        }
                         CustomFullScreenDialog.cancelDialog();
                         return Get.to(()=>FleaChatroom());
                       }else{
@@ -508,18 +522,11 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                       print('에러');
                       CustomFullScreenDialog.cancelDialog();
                     }
-
-
-
                   },
                   child:
                   (_fleaModelController.uid != _userModelController.uid)
                   ? Text('메시지 보내기') : Text('수정하기')
-
               ),
-
-
-
           ],
           ),
         ),
