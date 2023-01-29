@@ -36,6 +36,7 @@ class UserModel {
   bool? phoneAuth;
   String? phoneNum;
   List? likeUidList;
+  List? fleaChatUidList;
   Timestamp? resistDate;
 
   UserModel.fromJson(dynamic json, this.reference) {
@@ -53,6 +54,7 @@ class UserModel {
       phoneNum = json['phoneNum'];
       likeUidList = json['likeUidList'];
       resistDate = json['resistDate'];
+      fleaChatUidList = json['fleaChatUidList'];
 
   }
 

@@ -87,8 +87,19 @@ class UserModelController extends GetxController{
       this._phoneAuth!.value = userModel.phoneAuth!;
       this._likeUidList!.value = userModel.likeUidList!;
       this._resistDate = userModel.resistDate!;
+      this._fleaChatUidList!.value = userModel.fleaChatUidList!;
       await prefs.setInt('favoriteResort', userModel.favoriteResort!);
     } else {}
+  }
+
+
+  Future<void> addChatUidList(addUid) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'fleaChatUidList': addUid
+    });
+    await getCurrentUser(auth.currentUser!.uid);
   }
 
   Future<void> setNewField() async {
@@ -286,6 +297,14 @@ class UserModelController extends GetxController{
       'commentCount': index+1,
     });
     await getCurrentUser(auth.currentUser!.uid);
+  }
+
+  Future<void> updateChatCount({required myUid,required otherUid,required chatRoomName,required chatCount}) async {
+    print(myUid);
+    print(otherUid);
+    await ref.collection('user').doc(otherUid).collection('$chatRoomName').doc(myUid).update({
+      'chatCount': chatCount+1,
+    });
   }
 
   Future<void> updateResortNickname(index) async {

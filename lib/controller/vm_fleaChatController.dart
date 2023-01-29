@@ -8,208 +8,115 @@ import 'package:snowlive3/model/m_fleaChatModel.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 class FleaChatModelController extends GetxController {
-  RxString? _uid = ''.obs;
-  RxString? _displayName = ''.obs;
-  RxString? _profileImageUrl = ''.obs;
+  RxString? _myDisplayName = ''.obs;
+  RxString? _myProfileImageUrl = ''.obs;
   RxString? _comment = ''.obs;
   Timestamp? _timeStamp;
   RxString? _agoTime = ''.obs;
-  RxString? _resortNickname = ''.obs;
+  RxString? _myResortNickname = ''.obs;
   RxString? _otherUid = ''.obs;
-  RxInt? _fleaChatCount = 0.obs;
   RxString? _otherProfileImageUrl = ''.obs;
   RxString? _otherResortNickname = ''.obs;
   RxString? _otherDisplayName = ''.obs;
-  RxString _myUid = ''.obs;
+  RxString? _myUid = ''.obs;
   RxList? _chatUidList = [].obs;
   RxList? _chatUidSumList = [].obs;
-  RxString? _fixMyUid = ''.obs;
   RxString? _chatRoomName = ''.obs;
+  RxInt? _chatCount = 0.obs;
 
-
-  String? get uid => _uid!.value;
-  String? get displayName => _displayName!.value;
-  String? get profileImageUrl => _profileImageUrl!.value;
+  String? get myDisplayName => _myDisplayName!.value;
+  String? get myProfileImageUrl => _myProfileImageUrl!.value;
   String? get comment => _comment!.value;
   Timestamp? get timeStamp => _timeStamp;
   String? get agoTime => _agoTime!.value;
-  String? get resortNickname => _resortNickname!.value;
+  String? get myResortNickname => _myResortNickname!.value;
   String? get otherUid => _otherUid!.value;
-  int? get fleaChatCount => _fleaChatCount!.value;
   String? get otherProfileImageUrl => _otherProfileImageUrl!.value;
   String? get otherResortNickname => _otherResortNickname!.value;
   String? get otherDisplayName => _otherDisplayName!.value;
   List? get chatUidList => _chatUidList;
   List? get chatUidSumList => _chatUidSumList;
-  String? get myUid => _myUid.value;
-  String? get fixMyUid => _fixMyUid!.value;
+  String? get myUid => _myUid!.value;
   String? get chatRoomName => _chatRoomName!.value;
+  int? get chatCount => _chatCount!.value;
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
 
-  Future<void> getCurrentFleaChat({required uid, required otherUid}) async {
-    FleaChatModel fleaChatModel = await FleaChatModel().getFleaChatModel(uid,otherUid);
-    this._otherDisplayName!.value = fleaChatModel.otherDisplayName!;
-    this._uid!.value = fleaChatModel.uid!;
+  Future<void> getCurrentFleaChat({required myUid, required otherUid}) async {
+    FleaChatModel fleaChatModel = await FleaChatModel().getCuyrrentFleaChatInfo('$myUid#$otherUid');
+    this._myUid!.value = fleaChatModel.myUid!;
+    this._timeStamp = fleaChatModel.timeStamp!;
     this._otherUid!.value = fleaChatModel.otherUid!;
     this._otherProfileImageUrl!.value = fleaChatModel.otherProfileImageUrl!;
-    this._fleaChatCount!.value = fleaChatModel.fleaChatCount!;
     this._otherResortNickname!.value = fleaChatModel.otherResortNickname!;
-    this._timeStamp = fleaChatModel.timeStamp!;
+    this._otherDisplayName!.value = fleaChatModel.otherDisplayName!;
+    this._myDisplayName!.value = fleaChatModel.myDisplayName!;
+    this._myProfileImageUrl!.value = fleaChatModel.myProfileImageUrl!;
+    this._myResortNickname!.value = fleaChatModel.myResortNickname!;
+    this._chatRoomName!.value = fleaChatModel.chatRoomName!;
   }
 
   Future<void> sendMessage(
-      {required displayName,
-        required uid,
-        required profileImageUrl,
+      {required myDisplayName,
+        required senderUid,
+        required receiverUid,
+        required myProfileImageUrl,
         required comment,
-        required fleaChatCount,
-        required resortNickname,
-        required commentCount,
-        required myUid,
-        required fixMyUid,
+        required myResortNickname,
+        required chatCount,
+        required chatRoomName
       }) async {
-    await FleaChatModel().uploadComment(
-      comment: comment,
-      displayName: displayName,
-      profileImageUrl: profileImageUrl,
+    await FleaChatModel().uploadChat(
+        myDisplayName : myDisplayName,
+        myUid : senderUid,
+        otherUid : receiverUid,
+        myProfileImageUrl : myProfileImageUrl,
+        comment : comment,
+        myResortNickname : myResortNickname,
+        chatCount : chatCount,
+        chatRoomName : chatRoomName,
       timeStamp: Timestamp.now(),
-      fleaChatCount: fleaChatCount,
-      uid: uid,
-      resortNickname: resortNickname,
-      commentCount: commentCount,
-      myUid: myUid,
-      fixMyUid: fixMyUid
     );
-    FleaChatModel fleaChatModel =
-    await FleaChatModel().getFleaChatModel(uid, myUid);
-    this._uid!.value = fleaChatModel.uid!;
-    this._displayName!.value = fleaChatModel.displayName!;
-    this._profileImageUrl!.value = fleaChatModel.profileImageUrl!;
-    this._comment!.value = fleaChatModel.comment!;
-    this._timeStamp = fleaChatModel.timeStamp!;
-    this._resortNickname!.value = fleaChatModel.resortNickname!;
-    this._myUid.value = fleaChatModel.myUid!;
-    this._fixMyUid!.value = fleaChatModel.fixMyUid!;
   }
-
-
-  Future<void> sendMessageBuy(
-      {required displayName,
-        required uid,
-        required profileImageUrl,
-        required comment,
-        required fleaChatCount,
-        required resortNickname,
-        required commentCount,
-        required myUid,}) async {
-    await FleaChatModel().uploadCommentBuy(
-        comment: comment,
-        displayName: displayName,
-        profileImageUrl: profileImageUrl,
-        timeStamp: Timestamp.now(),
-        fleaChatCount: fleaChatCount,
-        uid: uid,
-        resortNickname: resortNickname,
-        commentCount: commentCount,
-        myUid: myUid,
-    );
-    FleaChatModel fleaChatModel =
-    await FleaChatModel().getFleaChatModel(uid, myUid);
-    this._uid!.value = fleaChatModel.uid!;
-    this._displayName!.value = fleaChatModel.displayName!;
-    this._profileImageUrl!.value = fleaChatModel.profileImageUrl!;
-    this._comment!.value = fleaChatModel.comment!;
-    this._timeStamp = fleaChatModel.timeStamp!;
-    this._resortNickname!.value = fleaChatModel.resortNickname!;
-    this._myUid.value = fleaChatModel.myUid!;
-  }
-
-  Future<void> sendMessageSell(
-      {required displayName,
-        required uid,
-        required profileImageUrl,
-        required comment,
-        required fleaChatCount,
-        required resortNickname,
-        required commentCount,
-        required myUid,}) async {
-    await FleaChatModel().uploadCommentSell(
-      comment: comment,
-      displayName: displayName,
-      profileImageUrl: profileImageUrl,
-      timeStamp: Timestamp.now(),
-      fleaChatCount: fleaChatCount,
-      uid: uid,
-      resortNickname: resortNickname,
-      commentCount: commentCount,
-      myUid: myUid,
-    );
-    FleaChatModel fleaChatModel =
-    await FleaChatModel().getFleaChatModel(uid, myUid);
-    this._uid!.value = fleaChatModel.uid!;
-    this._displayName!.value = fleaChatModel.displayName!;
-    this._profileImageUrl!.value = fleaChatModel.profileImageUrl!;
-    this._comment!.value = fleaChatModel.comment!;
-    this._timeStamp = fleaChatModel.timeStamp!;
-    this._resortNickname!.value = fleaChatModel.resortNickname!;
-    this._myUid.value = fleaChatModel.myUid!;
-  }
-
-
 
   Future<void> createChatroom(
-      {required uid,
+      {required myUid,
         required otherUid,
-        required timeStamp,
-        required fleaChatCount,
         required otherProfileImageUrl,
         required otherResortNickname,
         required otherDisplayName,
-        required displayName,
-        required profileImageUrl,
-        required resortNickname,
-        required fixMyUid,
+        required myDisplayName,
+        required myProfileImageUrl,
+        required myResortNickname,
       }) async {
     await FleaChatModel().createChatroom(
-        fleaChatCount: fleaChatCount,
         otherUid: otherUid,
-        timeStamp: timeStamp,
-        uid: uid,
+        myUid: myUid,
         otherProfileImageUrl: otherProfileImageUrl,
         otherResortNickname: otherResortNickname,
         otherDisplayName: otherDisplayName,
-        displayName: displayName,
-        profileImageUrl: profileImageUrl,
-        resortNickname: resortNickname,
-        fixMyUid: fixMyUid,
+        myDisplayName: myDisplayName,
+        myProfileImageUrl: myProfileImageUrl,
+        myResortNickname: myResortNickname,
     );
-    FleaChatModel fleaChatModel =
-    await FleaChatModel().getFleaChatModel(uid, otherUid);
-    this._uid!.value = fleaChatModel.uid!;
-    this._timeStamp = fleaChatModel.timeStamp!;
-    this._fleaChatCount!.value = fleaChatModel.fleaChatCount!;
-    this._otherUid!.value = fleaChatModel.otherUid!;
-    this._otherProfileImageUrl!.value = fleaChatModel.otherProfileImageUrl!;
-    this._otherResortNickname!.value = fleaChatModel.otherResortNickname!;
-    this._otherDisplayName!.value = fleaChatModel.otherDisplayName!;
-    this._displayName!.value = fleaChatModel.displayName!;
-    this._profileImageUrl!.value = fleaChatModel.profileImageUrl!;
-    this._resortNickname!.value = fleaChatModel.resortNickname!;
-    this._fixMyUid!.value = fleaChatModel.fixMyUid!;
-    this._chatRoomName!.value = fleaChatModel.chatRoomName!;
+
+    await getCurrentFleaChat(myUid: myUid, otherUid: otherUid);
+    await setNewChatCountUid(otherUid: otherUid, otherDispName: otherDisplayName, myDispName: myDisplayName);
+    await getChatCount(myUid: myUid, chatRoomName: chatRoomName, otherUid: otherUid);
 
   }
 
-  Future<void> setNewChatUid(otherUid) async {
+  Future<void> setNewChatCountUid({required otherUid, required otherDispName, required myDispName}) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
     await ref.collection('user').doc(uid).collection('$uid#$otherUid').doc(otherUid).set({
       'chatCount': 0,
+      'chatOpponent' : otherDispName
     });
     await ref.collection('user').doc(otherUid).collection('$uid#$otherUid').doc(uid).set({
       'chatCount': 0,
+      'chatOpponent' : myDispName
     });
   }
 
@@ -226,6 +133,14 @@ class FleaChatModelController extends GetxController {
     }
   }
 
+  Future<void> getChatCount({required myUid,required otherUid,required chatRoomName}) async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(otherUid).collection(chatRoomName).doc(myUid);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    int chatCount = documentSnapshot.get('chatCount');
+    this._chatCount!.value = chatCount;
+  }
 
 
   Future<void> updateChatUidSumList(uid) async {
@@ -291,3 +206,67 @@ class FleaChatModelController extends GetxController {
     return time;
   }
 }
+
+
+//
+// Future<void> sendMessageBuy(
+//     {required displayName,
+//       required uid,
+//       required profileImageUrl,
+//       required comment,
+//       required fleaChatCount,
+//       required resortNickname,
+//       required commentCount,
+//       required myUid,}) async {
+//   await FleaChatModel().uploadCommentBuy(
+//     comment: comment,
+//     displayName: displayName,
+//     profileImageUrl: profileImageUrl,
+//     timeStamp: Timestamp.now(),
+//     fleaChatCount: fleaChatCount,
+//     uid: uid,
+//     resortNickname: resortNickname,
+//     commentCount: commentCount,
+//     myUid: myUid,
+//   );
+//   FleaChatModel fleaChatModel =
+//   await FleaChatModel().getCuyrrentFleaChatInfo(uid, myUid);
+//   this._uid!.value = fleaChatModel.uid!;
+//   this._myDisplayName!.value = fleaChatModel.myDisplayName!;
+//   this._myProfileImageUrl!.value = fleaChatModel.myProfileImageUrl!;
+//   this._comment!.value = fleaChatModel.comment!;
+//   this._timeStamp = fleaChatModel.timeStamp!;
+//   this._myResortNickname!.value = fleaChatModel.myResortNickname!;
+//   this._myUid.value = fleaChatModel.myUid!;
+// }
+//
+// Future<void> sendMessageSell(
+//     {required displayName,
+//       required uid,
+//       required profileImageUrl,
+//       required comment,
+//       required fleaChatCount,
+//       required resortNickname,
+//       required commentCount,
+//       required myUid,}) async {
+//   await FleaChatModel().uploadCommentSell(
+//     comment: comment,
+//     displayName: displayName,
+//     profileImageUrl: profileImageUrl,
+//     timeStamp: Timestamp.now(),
+//     fleaChatCount: fleaChatCount,
+//     uid: uid,
+//     resortNickname: resortNickname,
+//     commentCount: commentCount,
+//     myUid: myUid,
+//   );
+//   FleaChatModel fleaChatModel =
+//   await FleaChatModel().getCuyrrentFleaChatInfo(uid, myUid);
+//   this._uid!.value = fleaChatModel.uid!;
+//   this._myDisplayName!.value = fleaChatModel.myDisplayName!;
+//   this._myProfileImageUrl!.value = fleaChatModel.myProfileImageUrl!;
+//   this._comment!.value = fleaChatModel.comment!;
+//   this._timeStamp = fleaChatModel.timeStamp!;
+//   this._myResortNickname!.value = fleaChatModel.myResortNickname!;
+//   this._myUid.value = fleaChatModel.myUid!;
+// }
