@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:snowlive3/controller/vm_fleaChatController.dart';
+import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
 import 'package:snowlive3/controller/vm_replyModelController.dart';
 import 'package:snowlive3/model/m_resortModel.dart';
@@ -15,6 +17,7 @@ import 'package:snowlive3/screens/v_webPage.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import '../../controller/vm_commentController.dart';
+import '../fleaMarket/v_fleaMarket_List_Screen_home.dart';
 
 class ResortHome extends StatefulWidget {
   @override
@@ -23,6 +26,7 @@ class ResortHome extends StatefulWidget {
 
 class _ResortHomeState extends State<ResortHome>
     with AutomaticKeepAliveClientMixin{
+
 
   @override
   bool get wantKeepAlive => true;
@@ -35,6 +39,9 @@ class _ResortHomeState extends State<ResortHome>
 
   GetDateTimeController _getDateTimeController =
       Get.find<GetDateTimeController>();
+
+
+
 
   //TODO: Dependency Injection**************************************************
 
@@ -81,6 +88,8 @@ class _ResortHomeState extends State<ResortHome>
     //TODO: Dependency Injection**************************************************
     Get.put(CommentModelController(), permanent: true);
     Get.put(ReplyModelController(), permanent: true);
+    Get.put(FleaModelController(), permanent: true);
+    Get.put(FleaChatModelController(), permanent: true);
     //TODO: Dependency Injection**************************************************
 
     final Size _size = MediaQuery.of(context).size;
@@ -130,15 +139,6 @@ class _ResortHomeState extends State<ResortHome>
                     children: [
                       SizedBox(
                         height: _statusBarSize + 64,
-                      ),
-                      GestureDetector(
-                        onTap: (){
-                          Get.to(()=>NoticeList());
-                        },
-                        child: NoticeTile_resortHome(),
-                      ),
-                      SizedBox(
-                        height: 12,
                       ),
                       Container(
                         color: Color(0xFFF2F4F6),
@@ -734,7 +734,7 @@ class _ResortHomeState extends State<ResortHome>
                                             left: 20,
                                             right: 20,
                                             top: 20,
-                                            bottom: 20),
+                                            bottom: 22),
                                         width: double.infinity,
                                         decoration: BoxDecoration(
                                             color: Colors.white,
@@ -756,7 +756,78 @@ class _ResortHomeState extends State<ResortHome>
                                           ],
                                         )),
                                     SizedBox(
-                                      height: 8,
+                                      height: 12,
+                                    ),
+                                    Container(
+                                        padding: EdgeInsets.only(
+                                            left: 20,
+                                            right: 20,
+                                            top: 20,
+                                            bottom: 22),
+                                        width: double.infinity,
+                                        height: 612,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                            BorderRadius.circular(14)),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text('스노우마켓', style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color(0xFFC8C8C8)
+                                                ),),
+                                                ElevatedButton(onPressed: (){},
+                                                    child: Text('더보기', style:
+                                                    TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 13,
+                                                        color: Color(0xFF949494),
+                                                ),),
+                                                  style: ElevatedButton.styleFrom(
+                                                    minimumSize: Size(42, 34),
+                                                    backgroundColor: Color(0xFFF2F3F4),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(8)),
+                                                    elevation: 0,
+                                                  ),
+                                                ),
+
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            FleaMarket_List_Screen_Home(),
+                                          ],
+                                        )),
+                                    SizedBox(
+                                      height: 12,
+                                    ),
+                                    Container(
+                                        padding: EdgeInsets.only(
+                                            left: 20,
+                                            right: 20,
+                                            top: 26,
+                                            bottom: 24),
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                            BorderRadius.circular(14)),
+                                        child: GestureDetector(
+                                          onTap: (){
+                                            Get.to(()=>NoticeList());
+                                          },
+                                          child: NoticeTile_resortHome(),
+                                        )),
+                                    SizedBox(
+                                      height: 20,
                                     ),
                                     ElevatedButton(
                                       child: RichText(
@@ -765,7 +836,7 @@ class _ResortHomeState extends State<ResortHome>
                                             TextSpan(
                                               text: '날씨 정보는 ',
                                               style: TextStyle(
-                                                  fontSize: 12,
+                                                  fontSize: 13,
                                                   color: Color(0xFFc8c8c8),
                                                   fontWeight: FontWeight.normal),
                                             ),
@@ -775,14 +846,14 @@ class _ResortHomeState extends State<ResortHome>
                                                   decoration:
                                                       TextDecoration.underline,
                                                   decorationThickness: 2,
-                                                  fontSize: 12,
+                                                  fontSize: 13,
                                                   color: Color(0xFF80B2FF),
                                                   fontWeight: FontWeight.normal),
                                             ),
                                             TextSpan(
                                               text: ' 정보입니다',
                                               style: TextStyle(
-                                                  fontSize: 12,
+                                                  fontSize: 13,
                                                   color: Color(0xFFc8c8c8),
                                                   fontWeight: FontWeight.normal),
                                             )
@@ -951,7 +1022,7 @@ class _ResortHomeState extends State<ResortHome>
                                                   style: TextStyle(
                                                     color: Color(0xFFc8c8c8),
                                                     fontWeight: FontWeight.normal,
-                                                    fontSize: 12,
+                                                    fontSize: 13,
                                                   ),
                                                 ),
                                                 SizedBox(
@@ -962,9 +1033,12 @@ class _ResortHomeState extends State<ResortHome>
                                                   style: TextStyle(
                                                     color: Color(0xFFc8c8c8),
                                                     fontWeight: FontWeight.normal,
-                                                    fontSize: 12,
+                                                    fontSize: 13,
                                                   ),
                                                 ),
+                                                SizedBox(
+                                                  height: 16,
+                                                )
                                               ],
                                             ),
                                           ),

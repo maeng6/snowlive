@@ -53,41 +53,39 @@ class _NoticeTile_resortHomeState extends State<NoticeTile_resortHome> {
                 autoPlayInterval: Duration(seconds: 4)),
             itemCount: noticeDocs.length,
             itemBuilder: (context, index, pageViewIndex) {
-              return Padding(
-                padding: const EdgeInsets.only(left: 22, right: 22),
-                child: Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 1.5),
-                            child: Icon(Icons.info_outline,
-                            size: 18,),
-                          ),
-                          SizedBox(
-                            width: 4,
-                          ),
-                          Container(
-                            constraints: BoxConstraints(maxWidth: _size.width - 70),
-                            child: Text(
-                              noticeDocs[index].get('noticeTitle'),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 14
-                              ),
+              return Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text('공지', style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF3D83ED)
+                        ),),
+                        SizedBox(
+                          width: 12,
+                        ),
+                        Container(
+                          constraints: BoxConstraints(maxWidth: _size.width - 70),
+                          child: Text(
+                            noticeDocs[index].get('noticeTitle'),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 14,
+                              fontWeight: FontWeight.bold
                             ),
                           ),
-                        ],
-                      ),
-                      Image.asset('assets/imgs/icons/icon_arrow_g.png',
-                        height: 20,
-                        width: 20,
-                      )
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                    Image.asset('assets/imgs/icons/icon_arrow_g.png',
+                      height: 20,
+                      width: 20,
+                    )
+                  ],
                 ),
               );
             },
