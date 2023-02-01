@@ -18,6 +18,10 @@ class FleaChatModel {
         this.chatUidSumList,
         this.fixMyUid,
         this.chatRoomName,
+        this.myChatCount,
+        this.otherChatCount,
+        this.myChatCheckCount,
+        this.otherChatCheckCount,
       });
 
   String? myDisplayName;
@@ -37,6 +41,10 @@ class FleaChatModel {
   List? chatUidSumList;
   String? fixMyUid;
   String? chatRoomName;
+  int? myChatCount;
+  int? otherChatCount;
+  int? myChatCheckCount;
+  int? otherChatCheckCount;
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseFirestore.instance;
@@ -44,7 +52,6 @@ class FleaChatModel {
   //TODO : 날짜다르면 댓글 리셋
 
   FleaChatModel.fromJson(dynamic json, this.reference) {
-
     this.chatRoomName = json['chatRoomName'];
    this.timeStamp = json['timeStamp'];
    this.otherUid = json['otherUid'];
@@ -55,7 +62,11 @@ class FleaChatModel {
    this.myProfileImageUrl = json['myProfileImageUrl'];
    this.myResortNickname = json['resortNickname'];
    this.myUid = json['myUid'];
-
+   this.myChatCount = json['myChatCount'];
+   this.otherChatCount = json['otherChatCount'];
+   this.myChatCheckCount = json['myChatCheckCount'];
+   this.otherChatCheckCount = json['otherChatCheckCount'];
+   this.comment = json['comment'];
   }
 
   FleaChatModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -92,7 +103,12 @@ class FleaChatModel {
       'myDisplayName' : myDisplayName,
       'myProfileImageUrl' : myProfileImageUrl,
       'resortNickname' : myResortNickname,
-      'chatUidSumList' : chatUidSumList
+      'chatUidSumList' : chatUidSumList,
+      'myChatCount': 0,
+      'otherChatCount': 0,
+      'myChatCheckCount' : 0,
+      'otherChatCheckCount' : 0,
+      'comment' : '',
     });
     await getCuyrrentFleaChatInfo('$myUid#$otherUid');
 
@@ -107,7 +123,11 @@ class FleaChatModel {
       required myResortNickname,
       required chatCount,
       required chatRoomName,
-        required timeStamp
+        required timeStamp,
+       required myChatCount,
+       required otherChatCount,
+       required myChatCheckCount,
+       required otherChatCheckCount,
       }) async{
     await ref
         .collection('fleaChat')
@@ -123,7 +143,11 @@ class FleaChatModel {
       'myResortNickname' : myResortNickname,
       'chatCount' : chatCount,
       'chatRoomName' : chatRoomName,
-      'timeStamp' : timeStamp
+      'timeStamp' : timeStamp,
+      'myChatCount' : myChatCount+1,
+      'otherChatCount' : otherChatCount+1,
+      'myChatCheckCount' : myChatCheckCount+1,
+      'otherChatCheckCount' : otherChatCheckCount+1
     });
     await ref
         .collection('fleaChat')
@@ -140,6 +164,12 @@ class FleaChatModel {
       'chatCount' : chatCount,
       'chatRoomName' : chatRoomName,
       'timeStamp' : timeStamp
+    });
+    await ref
+        .collection('fleaChat')
+        .doc(chatRoomName)
+        .update({
+      'comment' : comment,
     });
   }
 

@@ -483,18 +483,18 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                     CustomFullScreenDialog.showDialog();
                     try{
                       if(_fleaModelController.uid != _userModelController.uid){
-                        if(_userModelController.fleaChatUidList!.contains(_fleaChatModelController.otherUid)){
-
-
-
-
-
+                        await _userModelController.getCurrentUser(_userModelController.uid);
+                        if(_userModelController.fleaChatUidList!.contains(_fleaModelController.uid)){
+                          _fleaChatModelController.getCurrentFleaChat(myUid: _userModelController.uid, otherUid: _fleaModelController.uid);
+                       await _fleaChatModelController.resetMyChatCheckCount(chatRoomName: '${_fleaChatModelController.chatRoomName}');
+                        print('기존에 존재하는 채팅방으로 이동');
                         } else {
                           await _fleaChatModelController.setNewChatCountUid(
                               otherUid: _fleaModelController.uid,
                               otherDispName: _fleaChatModelController
                                   .myDisplayName,
                               myDispName: _userModelController.displayName);
+                          await _userModelController.addChatUidList(otherAddUid: _fleaModelController.uid, myAddUid: _userModelController.uid);
                           await _fleaChatModelController.createChatroom(
                             myUid: _userModelController.uid,
                             otherUid: _fleaModelController.uid,
@@ -513,6 +513,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                               _fleaModelController.uid);
                         }
                         CustomFullScreenDialog.cancelDialog();
+
                         return Get.to(()=>FleaChatroom());
                       }else{
                         CustomFullScreenDialog.cancelDialog();

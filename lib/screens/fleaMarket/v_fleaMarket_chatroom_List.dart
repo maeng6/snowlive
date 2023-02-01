@@ -35,8 +35,6 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
     print(_stream);
   }
 
-
-
   Stream<QuerySnapshot> newStream() {
     print(_userModelController.uid);
     return FirebaseFirestore.instance
@@ -95,8 +93,15 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
                                   await _fleaChatModelController.getCurrentFleaChat(
                                       myUid: chatDocs[index].get('myUid'),
                                       otherUid: chatDocs[index].get('otherUid'));
+
+                                  if(_userModelController.uid == _fleaChatModelController.otherUid){
+                                   await _fleaChatModelController.resetMyChatCheckCount(chatRoomName: _fleaChatModelController.chatRoomName);
+                                  }else{
+                                    await _fleaChatModelController.resetOtherChatCheckCount(chatRoomName: _fleaChatModelController.chatRoomName);
+                                  }
                                   CustomFullScreenDialog.cancelDialog();
                                   Get.to(()=>FleaChatroom());
+
 
                               }catch(e){
                                 CustomFullScreenDialog.cancelDialog();
@@ -107,19 +112,20 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
                               const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Container(
                                 color: Colors.white,
-                                child: Column(
+                                child:
+                                Obx(()=>Column(
                                   crossAxisAlignment:
                                   CrossAxisAlignment.start,
                                   children: [
                                     Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                       if(chatDocs[index]['myUid'] == _userModelController.uid)
+                                        if(chatDocs[index]['myUid'] == _userModelController.uid)
                                           Padding(
                                             padding: EdgeInsets.only(top: 5),
                                             child:
                                             (chatDocs[index]['otherProfileImageUrl'] != '')
-                                            ? ExtendedImage.network(
+                                                ? ExtendedImage.network(
                                               chatDocs[index]['otherProfileImageUrl'],
                                               cache: true,
                                               shape:
@@ -132,7 +138,7 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
                                               height: 32,
                                               fit: BoxFit.cover,
                                             )
-                                            : ExtendedImage.asset(
+                                                : ExtendedImage.asset(
                                               'assets/imgs/profile/img_profile_default_circle.png',
                                               shape:
                                               BoxShape.circle,
@@ -151,7 +157,7 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
                                             padding: EdgeInsets.only(top: 5),
                                             child:
                                             (chatDocs[index]['myProfileImageUrl'] != '')
-                                            ? ExtendedImage.network(
+                                                ? ExtendedImage.network(
                                               chatDocs[index]['myProfileImageUrl'],
                                               cache: true,
                                               shape:
@@ -164,7 +170,7 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
                                               height: 32,
                                               fit: BoxFit.cover,
                                             )
-                                            : ExtendedImage.asset(
+                                                : ExtendedImage.asset(
                                               'assets/imgs/profile/img_profile_default_circle.png',
                                               shape:
                                               BoxShape.circle,
@@ -190,14 +196,14 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
                                             Row(
                                               children: [
                                                 (chatDocs[index]['myUid'] == _userModelController.uid)
-                                                ? Text(
+                                                    ? Text(
                                                   chatDocs[index].get('otherDisplayName'),
                                                   style: TextStyle(
                                                       fontWeight: FontWeight.bold,
                                                       fontSize: 14,
                                                       color: Color(0xFF111111)),
                                                 )
-                                                : Text(
+                                                    : Text(
                                                   chatDocs[index].get('myDisplayName'),
                                                   style: TextStyle(
                                                       fontWeight: FontWeight.bold,
@@ -207,7 +213,7 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
                                                 SizedBox(
                                                     width: 6),
                                                 (chatDocs[index]['myUid'] != _userModelController.uid)
-                                                ? Text(
+                                                    ? Text(
                                                   chatDocs[index].get(
                                                       'otherResortNickname'),
                                                   style: TextStyle(
@@ -219,7 +225,7 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
                                                       color: Color(
                                                           0xFF949494)),
                                                 )
-                                                : Text(
+                                                    : Text(
                                                   chatDocs[index].get(
                                                       'resortNickname'),
                                                   style: TextStyle(
@@ -248,20 +254,11 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
                                             ),
                                             SizedBox(
                                               height: 2,
-                                            ),
-                                            (chatDocs[index]['myUid'] == _userModelController.uid)
-                                            ? Text('구매톡',
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 13
-                                            ),
-                                            )
-                                            : Text('판매톡',
-                                            style: TextStyle(
-                                              color: Colors.blue,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 13
+                                            ),Text('${chatDocs[index]['comment']}',
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 10
                                               ),
                                             ),
                                             SizedBox(
@@ -269,13 +266,16 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
                                             ),
                                           ],
                                         ),
+                                        (_userModelController.uid == chatDocs[index]['otherUid'])
+                                            ? Text('${chatDocs[index]['myChatCheckCount']}')
+                                            : Text('${chatDocs[index]['otherChatCheckCount']}')
                                       ],
                                     ),
                                     SizedBox(
                                       height: 36,
                                     ),
                                   ],
-                                ),
+                                )),
                               ),
                             ),
                           );
