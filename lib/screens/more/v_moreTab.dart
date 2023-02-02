@@ -75,7 +75,7 @@ class _MoreTabState extends State<MoreTab> {
                     width: _size.width - 32,
                     child: Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 26),
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -89,8 +89,8 @@ class _MoreTabState extends State<MoreTab> {
                                       child: Stack(
                                         children: [
                                           Container(
-                                            width: 64,
-                                            height: 64,
+                                            width: 52,
+                                            height: 52,
                                             child: CircleAvatar(
                                                 backgroundColor:
                                                     Colors.grey[100],
@@ -115,8 +115,8 @@ class _MoreTabState extends State<MoreTab> {
                                       child: Stack(
                                         children: [
                                           Container(
-                                            width: 64,
-                                            height: 64,
+                                            width: 52,
+                                            height: 52,
                                             child: CircleAvatar(
                                               backgroundColor:
                                                   Colors.yellow[100],
@@ -153,7 +153,7 @@ class _MoreTabState extends State<MoreTab> {
                                     style: TextStyle(
                                         color: Color(0xFF111111),
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 16),
+                                        fontSize: 15),
                                   ),
                                   SizedBox(
                                     width: 2,
@@ -469,14 +469,14 @@ class _MoreTabState extends State<MoreTab> {
                                 ],
                               ),
                               SizedBox(
-                                height: 3,
+                                height: 1,
                               ),
                               Stack(
                                 children: [
                                   Text(
                                     _userModelController.userEmail!,
                                     style: TextStyle(
-                                        color: Color(0xFF949494), fontSize: 14),
+                                        color: Color(0xFF949494), fontSize: 13),
                                   ),
                                 ],
                               ),

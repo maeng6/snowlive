@@ -66,7 +66,7 @@ List<ResortModel> resortList = [
     nX: 75,
     nY: 93,
     resortNickname: '무주',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_1.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_2.png'
 
   ),//무주
   ResortModel(
@@ -82,7 +82,7 @@ List<ResortModel> resortList = [
     nX: 72,
     nY: 129,
     resortNickname: '비발디',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_1.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_3.png'
 
   ),//비발디
   ResortModel(
@@ -98,7 +98,7 @@ List<ResortModel> resortList = [
     nX: 89,
     nY: 130,
     resortNickname: '알펜시아',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_1.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_4.png'
 
   ),//알펜
   ResortModel(
@@ -114,7 +114,7 @@ List<ResortModel> resortList = [
     nX: 95,
     nY: 80,
     resortNickname: '에덴벨리',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_1.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_5.png'
 
   ),//에덴
   ResortModel(
@@ -130,7 +130,7 @@ List<ResortModel> resortList = [
     nX: 71,
     nY: 132,
     resortNickname: '강촌',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_1.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_6.png'
 
   ),//엘리시안
   ResortModel(
@@ -146,7 +146,7 @@ List<ResortModel> resortList = [
     nX: 75,
     nY: 122,
     resortNickname: '오크밸리',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_1.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_7.png'
 
   ),//오크
   ResortModel(
@@ -162,7 +162,7 @@ List<ResortModel> resortList = [
     nX: 95,
     nY: 119,
     resortNickname: '오투',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_1.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_8.png'
 
   ),//오투
   ResortModel(
@@ -178,7 +178,7 @@ List<ResortModel> resortList = [
     nX: 89,
     nY: 130,
     resortNickname: '용평',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_1.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_9.png'
 
   ),//용평
   ResortModel(
@@ -194,7 +194,7 @@ List<ResortModel> resortList = [
     nX: 81,
     nY: 126,
     resortNickname: '웰리힐리',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_1.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_10.png'
 
   ),//웰리힐리
   ResortModel(
@@ -210,7 +210,7 @@ List<ResortModel> resortList = [
     nX: 66,
     nY: 120,
     resortNickname: '지산',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_1.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_11.png'
 
   ),//지산
   ResortModel(
@@ -226,7 +226,7 @@ List<ResortModel> resortList = [
     nX: 92,
     nY: 120,
     resortNickname: '하이원',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_1.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_12.png'
 
   ),//하이원
   ResortModel(
@@ -242,7 +242,7 @@ List<ResortModel> resortList = [
     nX: 84,
     nY: 128,
     resortNickname: '휘닉스',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_1.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_13.png'
 
   ),//휘닉스
 ];

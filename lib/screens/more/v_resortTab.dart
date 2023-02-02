@@ -147,8 +147,8 @@ class ResortTab extends StatelessWidget {
                             '실시간 웹캠',
                             style: TextStyle(
                                 color: (webcamUrlList[index]!.isNotEmpty)
-                                    ? Color(0xFF777777)
-                                    : Color(0xFFc8c8c8),
+                                    ? Color(0xFF555555)
+                                    : Color(0xFFDEDEDE),
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -189,8 +189,8 @@ class ResortTab extends StatelessWidget {
                             '슬로프 현황',
                             style: TextStyle(
                                 color: (slopeUrlList[index]!.isNotEmpty)
-                                    ? Color(0xFF777777)
-                                    : Color(0xFFc8c8c8),
+                                    ? Color(0xFF555555)
+                                    : Color(0xFFDEDEDE),
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold),
                           ),
