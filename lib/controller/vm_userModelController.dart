@@ -93,11 +93,14 @@ class UserModelController extends GetxController{
   }
 
 
-  Future<void> addChatUidList(addUid) async {
+  Future<void> addChatUidList({required otherAddUid, required myAddUid}) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
     await ref.collection('user').doc(uid).update({
-      'fleaChatUidList': addUid
+      'fleaChatUidList':  FieldValue.arrayUnion([otherAddUid])
+    });
+    await ref.collection('user').doc(otherAddUid).update({
+      'fleaChatUidList':  FieldValue.arrayUnion([myAddUid])
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -105,12 +108,14 @@ class UserModelController extends GetxController{
   Future<void> setNewField() async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
+    List fleaChatUidList = [];
     await ref.collection('user').doc(uid).update({
       'fleaCount': 0,
       'phoneAuth' : false,
       'phoneNum' : '',
       'likeUidList' : [],
-      'resistDate' : Timestamp.fromDate(DateTime(1990))
+      'resistDate' : Timestamp.fromDate(DateTime(1990)),
+      'fleaChatUidList' : fleaChatUidList
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -299,13 +304,13 @@ class UserModelController extends GetxController{
     await getCurrentUser(auth.currentUser!.uid);
   }
 
-  Future<void> updateChatCount({required myUid,required otherUid,required chatRoomName,required chatCount}) async {
-    print(myUid);
-    print(otherUid);
+  Future<void> updateChatCount({required myUid,required otherUid,required chatRoomName,required chatCount,required chatCheckCount}) async {
     await ref.collection('user').doc(otherUid).collection('$chatRoomName').doc(myUid).update({
       'chatCount': chatCount+1,
+      'chatCheckCount' : chatCheckCount+1
     });
   }
+
 
   Future<void> updateResortNickname(index) async {
     final User? user = auth.currentUser;

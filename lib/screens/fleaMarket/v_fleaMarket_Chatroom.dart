@@ -11,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
+import '../../controller/vm_fleaMarketController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
@@ -93,7 +94,21 @@ class _FleaChatroomState
               preferredSize: Size.fromHeight(58),
               child: AppBar(
                 leading: IconButton(
-                  onPressed: () {
+                  onPressed: () async{
+                    CustomFullScreenDialog.showDialog();
+                    try{
+                      if(_userModelController.uid == _fleaChatModelController.otherUid){
+                        await _fleaChatModelController.resetMyChatCheckCount(chatRoomName: _fleaChatModelController.chatRoomName);
+                      }else{
+                        await _fleaChatModelController.resetOtherChatCheckCount(chatRoomName: _fleaChatModelController.chatRoomName);
+                      }
+                      CustomFullScreenDialog.cancelDialog();
+                      Get.to(()=>FleaChatroom());
+
+
+                    }catch(e){
+                      CustomFullScreenDialog.cancelDialog();
+                    }
                     Navigator.pop(context);
                   },
                   icon: Icon(Icons.arrow_back),
@@ -103,42 +118,22 @@ class _FleaChatroomState
                   TextButton(
                       onPressed: () async{
                         CustomFullScreenDialog.showDialog();
-                        print(_fleaChatModelController.chatRoomName);
-
                         try{
-                          if(_fleaChatModelController.myUid == _userModelController.uid){
                             await _fleaChatModelController
-                                .deleteChatroom(
-                                '${_fleaChatModelController.chatRoomName}'
+                                .deleteChatroom(chatRoomName: _fleaChatModelController.chatRoomName, myUid: _userModelController.uid
                             );
                             await _fleaChatModelController
-                                .deleteChatUidListBuy(
-                                _fleaChatModelController.otherUid
+                                .deleteChatUidList(
+                            _userModelController.uid
                             );
                             await _fleaChatModelController.deleteChatUid(
                                 chatRoomName: '${_fleaChatModelController.chatRoomName}',
                               myUid: _userModelController.uid,
-                              otherUid: _fleaChatModelController.otherUid
+                              otherUid: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
+                                  :_fleaChatModelController.otherUid
                             );
                             CustomFullScreenDialog.cancelDialog();
                             Get.offAll(()=>MainHome());
-                          }else{
-                            await _fleaChatModelController
-                                .deleteChatroom(
-                                '${_fleaChatModelController.chatRoomName}'
-                            );
-                            await _fleaChatModelController
-                                .deleteChatUidListSell(
-                                _fleaChatModelController.myUid
-                            );
-                            await _fleaChatModelController.deleteChatUid(
-                                chatRoomName: '${_fleaChatModelController.chatRoomName}',
-                                myUid: _userModelController.uid,
-                                otherUid: _fleaChatModelController.otherUid
-                            );
-                            CustomFullScreenDialog.cancelDialog();
-                            Get.offAll(()=>MainHome());
-                          }
                         }catch(e){
                           CustomFullScreenDialog.cancelDialog();
                         }
@@ -409,6 +404,7 @@ class _FleaChatroomState
                                       :_fleaChatModelController.otherUid ,
                                         chatRoomName: _fleaChatModelController.chatRoomName,
                                         chatCount: _fleaChatModelController.chatCount,
+                                      chatCheckCount: _fleaChatModelController.chatCheckCount
                                     );
                                     await _fleaChatModelController.getChatCount(myUid: _userModelController.uid, chatRoomName: _fleaChatModelController.chatRoomName, otherUid: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
                                         :_fleaChatModelController.otherUid);
@@ -421,11 +417,35 @@ class _FleaChatroomState
                                         comment: _controller.text,
                                         myResortNickname: _userModelController.resortNickname,
                                         chatCount:  _fleaChatModelController.chatCount,
-                                        chatRoomName: _fleaChatModelController.chatRoomName
+                                        chatRoomName: _fleaChatModelController.chatRoomName,
+                                        myChatCount: _fleaChatModelController.myChatCount,
+                                        otherChatCount: _fleaChatModelController.otherChatCount,
+                                        myChatCheckCount: _fleaChatModelController.myChatCheckCount,
+                                        otherChatCheckCount: _fleaChatModelController.otherChatCheckCount
                                     );
-                                    setState(() {});
-                                  } catch (e) {}
                                   _controller.clear();
+                                    setState(() {});
+                                    if( _userModelController.uid==_fleaChatModelController.otherUid){
+                                     await _fleaChatModelController.updateOtherChatCount(
+                                          otherChatCount: _fleaChatModelController.otherChatCount,
+                                          otherChatCheckCount: _fleaChatModelController.otherChatCheckCount,
+                                      );
+                                     await _fleaChatModelController.getCurrentFleaChat(
+                                          myUid: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
+                                              :_fleaChatModelController.otherUid,
+                                          otherUid: _userModelController.uid);
+                                    } else{
+                                      await _fleaChatModelController.updateMyChatCount(
+                                          myChatCount: _fleaChatModelController.myChatCount,
+                                          myChatCheckCount: _fleaChatModelController.myChatCheckCount,
+                                      );
+                                      await _fleaChatModelController.getCurrentFleaChat(
+                                          myUid: _userModelController.uid,
+                                          otherUid: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
+                                              :_fleaChatModelController.otherUid);
+                                    }
+
+                                  } catch (e) {}
                                 },
                                 icon: (_controller.text.trim().isEmpty)
                                     ? Image.asset(
