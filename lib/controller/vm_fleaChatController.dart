@@ -272,6 +272,7 @@ class FleaChatModelController extends GetxController {
   Future<void> deleteChatroom({required chatRoomName, required myUid,required otherUid,required fleaMyUid, required myChatCount, required otherChatCount}) async {
     CustomFullScreenDialog.showDialog();
     try {
+      //내가 구매자이면
       if(myUid == fleaMyUid){
         for (int i = myChatCount; i > 0; i--) {
           DocumentReference myChatDocs = FirebaseFirestore
@@ -286,7 +287,9 @@ class FleaChatModelController extends GetxController {
           FirebaseFirestore.instance.runTransaction((transaction) async =>
           await transaction.delete(otherChatDocs));
         }
-      } else{
+      }
+      //내가 판매자이면
+      else{
         for (int i = myChatCount; i > 0; i--) {
           DocumentReference myChatDocs = FirebaseFirestore
               .instance.collection('fleaChat').doc(chatRoomName).collection(myUid).doc('$myUid$i');
@@ -294,7 +297,7 @@ class FleaChatModelController extends GetxController {
           await transaction.delete(myChatDocs));
           for (int i = otherChatCount; i > 0; i--) {
             DocumentReference otherChatDocs = FirebaseFirestore
-                .instance.collection('fleaChat').doc(chatRoomName).collection(myUid).doc('$otherUid$i');
+                .instance.collection('fleaChat').doc(chatRoomName).collection(myUid).doc('$fleaMyUid$i');
             FirebaseFirestore.instance.runTransaction((transaction) async =>
             await transaction.delete(otherChatDocs));
           }
