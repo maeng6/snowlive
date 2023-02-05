@@ -8,6 +8,7 @@ import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Chatroom.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_ModifyPage.dart';
+import 'package:snowlive3/screens/fleaMarket/v_phone_Auth_Screen.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
@@ -709,64 +710,74 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: TextButton(
                       onPressed: () async {
-                        CustomFullScreenDialog.showDialog();
-                        try {
-                          if (_fleaModelController.uid !=
-                              _userModelController.uid) {
-                            await _userModelController
-                                .getCurrentUser(_userModelController.uid);
-                            if (_userModelController.fleaChatUidList!
-                                .contains(_fleaModelController.uid)) {
-                              _fleaChatModelController.getCurrentFleaChat(
-                                  myUid: _userModelController.uid,
-                                  otherUid: _fleaModelController.uid);
-                              await _fleaChatModelController.resetMyChatCheckCount(
-                                  chatRoomName:
-                                      '${_fleaChatModelController.chatRoomName}');
-                              await _fleaChatModelController.setNewChatCountUid2(
-                                  otherUid: _fleaModelController.uid,
-                                  otherDispName: _fleaChatModelController
-                                      .myDisplayName,
-                                  myDispName: _userModelController.displayName);
-                              await _userModelController.addChatUidList(otherAddUid: _fleaModelController.uid, myAddUid: _userModelController.uid);
-                              await _fleaChatModelController.updateChatUidSumList(_fleaModelController.uid);
-                              print('기존에 존재하는 채팅방으로 이동');
-                            } else {
-                              await _fleaChatModelController.setNewChatCountUid(
-                                  otherUid: _fleaModelController.uid,
-                                  otherDispName:
-                                      _fleaChatModelController.myDisplayName,
-                                  myDispName: _userModelController.displayName);
-                              await _userModelController.addChatUidList(
-                                  otherAddUid: _fleaModelController.uid,
-                                  myAddUid: _userModelController.uid);
-                              await _fleaChatModelController.createChatroom(
-                                myUid: _userModelController.uid,
-                                otherUid: _fleaModelController.uid,
-                                otherProfileImageUrl:
-                                    _fleaModelController.profileImageUrl,
-                                otherResortNickname:
-                                    _fleaModelController.resortNickname,
-                                otherDisplayName:
-                                    _fleaModelController.displayName,
-                                myDisplayName: _userModelController.displayName,
-                                myProfileImageUrl:
-                                    _userModelController.profileImageUrl,
-                                myResortNickname:
-                                    _userModelController.resortNickname,
-                              );
-                               }
-                            CustomFullScreenDialog.cancelDialog();
 
-                            return Get.to(() => FleaChatroom());
-                          } else {
-                            CustomFullScreenDialog.cancelDialog();
-                            return Get.to(() => FleaMarket_ModifyPage());
+                        CustomFullScreenDialog.showDialog();
+
+                        await _userModelController.getCurrentUser(_userModelController.uid);
+
+                        if(_userModelController.phoneAuth == true){
+
+                          try {
+                            if (_fleaModelController.uid !=
+                                _userModelController.uid) {
+                              await _userModelController
+                                  .getCurrentUser(_userModelController.uid);
+                              if (_userModelController.fleaChatUidList!
+                                  .contains(_fleaModelController.uid)) {
+                                _fleaChatModelController.getCurrentFleaChat(
+                                    myUid: _userModelController.uid,
+                                    otherUid: _fleaModelController.uid);
+                                await _fleaChatModelController.resetMyChatCheckCount(
+                                    chatRoomName:
+                                    '${_fleaChatModelController.chatRoomName}');
+                                await _fleaChatModelController.setNewChatCountUid2(
+                                    otherUid: _fleaModelController.uid,
+                                    otherDispName: _fleaChatModelController
+                                        .myDisplayName,
+                                    myDispName: _userModelController.displayName);
+                                await _userModelController.addChatUidList(otherAddUid: _fleaModelController.uid, myAddUid: _userModelController.uid);
+                                print('기존에 존재하는 채팅방으로 이동');
+                              } else {
+                                await _fleaChatModelController.setNewChatCountUid(
+                                    otherUid: _fleaModelController.uid,
+                                    otherDispName:
+                                    _fleaChatModelController.myDisplayName,
+                                    myDispName: _userModelController.displayName);
+                                await _userModelController.addChatUidList(
+                                    otherAddUid: _fleaModelController.uid,
+                                    myAddUid: _userModelController.uid);
+                                await _fleaChatModelController.createChatroom(
+                                  myUid: _userModelController.uid,
+                                  otherUid: _fleaModelController.uid,
+                                  otherProfileImageUrl:
+                                  _fleaModelController.profileImageUrl,
+                                  otherResortNickname:
+                                  _fleaModelController.resortNickname,
+                                  otherDisplayName:
+                                  _fleaModelController.displayName,
+                                  myDisplayName: _userModelController.displayName,
+                                  myProfileImageUrl:
+                                  _userModelController.profileImageUrl,
+                                  myResortNickname:
+                                  _userModelController.resortNickname,
+                                );
+                              }
+                              CustomFullScreenDialog.cancelDialog();
+                              return Get.to(() => FleaChatroom());
+                            } else {
+                              CustomFullScreenDialog.cancelDialog();
+                              return Get.to(() => FleaMarket_ModifyPage());
+                            }
+                          } catch (e) {
+                            print('에러');
                           }
-                        } catch (e) {
-                          print('에러');
-                          CustomFullScreenDialog.cancelDialog();
                         }
+                        else if(_userModelController.phoneAuth == false){
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.to(()=>PhoneAuthScreen());
+                        }else{
+                        }
+
                       },
                       style: TextButton.styleFrom(
                           shape: const RoundedRectangleBorder(
