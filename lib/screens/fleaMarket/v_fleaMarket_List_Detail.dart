@@ -437,6 +437,14 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
           body: SingleChildScrollView(
             child: Column(
               children: [
+                if (_fleaModelController.itemImagesUrls!.isEmpty)
+                  ExtendedImage.asset(
+                    'assets/imgs/profile/img_profile_default_.png',
+                    fit: BoxFit.cover,
+                    width: _size.width,
+                    height: 280,
+                  ),
+                if (_fleaModelController.itemImagesUrls!.isNotEmpty)
                 CarouselSlider.builder(
                   options: CarouselOptions(
                     height: 280,
@@ -452,14 +460,6 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (_fleaModelController.itemImagesUrls!.isEmpty)
-                                ExtendedImage.asset(
-                                    'assets/imgs/profile/img_profile_default_.png',
-                                  fit: BoxFit.cover,
-                                  width: _size.width,
-                                  height: 280,
-                                ),
-                              if (_fleaModelController.itemImagesUrls!.isNotEmpty)
                                 ExtendedImage.network(
                                 _fleaModelController.itemImagesUrls![index],
                                 fit: BoxFit.cover,
