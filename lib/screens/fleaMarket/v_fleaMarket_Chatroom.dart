@@ -121,6 +121,8 @@ class _FleaChatroomState
                         try{
                             await _fleaChatModelController
                                 .deleteChatroom(
+                              otherUid: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
+                                  :_fleaChatModelController.otherUid,
                                 chatRoomName: _fleaChatModelController.chatRoomName,
                                 myUid: _userModelController.uid,
                                 fleaMyUid: _fleaChatModelController.myUid,
