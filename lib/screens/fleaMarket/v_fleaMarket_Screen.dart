@@ -49,6 +49,8 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
     Get.put(FleaChatModelController(), permanent: true);
     //TODO : ****************************************************************
 
+    Size _size = MediaQuery.of(context).size;
+
     print(isTap);
     return Scaffold(
       backgroundColor: Colors.white,
@@ -79,119 +81,145 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
       ),
       body:
       SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            Row(
-              children: [
-                SizedBox(
-                  width: 3,
-                ),
-                ElevatedButton(
-                  child: Text(
-                    '상품목록',
-                    style: TextStyle(
-                        color: isTap[0]
-                            ? Color(0xFFFFFFFF)
-                            : Color(0xFF111111),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                  onPressed: () {
-                    print('판매목록페이지로 전환');
-                    setState(() {
-                      isTap[0] = true;
-                      isTap[1] = false;
-                      isTap[2] = false;
-                    });
-                    print(isTap);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isTap[0]
-                        ? Color(0xFF111111)
-                        : Color(0xFFFFFFFF),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
-                  ),
-                ),
-                SizedBox(
-                  width: 3,
-                ),
-                ElevatedButton(
-                  child: Text(
-                    '내글보기',
-                    style: TextStyle(
-                        color: isTap[1]
-                            ? Color(0xFFFFFFFF)
-                            : Color(0xFF111111)),
-                  ),
-                  onPressed: () {
-                    print('판매내역 페이지로 전환');
-                    setState(() {
-                      isTap[0] = false;
-                      isTap[1] = true;
-                      isTap[2] = false;
-                    });
-                    print(isTap);
-                  },
-                  style: ElevatedButton.styleFrom(
-                      minimumSize: Size(54, 32),
-                      backgroundColor: isTap[1]
-                          ? Color(0xFF111111)
-                          : Color(0xFFFFFFFF),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      elevation: 0,
-                      textStyle: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      )),
-                ),
-                SizedBox(
-                  width: 3,
-                ),
-                ElevatedButton(
-                  child: Text(
-                    '채팅목록',
-                    style: TextStyle(
-                        color: isTap[2]
-                            ? Color(0xFFFFFFFF)
-                            : Color(0xFF111111)),
-                  ),
-                  onPressed: () {
-                    print('판매내역 페이지로 전환');
-                    setState(() {isTap[0] = false;
-                    isTap[1] = false;
-                    isTap[2] = true;
-
-                    });
-                    print(isTap);
-                  },
-                  style: ElevatedButton.styleFrom(
-                      minimumSize: Size(54, 32),
-                      backgroundColor: (isTap[2])
-                          ? Color(0xFF111111)
-                          : Color(0xFFFFFFFF),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      elevation: 0,
-                      textStyle: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      )),
-                ),
-                SizedBox(
-                  width: 3,
-                ),
-              ],
+            Positioned(
+              top: 50,
+              child: Container(
+                width: _size.width,
+                height: 1,
+                color: Color(0xFFECECEC),
+              ),
             ),
-            if(isTap[0]==true)
-              Expanded(child: FleaMarket_List_Screen()),
-            if(isTap[1]==true)
-              Expanded(child: FleaMarket_My_Screen()),
-            if(isTap[2]==true)
-              Expanded(child: FleaMarket_Chatroom_List()),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Column(
+                        children: [
+                          ElevatedButton(
+                            child: Text(
+                              '상품목록',
+                              style: TextStyle(
+                                  color: (isTap[0])
+                                      ? Color(0xFF111111)
+                                      : Color(0xFFC8C8C8),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17),
+                            ),
+                            onPressed: () {
+                              print('판매목록페이지로 전환');
+                              setState(() {
+                                isTap[0] = true;
+                                isTap[1] = false;
+                                isTap[2] = false;
+                              });
+                              print(isTap);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: Size(54, 10),
+                              backgroundColor: Color(0xFFFFFFFF),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              elevation: 0,
+                            ),
+                          ),
+                          Container(
+                            width: _size.width * 0.3333-12,
+                            height: 3,
+                            color:
+                            (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
+                          )
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          ElevatedButton(
+                            child: Text(
+                              '내글보기',
+                              style: TextStyle(
+                                  color: (isTap[1])
+                                      ? Color(0xFF111111)
+                                      : Color(0xFFC8C8C8),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17),
+                            ),
+                            onPressed: () {
+                              print('판매내역 페이지로 전환');
+                              setState(() {
+                                isTap[0] = false;
+                                isTap[1] = true;
+                                isTap[2] = false;
+                              });
+                              print(isTap);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: Size(54, 10),
+                              backgroundColor: Color(0xFFFFFFFF),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              elevation: 0,
+                            ),
+                          ),
+                          Container(
+                            width: _size.width * 0.3333-12,
+                            height: 3,
+                            color:
+                            (isTap[1]) ? Color(0xFF111111) : Colors.transparent,
+                          )
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          ElevatedButton(
+                            child: Text(
+                              '채팅목록',
+                              style: TextStyle(
+                                  color: (isTap[2])
+                                      ? Color(0xFF111111)
+                                      : Color(0xFFC8C8C8),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17),
+                            ),
+                            onPressed: () {
+                              print('판매내역 페이지로 전환');
+                              setState(() {isTap[0] = false;
+                              isTap[1] = false;
+                              isTap[2] = true;
 
+                              });
+                              print(isTap);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: Size(54, 10),
+                              backgroundColor: Color(0xFFFFFFFF),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              elevation: 0,
+                            ),
+                          ),
+                          Container(
+                            width: _size.width * 0.3333-12,
+                            height: 3,
+                            color:
+                            (isTap[2]) ? Color(0xFF111111) : Colors.transparent,
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  if(isTap[0]==true)
+                    Expanded(child: FleaMarket_List_Screen()),
+                  if(isTap[1]==true)
+                    Expanded(child: FleaMarket_My_Screen()),
+                  if(isTap[2]==true)
+                    Expanded(child: FleaMarket_Chatroom_List()),
+
+                ],
+              ),
+            ),
           ],
         ),
       ),
