@@ -133,12 +133,11 @@ class _FleaChatroomState
                                 .deleteChatUidList(
                             _userModelController.uid
                             );
-                            await _fleaChatModelController.deleteChatUid(
-                                chatRoomName: '${_fleaChatModelController.chatRoomName}',
-                              myUid: _userModelController.uid,
-                              otherUid: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
-                                  :_fleaChatModelController.otherUid
-                            );
+                            if(_userModelController.uid == _fleaChatModelController.otherUid){
+                              await _fleaChatModelController.resetOtherChatCount(chatRoomName: _fleaChatModelController.chatRoomName);
+                            }else{
+                              await _fleaChatModelController.resetMyChatCount(chatRoomName: _fleaChatModelController.chatRoomName);
+                            }
                             CustomFullScreenDialog.cancelDialog();
                             Get.offAll(()=>MainHome());
                         }catch(e){
@@ -431,6 +430,9 @@ class _FleaChatroomState
                                         otherChatCheckCount: _fleaChatModelController.otherChatCheckCount
                                     );
                                     setState(() {});
+                                    await _fleaChatModelController.updateChatUidSumList(
+                                        (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
+                                        :_fleaChatModelController.otherUid);
                                     if( _userModelController.uid==_fleaChatModelController.otherUid){
                                      await _fleaChatModelController.updateOtherChatCount(
                                           otherChatCount: _fleaChatModelController.otherChatCount,
