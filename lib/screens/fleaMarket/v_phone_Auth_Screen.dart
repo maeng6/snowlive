@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Upload.dart';
 import 'package:snowlive3/screens/onboarding/v_setProfileImage.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
@@ -137,17 +138,6 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                 Navigator.pop(context);
               },
             ),
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(right: 20),
-                child: Image.asset(
-                  'assets/imgs/icons/icon_onb_indicator2.png',
-                  scale: 4,
-                  width: 56,
-                  height: 8,
-                ),
-              ),
-            ],
             backgroundColor: Colors.white,
             elevation: 0.0,
             centerTitle: false,
@@ -371,6 +361,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                         }
                       }catch(e){print('에러');}
                       CustomFullScreenDialog.cancelDialog();
+                      Navigator.pop(context);
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 4),

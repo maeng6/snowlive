@@ -1,4 +1,5 @@
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Upload.dart';
+import 'package:snowlive3/screens/fleaMarket/v_phone_Auth_Screen.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
@@ -56,8 +58,15 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
         child: Scaffold(
           floatingActionButton: FloatingActionButton(
             backgroundColor: Color(0xFF3D6FED),
-            onPressed: () {
-              Get.to(() => FleaMarket_Upload());
+            onPressed: () async {
+              await _userModelController.getCurrentUser(_userModelController.uid);
+              if(_userModelController.phoneAuth == true){
+                Get.to(() => FleaMarket_Upload());
+              }else if(_userModelController.phoneAuth == false){
+                Get.to(()=>PhoneAuthScreen());
+              }else{
+
+              }
             },
             child: Icon(Icons.add),
           ),

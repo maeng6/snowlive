@@ -119,15 +119,19 @@ class _FleaChatroomState
                       onPressed: () async{
                         CustomFullScreenDialog.showDialog();
                         try{
+                          await _fleaChatModelController.getCurrentFleaChat(myUid: _userModelController, otherUid: (_userModelController.uid ==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
+                              :_fleaChatModelController.otherUid);
                             await _fleaChatModelController
                                 .deleteChatroom(
-                              otherUid: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
+                              otherUid: (_userModelController.uid ==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
                                   :_fleaChatModelController.otherUid,
                                 chatRoomName: _fleaChatModelController.chatRoomName,
                                 myUid: _userModelController.uid,
                                 fleaMyUid: _fleaChatModelController.myUid,
-                                myChatCount: _fleaChatModelController.myChatCount,
-                              otherChatCount: _fleaChatModelController.otherChatCount
+                                myChatCount:(_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.otherChatCount
+                                :_fleaChatModelController.myChatCount,
+                              otherChatCount: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myChatCount
+                                  :_fleaChatModelController.otherChatCount,
                             );
                             await _fleaChatModelController
                                 .deleteChatUidList(
