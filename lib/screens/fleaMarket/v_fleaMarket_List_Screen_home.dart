@@ -136,12 +136,19 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              chatDocs[index].get('title'),
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15,
-                                                  color: Color(0xFF111111)),
+                                            Container(
+                                              constraints: BoxConstraints(
+                                                maxWidth: _size.width - 132,
+                                              ),
+                                              child: Text(
+                                                chatDocs[index].get('title'),
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15,
+                                                    color: Color(0xFF111111)),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             ),
                                             SizedBox(
                                               height: 2,
@@ -165,7 +172,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                                 ),
                                                 Container(
                                                   constraints: BoxConstraints(
-                                                    maxWidth: _size.width - 76,
+                                                    maxWidth: _size.width - 150,
                                                   ),
                                                   child: Text(
                                                     chatDocs[index].get(

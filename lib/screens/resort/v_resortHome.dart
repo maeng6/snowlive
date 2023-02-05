@@ -211,16 +211,13 @@ class _ResortHomeState extends State<ResortHome>
                                                       mainAxisAlignment:
                                                           MainAxisAlignment.start,
                                                       crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
+                                                          CrossAxisAlignment.start,
                                                       children: [
                                                         Text(
                                                           '리조트를 선택해주세요.',
                                                           style: TextStyle(
                                                               fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
+                                                              fontWeight: FontWeight.bold),
                                                         ),
                                                         SizedBox(
                                                           height: 10,
@@ -229,10 +226,8 @@ class _ResortHomeState extends State<ResortHome>
                                                           '관심있는 리조트를 선택해 리조트와 관련된 실시간 날씨 정보와 웹캠, 슬로프 오픈 현황 등을 확인하세요.',
                                                           style: TextStyle(
                                                               fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight.w300,
-                                                              color: Color(
-                                                                  0xFF666666)),
+                                                              fontWeight: FontWeight.w300,
+                                                              color: Color(0xFF666666)),
                                                         ),
                                                         Container(
                                                           color: Colors.white,
@@ -240,8 +235,7 @@ class _ResortHomeState extends State<ResortHome>
                                                         ),
                                                         Expanded(
                                                           child: ListView.builder(
-                                                              padding:
-                                                                  EdgeInsets.zero,
+                                                              padding: EdgeInsets.zero,
                                                               itemCount: 13,
                                                               itemBuilder:
                                                                   (context,
@@ -251,13 +245,10 @@ class _ResortHomeState extends State<ResortHome>
                                                                         (context) {
                                                                   return Column(
                                                                     children: [
-                                                                      buildResortListTile(
-                                                                          index),
+                                                                      buildResortListTile(index),
                                                                       Divider(
-                                                                        height:
-                                                                            20,
-                                                                        thickness:
-                                                                            0.5,
+                                                                        height: 20,
+                                                                        thickness: 0.5,
                                                                       ),
                                                                     ],
                                                                   );

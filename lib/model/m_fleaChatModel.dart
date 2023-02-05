@@ -87,7 +87,7 @@ class FleaChatModel {
       {required myUid,required otherUid,required myDisplayName,required myResortNickname,required myProfileImageUrl,
         required otherProfileImageUrl,required otherResortNickname,required otherDisplayName }) async{
 
-    List chatUidSumList =  [myUid,otherUid];
+    List chatUidSumList =  [];
 
     await ref
         .collection('fleaChat')

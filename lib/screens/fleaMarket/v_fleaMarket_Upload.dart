@@ -138,24 +138,24 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                       _imageController.imagesUrlList.clear();
 
                     },
-                    child: Text('완료'))
+                    child: Text('올리기', style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF3D83ED)
+                    ),))
               ],
               backgroundColor: Colors.white,
               elevation: 0.0,
             ),
           ),
           body: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Divider(
-                    height: 1,
-                    color: Colors.black87,
-                  ),
                   SizedBox(
-                    height: 20,
+                    height: 16,
                   ),
                   Row(
                     children: [

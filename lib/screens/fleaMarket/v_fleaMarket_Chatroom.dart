@@ -120,18 +120,24 @@ class _FleaChatroomState
                         CustomFullScreenDialog.showDialog();
                         try{
                             await _fleaChatModelController
-                                .deleteChatroom(chatRoomName: _fleaChatModelController.chatRoomName, myUid: _userModelController.uid
+                                .deleteChatroom(
+                              otherUid: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
+                                  :_fleaChatModelController.otherUid,
+                                chatRoomName: _fleaChatModelController.chatRoomName,
+                                myUid: _userModelController.uid,
+                                fleaMyUid: _fleaChatModelController.myUid,
+                                myChatCount: _fleaChatModelController.myChatCount,
+                              otherChatCount: _fleaChatModelController.otherChatCount
                             );
                             await _fleaChatModelController
                                 .deleteChatUidList(
                             _userModelController.uid
                             );
-                            await _fleaChatModelController.deleteChatUid(
-                                chatRoomName: '${_fleaChatModelController.chatRoomName}',
-                              myUid: _userModelController.uid,
-                              otherUid: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
-                                  :_fleaChatModelController.otherUid
-                            );
+                            if(_userModelController.uid == _fleaChatModelController.otherUid){
+                              await _fleaChatModelController.resetOtherChatCount(chatRoomName: _fleaChatModelController.chatRoomName);
+                            }else{
+                              await _fleaChatModelController.resetMyChatCount(chatRoomName: _fleaChatModelController.chatRoomName);
+                            }
                             CustomFullScreenDialog.cancelDialog();
                             Get.offAll(()=>MainHome());
                         }catch(e){
@@ -395,7 +401,7 @@ class _FleaChatroomState
                                   if(_controller.text.trim().isEmpty)
                                   {return ;}
                                   FocusScope.of(context).unfocus();
-
+                                  _controller.clear();
                                   _scrollController.jumpTo(0);
                                   try {
                                     await _userModelController.updateChatCount(
@@ -414,7 +420,7 @@ class _FleaChatroomState
                                         receiverUid: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
                                             :_fleaChatModelController.otherUid,
                                         myProfileImageUrl: _userModelController.profileImageUrl,
-                                        comment: _controller.text,
+                                        comment: _newComment,
                                         myResortNickname: _userModelController.resortNickname,
                                         chatCount:  _fleaChatModelController.chatCount,
                                         chatRoomName: _fleaChatModelController.chatRoomName,
@@ -423,8 +429,10 @@ class _FleaChatroomState
                                         myChatCheckCount: _fleaChatModelController.myChatCheckCount,
                                         otherChatCheckCount: _fleaChatModelController.otherChatCheckCount
                                     );
-                                  _controller.clear();
                                     setState(() {});
+                                    await _fleaChatModelController.updateChatUidSumList(
+                                        (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
+                                        :_fleaChatModelController.otherUid);
                                     if( _userModelController.uid==_fleaChatModelController.otherUid){
                                      await _fleaChatModelController.updateOtherChatCount(
                                           otherChatCount: _fleaChatModelController.otherChatCount,
