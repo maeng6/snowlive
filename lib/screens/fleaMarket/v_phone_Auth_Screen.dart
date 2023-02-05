@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,32 +28,64 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
   bool isLoading = false;
   bool requestedAuth = false;
   bool authOk = false;
+  bool buttonColorActive = true;
+  bool buttonColorActive2 = true;
+  var _phoneNumber;
+  var _veriNumber;
+
+
 
   String? verificationId;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
+
   void signInWithPhoneAuthCredential(PhoneAuthCredential phoneAuthCredential) async {
+    final credential = phoneAuthCredential;
 
     try {
-      final authCredential = await _auth.signInWithCredential(phoneAuthCredential);
+      final userCredential = await FirebaseAuth.instance.currentUser
+          ?.linkWithCredential(credential);
 
-      if(authCredential.user != null){
-        setState(() {
-          authOk=true;
-          print("인증완료 및 로그인성공");
-        });
-        await _auth.currentUser!.delete();
-        print("auth정보삭제");
-        _auth.signOut();
-        print("phone로그인된것 로그아웃");
-      }
+      await FirebaseFirestore.instance.collection('user')
+          .doc(_userModelController.uid).update({'phoneAuth': true});
 
     } on FirebaseAuthException catch (e) {
-      setState(() {
-        print("인증실패..로그인실패");
-      });
-
+      switch (e.code) {
+        case "provider-already-linked":
+          print("The provider has already been linked to the user.");
+          FirebaseFirestore.instance.collection('user')
+              .doc(_userModelController.uid).update({'phoneAuth': true});
+          break;
+        case "invalid-credential":
+          print("The provider's credential is not valid.");
+          setState(() {
+            buttonColorActive2=true;
+          });
+          Get.snackbar('인증번호 오류','유효한 인증번호를 입력해 주세요.',
+              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.black87,
+              colorText: Colors.white,
+              duration: Duration(milliseconds: 3000));
+          break;
+        case "credential-already-in-use":
+          print("The account corresponding to the credential already exists, "
+              "or is already linked to a Firebase User.");
+          break;
+      // See the API reference for the full list of error codes.
+        default:
+          print("Unknown error.");
+          setState(() {
+            buttonColorActive2=true;
+          });
+          Get.snackbar('인증번호 오류','유효한 인증번호를 입력해 주세요.',
+              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.black87,
+              colorText: Colors.white,
+              duration: Duration(milliseconds: 3000));
+      }
     }
   }
 
@@ -63,8 +96,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
   }
 
   //TODO: Dependency Injection********************************************
-  UserModelController userModelController = Get.find<UserModelController>();
-
+  UserModelController _userModelController = Get.find<UserModelController>();
   //TODO: Dependency Injection********************************************
 
 
@@ -182,33 +214,42 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                             suffixIcon: IconButton(
                               splashColor: Colors.transparent,
                               onPressed: () async{
+                                if(_textEditingController.text.trim().isEmpty
+                                || !_formKey.currentState!.validate() || buttonColorActive == false)
+                                {return ;}
+                                CustomFullScreenDialog.showDialog();
+                                FocusScope.of(context).unfocus();
+                                buttonColorActive = false;
+                                try{
+                                  await _auth.verifyPhoneNumber(
+                                    timeout: const Duration(seconds: 60),
+                                    codeAutoRetrievalTimeout: (String verificationId) {
+                                      // Auto-resolution timed out...
+                                    },
+                                    phoneNumber: "+82"+_phoneNumber.trim(),
+                                    verificationCompleted: (phoneAuthCredential) async {
+                                      print("otp 문자옴");
+                                    },
+                                    verificationFailed: (verificationFailed) async {
+                                      print(verificationFailed.code);
 
-                                await _auth.verifyPhoneNumber(
-                                  timeout: const Duration(seconds: 60),
-                                  codeAutoRetrievalTimeout: (String verificationId) {
-                                    // Auto-resolution timed out...
-                                  },
-                                  phoneNumber: "+82"+_textEditingController.text.trim(),
-                                  verificationCompleted: (phoneAuthCredential) async {
-                                    print("otp 문자옴");
-                                  },
-                                  verificationFailed: (verificationFailed) async {
-                                    print(verificationFailed.code);
+                                      print("코드발송실패");
 
-                                    print("코드발송실패");
+                                    },
+                                    codeSent: (verificationId, resendingToken) async {
+                                      print("코드보냄");
 
-                                  },
-                                  codeSent: (verificationId, resendingToken) async {
-                                    print("코드보냄");
-
-                                    setState(() {
-                                      requestedAuth=true;
-                                      this.verificationId = verificationId;
-                                    });
-                                  },
-                                );
+                                      setState(() {
+                                        requestedAuth=true;
+                                        this.verificationId = verificationId;
+                                      });
+                                    },
+                                  );
+                                }catch(e){print('에러');}
+                                CustomFullScreenDialog.cancelDialog();
                               },
-                              icon: (_textEditingController.text.length < 13)
+                              icon: (_textEditingController.text.length < 13
+                              || !_formKey.currentState!.validate() || buttonColorActive == false)
                                   ? Image.asset(
                                 'assets/imgs/icons/icon_livetalk_send_g.png',
                                 width: 27,
@@ -240,11 +281,14 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                           validator: (val) {
                             if (val!.length == 13 && RegExp(r'^010?-([0-9]{4})?-([0-9]{4})$').hasMatch(val)) {
                               return null;
-                            } else if (val.length < 11 || val.length > 11) {
-                              return '올바른 전화번호를 입력해주세요.';
                             } else {
-                              return '올바른 전화번호를 입력해주세요.';
+                              return '올바른 전화번호를 입력해 주세요.';
                             }
+                          },
+                          onChanged: (value){
+                            setState(() {
+                              _phoneNumber = value;
+                            });
                           },
                         ),
                         SizedBox(
@@ -285,11 +329,14 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                           validator: (val2) {
                             if (val2!.length == 6) {
                               return null;
-                            } else if (val2.length < 6 || val2.length > 6) {
-                              return '올바른 인증번호를 입력해주세요.';
                             } else {
                               return '올바른 인증번호를 입력해주세요.';
                             }
+                          },
+                          onChanged: (value2){
+                            setState(() {
+                              _veriNumber = value2;
+                            });
                           },
                         ),
                       ],
@@ -306,16 +353,24 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                   padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom,top: 30),
                   child: ElevatedButton(
                     onPressed: () async{
+                      if(_textEditingController2.text.trim().isEmpty
+                      || buttonColorActive2 == false)
+                      {return ;}
+                      CustomFullScreenDialog.showDialog();
+                      FocusScope.of(context).unfocus();
+                      buttonColorActive2 = false;
+                      try{
+                        if(_textEditingController2.text.length <6){
+                          return ;
+                        }else{
+                          PhoneAuthCredential phoneAuthCredential =
+                          PhoneAuthProvider.credential(
+                              verificationId: verificationId!, smsCode: _textEditingController2.text);
 
-                      if(_textEditingController2.text.length <6){
-                        return ;
-                      }else{
-                        PhoneAuthCredential phoneAuthCredential =
-                        PhoneAuthProvider.credential(
-                            verificationId: verificationId!, smsCode: _textEditingController2.text);
-
-                        signInWithPhoneAuthCredential(phoneAuthCredential);
-                      }
+                          signInWithPhoneAuthCredential(phoneAuthCredential);
+                        }
+                      }catch(e){print('에러');}
+                      CustomFullScreenDialog.cancelDialog();
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 4),
@@ -334,9 +389,10 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                         splashFactory: InkRipple.splashFactory,
                         minimumSize: Size(1000, 56),
                         backgroundColor:
-                        (_textEditingController2.text.length == 6)
-                            ? Color(0xff377EEA)
-                            : Color(0xffDEDEDE)),
+                        (_textEditingController2.text.length != 6
+                        || buttonColorActive2 == false)
+                            ? Color(0xffDEDEDE)
+                            : Color(0xff377EEA)),
                   ),
                 ),
               ),
