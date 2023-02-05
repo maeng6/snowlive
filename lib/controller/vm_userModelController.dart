@@ -87,7 +87,9 @@ class UserModelController extends GetxController{
       this._phoneAuth!.value = userModel.phoneAuth!;
       this._likeUidList!.value = userModel.likeUidList!;
       this._resistDate = userModel.resistDate!;
-      this._fleaChatUidList!.value = userModel.fleaChatUidList!;
+      try {
+        this._fleaChatUidList!.value = userModel.fleaChatUidList!;
+      }catch(e){};
       await prefs.setInt('favoriteResort', userModel.favoriteResort!);
     } else {}
   }
