@@ -59,188 +59,194 @@ class _FleaMarket_My_ScreenState
         color: Colors.white,
         child: Scaffold(
           floatingActionButton: FloatingActionButton(
+            elevation: 4,
             onPressed: () {
               Get.to(()=>FleaMarket_Upload());
             },
             child: Icon(Icons.add),
           ),
           backgroundColor: Colors.white,
-          body: Column(
-            children: [
-              Expanded(
-                child: StreamBuilder<QuerySnapshot>(
-                  stream: _stream,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container(
-                        color: Colors.white,
-                      );
-                    } else if (snapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    final chatDocs = snapshot.data!.docs;
-                    return Scrollbar(
-                      child: ListView.builder(
-                        itemCount: chatDocs.length,
-                        itemBuilder: (context, index) {
-                          String _time = _fleaModelController
-                              .getAgoTime(chatDocs[index].get('timeStamp'));
-                          return GestureDetector(
-                            onTap: (){
-                              Get.to(()=>FleaMarket_List_Detail());
-                            },
-                            child: Padding(
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Container(
-                                color: Colors.white,
-                                child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
+          body: Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Column(
+              children: [
+                Expanded(
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: _stream,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container(
+                          color: Colors.white,
+                        );
+                      } else if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      final chatDocs = snapshot.data!.docs;
+                      return Scrollbar(
+                        child: ListView.builder(
+                          itemCount: chatDocs.length,
+                          itemBuilder: (context, index) {
+                            String _time = _fleaModelController
+                                .getAgoTime(chatDocs[index].get('timeStamp'));
+                            return GestureDetector(
+                              onTap: (){
+                                Get.to(()=>FleaMarket_List_Detail());
+                              },
+                              child: Column(
+                                children: [
+                                  Container(
+                                    color: Colors.white,
+                                    child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        if(List.from(chatDocs[index]['itemImagesUrls']).isNotEmpty)
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 5),
-                                            child: ExtendedImage.network(
-                                              chatDocs[index]['itemImagesUrls'][0],
-                                              cache: true,
-                                              shape:
-                                              BoxShape.rectangle,
-                                              borderRadius: BorderRadius.circular(5),
-                                              width: 100,
-                                              height: 100,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        if(List.from(chatDocs[index]['itemImagesUrls']).isEmpty)
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 5),
-                                            child: ExtendedImage.asset(
-                                              'assets/imgs/profile/img_profile_default_.png',
-                                              shape:
-                                              BoxShape.rectangle,
-                                              borderRadius: BorderRadius.circular(5),
-                                              width: 100,
-                                              height: 100,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        SizedBox(width: 10),
-                                        Column(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .start,
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment
-                                              .start,
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  chatDocs[index].get('category'),
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 14,
-                                                      color: Color(0xFF111111)),
+                                            if(List.from(chatDocs[index]['itemImagesUrls']).isNotEmpty)
+                                              Padding(
+                                                padding: EdgeInsets.only(top: 8, bottom: 8),
+                                                child: ExtendedImage.network(
+                                                  chatDocs[index]['itemImagesUrls'][0],
+                                                  cache: true,
+                                                  shape:
+                                                  BoxShape.rectangle,
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  border: Border.all(width: 0.5, color: Color(0xFFdedede)),
+                                                  width: 100,
+                                                  height: 100,
+                                                  fit: BoxFit.cover,
                                                 ),
-                                                SizedBox(
-                                                    width: 6),
-                                                Text(
-                                                  chatDocs[index].get('title'),
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 14,
-                                                      color: Color(0xFF111111)),
+                                              ),
+                                            if(List.from(chatDocs[index]['itemImagesUrls']).isEmpty)
+                                              Padding(
+                                                padding: EdgeInsets.only(top: 8, bottom: 8),
+                                                child: ExtendedImage.asset(
+                                                  'assets/imgs/profile/img_profile_default_.png',
+                                                  shape:
+                                                  BoxShape.rectangle,
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  width: 100,
+                                                  height: 100,
+                                                  fit: BoxFit.cover,
                                                 ),
-                                                SizedBox(
-                                                    width: 6),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 2,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  chatDocs[index].get(
-                                                      'resortNickname'),
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                      FontWeight
-                                                          .w300,
-                                                      fontSize:
-                                                      13,
-                                                      color: Color(
-                                                          0xFF949494)),
-                                                ),
-                                                SizedBox(
-                                                    width: 1),
-                                                Text(
-                                                  '· $_time',
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                      13,
-                                                      color: Color(
-                                                          0xFF949494),
-                                                      fontWeight:
-                                                      FontWeight
-                                                          .w300),
-                                                ),
-
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 8,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Container(
-                                                  constraints: BoxConstraints(
-                                                      maxWidth:
-                                                      _size.width - 106),
-                                                  child: Text(
-                                                    chatDocs[index].get('price').toString() + ' 원',
-                                                    maxLines: 1000,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                        color: Color(0xFF111111),
-                                                        fontWeight: FontWeight.normal,
-                                                        fontSize: 13),
+                                              ),
+                                            SizedBox(width: 16),
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: 6),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    constraints:
+                                                    BoxConstraints(
+                                                        maxWidth: _size.width - 150),
+                                                    child: Text(
+                                                      chatDocs[index].get('title'),
+                                                      maxLines: 2,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                          FontWeight.normal,
+                                                          fontSize: 15,
+                                                          color: Color(
+                                                              0xFF555555)),
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 8,
+                                                  Text(
+                                                    '$_time',
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Color(0xFF949494),
+                                                        fontWeight: FontWeight.normal),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 2,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        constraints: BoxConstraints(
+                                                            maxWidth:
+                                                            _size.width - 106),
+                                                        child: Text(
+                                                          chatDocs[index].get('price').toString() + ' 원',
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: TextStyle(
+                                                              color: Color(0xFF111111),
+                                                              fontWeight:
+                                                              FontWeight.bold,
+                                                              fontSize: 16),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(3),
+                                                          color: Color(0xFFD7F4FF),
+                                                        ),
+                                                        padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
+                                                        child: Text(
+                                                          chatDocs[index].get('category'),
+                                                          style: TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 12,
+                                                              color: Color(0xFF458BF5)),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 6,
+                                                      ),
+                                                      Container(decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(3),
+                                                        color: Color(0xFFD5F7E0),
+                                                      ),
+                                                        padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
+                                                        child: Text(
+                                                          chatDocs[index].get(
+                                                              'resortNickname'),
+                                                          style: TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 12,
+                                                              color: Color(0xFF17AD4A)),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
-                                      height: 36,
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                  Divider(
+                                    color: Color(0xFFDEDEDE),
+                                    height: 32,
+                                    thickness: 0.5,
+                                  ),
+                                ],
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 16,
-              )
-            ],
+              ],
+            ),
           ),
         ),
       ),
