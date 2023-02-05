@@ -55,7 +55,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
         color: Colors.white,
         child: Scaffold(
           floatingActionButton: FloatingActionButton(
-              elevation: 4,
+            backgroundColor: Color(0xFF3D6FED),
             onPressed: () {
               Get.to(() => FleaMarket_Upload());
             },

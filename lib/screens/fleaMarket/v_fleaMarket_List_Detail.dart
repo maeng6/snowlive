@@ -445,32 +445,29 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                   itemCount: _fleaModelController.itemImagesUrls!.length,
                   itemBuilder: (context, index, pageViewIndex) {
                     return Container(
-                      width: _size.width,
-                      height: 280,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (_fleaModelController
-                              .itemImagesUrls!.isEmpty)
-                            Container(
-                              width: _size.width,
-                              height: 280,
-                              child: ExtendedImage.asset(
-                                  'assets/imgs/profile/img_profile_default_.png',
+                      child: StreamBuilder<Object>(
+                        stream: null,
+                        builder: (context, snapshot) {
+                          return Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (_fleaModelController.itemImagesUrls!.isEmpty)
+                                ExtendedImage.asset(
+                                    'assets/imgs/profile/img_profile_default_.png',
+                                  fit: BoxFit.cover,
+                                  width: _size.width,
+                                  height: 280,
+                                ),
+                              if (_fleaModelController.itemImagesUrls!.isNotEmpty)
+                                ExtendedImage.network(
+                                _fleaModelController.itemImagesUrls![index],
                                 fit: BoxFit.cover,
-                              ),
-                            ),
-                          if (_fleaModelController
-                              .itemImagesUrls!.isNotEmpty)
-                            Container(
-                              width: _size.width,
-                              height: 280,
-                              child: ExtendedImage.network(
-                              _fleaModelController.itemImagesUrls![index],
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
+                                  width: _size.width,
+                                  height: 280,
+                                ),
+                            ],
+                          );
+                        }
                       ),
                     );
                   },
@@ -758,9 +755,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                 myResortNickname:
                                     _userModelController.resortNickname,
                               );
-                              await _fleaChatModelController
-                                  .updateChatUidSumList(_fleaModelController.uid);
-                            }
+                               }
                             CustomFullScreenDialog.cancelDialog();
 
                             return Get.to(() => FleaChatroom());

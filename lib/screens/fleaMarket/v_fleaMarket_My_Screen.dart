@@ -59,7 +59,7 @@ class _FleaMarket_My_ScreenState
         color: Colors.white,
         child: Scaffold(
           floatingActionButton: FloatingActionButton(
-            elevation: 4,
+            backgroundColor: Color(0xFF3D6FED),
             onPressed: () {
               Get.to(()=>FleaMarket_Upload());
             },
