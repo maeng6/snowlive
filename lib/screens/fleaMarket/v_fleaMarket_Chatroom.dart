@@ -120,7 +120,12 @@ class _FleaChatroomState
                         CustomFullScreenDialog.showDialog();
                         try{
                             await _fleaChatModelController
-                                .deleteChatroom(chatRoomName: _fleaChatModelController.chatRoomName, myUid: _userModelController.uid
+                                .deleteChatroom(
+                                chatRoomName: _fleaChatModelController.chatRoomName,
+                                myUid: _userModelController.uid,
+                                fleaMyUid: _fleaChatModelController.myUid,
+                                myChatCount: _fleaChatModelController.myChatCount,
+                              otherChatCount: _fleaChatModelController.otherChatCount
                             );
                             await _fleaChatModelController
                                 .deleteChatUidList(

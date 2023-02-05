@@ -243,13 +243,30 @@ class FleaChatModelController extends GetxController {
     this._chatUidSumList!.value = chatUidSumList;
   }
 
-  Future<void> deleteChatroom({required chatRoomName, required myUid}) async {
+  Future<void> deleteChatroom({required chatRoomName, required myUid,required fleaMyUid, required myChatCount, required otherChatCount}) async {
     CustomFullScreenDialog.showDialog();
     try {
-      CollectionReference chatRoom = FirebaseFirestore
-          .instance.collection('fleaChat').doc(chatRoomName).collection(myUid);
+      if(myUid == fleaMyUid){
+        for (int i = myChatCount; i == 0; i--) {
+          print('1');
+          DocumentReference myChatDocs = FirebaseFirestore
+              .instance.collection('fleaChat').doc(chatRoomName).collection(myUid).doc('$myUid$i');
+          FirebaseFirestore.instance.runTransaction((transaction) async =>
+          await transaction.delete(myChatDocs));
+        }
+
+      } else{
+        for (int i = otherChatCount; i == 0; i--) {
+          print(i);
+          DocumentReference myChatDocs = FirebaseFirestore
+              .instance.collection('fleaChat').doc(chatRoomName).collection(myUid).doc('$myUid$i');
+          FirebaseFirestore.instance.runTransaction((transaction) async =>
+          await transaction.delete(myChatDocs));
+        }
+      }
       CustomFullScreenDialog.cancelDialog();
     }catch(e){
+      print('에러');
       CustomFullScreenDialog.cancelDialog();
     }
     CustomFullScreenDialog.cancelDialog();
