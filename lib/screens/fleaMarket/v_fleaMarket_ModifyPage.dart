@@ -164,7 +164,14 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                       _imageController.imagesUrlList.clear();
 
                     },
-                    child: Text('수정완료'))
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: Text('수정완료', style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF3D83ED)
+                      ),),
+                    ))
               ],
               backgroundColor: Colors.white,
               elevation: 0.0,
@@ -176,12 +183,8 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Divider(
-                    height: 1,
-                    color: Colors.black87,
-                  ),
                   SizedBox(
-                    height: 20,
+                    height: 16,
                   ),
                   Row(
                     children: [
@@ -201,9 +204,10 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                           }
                         },
                         child: Container(
-                          height: 80,
-                          width: 70,
+                          height: 90,
+                          width: 90,
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               IconButton(
                                   onPressed: () async {
@@ -231,17 +235,38 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                       CustomFullScreenDialog.cancelDialog();
                                     }
                                   },
-                                  icon: Icon(Icons.camera_alt_rounded)),
+                                  icon: Icon(Icons.camera_alt_rounded),
+                                color: Color(0xFF949494),),
                               (isModifiedImageSelected==true)
-                              ?Text('$imageLength/5')
-                              :Text('${_imageUrls!.value.length}/5'),
+                              ?Transform.translate(
+                                offset: Offset(0, -10),
+                                child: Text('$imageLength / 5',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Color(0xFF949494)
+                                  ),),
+                              )
+                              :Transform.translate(
+                                offset: Offset(0, -10),
+                                child: Text('${_imageUrls!.value.length}/5',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Color(0xFF949494)
+                                  ),),
+                              ),
                             ],
                           ),
-                          decoration: BoxDecoration(border: Border.all()),
+                          decoration: BoxDecoration(border: Border.all(
+                              color: Colors.transparent
+                          ),
+                            borderRadius: BorderRadius.circular(8),
+                            color: Color(0xFFececec),),
                         ),
                       ),
                       SizedBox(
-                        width: 20,
+                        width: 8,
                       ),
                       (isModifiedImageSelected==true)
                       ?Expanded(
@@ -257,17 +282,22 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                   Stack(children: [
                                     Container(
                                       decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.grey)),
-                                      height: 80,
-                                      width: 70,
-                                      child: Image.file(
-                                        File(_imageFiles[index].path),
-                                        fit: BoxFit.fitHeight,
+                                          border: Border.all(color: Color(0xFFDEDEDE)),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      height: 90,
+                                      width: 90,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(7),
+                                        child: Image.file(
+                                          File(_imageFiles[index].path),
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
                                     Positioned(
-                                      top: -10,
-                                      right: -10,
+                                      top: -8,
+                                      right: -8,
                                       child: IconButton(
                                           onPressed: () {
                                             _imageFiles.removeAt(index);
@@ -276,11 +306,11 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                             print(imageLength);
                                             setState(() {});
                                           },
-                                          icon: Icon(Icons.cancel)),
+                                        icon: Icon(Icons.cancel), color: Color(0xFF111111),),
                                     ),
                                   ]),
                                   SizedBox(
-                                    width: 10,
+                                    width: 8,
                                   )
                                 ],
                               );
@@ -302,26 +332,31 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                   Stack(children: [
                                     Container(
                                       decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.grey)),
-                                      height: 80,
-                                      width: 70,
-                                      child: Image.network(
-                                        '${_imageUrls![index]}',
-                                        fit: BoxFit.fitHeight,
+                                        border: Border.all(color: Color(0xFFDEDEDE)),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      height: 90,
+                                      width: 90,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(7),
+                                        child: Image.network(
+                                          '${_imageUrls![index]}',
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
                                     Positioned(
-                                      top: -10,
-                                      right: -10,
+                                      top: -8,
+                                      right: -8,
                                       child: IconButton(
                                           onPressed: () {
                                             _imageUrls!.removeAt(index);
                                           },
-                                          icon: Icon(Icons.cancel)),
+                                        icon: Icon(Icons.cancel), color: Color(0xFF111111),),
                                     ),
                                   ]),
                                   SizedBox(
-                                    width: 10,
+                                    width: 8,
                                   )
                                 ],
                               );
@@ -332,11 +367,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                     ],
                   ),
                   SizedBox(
-                    height: 20,
-                  ),
-                  Divider(
-                    height: 1,
-                    color: Colors.black87,
+                    height: 30,
                   ),
                   Form(
                     key: _formKey,

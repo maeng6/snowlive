@@ -209,7 +209,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                   },
                                   icon: Icon(
                                       Icons.camera_alt_rounded),
-                                color: Color(0xFF666666),),
+                                color: Color(0xFF949494),),
                               Transform.translate(
                                 offset: Offset(0, -10),
                                 child: Text('$imageLength / 5',
@@ -226,12 +226,12 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                               color: Colors.transparent
                             ),
                             borderRadius: BorderRadius.circular(8),
-                            color: Color(0xFFDEDEDE),
+                            color: Color(0xFFececec),
                           ),
                         ),
                       ),
                       SizedBox(
-                        width: 12,
+                        width: 8,
                       ),
                       Expanded(
                         child: SizedBox(
@@ -275,7 +275,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                     ),
                                   ]),
                                   SizedBox(
-                                    width: 12,
+                                    width: 8,
                                   )
                                 ],
                               );
@@ -286,7 +286,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                     ],
                   ),
                   SizedBox(
-                    height: 24,
+                    height: 30,
                   ),
                   Form(
                     key: _formKey,
@@ -303,6 +303,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                       controller: _titleTextEditingController,
                       strutStyle: StrutStyle(leading: 0.3),
                       decoration: InputDecoration(
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
                         errorStyle: TextStyle(
                           fontSize: 12,
                         ),
@@ -327,7 +328,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                       },
                     ),
                       Divider(
-                        height: 40,
+                        height: 32,
                         thickness: 0.5,
                         color: Color(0xFFDEDEDE),
                       ),
@@ -340,6 +341,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                         controller: _itemNameTextEditingController,
                         strutStyle: StrutStyle(leading: 0.3),
                         decoration: InputDecoration(
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
                           errorStyle: TextStyle(
                             fontSize: 12,
                           ),
@@ -348,7 +350,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                           ),
                           hintStyle:
                           TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                          hintText: '물품명 입력',
+                          hintText: '물품명을 입력해 주세요.',
                           labelText: '물품명',
                           contentPadding: EdgeInsets.symmetric(vertical: 2),
                           border: InputBorder.none,
@@ -364,7 +366,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                         },
                       ),
                       Divider(
-                        height: 40,
+                        height: 32,
                         thickness: 0.5,
                         color: Color(0xFFDEDEDE),
                       ),
@@ -487,7 +489,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                         ],
                       ),
                       Divider(
-                        height: 40,
+                        height: 32,
                         thickness: 0.5,
                         color: Color(0xFFDEDEDE),
                       ),
@@ -572,13 +574,16 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                     fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF458BF5)
                               ),),
                                   )
-                                  : Text('카테고리', style: TextStyle(
-                                  fontSize: 16, color: Color(0xFF949494)
-                              ),)),
+                                  : Padding(
+                                    padding: EdgeInsets.only(bottom: 6),
+                                    child: Text('카테고리', style: TextStyle(
+                                    fontSize: 16, color: Color(0xFF949494)
+                              ),),
+                                  )),
                         ],
                       ),
                       Divider(
-                        height: 40,
+                        height: 32,
                         thickness: 0.5,
                         color: Color(0xFFDEDEDE),
                       ),
@@ -659,18 +664,21 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                   fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF17AD4A)
                               ),),
                             )
-                                : Text('거래장소', style: TextStyle(
-                                fontSize: 16, color: Color(0xFF949494)
-                            ),),),
+                                : Padding(
+                              padding: EdgeInsets.only(bottom: 6),
+                              child: Text('거래장소', style: TextStyle(
+                                  fontSize: 16, color: Color(0xFF949494)
+                            ),),
+                                ),),
                       ],
                     ),
                       Divider(
-                        height: 40,
+                        height: 32,
                         thickness: 0.5,
                         color: Color(0xFFDEDEDE),
                       ),
                     Container(
-                      height: 80,
+                      height: 120,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -686,6 +694,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                               controller: _itemDescribTextEditingController,
                               strutStyle: StrutStyle(leading: 0.3),
                               decoration: InputDecoration(
+                                floatingLabelBehavior: FloatingLabelBehavior.always,
                                 errorStyle: TextStyle(
                                   fontSize: 12,
                                 ),
@@ -694,7 +703,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                 ),
                                 hintStyle:
                                 TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                hintText: '상세설명 입력',
+                                hintText: '게시물에 올릴 물품의 상세설명을 입력해주세요.',
                                 labelText: '상세설명',
                                 border: InputBorder.none,
                               ),
