@@ -209,7 +209,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                   },
                                   icon: Icon(
                                       Icons.camera_alt_rounded),
-                                color: Color(0xFF949494),),
+                                color: Color(0xFF666666),),
                               Transform.translate(
                                 offset: Offset(0, -10),
                                 child: Text('$imageLength / 5',
@@ -226,7 +226,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                               color: Colors.transparent
                             ),
                             borderRadius: BorderRadius.circular(8),
-                            color: Color(0xFFD9D9D9),
+                            color: Color(0xFFDEDEDE),
                           ),
                         ),
                       ),
@@ -285,10 +285,8 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                       )
                     ],
                   ),
-                  Divider(
-                    height: 40,
-                    thickness: 0.5,
-                    color: Color(0xFFDEDEDE),
+                  SizedBox(
+                    height: 24,
                   ),
                   Form(
                     key: _formKey,
@@ -672,14 +670,16 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                         color: Color(0xFFDEDEDE),
                       ),
                     Container(
-                      height: 200,
+                      height: 80,
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: TextFormField(
                               maxLines: 10,
                               textAlignVertical: TextAlignVertical.center,
-                              cursorColor: Color(0xff377EEA),
+                              cursorColor: Color(0xff3D6FED),
                               cursorHeight: 16,
                               cursorWidth: 2,
                               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -689,11 +689,13 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                 errorStyle: TextStyle(
                                   fontSize: 12,
                                 ),
+                                labelStyle: TextStyle(
+                                    color: Color(0xff949494)
+                                ),
                                 hintStyle:
-                                TextStyle(color: Color(0xff949494), fontSize: 16),
+                                TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
                                 hintText: '상세설명 입력',
                                 labelText: '상세설명',
-                                contentPadding: EdgeInsets.all(10),
                                 border: InputBorder.none,
                               ),
                               validator: (val) {
@@ -706,10 +708,6 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                 }
                               },
                             ),
-                          ),
-                          Divider(
-                            height: 1,
-                            color: Colors.black87,
                           ),
                         ],
                       ),
