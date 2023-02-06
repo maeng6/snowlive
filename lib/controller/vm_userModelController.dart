@@ -306,12 +306,6 @@ class UserModelController extends GetxController{
     await getCurrentUser(auth.currentUser!.uid);
   }
 
-  Future<void> updateChatCount({required myUid,required otherUid,required chatRoomName,required chatCount,required chatCheckCount}) async {
-    await ref.collection('user').doc(otherUid).collection('$chatRoomName').doc(myUid).update({
-      'chatCount': chatCount+1,
-      'chatCheckCount' : chatCheckCount+1
-    });
-  }
 
 
   Future<void> updateResortNickname(index) async {

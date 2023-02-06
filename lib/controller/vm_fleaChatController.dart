@@ -30,8 +30,6 @@ class FleaChatModelController extends GetxController {
   RxList? _chatUidList = [].obs;
   RxList? _chatUidSumList = [].obs;
   RxString? _chatRoomName = ''.obs;
-  RxInt? _chatCount = 0.obs;
-  RxInt? _chatCheckCount = 0.obs;
   RxInt? _myChatCount = 0.obs;
   RxInt? _otherChatCount = 0.obs;
   RxInt? _myChatCheckCount = 0.obs;
@@ -51,8 +49,6 @@ class FleaChatModelController extends GetxController {
   List? get chatUidSumList => _chatUidSumList;
   String? get myUid => _myUid!.value;
   String? get chatRoomName => _chatRoomName!.value;
-  int? get chatCount => _chatCount!.value;
-  int? get chatCheckCount => _chatCheckCount!.value;
   int? get myChatCount => _myChatCount!.value;
   int? get otherChatCount => _otherChatCount!.value;
   int? get myChatCheckCount => _myChatCheckCount!.value;
@@ -91,7 +87,6 @@ class FleaChatModelController extends GetxController {
         required myProfileImageUrl,
         required comment,
         required myResortNickname,
-        required chatCount,
         required chatRoomName,
         required myChatCount,
         required otherChatCount,
@@ -105,7 +100,6 @@ class FleaChatModelController extends GetxController {
         myProfileImageUrl : myProfileImageUrl,
         comment : comment,
         myResortNickname : myResortNickname,
-        chatCount : chatCount,
         chatRoomName : chatRoomName,
         myChatCount : myChatCount,
         otherChatCount : otherChatCount,
@@ -137,7 +131,6 @@ class FleaChatModelController extends GetxController {
     );
 
     await getCurrentFleaChat(myUid: myUid, otherUid: otherUid);
-    await setNewChatCountUid(otherUid: otherUid, otherDispName: otherDisplayName, myDispName: myDisplayName);
     await getChatCount(myUid: myUid, chatRoomName: chatRoomName, otherUid: otherUid);
 
   }
@@ -169,28 +162,10 @@ class FleaChatModelController extends GetxController {
     getCurrentFleaChat(myUid: myUid, otherUid: otherUid);
   }
 
-  Future<void> setNewChatCountUid({required otherUid, required otherDispName, required myDispName}) async {
-    final User? user = auth.currentUser;
-    final uid = user!.uid;
-    await ref.collection('user').doc(uid).collection('$uid#$otherUid').doc(otherUid).set({
-      'chatCount': 0,
-      'chatCheckCount' : 0,
-      'chatOpponent' : otherDispName
-    });
-    await ref.collection('user').doc(otherUid).collection('$uid#$otherUid').doc(uid).set({
-      'chatCount': 0,
-      'chatCheckCount' : 0,
-      'chatOpponent' : myDispName
-    });
-  }
-
-  Future<void> setNewChatCountUid2({required otherUid, required otherDispName, required myDispName}) async {
-    final User? user = auth.currentUser;
-    final uid = user!.uid;
-    await ref.collection('user').doc(uid).collection('$uid#$otherUid').doc(otherUid).set({
-      'chatCount': 0,
-      'chatCheckCount' : 0,
-      'chatOpponent' : otherDispName
+  Future<void> setOtherChatCountUid({required chatRoomName,}) async {
+    await ref.collection('fleaChat').doc(chatRoomName).update({
+      'otherChatCount': 0,
+      'otherChatCheckCount' : 0,
     });
   }
 
@@ -227,18 +202,14 @@ class FleaChatModelController extends GetxController {
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
     await documentReference.get();
     int myChatCheckCount = documentSnapshot.get('myChatCheckCount');
+    int myChatCount = documentSnapshot.get('myChatCount');
     int otherChatCheckCount = documentSnapshot.get('otherChatCheckCount');
+    int otherChatCount = documentSnapshot.get('otherChatCount');
     this._myChatCheckCount!.value = myChatCheckCount;
+    this._myChatCount!.value = myChatCount;
     this._otherChatCheckCount!.value = otherChatCheckCount;
+    this._otherChatCount!.value = otherChatCount;
 
-    DocumentReference<Map<String, dynamic>> documentReference2 =
-    ref.collection('user').doc(otherUid).collection(chatRoomName).doc(myUid);
-    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot2 =
-    await documentReference2.get();
-    int chatCheckCount = documentSnapshot2.get('chatCheckCount');
-    int chatCount = documentSnapshot2.get('chatCount');
-    this._chatCheckCount!.value = chatCheckCount;
-    this._chatCount!.value = chatCount;
   }
 
   Future<void> updateChatUidSumList(uid) async {
@@ -271,41 +242,51 @@ class FleaChatModelController extends GetxController {
 
   Future<void> deleteChatroom({required chatRoomName, required myUid,required otherUid,required fleaMyUid, required myChatCount, required otherChatCount}) async {
     CustomFullScreenDialog.showDialog();
+    print('myChatCount:$myChatCount');
+    print('otherChatCount:$otherChatCount');
     try {
       //내가 구매자이면
       if(myUid == fleaMyUid){
-        for (int i = myChatCount; i > 0; i--) {
+        for (int i = myChatCount; i > -1; i--) {
           DocumentReference myChatDocs = FirebaseFirestore
               .instance.collection('fleaChat').doc(chatRoomName).collection(myUid).doc('$myUid$i');
-          FirebaseFirestore.instance.runTransaction((transaction) async =>
-          await transaction.delete(myChatDocs));
+           FirebaseFirestore.instance.runTransaction((transaction) async => await transaction.delete(myChatDocs));
         }
-        for (int i = otherChatCount; i > 0; i--) {
+        for (int i = otherChatCount; i > -1; i--) {
           DocumentReference otherChatDocs = FirebaseFirestore
               .instance.collection('fleaChat').doc(chatRoomName).collection(
               myUid).doc('$otherUid$i');
-          FirebaseFirestore.instance.runTransaction((transaction) async =>
-          await transaction.delete(otherChatDocs));
+           FirebaseFirestore.instance.runTransaction((transaction) async => await transaction.delete(otherChatDocs));
         }
       }
       //내가 판매자이면
       else{
-        for (int i = myChatCount; i > 0; i--) {
+        for (int i = myChatCount; i > -1; i--) {
           DocumentReference myChatDocs = FirebaseFirestore
               .instance.collection('fleaChat').doc(chatRoomName).collection(myUid).doc('$myUid$i');
-          FirebaseFirestore.instance.runTransaction((transaction) async =>
-          await transaction.delete(myChatDocs));
-          for (int i = otherChatCount; i > 0; i--) {
+           FirebaseFirestore.instance.runTransaction((transaction) async => await transaction.delete(myChatDocs));
+          for (int i = otherChatCount; i > -1; i--) {
             DocumentReference otherChatDocs = FirebaseFirestore
                 .instance.collection('fleaChat').doc(chatRoomName).collection(myUid).doc('$fleaMyUid$i');
-            FirebaseFirestore.instance.runTransaction((transaction) async =>
-            await transaction.delete(otherChatDocs));
+             FirebaseFirestore.instance.runTransaction((transaction) async => await transaction.delete(otherChatDocs));
           }
         }
       }
       await ref.collection('fleaChat').doc(chatRoomName).update({
         'chatUidSumList': FieldValue.arrayRemove([myUid])
       });
+
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('fleaChat').doc(chatRoomName);
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+      List chatUidSumList = documentSnapshot.get('chatUidSumList');
+      if(chatUidSumList.length==0){
+        await ref.collection('fleaChat').doc(chatRoomName).update({'myChatCount' : 0});
+        await ref.collection('fleaChat').doc(chatRoomName).update({'myChatCheckCount' : 0});
+        await ref.collection('fleaChat').doc(chatRoomName).update({'otherChatCount' : 0});
+        await ref.collection('fleaChat').doc(chatRoomName).update({'otherChatCheckCount' : 0});
+      }else{}
       CustomFullScreenDialog.cancelDialog();
     }catch(e){
       print('에러');
@@ -354,12 +335,12 @@ class FleaChatModelController extends GetxController {
     this._chatUidList!.value = chatUidList;
   }
 
-  Future<void> deleteChatUidList(uid) async {
-    await ref.collection('user').doc(uid).update({
-      'fleaChatUidList': FieldValue.arrayRemove([uid])
+  Future<void> deleteChatUidList({required myUid, required otherUid}) async {
+    await ref.collection('user').doc(myUid).update({
+      'fleaChatUidList': FieldValue.arrayRemove([otherUid])
     });
     DocumentReference<Map<String, dynamic>> documentReference =
-    ref.collection('user').doc(uid);
+    ref.collection('user').doc(myUid);
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
     await documentReference.get();
     List chatUidList = documentSnapshot.get('fleaChatUidList');
