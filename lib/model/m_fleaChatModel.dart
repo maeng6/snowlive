@@ -121,7 +121,6 @@ class FleaChatModel {
       required myProfileImageUrl,
       required comment,
       required myResortNickname,
-      required chatCount,
       required chatRoomName,
         required timeStamp,
        required myChatCount,
@@ -133,7 +132,7 @@ class FleaChatModel {
         .collection('fleaChat')
         .doc(chatRoomName)
         .collection(myUid)
-        .doc('$myUid$chatCount')
+        .doc('$myUid$myChatCount')
         .set({
       'myDisplayName' : myDisplayName,
       'senderUid' : myUid,
@@ -141,7 +140,6 @@ class FleaChatModel {
       'myProfileImageUrl' : myProfileImageUrl,
       'comment' : comment,
       'myResortNickname' : myResortNickname,
-      'chatCount' : chatCount,
       'chatRoomName' : chatRoomName,
       'timeStamp' : timeStamp,
       'myChatCount' : myChatCount+1,
@@ -153,7 +151,7 @@ class FleaChatModel {
         .collection('fleaChat')
         .doc(chatRoomName)
         .collection(otherUid)
-        .doc('$myUid$chatCount')
+        .doc('$myUid$myChatCount')
         .set({
       'myDisplayName' : myDisplayName,
       'senderUid' : myUid,
@@ -161,7 +159,6 @@ class FleaChatModel {
       'myProfileImageUrl' : myProfileImageUrl,
       'comment' : comment,
       'myResortNickname' : myResortNickname,
-      'chatCount' : chatCount,
       'chatRoomName' : chatRoomName,
       'timeStamp' : timeStamp
     });

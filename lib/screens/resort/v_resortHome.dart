@@ -756,7 +756,7 @@ class _ResortHomeState extends State<ResortHome>
                                             top: 20,
                                             bottom: 22),
                                         width: double.infinity,
-                                        height: 612,
+                                        height: 912,
                                         decoration: BoxDecoration(
                                             color: Colors.white,
                                             borderRadius:

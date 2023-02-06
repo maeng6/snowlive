@@ -437,6 +437,14 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
           body: SingleChildScrollView(
             child: Column(
               children: [
+                if (_fleaModelController.itemImagesUrls!.isEmpty)
+                  ExtendedImage.asset(
+                    'assets/imgs/profile/img_profile_default_.png',
+                    fit: BoxFit.cover,
+                    width: _size.width,
+                    height: 280,
+                  ),
+                if (_fleaModelController.itemImagesUrls!.isNotEmpty)
                 CarouselSlider.builder(
                   options: CarouselOptions(
                     height: 280,
@@ -452,14 +460,6 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (_fleaModelController.itemImagesUrls!.isEmpty)
-                                ExtendedImage.asset(
-                                    'assets/imgs/profile/img_profile_default_.png',
-                                  fit: BoxFit.cover,
-                                  width: _size.width,
-                                  height: 280,
-                                ),
-                              if (_fleaModelController.itemImagesUrls!.isNotEmpty)
                                 ExtendedImage.network(
                                 _fleaModelController.itemImagesUrls![index],
                                 fit: BoxFit.cover,
@@ -718,31 +718,20 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                         if(_userModelController.phoneAuth == true){
 
                           try {
-                            if (_fleaModelController.uid !=
-                                _userModelController.uid) {
-                              await _userModelController
-                                  .getCurrentUser(_userModelController.uid);
-                              if (_userModelController.fleaChatUidList!
-                                  .contains(_fleaModelController.uid)) {
+                            if (_fleaModelController.uid != _userModelController.uid) {
+                              await _userModelController.getCurrentUser(_userModelController.uid);
+                              if (_userModelController.fleaChatUidList!.contains(_fleaModelController.uid)) {
                                 _fleaChatModelController.getCurrentFleaChat(
                                     myUid: _userModelController.uid,
                                     otherUid: _fleaModelController.uid);
                                 await _fleaChatModelController.resetMyChatCheckCount(
-                                    chatRoomName:
-                                    '${_fleaChatModelController.chatRoomName}');
-                                await _fleaChatModelController.setNewChatCountUid2(
-                                    otherUid: _fleaModelController.uid,
-                                    otherDispName: _fleaChatModelController
-                                        .myDisplayName,
-                                    myDispName: _userModelController.displayName);
+                                    chatRoomName: '${_fleaChatModelController.chatRoomName}');
+                                await _fleaChatModelController.setOtherChatCountUid(
+                                  chatRoomName: _fleaChatModelController.chatRoomName
+                                );
                                 await _userModelController.addChatUidList(otherAddUid: _fleaModelController.uid, myAddUid: _userModelController.uid);
                                 print('기존에 존재하는 채팅방으로 이동');
                               } else {
-                                await _fleaChatModelController.setNewChatCountUid(
-                                    otherUid: _fleaModelController.uid,
-                                    otherDispName:
-                                    _fleaChatModelController.myDisplayName,
-                                    myDispName: _userModelController.displayName);
                                 await _userModelController.addChatUidList(
                                     otherAddUid: _fleaModelController.uid,
                                     myAddUid: _userModelController.uid);
