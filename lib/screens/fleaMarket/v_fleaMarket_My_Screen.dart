@@ -9,6 +9,7 @@ import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Upload.dart';
 import 'package:snowlive3/screens/fleaMarket/v_phone_Auth_Screen.dart';
 import '../../controller/vm_userModelController.dart';
+import '../../widget/w_fullScreenDialog.dart';
 
 class FleaMarket_My_Screen extends StatefulWidget {
   const FleaMarket_My_Screen({Key? key}) : super(key: key);
@@ -100,7 +101,12 @@ class _FleaMarket_My_ScreenState
                             String _time = _fleaModelController
                                 .getAgoTime(chatDocs[index].get('timeStamp'));
                             return GestureDetector(
-                              onTap: (){
+                              onTap: () async{
+                                CustomFullScreenDialog.showDialog();
+                                await _fleaModelController.getCurrentFleaItem(
+                                    uid: chatDocs[index].get('uid'),
+                                    fleaCount: chatDocs[index].get('fleaCount'));
+                                CustomFullScreenDialog.cancelDialog();
                                 Get.to(()=>FleaMarket_List_Detail());
                               },
                               child: Column(
