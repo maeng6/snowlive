@@ -724,6 +724,9 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                   ],
                   )
                   ),
+                  SizedBox(
+                    height: 20,
+                  )
                 ],
               ),
             ),

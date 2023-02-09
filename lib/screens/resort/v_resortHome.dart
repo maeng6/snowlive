@@ -18,6 +18,7 @@ import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import '../../controller/vm_commentController.dart';
 import '../fleaMarket/v_fleaMarket_List_Screen_home.dart';
+import '../fleaMarket/v_fleaMarket_Screen.dart';
 
 class ResortHome extends StatefulWidget {
   @override
@@ -754,9 +755,8 @@ class _ResortHomeState extends State<ResortHome>
                                             left: 20,
                                             right: 20,
                                             top: 20,
-                                            bottom: 22),
+                                            bottom: 10),
                                         width: double.infinity,
-                                        height: 912,
                                         decoration: BoxDecoration(
                                             color: Colors.white,
                                             borderRadius:
@@ -773,26 +773,29 @@ class _ResortHomeState extends State<ResortHome>
                                                     fontWeight: FontWeight.bold,
                                                     color: Color(0xFFC8C8C8)
                                                 ),),
-                                                ElevatedButton(onPressed: (){},
-                                                    child: Text('더보기', style:
-                                                    TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 13,
-                                                        color: Color(0xFF949494),
-                                                ),),
-                                                  style: ElevatedButton.styleFrom(
-                                                    minimumSize: Size(42, 34),
-                                                    backgroundColor: Color(0xFFF2F3F4),
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(8)),
-                                                    elevation: 0,
-                                                  ),
-                                                ),
+                                                // ElevatedButton(onPressed: (){
+                                                //   Get.to(() => FleaMarketScreen());
+                                                //
+                                                // },
+                                                //     child: Text('더보기', style:
+                                                //     TextStyle(
+                                                //         fontWeight: FontWeight.bold,
+                                                //         fontSize: 13,
+                                                //         color: Color(0xFF949494),
+                                                // ),),
+                                                //   style: ElevatedButton.styleFrom(
+                                                //     minimumSize: Size(42, 34),
+                                                //     backgroundColor: Color(0xFFF2F3F4),
+                                                //     shape: RoundedRectangleBorder(
+                                                //         borderRadius: BorderRadius.circular(8)),
+                                                //     elevation: 0,
+                                                //   ),
+                                                // ),
 
                                               ],
                                             ),
                                             SizedBox(
-                                              height: 20,
+                                              height: 16,
                                             ),
                                             FleaMarket_List_Screen_Home(),
                                           ],

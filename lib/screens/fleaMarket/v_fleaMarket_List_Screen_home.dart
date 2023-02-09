@@ -96,7 +96,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                  chatDocs[index].get('uid')))
                                  ? Center(
                                child: Padding(
-                                 padding: const EdgeInsets.symmetric(vertical: 12),
+                                 padding: const EdgeInsets.symmetric(vertical: 16),
                                  child: Text(
                                    '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
                                    style: TextStyle(
@@ -128,8 +128,8 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                        BorderRadius
                                            .circular(8),
                                        border: Border.all(width: 0.5, color: Color(0xFFdedede)),
-                                       width: 100,
-                                       height: 100,
+                                       width: 40,
+                                       height: 40,
                                        fit: BoxFit.cover,
                                      ),
                                    ),
@@ -143,12 +143,12 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                        borderRadius:
                                        BorderRadius
                                            .circular(8),
-                                       width: 100,
-                                       height: 100,
+                                       width: 40,
+                                       height: 40,
                                        fit: BoxFit.cover,
                                      ),
                                    ),
-                                 SizedBox(width: 16),
+                                 SizedBox(width: 12),
                                  Padding(
                                    padding: const EdgeInsets.symmetric(vertical: 6),
                                    child: Column(
@@ -164,90 +164,34 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                              child: Text(
                                                chatDocs[index]
                                                    .get('title'),
-                                               maxLines: 2,
+                                               maxLines: 1,
                                                overflow: TextOverflow.ellipsis,
                                                style: TextStyle(
                                                    fontWeight:
                                                    FontWeight.normal,
-                                                   fontSize: 15,
+                                                   fontSize: 14,
                                                    color: Color(
                                                        0xFF555555)),
                                              ),
                                            ),                                                          ],
                                        ),
-                                       Row(
-                                         children: [
-                                           Text(
-                                             '$_time',
-                                             style: TextStyle(
-                                                 fontSize: 14,
-                                                 color: Color(0xFF949494),
-                                                 fontWeight: FontWeight.normal),
-                                           ),
-                                         ],
-                                       ),
-                                       SizedBox(
-                                         height: 2,
-                                       ),
-                                       Row(
-                                         children: [
-                                           Container(
-                                             constraints:
-                                             BoxConstraints(
-                                                 maxWidth:
-                                                 _size.width -
-                                                     106),
-                                             child: Text(
-                                               chatDocs[index].get(
-                                                   'price').toString()+' 원',
-                                               maxLines: 1,
-                                               overflow: TextOverflow.ellipsis,
-                                               style: TextStyle(
-                                                   color: Color(0xFF111111),
-                                                   fontWeight:
-                                                   FontWeight.bold,
-                                                   fontSize: 16),
-                                             ),
-                                           ),
-                                         ],
-                                       ),
-                                       SizedBox(
-                                         height: 10,
-                                       ),
-                                       Row(
-                                         children: [
-                                           Container(
-                                             decoration: BoxDecoration(
-                                               borderRadius: BorderRadius.circular(3),
-                                               color: Color(0xFFD7F4FF),
-                                             ),
-                                             padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                             child: Text(
-                                               chatDocs[index].get('category'),
-                                               style: TextStyle(
-                                                   fontWeight: FontWeight.bold,
-                                                   fontSize: 12,
-                                                   color: Color(0xFF458BF5)),
-                                             ),
-                                           ),
-                                           SizedBox(
-                                             width: 6,
-                                           ),
-                                           Container(decoration: BoxDecoration(
-                                             borderRadius: BorderRadius.circular(3),
-                                             color: Color(0xFFD5F7E0),
-                                           ),
-                                             padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                             child: Text(
-                                               chatDocs[index].get(
-                                                   'resortNickname'),
-                                               style: TextStyle(
-                                                   fontWeight: FontWeight.bold,
-                                                   fontSize: 12,
-                                                   color: Color(0xFF17AD4A)),
-                                             ),
-                                           ),
-                                         ],
+                                       Container(
+                                         constraints:
+                                         BoxConstraints(
+                                             maxWidth:
+                                             _size.width -
+                                                 106),
+                                         child: Text(
+                                           chatDocs[index].get(
+                                               'price').toString()+' 원',
+                                           maxLines: 1,
+                                           overflow: TextOverflow.ellipsis,
+                                           style: TextStyle(
+                                               color: Color(0xFF111111),
+                                               fontWeight:
+                                               FontWeight.bold,
+                                               fontSize: 14),
+                                         ),
                                        ),
                                      ],
                                    ),
@@ -257,18 +201,16 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                            ],
                          ),
                        ),
-                       Divider(
-                         color: Color(0xFFDEDEDE),
-                         height: 10,
-                         thickness: 0.5,
-                       ),
+                       SizedBox(
+                         height: 12,
+                       )
                      ],
                    )),
                  );
 
                },
                options: CarouselOptions(
-                   height: 160,
+                   height: 68,
                    initialPage: 0,
                    scrollPhysics: NeverScrollableScrollPhysics(),
                    viewportFraction: 1,
@@ -309,7 +251,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                chatDocs[index].get('uid')))
                                ? Center(
                              child: Padding(
-                               padding: const EdgeInsets.symmetric(vertical: 12),
+                               padding: const EdgeInsets.symmetric(vertical: 24),
                                child: Text(
                                  '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
                                  style: TextStyle(
@@ -341,8 +283,8 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                      BorderRadius
                                          .circular(8),
                                      border: Border.all(width: 0.5, color: Color(0xFFdedede)),
-                                     width: 100,
-                                     height: 100,
+                                     width: 40,
+                                     height: 40,
                                      fit: BoxFit.cover,
                                    ),
                                  ),
@@ -356,12 +298,12 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                      borderRadius:
                                      BorderRadius
                                          .circular(8),
-                                     width: 100,
-                                     height: 100,
+                                     width: 40,
+                                     height: 40,
                                      fit: BoxFit.cover,
                                    ),
                                  ),
-                               SizedBox(width: 16),
+                               SizedBox(width: 12),
                                Padding(
                                  padding: const EdgeInsets.symmetric(vertical: 6),
                                  child: Column(
@@ -382,85 +324,29 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                              style: TextStyle(
                                                  fontWeight:
                                                  FontWeight.normal,
-                                                 fontSize: 15,
+                                                 fontSize: 14,
                                                  color: Color(
                                                      0xFF555555)),
                                            ),
                                          ),                                                          ],
                                      ),
-                                     Row(
-                                       children: [
-                                         Text(
-                                           '$_time',
-                                           style: TextStyle(
-                                               fontSize: 14,
-                                               color: Color(0xFF949494),
-                                               fontWeight: FontWeight.normal),
-                                         ),
-                                       ],
-                                     ),
-                                     SizedBox(
-                                       height: 2,
-                                     ),
-                                     Row(
-                                       children: [
-                                         Container(
-                                           constraints:
-                                           BoxConstraints(
-                                               maxWidth:
-                                               _size.width -
-                                                   106),
-                                           child: Text(
-                                             chatDocs[index].get(
-                                                 'price').toString()+' 원',
-                                             maxLines: 1,
-                                             overflow: TextOverflow.ellipsis,
-                                             style: TextStyle(
-                                                 color: Color(0xFF111111),
-                                                 fontWeight:
-                                                 FontWeight.bold,
-                                                 fontSize: 16),
-                                           ),
-                                         ),
-                                       ],
-                                     ),
-                                     SizedBox(
-                                       height: 10,
-                                     ),
-                                     Row(
-                                       children: [
-                                         Container(
-                                           decoration: BoxDecoration(
-                                             borderRadius: BorderRadius.circular(3),
-                                             color: Color(0xFFD7F4FF),
-                                           ),
-                                           padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                           child: Text(
-                                             chatDocs[index].get('category'),
-                                             style: TextStyle(
-                                                 fontWeight: FontWeight.bold,
-                                                 fontSize: 12,
-                                                 color: Color(0xFF458BF5)),
-                                           ),
-                                         ),
-                                         SizedBox(
-                                           width: 6,
-                                         ),
-                                         Container(decoration: BoxDecoration(
-                                           borderRadius: BorderRadius.circular(3),
-                                           color: Color(0xFFD5F7E0),
-                                         ),
-                                           padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                           child: Text(
-                                             chatDocs[index].get(
-                                                 'resortNickname'),
-                                             style: TextStyle(
-                                                 fontWeight: FontWeight.bold,
-                                                 fontSize: 12,
-                                                 color: Color(0xFF17AD4A)),
-                                           ),
-                                         ),
-                                       ],
+                                     Container(
+                                       constraints:
+                                       BoxConstraints(
+                                           maxWidth:
+                                           _size.width -
+                                               106),
+                                       child: Text(
+                                         chatDocs[index].get(
+                                             'price').toString()+' 원',
+                                         maxLines: 1,
+                                         overflow: TextOverflow.ellipsis,
+                                         style: TextStyle(
+                                             color: Color(0xFF111111),
+                                             fontWeight:
+                                             FontWeight.bold,
+                                             fontSize: 14),
+                                       ),
                                      ),
                                    ],
                                  ),
@@ -470,19 +356,15 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                          ],
                        ),
                      ),
-                     Divider(
-                       color: Color(0xFFDEDEDE),
-                       height: 10,
-                       thickness: 0.5,
-                     ),
-
+                     SizedBox(
+                       height: 12,
+                     )
                    ],
                  )),
                );
-
              },
              options: CarouselOptions(
-                 height: 160,
+                 height: 68,
                  scrollPhysics: NeverScrollableScrollPhysics(),
                  initialPage: 1,
                  viewportFraction: 1,
@@ -523,7 +405,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                chatDocs[index].get('uid')))
                                ? Center(
                              child: Padding(
-                               padding: const EdgeInsets.symmetric(vertical: 12),
+                               padding: const EdgeInsets.symmetric(vertical: 24),
                                child: Text(
                                  '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
                                  style: TextStyle(
@@ -555,8 +437,8 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                      BorderRadius
                                          .circular(8),
                                      border: Border.all(width: 0.5, color: Color(0xFFdedede)),
-                                     width: 100,
-                                     height: 100,
+                                     width: 40,
+                                     height: 40,
                                      fit: BoxFit.cover,
                                    ),
                                  ),
@@ -570,12 +452,12 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                      borderRadius:
                                      BorderRadius
                                          .circular(8),
-                                     width: 100,
-                                     height: 100,
+                                     width: 40,
+                                     height: 40,
                                      fit: BoxFit.cover,
                                    ),
                                  ),
-                               SizedBox(width: 16),
+                               SizedBox(width: 12),
                                Padding(
                                  padding: const EdgeInsets.symmetric(vertical: 6),
                                  child: Column(
@@ -596,85 +478,29 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                              style: TextStyle(
                                                  fontWeight:
                                                  FontWeight.normal,
-                                                 fontSize: 15,
+                                                 fontSize: 14,
                                                  color: Color(
                                                      0xFF555555)),
                                            ),
                                          ),                                                          ],
                                      ),
-                                     Row(
-                                       children: [
-                                         Text(
-                                           '$_time',
-                                           style: TextStyle(
-                                               fontSize: 14,
-                                               color: Color(0xFF949494),
-                                               fontWeight: FontWeight.normal),
-                                         ),
-                                       ],
-                                     ),
-                                     SizedBox(
-                                       height: 2,
-                                     ),
-                                     Row(
-                                       children: [
-                                         Container(
-                                           constraints:
-                                           BoxConstraints(
-                                               maxWidth:
-                                               _size.width -
-                                                   106),
-                                           child: Text(
-                                             chatDocs[index].get(
-                                                 'price').toString()+' 원',
-                                             maxLines: 1,
-                                             overflow: TextOverflow.ellipsis,
-                                             style: TextStyle(
-                                                 color: Color(0xFF111111),
-                                                 fontWeight:
-                                                 FontWeight.bold,
-                                                 fontSize: 16),
-                                           ),
-                                         ),
-                                       ],
-                                     ),
-                                     SizedBox(
-                                       height: 10,
-                                     ),
-                                     Row(
-                                       children: [
-                                         Container(
-                                           decoration: BoxDecoration(
-                                             borderRadius: BorderRadius.circular(3),
-                                             color: Color(0xFFD7F4FF),
-                                           ),
-                                           padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                           child: Text(
-                                             chatDocs[index].get('category'),
-                                             style: TextStyle(
-                                                 fontWeight: FontWeight.bold,
-                                                 fontSize: 12,
-                                                 color: Color(0xFF458BF5)),
-                                           ),
-                                         ),
-                                         SizedBox(
-                                           width: 6,
-                                         ),
-                                         Container(decoration: BoxDecoration(
-                                           borderRadius: BorderRadius.circular(3),
-                                           color: Color(0xFFD5F7E0),
-                                         ),
-                                           padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                           child: Text(
-                                             chatDocs[index].get(
-                                                 'resortNickname'),
-                                             style: TextStyle(
-                                                 fontWeight: FontWeight.bold,
-                                                 fontSize: 12,
-                                                 color: Color(0xFF17AD4A)),
-                                           ),
-                                         ),
-                                       ],
+                                     Container(
+                                       constraints:
+                                       BoxConstraints(
+                                           maxWidth:
+                                           _size.width -
+                                               106),
+                                       child: Text(
+                                         chatDocs[index].get(
+                                             'price').toString()+' 원',
+                                         maxLines: 1,
+                                         overflow: TextOverflow.ellipsis,
+                                         style: TextStyle(
+                                             color: Color(0xFF111111),
+                                             fontWeight:
+                                             FontWeight.bold,
+                                             fontSize: 14),
+                                       ),
                                      ),
                                    ],
                                  ),
@@ -684,18 +510,16 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                          ],
                        ),
                      ),
-                     Divider(
-                       color: Color(0xFFDEDEDE),
-                       height: 10,
-                       thickness: 0.5,
-                     ),
+                     SizedBox(
+                       height: 12,
+                     )
                    ],
                  )),
                );
 
              },
              options: CarouselOptions(
-                 height: 160,
+                 height: 68,
                  scrollPhysics: NeverScrollableScrollPhysics(),
                  initialPage: 2,
                  viewportFraction: 1,
@@ -736,7 +560,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                chatDocs[index].get('uid')))
                                ? Center(
                              child: Padding(
-                               padding: const EdgeInsets.symmetric(vertical: 12),
+                               padding: const EdgeInsets.symmetric(vertical: 24),
                                child: Text(
                                  '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
                                  style: TextStyle(
@@ -768,8 +592,8 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                      BorderRadius
                                          .circular(8),
                                      border: Border.all(width: 0.5, color: Color(0xFFdedede)),
-                                     width: 100,
-                                     height: 100,
+                                     width: 40,
+                                     height: 40,
                                      fit: BoxFit.cover,
                                    ),
                                  ),
@@ -783,12 +607,12 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                      borderRadius:
                                      BorderRadius
                                          .circular(8),
-                                     width: 100,
-                                     height: 100,
+                                     width: 40,
+                                     height: 40,
                                      fit: BoxFit.cover,
                                    ),
                                  ),
-                               SizedBox(width: 16),
+                               SizedBox(width: 12),
                                Padding(
                                  padding: const EdgeInsets.symmetric(vertical: 6),
                                  child: Column(
@@ -809,85 +633,29 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                              style: TextStyle(
                                                  fontWeight:
                                                  FontWeight.normal,
-                                                 fontSize: 15,
+                                                 fontSize: 14,
                                                  color: Color(
                                                      0xFF555555)),
                                            ),
                                          ),                                                          ],
                                      ),
-                                     Row(
-                                       children: [
-                                         Text(
-                                           '$_time',
-                                           style: TextStyle(
-                                               fontSize: 14,
-                                               color: Color(0xFF949494),
-                                               fontWeight: FontWeight.normal),
-                                         ),
-                                       ],
-                                     ),
-                                     SizedBox(
-                                       height: 2,
-                                     ),
-                                     Row(
-                                       children: [
-                                         Container(
-                                           constraints:
-                                           BoxConstraints(
-                                               maxWidth:
-                                               _size.width -
-                                                   106),
-                                           child: Text(
-                                             chatDocs[index].get(
-                                                 'price').toString()+' 원',
-                                             maxLines: 1,
-                                             overflow: TextOverflow.ellipsis,
-                                             style: TextStyle(
-                                                 color: Color(0xFF111111),
-                                                 fontWeight:
-                                                 FontWeight.bold,
-                                                 fontSize: 16),
-                                           ),
-                                         ),
-                                       ],
-                                     ),
-                                     SizedBox(
-                                       height: 10,
-                                     ),
-                                     Row(
-                                       children: [
-                                         Container(
-                                           decoration: BoxDecoration(
-                                             borderRadius: BorderRadius.circular(3),
-                                             color: Color(0xFFD7F4FF),
-                                           ),
-                                           padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                           child: Text(
-                                             chatDocs[index].get('category'),
-                                             style: TextStyle(
-                                                 fontWeight: FontWeight.bold,
-                                                 fontSize: 12,
-                                                 color: Color(0xFF458BF5)),
-                                           ),
-                                         ),
-                                         SizedBox(
-                                           width: 6,
-                                         ),
-                                         Container(decoration: BoxDecoration(
-                                           borderRadius: BorderRadius.circular(3),
-                                           color: Color(0xFFD5F7E0),
-                                         ),
-                                           padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                           child: Text(
-                                             chatDocs[index].get(
-                                                 'resortNickname'),
-                                             style: TextStyle(
-                                                 fontWeight: FontWeight.bold,
-                                                 fontSize: 12,
-                                                 color: Color(0xFF17AD4A)),
-                                           ),
-                                         ),
-                                       ],
+                                     Container(
+                                       constraints:
+                                       BoxConstraints(
+                                           maxWidth:
+                                           _size.width -
+                                               106),
+                                       child: Text(
+                                         chatDocs[index].get(
+                                             'price').toString()+' 원',
+                                         maxLines: 1,
+                                         overflow: TextOverflow.ellipsis,
+                                         style: TextStyle(
+                                             color: Color(0xFF111111),
+                                             fontWeight:
+                                             FontWeight.bold,
+                                             fontSize: 14),
+                                       ),
                                      ),
                                    ],
                                  ),
@@ -897,18 +665,15 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                          ],
                        ),
                      ),
-                     Divider(
-                       color: Color(0xFFDEDEDE),
-                       height: 10,
-                       thickness: 0.5,
-                     ),
+                     SizedBox(
+                       height: 12,
+                     )
                    ],
                  )),
                );
-
              },
              options: CarouselOptions(
-                 height: 160,
+                 height: 68,
                  scrollPhysics: NeverScrollableScrollPhysics(),
                  initialPage: 3,
                  viewportFraction: 1,
@@ -949,7 +714,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                  chatDocs[index].get('uid')))
                                  ? Center(
                                child: Padding(
-                                 padding: const EdgeInsets.symmetric(vertical: 12),
+                                 padding: const EdgeInsets.symmetric(vertical: 24),
                                  child: Text(
                                    '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
                                    style: TextStyle(
@@ -981,8 +746,8 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                        BorderRadius
                                            .circular(8),
                                        border: Border.all(width: 0.5, color: Color(0xFFdedede)),
-                                       width: 100,
-                                       height: 100,
+                                       width: 40,
+                                       height: 40,
                                        fit: BoxFit.cover,
                                      ),
                                    ),
@@ -996,8 +761,8 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                        borderRadius:
                                        BorderRadius
                                            .circular(8),
-                                       width: 100,
-                                       height: 100,
+                                       width: 40,
+                                       height: 40,
                                        fit: BoxFit.cover,
                                      ),
                                    ),
@@ -1022,25 +787,11 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                                style: TextStyle(
                                                    fontWeight:
                                                    FontWeight.normal,
-                                                   fontSize: 15,
+                                                   fontSize: 14,
                                                    color: Color(
                                                        0xFF555555)),
                                              ),
                                            ),                                                          ],
-                                       ),
-                                       Row(
-                                         children: [
-                                           Text(
-                                             '$_time',
-                                             style: TextStyle(
-                                                 fontSize: 14,
-                                                 color: Color(0xFF949494),
-                                                 fontWeight: FontWeight.normal),
-                                           ),
-                                         ],
-                                       ),
-                                       SizedBox(
-                                         height: 2,
                                        ),
                                        Row(
                                          children: [
@@ -1059,45 +810,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                                    color: Color(0xFF111111),
                                                    fontWeight:
                                                    FontWeight.bold,
-                                                   fontSize: 16),
-                                             ),
-                                           ),
-                                         ],
-                                       ),
-                                       SizedBox(
-                                         height: 10,
-                                       ),
-                                       Row(
-                                         children: [
-                                           Container(
-                                             decoration: BoxDecoration(
-                                               borderRadius: BorderRadius.circular(3),
-                                               color: Color(0xFFD7F4FF),
-                                             ),
-                                             padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                             child: Text(
-                                               chatDocs[index].get('category'),
-                                               style: TextStyle(
-                                                   fontWeight: FontWeight.bold,
-                                                   fontSize: 12,
-                                                   color: Color(0xFF458BF5)),
-                                             ),
-                                           ),
-                                           SizedBox(
-                                             width: 6,
-                                           ),
-                                           Container(decoration: BoxDecoration(
-                                             borderRadius: BorderRadius.circular(3),
-                                             color: Color(0xFFD5F7E0),
-                                           ),
-                                             padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                             child: Text(
-                                               chatDocs[index].get(
-                                                   'resortNickname'),
-                                               style: TextStyle(
-                                                   fontWeight: FontWeight.bold,
-                                                   fontSize: 12,
-                                                   color: Color(0xFF17AD4A)),
+                                                   fontSize: 14),
                                              ),
                                            ),
                                          ],
@@ -1110,29 +823,24 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                            ],
                          ),
                        ),
-                       Divider(
-                         color: Color(0xFFDEDEDE),
-                         height: 10,
-                         thickness: 0.5,
-                       ),
+                       SizedBox(
+                         height: 12,
+                       )
                      ],
                    )),
                  );
-
                },
                options: CarouselOptions(
-                   height: 160,
+                   height: 68,
                    scrollPhysics: NeverScrollableScrollPhysics(),
                    initialPage: 4,
                    viewportFraction: 1,
                    enableInfiniteScroll: false,
                    autoPlayInterval: Duration(seconds: 4)),
              ),
-
          ],
        );
-
      },
-            );
+    );
   }
 }

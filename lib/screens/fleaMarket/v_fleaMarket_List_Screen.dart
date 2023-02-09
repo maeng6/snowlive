@@ -124,7 +124,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                         chatDocs[index].get('uid')))
                                                 ? Center(
                                                     child: Padding(
-                                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                                      padding: const EdgeInsets.symmetric(vertical: 24),
                                                       child: Text(
                                                         '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
                                                         style: TextStyle(

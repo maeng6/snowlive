@@ -384,14 +384,18 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                       controller: _titleTextEditingController..text = '${_fleaModelController.title}',
                       strutStyle: StrutStyle(leading: 0.3),
                       decoration: InputDecoration(
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
                         errorStyle: TextStyle(
                           fontSize: 12,
                         ),
+                        labelStyle: TextStyle(
+                            color: Color(0xff949494)
+                        ),
                         hintStyle:
-                        TextStyle(color: Color(0xff949494), fontSize: 16),
-                        hintText: '글 제목 입력',
+                        TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                        hintText: '글 제목을 입력해 주세요',
                         labelText: '글 제목',
-                        contentPadding: EdgeInsets.all(10),
+                        contentPadding: EdgeInsets.symmetric(vertical: 2),
                         border: InputBorder.none,
                       ),
                       validator: (val) {
@@ -404,282 +408,351 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                         }
                       },
                     ),
-                    Divider(
-                      height: 1,
-                      color: Colors.black87,
-                    ),
-                    Padding(
-                      padding:
-                      const EdgeInsets.only(top: 5.0, right: 5.0, bottom: 5.0),
-                      child: Column(
+                      Divider(
+                        height: 32,
+                        thickness: 0.5,
+                        color: Color(0xFFDEDEDE),
+                      ),
+
+
+
+                      TextFormField(
+                        textAlignVertical: TextAlignVertical.center,
+                        cursorColor: Color(0xff3D6FED),
+                        cursorHeight: 16,
+                        cursorWidth: 2,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        controller: _itemNameTextEditingController..text='${_fleaModelController.itemName}',
+                        strutStyle: StrutStyle(leading: 0.3),
+                        decoration: InputDecoration(
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          errorStyle: TextStyle(
+                            fontSize: 12,
+                          ),
+                          labelStyle: TextStyle(
+                              color: Color(0xff949494)
+                          ),
+                          hintStyle:
+                          TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                          hintText: '물품명을 입력해 주세요.',
+                          labelText: '물품명',
+                          contentPadding: EdgeInsets.symmetric(vertical: 2),
+                          border: InputBorder.none,
+                        ),
+                        validator: (val) {
+                          if (val!.length <= 20 && val.length >= 1) {
+                            return null;
+                          } else if (val.length == 0) {
+                            return '물품명을 입력해주세요.';
+                          } else {
+                            return '최대 입력 가능한 글자 수를 초과했습니다.';
+                          }
+                        },
+                      ),
+
+
+                      Divider(
+                        height: 32,
+                        thickness: 0.5,
+                        color: Color(0xFFDEDEDE),
+                      ),
+
+                      Row(
                         children: [
-                          if (isCategorySelected==true)
-                            Text(
-                              '카테고리',
-                              style:
-                              TextStyle(color: Color(0xff949494), fontSize: 12),
-                            ),
-                          Obx(() => TextButton(
-                              onPressed: () {
-                                showModalBottomSheet(
-                                    enableDrag: false,
-                                    context: context,
-                                    builder: (context) {
-                                      return Container(
-                                        color: Colors.white,
-                                        height: _size.height * 0.5,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              '카테고리를 선택해주세요.',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Container(
-                                              color: Colors.white,
-                                              height: 30,
-                                            ),
-                                            Expanded(
-                                              child: ListView.builder(
-                                                  padding: EdgeInsets.zero,
-                                                  itemCount: 5,
-                                                  itemBuilder: (context, index) {
-                                                    return Builder(
-                                                        builder: (context) {
-                                                          return Column(
-                                                            children: [
-                                                              buildCategoryListTile(
-                                                                  index),
-                                                              Divider(
-                                                                height: 20,
-                                                                thickness: 0.5,
-                                                              ),
-                                                            ],
-                                                          );
-                                                        });
-                                                  }),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    });
+                          SizedBox(
+                            width: _size.width / 2 - 16,
+                            child: TextFormField(
+                              textAlignVertical: TextAlignVertical.center,
+                              cursorColor: Color(0xff377EEA),
+                              cursorHeight: 16,
+                              cursorWidth: 2,
+                              controller: _itemPriceTextEditingController..text='${_fleaModelController.price}',
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                // CurrencyTextInputFormatter(
+                                //   locale: 'ko',
+                                //   decimalDigits: 0,
+                                //   symbol: '',
+                                // ),
+                              ],
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.only(bottom: 14),
+                                border: InputBorder.none,
+                                hintText: '판매가격',
+                                prefixIcon: Image.asset('assets/imgs/icons/icon_won.png',
+                                  color: Color(0xFF949494),
+                                ),
+                                prefixIconConstraints: BoxConstraints(maxWidth: 20),
+                              ),
+                              validator: (val) {
+                                if (val!.length <= 8 && val.length >= 1) {
+                                  return null;
+                                } else if (val.length == 0) {
+                                  return '가격을 입력해주세요.';
+                                } else {
+                                  return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                }
                               },
-                              child: Text('${SelectedCategory!.value}'))),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Container(
+                            width: _size.width / 2 - 26,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                  Text(
+                                    '거래방식',
+                                    style:
+                                    TextStyle(color: Color(0xff949494), fontSize: 12),
+                                  ),
+                                Obx(() => TextButton(
+                                  style: TextButton.styleFrom(
+                                    minimumSize: Size.zero,
+                                    padding: EdgeInsets.symmetric(vertical: 6),
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  ),
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                          enableDrag: false,
+                                          context: context,
+                                          builder: (context) {
+                                            return Container(
+                                              color: Colors.white,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 20,
+                                                  vertical: 30),
+                                              height: _size.height * 0.45,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '거래방식을 선택해주세요.',
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight: FontWeight.bold),
+                                                  ),
+                                                  Container(
+                                                    color: Colors.white,
+                                                    height: 30,
+                                                  ),
+                                                  Expanded(
+                                                    child: ListView.builder(
+                                                        padding: EdgeInsets.zero,
+                                                        itemCount: 3,
+                                                        itemBuilder: (context, index) {
+                                                          return Builder(builder: (context) {
+                                                            return Column(
+                                                              children: [
+                                                                buildMethodListTile(index),
+                                                                Divider(
+                                                                  height: 20,
+                                                                  thickness: 0.5,
+                                                                ),
+                                                              ],
+                                                            );
+                                                          });
+                                                        }),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          });
+                                    },
+                                    child: Text('${SelectedMethod!.value}',
+                                      style: TextStyle(
+                                          fontSize: 16, color: Color(0xFF111111)
+                                      ),))),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                    Divider(
-                      height: 1,
-                      color: Colors.black87,
-                    ),
-                    TextFormField(
-                      textAlignVertical: TextAlignVertical.center,
-                      cursorColor: Color(0xff377EEA),
-                      cursorHeight: 16,
-                      cursorWidth: 2,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      controller: _itemNameTextEditingController..text='${_fleaModelController.itemName}',
-                      strutStyle: StrutStyle(leading: 0.3),
-                      decoration: InputDecoration(
-                        errorStyle: TextStyle(
-                          fontSize: 12,
-                        ),
-                        hintStyle:
-                        TextStyle(color: Color(0xff949494), fontSize: 16),
-                        hintText: '물품명 입력',
-                        labelText: '물품명',
-                        contentPadding: EdgeInsets.all(10),
-                        border: InputBorder.none,
+                      Divider(
+                        height: 32,
+                        thickness: 0.5,
+                        color: Color(0xFFDEDEDE),
                       ),
-                      validator: (val) {
-                        if (val!.length <= 20 && val.length >= 1) {
-                          return null;
-                        } else if (val.length == 0) {
-                          return '물품명을 입력해주세요.';
-                        } else {
-                          return '최대 입력 가능한 글자 수를 초과했습니다.';
-                        }
-                      },
+
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                          Text(
+                            '카테고리',
+                            style:
+                            TextStyle(color: Color(0xff949494), fontSize: 12),
+                          ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Obx(() => TextButton(
+                            style: TextButton.styleFrom(
+                              minimumSize: Size.zero,
+                              padding: EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            onPressed: () {
+                              showModalBottomSheet(
+                                  enableDrag: false,
+                                  context: context,
+                                  builder: (context) {
+                                    return Container(
+                                      color: Colors.white,
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 30),
+                                      height: _size.height * 0.8,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '카테고리를 선택해주세요.',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Container(
+                                            color: Colors.white,
+                                            height: 30,
+                                          ),
+                                          Expanded(
+                                            child: ListView.builder(
+                                                padding: EdgeInsets.zero,
+                                                itemCount: 5,
+                                                itemBuilder: (context, index) {
+                                                  return Builder(
+                                                      builder: (context) {
+                                                        return Column(
+                                                          children: [
+                                                            buildCategoryListTile(
+                                                                index),
+                                                            Divider(
+                                                              height: 20,
+                                                              thickness: 0.5,
+                                                            ),
+                                                          ],
+                                                        );
+                                                      });
+                                                }),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: Color(0xFFD7F4FF),
+                              ),
+                              padding: EdgeInsets.only(right: 10, left: 10, top: 4, bottom: 6),
+                              child: Text('${SelectedCategory!.value}', style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF458BF5)
+                              ),),
+                            ))),
+                          ],
                     ),
-                    Divider(
-                      height: 1,
-                      color: Colors.black87,
-                    ),
-                    TextFormField(
-                      textAlignVertical: TextAlignVertical.center,
-                      cursorColor: Color(0xff377EEA),
-                      cursorHeight: 16,
-                      cursorWidth: 2,
-                      controller: _itemPriceTextEditingController..text='${_fleaModelController.price}',
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        // CurrencyTextInputFormatter(
-                        //   locale: 'ko',
-                        //   decimalDigits: 0,
-                        //   symbol: '',
-                        // ),
+                      Divider(
+                        height: 32,
+                        thickness: 0.5,
+                        color: Color(0xFFDEDEDE),
+                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                          Text(
+                            '거래장소',
+                            style:
+                            TextStyle(color: Color(0xff949494), fontSize: 12),
+                          ),
+
+                        SizedBox(
+                          height: 4,
+                        ),
+
+                        Obx(() => TextButton(
+                            style: TextButton.styleFrom(
+                              minimumSize: Size.zero,
+                              padding: EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            onPressed: () {
+                              showModalBottomSheet(
+                                  enableDrag: false,
+                                  context: context,
+                                  builder: (context) {
+                                    return Container(
+                                      color: Colors.white,
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 30),
+                                      height: _size.height * 0.5,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '거래희망 장소를 선택해주세요.',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Container(
+                                            color: Colors.white,
+                                            height: 30,
+                                          ),
+                                          Expanded(
+                                            child: ListView.builder(
+                                                padding: EdgeInsets.zero,
+                                                itemCount: 14,
+                                                itemBuilder: (context, index) {
+                                                  return Builder(builder: (context) {
+                                                    return Column(
+                                                      children: [
+                                                        buildResortListTile(index),
+                                                        Divider(
+                                                          height: 20,
+                                                          thickness: 0.5,
+                                                        ),
+                                                      ],
+                                                    );
+                                                  });
+                                                }),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  });
+                            },
+                            child:  Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: Color(0xFFD5F7E0),
+                              ),
+                              padding: EdgeInsets.only(right: 10, left: 10, top: 4, bottom: 6),
+                              child: Text('${SelectedLocation!.value}', style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF17AD4A)
+                              ),),
+                            )
+                        )),
                       ],
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: '판매가격',
-                        prefixIcon: Image.asset('assets/imgs/icons/icon_won.png',
-                         color:
-                         (_itemPriceTextEditingController.text.trim().isEmpty)
-                         ? Colors.grey[350]
-                         : Colors.black87,
-                        ),
-                        prefixIconConstraints: BoxConstraints(maxWidth: 20),
+                    ),
+                      Divider(
+                        height: 32,
+                        thickness: 0.5,
+                        color: Color(0xFFDEDEDE),
                       ),
-                      validator: (val) {
-                        if (val!.length <= 8 && val.length >= 1) {
-                          return null;
-                        } else if (val.length == 0) {
-                          return '가격을 입력해주세요.';
-                        } else {
-                          return '최대 입력 가능한 글자 수를 초과했습니다.';
-                        }
-                      },
-                    ),
-                    Divider(
-                      height: 1,
-                      color: Colors.black87,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5.0, right: 5.0, bottom: 5.0),
-                      child: Column(
-                        children: [
-                          if (isLocationSelected==true)
-                            Text(
-                              '거래장소',
-                              style:
-                              TextStyle(color: Color(0xff949494), fontSize: 12),
-                            ),
-                          Obx(() => TextButton(
-                              onPressed: () {
-                                showModalBottomSheet(
-                                    enableDrag: false,
-                                    context: context,
-                                    builder: (context) {
-                                      return Container(
-                                        color: Colors.white,
-                                        height: _size.height * 0.5,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              '거래희망 장소를 선택해주세요.',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Container(
-                                              color: Colors.white,
-                                              height: 30,
-                                            ),
-                                            Expanded(
-                                              child: ListView.builder(
-                                                  padding: EdgeInsets.zero,
-                                                  itemCount: 14,
-                                                  itemBuilder: (context, index) {
-                                                    return Builder(builder: (context) {
-                                                      return Column(
-                                                        children: [
-                                                          buildResortListTile(index),
-                                                          Divider(
-                                                            height: 20,
-                                                            thickness: 0.5,
-                                                          ),
-                                                        ],
-                                                      );
-                                                    });
-                                                  }),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    });
-                              },
-                              child:  Text('${SelectedLocation!.value}'))),
-                        ],
-                      ),
-                    ),
-                    Divider(
-                      height: 1,
-                      color: Colors.black87,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5.0, right: 5.0, bottom: 5.0),
-                      child: Column(
-                        children: [
-                          if (isMethodSelected==true)
-                            Text(
-                              '거래방식',
-                              style:
-                              TextStyle(color: Color(0xff949494), fontSize: 12),
-                            ),
-                          Obx(() =>  TextButton(
-                              onPressed: () {
-                                showModalBottomSheet(
-                                    enableDrag: false,
-                                    context: context,
-                                    builder: (context) {
-                                      return Container(
-                                        color: Colors.white,
-                                        height: _size.height * 0.5,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              '거래방식을 선택해주세요.',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Container(
-                                              color: Colors.white,
-                                              height: 30,
-                                            ),
-                                            Expanded(
-                                              child: ListView.builder(
-                                                  padding: EdgeInsets.zero,
-                                                  itemCount: 3,
-                                                  itemBuilder: (context, index) {
-                                                    return Builder(builder: (context) {
-                                                      return Column(
-                                                        children: [
-                                                          buildMethodListTile(index),
-                                                          Divider(
-                                                            height: 20,
-                                                            thickness: 0.5,
-                                                          ),
-                                                        ],
-                                                      );
-                                                    });
-                                                  }),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    });
-                              },
-                              child: Text('${SelectedMethod!.value}'))),
-                        ],
-                      ),
-                    ),
-                    Divider(
-                      height: 1,
-                      color: Colors.black87,
-                    ),
                     Container(
-                      height: 200,
+                      height: 120,
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: TextFormField(
@@ -695,11 +768,13 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                 errorStyle: TextStyle(
                                   fontSize: 12,
                                 ),
+                                labelStyle: TextStyle(
+                                    color: Color(0xff949494)
+                                ),
                                 hintStyle:
-                                TextStyle(color: Color(0xff949494), fontSize: 16),
-                                hintText: '상세설명 입력',
+                                TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                                hintText: '게시물에 올릴 물품의 상세설명을 입력해주세요.',
                                 labelText: '상세설명',
-                                contentPadding: EdgeInsets.all(10),
                                 border: InputBorder.none,
                               ),
                               validator: (val) {
@@ -713,16 +788,15 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                               },
                             ),
                           ),
-                          Divider(
-                            height: 1,
-                            color: Colors.black87,
-                          ),
                         ],
                       ),
                     ),
                   ],
                   )
                   ),
+                  SizedBox(
+                    height: 20,
+                  )
                 ],
               ),
             ),

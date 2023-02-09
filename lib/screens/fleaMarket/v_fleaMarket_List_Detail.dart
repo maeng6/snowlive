@@ -707,7 +707,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                   height: 40,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 16, left: 16, right: 16),
                   child: TextButton(
                       onPressed: () async {
 
