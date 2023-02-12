@@ -32,8 +32,8 @@ class ContactUsPage extends StatelessWidget {
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset('assets/imgs/logos/snowLiveLogo.png',
-                        width: _size.width / 2,
+                      Image.asset('assets/imgs/logos/snowlive_logo_new.png',
+                        width: _size.width / 1.6,
                       ),
                     ],
                   ),
