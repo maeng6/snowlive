@@ -5,7 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_10.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
@@ -151,18 +153,22 @@ class _FleaChatroomState
                         }
                       },
 
-                      child: Text('채팅방 나가기'))
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 8, right: 10),
+                        child: Text('나가기', style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF949494)
+                        ),),
+                      ))
                 ],
                 titleSpacing: 0,
-                title: Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    '채팅방',
-                    style: GoogleFonts.notoSans(
-                        color: Color(0xFF111111),
-                        fontWeight: FontWeight.w900,
-                        fontSize: 22),
-                  ),
+                title: Text(
+                  '채팅방',
+                  style: GoogleFonts.notoSans(
+                      color: Color(0xFF111111),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 22),
                 ),
                 backgroundColor: Colors.white,
                 elevation: 0.0,
@@ -208,7 +214,7 @@ class _FleaChatroomState
                                       if (chatDocs[index][
                                       'myProfileImageUrl'] != "")
                                         Padding(
-                                          padding: EdgeInsets.only(top: 5),
+                                          padding: EdgeInsets.only(bottom: 16),
                                           child:
                                           !_isMe
                                               ? GestureDetector(
@@ -229,8 +235,8 @@ class _FleaChatroomState
                                               BorderRadius
                                                   .circular(
                                                   20),
-                                              width: 32,
-                                              height: 32,
+                                              width: 36,
+                                              height: 36,
                                               fit: BoxFit.cover,
                                             ),
                                           )
@@ -240,7 +246,7 @@ class _FleaChatroomState
                                       if (chatDocs[index][
                                       'myProfileImageUrl'] == "")
                                         Padding(
-                                          padding: EdgeInsets.only(top: 5),
+                                          padding: EdgeInsets.only(bottom: 16),
                                           child:
                                           !_isMe
                                               ? GestureDetector(
@@ -259,8 +265,8 @@ class _FleaChatroomState
                                               BorderRadius
                                                   .circular(
                                                   20),
-                                              width: 32,
-                                              height: 32,
+                                              width: 36,
+                                              height: 36,
                                               fit: BoxFit.cover,
                                             ),
                                           )
@@ -274,99 +280,102 @@ class _FleaChatroomState
                                         _isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                                         children: [
                                           if(!_isMe)
-                                            Row(
+                                            Column(
                                               children: [
-                                                Text(
-                                                  chatDocs[index].get('myDisplayName'),
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 14,
-                                                      color: Color(0xFF111111)),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      chatDocs[index].get('myDisplayName'),
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 13,
+                                                          color: Color(0xFF111111)),
+                                                    ),
+                                                    SizedBox(
+                                                        width: 6),
+                                                    Text(
+                                                      chatDocs[index].get(
+                                                          'myResortNickname'),
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .normal,
+                                                          fontSize:
+                                                          13,
+                                                          color: Color(
+                                                              0xFF949494)),
+                                                    ),
+                                                  ],
                                                 ),
-                                                SizedBox(
-                                                    width: 6),
-                                                Text(
-                                                  chatDocs[index].get(
-                                                      'myResortNickname'),
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                      FontWeight
-                                                          .w300,
-                                                      fontSize:
-                                                      13,
-                                                      color: Color(
-                                                          0xFF949494)),
-                                                ),
-                                                SizedBox(
-                                                    width: 1),
+                                                SizedBox(height: 8,)
                                               ],
                                             ),
                                           if(_isMe)
                                             SizedBox(
-                                              height: 2,
+                                              height: 0,
                                             ),
                                           Row(
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.only(top: 30),
+                                                padding: EdgeInsets.only(top: 18),
                                                 child: Container(
                                                   child:
                                                   _isMe ? Text(
                                                     '$_time   ',
                                                     style: TextStyle(
                                                         fontSize:
-                                                        10,
+                                                        11,
                                                         color: Color(
                                                             0xFF949494),
                                                         fontWeight:
                                                         FontWeight
-                                                            .w300),
+                                                            .normal),
                                                   ) : null,
                                                 ),
                                               ),
                                               ChatBubble(
                                                 clipper:
-                                                _isMe ? ChatBubbleClipper10(type: BubbleType.sendBubble)
-                                                    : ChatBubbleClipper10(type: BubbleType.receiverBubble),
-                                                backGroundColor: _isMe ? Colors.yellow : Colors.black38,
+                                                _isMe ? ChatBubbleClipper5(type: BubbleType.sendBubble)
+                                                    : ChatBubbleClipper5(type: BubbleType.receiverBubble),
+                                                backGroundColor: _isMe ? Color(0xFF3D6FED) : Color(0xFF555555),
                                                 elevation: 0,
                                                 child: Container(
                                                   constraints: BoxConstraints(
                                                       maxWidth:
-                                                      _size.width - 106),
+                                                      _size.width - 151),
                                                   child: Text(
                                                     chatDocs[index].get('comment'),
                                                     maxLines: 1000,
                                                     overflow: TextOverflow.ellipsis,
                                                     style: TextStyle(
                                                         color:
-                                                        _isMe ? Color(0xFF111111) : Colors.white,
+                                                        _isMe ? Color(0xFFFFFFFF) : Colors.white,
                                                         fontWeight: FontWeight.normal,
-                                                        fontSize: 13),
+                                                        fontSize: 14),
                                                   ),
                                                 ),
                                               ),
                                               Padding(
-                                                padding: const EdgeInsets.only(top: 30),
+                                                padding: EdgeInsets.only(top: 18),
                                                 child: Container(
                                                   child:
                                                   !_isMe ? Text(
                                                     '   $_time',
                                                     style: TextStyle(
                                                         fontSize:
-                                                        10,
+                                                        11,
                                                         color: Color(
                                                             0xFF949494),
                                                         fontWeight:
                                                         FontWeight
-                                                            .w300),
+                                                            .normal),
                                                   ) : null,
                                                 ),
                                               ),
                                             ],
                                           ),
                                           SizedBox(
-                                            height: 8,
+                                            height: 12,
                                           ),
                                         ],
                                       ),

@@ -35,8 +35,6 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
     _stream = newStream();
   }
 
-
-
   Stream<QuerySnapshot> newStream() {
     return FirebaseFirestore.instance
         .collection('fleaMarket')
@@ -59,22 +57,79 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
           floatingActionButton: FloatingActionButton(
             backgroundColor: Color(0xFF3D6FED),
             onPressed: () async {
-              await _userModelController.getCurrentUser(_userModelController.uid);
-              if(_userModelController.phoneAuth == true){
+              await _userModelController
+                  .getCurrentUser(_userModelController.uid);
+              if (_userModelController.phoneAuth == true) {
                 Get.to(() => FleaMarket_Upload());
-              }else if(_userModelController.phoneAuth == false){
-                Get.to(()=>PhoneAuthScreen());
-              }else{
-
-              }
+              } else if (_userModelController.phoneAuth == false) {
+                Get.to(() => PhoneAuthScreen());
+              } else {}
             },
             child: Icon(Icons.add),
           ),
           backgroundColor: Colors.white,
           body: Padding(
-            padding: const EdgeInsets.only(top: 12),
+            padding: const EdgeInsets.only(top: 2),
             child: Column(
               children: [
+                Container(
+                  height: 68,
+                  child: Row(
+                    children: [
+                      Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: ElevatedButton.icon(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.arrow_drop_down_sharp,
+                              size: 26,
+                              color: Color(0xFF555555),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                                side: const BorderSide(
+                                  width: 1,
+                                  color: Color(0xFFDEDEDE),
+                                ),
+                                primary: Color(0xFFFFFFFF),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30))),
+                            label: Text('카테고리',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF555555)))),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: ElevatedButton.icon(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.arrow_drop_down_sharp,
+                              size: 26,
+                              color: Color(0xFF555555),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                                side: const BorderSide(
+                                  width: 1,
+                                  color: Color(0xFFDEDEDE),
+                                ),
+                                primary: Color(0xFFFFFFFF),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30))),
+                            label: Text('리조트',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF555555)))),
+                      ),
+                    ],
+                  ),
+                ),
                 Expanded(
                   child: StreamBuilder<QuerySnapshot>(
                     stream: _stream,
@@ -106,71 +161,92 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                 CustomFullScreenDialog.showDialog();
                                 await _fleaModelController.getCurrentFleaItem(
                                     uid: chatDocs[index].get('uid'),
-                                    fleaCount: chatDocs[index].get('fleaCount'));
+                                    fleaCount:
+                                        chatDocs[index].get('fleaCount'));
                                 CustomFullScreenDialog.cancelDialog();
                                 print(_fleaModelController.itemImagesUrls);
                                 Get.to(() => FleaMarket_List_Detail());
                               },
                               child: Obx(() => Column(
-                                children: [
-                                  Container(
+                                    children: [
+                                      Container(
                                         color: Colors.white,
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
                                             (_userModelController.repoUidList!
-                                                    .contains(
-                                                        chatDocs[index].get('uid')))
+                                                    .contains(chatDocs[index]
+                                                        .get('uid')))
                                                 ? Center(
                                                     child: Padding(
-                                                      padding: const EdgeInsets.symmetric(vertical: 24),
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 24),
                                                       child: Text(
                                                         '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
                                                         style: TextStyle(
                                                             fontWeight:
-                                                                FontWeight.normal,
+                                                                FontWeight
+                                                                    .normal,
                                                             fontSize: 12,
-                                                            color:
-                                                                Color(0xffc8c8c8)),
+                                                            color: Color(
+                                                                0xffc8c8c8)),
                                                       ),
                                                     ),
                                                   )
                                                 : Row(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      if (List.from(chatDocs[index]
-                                                              ['itemImagesUrls'])
+                                                      if (List.from(chatDocs[
+                                                                  index][
+                                                              'itemImagesUrls'])
                                                           .isNotEmpty)
                                                         Padding(
-                                                          padding: EdgeInsets.only(top: 8, bottom: 8),
-                                                          child:
-                                                              ExtendedImage.network(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 8,
+                                                                  bottom: 8),
+                                                          child: ExtendedImage
+                                                              .network(
                                                             chatDocs[index][
                                                                 'itemImagesUrls'][0],
                                                             cache: true,
-                                                            shape:
-                                                                BoxShape.rectangle,
+                                                            shape: BoxShape
+                                                                .rectangle,
                                                             borderRadius:
                                                                 BorderRadius
-                                                                    .circular(8),
-                                                            border: Border.all(width: 0.5, color: Color(0xFFdedede)),
+                                                                    .circular(
+                                                                        8),
+                                                            border: Border.all(
+                                                                width: 0.5,
+                                                                color: Color(
+                                                                    0xFFdedede)),
                                                             width: 100,
                                                             height: 100,
                                                             fit: BoxFit.cover,
                                                           ),
                                                         ),
-                                                      if (List.from(chatDocs[index]['itemImagesUrls']).isEmpty)
+                                                      if (List.from(chatDocs[
+                                                                  index][
+                                                              'itemImagesUrls'])
+                                                          .isEmpty)
                                                         Padding(
-                                                          padding: EdgeInsets.only(top: 8, bottom: 8),
-                                                          child:
-                                                              ExtendedImage.asset('assets/imgs/profile/img_profile_default_.png',
-                                                            shape:
-                                                                BoxShape.rectangle,
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 8,
+                                                                  bottom: 8),
+                                                          child: ExtendedImage
+                                                              .asset(
+                                                            'assets/imgs/profile/img_profile_default_.png',
+                                                            shape: BoxShape
+                                                                .rectangle,
                                                             borderRadius:
                                                                 BorderRadius
-                                                                    .circular(8),
+                                                                    .circular(
+                                                                        8),
                                                             width: 100,
                                                             height: 100,
                                                             fit: BoxFit.cover,
@@ -178,39 +254,58 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                         ),
                                                       SizedBox(width: 16),
                                                       Padding(
-                                                        padding: const EdgeInsets.symmetric(vertical: 6),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                vertical: 6),
                                                         child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
                                                             Row(
                                                               children: [
                                                                 Container(
-                                                                  constraints:
-                                                                  BoxConstraints(
-                                                                      maxWidth: _size.width - 150),
+                                                                  constraints: BoxConstraints(
+                                                                      maxWidth:
+                                                                          _size.width -
+                                                                              150),
                                                                   child: Text(
-                                                                    chatDocs[index]
-                                                                        .get('title'),
+                                                                    chatDocs[
+                                                                            index]
+                                                                        .get(
+                                                                            'title'),
                                                                     maxLines: 2,
-                                                                    overflow: TextOverflow.ellipsis,
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
                                                                     style: TextStyle(
                                                                         fontWeight:
-                                                                            FontWeight.normal,
-                                                                        fontSize: 15,
+                                                                            FontWeight
+                                                                                .normal,
+                                                                        fontSize:
+                                                                            15,
                                                                         color: Color(
                                                                             0xFF555555)),
                                                                   ),
-                                                                ),                                                          ],
+                                                                ),
+                                                              ],
                                                             ),
                                                             Row(
                                                               children: [
                                                                 Text(
                                                                   '$_time',
                                                                   style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      color: Color(0xFF949494),
-                                                                      fontWeight: FontWeight.normal),
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Color(
+                                                                          0xFF949494),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .normal),
                                                                 ),
                                                               ],
                                                             ),
@@ -220,21 +315,27 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                             Row(
                                                               children: [
                                                                 Container(
-                                                                  constraints:
-                                                                      BoxConstraints(
-                                                                          maxWidth:
-                                                                              _size.width -
-                                                                                  106),
+                                                                  constraints: BoxConstraints(
+                                                                      maxWidth:
+                                                                          _size.width -
+                                                                              106),
                                                                   child: Text(
-                                                                    chatDocs[index].get(
-                                                                            'price').toString()+' 원',
+                                                                    chatDocs[index]
+                                                                            .get('price')
+                                                                            .toString() +
+                                                                        ' 원',
                                                                     maxLines: 1,
-                                                                    overflow: TextOverflow.ellipsis,
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
                                                                     style: TextStyle(
-                                                                        color: Color(0xFF111111),
+                                                                        color: Color(
+                                                                            0xFF111111),
                                                                         fontWeight:
-                                                                            FontWeight.bold,
-                                                                        fontSize: 16),
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        fontSize:
+                                                                            16),
                                                                   ),
                                                                 ),
                                                               ],
@@ -245,34 +346,74 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                             Row(
                                                               children: [
                                                                 Container(
-                                                                  decoration: BoxDecoration(
-                                                                    borderRadius: BorderRadius.circular(3),
-                                                                    color: Color(0xFFD7F4FF),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(3),
+                                                                    color: Color(
+                                                                        0xFFD7F4FF),
                                                                   ),
-                                                                  padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
+                                                                  padding: EdgeInsets
+                                                                      .only(
+                                                                          right:
+                                                                              6,
+                                                                          left:
+                                                                              6,
+                                                                          top:
+                                                                              2,
+                                                                          bottom:
+                                                                              3),
                                                                   child: Text(
-                                                                    chatDocs[index].get('category'),
+                                                                    chatDocs[
+                                                                            index]
+                                                                        .get(
+                                                                            'category'),
                                                                     style: TextStyle(
-                                                                        fontWeight: FontWeight.bold,
-                                                                        fontSize: 12,
-                                                                        color: Color(0xFF458BF5)),
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        fontSize:
+                                                                            12,
+                                                                        color: Color(
+                                                                            0xFF458BF5)),
                                                                   ),
                                                                 ),
                                                                 SizedBox(
                                                                   width: 6,
                                                                 ),
-                                                                Container(decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(3),
-                                                                  color: Color(0xFFD5F7E0),
-                                                                ),
-                                                                  padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
+                                                                Container(
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(3),
+                                                                    color: Color(
+                                                                        0xFFD5F7E0),
+                                                                  ),
+                                                                  padding: EdgeInsets
+                                                                      .only(
+                                                                          right:
+                                                                              6,
+                                                                          left:
+                                                                              6,
+                                                                          top:
+                                                                              2,
+                                                                          bottom:
+                                                                              3),
                                                                   child: Text(
-                                                                    chatDocs[index].get(
-                                                                        'resortNickname'),
+                                                                    chatDocs[
+                                                                            index]
+                                                                        .get(
+                                                                            'resortNickname'),
                                                                     style: TextStyle(
-                                                                        fontWeight: FontWeight.bold,
-                                                                        fontSize: 12,
-                                                                        color: Color(0xFF17AD4A)),
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        fontSize:
+                                                                            12,
+                                                                        color: Color(
+                                                                            0xFF17AD4A)),
                                                                   ),
                                                                 ),
                                                               ],
@@ -285,13 +426,13 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                           ],
                                         ),
                                       ),
-                              Divider(
-                                color: Color(0xFFDEDEDE),
-                                height: 32,
-                                thickness: 0.5,
-                              ),
-                                ],
-                              )),
+                                      Divider(
+                                        color: Color(0xFFDEDEDE),
+                                        height: 32,
+                                        thickness: 0.5,
+                                      ),
+                                    ],
+                                  )),
                             );
                           },
                         ),

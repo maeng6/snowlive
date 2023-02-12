@@ -438,11 +438,14 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
             child: Column(
               children: [
                 if (_fleaModelController.itemImagesUrls!.isEmpty)
-                  ExtendedImage.asset(
-                    'assets/imgs/profile/img_profile_default_.png',
-                    fit: BoxFit.cover,
-                    width: _size.width,
-                    height: 280,
+                  Container(
+                    color: Color(0xFFDEDEDE),
+                    child: ExtendedImage.asset(
+                      'assets/imgs/profile/img_profile_default_.png',
+                      fit: BoxFit.fitHeight,
+                      width: _size.width,
+                      height: 280,
+                    ),
                   ),
                 if (_fleaModelController.itemImagesUrls!.isNotEmpty)
                 CarouselSlider.builder(
