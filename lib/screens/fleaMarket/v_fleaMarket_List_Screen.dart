@@ -85,13 +85,15 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
               onSelectedItemChanged: (i) {
                 setState(() {
                   _selectedValue = _categories[i];
-                  _stream = newStream();
                 });
               },
               scrollController: _scrollWheelController,
             ),
           ),
         );});
+    setState(() {
+      _stream = newStream();
+    });
   }
 
   @override
