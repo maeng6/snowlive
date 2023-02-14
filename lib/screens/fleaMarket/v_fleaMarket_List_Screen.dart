@@ -1,5 +1,4 @@
 import 'package:extended_image/extended_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,20 +26,72 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
 //TODO: Dependency Injection**************************************************
 
   var _stream;
+  var _selectedValue = '전체';
+  var _allCategories;
+  List<String> _categories = ['전체', '데크', '바인딩', '부츠', '의류', '기타'];
+
+  FixedExtentScrollController? _scrollWheelController;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _stream = newStream();
+    _scrollWheelController = FixedExtentScrollController(
+      /// Jump to the item index of the selected value in CupertinoPicker
+      initialItem: _categories.indexOf(_selectedValue),
+    );
+
   }
 
   Stream<QuerySnapshot> newStream() {
     return FirebaseFirestore.instance
         .collection('fleaMarket')
+        .where('category', isEqualTo: (_selectedValue == '전체') ? _allCategories :'$_selectedValue')
         .orderBy('timeStamp', descending: true)
         .limit(500)
         .snapshots();
+  }
+
+  _showCupertinoPicker() async{
+
+    await showCupertinoModalPopup(
+        context: context,
+        builder: (_){
+          WidgetsBinding.instance.addPostFrameCallback(
+            /// [ScrollController] now refers to a
+            /// [ListWheelScrollView] that is already mounted on the screen
+                (_) => _scrollWheelController?.jumpToItem(
+              _categories.indexOf(_selectedValue),
+            ),
+          );
+          return Padding(
+          padding: EdgeInsets.only(
+              bottom:
+              MediaQuery.of(context)
+                  .viewInsets
+                  .bottom),
+          child: Container(
+            height: 200,
+            padding: EdgeInsets.only(
+                left: 20, right: 20),
+            child: CupertinoPicker(
+              magnification: 1.1,
+              backgroundColor: Colors.white,
+              itemExtent: 40,
+              children: [
+                ..._categories.map((e) => Text(e))
+              ],
+              onSelectedItemChanged: (i) {
+                setState(() {
+                  _selectedValue = _categories[i];
+                  _stream = newStream();
+                });
+              },
+              scrollController: _scrollWheelController,
+            ),
+          ),
+        );});
   }
 
   @override
@@ -79,7 +130,9 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                       Directionality(
                         textDirection: TextDirection.rtl,
                         child: ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: () async{
+                              await _showCupertinoPicker();
+                            },
                             icon: Icon(
                               Icons.arrow_drop_down_sharp,
                               size: 26,
@@ -94,34 +147,13 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30))),
-                            label: Text('카테고리',
+                            label:
+                            (_selectedValue == null) ? Text('전체',
                                 style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF555555)))),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Directionality(
-                        textDirection: TextDirection.rtl,
-                        child: ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.arrow_drop_down_sharp,
-                              size: 26,
-                              color: Color(0xFF555555),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                                side: const BorderSide(
-                                  width: 1,
-                                  color: Color(0xFFDEDEDE),
-                                ),
-                                primary: Color(0xFFFFFFFF),
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30))),
-                            label: Text('리조트',
+                                    color: Color(0xFF555555))
+                            ):Text('$_selectedValue',
                                 style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
