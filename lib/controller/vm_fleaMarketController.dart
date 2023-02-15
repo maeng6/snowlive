@@ -82,6 +82,21 @@ class FleaModelController extends GetxController {
     await getCurrentFleaItem(uid: uid, fleaCount: fleaCount);
   }
 
+  Future<void> updateState(isSoldOut) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    if(isSoldOut == false) {
+      await ref.collection('fleaMarket').doc('$uid#$fleaCount').update({
+        'soldOut': true,
+      });
+    }else{
+      await ref.collection('fleaMarket').doc('$uid#$fleaCount').update({
+        'soldOut': false,
+      });
+    }
+    await getCurrentFleaItem(uid: uid, fleaCount: fleaCount);
+  }
+
   Future<void> uploadFleaItem(
       {required displayName,
         required uid,

@@ -353,7 +353,10 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                                       maxWidth:
                                                                           _size.width -
                                                                               106),
-                                                                  child: Text(
+                                                                  child:
+                                                                  ( chatDocs[index]
+                                                                      .get('soldOut')==false)?
+                                                                  Text(
                                                                     chatDocs[index]
                                                                             .get('price')
                                                                             .toString() +
@@ -370,6 +373,21 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                                                 .bold,
                                                                         fontSize:
                                                                             16),
+                                                                  )
+                                                                  : Text(
+                                                                   '거래완료',
+                                                                    maxLines: 1,
+                                                                    overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                    style: TextStyle(
+                                                                        color: Color(
+                                                                            0xFF111111),
+                                                                        fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                        fontSize:
+                                                                        16),
                                                                   ),
                                                                 ),
                                                               ],
