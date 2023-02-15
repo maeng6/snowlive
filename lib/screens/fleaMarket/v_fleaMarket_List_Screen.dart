@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
@@ -28,19 +29,13 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
   var _stream;
   var _selectedValue = '전체';
   var _allCategories;
-  List<String> _categories = ['전체', '데크', '바인딩', '부츠', '의류', '기타'];
 
-  FixedExtentScrollController? _scrollWheelController;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _stream = newStream();
-    _scrollWheelController = FixedExtentScrollController(
-      /// Jump to the item index of the selected value in CupertinoPicker
-      initialItem: _categories.indexOf(_selectedValue),
-    );
 
   }
 
@@ -58,13 +53,6 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
     await showCupertinoModalPopup(
         context: context,
         builder: (_){
-          WidgetsBinding.instance.addPostFrameCallback(
-            /// [ScrollController] now refers to a
-            /// [ListWheelScrollView] that is already mounted on the screen
-                (_) => _scrollWheelController?.jumpToItem(
-              _categories.indexOf(_selectedValue),
-            ),
-          );
           return Padding(
           padding: EdgeInsets.only(
               bottom:
@@ -72,23 +60,74 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                   .viewInsets
                   .bottom),
           child: Container(
-            height: 200,
+            height: 475,
             padding: EdgeInsets.only(
                 left: 20, right: 20),
-            child: CupertinoPicker(
-              magnification: 1.1,
-              backgroundColor: Colors.white,
-              itemExtent: 40,
-              children: [
-                ..._categories.map((e) => Text(e))
+            child:
+            CupertinoActionSheet(
+              actions: [
+                CupertinoActionSheetAction(
+                    onPressed: (){
+                      setState(() {_selectedValue = '전체';});
+                      Navigator.pop(context);
+                    },
+                    child: Text('전체',)),
+                CupertinoActionSheetAction(
+                    onPressed: (){
+                      setState(() {_selectedValue = '데크';});
+                      Navigator.pop(context);
+                    },
+                    child: Text('데크')),
+                CupertinoActionSheetAction(
+                    onPressed: (){
+                      setState(() {_selectedValue = '바인딩';});
+                      Navigator.pop(context);
+                    },
+                    child: Text('바인딩')),
+                CupertinoActionSheetAction(
+                    onPressed: (){
+                      setState(() {_selectedValue = '부츠';});
+                      Navigator.pop(context);
+                    },
+                    child: Text('부츠')),
+                CupertinoActionSheetAction(
+                    onPressed: (){
+                      setState(() {_selectedValue = '의류';});
+                      Navigator.pop(context);
+                    },
+                    child: Text('의류')),
+                CupertinoActionSheetAction(
+                    onPressed: (){
+                      setState(() {_selectedValue = '기타';});
+                      Navigator.pop(context);
+                    },
+                    child: Text('기타')),
+
               ],
-              onSelectedItemChanged: (i) {
-                setState(() {
-                  _selectedValue = _categories[i];
-                });
-              },
-              scrollController: _scrollWheelController,
-            ),
+              cancelButton: CupertinoActionSheetAction(
+                child: Text('닫기'),
+                onPressed: (){
+                  HapticFeedback.mediumImpact();
+                  Navigator.pop(context);
+                },
+              ),
+            )
+
+            // CupertinoPicker(
+            //   magnification: 1.1,
+            //   backgroundColor: Colors.white,
+            //   itemExtent: 40,
+            //   children: [
+            //     ..._categories.map((e) => Text(e))
+            //   ],
+            //   onSelectedItemChanged: (i) {
+            //     setState(() {
+            //       _selectedValue = _categories[i];
+            //     });
+            //   },
+            //   scrollController: _scrollWheelController,
+            // ),
+
           ),
         );});
     setState(() {
