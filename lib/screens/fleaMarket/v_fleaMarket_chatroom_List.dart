@@ -280,14 +280,14 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
                                                 SizedBox(
                                                   height: 4,
                                                 ),
-                                                (_userModelController.uid ==
-                                                        chatDocs[index]
-                                                            ['otherUid'])
+                                                (_userModelController.uid == chatDocs[index]['otherUid'])
                                                     ? Container(
                                                   decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(20),
                                                     color:
-                                                    Color(0xFF3D6FED),
+                                                    (chatDocs[index]['myChatCheckCount']==0)?
+                                                    Color(0xFFFFFFFF)
+                                                    :Color(0xFF3D6FED),
                                                   ),
                                                         padding:
                                                             EdgeInsets.only(
@@ -296,8 +296,8 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
                                                                 bottom: 3,
                                                               top: 1
                                                             ),
-                                                        child: Text(
-                                                          '${chatDocs[index]['myChatCheckCount']}',
+                                                        child:
+                                                        Text('${chatDocs[index]['myChatCheckCount']}',
                                                           style: TextStyle(
                                                               fontWeight:
                                                                   FontWeight
@@ -310,7 +310,9 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
                                                   decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(20),
                                                     color:
-                                                    Color(0xFF3D6FED),
+                                                    (chatDocs[index]['otherChatcheckCount'] ==0)?
+                                                    Color(0xFFFFFFFF)
+                                                    :Color(0XFF3D6FED),
                                                   ),
                                                         padding:
                                                             EdgeInsets.only(

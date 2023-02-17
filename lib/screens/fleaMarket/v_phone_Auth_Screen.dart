@@ -105,6 +105,9 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    Size _size = MediaQuery.of(context).size;
+
     final FirebaseAuth auth = FirebaseAuth.instance;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     SystemChrome.setEnabledSystemUIMode(
@@ -185,104 +188,119 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                 child: Container(
                   child: Center(
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TextFormField(
-                          keyboardType: TextInputType.phone,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly, //숫자만!
-                            NumberFormatter(), // 자동하이픈
-                            LengthLimitingTextInputFormatter(13)
-                          ],
-                          textAlignVertical: TextAlignVertical.center,
-                          cursorColor: Color(0xff377EEA),
-                          cursorHeight: 16,
-                          cursorWidth: 2,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          controller: _textEditingController,
-                          strutStyle: StrutStyle(leading: 0.3),
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              splashColor: Colors.transparent,
-                              onPressed: () async{
-                                if(_textEditingController.text.trim().isEmpty
-                                || !_formKey.currentState!.validate() || buttonColorActive == false)
-                                {return ;}
-                                CustomFullScreenDialog.showDialog();
-                                FocusScope.of(context).unfocus();
-                                buttonColorActive = false;
-                                try{
-                                  await _auth.verifyPhoneNumber(
-                                    timeout: const Duration(seconds: 60),
-                                    codeAutoRetrievalTimeout: (String verificationId) {
-                                      // Auto-resolution timed out...
-                                    },
-                                    phoneNumber: "+82"+_phoneNumber.trim(),
-                                    verificationCompleted: (phoneAuthCredential) async {
-                                      print("otp 문자옴");
-                                    },
-                                    verificationFailed: (verificationFailed) async {
-                                      print(verificationFailed.code);
-
-                                      print("코드발송실패");
-
-                                    },
-                                    codeSent: (verificationId, resendingToken) async {
-                                      print("코드보냄");
-
-                                      setState(() {
-                                        requestedAuth=true;
-                                        this.verificationId = verificationId;
-                                      });
-                                    },
-                                  );
-                                }catch(e){print('에러');}
-                                CustomFullScreenDialog.cancelDialog();
-                              },
-                              icon: (_textEditingController.text.length < 13
-                              || !_formKey.currentState!.validate() || buttonColorActive == false)
-                                  ? Image.asset(
-                                'assets/imgs/icons/icon_livetalk_send_g.png',
-                                width: 27,
-                                height: 27,
-                              )
-                                  : Image.asset(
-                                'assets/imgs/icons/icon_livetalk_send.png',
-                                width: 27,
-                                height: 27,
+                        Stack(
+                          children: [
+                            SizedBox(
+                              width: _size.width - 32,
+                              child: TextFormField(
+                                keyboardType: TextInputType.phone,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly, //숫자만!
+                                  NumberFormatter(), // 자동하이픈
+                                  LengthLimitingTextInputFormatter(13)
+                                ],
+                                textAlignVertical: TextAlignVertical.center,
+                                cursorColor: Color(0xff377EEA),
+                                cursorHeight: 16,
+                                cursorWidth: 2,
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                controller: _textEditingController,
+                                strutStyle: StrutStyle(leading: 0.3),
+                                decoration: InputDecoration(
+                                    errorStyle: TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                    hintStyle:
+                                    TextStyle(color: Color(0xff949494), fontSize: 16),
+                                    hintText: '010-0000-0000',
+                                    labelText: '전화번호 입력',
+                                    contentPadding: EdgeInsets.only(
+                                        top: 20, bottom: 20, left: 20, right: 20),
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                      borderRadius: BorderRadius.circular(6),
+                                    )),
+                                validator: (val) {
+                                  if (val!.length == 13 && RegExp(r'^010?-([0-9]{4})?-([0-9]{4})$').hasMatch(val)) {
+                                    return null;
+                                  } else {
+                                    return '올바른 전화번호를 입력해 주세요.';
+                                  }
+                                },
+                                onChanged: (value){
+                                  setState(() {
+                                    _phoneNumber = value;
+                                  });
+                                },
                               ),
                             ),
-                              errorStyle: TextStyle(
-                                fontSize: 12,
+                            Positioned(
+                              right: 8,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 10),
+                                child: ElevatedButton(onPressed: () async {
+                                  if(_textEditingController.text.trim().isEmpty
+                                      || !_formKey.currentState!.validate() || buttonColorActive == false)
+                                  {return ;}
+                                  CustomFullScreenDialog.showDialog();
+                                  FocusScope.of(context).unfocus();
+                                  buttonColorActive = false;
+                                  try{
+                                    await _auth.verifyPhoneNumber(
+                                      timeout: const Duration(seconds: 60),
+                                      codeAutoRetrievalTimeout: (String verificationId) {
+                                        // Auto-resolution timed out...
+                                      },
+                                      phoneNumber: "+82"+_phoneNumber.trim(),
+                                      verificationCompleted: (phoneAuthCredential) async {
+                                        print("otp 문자옴");
+                                      },
+                                      verificationFailed: (verificationFailed) async {
+                                        print(verificationFailed.code);
+
+                                        print("코드발송실패");
+
+                                      },
+                                      codeSent: (verificationId, resendingToken) async {
+                                        print("코드보냄");
+
+                                        setState(() {
+                                          requestedAuth=true;
+                                          this.verificationId = verificationId;
+                                        });
+                                      },
+                                    );
+                                  }catch(e){print('에러');}
+                                  CustomFullScreenDialog.cancelDialog();
+                                },
+                                  child: Text(
+                                    '인증번호 발송',
+                                    style: TextStyle(
+                                        color: Color(0xFF377EEA),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
+                                  ),
+                                  style: TextButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 13),
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(6))),
+                                      elevation: 0,
+                                      splashFactory: InkRipple.splashFactory,
+                                      backgroundColor: Color(0xffFFFFFF)),
+                                ),
                               ),
-                              hintStyle:
-                              TextStyle(color: Color(0xff949494), fontSize: 16),
-                              hintText: '010-0000-0000',
-                              labelText: '전화번호 입력',
-                              contentPadding: EdgeInsets.only(
-                                  top: 20, bottom: 20, left: 20, right: 20),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFFDEDEDE)),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFFDEDEDE)),
-                                borderRadius: BorderRadius.circular(6),
-                              )),
-                          validator: (val) {
-                            if (val!.length == 13 && RegExp(r'^010?-([0-9]{4})?-([0-9]{4})$').hasMatch(val)) {
-                              return null;
-                            } else {
-                              return '올바른 전화번호를 입력해 주세요.';
-                            }
-                          },
-                          onChanged: (value){
-                            setState(() {
-                              _phoneNumber = value;
-                            });
-                          },
+                            ),
+                          ],
                         ),
                         SizedBox(
-                          height: 40,
+                          height: 16,
                         ),
                         if(requestedAuth == true)
                         TextFormField(
