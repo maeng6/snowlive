@@ -107,8 +107,9 @@ class setting_moreTab extends StatelessWidget {
                                       }catch(e){print('프사 없음');}
                                       await _loginController
                                           .deleteUser(
-                                          _userModelController
-                                              .uid);
+                                        uid: _userModelController.uid,
+                                        fleaCount: _userModelController.fleaCount
+                                      );
                                     },
                                     child: Text(
                                       '확인',

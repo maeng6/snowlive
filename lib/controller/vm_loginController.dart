@@ -81,9 +81,20 @@ class LoginController extends GetxController {
     Get.offAll(() => LoginPage());
   }
 
-  Future<void> deleteUser(uid) async {
+  Future<void> deleteFleaItemAll({required myUid, required fleaCount}) async{
+    print(myUid);
+     for (int i = fleaCount; i > -1; i--) {
+      DocumentReference fleaDocs = FirebaseFirestore
+          .instance.collection('fleaMarket').doc('$myUid#$i');
+      FirebaseFirestore.instance.runTransaction((transaction) async => await transaction.delete(fleaDocs));
+      print(i);
+     }
+  }
+
+  Future<void> deleteUser({required uid, required fleaCount}) async {
     CustomFullScreenDialog.showDialog();
     try {
+      await deleteFleaItemAll(myUid: uid , fleaCount: fleaCount);
       await FlutterSecureStorage().delete(key: 'uid');
       CollectionReference users = FirebaseFirestore.instance.collection('user');
       await users.doc(uid).delete();
