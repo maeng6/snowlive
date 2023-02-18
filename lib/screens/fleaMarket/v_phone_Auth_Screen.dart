@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,9 +32,33 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
   bool authOk = false;
   bool buttonColorActive = true;
   bool buttonColorActive2 = true;
+  bool isFirstSent = true;
   var _phoneNumber;
   var _veriNumber;
 
+  Timer? countdownTimer;
+  Duration myDuration = Duration(minutes: 2);
+
+  void startTimer() {
+    countdownTimer =
+        Timer.periodic(Duration(seconds: 1), (_) => setCountDown());
+  }
+
+  void setCountDown() {
+    final reduceSecondsBy = 1;
+    setState(() {
+      final seconds = myDuration.inSeconds - reduceSecondsBy;
+      if (seconds < 0) {
+        countdownTimer!.cancel();
+        buttonColorActive = true;
+        isFirstSent = false;
+        requestedAuth = false;
+        myDuration = Duration(minutes: 2);
+      } else {
+        myDuration = Duration(seconds: seconds);
+      }
+    });
+  }
 
 
   String? verificationId;
@@ -50,6 +75,8 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
 
       await FirebaseFirestore.instance.collection('user')
           .doc(_userModelController.uid).update({'phoneAuth': true});
+
+      Navigator.pop(context);
 
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -73,6 +100,15 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
         case "credential-already-in-use":
           print("The account corresponding to the credential already exists, "
               "or is already linked to a Firebase User.");
+          setState(() {
+            buttonColorActive2=true;
+          });
+          Get.snackbar('인증번호 오류','유효한 인증번호를 입력해 주세요.',
+              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.black87,
+              colorText: Colors.white,
+              duration: Duration(milliseconds: 3000));
           break;
       // See the API reference for the full list of error codes.
         default:
@@ -105,6 +141,10 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    String strDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = strDigits(myDuration.inMinutes.remainder(2));
+    final seconds = strDigits(myDuration.inSeconds.remainder(60));
 
     Size _size = MediaQuery.of(context).size;
 
@@ -167,14 +207,14 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '스노우마켓 이용을 위해\n본인인증을 진행해 주세요.',
+                '스노우마켓 이용을 위해\n전화번호 인증을\n진행해 주세요.',
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
               SizedBox(
                 height: 10,
               ),
               Text(
-                '본인인증은 최초 1회만 진행됩니다.',
+                '전화번호 인증은 최초 1회만 진행됩니다.',
                 style: TextStyle(
                   color: Color(0xff949494),
                   fontSize: 14,
@@ -251,10 +291,9 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                   {return ;}
                                   CustomFullScreenDialog.showDialog();
                                   FocusScope.of(context).unfocus();
-                                  buttonColorActive = false;
                                   try{
                                     await _auth.verifyPhoneNumber(
-                                      timeout: const Duration(seconds: 60),
+                                      timeout: const Duration(seconds: 90),
                                       codeAutoRetrievalTimeout: (String verificationId) {
                                         // Auto-resolution timed out...
                                       },
@@ -273,15 +312,26 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
 
                                         setState(() {
                                           requestedAuth=true;
+                                          buttonColorActive=false;
                                           this.verificationId = verificationId;
                                         });
                                       },
                                     );
+                                    startTimer();
                                   }catch(e){print('에러');}
                                   CustomFullScreenDialog.cancelDialog();
                                 },
-                                  child: Text(
+                                  child:
+                                  (isFirstSent == true)
+                                  ? Text(
                                     '인증번호 발송',
+                                    style: TextStyle(
+                                        color: Color(0xFF377EEA),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
+                                  )
+                                  : Text(
+                                    '인증번호 재발송',
                                     style: TextStyle(
                                         color: Color(0xFF377EEA),
                                         fontWeight: FontWeight.bold,
@@ -294,7 +344,8 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                       elevation: 0,
                                       splashFactory: InkRipple.splashFactory,
                                       backgroundColor: Color(0xffFFFFFF)),
-                                ),
+                                )
+
                               ),
                             ),
                           ],
@@ -303,50 +354,68 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                           height: 16,
                         ),
                         if(requestedAuth == true)
-                        TextFormField(
-                          keyboardType: TextInputType.phone,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly, //숫자만!
-                            LengthLimitingTextInputFormatter(6)
-                          ],
-                          textAlignVertical: TextAlignVertical.center,
-                          cursorColor: Color(0xff377EEA),
-                          cursorHeight: 16,
-                          cursorWidth: 2,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          controller: _textEditingController2,
-                          strutStyle: StrutStyle(leading: 0.3),
-                          decoration: InputDecoration(
-                              errorStyle: TextStyle(
-                                fontSize: 12,
+                          Stack(
+                            children: [
+                              TextFormField(
+                                keyboardType: TextInputType.phone,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly, //숫자만!
+                                  LengthLimitingTextInputFormatter(6)
+                                ],
+                                textAlignVertical: TextAlignVertical.center,
+                                cursorColor: Color(0xff377EEA),
+                                cursorHeight: 16,
+                                cursorWidth: 2,
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                controller: _textEditingController2,
+                                strutStyle: StrutStyle(leading: 0.3),
+                                decoration: InputDecoration(
+                                    errorStyle: TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                    hintStyle:
+                                    TextStyle(color: Color(0xff949494), fontSize: 16),
+                                    hintText: '123456',
+                                    labelText: '인증번호 입력',
+                                    contentPadding: EdgeInsets.only(
+                                        top: 20, bottom: 20, left: 20, right: 20),
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                      borderRadius: BorderRadius.circular(6),
+                                    )),
+                                validator: (val2) {
+                                  if (val2!.length == 6) {
+                                    return null;
+                                  } else {
+                                    return '올바른 인증번호를 입력해주세요.';
+                                  }
+                                },
+                                onChanged: (value2){
+                                  setState(() {
+                                    _veriNumber = value2;
+                                  });
+                                },
                               ),
-                              hintStyle:
-                              TextStyle(color: Color(0xff949494), fontSize: 16),
-                              hintText: '123456',
-                              labelText: '인증번호 입력',
-                              contentPadding: EdgeInsets.only(
-                                  top: 20, bottom: 20, left: 20, right: 20),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFFDEDEDE)),
-                                borderRadius: BorderRadius.circular(6),
+                              Positioned(
+                                right: 8,
+                                child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 13),
+                                    child: Text('유효시간 $minutes:$seconds',
+                                    style: TextStyle(
+                                      color: Colors.redAccent,
+                                      fontSize: 15
+                                    ),
+                                    )
+
+                                ),
                               ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFFDEDEDE)),
-                                borderRadius: BorderRadius.circular(6),
-                              )),
-                          validator: (val2) {
-                            if (val2!.length == 6) {
-                              return null;
-                            } else {
-                              return '올바른 인증번호를 입력해주세요.';
-                            }
-                          },
-                          onChanged: (value2){
-                            setState(() {
-                              _veriNumber = value2;
-                            });
-                          },
-                        ),
+                            ],
+                          ),
+
                       ],
                     ),
                   ),
@@ -379,7 +448,6 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                         }
                       }catch(e){print('에러');}
                       CustomFullScreenDialog.cancelDialog();
-                      Navigator.pop(context);
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 4),
