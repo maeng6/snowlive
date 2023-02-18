@@ -252,7 +252,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                     hintStyle:
                                     TextStyle(color: Color(0xff949494), fontSize: 16),
                                     hintText: '010-0000-0000',
-                                    labelText: '전화번호 입력',
+                                    labelText: '전화번호',
                                     contentPadding: EdgeInsets.only(
                                         top: 20, bottom: 20, left: 20, right: 20),
                                     border: OutlineInputBorder(
@@ -371,8 +371,8 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                     ),
                                     hintStyle:
                                     TextStyle(color: Color(0xff949494), fontSize: 16),
-                                    hintText: '123456',
-                                    labelText: '인증번호 입력',
+                                    hintText: '6자리 코드 입력',
+                                    labelText: '인증번호',
                                     contentPadding: EdgeInsets.only(
                                         top: 20, bottom: 20, left: 20, right: 20),
                                     border: OutlineInputBorder(
@@ -399,11 +399,11 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                               Positioned(
                                 right: 8,
                                 child: Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 13),
+                                    padding: EdgeInsets.symmetric(vertical: 23.5, horizontal: 14),
                                     child: Text('유효시간 $minutes:$seconds',
                                     style: TextStyle(
-                                      color: Colors.redAccent,
-                                      fontSize: 15
+                                      color: Color(0xFFD32F2F),
+                                      fontSize: 13
                                     ),
                                     )
 

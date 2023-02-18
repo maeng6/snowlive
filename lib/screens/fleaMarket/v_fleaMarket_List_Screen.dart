@@ -60,7 +60,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                   .viewInsets
                   .bottom),
           child: Container(
-            height: 490,
+            height: 520,
             padding: EdgeInsets.only(
                 left: 20, right: 20),
             child:

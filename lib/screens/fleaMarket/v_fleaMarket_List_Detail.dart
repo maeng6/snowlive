@@ -124,26 +124,36 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                     TextButton(
                                                         onPressed: () async {
                                                           var repoUid =
-                                                              _fleaModelController.uid;
-                                                          await _userModelController.repoUpdate(repoUid);
-                                                          Navigator.pop(context);
-                                                          Navigator.pop(context);
+                                                              _fleaModelController
+                                                                  .uid;
+                                                          await _userModelController
+                                                              .repoUpdate(
+                                                                  repoUid);
+                                                          Navigator.pop(
+                                                              context);
+                                                          Navigator.pop(
+                                                              context);
                                                         },
-                                                        child: Text('신고',
+                                                        child: Text(
+                                                          '신고',
                                                           style: TextStyle(
                                                             fontSize: 15,
-                                                            color: Color(0xFF3D83ED),
-                                                            fontWeight: FontWeight.bold,
+                                                            color: Color(
+                                                                0xFF3D83ED),
+                                                            fontWeight:
+                                                                FontWeight.bold,
                                                           ),
                                                         ))
                                                   ],
-                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
                                                 )
                                               ],
                                             ));
                                           },
                                           shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10)),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
                                         ),
                                       ),
                                       GestureDetector(
@@ -202,11 +212,17 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                     TextButton(
                                                         onPressed: () {
                                                           var repoUid =
-                                                              _fleaModelController.uid;
-                                                          _userModelController.updateRepoUid(                                                               repoUid);
-                                                          Navigator.pop(context);
-                                                          Navigator.pop(context);
-                                                          Navigator.pop(context);
+                                                              _fleaModelController
+                                                                  .uid;
+                                                          _userModelController
+                                                              .updateRepoUid(
+                                                                  repoUid);
+                                                          Navigator.pop(
+                                                              context);
+                                                          Navigator.pop(
+                                                              context);
+                                                          Navigator.pop(
+                                                              context);
                                                         },
                                                         child: Text(
                                                           '확인',
@@ -434,438 +450,475 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
               elevation: 0.0,
             ),
           ),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                if (_fleaModelController.itemImagesUrls!.isEmpty)
-                  Container(
-                    color: Color(0xFFDEDEDE),
-                    child: ExtendedImage.asset(
-                      'assets/imgs/profile/img_profile_default_.png',
-                      fit: BoxFit.fitHeight,
-                      width: _size.width,
-                      height: 280,
-                    ),
-                  ),
-                if (_fleaModelController.itemImagesUrls!.isNotEmpty)
-                  CarouselSlider.builder(
-                    options: CarouselOptions(
-                      height: 280,
-                      viewportFraction: 1,
-                      enableInfiniteScroll: false,
-                    ),
-                    itemCount: _fleaModelController.itemImagesUrls!.length,
-                    itemBuilder: (context, index, pageViewIndex) {
-                      return Container(
-                        child: StreamBuilder<Object>(
-                            stream: null,
-                            builder: (context, snapshot) {
-                              return Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ExtendedImage.network(
-                                    _fleaModelController.itemImagesUrls![index],
-                                    fit: BoxFit.cover,
-                                    width: _size.width,
-                                    height: 280,
-                                  ),
-                                ],
-                              );
-                            }
+          body: Column(
+            children: [
+              Container(
+                height: _size.height - 227,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      if (_fleaModelController.itemImagesUrls!.isEmpty)
+                        Container(
+                          color: Color(0xFFDEDEDE),
+                          child: ExtendedImage.asset(
+                            'assets/imgs/profile/img_profile_default_.png',
+                            fit: BoxFit.fitHeight,
+                            width: _size.width,
+                            height: 280,
+                          ),
                         ),
-                      );
-                    },
-                  ),
-                SizedBox(
-                  height: 16,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              if (_fleaModelController.profileImageUrl!.isEmpty)
-                                ExtendedImage.asset(
-                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                  shape: BoxShape.circle,
-                                  borderRadius: BorderRadius.circular(20),
-                                  width: 32,
-                                  height: 32,
-                                  fit: BoxFit.cover,
-                                ),
-                              if (_fleaModelController.profileImageUrl!.isNotEmpty)
-                                ExtendedImage.network(
-                                  '${_fleaModelController.profileImageUrl}',
-                                  shape: BoxShape.circle,
-                                  borderRadius: BorderRadius.circular(20),
-                                  width: 32,
-                                  height: 32,
-                                  fit: BoxFit.cover,
-                                ),
-                              SizedBox(width: 12),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 2),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
+                      if (_fleaModelController.itemImagesUrls!.isNotEmpty)
+                        CarouselSlider.builder(
+                          options: CarouselOptions(
+                            height: 280,
+                            viewportFraction: 1,
+                            enableInfiniteScroll: false,
+                          ),
+                          itemCount: _fleaModelController.itemImagesUrls!.length,
+                          itemBuilder: (context, index, pageViewIndex) {
+                            return Container(
+                              child: StreamBuilder<Object>(
+                                  stream: null,
+                                  builder: (context, snapshot) {
+                                    return Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              '${_fleaModelController.displayName}',
-                                              //chatDocs[index].get('displayName'),
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14,
-                                                  color: Color(0xFF111111)),
-                                            ),
-                                            SizedBox(width: 6),
-                                            Text(
-                                              '$_time',
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Color(0xFF949494),
-                                                  fontWeight: FontWeight.w300),
-                                            ),
-                                          ],
+                                        ExtendedImage.network(
+                                          _fleaModelController.itemImagesUrls![index],
+                                          fit: BoxFit.cover,
+                                          width: _size.width,
+                                          height: 280,
                                         ),
                                       ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Divider(
-                            height: 32,
-                            thickness: 0.5,
-                          )
-                        ],
-                      )),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 4,
+                                    );
+                                  }),
+                            );
+                          },
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              (_fleaModelController.soldOut == true)?
-                              '거래완료'
-                              :'${_fleaModelController.title}',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        )
-                        ,
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3),
-                                color: Color(0xFFD7F4FF),
-                              ),
-                              padding: EdgeInsets.only(
-                                  right: 6, left: 6, top: 2, bottom: 3),
-                              child: Text(
-                                '${_fleaModelController.category}',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    color: Color(0xFF458BF5)),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 6,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3),
-                                color: Color(0xFFD5F7E0),
-                              ),
-                              padding: EdgeInsets.only(
-                                  right: 6, left: 6, top: 2, bottom: 3),
-                              child: Text(
-                                '${_fleaModelController.location}',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    color: Color(0xFF17AD4A)),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 24),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '물품명',
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.normal,
-                                  color: Color(0xFFB7B7B7)),
-                            ),
-                            Text(
-                              '${_fleaModelController.itemName}',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '금액',
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.normal,
-                                      color: Color(0xFFB7B7B7)),
-                                ),
-                                Container(
-                                  width: _size.width / 2 - 32,
-                                  child: Text(
-                                    '${_fleaModelController.price} 원',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.normal),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '거래방식',
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.normal,
-                                      color: Color(0xFFB7B7B7)),
-                                ),
-                                Container(
-                                  width: _size.width / 2 - 32,
-                                  child: Text(
-                                    '${_fleaModelController.method}',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.normal),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Divider(
-                          height: 50,
-                          thickness: 0.5,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '상세설명',
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.normal,
-                                  color: Color(0xFFB7B7B7)),
-                            ),
-                            Container(
-                              width: _size.width,
-                              child: Text(
-                                '${_fleaModelController.description}',
-                                maxLines: 500,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.normal),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ]),
-                ),
-                SizedBox(
-                  height: 40,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 16, right: 5),
-                          child: TextButton(
-                              onPressed: () async {
-
-                                CustomFullScreenDialog.showDialog();
-
-                                await _userModelController.getCurrentUser(_userModelController.uid);
-
-                                if(_userModelController.phoneAuth == true){
-
-                                  try {
-                                    if (_fleaModelController.uid != _userModelController.uid) {
-                                      await _userModelController.getCurrentUser(_userModelController.uid);
-                                      if (_userModelController.fleaChatUidList!.contains(_fleaModelController.uid)) {
-                                        _fleaChatModelController.getCurrentFleaChat(
-                                            myUid: _userModelController.uid,
-                                            otherUid: _fleaModelController.uid);
-                                        await _fleaChatModelController.resetMyChatCheckCount(
-                                            chatRoomName: '${_fleaChatModelController.chatRoomName}');
-                                        await _fleaChatModelController.setOtherChatCountUid(
-                                            chatRoomName: _fleaChatModelController.chatRoomName
-                                        );
-                                        await _userModelController.addChatUidList(otherAddUid: _fleaModelController.uid, myAddUid: _userModelController.uid);
-                                        print('기존에 존재하는 채팅방으로 이동');
-                                      } else {
-                                        await _userModelController.addChatUidList(
-                                            otherAddUid: _fleaModelController.uid,
-                                            myAddUid: _userModelController.uid);
-                                        await _fleaChatModelController.createChatroom(
-                                          myUid: _userModelController.uid,
-                                          otherUid: _fleaModelController.uid,
-                                          otherProfileImageUrl:
-                                          _fleaModelController.profileImageUrl,
-                                          otherResortNickname:
-                                          _fleaModelController.resortNickname,
-                                          otherDisplayName:
-                                          _fleaModelController.displayName,
-                                          myDisplayName: _userModelController.displayName,
-                                          myProfileImageUrl:
-                                          _userModelController.profileImageUrl,
-                                          myResortNickname:
-                                          _userModelController.resortNickname,
-                                        );
-                                      }
-                                      CustomFullScreenDialog.cancelDialog();
-                                      return Get.to(() => FleaChatroom());
-                                    } else {
-                                      CustomFullScreenDialog.cancelDialog();
-                                      return Get.to(() => FleaMarket_ModifyPage());
-                                    }
-                                  } catch (e) {
-                                    print('에러');
-                                  }
-                                }
-                                else if(_userModelController.phoneAuth == false){
-                                  CustomFullScreenDialog.cancelDialog();
-                                  Get.to(()=>PhoneAuthScreen());
-                                }else{
-                                }
-
-                              },
-                              style: TextButton.styleFrom(
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(6))),
-                                  elevation: 0,
-                                  splashFactory: InkRipple.splashFactory,
-                                  minimumSize: Size(1000, 56),
-                                  backgroundColor: Color(0xff555555)),
-                              child:
-                              (_fleaModelController.uid != _userModelController.uid)
-                                  ? Padding(
-                                padding: const EdgeInsets.only(bottom: 4),
-                                child: Text(
-                                  '메시지 보내기',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              )
-                                  : Padding(
-                                padding: const EdgeInsets.only(bottom: 4),
-                                child: Text(
-                                  '수정하기',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              )),
-                        ),
+                      SizedBox(
+                        height: 16,
                       ),
-                      (_fleaModelController.uid == _userModelController.uid)?
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 16, left: 5),
-                          child: TextButton(
-                              onPressed: () async {
-                                CustomFullScreenDialog.showDialog();
-                                await _fleaModelController.updateState(isSoldOut);
-                                setState(() {
-                                });
-                                CustomFullScreenDialog.cancelDialog();
-                              },
-                              style: TextButton.styleFrom(
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(6))),
-                                  elevation: 0,
-                                  splashFactory: InkRipple.splashFactory,
-                                  minimumSize: Size(1000, 56),
-                                  backgroundColor: Color(0xff377EEA)),
-                              child:
-                              (_fleaModelController.soldOut == true)
-                                  ? Padding(
-                                padding: const EdgeInsets.only(bottom: 4),
-                                child: Text(
-                                  '거래가능으로 변경',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Container(
+                            child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                if (_fleaModelController.profileImageUrl!.isEmpty)
+                                  ExtendedImage.asset(
+                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                    shape: BoxShape.circle,
+                                    borderRadius: BorderRadius.circular(20),
+                                    width: 32,
+                                    height: 32,
+                                    fit: BoxFit.cover,
+                                  ),
+                                if (_fleaModelController.profileImageUrl!.isNotEmpty)
+                                  ExtendedImage.network(
+                                    '${_fleaModelController.profileImageUrl}',
+                                    shape: BoxShape.circle,
+                                    borderRadius: BorderRadius.circular(20),
+                                    width: 32,
+                                    height: 32,
+                                    fit: BoxFit.cover,
+                                  ),
+                                SizedBox(width: 12),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 2),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '${_fleaModelController.displayName}',
+                                                //chatDocs[index].get('displayName'),
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14,
+                                                    color: Color(0xFF111111)),
+                                              ),
+                                              SizedBox(width: 6),
+                                              Text(
+                                                '$_time',
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Color(0xFF949494),
+                                                    fontWeight: FontWeight.w300),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              )
-                                  : Padding(
-                                padding: const EdgeInsets.only(bottom: 4),
-                                child: Text(
-                                  '거래완료',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              )),
-                        ),
-                      )
-                          : SizedBox(),
+                              ],
+                            ),
+                            Divider(
+                              height: 32,
+                              thickness: 0.5,
+                            )
+                          ],
+                        )),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    (_fleaModelController.soldOut == true)
+                                        ? '거래완료'
+                                        : '${_fleaModelController.title}',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 18, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Row(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      color: Color(0xFFD7F4FF),
+                                    ),
+                                    padding: EdgeInsets.only(
+                                        right: 6, left: 6, top: 2, bottom: 3),
+                                    child: Text(
+                                      '${_fleaModelController.category}',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                          color: Color(0xFF458BF5)),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 6,
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      color: Color(0xFFD5F7E0),
+                                    ),
+                                    padding: EdgeInsets.only(
+                                        right: 6, left: 6, top: 2, bottom: 3),
+                                    child: Text(
+                                      '${_fleaModelController.location}',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                          color: Color(0xFF17AD4A)),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 24),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '물품명',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.normal,
+                                        color: Color(0xFFB7B7B7)),
+                                  ),
+                                  Text(
+                                    '${_fleaModelController.itemName}',
+                                    style: TextStyle(
+                                        fontSize: 16, fontWeight: FontWeight.normal),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 16,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '금액',
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.normal,
+                                            color: Color(0xFFB7B7B7)),
+                                      ),
+                                      Container(
+                                        width: _size.width / 2 - 32,
+                                        child: Text(
+                                          '${_fleaModelController.price} 원',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.normal),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '거래방식',
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.normal,
+                                            color: Color(0xFFB7B7B7)),
+                                      ),
+                                      Container(
+                                        width: _size.width / 2 - 32,
+                                        child: Text(
+                                          '${_fleaModelController.method}',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.normal),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Divider(
+                                height: 50,
+                                thickness: 0.5,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '상세설명',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.normal,
+                                        color: Color(0xFFB7B7B7)),
+                                  ),
+                                  Container(
+                                    width: _size.width,
+                                    child: Text(
+                                      '${_fleaModelController.description}',
+                                      maxLines: 500,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.normal),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ]),
+                      ),
+                      SizedBox(
+                        height: 40,
+                      ),
+
                     ],
                   ),
                 ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          top: 16,
+                            bottom:
+                            MediaQuery.of(context).viewInsets.bottom + 16,
+                            right: 5),
+                        child: TextButton(
+                            onPressed: () async {
+                              CustomFullScreenDialog.showDialog();
 
-              ],
-            ),
+                              await _userModelController
+                                  .getCurrentUser(_userModelController.uid);
+
+                              if (_userModelController.phoneAuth == true) {
+                                try {
+                                  if (_fleaModelController.uid !=
+                                      _userModelController.uid) {
+                                    await _userModelController.getCurrentUser(
+                                        _userModelController.uid);
+                                    if (_userModelController.fleaChatUidList!
+                                        .contains(_fleaModelController.uid)) {
+                                      _fleaChatModelController
+                                          .getCurrentFleaChat(
+                                          myUid: _userModelController.uid,
+                                          otherUid:
+                                          _fleaModelController.uid);
+                                      await _fleaChatModelController
+                                          .resetMyChatCheckCount(
+                                          chatRoomName:
+                                          '${_fleaChatModelController.chatRoomName}');
+                                      await _fleaChatModelController
+                                          .setOtherChatCountUid(
+                                          chatRoomName:
+                                          _fleaChatModelController
+                                              .chatRoomName);
+                                      await _userModelController
+                                          .addChatUidList(
+                                          otherAddUid:
+                                          _fleaModelController.uid,
+                                          myAddUid:
+                                          _userModelController.uid);
+                                      print('기존에 존재하는 채팅방으로 이동');
+                                    } else {
+                                      await _userModelController
+                                          .addChatUidList(
+                                          otherAddUid:
+                                          _fleaModelController.uid,
+                                          myAddUid:
+                                          _userModelController.uid);
+                                      await _fleaChatModelController
+                                          .createChatroom(
+                                        myUid: _userModelController.uid,
+                                        otherUid: _fleaModelController.uid,
+                                        otherProfileImageUrl:
+                                        _fleaModelController
+                                            .profileImageUrl,
+                                        otherResortNickname:
+                                        _fleaModelController
+                                            .resortNickname,
+                                        otherDisplayName:
+                                        _fleaModelController.displayName,
+                                        myDisplayName:
+                                        _userModelController.displayName,
+                                        myProfileImageUrl:
+                                        _userModelController
+                                            .profileImageUrl,
+                                        myResortNickname: _userModelController
+                                            .resortNickname,
+                                      );
+                                    }
+                                    CustomFullScreenDialog.cancelDialog();
+                                    return Get.to(() => FleaChatroom());
+                                  } else {
+                                    CustomFullScreenDialog.cancelDialog();
+                                    return Get.to(
+                                            () => FleaMarket_ModifyPage());
+                                  }
+                                } catch (e) {
+                                  print('에러');
+                                }
+                              } else if (_userModelController.phoneAuth ==
+                                  false) {
+                                CustomFullScreenDialog.cancelDialog();
+                                Get.to(() => PhoneAuthScreen());
+                              } else {}
+                            },
+                            style: TextButton.styleFrom(
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.all(Radius.circular(6))),
+                                elevation: 0,
+                                splashFactory: InkRipple.splashFactory,
+                                minimumSize: Size(1000, 56),
+                                backgroundColor: (_fleaModelController.uid !=
+                                    _userModelController.uid)
+                                    ? Color(0xff3D83ED)
+                                    : Color(0xFF555555)),
+                            child: (_fleaModelController.uid !=
+                                _userModelController.uid)
+                                ? Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Text(
+                                '메시지 보내기',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
+                              ),
+                            )
+                                : Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Text(
+                                '수정하기',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
+                              ),
+                            )),
+                      ),
+                    ),
+                    (_fleaModelController.uid == _userModelController.uid)
+                        ? Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom + 16, left: 5, top: 16),
+                        child: TextButton(
+                            onPressed: () async {
+                              CustomFullScreenDialog.showDialog();
+                              await _fleaModelController
+                                  .updateState(isSoldOut);
+                              setState(() {});
+                              CustomFullScreenDialog.cancelDialog();
+                            },
+                            style: TextButton.styleFrom(
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(6))),
+                                elevation: 0,
+                                splashFactory: InkRipple.splashFactory,
+                                minimumSize: Size(1000, 56),
+                                backgroundColor: Color(0xff377EEA)),
+                            child: (_fleaModelController.soldOut ==
+                                true)
+                                ? Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 4),
+                              child: Text(
+                                '거래가능으로 변경',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
+                              ),
+                            )
+                                : Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 4),
+                              child: Text(
+                                '거래완료',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
+                              ),
+                            )),
+                      ),
+                    )
+                        : SizedBox(),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
