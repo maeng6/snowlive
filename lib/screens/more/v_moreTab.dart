@@ -2,7 +2,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/screens/fleaMarket/v_phone_Auth_Screen.dart';
 import 'package:snowlive3/screens/more/v_contactUsPage.dart';
 import 'package:snowlive3/screens/more/v_favoriteResort_moreTab.dart';
 import 'package:snowlive3/screens/more/v_licenseListPage.dart';

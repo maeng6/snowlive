@@ -1,4 +1,3 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -8,9 +7,6 @@ import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_My_Screen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_chatroom_List.dart';
-import 'package:snowlive3/screens/v_webPage.dart';
-import '../../model/m_brandModel.dart';
-import '../../model/m_shopModel.dart';
 
 class FleaMarketScreen extends StatefulWidget {
   FleaMarketScreen({Key? key}) : super(key: key);

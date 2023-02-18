@@ -7,7 +7,6 @@ import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
-import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Upload.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 

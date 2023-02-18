@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/screens/login/v_loginpage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 class EmailSignupPage extends StatefulWidget {

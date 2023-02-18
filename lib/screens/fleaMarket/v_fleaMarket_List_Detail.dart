@@ -9,7 +9,6 @@ import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Chatroom.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_ModifyPage.dart';
 import 'package:snowlive3/screens/fleaMarket/v_phone_Auth_Screen.dart';
-import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 class FleaMarket_List_Detail extends StatefulWidget {

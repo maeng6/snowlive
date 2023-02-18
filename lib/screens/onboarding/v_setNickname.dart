@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +6,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/onboarding/v_WelcomePage.dart';
 import 'package:snowlive3/screens/onboarding/v_setProfileImage.dart';
 
 class SetNickname extends StatefulWidget {

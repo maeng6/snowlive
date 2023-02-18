@@ -18,7 +18,6 @@ import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import '../../controller/vm_commentController.dart';
 import '../fleaMarket/v_fleaMarket_List_Screen_home.dart';
-import '../fleaMarket/v_fleaMarket_Screen.dart';
 
 class ResortHome extends StatefulWidget {
   @override

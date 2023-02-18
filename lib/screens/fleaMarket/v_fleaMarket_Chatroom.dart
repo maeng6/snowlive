@@ -5,15 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_10.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
-import '../../controller/vm_fleaMarketController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 

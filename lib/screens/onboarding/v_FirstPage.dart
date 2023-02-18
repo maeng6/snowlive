@@ -6,9 +6,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_loginController.dart';
 import 'package:snowlive3/screens/onboarding/v_WelcomePage.dart';
-import 'package:snowlive3/screens/onboarding/v_setNickname.dart';
-import 'package:snowlive3/screens/v_webPage.dart';
-
 import '../login/v_loginpage.dart';
 
 class FirstPage extends StatefulWidget {
