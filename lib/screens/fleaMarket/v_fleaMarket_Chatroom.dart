@@ -38,7 +38,7 @@ class _FleaChatroomState
 
   var _stream;
   bool _isVisible = false;
-  bool _isSend = false;
+  bool _isSend = true;
 
   ScrollController _scrollController = ScrollController();
 
