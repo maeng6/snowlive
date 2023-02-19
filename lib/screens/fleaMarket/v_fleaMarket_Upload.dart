@@ -386,11 +386,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                 controller: _itemPriceTextEditingController,
                                 keyboardType: TextInputType.number,
                                 inputFormatters: [
-                                  // CurrencyTextInputFormatter(
-                                  //   locale: 'ko',
-                                  //   decimalDigits: 0,
-                                  //   symbol: '',
-                                  // ),
+                                  FilteringTextInputFormatter.allow(RegExp('[0-9]'))
                                 ],
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.only(bottom: 14),

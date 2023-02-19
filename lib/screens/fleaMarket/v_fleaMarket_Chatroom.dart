@@ -412,7 +412,6 @@ class _FleaChatroomState
                                 onPressed: () async {
                                   if(_controller.text.trim().isEmpty || _isSend == false)
                                   {return ;}
-                                  FocusScope.of(context).unfocus();
                                   _controller.clear();
                                   _scrollController.jumpTo(0);
                                   try {
