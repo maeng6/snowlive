@@ -57,15 +57,10 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
         context: context,
         builder: (_){
           return Padding(
-          padding: EdgeInsets.only(
-              bottom:
-              MediaQuery.of(context)
-                  .viewInsets
-                  .bottom),
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Container(
             height: 520,
-            padding: EdgeInsets.only(
-                left: 20, right: 20),
+            padding: EdgeInsets.only(left: 20, right: 20),
             child:
             CupertinoActionSheet(
               actions: [
@@ -171,35 +166,49 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                   height: 68,
                   child: Row(
                     children: [
-                      ElevatedButton.icon(
-                          onPressed: () async{
-                            await _showCupertinoPicker();
-                          },
-                          icon: Icon(
-                            Icons.arrow_drop_down_sharp,
-                            size: 26,
-                            color: Color(0xFF555555),
+                      Stack(
+                        children: [
+                          ElevatedButton(
+                              onPressed: () async{
+                                await _showCupertinoPicker();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.only(
+                                  right: 36,
+                                  left: 16,
+                                  top: 12,
+                                  bottom: 12
+                                ),
+                                  side: const BorderSide(
+                                    width: 1,
+                                    color: Color(0xFFDEDEDE),
+                                  ),
+                                  primary: Color(0xFFFFFFFF),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30))),
+                              child:
+                              (_selectedValue == null) ? Text('전체',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF555555))
+                              ):Text('$_selectedValue',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF555555)))),
+                          Positioned(
+                            top: 11,
+                            right: 8,
+                            child: Icon(
+                              Icons.arrow_drop_down_sharp,
+                              size: 26,
+                              color: Color(0xFF555555),
+                            ),
                           ),
-                          style: ElevatedButton.styleFrom(
-                              side: const BorderSide(
-                                width: 1,
-                                color: Color(0xFFDEDEDE),
-                              ),
-                              primary: Color(0xFFFFFFFF),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30))),
-                          label:
-                          (_selectedValue == null) ? Text('전체',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF555555))
-                          ):Text('$_selectedValue',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF555555)))),
+                        ],
+                      ),
                     ],
                   ),
                 ),
