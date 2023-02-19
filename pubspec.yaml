@@ -140,6 +140,8 @@ flutter_native_splash:
   ios_content_mode: scaleTotFill
 # 변경사항 필요시 flutter pub run flutter_native_splash:create 와 remove 사용
 
+
+
 flutter_icons:
   android: "launcher_icon"
   ios: true
