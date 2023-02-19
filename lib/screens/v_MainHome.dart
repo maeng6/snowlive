@@ -81,13 +81,34 @@ class _MainHomeState extends State<MainHome> {
               label: 'Weather',
             ),
             BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/imgs/icons/icon_more_off.png',
-                scale: 4,
+              icon: Stack(
+                children: [
+                  Image.asset(
+                    'assets/imgs/icons/icon_more_off.png',
+                    scale: 4,
+                  ),
+                  Positioned(  // draw a red marble
+                    top: 2,
+                    right: 0.0,
+                    child: new Icon(Icons.brightness_1, size: 7.0,
+                        color: Color(0xFFD32F2F)),
+                  )
+                ],
               ),
-              activeIcon: Image.asset(
-                  'assets/imgs/icons/icon_more_on.png',
-                  scale: 4),
+              activeIcon: Stack(
+                children: [
+                  Image.asset(
+                      'assets/imgs/icons/icon_more_on.png',
+                      scale: 4),
+                  Positioned(  // draw a red marble
+                    top: 2,
+                    right: 0.0,
+                    child: new Icon(Icons.brightness_1, size: 7.0,
+                        color: Color(0xFFD32F2F)),
+                  )
+
+                ],
+              ),
               label: 'More',
             ),
           ],
