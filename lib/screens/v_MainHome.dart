@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:snowlive3/screens/comments/v_liveTalk_Screen.dart';
 import 'package:snowlive3/screens/resort/v_resortHome.dart';
+import '../controller/vm_loginController.dart';
+import '../controller/vm_noticeController.dart';
 import 'brand/v_brandHome.dart';
 import 'fleaMarket/v_fleaMarket_Screen.dart';
 import 'more/v_moreTab.dart';
@@ -29,6 +32,13 @@ class _MainHomeState extends State<MainHome> {
 
   @override
   Widget build(BuildContext context) {
+
+    //TODO: Dependency Injection************************************************
+    Get.put(NoticeController(), permanent: true);
+    NoticeController _noticeController = Get.find<NoticeController>();
+    //TODO: Dependency Injection************************************************
+
+    _noticeController.getIsNewNotice();
 
     return Scaffold(
         bottomNavigationBar: BottomNavigationBar(
