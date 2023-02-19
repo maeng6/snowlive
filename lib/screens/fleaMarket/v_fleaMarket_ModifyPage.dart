@@ -479,6 +479,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                 cursorHeight: 16,
                                 cursorWidth: 2,
                                 controller: _itemPriceTextEditingController..text='$_initPrice',
+                                inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
                                 onChanged: (price){
                                   _initPrice = int.parse(price);
                                 },

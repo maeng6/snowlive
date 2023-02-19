@@ -784,11 +784,6 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                           .resetMyChatCheckCount(
                                           chatRoomName:
                                           '${_fleaChatModelController.chatRoomName}');
-                                      await _fleaChatModelController
-                                          .setOtherChatCountUid(
-                                          chatRoomName:
-                                          _fleaChatModelController
-                                              .chatRoomName);
                                       await _userModelController
                                           .addChatUidList(
                                           otherAddUid:
