@@ -22,6 +22,10 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
   bool? fleaImageSelected = false;
   int i = 0;
   int imageLength = 0;
+  int? _initPrice = 0;
+  String? _initTitle ;
+  String? _initItemName ;
+  String? _initdescrip ;
   TextEditingController _titleTextEditingController = TextEditingController();
   TextEditingController _itemNameTextEditingController = TextEditingController();
   TextEditingController _itemPriceTextEditingController = TextEditingController();
@@ -36,7 +40,6 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
   String? title = '';
   final _formKey = GlobalKey<FormState>();
   RxList? _imageUrls=[].obs;
-
   ListTile buildCategoryListTile(int index) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
@@ -49,6 +52,8 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
+
+
 
   ListTile buildResortListTile(int index) {
     return ListTile(
@@ -85,11 +90,14 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
     SelectedCategory = _fleaModelController.category!.obs;
     SelectedLocation = _fleaModelController.location!.obs;
     SelectedMethod = _fleaModelController.method!.obs;
+    _initPrice =_fleaModelController.price;
+    _initTitle =_fleaModelController.title;
+    _initItemName =_fleaModelController.itemName;
+    _initdescrip =_fleaModelController.description;
   }
 
   @override
   Widget build(BuildContext context) {
-    print(_imageFiles);
     //TODO : ****************************************************************
     Get.put(ImageController(), permanent: true);
     UserModelController _userModelController = Get.find<UserModelController>();
@@ -381,7 +389,10 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                       cursorHeight: 16,
                       cursorWidth: 2,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      controller: _titleTextEditingController..text = '${_fleaModelController.title}',
+                      controller: _titleTextEditingController..text = '$_initTitle',
+                      onChanged: (title){
+                        _initTitle = title;
+                      },
                       strutStyle: StrutStyle(leading: 0.3),
                       decoration: InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -413,16 +424,16 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                         thickness: 0.5,
                         color: Color(0xFFDEDEDE),
                       ),
-
-
-
                       TextFormField(
                         textAlignVertical: TextAlignVertical.center,
                         cursorColor: Color(0xff3D6FED),
                         cursorHeight: 16,
                         cursorWidth: 2,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        controller: _itemNameTextEditingController..text='${_fleaModelController.itemName}',
+                        controller: _itemNameTextEditingController..text='$_initItemName',
+                        onChanged: (itemName){
+                          _initItemName = itemName;
+                        },
                         strutStyle: StrutStyle(leading: 0.3),
                         decoration: InputDecoration(
                           floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -449,14 +460,11 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                           }
                         },
                       ),
-
-
                       Divider(
                         height: 32,
                         thickness: 0.5,
                         color: Color(0xFFDEDEDE),
                       ),
-
                       Row(
                         children: [
                           SizedBox(
@@ -466,15 +474,10 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                               cursorColor: Color(0xff377EEA),
                               cursorHeight: 16,
                               cursorWidth: 2,
-                              controller: _itemPriceTextEditingController..text='${_fleaModelController.price}',
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                // CurrencyTextInputFormatter(
-                                //   locale: 'ko',
-                                //   decimalDigits: 0,
-                                //   symbol: '',
-                                // ),
-                              ],
+                              controller: _itemPriceTextEditingController..text='$_initPrice',
+                              onChanged: (price){
+                                _initPrice = int.parse(price);
+                              },
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.only(bottom: 14),
                                 border: InputBorder.none,
@@ -762,7 +765,11 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                               cursorHeight: 16,
                               cursorWidth: 2,
                               autovalidateMode: AutovalidateMode.onUserInteraction,
-                              controller: _itemDescribTextEditingController..text = '${_fleaModelController.description}',
+                              controller: _itemDescribTextEditingController..text = '$_initdescrip',
+                              onChanged: (descrip){
+                                _initdescrip = descrip;
+                                print(_initdescrip);
+                              },
                               strutStyle: StrutStyle(leading: 0.3),
                               decoration: InputDecoration(
                                 errorStyle: TextStyle(
