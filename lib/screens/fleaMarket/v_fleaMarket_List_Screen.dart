@@ -33,101 +33,114 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
 
   var f = NumberFormat('###,###,###,###');
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _stream = newStream();
-
   }
 
   Stream<QuerySnapshot> newStream() {
     return FirebaseFirestore.instance
         .collection('fleaMarket')
-        .where('category', isEqualTo: (_selectedValue == '전체') ? _allCategories :'$_selectedValue')
+        .where('category',
+            isEqualTo:
+                (_selectedValue == '전체') ? _allCategories : '$_selectedValue')
         .orderBy('timeStamp', descending: true)
         .limit(500)
         .snapshots();
   }
 
-  _showCupertinoPicker() async{
-
+  _showCupertinoPicker() async {
     await showCupertinoModalPopup(
         context: context,
-        builder: (_){
+        builder: (_) {
           return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Container(
-            height: 520,
-            padding: EdgeInsets.only(left: 20, right: 20),
-            child:
-            CupertinoActionSheet(
-              actions: [
-                CupertinoActionSheetAction(
-                    onPressed: (){
-                      setState(() {_selectedValue = '전체';});
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Container(
+                height: 520,
+                padding: EdgeInsets.only(left: 20, right: 20),
+                child: CupertinoActionSheet(
+                  actions: [
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue = '전체';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          '전체',
+                        )),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue = '데크';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('데크')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue = '바인딩';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('바인딩')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue = '부츠';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('부츠')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue = '의류';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('의류')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue = '기타';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('기타')),
+                  ],
+                  cancelButton: CupertinoActionSheetAction(
+                    child: Text('닫기'),
+                    onPressed: () {
+                      HapticFeedback.mediumImpact();
                       Navigator.pop(context);
                     },
-                    child: Text('전체',)),
-                CupertinoActionSheetAction(
-                    onPressed: (){
-                      setState(() {_selectedValue = '데크';});
-                      Navigator.pop(context);
-                    },
-                    child: Text('데크')),
-                CupertinoActionSheetAction(
-                    onPressed: (){
-                      setState(() {_selectedValue = '바인딩';});
-                      Navigator.pop(context);
-                    },
-                    child: Text('바인딩')),
-                CupertinoActionSheetAction(
-                    onPressed: (){
-                      setState(() {_selectedValue = '부츠';});
-                      Navigator.pop(context);
-                    },
-                    child: Text('부츠')),
-                CupertinoActionSheetAction(
-                    onPressed: (){
-                      setState(() {_selectedValue = '의류';});
-                      Navigator.pop(context);
-                    },
-                    child: Text('의류')),
-                CupertinoActionSheetAction(
-                    onPressed: (){
-                      setState(() {_selectedValue = '기타';});
-                      Navigator.pop(context);
-                    },
-                    child: Text('기타')),
+                  ),
+                )
 
-              ],
-              cancelButton: CupertinoActionSheetAction(
-                child: Text('닫기'),
-                onPressed: (){
-                  HapticFeedback.mediumImpact();
-                  Navigator.pop(context);
-                },
-              ),
-            )
+                // CupertinoPicker(
+                //   magnification: 1.1,
+                //   backgroundColor: Colors.white,
+                //   itemExtent: 40,
+                //   children: [
+                //     ..._categories.map((e) => Text(e))
+                //   ],
+                //   onSelectedItemChanged: (i) {
+                //     setState(() {
+                //       _selectedValue = _categories[i];
+                //     });
+                //   },
+                //   scrollController: _scrollWheelController,
+                // ),
 
-            // CupertinoPicker(
-            //   magnification: 1.1,
-            //   backgroundColor: Colors.white,
-            //   itemExtent: 40,
-            //   children: [
-            //     ..._categories.map((e) => Text(e))
-            //   ],
-            //   onSelectedItemChanged: (i) {
-            //     setState(() {
-            //       _selectedValue = _categories[i];
-            //     });
-            //   },
-            //   scrollController: _scrollWheelController,
-            // ),
-
-          ),
-        );});
+                ),
+          );
+        });
     setState(() {
       _stream = newStream();
     });
@@ -169,16 +182,12 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                       Stack(
                         children: [
                           ElevatedButton(
-                              onPressed: () async{
+                              onPressed: () async {
                                 await _showCupertinoPicker();
                               },
                               style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.only(
-                                  right: 36,
-                                  left: 16,
-                                  top: 12,
-                                  bottom: 12
-                                ),
+                                  padding: EdgeInsets.only(
+                                      right: 36, left: 16, top: 12, bottom: 12),
                                   side: const BorderSide(
                                     width: 1,
                                     color: Color(0xFFDEDEDE),
@@ -187,24 +196,29 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30))),
-                              child:
-                              (_selectedValue == null) ? Text('전체',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF555555))
-                              ):Text('$_selectedValue',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF555555)))),
+                              child: (_selectedValue == null)
+                                  ? Text('전체',
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF555555)))
+                                  : Text('$_selectedValue',
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF555555)))),
                           Positioned(
                             top: 11,
                             right: 8,
-                            child: Icon(
-                              Icons.arrow_drop_down_sharp,
-                              size: 26,
-                              color: Color(0xFF555555),
+                            child: GestureDetector(
+                              onTap: () async {
+                                await _showCupertinoPicker();
+                              },
+                              child: Icon(
+                                Icons.arrow_drop_down_sharp,
+                                size: 26,
+                                color: Color(0xFF555555),
+                              ),
                             ),
                           ),
                         ],
@@ -401,40 +415,32 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                                       maxWidth:
                                                                           _size.width -
                                                                               106),
-                                                                  child:
-                                                                  ( chatDocs[index]
-                                                                      .get('soldOut')==false)?
-                                                                  Text(
-                                                                    f.format(chatDocs[index].get('price')) +
-                                                                        ' 원',
-                                                                    maxLines: 1,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    style: TextStyle(
-                                                                        color: Color(
-                                                                            0xFF111111),
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .bold,
-                                                                        fontSize:
-                                                                            16),
-                                                                  )
-                                                                  : Text(
-                                                                   '거래완료',
-                                                                    maxLines: 1,
-                                                                    overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                    style: TextStyle(
-                                                                        color: Color(
-                                                                            0xFF111111),
-                                                                        fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                        fontSize:
-                                                                        16),
-                                                                  ),
+                                                                  child: (chatDocs[index]
+                                                                              .get('soldOut') ==
+                                                                          false)
+                                                                      ? Text(
+                                                                          f.format(chatDocs[index].get('price')) +
+                                                                              ' 원',
+                                                                          maxLines:
+                                                                              1,
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          style: TextStyle(
+                                                                              color: Color(0xFF111111),
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 16),
+                                                                        )
+                                                                      : Text(
+                                                                          '거래완료',
+                                                                          maxLines:
+                                                                              1,
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          style: TextStyle(
+                                                                              color: Color(0xFF111111),
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 16),
+                                                                        ),
                                                                 ),
                                                               ],
                                                             ),
@@ -447,71 +453,38 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                                   decoration:
                                                                       BoxDecoration(
                                                                     borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(3),
-                                                                    color: Color(
-                                                                        0xFFD7F4FF),
+                                                                        BorderRadius.circular(3),
+                                                                    color: Color(0xFFD7F4FF),
                                                                   ),
-                                                                  padding: EdgeInsets
-                                                                      .only(
-                                                                          right:
-                                                                              6,
-                                                                          left:
-                                                                              6,
-                                                                          top:
-                                                                              2,
-                                                                          bottom:
-                                                                              3),
+                                                                  padding: EdgeInsets.only(
+                                                                          right: 6,
+                                                                          left: 6,
+                                                                          top: 2,
+                                                                          bottom: 3),
                                                                   child: Text(
-                                                                    chatDocs[
-                                                                            index]
-                                                                        .get(
-                                                                            'category'),
+                                                                    chatDocs[index].get('category'),
                                                                     style: TextStyle(
                                                                         fontWeight:
-                                                                            FontWeight
-                                                                                .bold,
-                                                                        fontSize:
-                                                                            12,
-                                                                        color: Color(
-                                                                            0xFF458BF5)),
+                                                                            FontWeight.bold,
+                                                                        fontSize: 12,
+                                                                        color: Color(0xFF458BF5)),
                                                                   ),
                                                                 ),
                                                                 SizedBox(
                                                                   width: 6,
                                                                 ),
                                                                 Container(
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(3),
-                                                                    color: Color(
-                                                                        0xFFD5F7E0),
+                                                                  decoration: BoxDecoration(
+                                                                    borderRadius: BorderRadius.circular(3),
+                                                                    color: Color(0xFFD5F7E0),
                                                                   ),
-                                                                  padding: EdgeInsets
-                                                                      .only(
-                                                                          right:
-                                                                              6,
-                                                                          left:
-                                                                              6,
-                                                                          top:
-                                                                              2,
-                                                                          bottom:
-                                                                              3),
+                                                                  padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
                                                                   child: Text(
-                                                                    chatDocs[
-                                                                            index]
-                                                                        .get(
-                                                                            'resortNickname'),
+                                                                    chatDocs[index].get('location'),
                                                                     style: TextStyle(
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .bold,
-                                                                        fontSize:
-                                                                            12,
-                                                                        color: Color(
-                                                                            0xFF17AD4A)),
+                                                                        fontWeight: FontWeight.bold,
+                                                                        fontSize: 12,
+                                                                        color: Color(0xFF17AD4A)),
                                                                   ),
                                                                 ),
                                                               ],
