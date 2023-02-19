@@ -10,6 +10,7 @@ import 'package:snowlive3/screens/more/v_resortTab.dart';
 import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
 import 'package:snowlive3/screens/more/v_setting_moreTab.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
+import '../../controller/vm_noticeController.dart';
 import '../../controller/vm_userModelController.dart';
 
 class MoreTab extends StatefulWidget {
@@ -32,6 +33,14 @@ class _MoreTabState extends State<MoreTab> {
 
   @override
   Widget build(BuildContext context) {
+
+    //TODO: Dependency Injection************************************************
+    Get.put(NoticeController(), permanent: true);
+    NoticeController _noticeController = Get.find<NoticeController>();
+    //TODO: Dependency Injection************************************************
+
+    _noticeController.getIsNewNotice();
+
     Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -567,7 +576,9 @@ class _MoreTabState extends State<MoreTab> {
                       top: 1,
                       left: 58,
                       child: new Icon(Icons.brightness_1, size: 6.0,
-                          color: Color(0xFFD32F2F)),
+                          color:
+                          (_noticeController.isNewNotice == true)
+                              ?Color(0xFFD32F2F):Colors.white),
                     )
                   ],
                 ),

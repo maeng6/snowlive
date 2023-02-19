@@ -101,7 +101,9 @@ class _MainHomeState extends State<MainHome> {
                     top: 2,
                     right: 0.0,
                     child: new Icon(Icons.brightness_1, size: 7.0,
-                        color: Color(0xFFD32F2F)),
+                        color:
+                        (_noticeController.isNewNotice == true)
+                        ?Color(0xFFD32F2F):Colors.white),
                   )
                 ],
               ),
@@ -114,7 +116,9 @@ class _MainHomeState extends State<MainHome> {
                     top: 2,
                     right: 0.0,
                     child: new Icon(Icons.brightness_1, size: 7.0,
-                        color: Color(0xFFD32F2F)),
+                        color:
+                        (_noticeController.isNewNotice == true)
+                            ?Color(0xFFD32F2F):Colors.white),
                   )
 
                 ],
