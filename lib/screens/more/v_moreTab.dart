@@ -64,7 +64,7 @@ class _MoreTabState extends State<MoreTab> {
                 height: 24,
               ),
               Obx(
-                () => Padding(
+                    () => Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
                     decoration: BoxDecoration(
@@ -74,7 +74,7 @@ class _MoreTabState extends State<MoreTab> {
                     width: _size.width - 32,
                     child: Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -83,59 +83,59 @@ class _MoreTabState extends State<MoreTab> {
                             children: [
                               (_userModelController.profileImageUrl!.isNotEmpty)
                                   ? GestureDetector(
-                                      onTap: () => Get.to(
-                                          () => SetProfileImage_moreTab()),
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            width: 52,
-                                            height: 52,
-                                            child: CircleAvatar(
-                                                backgroundColor:
-                                                    Colors.grey[100],
-                                                backgroundImage: NetworkImage(
-                                                  _userModelController
-                                                      .profileImageUrl!,
-                                                )),
-                                          ),
-                                          Positioned(
-                                              bottom: 0,
-                                              right: 0,
-                                              child: ExtendedImage.asset(
-                                                  'assets/imgs/icons/icon_profile_add.png',
-                                                  height: 22,
-                                                  width: 22))
-                                        ],
-                                      ),
-                                    )
+                                onTap: () => Get.to(
+                                        () => SetProfileImage_moreTab()),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      width: 52,
+                                      height: 52,
+                                      child: CircleAvatar(
+                                          backgroundColor:
+                                          Colors.grey[100],
+                                          backgroundImage: NetworkImage(
+                                            _userModelController
+                                                .profileImageUrl!,
+                                          )),
+                                    ),
+                                    Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: ExtendedImage.asset(
+                                            'assets/imgs/icons/icon_profile_add.png',
+                                            height: 22,
+                                            width: 22))
+                                  ],
+                                ),
+                              )
                                   : GestureDetector(
-                                      onTap: () => Get.to(
-                                          () => SetProfileImage_moreTab()),
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            width: 52,
-                                            height: 52,
-                                            child: CircleAvatar(
-                                              backgroundColor:
-                                                  Colors.yellow[100],
-                                              backgroundImage: AssetImage(
-                                                  'assets/imgs/profile/img_profile_default_circle.png'),
-                                            ),
-                                          ),
-                                          Positioned(
-                                              bottom: 0,
-                                              right: 0,
-                                              child: GestureDetector(
-                                                child: ExtendedImage.asset(
-                                                    'assets/imgs/icons/icon_profile_add.png',
-                                                    height: 22,
-                                                    width: 22),
-                                                onTap: () {},
-                                              ))
-                                        ],
+                                onTap: () => Get.to(
+                                        () => SetProfileImage_moreTab()),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      width: 52,
+                                      height: 52,
+                                      child: CircleAvatar(
+                                        backgroundColor:
+                                        Colors.yellow[100],
+                                        backgroundImage: AssetImage(
+                                            'assets/imgs/profile/img_profile_default_circle.png'),
                                       ),
                                     ),
+                                    Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: GestureDetector(
+                                          child: ExtendedImage.asset(
+                                              'assets/imgs/icons/icon_profile_add.png',
+                                              height: 22,
+                                              width: 22),
+                                          onTap: () {},
+                                        ))
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                           SizedBox(
@@ -168,9 +168,9 @@ class _MoreTabState extends State<MoreTab> {
                                               return SingleChildScrollView(
                                                 padding: EdgeInsets.only(
                                                     bottom:
-                                                        MediaQuery.of(context)
-                                                            .viewInsets
-                                                            .bottom),
+                                                    MediaQuery.of(context)
+                                                        .viewInsets
+                                                        .bottom),
                                                 child: Container(
                                                   height: 300,
                                                   child: Padding(
@@ -178,11 +178,11 @@ class _MoreTabState extends State<MoreTab> {
                                                         left: 20, right: 20),
                                                     child: Column(
                                                       crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
+                                                      CrossAxisAlignment
+                                                          .start,
                                                       mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
+                                                      MainAxisAlignment
+                                                          .start,
                                                       children: [
                                                         SizedBox(
                                                           height: 30,
@@ -192,8 +192,8 @@ class _MoreTabState extends State<MoreTab> {
                                                           style: TextStyle(
                                                               fontSize: 18,
                                                               fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                              FontWeight
+                                                                  .bold,
                                                               color: Color(
                                                                   0xFF111111)),
                                                         ),
@@ -204,87 +204,87 @@ class _MoreTabState extends State<MoreTab> {
                                                           height: 130,
                                                           child: Column(
                                                             crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
+                                                            CrossAxisAlignment
+                                                                .start,
                                                             mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
+                                                            MainAxisAlignment
+                                                                .start,
                                                             children: [
                                                               Form(
                                                                 key: _formKey,
                                                                 child:
-                                                                    TextFormField(
+                                                                TextFormField(
                                                                   cursorColor:
-                                                                      Color(
-                                                                          0xff377EEA),
+                                                                  Color(
+                                                                      0xff377EEA),
                                                                   cursorHeight:
-                                                                      16,
+                                                                  16,
                                                                   cursorWidth:
-                                                                      2,
+                                                                  2,
                                                                   autovalidateMode:
-                                                                      AutovalidateMode
-                                                                          .onUserInteraction,
+                                                                  AutovalidateMode
+                                                                      .onUserInteraction,
                                                                   controller:
-                                                                      _textEditingController,
+                                                                  _textEditingController,
                                                                   strutStyle:
-                                                                      StrutStyle(
-                                                                          leading:
-                                                                              0.3),
+                                                                  StrutStyle(
+                                                                      leading:
+                                                                      0.3),
                                                                   decoration:
-                                                                      InputDecoration(
-                                                                          errorStyle:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                12,
-                                                                          ),
-                                                                          hintStyle: TextStyle(
-                                                                              color: Color(
-                                                                                  0xff949494),
-                                                                              fontSize:
-                                                                                  16),
-                                                                          hintText:
-                                                                              '활동명 입력',
-                                                                          labelText:
-                                                                              '활동명',
-                                                                          contentPadding: EdgeInsets.only(
-                                                                              top:
-                                                                                  20,
-                                                                              bottom:
-                                                                                  20,
-                                                                              left:
-                                                                                  20,
-                                                                              right:
-                                                                                  20),
-                                                                          border:
-                                                                              OutlineInputBorder(
-                                                                            borderSide:
-                                                                                BorderSide(color: Color(0xFFDEDEDE)),
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(6),
-                                                                          ),
-                                                                          enabledBorder:
-                                                                              OutlineInputBorder(
-                                                                            borderSide:
-                                                                                BorderSide(color: Color(0xFFDEDEDE)),
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(6),
-                                                                          ),
-                                                                          errorBorder:
-                                                                              OutlineInputBorder(
-                                                                            borderSide:
-                                                                                BorderSide(color: Color(0xFFFF3726)),
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(6),
-                                                                          )),
+                                                                  InputDecoration(
+                                                                      errorStyle:
+                                                                      TextStyle(
+                                                                        fontSize:
+                                                                        12,
+                                                                      ),
+                                                                      hintStyle: TextStyle(
+                                                                          color: Color(
+                                                                              0xff949494),
+                                                                          fontSize:
+                                                                          16),
+                                                                      hintText:
+                                                                      '활동명 입력',
+                                                                      labelText:
+                                                                      '활동명',
+                                                                      contentPadding: EdgeInsets.only(
+                                                                          top:
+                                                                          20,
+                                                                          bottom:
+                                                                          20,
+                                                                          left:
+                                                                          20,
+                                                                          right:
+                                                                          20),
+                                                                      border:
+                                                                      OutlineInputBorder(
+                                                                        borderSide:
+                                                                        BorderSide(color: Color(0xFFDEDEDE)),
+                                                                        borderRadius:
+                                                                        BorderRadius.circular(6),
+                                                                      ),
+                                                                      enabledBorder:
+                                                                      OutlineInputBorder(
+                                                                        borderSide:
+                                                                        BorderSide(color: Color(0xFFDEDEDE)),
+                                                                        borderRadius:
+                                                                        BorderRadius.circular(6),
+                                                                      ),
+                                                                      errorBorder:
+                                                                      OutlineInputBorder(
+                                                                        borderSide:
+                                                                        BorderSide(color: Color(0xFFFF3726)),
+                                                                        borderRadius:
+                                                                        BorderRadius.circular(6),
+                                                                      )),
                                                                   validator:
                                                                       (val) {
                                                                     if (val!.length <=
-                                                                            20 &&
+                                                                        20 &&
                                                                         val.length >=
                                                                             1) {
                                                                       return null;
                                                                     } else if (val
-                                                                            .length ==
+                                                                        .length ==
                                                                         0) {
                                                                       return '닉네임을 입력해주세요.';
                                                                     } else {
@@ -298,17 +298,17 @@ class _MoreTabState extends State<MoreTab> {
                                                               ),
                                                               Padding(
                                                                 padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            19),
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    left:
+                                                                    19),
                                                                 child: Text(
                                                                   '최대 20글자까지 입력 가능합니다.',
                                                                   style: TextStyle(
                                                                       color: Color(
                                                                           0xff949494),
                                                                       fontSize:
-                                                                          12),
+                                                                      12),
                                                                 ),
                                                               ),
                                                             ],
@@ -319,7 +319,7 @@ class _MoreTabState extends State<MoreTab> {
                                                             Expanded(
                                                               child: InkWell(
                                                                 child:
-                                                                    ElevatedButton(
+                                                                ElevatedButton(
                                                                   onPressed:
                                                                       () {
                                                                     Navigator.pop(
@@ -331,26 +331,26 @@ class _MoreTabState extends State<MoreTab> {
                                                                         color: Colors
                                                                             .white,
                                                                         fontSize:
-                                                                            15,
+                                                                        15,
                                                                         fontWeight:
-                                                                            FontWeight.bold),
+                                                                        FontWeight.bold),
                                                                   ),
                                                                   style: TextButton.styleFrom(
                                                                       splashFactory:
-                                                                          InkRipple
-                                                                              .splashFactory,
+                                                                      InkRipple
+                                                                          .splashFactory,
                                                                       elevation:
-                                                                          0,
+                                                                      0,
                                                                       minimumSize:
-                                                                          Size(
-                                                                              100,
-                                                                              56),
+                                                                      Size(
+                                                                          100,
+                                                                          56),
                                                                       backgroundColor:
-                                                                          Color(
-                                                                              0xff555555),
+                                                                      Color(
+                                                                          0xff555555),
                                                                       padding: EdgeInsets.symmetric(
                                                                           horizontal:
-                                                                              0)),
+                                                                          0)),
                                                                 ),
                                                               ),
                                                             ),
@@ -360,20 +360,20 @@ class _MoreTabState extends State<MoreTab> {
                                                             Expanded(
                                                               child: InkWell(
                                                                 child:
-                                                                    ElevatedButton(
+                                                                ElevatedButton(
                                                                   onPressed:
                                                                       () async {
                                                                     setState(
-                                                                        () {
-                                                                      isLoading =
+                                                                            () {
+                                                                          isLoading =
                                                                           true;
-                                                                    });
+                                                                        });
                                                                     if (_formKey
                                                                         .currentState!
                                                                         .validate()) {
                                                                       await _userModelController
                                                                           .updateNickname(
-                                                                              _textEditingController.text);
+                                                                          _textEditingController.text);
                                                                       Get.snackbar(
                                                                           '닉네임을 변경하였습니다.',
                                                                           '',
@@ -381,17 +381,17 @@ class _MoreTabState extends State<MoreTab> {
                                                                               .BOTTOM,
                                                                           margin: EdgeInsets.only(
                                                                               right:
-                                                                                  20,
+                                                                              20,
                                                                               left:
-                                                                                  20,
+                                                                              20,
                                                                               bottom:
-                                                                                  12),
+                                                                              12),
                                                                           backgroundColor: Colors
                                                                               .black87,
                                                                           colorText: Colors
                                                                               .white,
                                                                           duration:
-                                                                              Duration(milliseconds: 3000));
+                                                                          Duration(milliseconds: 3000));
                                                                       Navigator.pop(
                                                                           context);
                                                                     } else {
@@ -402,23 +402,23 @@ class _MoreTabState extends State<MoreTab> {
                                                                               .BOTTOM,
                                                                           margin: EdgeInsets.only(
                                                                               right:
-                                                                                  20,
+                                                                              20,
                                                                               left:
-                                                                                  20,
+                                                                              20,
                                                                               bottom:
-                                                                                  12),
+                                                                              12),
                                                                           backgroundColor: Colors
                                                                               .black87,
                                                                           colorText: Colors
                                                                               .white,
                                                                           duration:
-                                                                              Duration(milliseconds: 3000));
+                                                                          Duration(milliseconds: 3000));
                                                                     }
                                                                     setState(
-                                                                        () {
-                                                                      isLoading =
+                                                                            () {
+                                                                          isLoading =
                                                                           false;
-                                                                    });
+                                                                        });
                                                                   },
                                                                   child: Text(
                                                                     '변경',
@@ -426,26 +426,26 @@ class _MoreTabState extends State<MoreTab> {
                                                                         color: Colors
                                                                             .white,
                                                                         fontSize:
-                                                                            15,
+                                                                        15,
                                                                         fontWeight:
-                                                                            FontWeight.bold),
+                                                                        FontWeight.bold),
                                                                   ),
                                                                   style: TextButton.styleFrom(
                                                                       splashFactory:
-                                                                          InkRipple
-                                                                              .splashFactory,
+                                                                      InkRipple
+                                                                          .splashFactory,
                                                                       elevation:
-                                                                          0,
+                                                                      0,
                                                                       minimumSize:
-                                                                          Size(
-                                                                              100,
-                                                                              56),
+                                                                      Size(
+                                                                          100,
+                                                                          56),
                                                                       backgroundColor:
-                                                                          Color(
-                                                                              0xff2C97FB),
+                                                                      Color(
+                                                                          0xff2C97FB),
                                                                       padding: EdgeInsets.symmetric(
                                                                           horizontal:
-                                                                              0)),
+                                                                          0)),
                                                                 ),
                                                               ),
                                                             ),
@@ -491,9 +491,9 @@ class _MoreTabState extends State<MoreTab> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text('리조트', style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF3D83ED)
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF3D83ED)
                 ),),
               ),
               SizedBox(height: 10),
@@ -569,9 +569,9 @@ class _MoreTabState extends State<MoreTab> {
                 minVerticalPadding: 20,
                 onTap: () {
                   Get.to(() => WebPage(
-                        url:
-                            'https://sites.google.com/view/snowlive-termsofservice/%ED%99%88',
-                      ));
+                    url:
+                    'https://sites.google.com/view/snowlive-termsofservice/%ED%99%88',
+                  ));
                 },
                 title: Text(
                   '이용약관',
@@ -591,9 +591,9 @@ class _MoreTabState extends State<MoreTab> {
                 minVerticalPadding: 20,
                 onTap: () {
                   Get.to(() => WebPage(
-                        url:
-                            'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88',
-                      ));
+                    url:
+                    'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88',
+                  ));
                 },
                 title: Text(
                   '개인정보처리방침',
