@@ -771,11 +771,15 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                         _userModelController.uid);
                                     if (_userModelController.fleaChatUidList!
                                         .contains(_fleaModelController.uid)) {
-                                      _fleaChatModelController
+                                     await _fleaChatModelController
                                           .getCurrentFleaChat(
                                           myUid: _userModelController.uid,
                                           otherUid:
                                           _fleaModelController.uid);
+                                     await _fleaChatModelController.getChatCount(
+                                         myUid:  _userModelController.uid,
+                                         otherUid: _fleaModelController.uid,
+                                         chatRoomName: _fleaChatModelController.chatRoomName);
                                       await _fleaChatModelController
                                           .resetMyChatCheckCount(
                                           chatRoomName:
