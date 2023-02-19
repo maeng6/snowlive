@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Upload.dart';
@@ -29,6 +30,8 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
   var _stream;
   var _selectedValue = '전체';
   var _allCategories;
+
+  var f = NumberFormat('###,###,###,###');
 
 
   @override
@@ -168,38 +171,35 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                   height: 68,
                   child: Row(
                     children: [
-                      Directionality(
-                        textDirection: TextDirection.rtl,
-                        child: ElevatedButton.icon(
-                            onPressed: () async{
-                              await _showCupertinoPicker();
-                            },
-                            icon: Icon(
-                              Icons.arrow_drop_down_sharp,
-                              size: 26,
-                              color: Color(0xFF555555),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                                side: const BorderSide(
-                                  width: 1,
-                                  color: Color(0xFFDEDEDE),
-                                ),
-                                primary: Color(0xFFFFFFFF),
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30))),
-                            label:
-                            (_selectedValue == null) ? Text('전체',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF555555))
-                            ):Text('$_selectedValue',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF555555)))),
-                      ),
+                      ElevatedButton.icon(
+                          onPressed: () async{
+                            await _showCupertinoPicker();
+                          },
+                          icon: Icon(
+                            Icons.arrow_drop_down_sharp,
+                            size: 26,
+                            color: Color(0xFF555555),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              side: const BorderSide(
+                                width: 1,
+                                color: Color(0xFFDEDEDE),
+                              ),
+                              primary: Color(0xFFFFFFFF),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30))),
+                          label:
+                          (_selectedValue == null) ? Text('전체',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF555555))
+                          ):Text('$_selectedValue',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF555555)))),
                     ],
                   ),
                 ),
@@ -396,9 +396,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                                   ( chatDocs[index]
                                                                       .get('soldOut')==false)?
                                                                   Text(
-                                                                    chatDocs[index]
-                                                                            .get('price')
-                                                                            .toString() +
+                                                                    f.format(chatDocs[index].get('price')) +
                                                                         ' 원',
                                                                     maxLines: 1,
                                                                     overflow:

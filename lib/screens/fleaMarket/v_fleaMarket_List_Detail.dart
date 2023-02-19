@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
@@ -26,6 +27,9 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
       Get.find<FleaChatModelController>();
 
 //TODO: Dependency Injection**************************************************
+
+  var f = NumberFormat('###,###,###,###');
+
 
   @override
   Widget build(BuildContext context) {
@@ -668,7 +672,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                       Container(
                                         width: _size.width / 2 - 32,
                                         child: Text(
-                                          '${_fleaModelController.price} 원',
+                                          '${f.format(_fleaModelController.price)} 원',
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
