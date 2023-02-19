@@ -408,13 +408,13 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                           ),
                           hintStyle:
                           TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                          hintText: '글 제목을 입력해 주세요',
+                          hintText: '글 제목을 입력해 주세요. (최대 50자)',
                           labelText: '글 제목',
                           contentPadding: EdgeInsets.symmetric(vertical: 2),
                           border: InputBorder.none,
                         ),
                         validator: (val) {
-                          if (val!.length <= 20 && val.length >= 1) {
+                          if (val!.length <= 50 && val.length >= 1) {
                             return null;
                           } else if (val.length == 0) {
                             return '글 제목을 입력해주세요.';
@@ -449,7 +449,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                             ),
                             hintStyle:
                             TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                            hintText: '물품명을 입력해 주세요.',
+                            hintText: '물품명을 입력해 주세요. (최대 20자)',
                             labelText: '물품명',
                             contentPadding: EdgeInsets.symmetric(vertical: 2),
                             border: InputBorder.none,
@@ -785,7 +785,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                   ),
                                   hintStyle:
                                   TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                  hintText: '게시물에 올릴 물품의 상세설명을 입력해주세요.',
+                                  hintText: '게시글 내용을 작성해 주세요. (최대 1,000자)',
                                   labelText: '상세설명',
                                   border: InputBorder.none,
                                 ),
