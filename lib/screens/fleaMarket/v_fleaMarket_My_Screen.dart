@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Upload.dart';
@@ -30,6 +31,8 @@ class _FleaMarket_My_ScreenState
 //TODO: Dependency Injection**************************************************
 
   var _stream;
+  var f = NumberFormat('###,###,###,###');
+
 
   @override
   void initState() {
@@ -187,7 +190,7 @@ class _FleaMarket_My_ScreenState
                                                             maxWidth:
                                                             _size.width - 106),
                                                         child: Text(
-                                                          chatDocs[index].get('price').toString() + ' 원',
+                                                          f.format(chatDocs[index].get('price')) + ' 원',
                                                           maxLines: 1,
                                                           overflow: TextOverflow.ellipsis,
                                                           style: TextStyle(
