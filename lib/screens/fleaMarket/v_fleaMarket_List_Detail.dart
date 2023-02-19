@@ -909,7 +909,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                               padding: const EdgeInsets.only(
                                   bottom: 4),
                               child: Text(
-                                '거래완료',
+                                '거래완료로 변경',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
