@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import '../../controller/vm_userModelController.dart';
@@ -25,6 +26,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
 //TODO: Dependency Injection**************************************************
 
   var _stream;
+  var f = NumberFormat('###,###,###,###');
 
   @override
   void initState() {
@@ -181,8 +183,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                              _size.width -
                                                  106),
                                          child: Text(
-                                           chatDocs[index].get(
-                                               'price').toString()+' 원',
+                                           f.format(chatDocs[index].get('price'))+' 원',
                                            maxLines: 1,
                                            overflow: TextOverflow.ellipsis,
                                            style: TextStyle(
@@ -336,9 +337,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                            _size.width -
                                                106),
                                        child: Text(
-                                         chatDocs[index].get(
-                                             'price').toString()+' 원',
-                                         maxLines: 1,
+                                         f.format(chatDocs[index].get('price'))+' 원',                                         maxLines: 1,
                                          overflow: TextOverflow.ellipsis,
                                          style: TextStyle(
                                              color: Color(0xFF111111),
@@ -490,9 +489,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                            _size.width -
                                                106),
                                        child: Text(
-                                         chatDocs[index].get(
-                                             'price').toString()+' 원',
-                                         maxLines: 1,
+                                         f.format(chatDocs[index].get('price'))+' 원',                                         maxLines: 1,
                                          overflow: TextOverflow.ellipsis,
                                          style: TextStyle(
                                              color: Color(0xFF111111),
@@ -645,9 +642,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                            _size.width -
                                                106),
                                        child: Text(
-                                         chatDocs[index].get(
-                                             'price').toString()+' 원',
-                                         maxLines: 1,
+                                         f.format(chatDocs[index].get('price'))+' 원',                                         maxLines: 1,
                                          overflow: TextOverflow.ellipsis,
                                          style: TextStyle(
                                              color: Color(0xFF111111),
@@ -801,9 +796,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                                  _size.width -
                                                      106),
                                              child: Text(
-                                               chatDocs[index].get(
-                                                   'price').toString()+' 원',
-                                               maxLines: 1,
+                                               f.format(chatDocs[index].get('price'))+' 원',                                               maxLines: 1,
                                                overflow: TextOverflow.ellipsis,
                                                style: TextStyle(
                                                    color: Color(0xFF111111),
