@@ -231,7 +231,7 @@ class _FleaMarket_My_ScreenState
                                                         padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
                                                         child: Text(
                                                           chatDocs[index].get(
-                                                              'resortNickname'),
+                                                              'location'),
                                                           style: TextStyle(
                                                               fontWeight: FontWeight.bold,
                                                               fontSize: 12,
