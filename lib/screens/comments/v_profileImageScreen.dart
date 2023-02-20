@@ -35,6 +35,7 @@ class _ProfileImagePageState extends State<ProfileImagePage> {
         maxScale: 7,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if(widget.CommentProfileUrl != '')
             ExtendedImage.network(widget.CommentProfileUrl),

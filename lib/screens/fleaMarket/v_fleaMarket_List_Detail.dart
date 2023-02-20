@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Chatroom.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_ModifyPage.dart';
 import 'package:snowlive3/screens/fleaMarket/v_phone_Auth_Screen.dart';
@@ -487,11 +488,16 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                     return Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        ExtendedImage.network(
-                                          _fleaModelController.itemImagesUrls![index],
-                                          fit: BoxFit.cover,
-                                          width: _size.width,
-                                          height: 280,
+                                        GestureDetector(
+                                          onTap: (){
+                                            Get.to(()=>ProfileImagePage(CommentProfileUrl: _fleaModelController.itemImagesUrls![index]));
+                                          },
+                                          child: ExtendedImage.network(
+                                            _fleaModelController.itemImagesUrls![index],
+                                            fit: BoxFit.cover,
+                                            width: _size.width,
+                                            height: 280,
+                                          ),
                                         ),
                                       ],
                                     );

@@ -37,7 +37,7 @@ class ImageController extends GetxController {
     List<XFile> selectedImages = [];
     final ImagePicker _picker = ImagePicker();
     selectedImages =
-        await _picker.pickMultiImage(maxWidth: 640, maxHeight: 280, imageQuality: 100);
+        await _picker.pickMultiImage(imageQuality: 100);
     if (selectedImages != null) {
       return selectedImages;
     }else {
