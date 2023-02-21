@@ -9,7 +9,9 @@ import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Chatroom.dart';
+import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_ModifyPage.dart';
+import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Screen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_phone_Auth_Screen.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
@@ -30,7 +32,6 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
 //TODO: Dependency Injection**************************************************
 
   var f = NumberFormat('###,###,###,###');
-
 
   @override
   Widget build(BuildContext context) {
@@ -378,15 +379,16 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                                     CustomFullScreenDialog
                                                                         .showDialog();
                                                                     try {
-                                                                      await FirebaseFirestore
-                                                                          .instance
-                                                                          .collection(
-                                                                              'fleaMarket')
-                                                                          .doc(
-                                                                              '${_userModelController.uid}#${_fleaModelController.fleaCount}')
-                                                                          .delete();
-                                                                      Navigator.pop(
-                                                                          context);
+                                                                      await FirebaseFirestore.instance.collection('fleaMarket').doc('${_userModelController.uid}#${_fleaModelController.fleaCount}').delete();
+                                                                      try {
+                                                                        await _fleaModelController.deleteFleaImage(
+                                                                            uid: _userModelController.uid,
+                                                                            fleaCount: _fleaModelController.fleaCount,
+                                                                            imageCount: _fleaModelController.itemImagesUrls!.length);
+                                                                      }catch(e){
+                                                                        print('이미지 삭제 에러');
+                                                                      };
+                                                                      Navigator.pop(context);
                                                                     } catch (e) {}
                                                                     print(
                                                                         '댓글 삭제 완료');
@@ -458,7 +460,11 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
           body: Column(
             children: [
               Container(
-                height: _size.height - MediaQuery.of(context).viewPadding.top - 58 - MediaQuery.of(context).viewPadding.bottom -88 ,
+                height: _size.height -
+                    MediaQuery.of(context).viewPadding.top -
+                    58 -
+                    MediaQuery.of(context).viewPadding.bottom -
+                    88,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
@@ -479,21 +485,28 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                             viewportFraction: 1,
                             enableInfiniteScroll: false,
                           ),
-                          itemCount: _fleaModelController.itemImagesUrls!.length,
+                          itemCount:
+                              _fleaModelController.itemImagesUrls!.length,
                           itemBuilder: (context, index, pageViewIndex) {
                             return Container(
                               child: StreamBuilder<Object>(
                                   stream: null,
                                   builder: (context, snapshot) {
                                     return Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         GestureDetector(
-                                          onTap: (){
-                                            Get.to(()=>ProfileImagePage(CommentProfileUrl: _fleaModelController.itemImagesUrls![index]));
+                                          onTap: () {
+                                            Get.to(() => ProfileImagePage(
+                                                CommentProfileUrl:
+                                                    _fleaModelController
+                                                            .itemImagesUrls![
+                                                        index]));
                                           },
                                           child: ExtendedImage.network(
-                                            _fleaModelController.itemImagesUrls![index],
+                                            _fleaModelController
+                                                .itemImagesUrls![index],
                                             fit: BoxFit.cover,
                                             width: _size.width,
                                             height: 280,
@@ -517,7 +530,8 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                if (_fleaModelController.profileImageUrl!.isEmpty)
+                                if (_fleaModelController
+                                    .profileImageUrl!.isEmpty)
                                   ExtendedImage.asset(
                                     'assets/imgs/profile/img_profile_default_circle.png',
                                     shape: BoxShape.circle,
@@ -526,7 +540,8 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                     height: 32,
                                     fit: BoxFit.cover,
                                   ),
-                                if (_fleaModelController.profileImageUrl!.isNotEmpty)
+                                if (_fleaModelController
+                                    .profileImageUrl!.isNotEmpty)
                                   ExtendedImage.network(
                                     '${_fleaModelController.profileImageUrl}',
                                     shape: BoxShape.circle,
@@ -540,7 +555,8 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                   padding: const EdgeInsets.only(bottom: 2),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
@@ -560,7 +576,8 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     color: Color(0xFF949494),
-                                                    fontWeight: FontWeight.w300),
+                                                    fontWeight:
+                                                        FontWeight.w300),
                                               ),
                                             ],
                                           ),
@@ -588,7 +605,8 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                 height: 4,
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     (_fleaModelController.soldOut == true)
@@ -597,7 +615,8 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                        fontSize: 18, fontWeight: FontWeight.bold),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -655,7 +674,8 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                   Text(
                                     '${_fleaModelController.itemName}',
                                     style: TextStyle(
-                                        fontSize: 16, fontWeight: FontWeight.normal),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.normal),
                                   ),
                                 ],
                               ),
@@ -663,10 +683,12 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                 height: 16,
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         '금액',
@@ -689,7 +711,8 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                     ],
                                   ),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         '거래방식',
@@ -745,7 +768,6 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                       SizedBox(
                         height: 40,
                       ),
-
                     ],
                   ),
                 ),
@@ -758,9 +780,9 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.only(
-                          top: 16,
+                            top: 16,
                             bottom:
-                            MediaQuery.of(context).viewInsets.bottom + 16,
+                                MediaQuery.of(context).viewInsets.bottom + 16,
                             right: 5),
                         child: TextButton(
                             onPressed: () async {
@@ -777,52 +799,48 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                         _userModelController.uid);
                                     if (_userModelController.fleaChatUidList!
                                         .contains(_fleaModelController.uid)) {
-                                     await _fleaChatModelController
+                                      await _fleaChatModelController
                                           .getCurrentFleaChat(
-                                          myUid: _userModelController.uid,
-                                          otherUid:
-                                          _fleaModelController.uid);
-                                     await _fleaChatModelController.getChatCount(
-                                         myUid:  _userModelController.uid,
-                                         otherUid: _fleaModelController.uid,
-                                         chatRoomName: _fleaChatModelController.chatRoomName);
+                                              myUid: _userModelController.uid,
+                                              otherUid:
+                                                  _fleaModelController.uid);
+                                      await _fleaChatModelController
+                                          .getChatCount(
+                                              myUid: _userModelController.uid,
+                                              otherUid:
+                                                  _fleaModelController.uid,
+                                              chatRoomName:
+                                                  _fleaChatModelController
+                                                      .chatRoomName);
                                       await _fleaChatModelController
                                           .resetMyChatCheckCount(
-                                          chatRoomName:
-                                          '${_fleaChatModelController.chatRoomName}');
-                                      await _userModelController
-                                          .addChatUidList(
-                                          otherAddUid:
-                                          _fleaModelController.uid,
-                                          myAddUid:
-                                          _userModelController.uid);
+                                              chatRoomName:
+                                                  '${_fleaChatModelController.chatRoomName}');
+                                      await _userModelController.addChatUidList(
+                                          otherAddUid: _fleaModelController.uid,
+                                          myAddUid: _userModelController.uid);
                                       print('기존에 존재하는 채팅방으로 이동');
                                     } else {
-                                      await _userModelController
-                                          .addChatUidList(
-                                          otherAddUid:
-                                          _fleaModelController.uid,
-                                          myAddUid:
-                                          _userModelController.uid);
+                                      await _userModelController.addChatUidList(
+                                          otherAddUid: _fleaModelController.uid,
+                                          myAddUid: _userModelController.uid);
                                       await _fleaChatModelController
                                           .createChatroom(
                                         myUid: _userModelController.uid,
                                         otherUid: _fleaModelController.uid,
                                         otherProfileImageUrl:
-                                        _fleaModelController
-                                            .profileImageUrl,
+                                            _fleaModelController
+                                                .profileImageUrl,
                                         otherResortNickname:
-                                        _fleaModelController
-                                            .resortNickname,
+                                            _fleaModelController.resortNickname,
                                         otherDisplayName:
-                                        _fleaModelController.displayName,
+                                            _fleaModelController.displayName,
                                         myDisplayName:
-                                        _userModelController.displayName,
-                                        myProfileImageUrl:
-                                        _userModelController
+                                            _userModelController.displayName,
+                                        myProfileImageUrl: _userModelController
                                             .profileImageUrl,
-                                        myResortNickname: _userModelController
-                                            .resortNickname,
+                                        myResortNickname:
+                                            _userModelController.resortNickname,
                                       );
                                     }
                                     CustomFullScreenDialog.cancelDialog();
@@ -830,7 +848,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                   } else {
                                     CustomFullScreenDialog.cancelDialog();
                                     return Get.to(
-                                            () => FleaMarket_ModifyPage());
+                                        () => FleaMarket_ModifyPage());
                                   }
                                 } catch (e) {
                                   print('에러');
@@ -844,85 +862,88 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                             style: TextButton.styleFrom(
                                 shape: const RoundedRectangleBorder(
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(6))),
+                                        BorderRadius.all(Radius.circular(6))),
                                 elevation: 0,
                                 splashFactory: InkRipple.splashFactory,
                                 minimumSize: Size(1000, 56),
                                 backgroundColor: (_fleaModelController.uid !=
-                                    _userModelController.uid)
+                                        _userModelController.uid)
                                     ? Color(0xff3D83ED)
                                     : Color(0xFF555555)),
                             child: (_fleaModelController.uid !=
-                                _userModelController.uid)
+                                    _userModelController.uid)
                                 ? Padding(
-                              padding: const EdgeInsets.only(bottom: 4),
-                              child: Text(
-                                '메시지 보내기',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16),
-                              ),
-                            )
+                                    padding: const EdgeInsets.only(bottom: 4),
+                                    child: Text(
+                                      '메시지 보내기',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                                  )
                                 : Padding(
-                              padding: const EdgeInsets.only(bottom: 4),
-                              child: Text(
-                                '수정하기',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16),
-                              ),
-                            )),
+                                    padding: const EdgeInsets.only(bottom: 4),
+                                    child: Text(
+                                      '수정하기',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                                  )),
                       ),
                     ),
                     (_fleaModelController.uid == _userModelController.uid)
                         ? Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).viewInsets.bottom + 16, left: 5, top: 16),
-                        child: TextButton(
-                            onPressed: () async {
-                              CustomFullScreenDialog.showDialog();
-                              await _fleaModelController
-                                  .updateState(isSoldOut);
-                              setState(() {});
-                              CustomFullScreenDialog.cancelDialog();
-                            },
-                            style: TextButton.styleFrom(
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(6))),
-                                elevation: 0,
-                                splashFactory: InkRipple.splashFactory,
-                                minimumSize: Size(1000, 56),
-                                backgroundColor: Color(0xff377EEA)),
-                            child: (_fleaModelController.soldOut ==
-                                true)
-                                ? Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 4),
-                              child: Text(
-                                '거래가능으로 변경',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16),
-                              ),
-                            )
-                                : Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 4),
-                              child: Text(
-                                '거래완료로 변경',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16),
-                              ),
-                            )),
-                      ),
-                    )
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).viewInsets.bottom +
+                                          16,
+                                  left: 5,
+                                  top: 16),
+                              child: TextButton(
+                                  onPressed: () async {
+                                    CustomFullScreenDialog.showDialog();
+                                    await _fleaModelController
+                                        .updateState(isSoldOut);
+                                    setState(() {});
+                                    CustomFullScreenDialog.cancelDialog();
+                                  },
+                                  style: TextButton.styleFrom(
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(6))),
+                                      elevation: 0,
+                                      splashFactory: InkRipple.splashFactory,
+                                      minimumSize: Size(1000, 56),
+                                      backgroundColor: Color(0xff377EEA)),
+                                  child: (_fleaModelController.soldOut == true)
+                                      ? Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 4),
+                                          child: Text(
+                                            '거래가능으로 변경',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16),
+                                          ),
+                                        )
+                                      : Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 4),
+                                          child: Text(
+                                            '거래완료로 변경',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16),
+                                          ),
+                                        )),
+                            ),
+                          )
                         : SizedBox(),
                   ],
                 ),
