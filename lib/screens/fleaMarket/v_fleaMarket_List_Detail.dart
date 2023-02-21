@@ -8,6 +8,7 @@ import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
+import 'package:snowlive3/screens/fleaMarket/v_fleaMarketImageScreen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Chatroom.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_ModifyPage.dart';
@@ -498,11 +499,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                       children: [
                                         GestureDetector(
                                           onTap: () {
-                                            Get.to(() => ProfileImagePage(
-                                                CommentProfileUrl:
-                                                    _fleaModelController
-                                                            .itemImagesUrls![
-                                                        index]));
+                                            Get.to(() => FleaMarketImageScreen());
                                           },
                                           child: ExtendedImage.network(
                                             _fleaModelController

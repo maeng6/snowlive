@@ -114,7 +114,7 @@ class _BrandWebBodyState extends State<BrandWebBody> {
                             children: [
                               ElevatedButton(
                                 child: Text(
-                                  '보드샵 6',
+                                  '보드샵 9',
                                   style: TextStyle(
                                       color: (isBrand)
                                           ? Color(0xFFC8C8C8)
