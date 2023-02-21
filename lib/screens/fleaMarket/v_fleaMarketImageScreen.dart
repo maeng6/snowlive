@@ -73,7 +73,7 @@ class _FleaMarketImageScreenState extends State<FleaMarketImageScreen> {
                             _fleaModelController
                                 .itemImagesUrls![index],
                             fit: BoxFit.cover,
-                            width: _size.width - 9,
+                            width: _size.width,
                           ),
                         ),
                       ],
