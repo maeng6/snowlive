@@ -238,15 +238,17 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                           width: 8,
                         ),
                         if(_imageFiles.length == 0)
-                          Text('대표사진은 처음 선택한 사진으로 등록됩니다.',
+                          SizedBox(width: 8,),
+                        if(_imageFiles.length == 0)
+                        Text('대표사진은 처음 선택한 \n사진으로 등록됩니다.',
                             style: TextStyle(
                                 color: Color(0xff949494),
-                                fontSize: 15
+                                fontSize: 12
                             ),
                           ),
                         Expanded(
                           child: SizedBox(
-                            height: 100,
+                            height: 120,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
@@ -258,7 +260,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
 
                                       Container(
                                         decoration: BoxDecoration(
-                                            border: Border.all(color: Color(0xFFDEDEDE)),
+                                            border: Border.all(color: Color(0xFFECECEC)),
                                           borderRadius: BorderRadius.circular(8),
                                           color: Colors.white
                                         ),
@@ -287,13 +289,13 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                       ),
                                       if(index==0)
                                         Positioned(
-                                          top: 70,
+                                          top: 68,
                                           child: Opacity(
                                             opacity:0.8,
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 border: Border.all(
-                                                  color: Colors.white
+                                                  color: Colors.transparent
                                                 ),
                                                   borderRadius: BorderRadius.only(
                                                     bottomRight: Radius.circular(8),
@@ -301,11 +303,13 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                                   ),
                                                   color: Colors.black87,
                                               ),
+                                              height: 22,
                                               width: 90,
                                               child: ClipRRect(
                                                 borderRadius: BorderRadius.circular(7),
                                                 child: Text('대표사진',
-                                                  style: TextStyle(color: Colors.white),
+                                                  style: TextStyle(color: Colors.white,
+                                                  fontSize: 12),
                                                   textAlign: TextAlign.center,
                                                 ),
                                               ),
