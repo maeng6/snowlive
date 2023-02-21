@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/model/m_commentModel.dart';
 import 'package:snowlive3/model/m_fleaMarketModel.dart';
@@ -80,6 +81,14 @@ class FleaModelController extends GetxController {
       'itemImagesUrls': imageUrls,
     });
     await getCurrentFleaItem(uid: uid, fleaCount: fleaCount);
+  }
+
+  Future<void> deleteFleaImage({required uid, required fleaCount, required imageCount}) async{
+    print('$uid#$fleaCount');
+    for (int i = imageCount-1; i > -1; i--) {
+      print('#$i.jpg');
+    await FirebaseStorage.instance.ref().child('images/fleamarket/$uid#$fleaCount/#$i.jpg').delete();
+    }
   }
 
   Future<void> updateState(isSoldOut) async {
