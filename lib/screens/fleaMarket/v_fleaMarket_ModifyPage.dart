@@ -280,6 +280,14 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                         SizedBox(
                           width: 8,
                         ),
+                        if(_imageUrls!.length==0 && _imageFiles.length==0)
+                          Text('대표사진은 처음 선택한 \n사진으로 등록됩니다.',
+                            style: TextStyle(
+                                color: Color(0xff949494),
+                                fontSize: 12
+                            ),
+                          ),
+
                         (isModifiedImageSelected==true)
                         ?Expanded(
                           child: SizedBox(
@@ -320,6 +328,35 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                             },
                                           icon: Icon(Icons.cancel), color: Color(0xFF111111),),
                                       ),
+                                      if(index==0)
+                                        Positioned(
+                                          top: 68,
+                                          child: Opacity(
+                                            opacity:0.8,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.transparent
+                                                ),
+                                                borderRadius: BorderRadius.only(
+                                                    bottomRight: Radius.circular(8),
+                                                    bottomLeft: Radius.circular(8)
+                                                ),
+                                                color: Colors.black87,
+                                              ),
+                                              height: 22,
+                                              width: 90,
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(7),
+                                                child: Text('대표사진',
+                                                  style: TextStyle(color: Colors.white,
+                                                      fontSize: 12),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                     ]),
                                     SizedBox(
                                       width: 8,
@@ -363,6 +400,8 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                         child: IconButton(
                                             onPressed: () {
                                               _imageUrls!.removeAt(index);
+                                              setState(() {
+                                              });
                                             },
                                           icon: Icon(Icons.cancel), color: Color(0xFF111111),),
                                       ),
