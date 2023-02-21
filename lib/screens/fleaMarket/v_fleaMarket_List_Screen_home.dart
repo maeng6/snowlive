@@ -319,7 +319,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                            child: Text(
                                              chatDocs[index]
                                                  .get('title'),
-                                             maxLines: 2,
+                                             maxLines: 1,
                                              overflow: TextOverflow.ellipsis,
                                              style: TextStyle(
                                                  fontWeight:
@@ -328,16 +328,17 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                                  color: Color(
                                                      0xFF555555)),
                                            ),
-                                         ),                                                          ],
+                                         ),
+                                       ],
                                      ),
                                      Container(
                                        constraints:
                                        BoxConstraints(
                                            maxWidth:
-                                           _size.width -
-                                               106),
+                                           _size.width - 106),
                                        child: Text(
-                                         f.format(chatDocs[index].get('price'))+' 원',                                         maxLines: 1,
+                                         f.format(chatDocs[index].get('price'))+' 원',
+                                         maxLines: 1,
                                          overflow: TextOverflow.ellipsis,
                                          style: TextStyle(
                                              color: Color(0xFF111111),
@@ -471,7 +472,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                            child: Text(
                                              chatDocs[index]
                                                  .get('title'),
-                                             maxLines: 2,
+                                             maxLines: 1,
                                              overflow: TextOverflow.ellipsis,
                                              style: TextStyle(
                                                  fontWeight:
@@ -624,7 +625,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                            child: Text(
                                              chatDocs[index]
                                                  .get('title'),
-                                             maxLines: 2,
+                                             maxLines: 1,
                                              overflow: TextOverflow.ellipsis,
                                              style: TextStyle(
                                                  fontWeight:
@@ -776,7 +777,7 @@ class _FleaMarket_List_ScreenState_Home extends State<FleaMarket_List_Screen_Hom
                                              child: Text(
                                                chatDocs[index]
                                                    .get('title'),
-                                               maxLines: 2,
+                                               maxLines: 1,
                                                overflow: TextOverflow.ellipsis,
                                                style: TextStyle(
                                                    fontWeight:

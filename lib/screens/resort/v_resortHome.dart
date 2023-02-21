@@ -580,8 +580,8 @@ class _ResortHomeState extends State<ResortHome>
                                       height: 107,
                                       child: Padding(
                                         padding: const EdgeInsets.only(
-                                            right: 42,
-                                            left: 42,
+                                            right: 32,
+                                            left: 32,
                                             top: 22,
                                             bottom: 22),
                                         child: Row(
@@ -790,7 +790,6 @@ class _ResortHomeState extends State<ResortHome>
                                                 //     elevation: 0,
                                                 //   ),
                                                 // ),
-
                                               ],
                                             ),
                                             SizedBox(
