@@ -6,19 +6,18 @@ import 'package:image_picker/image_picker.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/model/m_fleaMarketModel.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Screen.dart';
-import 'package:snowlive3/screens/v_MainHome.dart';
-import '../../controller/vm_imageController.dart';
-import '../../controller/vm_userModelController.dart';
-import '../../widget/w_fullScreenDialog.dart';
+import '../../../controller/vm_imageController.dart';
+import '../../../controller/vm_userModelController.dart';
+import '../../../widget/w_fullScreenDialog.dart';
 
-class FleaMarket_ModifyPage extends StatefulWidget {
-  const FleaMarket_ModifyPage({Key? key}) : super(key: key);
+class Bulletin_Crew_ModifyPage extends StatefulWidget {
+  const Bulletin_Crew_ModifyPage({Key? key}) : super(key: key);
 
   @override
-  State<FleaMarket_ModifyPage> createState() => _FleaMarket_ModifyPageState();
+  State<Bulletin_Crew_ModifyPage> createState() => _Bulletin_Crew_ModifyPageState();
 }
 
-class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
+class _Bulletin_Crew_ModifyPageState extends State<Bulletin_Crew_ModifyPage> {
   List<XFile> _imageFiles = [];
   bool? fleaImageSelected = false;
   int i = 0;
@@ -41,14 +40,6 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
   String? title = '';
   final _formKey = GlobalKey<FormState>();
   RxList? _imageUrls=[].obs;
-
-  PageController _pageController = PageController();
-
-  void _onItemTapped(int index) {
-    _pageController.jumpToPage(index);
-  }
-
-
   ListTile buildCategoryListTile(int index) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
@@ -176,7 +167,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                             resortNickname: _userModelController.resortNickname
                         );
                         CustomFullScreenDialog.cancelDialog();
-                        Get.to(()=> MainHome());
+                        Get.to(()=> FleaMarketScreen());
                       }
                       _imageController.imagesUrlList.clear();
 
@@ -242,6 +233,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                           isModifiedImageSelected = true;
                                           imageLength = _imageFiles.length;
                                           setState(() {});
+                                          print(_imageFiles);
                                         }else{
                                           CustomFullScreenDialog.cancelDialog();
                                           Get.dialog(
@@ -330,6 +322,8 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                             onPressed: () {
                                               _imageFiles.removeAt(index);
                                               imageLength = _imageFiles.length;
+                                              print(_imageFiles);
+                                              print(imageLength);
                                               setState(() {});
                                             },
                                           icon: Icon(Icons.cancel), color: Color(0xFF111111),),

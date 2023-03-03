@@ -20,6 +20,7 @@ class UserModelController extends GetxController{
   RxInt? _instantResort = 0.obs;
   RxInt? _commentCount = 0.obs;
   RxInt? _fleaCount = 0.obs;
+  RxInt? _bulletinRoomCount = 0.obs;
   int? _favoriteSaved=0;
   RxString? _profileImageUrl=''.obs;
   RxList? _repoUidList=[].obs;
@@ -39,6 +40,7 @@ class UserModelController extends GetxController{
   int? get instantResort  => _instantResort!.value;
   int? get commentCount  => _commentCount!.value;
   int? get fleaCount  => _fleaCount!.value;
+  int? get bulletinRoomCount  => _bulletinRoomCount!.value;
   int? get favoriteSaved => _favoriteSaved;
   String? get profileImageUrl => _profileImageUrl!.value;
   List? get repoUidList => _repoUidList;
@@ -81,6 +83,7 @@ class UserModelController extends GetxController{
       this._instantResort!.value = userModel.instantResort!;
       this._commentCount!.value = userModel.commentCount!;
       this._fleaCount!.value = userModel.fleaCount!;
+      this._bulletinRoomCount!.value = userModel.bulletinRoomCount!;
       this._profileImageUrl!.value = userModel.profileImageUrl!;
       this._resortNickname!.value = userModel.resortNickname!;
       this._phoneNum!.value = userModel.phoneNum!;
@@ -112,6 +115,7 @@ class UserModelController extends GetxController{
     final uid = user!.uid;
     List fleaChatUidList = [];
     await ref.collection('user').doc(uid).update({
+      'bulletinRoomCount': 0,
       'fleaCount': 0,
       'phoneAuth' : false,
       'phoneNum' : '',
@@ -196,6 +200,39 @@ class UserModelController extends GetxController{
 
   }
 
+  Future<void> bulletinRoomCountUpdate(uid) async {
+
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int bulletinRoomCount = documentSnapshot.get('bulletinRoomCount');
+      int bulletinRoomCountPlus = bulletinRoomCount + 1;
+
+      await ref.collection('user').doc(uid).update({
+        'bulletinRoomCount': bulletinRoomCountPlus,
+      });
+      this._bulletinRoomCount!.value = bulletinRoomCountPlus;
+    }catch(e){
+      await ref.collection('user').doc(uid).update({
+        'bulletinRoomCount': 1,
+      });
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int bulletinRoomCount = documentSnapshot.get('bulletinRoomCount');
+
+      this._bulletinRoomCount!.value = bulletinRoomCount;
+
+    }
+
+  }
 
 
 
