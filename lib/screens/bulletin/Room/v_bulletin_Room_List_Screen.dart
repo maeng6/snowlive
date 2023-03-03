@@ -78,7 +78,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                     CupertinoActionSheetAction(
                         onPressed: () {
                           setState(() {
-                            _selectedValue = '방임대';
+                            _selectedValue = '방 임대';
                           });
                           Navigator.pop(context);
                         },
