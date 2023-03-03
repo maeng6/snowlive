@@ -83,6 +83,28 @@ class ImageController extends GetxController {
     return downloadUrl;
   }
 
+  Future<List<String>> setNewMultiImage_bulletinRoom(List<XFile> newImages,bulletinRoomCount) async {
+    int i =0;
+    var downloadUrlsingle;
+    String? uid = await FlutterSecureStorage().read(key: 'uid');
+    var metaData = SettableMetadata(contentType: 'image/jpeg');
+    List<String> downloadUrl = [];
+    if (newImages != null) {
+
+      while(i<newImages.length) {
+        Reference ref = FirebaseStorage.instance.ref('images/bulletinRoom/$uid#$bulletinRoomCount/#$i.jpg');
+        await ref.putFile(File(newImages[i].path), metaData);
+        downloadUrlsingle = await ref.getDownloadURL();
+        downloadUrl.add(downloadUrlsingle);
+        i++;
+      }
+    } else {
+      CustomFullScreenDialog.cancelDialog();
+    }
+    imagesUrlList.addAll(downloadUrl);
+    return downloadUrl;
+  }
+
   Future<void> deleteProfileImage() async{
     String? uid = _userModelController.uid;
     await FirebaseStorage.instance.ref().child('images/profile/$uid.jpg').delete();

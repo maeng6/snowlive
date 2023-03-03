@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
+import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../model/m_brandModel.dart';
 import '../../model/m_shopModel.dart';
 
@@ -181,8 +182,10 @@ Widget clothWebGridView(BuildContext context) {
             children: [
               Expanded(
                 child: GestureDetector(
-                  onTap: () => Get.to(
-                      () => WebPage(url: '${clothBrandHomeUrlList[index]}')),
+                  onTap: () {
+                    CustomFullScreenDialog.showDialog();
+                    Get.to(() => WebPage(url: '${clothBrandHomeUrlList[index]}'));
+                  },
                   child: Padding(
                     padding: EdgeInsets.only(top: 4),
                     child: Container(

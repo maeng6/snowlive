@@ -3,32 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:snowlive3/controller/vm_fleaMarketController.dart';
-import 'package:snowlive3/model/m_fleaMarketModel.dart';
-import '../../controller/vm_imageController.dart';
-import '../../controller/vm_userModelController.dart';
-import '../../widget/w_fullScreenDialog.dart';
+import '../../../controller/vm_bulletinRoomController.dart';
+import '../../../controller/vm_imageController.dart';
+import '../../../controller/vm_userModelController.dart';
+import '../../../model/m_bulletinRoomModel.dart';
+import '../../../widget/w_fullScreenDialog.dart';
 
-class FleaMarket_Upload extends StatefulWidget {
-  const FleaMarket_Upload({Key? key}) : super(key: key);
+class Bulletin_Room_Upload extends StatefulWidget {
+  const Bulletin_Room_Upload({Key? key}) : super(key: key);
 
   @override
-  State<FleaMarket_Upload> createState() => _FleaMarket_UploadState();
+  State<Bulletin_Room_Upload> createState() => _Bulletin_Room_UploadState();
 }
 
-class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
+class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
   List<XFile> _imageFiles = [];
    Map<String, String?> _tileSelected = {
-    "거래방식": '',
-    "카테고리": '',
-     "거래장소": ''
+    "구분": '',
+    "리조트": ''
   };
-  bool? fleaImageSelected = false;
+  bool? bulletinRoomImageSelected = false;
   int i = 0;
   int imageLength = 0;
   TextEditingController _titleTextEditingController = TextEditingController();
-  TextEditingController _itemNameTextEditingController = TextEditingController();
-  TextEditingController _itemPriceTextEditingController = TextEditingController();
   TextEditingController _itemDescribTextEditingController = TextEditingController();
   bool? isCategorySelected = false;
   bool? isLocationSelected = false;
@@ -39,30 +36,14 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
   String? title = '';
   final _formKey = GlobalKey<FormState>();
 
-  ListTile buildCategoryListTile(int index) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text('${fleaCategoryList[index]}'),
-      onTap: () async {
-        isCategorySelected = true;
-        SelectedCategory = fleaCategoryList[index];
-        _tileSelected['카테고리'] = SelectedCategory;
-        print(_tileSelected);
-        Navigator.pop(context);
-        setState(() {});
-      },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    );
-  }
-
   ListTile buildResortListTile(int index) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text('${fleaLocationList[index]}'),
+      title: Text('${bulletinResortList[index]}'),
       onTap: () async {
         isLocationSelected = true;
-        SelectedLocation = fleaLocationList[index];
-        _tileSelected['거래장소'] = SelectedLocation;
+        SelectedLocation = bulletinResortList[index];
+        _tileSelected['리조트'] = SelectedLocation;
         print(_tileSelected);
         Navigator.pop(context);
         setState(() {});
@@ -71,14 +52,14 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
     );
   }
 
-  ListTile buildMethodListTile(int index) {
+  ListTile buildCategoryListTile(int index) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text('${fleaMethodList[index]}'),
+      title: Text('${bulletinRoomCategoryList[index]}'),
       onTap: () async {
-        isMethodSelected = true;
-        SelectedMethod = fleaMethodList[index];
-        _tileSelected['거래방식'] = SelectedMethod;
+        isCategorySelected = true;
+        SelectedCategory = bulletinRoomCategoryList[index];
+        _tileSelected['구분'] = SelectedCategory;
         print(_tileSelected);
         Navigator.pop(context);
         setState(() {});
@@ -92,7 +73,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
     //TODO : ****************************************************************
     Get.put(ImageController(), permanent: true);
     UserModelController _userModelController = Get.find<UserModelController>();
-    FleaModelController _fleaModelController = Get.find<FleaModelController>();
+    BulletinRoomModelController _bulletinRoomModelController = Get.find<BulletinRoomModelController>();
     ImageController _imageController = Get.find<ImageController>();
     //TODO : ****************************************************************
 
@@ -107,7 +88,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(58),
             child: AppBar(
-              title: Text('내 물건 팔기'),
+              title: Text('시즌방'),
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
@@ -124,24 +105,16 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                     onPressed: () async{
                       final isValid = _formKey.currentState!.validate();
 
-                      if(_tileSelected["거래방식"]!.isEmpty){
-                        Get.snackbar('선택되지않은 항목', '거래방식을 선택해주세요.',
+                      if(_tileSelected["구분"]!.isEmpty){
+                        Get.snackbar('선택되지않은 항목', '구분을 선택해주세요.',
                             margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
                             snackPosition: SnackPosition.BOTTOM,
                             backgroundColor: Colors.black87,
                             colorText: Colors.white,
                             duration: Duration(milliseconds: 3000));
                       }
-                      else if(_tileSelected["카테고리"]!.isEmpty){
-                        Get.snackbar('선택되지않은 항목', '카테고리를 선택해주세요.',
-                            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                            snackPosition: SnackPosition.BOTTOM,
-                            backgroundColor: Colors.black87,
-                            colorText: Colors.white,
-                            duration: Duration(milliseconds: 3000));
-                      }
-                      else if(_tileSelected["거래장소"]!.isEmpty){
-                        Get.snackbar('선택되지않은 항목', '거래장소를 선택해주세요.',
+                      else if(_tileSelected["리조트"]!.isEmpty){
+                        Get.snackbar('선택되지않은 항목', '리조트를 선택해주세요.',
                             margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
                             snackPosition: SnackPosition.BOTTOM,
                             backgroundColor: Colors.black87,
@@ -152,21 +125,18 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
 
                       if(isValid){
                         CustomFullScreenDialog.showDialog();
-                        await _userModelController.fleaCountUpdate(_userModelController.uid);
-                        await _imageController.setNewMultiImage(_imageFiles, _userModelController.fleaCount);
-                        await _fleaModelController.uploadFleaItem(
+                        await _userModelController.bulletinRoomCountUpdate(_userModelController.uid);
+                        await _imageController.setNewMultiImage_bulletinRoom(_imageFiles, _userModelController.bulletinRoomCount);
+                        await _bulletinRoomModelController.uploadBulletinRoom(
                             displayName: _userModelController.displayName,
                             uid: _userModelController.uid,
                             profileImageUrl: _userModelController.profileImageUrl,
                             itemImagesUrls: _imageController.imagesUrlList,
                             title: _titleTextEditingController.text,
                             category: SelectedCategory,
-                            itemName: _itemNameTextEditingController.text,
-                            price: int.parse(_itemPriceTextEditingController.text),
                             location: SelectedLocation,
-                            method: SelectedMethod,
                             description: _itemDescribTextEditingController.text,
-                            fleaCount: _userModelController.fleaCount,
+                            bulletinRoomCount: _userModelController.bulletinRoomCount,
                             resortNickname: _userModelController.resortNickname
                         );
                         Navigator.pop(context);
@@ -211,9 +181,8 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                               _imageFiles = await _imageController
                                   .getMultiImage(ImageSource.gallery);
                               CustomFullScreenDialog.cancelDialog();
-                              fleaImageSelected = true;
+                              bulletinRoomImageSelected = true;
                               imageLength = _imageFiles.length;
-                              print(_imageFiles);
                               setState(() {});
                             } catch (e) {
                               CustomFullScreenDialog.cancelDialog();
@@ -233,10 +202,9 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                             .getMultiImage(ImageSource.gallery);
                                         if(_imageFiles.length <= 5){
                                           CustomFullScreenDialog.cancelDialog();
-                                          fleaImageSelected = true;
+                                          bulletinRoomImageSelected = true;
                                           imageLength = _imageFiles.length;
                                           setState(() {});
-                                          print(_imageFiles);
                                         }else{
                                           CustomFullScreenDialog.cancelDialog();
                                           Get.dialog(
@@ -278,7 +246,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                         if(_imageFiles.length == 0)
                           SizedBox(width: 8,),
                         if(_imageFiles.length == 0)
-                        Text('대표사진은 처음 선택한 \n사진으로 등록됩니다.',
+                        Text('사진은 게시글에 첨부됩니다.',
                             style: TextStyle(
                                 color: Color(0xff949494),
                                 fontSize: 12
@@ -319,8 +287,6 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                             onPressed: () {
                                               _imageFiles.removeAt(index);
                                               imageLength = _imageFiles.length;
-                                              print(_imageFiles);
-                                              print(imageLength);
                                               setState(() {});
                                             },
                                             icon: Icon(Icons.cancel), color: Color(0xFF111111),),
@@ -376,127 +342,17 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                      TextFormField(
-                        textAlignVertical: TextAlignVertical.center,
-                        cursorColor: Color(0xff3D6FED),
-                        cursorHeight: 16,
-                        cursorWidth: 2,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        controller: _titleTextEditingController,
-                        strutStyle: StrutStyle(leading: 0.3),
-                        decoration: InputDecoration(
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          errorStyle: TextStyle(
-                            fontSize: 12,
-                          ),
-                          labelStyle: TextStyle(
-                              color: Color(0xff949494)
-                          ),
-                          hintStyle:
-                          TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                          hintText: '글 제목을 입력해 주세요. (최대 50자)',
-                          labelText: '글 제목',
-                          contentPadding: EdgeInsets.symmetric(vertical: 2),
-                          border: InputBorder.none,
-                        ),
-                        validator: (val) {
-                          if (val!.length <= 50 && val.length >= 1) {
-                            return null;
-                          } else if (val.length == 0) {
-                            return '글 제목을 입력해주세요.';
-                          } else {
-                            return '최대 입력 가능한 글자 수를 초과했습니다.';
-                          }
-                        },
-                      ),
-                        Divider(
-                          height: 32,
-                          thickness: 0.5,
-                          color: Color(0xFFDEDEDE),
-                        ),
-                        TextFormField(
-                          textAlignVertical: TextAlignVertical.center,
-                          cursorColor: Color(0xff3D6FED),
-                          cursorHeight: 16,
-                          cursorWidth: 2,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          controller: _itemNameTextEditingController,
-                          strutStyle: StrutStyle(leading: 0.3),
-                          decoration: InputDecoration(
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            errorStyle: TextStyle(
-                              fontSize: 12,
-                            ),
-                            labelStyle: TextStyle(
-                                color: Color(0xff949494)
-                            ),
-                            hintStyle:
-                            TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                            hintText: '물품명을 입력해 주세요. (최대 20자)',
-                            labelText: '물품명',
-                            contentPadding: EdgeInsets.symmetric(vertical: 2),
-                            border: InputBorder.none,
-                          ),
-                          validator: (val) {
-                            if (val!.length <= 20 && val.length >= 1) {
-                              return null;
-                            } else if (val.length == 0) {
-                              return '물품명을 입력해주세요.';
-                            } else {
-                              return '최대 입력 가능한 글자 수를 초과했습니다.';
-                            }
-                          },
-                        ),
-                        Divider(
-                          height: 32,
-                          thickness: 0.5,
-                          color: Color(0xFFDEDEDE),
-                        ),
                         Row(
                           children: [
-                            SizedBox(
-                              width: _size.width / 2 - 16,
-                              child: TextFormField(
-                                textAlignVertical: TextAlignVertical.center,
-                                cursorColor: Color(0xff377EEA),
-                                cursorHeight: 16,
-                                cursorWidth: 2,
-                                controller: _itemPriceTextEditingController,
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(RegExp('[0-9]'))
-                                ],
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.only(bottom: 14),
-                                  border: InputBorder.none,
-                                  hintText: ' 판매가격',
-                                  hintStyle: TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                  prefixIcon: Image.asset('assets/imgs/icons/icon_won.png',
-                                    color: Color(0xFF949494),
-                                  ),
-                                  prefixIconConstraints: BoxConstraints(maxWidth: 20),
-                                ),
-                                validator: (val) {
-                                  if (val!.length <= 8 && val.length >= 1) {
-                                    return null;
-                                  } else if (val.length == 0) {
-                                    return '가격을 입력해주세요.';
-                                  } else {
-                                    return '최대 입력 가능한 글자 수를 초과했습니다.';
-                                  }
-                                },
-                              ),
-                            ),
-                            SizedBox(width: 10),
                             Container(
                               width: _size.width / 2 - 26,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  if (isMethodSelected==true)
+                                  if (isCategorySelected == true)
                                     Text(
-                                      '거래방식',
+                                      '구분',
                                       style:
                                       TextStyle(color: Color(0xff949494), fontSize: 12),
                                     ),
@@ -522,7 +378,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      '거래방식을 선택해주세요.',
+                                                      '구분을 선택해주세요.',
                                                       style: TextStyle(
                                                           fontSize: 20,
                                                           fontWeight: FontWeight.bold),
@@ -539,7 +395,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                                             return Builder(builder: (context) {
                                                               return Column(
                                                                 children: [
-                                                                  buildMethodListTile(index),
+                                                                  buildCategoryListTile(index),
                                                                   Divider(
                                                                     height: 20,
                                                                     thickness: 0.5,
@@ -554,110 +410,101 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                               );
                                             });
                                       },
-                                      child: (isMethodSelected!)
-                                          ? Text('$SelectedMethod', style: TextStyle(
+                                      child: (isCategorySelected!)
+                                          ? Text('$SelectedCategory', style: TextStyle(
                                       fontSize: 16, color: Color(0xFF111111)
                                   ),)
-                                          : Text('거래방식', style: TextStyle(
+                                          : Text('구분', style: TextStyle(
                                         fontSize: 16, color: Color(0xFF949494)
                                       ),)),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-                        Divider(
-                          height: 32,
-                          thickness: 0.5,
-                          color: Color(0xFFDEDEDE),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (isCategorySelected==true)
-                              Text(
-                                '카테고리',
-                                style:
-                                TextStyle(color: Color(0xff949494), fontSize: 12),
-                              ),
-                            SizedBox(
-                              height: 4,
-                            ),
-                            TextButton(
-                                style: TextButton.styleFrom(
-                                  minimumSize: Size.zero,
-                                  padding: EdgeInsets.symmetric(vertical: 6, horizontal: 0),
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                onPressed: () {
-                                  showModalBottomSheet(
-                                      enableDrag: false,
-                                      context: context,
-                                      builder: (context) {
-                                        return Container(
-                                          color: Colors.white,
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 20,
-                                              vertical: 30),
-                                          height: _size.height * 0.8,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                '카테고리를 선택해주세요.',
-                                                style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-                                              Container(
-                                                color: Colors.white,
-                                                height: 30,
-                                              ),
-                                              Expanded(
-                                                child: ListView.builder(
-                                                    padding: EdgeInsets.zero,
-                                                    itemCount: 5,
-                                                    itemBuilder: (context, index) {
-                                                      return Builder(
-                                                          builder: (context) {
-                                                            return Column(
-                                                              children: [
-                                                                buildCategoryListTile(
-                                                                    index),
-                                                                Divider(
-                                                                  height: 20,
-                                                                  thickness: 0.5,
-                                                                ),
-                                                              ],
-                                                            );
-                                                          });
-                                                    }),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      });
-                                },
-                                child: (isCategorySelected!)
-                                    ? Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    color: Color(0xFFD7F4FF),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (isLocationSelected==true)
+                                  Text(
+                                    '리조트',
+                                    style:
+                                    TextStyle(color: Color(0xff949494), fontSize: 12),
                                   ),
-                                  padding: EdgeInsets.only(right: 10, left: 10, top: 4, bottom: 6),
-                                      child: Text('$SelectedCategory', style: TextStyle(
-                                      fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF458BF5)
-                                ),),
-                                    )
-                                    : Padding(
-                                      padding: EdgeInsets.only(bottom: 6),
-                                      child: Text('카테고리', style: TextStyle(
-                                      fontSize: 16, color: Color(0xFF949494)
-                                ),),
-                                    )),
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                    minimumSize: Size.zero,
+                                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  ),
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                        enableDrag: false,
+                                        context: context,
+                                        builder: (context) {
+                                          return Container(
+                                            color: Colors.white,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 20,
+                                                vertical: 30),
+                                            height: _size.height * 0.8,
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '리조트를 선택해주세요.',
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                                Container(
+                                                  color: Colors.white,
+                                                  height: 30,
+                                                ),
+                                                Expanded(
+                                                  child: ListView.builder(
+                                                      padding: EdgeInsets.zero,
+                                                      itemCount: 13,
+                                                      itemBuilder: (context, index) {
+                                                        return Builder(builder: (context) {
+                                                          return Column(
+                                                            children: [
+                                                              buildResortListTile(index),
+                                                              Divider(
+                                                                height: 20,
+                                                                thickness: 0.5,
+                                                              ),
+                                                            ],
+                                                          );
+                                                        });
+                                                      }),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                  },
+                                  child: (isLocationSelected!)
+                                      ? Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4),
+                                      color: Color(0xFFD5F7E0),
+                                    ),
+                                    padding: EdgeInsets.only(right: 10, left: 10, top: 4, bottom: 6),
+                                    child: Text('$SelectedLocation', style: TextStyle(
+                                        fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF17AD4A)
+                                    ),),
+                                  )
+                                      : Padding(
+                                    padding: EdgeInsets.only(bottom: 6),
+                                    child: Text('리조트', style: TextStyle(
+                                        fontSize: 16, color: Color(0xFF949494)
+                                    ),),
+                                  ),),
+                              ],
+                            ),
                           ],
                         ),
                         Divider(
@@ -665,91 +512,39 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                           thickness: 0.5,
                           color: Color(0xFFDEDEDE),
                         ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (isLocationSelected==true)
-                            Text(
-                              '거래장소',
-                              style:
-                              TextStyle(color: Color(0xff949494), fontSize: 12),
+                        TextFormField(
+                          textAlignVertical: TextAlignVertical.center,
+                          cursorColor: Color(0xff3D6FED),
+                          cursorHeight: 16,
+                          cursorWidth: 2,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          controller: _titleTextEditingController,
+                          strutStyle: StrutStyle(leading: 0.3),
+                          decoration: InputDecoration(
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            errorStyle: TextStyle(
+                              fontSize: 12,
                             ),
-                          SizedBox(
-                            height: 4,
+                            labelStyle: TextStyle(
+                                color: Color(0xff949494)
+                            ),
+                            hintStyle:
+                            TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                            hintText: '글 제목을 입력해 주세요. (최대 50자)',
+                            labelText: '글 제목',
+                            contentPadding: EdgeInsets.symmetric(vertical: 2),
+                            border: InputBorder.none,
                           ),
-                          TextButton(
-                              style: TextButton.styleFrom(
-                                minimumSize: Size.zero,
-                                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 0),
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              ),
-                              onPressed: () {
-                                showModalBottomSheet(
-                                    enableDrag: false,
-                                    context: context,
-                                    builder: (context) {
-                                      return Container(
-                                        color: Colors.white,
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 30),
-                                        height: _size.height * 0.8,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              '거래희망 장소를 선택해주세요.',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Container(
-                                              color: Colors.white,
-                                              height: 30,
-                                            ),
-                                            Expanded(
-                                              child: ListView.builder(
-                                                  padding: EdgeInsets.zero,
-                                                  itemCount: 14,
-                                                  itemBuilder: (context, index) {
-                                                    return Builder(builder: (context) {
-                                                      return Column(
-                                                        children: [
-                                                          buildResortListTile(index),
-                                                          Divider(
-                                                            height: 20,
-                                                            thickness: 0.5,
-                                                          ),
-                                                        ],
-                                                      );
-                                                    });
-                                                  }),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    });
-                              },
-                              child: (isLocationSelected!)
-                                  ? Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4),
-                                  color: Color(0xFFD5F7E0),
-                                ),
-                                padding: EdgeInsets.only(right: 10, left: 10, top: 4, bottom: 6),
-                                child: Text('$SelectedLocation', style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF17AD4A)
-                                ),),
-                              )
-                                  : Padding(
-                                padding: EdgeInsets.only(bottom: 6),
-                                child: Text('거래장소', style: TextStyle(
-                                    fontSize: 16, color: Color(0xFF949494)
-                              ),),
-                                  ),),
-                        ],
-                      ),
+                          validator: (val) {
+                            if (val!.length <= 50 && val.length >= 1) {
+                              return null;
+                            } else if (val.length == 0) {
+                              return '글 제목을 입력해주세요.';
+                            } else {
+                              return '최대 입력 가능한 글자 수를 초과했습니다.';
+                            }
+                          },
+                        ),
                         Divider(
                           height: 32,
                           thickness: 0.5,
@@ -782,14 +577,14 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                   hintStyle:
                                   TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
                                   hintText: '게시글 내용을 작성해 주세요. (최대 1,000자)',
-                                  labelText: '상세설명',
+                                  labelText: '내용',
                                   border: InputBorder.none,
                                 ),
                                 validator: (val) {
                                   if (val!.length <= 1000 && val.length >= 1) {
                                     return null;
                                   } else if (val.length == 0) {
-                                    return '상세설명을 입력해주세요.';
+                                    return '내용을 입력해주세요.';
                                   } else {
                                     return '최대 입력 가능한 글자 수를 초과했습니다.';
                                   }
