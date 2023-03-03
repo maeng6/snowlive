@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -24,7 +25,6 @@ class _WebPageState extends State<WebPage> {
 
   @override
   Widget build(BuildContext context) {
-
 
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     SystemChrome.setEnabledSystemUIMode(
@@ -77,6 +77,7 @@ class _WebPageState extends State<WebPage> {
       body:Padding(
         padding:  EdgeInsets.only(top: _statusBarSize+58),
         child: WebView(
+          backgroundColor: Colors.white,
           initialUrl: '${widget.url}',
           javascriptMode: JavascriptMode.unrestricted,
         ),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:snowlive3/screens/bulletin/v_bulletin_Screen.dart';
 import 'package:snowlive3/screens/comments/v_liveTalk_Screen.dart';
 import 'package:snowlive3/screens/resort/v_resortHome.dart';
 import '../controller/vm_loginController.dart';
 import '../controller/vm_noticeController.dart';
 import 'brand/v_brandHome.dart';
+import 'fleaMarket/v_fleaMarket_List_Screen.dart';
 import 'fleaMarket/v_fleaMarket_Screen.dart';
 import 'more/v_moreTab.dart';
 
@@ -135,7 +137,7 @@ class _MainHomeState extends State<MainHome> {
           physics: NeverScrollableScrollPhysics(),
           children: [
                 ResortHome(),
-                BrandWebBody(),
+                BulletinScreen(),
                 FleaMarketScreen(),
                 CommentTile_liveTalk_resortHome(),
                 MoreTab(),
