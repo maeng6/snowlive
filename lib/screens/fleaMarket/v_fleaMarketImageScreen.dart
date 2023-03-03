@@ -50,37 +50,46 @@ class _FleaMarketImageScreenState extends State<FleaMarketImageScreen> {
             elevation: 0.0,
           ),
         ),
-        body: CarouselSlider.builder(
-          options: CarouselOptions(
-            aspectRatio: 9/16,
-            viewportFraction: 1,
-            enableInfiniteScroll: false,
+        body: Container(
+          height: _size.height,
+          width: _size.width,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CarouselSlider.builder(
+                options: CarouselOptions(
+                  aspectRatio: 9/14,
+                  viewportFraction: 1,
+                  enableInfiniteScroll: false,
+                ),
+                itemCount:
+                _fleaModelController.itemImagesUrls!.length,
+                itemBuilder: (context, index, pageViewIndex) {
+                  return Container(
+                    child: StreamBuilder<Object>(
+                        stream: null,
+                        builder: (context, snapshot) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              InteractiveViewer(
+                                maxScale: 7,
+                                child: ExtendedImage.network(
+                                  _fleaModelController.itemImagesUrls![index],
+                                  fit: BoxFit.cover,
+                                  width: _size.width,
+                                  height: _size.height,
+                                ),
+                              ),
+                            ],
+                          );
+                        }),
+                  );
+                },
+              ),
+            ],
           ),
-          itemCount:
-          _fleaModelController.itemImagesUrls!.length,
-          itemBuilder: (context, index, pageViewIndex) {
-            return Container(
-              child: StreamBuilder<Object>(
-                  stream: null,
-                  builder: (context, snapshot) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        InteractiveViewer(
-                          maxScale: 7,
-                          child: ExtendedImage.network(
-                            _fleaModelController
-                                .itemImagesUrls![index],
-                            fit: BoxFit.cover,
-                            width: _size.width,
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
-            );
-          },
         ),
       ),
     );
