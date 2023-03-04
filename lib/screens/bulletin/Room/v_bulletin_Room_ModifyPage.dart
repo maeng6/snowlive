@@ -45,10 +45,10 @@ class _Bulletin_Room_ModifyPageState extends State<Bulletin_Room_ModifyPage> {
   ListTile buildResortListTile(int index) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text('${bulletinResortList[index]}'),
+      title: Text('${bulletinRoomResortList[index]}'),
       onTap: () async {
         isLocationSelected = true;
-        SelectedLocation!.value = bulletinResortList[index];
+        SelectedLocation!.value = bulletinRoomResortList[index];
         _tileSelected['리조트'] = SelectedLocation!.value;
         print(_tileSelected);
         Navigator.pop(context);

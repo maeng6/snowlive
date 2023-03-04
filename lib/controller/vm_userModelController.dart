@@ -21,6 +21,7 @@ class UserModelController extends GetxController{
   RxInt? _commentCount = 0.obs;
   RxInt? _fleaCount = 0.obs;
   RxInt? _bulletinRoomCount = 0.obs;
+  RxInt? _bulletinCrewCount = 0.obs;
   int? _favoriteSaved=0;
   RxString? _profileImageUrl=''.obs;
   RxList? _repoUidList=[].obs;
@@ -41,6 +42,7 @@ class UserModelController extends GetxController{
   int? get commentCount  => _commentCount!.value;
   int? get fleaCount  => _fleaCount!.value;
   int? get bulletinRoomCount  => _bulletinRoomCount!.value;
+  int? get bulletinCrewCount  => _bulletinCrewCount!.value;
   int? get favoriteSaved => _favoriteSaved;
   String? get profileImageUrl => _profileImageUrl!.value;
   List? get repoUidList => _repoUidList;
@@ -229,9 +231,39 @@ class UserModelController extends GetxController{
       int bulletinRoomCount = documentSnapshot.get('bulletinRoomCount');
 
       this._bulletinRoomCount!.value = bulletinRoomCount;
-
     }
+  }
 
+  Future<void> bulletinCrewCountUpdate(uid) async {
+
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int bulletinCrewCount = documentSnapshot.get('bulletinCrewCount');
+      int bulletinCrewCountPlus = bulletinCrewCount + 1;
+
+      await ref.collection('user').doc(uid).update({
+        'bulletinCrewCount': bulletinCrewCountPlus,
+      });
+      this._bulletinCrewCount!.value = bulletinCrewCountPlus;
+    }catch(e){
+      await ref.collection('user').doc(uid).update({
+        'bulletinCrewCount': 1,
+      });
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int bulletinCrewCount = documentSnapshot.get('bulletinCrewCount');
+
+      this._bulletinCrewCount!.value = bulletinCrewCount;
+    }
   }
 
 

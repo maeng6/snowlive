@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class BulletinRoomModel {
+class BulletinCrewModel {
   final auth = FirebaseAuth.instance;
   final ref = FirebaseFirestore.instance;
 
-  BulletinRoomModel(
+  BulletinCrewModel(
       {this.displayName,
       this.uid,
       this.profileImageUrl,
@@ -14,7 +14,7 @@ class BulletinRoomModel {
       this.category,
       this.location,
       this.description,
-      this.bulletinRoomCount,
+      this.bulletinCrewCount,
       this.resortNickname,
       this.timeStamp});
 
@@ -26,13 +26,13 @@ class BulletinRoomModel {
   String? category;
   String? location;
   String? description;
-  int? bulletinRoomCount;
+  int? bulletinCrewCount;
   String? resortNickname;
   Timestamp? timeStamp;
   bool? soldOut;
   DocumentReference? reference;
 
-  BulletinRoomModel.fromJson(dynamic json, this.reference) {
+  BulletinCrewModel.fromJson(dynamic json, this.reference) {
     displayName = json['displayName'];
     uid = json['uid'];
     profileImageUrl = json['profileImageUrl'];
@@ -42,24 +42,24 @@ class BulletinRoomModel {
     location = json['location'];
     description = json['description'];
     timeStamp = json['timeStamp'];
-    bulletinRoomCount = json['bulletinRoomCount'];
+    bulletinCrewCount = json['bulletinCrewCount'];
     resortNickname = json['resortNickname'];
     soldOut = json['soldOut'];
   }
 
-  BulletinRoomModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
+  BulletinCrewModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
       : this.fromJson(snapshot.data(), snapshot.reference);
 
-  Future<BulletinRoomModel> getBulletinRoomModel(String uid,int bulletinRoomCount) async {
+  Future<BulletinCrewModel> getBulletinCrewModel(String uid,int bulletinCrewCount) async {
     DocumentReference<Map<String, dynamic>> documentReference =
-        ref.collection('bulletinRoom').doc('$uid#$bulletinRoomCount');
+        ref.collection('bulletinCrew').doc('$uid#$bulletinCrewCount');
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await documentReference.get();
-    BulletinRoomModel bulletinRoomModel = BulletinRoomModel.fromSnapShot(documentSnapshot);
-    return bulletinRoomModel;
+    BulletinCrewModel bulletinCrewModel = BulletinCrewModel.fromSnapShot(documentSnapshot);
+    return bulletinCrewModel;
   }
 
-  Future<void> uploadBulletinRoom(
+  Future<void> uploadBulletinCrew(
       {required displayName,
       required uid,
       required profileImageUrl,
@@ -69,9 +69,9 @@ class BulletinRoomModel {
       required location,
       required description,
       timeStamp,
-      required bulletinRoomCount,
+      required bulletinCrewCount,
       required resortNickname}) async {
-    await ref.collection('bulletinRoom').doc('$uid#$bulletinRoomCount').set({
+    await ref.collection('bulletinCrew').doc('$uid#$bulletinCrewCount').set({
       'displayName': displayName,
       'uid': uid,
       'profileImageUrl': profileImageUrl,
@@ -81,13 +81,13 @@ class BulletinRoomModel {
       'location': location,
       'description': description,
       'timeStamp': Timestamp.now(),
-      'bulletinRoomCount': bulletinRoomCount,
+      'bulletinCrewCount': bulletinCrewCount,
       'resortNickname': resortNickname,
       'soldOut': false,
     });
   }
 
-  Future<void> updateBulletinRoom(
+  Future<void> updateBulletinCrew(
       {required displayName,
         required uid,
         required profileImageUrl,
@@ -97,9 +97,9 @@ class BulletinRoomModel {
         required location,
         required description,
         timeStamp,
-        required bulletinRoomCount,
+        required bulletinCrewCount,
         required resortNickname}) async {
-    await ref.collection('bulletinRoom').doc('$uid#$bulletinRoomCount').update({
+    await ref.collection('bulletinCrew').doc('$uid#$bulletinCrewCount').update({
       'displayName': displayName,
       'uid': uid,
       'profileImageUrl': profileImageUrl,
@@ -108,7 +108,7 @@ class BulletinRoomModel {
       'category': category,
       'location': location,
       'description': description,
-      'bulletinRoomCount': bulletinRoomCount,
+      'bulletinCrewCount': bulletinCrewCount,
       'timeStamp': Timestamp.now(),
       'resortNickname': resortNickname,
       'soldOut': false,
@@ -117,7 +117,8 @@ class BulletinRoomModel {
 
 }
 
-List<dynamic> bulletinRoomResortList = [
+List<dynamic> bulletinCrewResortList = [
+  '전국',
   '곤지암리조트',
   '무주덕유산리조트',
   '비발디파크',
@@ -130,11 +131,11 @@ List<dynamic> bulletinRoomResortList = [
   '웰리힐리파크',
   '지산리조트',
   '하이원리조트',
-  '휘닉스평창'
+  '휘닉스평창',
 ];
 
-List<dynamic> bulletinRoomCategoryList = [
-  '방 임대',
-  '방 구해요',
-  '주주모집'
+List<dynamic> bulletinCrewCategoryList = [
+  '단톡방',
+  '동호회(크루)',
+  '기타'
 ];

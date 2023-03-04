@@ -11,6 +11,7 @@ import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_My_Screen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_chatroom_List.dart';
 
+import '../../controller/vm_bulletinCrewController.dart';
 import '../../controller/vm_bulletinRoomController.dart';
 import '../../model/m_brandModel.dart';
 import '../../model/m_shopModel.dart';
@@ -50,6 +51,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
 
     //TODO : ****************************************************************
     Get.put(BulletinRoomModelController(), permanent: true);
+    Get.put(BulletinCrewModelController(), permanent: true);
     Get.put(FleaChatModelController(), permanent: true);
     //TODO : ****************************************************************
 
