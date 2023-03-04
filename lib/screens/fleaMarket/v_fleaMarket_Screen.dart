@@ -415,7 +415,6 @@ Widget clothWebGridView(BuildContext context) {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    CustomFullScreenDialog.showDialog();
                     Get.to(() => WebPage(url: '${clothBrandHomeUrlList[index]}'));
                   },
                   child: Padding(
