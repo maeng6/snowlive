@@ -644,7 +644,7 @@ class _Bulletin_Room_ModifyPageState extends State<Bulletin_Room_ModifyPage> {
                               color: Color(0xFFDEDEDE),
                             ),
                             Container(
-                              height: 120,
+                              height: _size.height - 400,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,

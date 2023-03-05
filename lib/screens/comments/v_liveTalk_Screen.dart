@@ -100,10 +100,10 @@ class _CommentTile_liveTalk_resortHomeState
                   padding: const EdgeInsets.only(left: 16),
                   child: Text(
                     '라이브톡',
-                    style: GoogleFonts.notoSans(
+                    style: TextStyle(
                         color: Color(0xFF111111),
-                        fontWeight: FontWeight.w900,
-                        fontSize: 22),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20),
                   ),
                 ),
                 backgroundColor: Colors.white,
@@ -177,51 +177,32 @@ class _CommentTile_liveTalk_resortHomeState
                                                             onTap: () {
                                                               Get.to(() =>
                                                                   ProfileImagePage(
-                                                                    CommentProfileUrl:
-                                                                        chatDocs[
-                                                                                index]
-                                                                            [
-                                                                            'profileImageUrl'],
+                                                                    CommentProfileUrl: chatDocs[index]['profileImageUrl'],
                                                                   ));
                                                             },
-                                                            child: ExtendedImage
-                                                                .network(
-                                                              chatDocs[index][
-                                                                  'profileImageUrl'],
+                                                            child: ExtendedImage.network(
+                                                              chatDocs[index]['profileImageUrl'],
                                                               cache: true,
-                                                              shape:
-                                                                  BoxShape.circle,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20),
+                                                              shape: BoxShape.circle,
+                                                              borderRadius: BorderRadius.circular(20),
                                                               width: 32,
                                                               height: 32,
                                                               fit: BoxFit.cover,
                                                             ),
                                                           ),
                                                         ),
-                                                      if (chatDocs[index][
-                                                              'profileImageUrl'] ==
-                                                          "")
+                                                      if (chatDocs[index]['profileImageUrl'] == "")
                                                         Padding(
                                                           padding: EdgeInsets.only(top: 5),
                                                           child: GestureDetector(
                                                             onTap: () {
-                                                              Get.to(() =>
-                                                                  ProfileImagePage(
-                                                                      CommentProfileUrl:
-                                                                          ''));
+                                                              Get.to(() => ProfileImagePage(
+                                                                      CommentProfileUrl: ''));
                                                             },
-                                                            child: ExtendedImage
-                                                                .asset(
+                                                            child: ExtendedImage.asset(
                                                               'assets/imgs/profile/img_profile_default_circle.png',
-                                                              shape:
-                                                                  BoxShape.circle,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20),
+                                                              shape: BoxShape.circle,
+                                                              borderRadius: BorderRadius.circular(20),
                                                               width: 32,
                                                               height: 32,
                                                               fit: BoxFit.cover,
@@ -230,12 +211,8 @@ class _CommentTile_liveTalk_resortHomeState
                                                         ),
                                                       SizedBox(width: 10),
                                                       Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           Row(
                                                             children: [
@@ -249,29 +226,19 @@ class _CommentTile_liveTalk_resortHomeState
                                                               SizedBox(
                                                                   width: 6),
                                                               Text(
-                                                                chatDocs[index].get(
-                                                                    'resortNickname'),
+                                                                chatDocs[index].get('resortNickname'),
                                                                 style: TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w300,
-                                                                    fontSize:
-                                                                        13,
-                                                                    color: Color(
-                                                                        0xFF949494)),
+                                                                    fontWeight: FontWeight.w300,
+                                                                    fontSize: 13,
+                                                                    color: Color(0xFF949494)),
                                                               ),
                                                               SizedBox(
                                                                   width: 1),
-                                                              Text(
-                                                                '· $_time',
+                                                              Text('· $_time',
                                                                 style: TextStyle(
-                                                                    fontSize:
-                                                                        13,
-                                                                    color: Color(
-                                                                        0xFF949494),
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w300),
+                                                                    fontSize: 13,
+                                                                    color: Color(0xFF949494),
+                                                                    fontWeight: FontWeight.w300),
                                                               ),
                                                             ],
                                                           ),
@@ -282,8 +249,7 @@ class _CommentTile_liveTalk_resortHomeState
                                                             children: [
                                                               Container(
                                                                 constraints: BoxConstraints(
-                                                                    maxWidth:
-                                                                        _size.width - 106),
+                                                                    maxWidth: _size.width - 106),
                                                                 child: Text(
                                                                   chatDocs[index].get('comment'),
                                                                   maxLines: 1000,
@@ -312,12 +278,10 @@ class _CommentTile_liveTalk_resortHomeState
                                                                           print(likeUid);
 
                                                                           if (_firstPress) {
-                                                                            _firstPress =
-                                                                                false;
+                                                                            _firstPress = false;
                                                                             await _userModelController.deleteLikeUid(likeUid);
                                                                             await _commentModelController.likeDelete(likeUid);
-                                                                            _firstPress =
-                                                                                true;
+                                                                            _firstPress = true;
                                                                           }
                                                                         },
                                                                         icon:
@@ -335,18 +299,14 @@ class _CommentTile_liveTalk_resortHomeState
                                                                           IconButton(
                                                                         onPressed:
                                                                             () async {
-                                                                          var likeUid =
-                                                                              '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
-                                                                          print(
-                                                                              likeUid);
+                                                                          var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
+                                                                          print(likeUid);
 
                                                                           if (_firstPress) {
-                                                                            _firstPress =
-                                                                                false;
+                                                                            _firstPress = false;
                                                                             await _userModelController.updateLikeUid(likeUid);
                                                                             await _commentModelController.likeUpdate(likeUid);
-                                                                            _firstPress =
-                                                                                true;
+                                                                            _firstPress = true;
                                                                           }
                                                                         },
                                                                         icon: Icon(Icons.favorite_border,
@@ -369,29 +329,20 @@ class _CommentTile_liveTalk_resortHomeState
                                                               ),
                                                               Padding(
                                                                 padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        top: 2),
+                                                                    const EdgeInsets.only(top: 2),
                                                                 child:
                                                                     IconButton(
                                                                   onPressed:
                                                                       () {
                                                                     Get.to(() =>
                                                                         ReplyScreen(
-                                                                          replyUid:
-                                                                              chatDocs[index]['uid'],
-                                                                          replyCount:
-                                                                              chatDocs[index]['commentCount'],
-                                                                          replyImage:
-                                                                              chatDocs[index]['profileImageUrl'],
-                                                                          replyDisplayName:
-                                                                              chatDocs[index]['displayName'],
-                                                                          replyResortNickname:
-                                                                              chatDocs[index]['resortNickname'],
-                                                                          comment:
-                                                                              chatDocs[index]['comment'],
-                                                                          commentTime:
-                                                                              chatDocs[index]['timeStamp'],
+                                                                          replyUid: chatDocs[index]['uid'],
+                                                                          replyCount: chatDocs[index]['commentCount'],
+                                                                          replyImage: chatDocs[index]['profileImageUrl'],
+                                                                          replyDisplayName: chatDocs[index]['displayName'],
+                                                                          replyResortNickname: chatDocs[index]['resortNickname'],
+                                                                          comment: chatDocs[index]['comment'],
+                                                                          commentTime: chatDocs[index]['timeStamp'],
                                                                         ));
                                                                   },
                                                                   icon: Icon(Icons.insert_comment_outlined,
@@ -454,141 +405,143 @@ class _CommentTile_liveTalk_resortHomeState
                                                                   context: context,
                                                                   builder:
                                                                       (context) {
-                                                                    return Container(
-                                                                      height: 190,
-                                                                      child:
-                                                                          Padding(
-                                                                        padding: const EdgeInsets.symmetric(
-                                                                            horizontal: 20.0,
-                                                                            vertical: 14),
+                                                                    return SafeArea(
+                                                                      child: Container(
+                                                                        height: 140,
                                                                         child:
-                                                                            Column(
-                                                                          children: [
-                                                                            GestureDetector(
-                                                                              child: ListTile(
-                                                                                contentPadding: EdgeInsets.zero,
-                                                                                title: Center(
-                                                                                  child: Text(
-                                                                                    '신고하기',
-                                                                                    style: TextStyle(
-                                                                                      fontSize: 15,
-                                                                                      fontWeight: FontWeight.bold,
+                                                                            Padding(
+                                                                          padding: const EdgeInsets.symmetric(
+                                                                              horizontal: 20.0,
+                                                                              vertical: 14),
+                                                                          child:
+                                                                              Column(
+                                                                            children: [
+                                                                              GestureDetector(
+                                                                                child: ListTile(
+                                                                                  contentPadding: EdgeInsets.zero,
+                                                                                  title: Center(
+                                                                                    child: Text(
+                                                                                      '신고하기',
+                                                                                      style: TextStyle(
+                                                                                        fontSize: 15,
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                      ),
                                                                                     ),
                                                                                   ),
+                                                                                  //selected: _isSelected[index]!,
+                                                                                  onTap: () async {
+                                                                                    Get.dialog(AlertDialog(
+                                                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                      elevation: 0,
+                                                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                      content: Text(
+                                                                                        '이 회원을 신고하시겠습니까?',
+                                                                                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                                                                                      ),
+                                                                                      actions: [
+                                                                                        Row(
+                                                                                          children: [
+                                                                                            TextButton(
+                                                                                                onPressed: () {
+                                                                                                  Navigator.pop(context);
+                                                                                                },
+                                                                                                child: Text(
+                                                                                                  '취소',
+                                                                                                  style: TextStyle(
+                                                                                                    fontSize: 15,
+                                                                                                    color: Color(0xFF949494),
+                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                  ),
+                                                                                                )),
+                                                                                            TextButton(
+                                                                                                onPressed: () async {
+                                                                                                  var repoUid = chatDocs[index].get('uid');
+                                                                                                  await _userModelController.repoUpdate(repoUid);
+                                                                                                  Navigator.pop(context);
+                                                                                                  Navigator.pop(context);
+                                                                                                },
+                                                                                                child: Text(
+                                                                                                  '신고',
+                                                                                                  style: TextStyle(
+                                                                                                    fontSize: 15,
+                                                                                                    color: Color(0xFF3D83ED),
+                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                  ),
+                                                                                                ))
+                                                                                          ],
+                                                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                                                        )
+                                                                                      ],
+                                                                                    ));
+                                                                                  },
+                                                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                                                 ),
-                                                                                //selected: _isSelected[index]!,
-                                                                                onTap: () async {
-                                                                                  Get.dialog(AlertDialog(
-                                                                                    contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                    elevation: 0,
-                                                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                                                                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                    content: Text(
-                                                                                      '이 회원을 신고하시겠습니까?',
-                                                                                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                                                                                    ),
-                                                                                    actions: [
-                                                                                      Row(
-                                                                                        children: [
-                                                                                          TextButton(
-                                                                                              onPressed: () {
-                                                                                                Navigator.pop(context);
-                                                                                              },
-                                                                                              child: Text(
-                                                                                                '취소',
-                                                                                                style: TextStyle(
-                                                                                                  fontSize: 15,
-                                                                                                  color: Color(0xFF949494),
-                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                ),
-                                                                                              )),
-                                                                                          TextButton(
-                                                                                              onPressed: () async {
-                                                                                                var repoUid = chatDocs[index].get('uid');
-                                                                                                await _userModelController.repoUpdate(repoUid);
-                                                                                                Navigator.pop(context);
-                                                                                                Navigator.pop(context);
-                                                                                              },
-                                                                                              child: Text(
-                                                                                                '신고',
-                                                                                                style: TextStyle(
-                                                                                                  fontSize: 15,
-                                                                                                  color: Color(0xFF3D83ED),
-                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                ),
-                                                                                              ))
-                                                                                        ],
-                                                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                                                      )
-                                                                                    ],
-                                                                                  ));
-                                                                                },
-                                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                                               ),
-                                                                            ),
-                                                                            GestureDetector(
-                                                                              child: ListTile(
-                                                                                contentPadding: EdgeInsets.zero,
-                                                                                title: Center(
-                                                                                  child: Text(
-                                                                                    '이 회원의 글 모두 숨기기',
-                                                                                    style: TextStyle(
-                                                                                      fontSize: 15,
-                                                                                      fontWeight: FontWeight.bold,
+                                                                              GestureDetector(
+                                                                                child: ListTile(
+                                                                                  contentPadding: EdgeInsets.zero,
+                                                                                  title: Center(
+                                                                                    child: Text(
+                                                                                      '이 회원의 글 모두 숨기기',
+                                                                                      style: TextStyle(
+                                                                                        fontSize: 15,
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                      ),
                                                                                     ),
                                                                                   ),
+                                                                                  //selected: _isSelected[index]!,
+                                                                                  onTap: () async {
+                                                                                    Get.dialog(AlertDialog(
+                                                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                      elevation: 0,
+                                                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                      content: Text(
+                                                                                        '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.',
+                                                                                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                                                                                      ),
+                                                                                      actions: [
+                                                                                        Row(
+                                                                                          children: [
+                                                                                            TextButton(
+                                                                                                onPressed: () {
+                                                                                                  Navigator.pop(context);
+                                                                                                },
+                                                                                                child: Text(
+                                                                                                  '취소',
+                                                                                                  style: TextStyle(
+                                                                                                    fontSize: 15,
+                                                                                                    color: Color(0xFF949494),
+                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                  ),
+                                                                                                )),
+                                                                                            TextButton(
+                                                                                                onPressed: () {
+                                                                                                  var repoUid = chatDocs[index].get('uid');
+                                                                                                  _userModelController.updateRepoUid(repoUid);
+                                                                                                  Navigator.pop(context);
+                                                                                                  Navigator.pop(context);
+                                                                                                },
+                                                                                                child: Text(
+                                                                                                  '확인',
+                                                                                                  style: TextStyle(
+                                                                                                    fontSize: 15,
+                                                                                                    color: Color(0xFF3D83ED),
+                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                  ),
+                                                                                                ))
+                                                                                          ],
+                                                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                                                        )
+                                                                                      ],
+                                                                                    ));
+                                                                                  },
+                                                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                                                 ),
-                                                                                //selected: _isSelected[index]!,
-                                                                                onTap: () async {
-                                                                                  Get.dialog(AlertDialog(
-                                                                                    contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                    elevation: 0,
-                                                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                                                                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                    content: Text(
-                                                                                      '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.',
-                                                                                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                                                                                    ),
-                                                                                    actions: [
-                                                                                      Row(
-                                                                                        children: [
-                                                                                          TextButton(
-                                                                                              onPressed: () {
-                                                                                                Navigator.pop(context);
-                                                                                              },
-                                                                                              child: Text(
-                                                                                                '취소',
-                                                                                                style: TextStyle(
-                                                                                                  fontSize: 15,
-                                                                                                  color: Color(0xFF949494),
-                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                ),
-                                                                                              )),
-                                                                                          TextButton(
-                                                                                              onPressed: () {
-                                                                                                var repoUid = chatDocs[index].get('uid');
-                                                                                                _userModelController.updateRepoUid(repoUid);
-                                                                                                Navigator.pop(context);
-                                                                                                Navigator.pop(context);
-                                                                                              },
-                                                                                              child: Text(
-                                                                                                '확인',
-                                                                                                style: TextStyle(
-                                                                                                  fontSize: 15,
-                                                                                                  color: Color(0xFF3D83ED),
-                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                ),
-                                                                                              ))
-                                                                                        ],
-                                                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                                                      )
-                                                                                    ],
-                                                                                  ));
-                                                                                },
-                                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                                                              ),
-                                                                            )
-                                                                          ],
+                                                                              )
+                                                                            ],
+                                                                          ),
                                                                         ),
                                                                       ),
                                                                     );
@@ -754,8 +707,7 @@ class _CommentTile_liveTalk_resortHomeState
                           cursorColor: Color(0xff377EEA),
                           controller: _controller,
                           strutStyle: StrutStyle(leading: 0.3),
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
+                          maxLines: 1,
                           enableSuggestions: false,
                           autocorrect: false,
                           textInputAction: TextInputAction.newline,

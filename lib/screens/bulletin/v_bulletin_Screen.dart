@@ -72,10 +72,10 @@ class _BulletinScreenState extends State<BulletinScreen> {
                   padding: const EdgeInsets.only(left: 16),
                   child: Text(
                     '게시판',
-                    style: GoogleFonts.notoSans(
+                    style: TextStyle(
                         color: Color(0xFF111111),
-                        fontWeight: FontWeight.w900,
-                        fontSize: 22),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
                   )),
               backgroundColor: Colors.white,
               elevation: 0.0,
@@ -88,7 +88,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
         child: Stack(
           children: [
             Positioned(
-              top: 50,
+              top: 42,
               child: Container(
                 width: _size.width,
                 height: 1,
@@ -101,77 +101,96 @@ class _BulletinScreenState extends State<BulletinScreen> {
                 children: [
                   Row(
                     children: [
-                      Column(
-                        children: [
-                          ElevatedButton(
-                            child: Text(
-                              '시즌방',
-                              style: TextStyle(
-                                  color: (isTap[0])
-                                      ? Color(0xFF111111)
-                                      : Color(0xFFC8C8C8),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17),
+                      Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 40,
+                              child: ElevatedButton(
+                                child: Text(
+                                  '시즌방',
+                                  style: TextStyle(
+                                      color: (isTap[0])
+                                          ? Color(0xFF111111)
+                                          : Color(0xFF949494),
+                                      fontWeight: (isTap[0])
+                                          ? FontWeight.bold
+                                      : FontWeight.normal,
+                                      fontSize: 15),
+                                ),
+                                onPressed: () {
+                                  print('시즌방페이지로 전환');
+                                  setState(() {
+                                    isTap[0] = true;
+                                    isTap[1] = false;
+                                  });
+                                  print(isTap);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.only(top: 4),
+                                  minimumSize: Size(40, 10),
+                                  backgroundColor: Color(0xFFFFFFFF),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)),
+                                  elevation: 0,
+                                ),
+                              ),
                             ),
-                            onPressed: () {
-                              print('시즌방페이지로 전환');
-                              setState(() {
-                                isTap[0] = true;
-                                isTap[1] = false;
-                              });
-                              print(isTap);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: Size(54, 10),
-                              backgroundColor: Color(0xFFFFFFFF),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              elevation: 0,
-                            ),
-                          ),
-                          Container(
-                            width: _size.width * 0.3333-12,
-                            height: 3,
-                            color:
-                            (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
-                          )
-                        ],
+                            Container(
+                              width: 56,
+                              height: 3,
+                              color:
+                              (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
+                            )
+                          ],
+                        ),
                       ),
-                      Column(
-                        children: [
-                          ElevatedButton(
-                            child: Text(
-                              '단톡방/동호회',
-                              style: TextStyle(
-                                  color: (isTap[1])
-                                      ? Color(0xFF111111)
-                                      : Color(0xFFC8C8C8),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17),
+                      Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 40,
+                              child: ElevatedButton(
+                                child: Text(
+                                  '단톡방/동호회',
+                                  style: TextStyle(
+                                      color: (isTap[1])
+                                          ? Color(0xFF111111)
+                                          : Color(0xFF949494),
+                                      fontWeight:
+                                      (isTap[1])
+                                          ? FontWeight.bold
+                                      : FontWeight.normal,
+                                      fontSize: 15),
+                                ),
+                                onPressed: () {
+                                  print('동호회 페이지로 전환');
+                                  setState(() {
+                                    isTap[0] = false;
+                                    isTap[1] = true;
+                                  });
+                                  print(isTap);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.only(top: 4),
+                                  minimumSize: Size(40, 10),
+                                  backgroundColor: Color(0xFFFFFFFF),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)),
+                                  elevation: 0,
+                                ),
+                              ),
                             ),
-                            onPressed: () {
-                              print('동호회 페이지로 전환');
-                              setState(() {
-                                isTap[0] = false;
-                                isTap[1] = true;
-                              });
-                              print(isTap);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: Size(54, 10),
-                              backgroundColor: Color(0xFFFFFFFF),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              elevation: 0,
-                            ),
-                          ),
-                          Container(
-                            width: _size.width * 0.3333-12,
-                            height: 3,
-                            color:
-                            (isTap[1]) ? Color(0xFF111111) : Colors.transparent,
-                          )
-                        ],
+                            Container(
+                              width: 106,
+                              height: 3,
+                              color:
+                              (isTap[1]) ? Color(0xFF111111) : Colors.transparent,
+                            )
+                          ],
+                        ),
                       ),
                     ],
                   ),

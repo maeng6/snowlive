@@ -62,7 +62,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Container(
                 height: 520,
-                padding: EdgeInsets.only(left: 20, right: 20),
+                padding: EdgeInsets.only(left: 16, right: 16),
                 child: CupertinoActionSheet(
                   actions: [
                     CupertinoActionSheetAction(
@@ -137,12 +137,12 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
             child: Icon(Icons.add),
           ),
           backgroundColor: Colors.white,
-          body: Padding(
-            padding: const EdgeInsets.only(top: 2),
-            child: Column(
-              children: [
-                Container(
-                  height: 68,
+          body: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 6, bottom: 6),
+                child: Container(
+                  height: 56,
                   child: Row(
                     children: [
                       Stack(
@@ -153,7 +153,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                               },
                               style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.only(
-                                      right: 36, left: 16, top: 12, bottom: 12),
+                                      right: 36, left: 16, top: 8, bottom: 8),
                                   side: const BorderSide(
                                     width: 1,
                                     color: Color(0xFFDEDEDE),
@@ -167,12 +167,12 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFF555555)))
+                                          color: Color(0xFF111111)))
                                   : Text('$_selectedValue',
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFF555555)))),
+                                          color: Color(0xFF111111)))),
                           Positioned(
                             top: 11,
                             right: 8,
@@ -183,7 +183,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                               child: Icon(
                                 Icons.arrow_drop_down_sharp,
                                 size: 26,
-                                color: Color(0xFF555555),
+                                color: Color(0xFF111111),
                               ),
                             ),
                           ),
@@ -192,44 +192,47 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                     ],
                   ),
                 ),
-                Expanded(
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: _stream,
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container(
-                          color: Colors.white,
-                        );
-                      } else if (snapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      final chatDocs = snapshot.data!.docs;
-                      return Scrollbar(
-                        child: ListView.builder(
-                          itemCount: chatDocs.length,
-                          itemBuilder: (context, index) {
-                            String _time = _bulletinRoomModelController
-                                .getAgoTime(chatDocs[index].get('timeStamp'));
-                            return GestureDetector(
-                              onTap: () async {
-                                if (_userModelController.repoUidList!
-                                    .contains(chatDocs[index].get('uid'))) {
-                                  return;
-                                }
-                                CustomFullScreenDialog.showDialog();
-                                await _bulletinRoomModelController.getCurrentBulletinRoom(
-                                    uid: chatDocs[index].get('uid'),
-                                    bulletinRoomCount:
-                                        chatDocs[index].get('bulletinRoomCount'));
-                                CustomFullScreenDialog.cancelDialog();
-                                Get.to(() => Bulletin_Room_List_Detail());
-                              },
-                              child: Obx(() => Column(
-                                    children: [
-                                      Container(
+              ),
+              Expanded(
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: _stream,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Container(
+                        color: Colors.white,
+                      );
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    final chatDocs = snapshot.data!.docs;
+                    return Scrollbar(
+                      child: ListView.builder(
+                        itemCount: chatDocs.length,
+                        itemBuilder: (context, index) {
+                          String _time = _bulletinRoomModelController
+                              .getAgoTime(chatDocs[index].get('timeStamp'));
+                          return GestureDetector(
+                            onTap: () async {
+                              if (_userModelController.repoUidList!
+                                  .contains(chatDocs[index].get('uid'))) {
+                                return;
+                              }
+                              CustomFullScreenDialog.showDialog();
+                              await _bulletinRoomModelController.getCurrentBulletinRoom(
+                                  uid: chatDocs[index].get('uid'),
+                                  bulletinRoomCount:
+                                      chatDocs[index].get('bulletinRoomCount'));
+                              CustomFullScreenDialog.cancelDialog();
+                              Get.to(() => Bulletin_Room_List_Detail());
+                            },
+                            child: Obx(() => Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 2),
+                                      child: Container(
                                         color: Colors.white,
                                         child: Column(
                                           crossAxisAlignment:
@@ -256,115 +259,90 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                                     ),
                                                   )
                                                 : Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Padding(
                                                         padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                vertical: 6),
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                Container(
-                                                                  constraints: BoxConstraints(
-                                                                      maxWidth:
-                                                                          _size.width -
-                                                                              150),
-                                                                  child: Text(
-                                                                    chatDocs[
-                                                                            index]
-                                                                        .get(
-                                                                            'title'),
-                                                                    maxLines: 2,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    style: TextStyle(
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .normal,
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Color(
-                                                                            0xFF555555)),
-                                                                  ),
+                                                            const EdgeInsets.symmetric(vertical: 6),
+                                                        child: Container(
+                                                          width: _size.width-32,
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Container(
+                                                                decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(3),
+                                                                  color: Color(0xFFD5F7E0),
                                                                 ),
-                                                              ],
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Text(
-                                                                  '$_time',
+                                                                padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
+                                                                child: Text(
+                                                                  chatDocs[index].get('location'),
                                                                   style: TextStyle(
-                                                                      fontSize:
-                                                                          14,
-                                                                      color: Color(
-                                                                          0xFF949494),
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .normal),
+                                                                      fontWeight: FontWeight.bold,
+                                                                      fontSize: 12,
+                                                                      color: Color(0xFF17AD4A)),
                                                                 ),
-                                                              ],
-                                                            ),
-                                                            SizedBox(
-                                                              height: 2,
-                                                            ),
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Container(
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(3),
-                                                                    color: Color(0xFFD7F4FF),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 8,
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  Row(
+                                                                    children: [
+                                                                      Text(
+                                                                        '[',
+                                                                        style: TextStyle(
+                                                                            fontWeight: FontWeight.bold,
+                                                                            fontSize: 15,
+                                                                            color: Color(0xFF111111)),
+                                                                      ),
+                                                                      Text(
+                                                                        chatDocs[index].get('category'),
+                                                                        style: TextStyle(
+                                                                            fontWeight: FontWeight.bold,
+                                                                            fontSize: 15,
+                                                                            color: Color(0xFF111111)),
+                                                                      ),
+                                                                      Text(
+                                                                        '] ',
+                                                                        style: TextStyle(
+                                                                            fontWeight: FontWeight.bold,
+                                                                            fontSize: 15,
+                                                                            color: Color(0xFF111111)),
+                                                                      ),
+                                                                      Container(
+                                                                        constraints: BoxConstraints(
+                                                                            maxWidth: _size.width - 164),
+                                                                        child: Text(
+                                                                          chatDocs[index].get('title'),
+                                                                          maxLines: 1,
+                                                                          overflow:  TextOverflow.ellipsis,
+                                                                          style: TextStyle(
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 15,
+                                                                              color: Color(0xFF111111)),
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                  padding: EdgeInsets.only(
-                                                                          right: 6,
-                                                                          left: 6,
-                                                                          top: 2,
-                                                                          bottom: 3),
-                                                                  child: Text(
-                                                                    chatDocs[index].get('category'),
+                                                                  Text(
+                                                                    '$_time',
                                                                     style: TextStyle(
+                                                                        fontSize:
+                                                                        14,
+                                                                        color: Color(
+                                                                            0xFF949494),
                                                                         fontWeight:
-                                                                            FontWeight.bold,
-                                                                        fontSize: 12,
-                                                                        color: Color(0xFF458BF5)),
+                                                                        FontWeight
+                                                                            .normal),
                                                                   ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 6,
-                                                                ),
-                                                                Container(
-                                                                  decoration: BoxDecoration(
-                                                                    borderRadius: BorderRadius.circular(3),
-                                                                    color: Color(0xFFD5F7E0),
-                                                                  ),
-                                                                  padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                                                  child: Text(
-                                                                    chatDocs[index].get('location'),
-                                                                    style: TextStyle(
-                                                                        fontWeight: FontWeight.bold,
-                                                                        fontSize: 12,
-                                                                        color: Color(0xFF17AD4A)),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ],
@@ -372,22 +350,22 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                           ],
                                         ),
                                       ),
-                                      Divider(
-                                        color: Color(0xFFDEDEDE),
-                                        height: 32,
-                                        thickness: 0.5,
-                                      ),
-                                    ],
-                                  )),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
+                                    ),
+                                    Divider(
+                                      color: Color(0xFFECECEC),
+                                      height: 24,
+                                      thickness: 0.5,
+                                    ),
+                                  ],
+                                )),
+                          );
+                        },
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
