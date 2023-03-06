@@ -1166,6 +1166,9 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                                                 .collection('reply')
                                                                                                                                 .doc('${_userModelController.uid}${replyDocs[index]['commentCount']}')
                                                                                                                                 .delete();
+                                                                                                                            await _bulletinCrewModelController.reduceBulletinCrewReplyCount(
+                                                                                                                                bullUid: _bulletinCrewModelController.uid,
+                                                                                                                                bullCount: _bulletinCrewModelController.bulletinCrewCount);
                                                                                                                           } catch (e) {}
                                                                                                                           print('댓글 삭제 완료');
                                                                                                                           Navigator.pop(context);
@@ -1271,6 +1274,9 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                       _scrollController.jumpTo(0);
                                       try{
                                         await _userModelController.updateCommentCount(_userModelController.commentCount);
+                                        await _bulletinCrewModelController.updateBulletinCrewReplyCount(
+                                            bullUid: _bulletinCrewModelController.uid,
+                                            bullCount: _bulletinCrewModelController.bulletinCrewCount);
                                         await _bulletinCrewReplyModelController.sendReply(
                                             replyResortNickname: _userModelController.resortNickname,
                                             displayName: _userModelController.displayName,

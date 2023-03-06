@@ -12,6 +12,7 @@ import 'package:snowlive3/screens/bulletin/Room/v_bulletin_Room_Upload.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import 'package:snowlive3/screens/fleaMarket/v_phone_Auth_Screen.dart';
 import '../../../controller/vm_bulletinRoomController.dart';
+import '../../../controller/vm_timeStampController.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
@@ -26,7 +27,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   BulletinRoomModelController _bulletinRoomModelController = Get.find<BulletinRoomModelController>();
-
+  TimeStampController _timeStampController = Get.find<TimeStampController>();
 //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -212,8 +213,8 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                       child: ListView.builder(
                         itemCount: chatDocs.length,
                         itemBuilder: (context, index) {
-                          String _time = _bulletinRoomModelController
-                              .getAgoTime(chatDocs[index].get('timeStamp'));
+                          String _time = _timeStampController
+                              .yyyymmddFormat(chatDocs[index].get('timeStamp'));
                           return GestureDetector(
                             onTap: () async {
                               if (_userModelController.repoUidList!
@@ -290,43 +291,60 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                                               Row(
                                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                 children: [
-                                                                  Row(
-                                                                    children: [
-                                                                      Text(
-                                                                        '[',
-                                                                        style: TextStyle(
-                                                                            fontWeight: FontWeight.bold,
-                                                                            fontSize: 15,
-                                                                            color: Color(0xFF111111)),
-                                                                      ),
-                                                                      Text(
-                                                                        chatDocs[index].get('category'),
-                                                                        style: TextStyle(
-                                                                            fontWeight: FontWeight.bold,
-                                                                            fontSize: 15,
-                                                                            color: Color(0xFF111111)),
-                                                                      ),
-                                                                      Text(
-                                                                        '] ',
-                                                                        style: TextStyle(
-                                                                            fontWeight: FontWeight.bold,
-                                                                            fontSize: 15,
-                                                                            color: Color(0xFF111111)),
-                                                                      ),
-                                                                      Container(
-                                                                        constraints: BoxConstraints(
-                                                                            maxWidth: _size.width - 164),
-                                                                        child: Text(
-                                                                          chatDocs[index].get('title'),
-                                                                          maxLines: 1,
-                                                                          overflow:  TextOverflow.ellipsis,
+                                                                  Expanded(
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          '[',
                                                                           style: TextStyle(
                                                                               fontWeight: FontWeight.bold,
                                                                               fontSize: 15,
                                                                               color: Color(0xFF111111)),
                                                                         ),
-                                                                      ),
-                                                                    ],
+                                                                        Text(
+                                                                          chatDocs[index].get('category'),
+                                                                          style: TextStyle(
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 15,
+                                                                              color: Color(0xFF111111)),
+                                                                        ),
+                                                                        Text(
+                                                                          '] ',
+                                                                          style: TextStyle(
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 15,
+                                                                              color: Color(0xFF111111)),
+                                                                        ),
+                                                                        Expanded(
+                                                                          child: Container(
+                                                                            constraints: BoxConstraints(
+                                                                                maxWidth: _size.width - 164),
+                                                                            child: Text(
+                                                                              chatDocs[index].get('title'),
+                                                                              maxLines: 1,
+                                                                              overflow:  TextOverflow.ellipsis,
+                                                                              style: TextStyle(
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  fontSize: 15,
+                                                                                  color: Color(0xFF111111)),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Expanded(
+                                                                          child: Container(
+                                                                            child: Text(
+                                                                              chatDocs[index].get('bulletinRoomReplyCount').toString(),
+                                                                              maxLines: 1,
+                                                                              overflow:  TextOverflow.ellipsis,
+                                                                              style: TextStyle(
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  fontSize: 15,
+                                                                                  color: Color(0xFF949494)),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
                                                                   ),
                                                                   Text(
                                                                     '$_time',

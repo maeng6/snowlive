@@ -1,7 +1,10 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:snowlive3/controller/vm_timeStampController.dart';
 import 'package:snowlive3/screens/more/v_noticeDetailPage.dart';
 
 
@@ -14,12 +17,9 @@ class NoticeList extends StatefulWidget {
 
 class _NoticeListState extends State<NoticeList> {
 
-
-  @override
-  void setState(VoidCallback fn) {
-    // TODO: implement setState
-    setState(fn);
-  }
+  //TODO: Dependency Injection**************************************************
+  TimeStampController _timeStampController = Get.find<TimeStampController>();
+  //TODO: Dependency Injection**************************************************
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +87,8 @@ class _NoticeListState extends State<NoticeList> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Text(_timeStampController.yyyymmddFormat(noticeDocs[index].get('timeStamp'))),
+                      SizedBox(width: 20,),
                       Container(
                         constraints: BoxConstraints(maxWidth: _size.width - 100),
                         child: Text(
@@ -98,6 +100,7 @@ class _NoticeListState extends State<NoticeList> {
                           ),
                         ),
                       ),
+                      Expanded(child: SizedBox()),
                       Image.asset('assets/imgs/icons/icon_arrow_g.png',
                         height: 24,
                         width: 24,

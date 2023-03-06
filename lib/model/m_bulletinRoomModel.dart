@@ -27,6 +27,7 @@ class BulletinRoomModel {
   String? location;
   String? description;
   int? bulletinRoomCount;
+  int? bulletinRoomReplyCount;
   String? resortNickname;
   Timestamp? timeStamp;
   bool? soldOut;
@@ -43,6 +44,7 @@ class BulletinRoomModel {
     description = json['description'];
     timeStamp = json['timeStamp'];
     bulletinRoomCount = json['bulletinRoomCount'];
+    bulletinRoomReplyCount = json['bulletinRoomReplyCount'];
     resortNickname = json['resortNickname'];
     soldOut = json['soldOut'];
   }
@@ -82,6 +84,7 @@ class BulletinRoomModel {
       'description': description,
       'timeStamp': Timestamp.now(),
       'bulletinRoomCount': bulletinRoomCount,
+      'bulletinRoomReplyCount': 0,
       'resortNickname': resortNickname,
       'soldOut': false,
     });

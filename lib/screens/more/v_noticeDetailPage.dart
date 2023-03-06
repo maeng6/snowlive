@@ -65,7 +65,7 @@ class _NoticeDetailState extends State<NoticeDetail> {
           Size _size = MediaQuery.of(context).size;
 
           return ListView.builder(
-            itemCount: noticeDocs.length,
+            itemCount: 1,
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16, top: 10),

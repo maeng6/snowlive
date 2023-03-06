@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
 import 'package:snowlive3/controller/vm_loginController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
+import 'package:snowlive3/controller/vm_timeStampController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/screens/login/v_loginpage.dart';
@@ -29,6 +30,7 @@ class _LoadingPageState extends State<LoadingPage> {
     UserModelController _userModelController = UserModelController();
     Get.put(GetDateTimeController(), permanent: true);
     LoginController _logInController = LoginController();
+    TimeStampController _timeStampController = Get.put(TimeStampController(),permanent: true, );
     //TODO: Dependency Injection************************************************
 
     return FutureBuilder(

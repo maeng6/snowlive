@@ -20,6 +20,7 @@ class BulletinRoomModelController extends GetxController {
   RxString? _location = ''.obs;
   RxString? _description = ''.obs;
   RxInt? _bulletinRoomCount = 0.obs;
+  RxInt? _bulletinRoomReplyCount = 0.obs;
   RxString? _resortNickname = ''.obs;
   RxBool? _soldOut = false.obs;
   Timestamp? _timeStamp;
@@ -42,6 +43,8 @@ class BulletinRoomModelController extends GetxController {
 
   int? get bulletinRoomCount => _bulletinRoomCount!.value;
 
+  int? get bulletinRoomReplyCount => _bulletinRoomReplyCount!.value;
+
   String? get resortNickname => _resortNickname!.value;
 
   bool? get soldOut => _soldOut!.value;
@@ -59,6 +62,7 @@ class BulletinRoomModelController extends GetxController {
     this._location!.value = bulletinRoomModel.location!;
     this._description!.value = bulletinRoomModel.description!;
     this._bulletinRoomCount!.value = bulletinRoomModel.bulletinRoomCount!;
+    this._bulletinRoomReplyCount!.value = bulletinRoomModel.bulletinRoomReplyCount!;
     this._resortNickname!.value = bulletinRoomModel.resortNickname!;
     this._soldOut!.value = bulletinRoomModel.soldOut!;
     this._timeStamp = bulletinRoomModel.timeStamp!;
@@ -142,6 +146,46 @@ class BulletinRoomModelController extends GetxController {
         description: description,
         bulletinRoomCount: bulletinRoomCount,
         resortNickname: resortNickname);
+  }
+
+  Future<void> updateBulletinRoomReplyCount({required bullUid, required bullCount}) async {
+
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('bulletinRoom').doc('$bullUid#$bullCount');
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int bulletinRoomReplyCount = documentSnapshot.get('bulletinRoomReplyCount');
+      int bulletinRoomReplyCountPlus = bulletinRoomReplyCount + 1;
+
+      await ref.collection('bulletinRoom').doc('$bullUid#$bullCount').update({
+        'bulletinRoomReplyCount': bulletinRoomReplyCountPlus,
+      });
+    }catch(e){
+      await ref.collection('bulletinRoom').doc('$bullUid#$bullCount').update({
+        'bulletinRoomReplyCount': 1,
+      });
+    }
+  }
+
+  Future<void> reduceBulletinRoomReplyCount({required bullUid, required bullCount}) async {
+
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('bulletinRoom').doc('$bullUid#$bullCount');
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int bulletinRoomReplyCount = documentSnapshot.get('bulletinRoomReplyCount');
+      int bulletinRoomReplyCountPlus = bulletinRoomReplyCount - 1;
+
+      await ref.collection('bulletinRoom').doc('$bullUid#$bullCount').update({
+        'bulletinRoomReplyCount': bulletinRoomReplyCountPlus,
+      });
+    }catch(e){}
   }
 
   String getAgoTime(timestamp) {

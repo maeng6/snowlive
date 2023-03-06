@@ -1086,6 +1086,10 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                                                                               .collection('reply')
                                                                                                                               .doc('${_userModelController.uid}${replyDocs[index]['commentCount']}')
                                                                                                                               .delete();
+                                                                                                                          await _bulletinRoomModelController.reduceBulletinRoomReplyCount(
+                                                                                                                              bullUid: _bulletinRoomModelController.uid,
+                                                                                                                              bullCount: _bulletinRoomModelController.bulletinRoomCount);
+
                                                                                                                         } catch (e) {}
                                                                                                                         print('댓글 삭제 완료');
                                                                                                                         Navigator.pop(context);
@@ -1189,6 +1193,9 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                         _scrollController.jumpTo(0);
                                         try{
                                           await _userModelController.updateCommentCount(_userModelController.commentCount);
+                                          await _bulletinRoomModelController.updateBulletinRoomReplyCount(
+                                              bullUid: _bulletinRoomModelController.uid,
+                                              bullCount: _bulletinRoomModelController.bulletinRoomCount);
                                           await _bulletinRoomReplyModelController.sendReply(
                                               replyResortNickname: _userModelController.resortNickname,
                                               displayName: _userModelController.displayName,

@@ -15,6 +15,7 @@ class BulletinCrewModel {
       this.location,
       this.description,
       this.bulletinCrewCount,
+      this.bulletinCrewReplyCount,
       this.resortNickname,
       this.timeStamp});
 
@@ -27,6 +28,7 @@ class BulletinCrewModel {
   String? location;
   String? description;
   int? bulletinCrewCount;
+  int? bulletinCrewReplyCount;
   String? resortNickname;
   Timestamp? timeStamp;
   bool? soldOut;
@@ -43,6 +45,7 @@ class BulletinCrewModel {
     description = json['description'];
     timeStamp = json['timeStamp'];
     bulletinCrewCount = json['bulletinCrewCount'];
+    bulletinCrewReplyCount = json['bulletinCrewReplyCount'];
     resortNickname = json['resortNickname'];
     soldOut = json['soldOut'];
   }
@@ -82,6 +85,7 @@ class BulletinCrewModel {
       'description': description,
       'timeStamp': Timestamp.now(),
       'bulletinCrewCount': bulletinCrewCount,
+      'bulletinCrewReplyCount': 0,
       'resortNickname': resortNickname,
       'soldOut': false,
     });
