@@ -101,192 +101,194 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                       enableDrag: false,
                       context: context,
                       builder: (context) {
-                        return Container(
-                          height: 180,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0, vertical: 14),
-                            child: Column(
-                              children: [
-                                GestureDetector(
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    title: Center(
-                                      child: Text(
-                                        '신고하기',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
+                        return SafeArea(
+                          child: Container(
+                            height: 140,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0, vertical: 14),
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Center(
+                                        child: Text(
+                                          '신고하기',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
+                                      //selected: _isSelected[index]!,
+                                      onTap: () async {
+                                        Get.dialog(AlertDialog(
+                                          contentPadding: EdgeInsets.only(
+                                              bottom: 0,
+                                              left: 20,
+                                              right: 20,
+                                              top: 30),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  10.0)),
+                                          buttonPadding:
+                                          EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 0),
+                                          content: Text(
+                                            '이 회원을 신고하시겠습니까?',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 15),
+                                          ),
+                                          actions: [
+                                            Row(
+                                              children: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(
+                                                          context);
+                                                    },
+                                                    child: Text(
+                                                      '취소',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(
+                                                            0xFF949494),
+                                                        fontWeight:
+                                                        FontWeight.bold,
+                                                      ),
+                                                    )),
+                                                TextButton(
+                                                    onPressed: () async {
+                                                      var repoUid =
+                                                          _bulletinCrewModelController
+                                                              .uid;
+                                                      await _userModelController
+                                                          .repoUpdate(
+                                                          repoUid);
+                                                      Navigator.pop(
+                                                          context);
+                                                      Navigator.pop(
+                                                          context);
+                                                    },
+                                                    child: Text(
+                                                      '신고',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(
+                                                            0xFF3D83ED),
+                                                        fontWeight:
+                                                        FontWeight.bold,
+                                                      ),
+                                                    ))
+                                              ],
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                            )
+                                          ],
+                                        ));
+                                      },
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(10)),
                                     ),
-                                    //selected: _isSelected[index]!,
-                                    onTap: () async {
-                                      Get.dialog(AlertDialog(
-                                        contentPadding: EdgeInsets.only(
-                                            bottom: 0,
-                                            left: 20,
-                                            right: 20,
-                                            top: 30),
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(
-                                                10.0)),
-                                        buttonPadding:
-                                        EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 0),
-                                        content: Text(
-                                          '이 회원을 신고하시겠습니까?',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 15),
-                                        ),
-                                        actions: [
-                                          Row(
-                                            children: [
-                                              TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(
-                                                        context);
-                                                  },
-                                                  child: Text(
-                                                    '취소',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Color(
-                                                          0xFF949494),
-                                                      fontWeight:
-                                                      FontWeight.bold,
-                                                    ),
-                                                  )),
-                                              TextButton(
-                                                  onPressed: () async {
-                                                    var repoUid =
-                                                        _bulletinCrewModelController
-                                                            .uid;
-                                                    await _userModelController
-                                                        .repoUpdate(
-                                                        repoUid);
-                                                    Navigator.pop(
-                                                        context);
-                                                    Navigator.pop(
-                                                        context);
-                                                  },
-                                                  child: Text(
-                                                    '신고',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Color(
-                                                          0xFF3D83ED),
-                                                      fontWeight:
-                                                      FontWeight.bold,
-                                                    ),
-                                                  ))
-                                            ],
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                          )
-                                        ],
-                                      ));
-                                    },
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(10)),
                                   ),
-                                ),
-                                GestureDetector(
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    title: Center(
-                                      child: Text(
-                                        '이 회원의 글 모두 숨기기',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
+                                  GestureDetector(
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Center(
+                                        child: Text(
+                                          '이 회원의 글 모두 숨기기',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
+                                      //selected: _isSelected[index]!,
+                                      onTap: () async {
+                                        Get.dialog(AlertDialog(
+                                          contentPadding: EdgeInsets.only(
+                                              bottom: 0,
+                                              left: 20,
+                                              right: 20,
+                                              top: 30),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  10.0)),
+                                          buttonPadding:
+                                          EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 0),
+                                          content: Text(
+                                            '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 15),
+                                          ),
+                                          actions: [
+                                            Row(
+                                              children: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(
+                                                          context);
+                                                    },
+                                                    child: Text(
+                                                      '취소',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(
+                                                            0xFF949494),
+                                                        fontWeight:
+                                                        FontWeight.bold,
+                                                      ),
+                                                    )),
+                                                TextButton(
+                                                    onPressed: () {
+                                                      var repoUid =
+                                                          _bulletinCrewModelController
+                                                              .uid;
+                                                      _userModelController
+                                                          .updateRepoUid(
+                                                          repoUid);
+                                                      Navigator.pop(
+                                                          context);
+                                                      Navigator.pop(
+                                                          context);
+                                                      Navigator.pop(
+                                                          context);
+                                                    },
+                                                    child: Text(
+                                                      '확인',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(
+                                                            0xFF3D83ED),
+                                                        fontWeight:
+                                                        FontWeight.bold,
+                                                      ),
+                                                    ))
+                                              ],
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                            )
+                                          ],
+                                        ));
+                                      },
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(10)),
                                     ),
-                                    //selected: _isSelected[index]!,
-                                    onTap: () async {
-                                      Get.dialog(AlertDialog(
-                                        contentPadding: EdgeInsets.only(
-                                            bottom: 0,
-                                            left: 20,
-                                            right: 20,
-                                            top: 30),
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(
-                                                10.0)),
-                                        buttonPadding:
-                                        EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 0),
-                                        content: Text(
-                                          '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 15),
-                                        ),
-                                        actions: [
-                                          Row(
-                                            children: [
-                                              TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(
-                                                        context);
-                                                  },
-                                                  child: Text(
-                                                    '취소',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Color(
-                                                          0xFF949494),
-                                                      fontWeight:
-                                                      FontWeight.bold,
-                                                    ),
-                                                  )),
-                                              TextButton(
-                                                  onPressed: () {
-                                                    var repoUid =
-                                                        _bulletinCrewModelController
-                                                            .uid;
-                                                    _userModelController
-                                                        .updateRepoUid(
-                                                        repoUid);
-                                                    Navigator.pop(
-                                                        context);
-                                                    Navigator.pop(
-                                                        context);
-                                                    Navigator.pop(
-                                                        context);
-                                                  },
-                                                  child: Text(
-                                                    '확인',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Color(
-                                                          0xFF3D83ED),
-                                                      fontWeight:
-                                                      FontWeight.bold,
-                                                    ),
-                                                  ))
-                                            ],
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                          )
-                                        ],
-                                      ));
-                                    },
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(10)),
-                                  ),
-                                )
-                              ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -305,213 +307,215 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                       enableDrag: false,
                       context: context,
                       builder: (context) {
-                        return Container(
-                          height: 140,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0, vertical: 14),
-                            child: Column(
-                              children: [
-                                (_bulletinCrewModelController.uid == _userModelController.uid)?
-                                GestureDetector(
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    title: Center(
-                                      child: Text(
-                                        '수정하기',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
+                        return SafeArea(
+                          child: Container(
+                            height: 140,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0, vertical: 14),
+                              child: Column(
+                                children: [
+                                  (_bulletinCrewModelController.uid == _userModelController.uid)?
+                                  GestureDetector(
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Center(
+                                        child: Text(
+                                          '수정하기',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
+                                      //selected: _isSelected[index]!,
+                                      onTap: () async {
+                                        CustomFullScreenDialog.showDialog();
+                                        Navigator.pop(context);
+                                        await _userModelController
+                                            .getCurrentUser(_userModelController.uid);
+                                        CustomFullScreenDialog.cancelDialog();
+                                        Get.to(
+                                                () => Bulletin_Crew_ModifyPage());
+                                      },
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(10)),
                                     ),
-                                    //selected: _isSelected[index]!,
-                                    onTap: () async {
-                                      CustomFullScreenDialog.showDialog();
-                                      Navigator.pop(context);
-                                      await _userModelController
-                                          .getCurrentUser(_userModelController.uid);
-                                      CustomFullScreenDialog.cancelDialog();
-                                      Get.to(
-                                              () => Bulletin_Crew_ModifyPage());
-                                    },
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(10)),
-                                  ),
-                                )
-                                    :SizedBox(),
-                                GestureDetector(
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    title: Center(
-                                      child: Text(
-                                        '삭제',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
+                                  )
+                                      :SizedBox(),
+                                  GestureDetector(
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Center(
+                                        child: Text(
+                                          '삭제',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    //selected: _isSelected[index]!,
-                                    onTap: () async {
-                                      Navigator.pop(context);
-                                      showModalBottomSheet(
-                                          context: context,
-                                          builder: (context) {
-                                            return Container(
-                                              color: Colors.white,
-                                              height: 180,
-                                              child: Padding(
-                                                padding: const EdgeInsets
-                                                    .symmetric(
-                                                    horizontal: 20.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment
-                                                      .start,
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .start,
-                                                  children: [
-                                                    SizedBox(
-                                                      height: 30,
-                                                    ),
-                                                    Text(
-                                                      '삭제하시겠습니까?',
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .bold,
-                                                          color: Color(
-                                                              0xFF111111)),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 30,
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceEvenly,
-                                                      children: [
-                                                        Expanded(
-                                                          child:
-                                                          ElevatedButton(
-                                                            onPressed:
-                                                                () {
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            child: Text(
-                                                              '취소',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                  15,
-                                                                  fontWeight:
-                                                                  FontWeight.bold),
-                                                            ),
-                                                            style: TextButton.styleFrom(
-                                                                splashFactory:
-                                                                InkRipple
-                                                                    .splashFactory,
-                                                                elevation:
-                                                                0,
-                                                                minimumSize:
-                                                                Size(
-                                                                    100,
-                                                                    56),
-                                                                backgroundColor:
-                                                                Color(
-                                                                    0xff555555),
-                                                                padding: EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                    0)),
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Expanded(
-                                                          child:
-                                                          ElevatedButton(
-                                                            onPressed:
-                                                                () async {
-                                                              CustomFullScreenDialog
-                                                                  .showDialog();
-                                                              try {
-                                                                await FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                    'bulletinCrew')
-                                                                    .doc(
-                                                                    '${_userModelController.uid}#${_bulletinCrewModelController.bulletinCrewCount}')
-                                                                    .delete();
-                                                                try {
-                                                                  await _bulletinCrewModelController.deleteBulletinCrewImage(
-                                                                      uid:
-                                                                      _userModelController.uid,
-                                                                      bulletinCrewCount: _bulletinCrewModelController.bulletinCrewCount,
-                                                                      imageCount: _bulletinCrewModelController.itemImagesUrls!.length);
-                                                                } catch (e) {
-                                                                  print(
-                                                                      '이미지 삭제 에러');
-                                                                }
-                                                                ;
+                                      //selected: _isSelected[index]!,
+                                      onTap: () async {
+                                        Navigator.pop(context);
+                                        showModalBottomSheet(
+                                            context: context,
+                                            builder: (context) {
+                                              return Container(
+                                                color: Colors.white,
+                                                height: 180,
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 20.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment
+                                                        .start,
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 30,
+                                                      ),
+                                                      Text(
+                                                        '삭제하시겠습니까?',
+                                                        style: TextStyle(
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                            FontWeight
+                                                                .bold,
+                                                            color: Color(
+                                                                0xFF111111)),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 30,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                        children: [
+                                                          Expanded(
+                                                            child:
+                                                            ElevatedButton(
+                                                              onPressed:
+                                                                  () {
                                                                 Navigator.pop(
                                                                     context);
-                                                              } catch (e) {}
-                                                              print(
-                                                                  '시즌방게시글 삭제 완료');
-                                                              Navigator.pop(
-                                                                  context);
-                                                              CustomFullScreenDialog
-                                                                  .cancelDialog();
-                                                            },
-                                                            child: Text(
-                                                              '확인',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                  15,
-                                                                  fontWeight:
-                                                                  FontWeight.bold),
+                                                              },
+                                                              child: Text(
+                                                                '취소',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                    15,
+                                                                    fontWeight:
+                                                                    FontWeight.bold),
+                                                              ),
+                                                              style: TextButton.styleFrom(
+                                                                  splashFactory:
+                                                                  InkRipple
+                                                                      .splashFactory,
+                                                                  elevation:
+                                                                  0,
+                                                                  minimumSize:
+                                                                  Size(
+                                                                      100,
+                                                                      56),
+                                                                  backgroundColor:
+                                                                  Color(
+                                                                      0xff555555),
+                                                                  padding: EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                      0)),
                                                             ),
-                                                            style: TextButton.styleFrom(
-                                                                splashFactory:
-                                                                InkRipple
-                                                                    .splashFactory,
-                                                                elevation:
-                                                                0,
-                                                                minimumSize:
-                                                                Size(
-                                                                    100,
-                                                                    56),
-                                                                backgroundColor:
-                                                                Color(
-                                                                    0xff2C97FB),
-                                                                padding: EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                    0)),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Expanded(
+                                                            child:
+                                                            ElevatedButton(
+                                                              onPressed:
+                                                                  () async {
+                                                                CustomFullScreenDialog
+                                                                    .showDialog();
+                                                                try {
+                                                                  await FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                      'bulletinCrew')
+                                                                      .doc(
+                                                                      '${_userModelController.uid}#${_bulletinCrewModelController.bulletinCrewCount}')
+                                                                      .delete();
+                                                                  try {
+                                                                    await _bulletinCrewModelController.deleteBulletinCrewImage(
+                                                                        uid:
+                                                                        _userModelController.uid,
+                                                                        bulletinCrewCount: _bulletinCrewModelController.bulletinCrewCount,
+                                                                        imageCount: _bulletinCrewModelController.itemImagesUrls!.length);
+                                                                  } catch (e) {
+                                                                    print(
+                                                                        '이미지 삭제 에러');
+                                                                  }
+                                                                  ;
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                } catch (e) {}
+                                                                print(
+                                                                    '시즌방게시글 삭제 완료');
+                                                                Navigator.pop(
+                                                                    context);
+                                                                CustomFullScreenDialog
+                                                                    .cancelDialog();
+                                                              },
+                                                              child: Text(
+                                                                '확인',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                    15,
+                                                                    fontWeight:
+                                                                    FontWeight.bold),
+                                                              ),
+                                                              style: TextButton.styleFrom(
+                                                                  splashFactory:
+                                                                  InkRipple
+                                                                      .splashFactory,
+                                                                  elevation:
+                                                                  0,
+                                                                  minimumSize:
+                                                                  Size(
+                                                                      100,
+                                                                      56),
+                                                                  backgroundColor:
+                                                                  Color(
+                                                                      0xff2C97FB),
+                                                                  padding: EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                      0)),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          });
-                                    },
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(10)),
+                                              );
+                                            });
+                                      },
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(10)),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -562,13 +566,11 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                       stream: null,
                                       builder: (context, snapshot) {
                                         return Row(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             GestureDetector(
                                               onTap: () {
-                                                Get.to(
-                                                        () => BulletinCrewImageScreen());
+                                                Get.to(() => BulletinCrewImageScreen());
                                               },
                                               child: ExtendedImage.network(
                                                 _bulletinCrewModelController
@@ -587,61 +589,58 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                Text(
+                                  '${_bulletinCrewModelController.category}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                      color: Color(0xFF111111)),
+                                ),
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                Container(
+                                  width: _size.width - 32,
+                                  child: Text(
+                                    (_bulletinCrewModelController.soldOut == true)
+                                        ? '거래완료'
+                                        : '${_bulletinCrewModelController.title}',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Column(
                                   children: [
-                                    if (_bulletinCrewModelController.profileImageUrl!.isEmpty)
-                                      ExtendedImage.asset(
-                                        'assets/imgs/profile/img_profile_default_circle.png',
-                                        shape: BoxShape.circle,
-                                        borderRadius: BorderRadius.circular(20),
-                                        width: 32,
-                                        height: 32,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    if (_bulletinCrewModelController.profileImageUrl!.isNotEmpty)
-                                      ExtendedImage.network('${_bulletinCrewModelController.profileImageUrl}',
-                                        shape: BoxShape.circle,
-                                        borderRadius: BorderRadius.circular(20),
-                                        width: 32,
-                                        height: 32,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    SizedBox(width: 12),
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: 2),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Text('${_bulletinCrewModelController.displayName}',
-                                                    //chatDocs[index].get('displayName'),
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 14,
-                                                        color: Color(0xFF111111)),
-                                                  ),
-                                                  SizedBox(width: 6),
-                                                  Text('$_time',
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Color(0xFF949494),
-                                                        fontWeight:
-                                                        FontWeight.w300),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '${_bulletinCrewModelController.location}',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 14,
+                                              color: Color(0xFF949494)),
+                                        ),
+                                        Text('   $_time',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Color(0xFF949494),
+                                              fontWeight: FontWeight.normal),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 6,
                                     ),
                                   ],
                                 ),
@@ -664,50 +663,65 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Container(
-                                            width: _size.width - 32,
-                                            child: Text(
-                                              (_bulletinCrewModelController.soldOut == true)
-                                                  ? '거래완료'
-                                                  : '[${_bulletinCrewModelController.category}] ${_bulletinCrewModelController.title}',
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
+                                          if (_bulletinCrewModelController.profileImageUrl!.isEmpty)
+                                            ExtendedImage.asset(
+                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                              shape: BoxShape.circle,
+                                              borderRadius: BorderRadius.circular(20),
+                                              width: 32,
+                                              height: 32,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          if (_bulletinCrewModelController.profileImageUrl!.isNotEmpty)
+                                            ExtendedImage.network('${_bulletinCrewModelController.profileImageUrl}',
+                                              shape: BoxShape.circle,
+                                              borderRadius: BorderRadius.circular(20),
+                                              width: 32,
+                                              height: 32,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          SizedBox(width: 12),
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 2),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Text('${_bulletinCrewModelController.displayName}',
+                                                          //chatDocs[index].get('displayName'),
+                                                          style: TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 14,
+                                                              color: Color(0xFF111111)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
                                       ),
-                                      SizedBox(
-                                        height: 12,
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(3),
-                                          color: Color(0xFFD5F7E0),
-                                        ),
-                                        padding: EdgeInsets.only(
-                                            right: 6, left: 6, top: 2, bottom: 3),
-                                        child: Text(
-                                          '${_bulletinCrewModelController.location}',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12,
-                                              color: Color(0xFF17AD4A)),
-                                        ),
-                                      ),
                                       Divider(
                                         color: Color(0xFFECECEC),
-                                        height: 42,
+                                        height: 32,
                                         thickness: 0.5,
                                       ),
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
+                                          SizedBox(
+                                            height: 4,
+                                          ),
                                           Text(
                                             '상세설명',
                                             style: TextStyle(
@@ -778,11 +792,18 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           (replyDocs.length == 0)
-                                                              ? Text('첫 답글을 남겨주세요!', style: TextStyle(
-                                                              fontSize: 15,
-                                                              fontWeight: FontWeight.normal,
-                                                              color: Color(0xFF111111)
-                                                          ),)
+                                                              ? Column(
+                                                                children: [
+                                                                  Text('첫 답글을 남겨주세요!', style: TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight: FontWeight.normal,
+                                                                  color: Color(0xFF111111)
+                                                          ),),
+                                                                  SizedBox(
+                                                                    height: 20,
+                                                                  )
+                                                                ],
+                                                              )
                                                               :Scrollbar(
                                                             child: ListView.builder(
                                                               controller: _scrollController,
@@ -790,9 +811,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                               reverse: true,
                                                               itemCount: replyDocs.length,
                                                               itemBuilder: (context, index) {
-                                                                String _time = _bulletinCrewReplyModelController
-                                                                    .getAgoTime(replyDocs[index]
-                                                                    .get('timeStamp'));
+                                                                String _time = _bulletinCrewReplyModelController.getAgoTime(replyDocs[index].get('timeStamp'));
                                                                 return Padding(
                                                                   padding: const EdgeInsets.only(top: 16),
                                                                   child: Obx(() => Container(
@@ -806,16 +825,13 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                             ? Center(
                                                                           child: Padding(
                                                                             padding:
-                                                                            const EdgeInsets.symmetric(vertical: 12),
+                                                                            const EdgeInsets.symmetric(vertical: 16),
                                                                             child: Text(
                                                                               '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
                                                                               style: TextStyle(
-                                                                                  fontWeight:
-                                                                                  FontWeight
-                                                                                      .normal,
+                                                                                  fontWeight: FontWeight.normal,
                                                                                   fontSize: 12,
-                                                                                  color: Color(
-                                                                                      0xffc8c8c8)),
+                                                                                  color: Color(0xffc8c8c8)),
                                                                             ),
                                                                           ),
                                                                         )
@@ -893,8 +909,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                         ),
                                                                                         SizedBox(
                                                                                             width: 1),
-                                                                                        Text(
-                                                                                          '· $_time',
+                                                                                        Text('· $_time',
                                                                                           style: TextStyle(
                                                                                               fontSize: 13,
                                                                                               color: Color(0xFF949494),
@@ -908,15 +923,12 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                     Row(
                                                                                       children: [
                                                                                         Container(
-                                                                                          constraints:
-                                                                                          BoxConstraints(maxWidth: _size.width - 140),
+                                                                                          constraints: BoxConstraints(maxWidth: _size.width - 140),
                                                                                           child:
                                                                                           Text(
                                                                                             replyDocs[index].get('reply'),
-                                                                                            maxLines:
-                                                                                            1000,
-                                                                                            overflow:
-                                                                                            TextOverflow.ellipsis,
+                                                                                            maxLines: 1000,
+                                                                                            overflow: TextOverflow.ellipsis,
                                                                                             style: TextStyle(
                                                                                                 color: Color(0xFF111111),
                                                                                                 fontWeight: FontWeight.normal,
@@ -938,139 +950,141 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                   enableDrag: false,
                                                                                   context: context,
                                                                                   builder: (context) {
-                                                                                    return Container(
-                                                                                      height:
-                                                                                      190,
-                                                                                      child:
-                                                                                      Padding(
-                                                                                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                                                                                        child: Column(
-                                                                                          children: [
-                                                                                            GestureDetector(
-                                                                                              child: ListTile(
-                                                                                                contentPadding: EdgeInsets.zero,
-                                                                                                title: Center(
-                                                                                                  child: Text(
-                                                                                                    '신고하기',
-                                                                                                    style: TextStyle(
-                                                                                                      fontSize: 15,
-                                                                                                      fontWeight: FontWeight.bold,
+                                                                                    return SafeArea(
+                                                                                      child: Container(
+                                                                                        height:
+                                                                                        140,
+                                                                                        child:
+                                                                                        Padding(
+                                                                                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                                                                                          child: Column(
+                                                                                            children: [
+                                                                                              GestureDetector(
+                                                                                                child: ListTile(
+                                                                                                  contentPadding: EdgeInsets.zero,
+                                                                                                  title: Center(
+                                                                                                    child: Text(
+                                                                                                      '신고하기',
+                                                                                                      style: TextStyle(
+                                                                                                        fontSize: 15,
+                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                      ),
                                                                                                     ),
                                                                                                   ),
+                                                                                                  //selected: _isSelected[index]!,
+                                                                                                  onTap: () async {
+                                                                                                    Get.dialog(AlertDialog(
+                                                                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                      elevation: 0,
+                                                                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                                                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                      content: Text(
+                                                                                                        '이 회원을 신고하시겠습니까?',
+                                                                                                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                                                                                                      ),
+                                                                                                      actions: [
+                                                                                                        Row(
+                                                                                                          children: [
+                                                                                                            TextButton(
+                                                                                                                onPressed: () {
+                                                                                                                  Navigator.pop(context);
+                                                                                                                },
+                                                                                                                child: Text(
+                                                                                                                  '취소',
+                                                                                                                  style: TextStyle(
+                                                                                                                    fontSize: 15,
+                                                                                                                    color: Color(0xFF949494),
+                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                  ),
+                                                                                                                )),
+                                                                                                            TextButton(
+                                                                                                                onPressed: () async {
+                                                                                                                  var repoUid = replyDocs[index].get('uid');
+                                                                                                                  await _userModelController.repoUpdate(repoUid);
+                                                                                                                  Navigator.pop(context);
+                                                                                                                  Navigator.pop(context);
+                                                                                                                },
+                                                                                                                child: Text(
+                                                                                                                  '신고',
+                                                                                                                  style: TextStyle(
+                                                                                                                    fontSize: 15,
+                                                                                                                    color: Color(0xFF3D83ED),
+                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                  ),
+                                                                                                                ))
+                                                                                                          ],
+                                                                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                        )
+                                                                                                      ],
+                                                                                                    ));
+                                                                                                  },
+                                                                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                                                                 ),
-                                                                                                //selected: _isSelected[index]!,
-                                                                                                onTap: () async {
-                                                                                                  Get.dialog(AlertDialog(
-                                                                                                    contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                                    elevation: 0,
-                                                                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                                                                                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                    content: Text(
-                                                                                                      '이 회원을 신고하시겠습니까?',
-                                                                                                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                                                                                                    ),
-                                                                                                    actions: [
-                                                                                                      Row(
-                                                                                                        children: [
-                                                                                                          TextButton(
-                                                                                                              onPressed: () {
-                                                                                                                Navigator.pop(context);
-                                                                                                              },
-                                                                                                              child: Text(
-                                                                                                                '취소',
-                                                                                                                style: TextStyle(
-                                                                                                                  fontSize: 15,
-                                                                                                                  color: Color(0xFF949494),
-                                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                                ),
-                                                                                                              )),
-                                                                                                          TextButton(
-                                                                                                              onPressed: () async {
-                                                                                                                var repoUid = replyDocs[index].get('uid');
-                                                                                                                await _userModelController.repoUpdate(repoUid);
-                                                                                                                Navigator.pop(context);
-                                                                                                                Navigator.pop(context);
-                                                                                                              },
-                                                                                                              child: Text(
-                                                                                                                '신고',
-                                                                                                                style: TextStyle(
-                                                                                                                  fontSize: 15,
-                                                                                                                  color: Color(0xFF3D83ED),
-                                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                                ),
-                                                                                                              ))
-                                                                                                        ],
-                                                                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                      )
-                                                                                                    ],
-                                                                                                  ));
-                                                                                                },
-                                                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                                                               ),
-                                                                                            ),
-                                                                                            GestureDetector(
-                                                                                              child: ListTile(
-                                                                                                contentPadding: EdgeInsets.zero,
-                                                                                                title: Center(
-                                                                                                  child: Text(
-                                                                                                    '이 회원의 글 모두 숨기기',
-                                                                                                    style: TextStyle(
-                                                                                                      fontSize: 15,
-                                                                                                      fontWeight: FontWeight.bold,
+                                                                                              GestureDetector(
+                                                                                                child: ListTile(
+                                                                                                  contentPadding: EdgeInsets.zero,
+                                                                                                  title: Center(
+                                                                                                    child: Text(
+                                                                                                      '이 회원의 글 모두 숨기기',
+                                                                                                      style: TextStyle(
+                                                                                                        fontSize: 15,
+                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                      ),
                                                                                                     ),
                                                                                                   ),
+                                                                                                  //selected: _isSelected[index]!,
+                                                                                                  onTap: () async {
+                                                                                                    Get.dialog(AlertDialog(
+                                                                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                      elevation: 0,
+                                                                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                                                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                      content: Text(
+                                                                                                        '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.',
+                                                                                                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                                                                                                      ),
+                                                                                                      actions: [
+                                                                                                        Row(
+                                                                                                          children: [
+                                                                                                            TextButton(
+                                                                                                                onPressed: () {
+                                                                                                                  Navigator.pop(context);
+                                                                                                                },
+                                                                                                                child: Text(
+                                                                                                                  '취소',
+                                                                                                                  style: TextStyle(
+                                                                                                                    fontSize: 15,
+                                                                                                                    color: Color(0xFF949494),
+                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                  ),
+                                                                                                                )),
+                                                                                                            TextButton(
+                                                                                                                onPressed: () {
+                                                                                                                  var repoUid = replyDocs[index].get('uid');
+                                                                                                                  _userModelController.updateRepoUid(repoUid);
+                                                                                                                  Navigator.pop(context);
+                                                                                                                  Navigator.pop(context);
+                                                                                                                },
+                                                                                                                child: Text(
+                                                                                                                  '확인',
+                                                                                                                  style: TextStyle(
+                                                                                                                    fontSize: 15,
+                                                                                                                    color: Color(0xFF3D83ED),
+                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                  ),
+                                                                                                                ))
+                                                                                                          ],
+                                                                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                        )
+                                                                                                      ],
+                                                                                                    ));
+                                                                                                  },
+                                                                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                                                                 ),
-                                                                                                //selected: _isSelected[index]!,
-                                                                                                onTap: () async {
-                                                                                                  Get.dialog(AlertDialog(
-                                                                                                    contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                                    elevation: 0,
-                                                                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                                                                                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                    content: Text(
-                                                                                                      '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.',
-                                                                                                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                                                                                                    ),
-                                                                                                    actions: [
-                                                                                                      Row(
-                                                                                                        children: [
-                                                                                                          TextButton(
-                                                                                                              onPressed: () {
-                                                                                                                Navigator.pop(context);
-                                                                                                              },
-                                                                                                              child: Text(
-                                                                                                                '취소',
-                                                                                                                style: TextStyle(
-                                                                                                                  fontSize: 15,
-                                                                                                                  color: Color(0xFF949494),
-                                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                                ),
-                                                                                                              )),
-                                                                                                          TextButton(
-                                                                                                              onPressed: () {
-                                                                                                                var repoUid = replyDocs[index].get('uid');
-                                                                                                                _userModelController.updateRepoUid(repoUid);
-                                                                                                                Navigator.pop(context);
-                                                                                                                Navigator.pop(context);
-                                                                                                              },
-                                                                                                              child: Text(
-                                                                                                                '확인',
-                                                                                                                style: TextStyle(
-                                                                                                                  fontSize: 15,
-                                                                                                                  color: Color(0xFF3D83ED),
-                                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                                ),
-                                                                                                              ))
-                                                                                                        ],
-                                                                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                      )
-                                                                                                    ],
-                                                                                                  ));
-                                                                                                },
-                                                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                                                                              ),
-                                                                                            )
-                                                                                          ],
+                                                                                              )
+                                                                                            ],
+                                                                                          ),
                                                                                         ),
                                                                                       ),
                                                                                     );
@@ -1092,123 +1106,118 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                   enableDrag: false,
                                                                                   context: context,
                                                                                   builder: (context) {
-                                                                                    return Container(
-                                                                                      height:
-                                                                                      130,
-                                                                                      child:
-                                                                                      Padding(
-                                                                                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
-                                                                                        child: Column(
-                                                                                          children: [
-                                                                                            GestureDetector(
-                                                                                              child: ListTile(
-                                                                                                contentPadding: EdgeInsets.zero,
-                                                                                                title: Center(
-                                                                                                  child: Text(
-                                                                                                    '삭제',
-                                                                                                    style: TextStyle(
-                                                                                                      fontSize: 15,
-                                                                                                      fontWeight: FontWeight.bold,
+                                                                                    return SafeArea(
+                                                                                      child: Container(
+                                                                                        height: 90,
+                                                                                        child:
+                                                                                        Padding(
+                                                                                          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
+                                                                                          child: Column(
+                                                                                            children: [
+                                                                                              GestureDetector(
+                                                                                                child: ListTile(
+                                                                                                  contentPadding: EdgeInsets.zero,
+                                                                                                  title: Center(
+                                                                                                    child: Text('삭제',
+                                                                                                      style: TextStyle(
+                                                                                                        fontSize: 15,
+                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                      ),
                                                                                                     ),
                                                                                                   ),
-                                                                                                ),
-                                                                                                //selected: _isSelected[index]!,
-                                                                                                onTap: () async {
-                                                                                                  Navigator.pop(context);
-                                                                                                  showModalBottomSheet(
-                                                                                                      context: context,
-                                                                                                      builder: (context) {
-                                                                                                        return Container(
-                                                                                                          color: Colors.white,
-                                                                                                          height: 180,
-                                                                                                          child: Padding(
-                                                                                                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                                                                                            child: Column(
-                                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                              mainAxisAlignment: MainAxisAlignment.start,
-                                                                                                              children: [
-                                                                                                                SizedBox(
-                                                                                                                  height: 30,
-                                                                                                                ),
-                                                                                                                Text(
-                                                                                                                  '삭제하시겠습니까?',
-                                                                                                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF111111)),
-                                                                                                                ),
-                                                                                                                SizedBox(
-                                                                                                                  height: 30,
-                                                                                                                ),
-                                                                                                                Row(
-                                                                                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                                                                  children: [
-                                                                                                                    Expanded(
-                                                                                                                      child: ElevatedButton(
-                                                                                                                        onPressed: () {
-                                                                                                                          Navigator.pop(context);
-                                                                                                                        },
-                                                                                                                        child: Text(
-                                                                                                                          '취소',
-                                                                                                                          style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                                                                                                  //selected: _isSelected[index]!,
+                                                                                                  onTap: () async {
+                                                                                                    Navigator.pop(context);
+                                                                                                    showModalBottomSheet(
+                                                                                                        context: context,
+                                                                                                        builder: (context) {
+                                                                                                          return Container(
+                                                                                                            color: Colors.white,
+                                                                                                            height: 180,
+                                                                                                            child: Padding(
+                                                                                                              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                                                                                              child: Column(
+                                                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                                                                children: [
+                                                                                                                  SizedBox(
+                                                                                                                    height: 30,
+                                                                                                                  ),
+                                                                                                                  Text(
+                                                                                                                    '삭제하시겠습니까?',
+                                                                                                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF111111)),
+                                                                                                                  ),
+                                                                                                                  SizedBox(
+                                                                                                                    height: 30,
+                                                                                                                  ),
+                                                                                                                  Row(
+                                                                                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                                                    children: [
+                                                                                                                      Expanded(
+                                                                                                                        child: ElevatedButton(
+                                                                                                                          onPressed: () {
+                                                                                                                            Navigator.pop(context);
+                                                                                                                          },
+                                                                                                                          child: Text(
+                                                                                                                            '취소',
+                                                                                                                            style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                                                                                                                          ),
+                                                                                                                          style: TextButton.styleFrom(splashFactory: InkRipple.splashFactory, elevation: 0, minimumSize: Size(100, 56), backgroundColor: Color(0xff555555), padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                                                                         ),
-                                                                                                                        style: TextButton.styleFrom(splashFactory: InkRipple.splashFactory, elevation: 0, minimumSize: Size(100, 56), backgroundColor: Color(0xff555555), padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                                                                       ),
-                                                                                                                    ),
-                                                                                                                    SizedBox(
-                                                                                                                      width: 10,
-                                                                                                                    ),
-                                                                                                                    Expanded(
-                                                                                                                      child: ElevatedButton(
-                                                                                                                        onPressed: () async {
-                                                                                                                          CustomFullScreenDialog.showDialog();
-                                                                                                                          try {
-                                                                                                                            await FirebaseFirestore.instance
-                                                                                                                                .collection('bulletinCrew')
-                                                                                                                                .doc('${_bulletinCrewModelController.uid}#${_bulletinCrewModelController.bulletinCrewCount}')
-                                                                                                                                .collection('reply')
-                                                                                                                                .doc('${_userModelController.uid}${replyDocs[index]['commentCount']}')
-                                                                                                                                .delete();
-                                                                                                                            await _bulletinCrewModelController.reduceBulletinCrewReplyCount(
-                                                                                                                                bullUid: _bulletinCrewModelController.uid,
-                                                                                                                                bullCount: _bulletinCrewModelController.bulletinCrewCount);
-                                                                                                                          } catch (e) {}
-                                                                                                                          print('댓글 삭제 완료');
-                                                                                                                          Navigator.pop(context);
-                                                                                                                          CustomFullScreenDialog.cancelDialog();
-                                                                                                                        },
-                                                                                                                        child: Text(
-                                                                                                                          '확인',
-                                                                                                                          style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                                                                                                                      SizedBox(
+                                                                                                                        width: 10,
+                                                                                                                      ),
+                                                                                                                      Expanded(
+                                                                                                                        child: ElevatedButton(
+                                                                                                                          onPressed: () async {
+                                                                                                                            CustomFullScreenDialog.showDialog();
+                                                                                                                            try {
+                                                                                                                              await FirebaseFirestore.instance
+                                                                                                                                  .collection('bulletinCrew')
+                                                                                                                                  .doc('${_bulletinCrewModelController.uid}#${_bulletinCrewModelController.bulletinCrewCount}')
+                                                                                                                                  .collection('reply')
+                                                                                                                                  .doc('${_userModelController.uid}${replyDocs[index]['commentCount']}')
+                                                                                                                                  .delete();
+                                                                                                                              await _bulletinCrewModelController.reduceBulletinCrewReplyCount(
+                                                                                                                                  bullUid: _bulletinCrewModelController.uid,
+                                                                                                                                  bullCount: _bulletinCrewModelController.bulletinCrewCount);
+                                                                                                                            } catch (e) {}
+                                                                                                                            print('댓글 삭제 완료');
+                                                                                                                            Navigator.pop(context);
+                                                                                                                            CustomFullScreenDialog.cancelDialog();
+                                                                                                                          },
+                                                                                                                          child: Text(
+                                                                                                                            '확인',
+                                                                                                                            style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                                                                                                                          ),
+                                                                                                                          style: TextButton.styleFrom(splashFactory: InkRipple.splashFactory, elevation: 0, minimumSize: Size(100, 56), backgroundColor: Color(0xff2C97FB), padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                                                                         ),
-                                                                                                                        style: TextButton.styleFrom(splashFactory: InkRipple.splashFactory, elevation: 0, minimumSize: Size(100, 56), backgroundColor: Color(0xff2C97FB), padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                                                                       ),
-                                                                                                                    ),
-                                                                                                                  ],
-                                                                                                                )
-                                                                                                              ],
+                                                                                                                    ],
+                                                                                                                  )
+                                                                                                                ],
+                                                                                                              ),
                                                                                                             ),
-                                                                                                          ),
-                                                                                                        );
-                                                                                                      });
-                                                                                                },
-                                                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                                                                          );
+                                                                                                        });
+                                                                                                  },
+                                                                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                                                                ),
                                                                                               ),
-                                                                                            ),
-                                                                                          ],
+                                                                                            ],
+                                                                                          ),
                                                                                         ),
                                                                                       ),
                                                                                     );
                                                                                   }),
                                                                               child:
                                                                               Padding(
-                                                                                padding: const EdgeInsets
-                                                                                    .only(
-                                                                                    bottom:
-                                                                                    22),
+                                                                                padding: const EdgeInsets.only(bottom: 22),
                                                                                 child:
                                                                                 Icon(
-                                                                                  Icons
-                                                                                      .more_vert,
-                                                                                  color: Color(
-                                                                                      0xFFdedede),
+                                                                                  Icons.more_vert,
+                                                                                  color: Color(0xFFdedede),
                                                                                 ),
                                                                               ),
                                                                             )

@@ -151,57 +151,118 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
           body: Column(
             children: [
               Padding(
-                padding: EdgeInsets.only(top: 6, bottom: 6),
-                child: Container(
-                  height: 56,
-                  child: Row(
-                    children: [
-                      Stack(
-                        children: [
-                          ElevatedButton(
-                              onPressed: () async {
-                                await _showCupertinoPicker();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.only(
-                                      right: 36, left: 16, top: 8, bottom: 8),
-                                  side: const BorderSide(
-                                    width: 1,
-                                    color: Color(0xFFDEDEDE),
+                padding: EdgeInsets.only(top: 4, bottom: 6),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: Container(
+                        height: 56,
+                        child: Row(
+                          children: [
+                            Stack(
+                              children: [
+                                ElevatedButton(
+                                    onPressed: () async {
+                                      await _showCupertinoPicker();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.only(
+                                            right: 30, left: 14, top: 8, bottom: 8),
+                                        side: const BorderSide(
+                                          width: 1,
+                                          color: Color(0xFFF5F5F5),
+                                        ),
+                                        primary: Color(0xFFF5F5F5),
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8))),
+                                    child: (_selectedValue == null)
+                                        ? Text('전체',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF555555)))
+                                        : Text('$_selectedValue',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF555555)))),
+                                Positioned(
+                                  top: 12,
+                                  right: 6,
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      await _showCupertinoPicker();
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_drop_down_sharp,
+                                      size: 24,
+                                      color: Color(0xFF666666),
+                                    ),
                                   ),
-                                  primary: Color(0xFFFFFFFF),
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30))),
-                              child: (_selectedValue == null)
-                                  ? Text('전체',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF111111)))
-                                  : Text('$_selectedValue',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF111111)))),
-                          Positioned(
-                            top: 11,
-                            right: 8,
-                            child: GestureDetector(
-                              onTap: () async {
-                                await _showCupertinoPicker();
-                              },
-                              child: Icon(
-                                Icons.arrow_drop_down_sharp,
-                                size: 26,
-                                color: Color(0xFF111111),
-                              ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: Container(
+                        height: 56,
+                        child: Row(
+                          children: [
+                            Stack(
+                              children: [
+                                ElevatedButton(
+                                    onPressed: () async {
+                                      await _showCupertinoPicker();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.only(
+                                            right: 30, left: 14, top: 8, bottom: 8),
+                                        side: const BorderSide(
+                                          width: 1,
+                                          color: Color(0xFFF5F5F5),
+                                        ),
+                                        primary: Color(0xFFF5F5F5),
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8))),
+                                    child: (_selectedValue == null)
+                                        ? Text('전체',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF555555)))
+                                        : Text('$_selectedValue',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF555555)))),
+                                Positioned(
+                                  top: 12,
+                                  right: 6,
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      await _showCupertinoPicker();
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_drop_down_sharp,
+                                      size: 24,
+                                      color: Color(0xFF666666),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
@@ -269,109 +330,98 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                           ),
                                         )
                                             : Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(vertical: 6),
-                                              child: Container(
-                                                width: _size.width-32,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(vertical: 6),
+                                                  child: Container(
+                                                    width: _size.width-32,
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        Container(
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(3),
-                                                            color: Color(0xFFD5F7E0),
-                                                          ),
-                                                          padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                                          child: Text(
-                                                            chatDocs[index].get('location'),
-                                                            style: TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                fontSize: 12,
-                                                                color: Color(0xFF17AD4A)),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 8,
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Expanded(
-                                                          child: Row(
-                                                            children: [
-                                                              Text(
-                                                                '[',
-                                                                style: TextStyle(
-                                                                    fontWeight: FontWeight.bold,
-                                                                    fontSize: 15,
-                                                                    color: Color(0xFF111111)),
-                                                              ),
-                                                              Text(
-                                                                chatDocs[index].get('category'),
-                                                                style: TextStyle(
-                                                                    fontWeight: FontWeight.bold,
-                                                                    fontSize: 15,
-                                                                    color: Color(0xFF111111)),
-                                                              ),
-                                                              Text(
-                                                                '] ',
-                                                                style: TextStyle(
-                                                                    fontWeight: FontWeight.bold,
-                                                                    fontSize: 15,
-                                                                    color: Color(0xFF111111)),
-                                                              ),
-                                                              Expanded(
-                                                                child: Container(
-                                                                  constraints: BoxConstraints(
-                                                                      maxWidth: _size.width - 164),
-                                                                  child: Text(
-                                                                    chatDocs[index].get('title'),
-                                                                    maxLines: 1,
-                                                                    overflow: TextOverflow.ellipsis,
-                                                                    style: TextStyle(
-                                                                        fontWeight: FontWeight.bold,
-                                                                        fontSize: 15,
-                                                                        color: Color(0xFF111111)),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child: Container(
-                                                                  child: Text(
-                                                                    chatDocs[index].get('bulletinCrewReplyCount').toString(),
-                                                                    maxLines: 1,
-                                                                    overflow:  TextOverflow.ellipsis,
-                                                                    style: TextStyle(
-                                                                        fontWeight: FontWeight.bold,
-                                                                        fontSize: 15,
-                                                                        color: Color(0xFF949494)),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Text('$_time',
+                                                        Text(
+                                                          chatDocs[index].get('category'),
                                                           style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: Color(0xFF949494),
-                                                              fontWeight: FontWeight.normal),
+                                                              fontWeight: FontWeight.normal,
+                                                              fontSize: 13,
+                                                              color: Color(0xFF111111)),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 2,
+                                                        ),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Expanded(
+                                                              child: Row(
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: Container(
+                                                                      constraints: BoxConstraints(
+                                                                          maxWidth: _size.width - 164),
+                                                                      child: Text(
+                                                                        chatDocs[index].get('title'),
+                                                                        maxLines: 2,
+                                                                        overflow: TextOverflow.ellipsis,
+                                                                        style: TextStyle(
+                                                                            fontWeight: FontWeight.bold,
+                                                                            fontSize: 15,
+                                                                            color: Color(0xFF111111)),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: EdgeInsets.only(left: 16),
+                                                                    child: Container(
+                                                                      decoration: BoxDecoration(
+                                                                        borderRadius: BorderRadius.circular(50),
+                                                                        color: Color(0xFFE1EDFF),
+                                                                      ),
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets.only(top: 2, bottom: 4, left: 8, right: 8),
+                                                                        child: Text(
+                                                                          chatDocs[index].get('bulletinCrewReplyCount').toString(),
+                                                                          maxLines: 1,
+                                                                          overflow:  TextOverflow.ellipsis,
+                                                                          style: TextStyle(
+                                                                              fontWeight: FontWeight.normal,
+                                                                              fontSize: 11,
+                                                                              color: Color(0xFF3D83ED)),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          height: 8,
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Text(
+                                                              chatDocs[index].get('location'),
+                                                              style: TextStyle(
+                                                                  fontSize: 13,
+                                                                  color: Color(0xFF949494),
+                                                                  fontWeight: FontWeight.normal),
+                                                            ),
+                                                            Text('   $_time',
+                                                              style: TextStyle(
+                                                                  fontSize: 13,
+                                                                  color: Color(0xFF949494),
+                                                                  fontWeight: FontWeight.normal),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ],
                                                     ),
-                                                  ],
+                                                  ),
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
                                       ],
                                     ),
                                   ),

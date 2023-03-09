@@ -606,45 +606,52 @@ class _Bulletin_Crew_ModifyPageState extends State<Bulletin_Crew_ModifyPage> {
                             Divider(
                               height: 32,
                               thickness: 0.5,
-                              color: Color(0xFFDEDEDE),
+                              color: Color(0xFFECECEC),
                             ),
-                            TextFormField(
-                              textAlignVertical: TextAlignVertical.center,
-                              cursorColor: Color(0xff3D6FED),
-                              cursorHeight: 16,
-                              cursorWidth: 2,
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                              controller: _titleTextEditingController..text='$_initTitle',
-                              strutStyle: StrutStyle(leading: 0.3),
-                              decoration: InputDecoration(
-                                floatingLabelBehavior: FloatingLabelBehavior.always,
-                                errorStyle: TextStyle(
-                                  fontSize: 12,
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 4,
                                 ),
-                                labelStyle: TextStyle(
-                                    color: Color(0xff949494)
+                                TextFormField(
+                                  textAlignVertical: TextAlignVertical.center,
+                                  cursorColor: Color(0xff3D6FED),
+                                  cursorHeight: 16,
+                                  cursorWidth: 2,
+                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  controller: _titleTextEditingController..text='$_initTitle',
+                                  strutStyle: StrutStyle(leading: 0.3),
+                                  decoration: InputDecoration(
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    errorStyle: TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                    labelStyle: TextStyle(
+                                        color: Color(0xff949494)
+                                    ),
+                                    hintStyle:
+                                    TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                                    hintText: '글 제목을 입력해 주세요. (최대 50자)',
+                                    labelText: '글 제목',
+                                    contentPadding: EdgeInsets.symmetric(vertical: 2),
+                                    border: InputBorder.none,
+                                  ),
+                                  validator: (val) {
+                                    if (val!.length <= 50 && val.length >= 1) {
+                                      return null;
+                                    } else if (val.length == 0) {
+                                      return '글 제목을 입력해주세요.';
+                                    } else {
+                                      return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                    }
+                                  },
                                 ),
-                                hintStyle:
-                                TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                hintText: '글 제목을 입력해 주세요. (최대 50자)',
-                                labelText: '글 제목',
-                                contentPadding: EdgeInsets.symmetric(vertical: 2),
-                                border: InputBorder.none,
-                              ),
-                              validator: (val) {
-                                if (val!.length <= 50 && val.length >= 1) {
-                                  return null;
-                                } else if (val.length == 0) {
-                                  return '글 제목을 입력해주세요.';
-                                } else {
-                                  return '최대 입력 가능한 글자 수를 초과했습니다.';
-                                }
-                              },
+                              ],
                             ),
                             Divider(
                               height: 32,
                               thickness: 0.5,
-                              color: Color(0xFFDEDEDE),
+                              color: Color(0xFFECECEC),
                             ),
                             Container(
                               height: 120,
