@@ -1324,7 +1324,10 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                         CustomFullScreenDialog.cancelDialog();
                                         setState(() {
                                         });}catch(e){}
-                                      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                                      _scrollController
+                                          .jumpTo(
+                                          (_replyReverse == true) ? _scrollController.position.maxScrollExtent
+                                              : 0);
                                       CustomFullScreenDialog.cancelDialog();
                                     },
                                     icon: (_controller.text.trim().isEmpty)
