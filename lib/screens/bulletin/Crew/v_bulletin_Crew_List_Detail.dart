@@ -28,6 +28,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
   final _controller = TextEditingController();
   var _newReply = '';
   final _formKey = GlobalKey<FormState>();
+  bool _replyReverse = true;
 
   var _replyStream;
   bool _myReply = false;
@@ -760,12 +761,39 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          '답글',
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.normal,
-                                              color: Color(0xFFB7B7B7)),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              '답글',
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: Color(0xFFB7B7B7)),
+                                            ),
+                                            GestureDetector(
+                                              onTap: (){
+                                                if(_replyReverse == true){
+                                                  setState(() {
+                                                    _replyReverse = false;
+                                                  });
+                                                }else{
+                                                  setState(() {
+                                                    _replyReverse = true;
+                                                  });
+                                                }
+                                              },
+                                              child: Text(
+                                                '최신순⇅',
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.normal,
+                                                    color:
+                                                    (_replyReverse == true)
+                                                        ? Color(0xFFB7B7B7) : Colors.blue),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                         SizedBox(
                                           height: 4,
@@ -808,7 +836,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                             child: ListView.builder(
                                                               controller: _scrollController2,
                                                               shrinkWrap: true,
-                                                              reverse: true,
+                                                              reverse: _replyReverse,
                                                               itemCount: replyDocs.length,
                                                               itemBuilder: (context, index) {
                                                                 String _time = _bulletinCrewReplyModelController.getAgoTime(replyDocs[index].get('timeStamp'));
