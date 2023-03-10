@@ -33,6 +33,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
 
   var _stream;
   var _selectedValue = '전체';
+  var _selectedValue2 = '전체';
   var _allCategories;
 
   var f = NumberFormat('###,###,###,###');
@@ -50,6 +51,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
         .where('category',
             isEqualTo:
                 (_selectedValue == '전체') ? _allCategories : '$_selectedValue')
+        .where('location', isEqualTo: (_selectedValue2 == '전체') ? _allCategories : '$_selectedValue2')
         .orderBy('timeStamp', descending: true)
         .limit(500)
         .snapshots();
@@ -63,7 +65,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Container(
-                height: 520,
+                height: 360,
                 padding: EdgeInsets.only(left: 20, right: 20),
                 child: CupertinoActionSheet(
                   actions: [
@@ -93,6 +95,14 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           Navigator.pop(context);
                         },
                         child: Text('동호회(크루)')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue = '기타';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('기타')),
 
                   ],
                   cancelButton: CupertinoActionSheetAction(
@@ -120,6 +130,159 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                 // ),
 
                 ),
+          );
+        });
+    setState(() {
+      _stream = newStream();
+    });
+  }
+
+  _showCupertinoPicker2() async {
+    await showCupertinoModalPopup(
+        context: context,
+        builder: (_) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Container(
+                height: 520,
+                padding: EdgeInsets.only(left: 16, right: 16),
+                child: CupertinoActionSheet(
+                  actions: [
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '전체';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          '전체',
+                        )),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '전국';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          '전국',
+                        )),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '곤지암리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('곤지암리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '무주덕유산리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('무주덕유산리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '비발디파크';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('비발디파크')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '알펜시아';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('알펜시아')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '에덴벨리리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('에덴벨리리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '엘리시안강촌';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('엘리시안강촌')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '오크밸리리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('오크밸리리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '오투리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('오투리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '용평리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('용평리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '웰리힐리파크';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('웰리힐리파크')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '지산리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('지산리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '하이원리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('하이원리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          setState(() {
+                            _selectedValue2 = '휘닉스평창';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('휘닉스평창')),
+                  ],
+                  cancelButton: CupertinoActionSheetAction(
+                    child: Text('닫기'),
+                    onPressed: () {
+                      HapticFeedback.mediumImpact();
+                      Navigator.pop(context);
+                    },
+                  ),
+                )
+            ),
           );
         });
     setState(() {
@@ -218,7 +381,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                               children: [
                                 ElevatedButton(
                                     onPressed: () async {
-                                      await _showCupertinoPicker();
+                                      await _showCupertinoPicker2();
                                     },
                                     style: ElevatedButton.styleFrom(
                                         padding: EdgeInsets.only(
@@ -231,13 +394,13 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                         elevation: 0,
                                         shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(8))),
-                                    child: (_selectedValue == null)
+                                    child: (_selectedValue2 == null)
                                         ? Text('전체',
                                         style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xFF555555)))
-                                        : Text('$_selectedValue',
+                                        : Text('$_selectedValue2',
                                         style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
@@ -247,7 +410,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                   right: 6,
                                   child: GestureDetector(
                                     onTap: () async {
-                                      await _showCupertinoPicker();
+                                      await _showCupertinoPicker2();
                                     },
                                     child: Icon(
                                       Icons.arrow_drop_down_sharp,

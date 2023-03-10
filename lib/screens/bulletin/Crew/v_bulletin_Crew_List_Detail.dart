@@ -28,12 +28,14 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
   final _controller = TextEditingController();
   var _newReply = '';
   final _formKey = GlobalKey<FormState>();
-  bool _read = false;
 
   var _replyStream;
   bool _myReply = false;
 
   ScrollController _scrollController = ScrollController();
+
+  ScrollController _scrollController2 = ScrollController();
+
 
 
   @override
@@ -72,7 +74,6 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
     String _time =
     _bulletinCrewModelController.getAgoTime(_bulletinCrewModelController.timeStamp);
     Size _size = MediaQuery.of(context).size;
-    bool isSoldOut = _bulletinCrewModelController.soldOut!;
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -542,7 +543,6 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                   child: Container(
                     height: _size.height - MediaQuery.of(context).viewPadding.top - 58 - MediaQuery.of(context).viewPadding.bottom - 88,
                     child: SingleChildScrollView(
-                      reverse: _read,
                       controller: _scrollController,
                       child: Column(
                         children: [
@@ -806,7 +806,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                               )
                                                               :Scrollbar(
                                                             child: ListView.builder(
-                                                              controller: _scrollController,
+                                                              controller: _scrollController2,
                                                               shrinkWrap: true,
                                                               reverse: true,
                                                               itemCount: replyDocs.length,
@@ -1279,8 +1279,6 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                       FocusScope.of(context).unfocus();
                                       _controller.clear();
                                       CustomFullScreenDialog.showDialog();
-                                      _read = true;
-                                      _scrollController.jumpTo(0);
                                       try{
                                         await _userModelController.updateCommentCount(_userModelController.commentCount);
                                         await _bulletinCrewModelController.updateBulletinCrewReplyCount(
@@ -1298,6 +1296,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                         CustomFullScreenDialog.cancelDialog();
                                         setState(() {
                                         });}catch(e){}
+                                      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
                                       CustomFullScreenDialog.cancelDialog();
                                     },
                                     icon: (_controller.text.trim().isEmpty)
