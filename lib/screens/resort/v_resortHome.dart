@@ -18,6 +18,8 @@ import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import '../../controller/vm_commentController.dart';
 import '../fleaMarket/v_fleaMarket_List_Screen_home.dart';
+import 'package:lottie/lottie.dart';
+
 
 class ResortHome extends StatefulWidget {
   @override
@@ -267,24 +269,20 @@ class _ResortHomeState extends State<ResortHome>
                                         SizedBox(
                                           height: 36,
                                           child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 16),
+                                            padding: const EdgeInsets.only(left: 16),
                                             child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
                                                 Text(
                                                   '${_getDateTimeController.date}',
                                                   style: TextStyle(
                                                       color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.normal,
+                                                      fontWeight: FontWeight.normal,
                                                       fontSize: 14),
                                                 ),
                                                 Transform.translate(
                                                     offset: Offset(-2, 0),
-                                                    child: _resortModelController
-                                                        .weatherIcons),
+                                                    child: _resortModelController.weatherIcons),
                                               ],
                                             ),
                                           ),
@@ -293,40 +291,26 @@ class _ResortHomeState extends State<ResortHome>
                                           height: 30,
                                         ),
                                         Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Obx(
                                               () => Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 4, left: 12),
-                                                child: (_resortModelController
-                                                            .isLoading ==
-                                                        true)
+                                                padding: EdgeInsets.only(right: 4, left: 12),
+                                                child: (_resortModelController.isLoading == true)
                                                     ? Padding(
-                                                        padding: const EdgeInsets
-                                                                .symmetric(
-                                                            vertical: 51),
+                                                        padding: const EdgeInsets.symmetric(vertical: 51),
                                                         child: Container(
                                                             height: 30,
-                                                            width: 30,
+                                                            width: 50,
                                                             child:
-                                                                CircularProgressIndicator(
-                                                              color: Colors.white
-                                                                  .withOpacity(
-                                                                      0.3),
-                                                            )),
+                                                                Lottie.asset('assets/json/loadings_wht_final.json')),
                                                       )
-                                                    : Text(
-                                                        '${_resortModelController.resortTemp!}',
+                                                    : Text('${_resortModelController.resortTemp!}',
                                                         //u00B0
-                                                        style:
-                                                            GoogleFonts.bebasNeue(
+                                                        style: GoogleFonts.bebasNeue(
                                                                 fontSize: 110,
-                                                                color:
-                                                                    Colors.white),
+                                                                color: Colors.white),
                                                       ),
                                               ),
                                             ),
@@ -334,24 +318,18 @@ class _ResortHomeState extends State<ResortHome>
                                               () => Padding(
                                                 padding: const EdgeInsets.only(
                                                     top: 12),
-                                                child: (_resortModelController
-                                                            .isLoading ==
-                                                        true)
-                                                    ? Text(
-                                                        ' ',
+                                                child: (_resortModelController.isLoading == true)
+                                                    ? Text(' ',
                                                         style:
                                                             GoogleFonts.bebasNeue(
                                                                 fontSize: 60,
-                                                                color:
-                                                                    Colors.white),
+                                                                color: Colors.white),
                                                       )
-                                                    : Text(
-                                                        '\u00B0',
+                                                    : Text('\u00B0',
                                                         style:
                                                             GoogleFonts.bebasNeue(
                                                                 fontSize: 60,
-                                                                color:
-                                                                    Colors.white),
+                                                                color: Colors.white),
                                                       ),
                                               ),
                                             )

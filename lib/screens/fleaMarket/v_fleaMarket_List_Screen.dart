@@ -60,7 +60,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Container(
                 height: 520,
-                padding: EdgeInsets.only(left: 20, right: 20),
+                padding: EdgeInsets.only(left: 16, right: 16),
                 child: CupertinoActionSheet(
                   actions: [
                     CupertinoActionSheetAction(
@@ -172,58 +172,61 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
           ),
           backgroundColor: Colors.white,
           body: Padding(
-            padding: const EdgeInsets.only(top: 2),
+            padding: const EdgeInsets.only(top: 4, bottom: 6),
             child: Column(
               children: [
-                Container(
-                  height: 68,
-                  child: Row(
-                    children: [
-                      Stack(
-                        children: [
-                          ElevatedButton(
-                              onPressed: () async {
-                                await _showCupertinoPicker();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.only(
-                                      right: 36, left: 16, top: 12, bottom: 12),
-                                  side: const BorderSide(
-                                    width: 1,
-                                    color: Color(0xFFDEDEDE),
-                                  ),
-                                  primary: Color(0xFFFFFFFF),
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30))),
-                              child: (_selectedValue == null)
-                                  ? Text('전체',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFF555555)))
-                                  : Text('$_selectedValue',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFF555555)))),
-                          Positioned(
-                            top: 11,
-                            right: 8,
-                            child: GestureDetector(
-                              onTap: () async {
-                                await _showCupertinoPicker();
-                              },
-                              child: Icon(
-                                Icons.arrow_drop_down_sharp,
-                                size: 26,
-                                color: Color(0xFF555555),
+                Padding(
+                  padding: EdgeInsets.only(right: 8),
+                  child: Container(
+                    height: 56,
+                    child: Row(
+                      children: [
+                        Stack(
+                          children: [
+                            ElevatedButton(
+                                onPressed: () async {
+                                  await _showCupertinoPicker();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.only(
+                                        right: 30, left: 14, top: 8, bottom: 8),
+                                    side: const BorderSide(
+                                      width: 1,
+                                      color: Color(0xFFF5F5F5),
+                                    ),
+                                    primary: Color(0xFFF5F5F5),
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8))),
+                                child: (_selectedValue == null)
+                                    ? Text('전체',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF555555)))
+                                    : Text('$_selectedValue',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF555555)))),
+                            Positioned(
+                              top: 12,
+                              right: 6,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  await _showCupertinoPicker();
+                                },
+                                child: Icon(
+                                  Icons.arrow_drop_down_sharp,
+                                  size: 24,
+                                  color: Color(0xFF666666),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Expanded(
@@ -499,7 +502,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                       ),
                                       Divider(
                                         color: Color(0xFFDEDEDE),
-                                        height: 32,
+                                        height: 24,
                                         thickness: 0.5,
                                       ),
                                     ],

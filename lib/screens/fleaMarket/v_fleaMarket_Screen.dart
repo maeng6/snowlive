@@ -77,7 +77,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                         ? Color(0xFFFFFFFF)
                         : Color(0xFF111111),
                     fontWeight: FontWeight.bold,
-                    fontSize: 15),
+                    fontSize: 14),
               ),
               onPressed: () {
                 isFlea = true;
@@ -90,7 +90,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                     ? Color(0xFF111111)
                     : Color(0xFFFFFFFF),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
+                    borderRadius: BorderRadius.circular(20)),
                 elevation: 0,
               ),
             ),
@@ -116,10 +116,10 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                       ? Color(0xFFFFFFFF)
                       : Color(0xFF111111),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6)),
+                      borderRadius: BorderRadius.circular(20)),
                   elevation: 0,
                   textStyle: TextStyle(
-                    fontSize: 15,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                   )),
             ),
@@ -134,10 +134,10 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                   padding: const EdgeInsets.only(left: 16),
                   child: Text(
                     '스노우마켓',
-                    style: GoogleFonts.notoSans(
+                    style: TextStyle(
                         color: Color(0xFF111111),
-                        fontWeight: FontWeight.w900,
-                        fontSize: 22),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
                   )),
               backgroundColor: Colors.white,
               elevation: 0.0,
@@ -151,7 +151,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
         child: Stack(
           children: [
             Positioned(
-              top: 50,
+              top: 44,
               child: Container(
                 width: _size.width,
                 height: 1,
@@ -164,116 +164,152 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                 children: [
                   Row(
                     children: [
-                      Column(
-                        children: [
-                          ElevatedButton(
-                            child: Text(
-                              '상품목록',
-                              style: TextStyle(
-                                  color: (isTap[0])
-                                      ? Color(0xFF111111)
-                                      : Color(0xFFC8C8C8),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17),
+                      Padding(
+                        padding: EdgeInsets.only(right: 12),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: Container(
+                                height: 40,
+                                child: ElevatedButton(
+                                  child: Text(
+                                    '상품목록',
+                                    style: TextStyle(
+                                        color: (isTap[0])
+                                            ? Color(0xFF111111)
+                                            : Color(0xFFC8C8C8),
+                                        fontWeight:  (isTap[0])
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        fontSize: 16),
+                                  ),
+                                  onPressed: () {
+                                    print('판매목록페이지로 전환');
+                                    setState(() {
+                                      isTap[0] = true;
+                                      isTap[1] = false;
+                                      isTap[2] = false;
+                                    });
+                                    print(isTap);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.only(top: 0),
+                                    minimumSize: Size(40, 10),
+                                    backgroundColor: Color(0xFFFFFFFF),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    elevation: 0,
+                                  ),
+                                ),
+                              ),
                             ),
-                            onPressed: () {
-                              print('판매목록페이지로 전환');
-                              setState(() {
-                                isTap[0] = true;
-                                isTap[1] = false;
-                                isTap[2] = false;
-                              });
-                              print(isTap);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: Size(54, 10),
-                              backgroundColor: Color(0xFFFFFFFF),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              elevation: 0,
-                            ),
-                          ),
-                          Container(
-                            width: _size.width * 0.3333-12,
-                            height: 3,
-                            color:
-                            (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
-                          )
-                        ],
+                            Container(
+                              width: 68,
+                              height: 3,
+                              color:
+                              (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
+                            )
+                          ],
+                        ),
                       ),
-                      Column(
-                        children: [
-                          ElevatedButton(
-                            child: Text(
-                              '내글보기',
-                              style: TextStyle(
-                                  color: (isTap[1])
-                                      ? Color(0xFF111111)
-                                      : Color(0xFFC8C8C8),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17),
+                      Padding(
+                        padding: EdgeInsets.only(right: 12),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: Container(
+                                height: 40,
+                                child: ElevatedButton(
+                                  child: Text(
+                                    '내글보기',
+                                    style: TextStyle(
+                                        color: (isTap[1])
+                                            ? Color(0xFF111111)
+                                            : Color(0xFFC8C8C8),
+                                        fontWeight:  (isTap[1])
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        fontSize: 16),
+                                  ),
+                                  onPressed: () {
+                                    print('판매내역 페이지로 전환');
+                                    setState(() {
+                                      isTap[0] = false;
+                                      isTap[1] = true;
+                                      isTap[2] = false;
+                                    });
+                                    print(isTap);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.only(top: 0),
+                                    minimumSize: Size(40, 10),
+                                    backgroundColor: Color(0xFFFFFFFF),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    elevation: 0,
+                                  ),
+                                ),
+                              ),
                             ),
-                            onPressed: () {
-                              print('판매내역 페이지로 전환');
-                              setState(() {
-                                isTap[0] = false;
-                                isTap[1] = true;
-                                isTap[2] = false;
-                              });
-                              print(isTap);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: Size(54, 10),
-                              backgroundColor: Color(0xFFFFFFFF),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              elevation: 0,
-                            ),
-                          ),
-                          Container(
-                            width: _size.width * 0.3333-12,
-                            height: 3,
-                            color:
-                            (isTap[1]) ? Color(0xFF111111) : Colors.transparent,
-                          )
-                        ],
+                            Container(
+                              width: 68,
+                              height: 3,
+                              color:
+                              (isTap[1]) ? Color(0xFF111111) : Colors.transparent,
+                            )
+                          ],
+                        ),
                       ),
-                      Column(
-                        children: [
-                          ElevatedButton(
-                            child: Text(
-                              '채팅목록',
-                              style: TextStyle(
-                                  color: (isTap[2])
-                                      ? Color(0xFF111111)
-                                      : Color(0xFFC8C8C8),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17),
-                            ),
-                            onPressed: () {
-                              print('판매내역 페이지로 전환');
-                              setState(() {isTap[0] = false;
-                              isTap[1] = false;
-                              isTap[2] = true;
+                      Padding(
+                        padding: EdgeInsets.only(right: 12),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: Container(
+                                height: 40,
+                                child: ElevatedButton(
+                                  child: Text(
+                                    '채팅목록',
+                                    style: TextStyle(
+                                        color: (isTap[2])
+                                            ? Color(0xFF111111)
+                                            : Color(0xFFC8C8C8),
+                                        fontWeight:  (isTap[2])
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        fontSize: 16),
+                                  ),
+                                  onPressed: () {
+                                    print('판매내역 페이지로 전환');
+                                    setState(() {isTap[0] = false;
+                                    isTap[1] = false;
+                                    isTap[2] = true;
 
-                              });
-                              print(isTap);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: Size(54, 10),
-                              backgroundColor: Color(0xFFFFFFFF),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              elevation: 0,
+                                    });
+                                    print(isTap);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.only(top: 0),
+                                    minimumSize: Size(50, 10),
+                                    backgroundColor: Color(0xFFFFFFFF),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    elevation: 0,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                          Container(
-                            width: _size.width * 0.3333-12,
-                            height: 3,
-                            color:
-                            (isTap[2]) ? Color(0xFF111111) : Colors.transparent,
-                          )
-                        ],
+                            Container(
+                              width: 68,
+                              height: 3,
+                              color:
+                              (isTap[2]) ? Color(0xFF111111) : Colors.transparent,
+                            )
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -296,7 +332,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
             Stack(
               children: [
                 Positioned(
-                  top: 50,
+                  top: 44,
                   child: Container(
                     width: _size.width,
                     height: 1,
@@ -306,78 +342,101 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Column(
-                        children: [
-                          ElevatedButton(
-                            child: Text(
-                              '의류 브랜드 17',
-                              style: TextStyle(
-                                  color: (isBrand)
-                                      ? Color(0xFF111111)
-                                      : Color(0xFFC8C8C8),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17),
-                            ),
-                            onPressed: () {
-                              print('브랜드페이지로 전환');
-                              setState(() {
-                                isBrand = true;
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: Size(54, 10),
-                              backgroundColor: Color(0xFFFFFFFF),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              elevation: 0,
-                            ),
-                          ),
-                          Container(
-                            width: _size.width * 0.5 -18,
-                            height: 3,
-                            color:
-                            (isBrand) ? Color(0xFF111111) : Colors.transparent,
-                          )
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          ElevatedButton(
-                            child: Text(
-                              '보드샵 9',
-                              style: TextStyle(
-                                color: (isBrand)
-                                    ? Color(0xFFC8C8C8)
-                                    : Color(0xFF111111),
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
+                      Padding(
+                        padding: EdgeInsets.only(right: 12),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: Container(
+                                height: 40,
+                                child: ElevatedButton(
+                                  child: Text(
+                                    '의류 브랜드 17',
+                                    style: TextStyle(
+                                        color: (isBrand)
+                                            ? Color(0xFF111111)
+                                            : Color(0xFFC8C8C8),
+                                        fontWeight: (isBrand)
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        fontSize: 16),
+                                  ),
+                                  onPressed: () {
+                                    print('브랜드페이지로 전환');
+                                    setState(() {
+                                      isBrand = true;
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.only(top: 0),
+                                    minimumSize: Size(40, 10),
+                                    backgroundColor: Color(0xFFFFFFFF),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    elevation: 0,
+                                  ),
+                                ),
                               ),
                             ),
-                            onPressed: () {
-                              print('샵페이지로 전환');
-                              setState(() {
-                                isBrand = false;
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: Size(54, 10),
-                              backgroundColor: (isBrand)
-                                  ? Color(0xFFFFFFFF)
-                                  : Color(0xFFFFFFFF),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6)),
-                              elevation: 0,
+                            Container(
+                              width: 110,
+                              height: 3,
+                              color:
+                              (isBrand) ? Color(0xFF111111) : Colors.transparent,
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: 12),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: Container(
+                                height: 40,
+                                child: ElevatedButton(
+                                  child: Text(
+                                    '보드샵 9',
+                                    style: TextStyle(
+                                      color: (isBrand)
+                                          ? Color(0xFFC8C8C8)
+                                          : Color(0xFF111111),
+                                      fontSize: 16,
+                                      fontWeight: (isBrand)
+                                          ? FontWeight.normal
+                                          : FontWeight.bold,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    print('샵페이지로 전환');
+                                    setState(() {
+                                      isBrand = false;
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.only(top: 0),
+                                    minimumSize: Size(40, 10),
+                                    backgroundColor: (isBrand)
+                                        ? Color(0xFFFFFFFF)
+                                        : Color(0xFFFFFFFF),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(6)),
+                                    elevation: 0,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                          Container(
-                            width: _size.width * 0.5 - 18,
-                            height: 3,
-                            color:
-                            (isBrand) ? Colors.transparent : Color(0xFF111111),
-                          )
-                        ],
+                            Container(
+                              width: 72,
+                              height: 3,
+                              color:
+                              (isBrand) ? Colors.transparent : Color(0xFF111111),
+                            )
+                          ],
+                        ),
                       ),
                     ],
                   ),
