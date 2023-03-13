@@ -848,6 +848,12 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                                             color: Color(0xFF949494),
                                                                                             fontWeight: FontWeight.w300),
                                                                                       ),
+                                                                                      SizedBox(
+                                                                                          width: 8),
+                                                                                      Icon(Icons.brightness_1, size: 6.0,
+                                                                                          color:
+                                                                                          (replyDocs[index].get('uid')==_bulletinRoomModelController.uid)
+                                                                                              ?Color(0xFFD32F2F):Colors.white)
                                                                                     ],
                                                                                   ),
                                                                                   SizedBox(

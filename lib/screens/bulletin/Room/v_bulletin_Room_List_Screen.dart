@@ -31,8 +31,8 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
 //TODO: Dependency Injection**************************************************
 
   var _stream;
-  var _selectedValue = '전체';
-  var _selectedValue2 = '전체';
+  var _selectedValue = '카테고리';
+  var _selectedValue2 = '리조트';
   var _allCategories;
 
   var f = NumberFormat('###,###,###,###');
@@ -49,8 +49,8 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
         .collection('bulletinRoom')
         .where('category',
             isEqualTo:
-                (_selectedValue == '전체') ? _allCategories : '$_selectedValue')
-        .where('location', isEqualTo: (_selectedValue2 == '전체') ? _allCategories : '$_selectedValue2')
+                (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
+        .where('location', isEqualTo: (_selectedValue2 == '리조트') ? _allCategories : '$_selectedValue2')
         .orderBy('timeStamp', descending: true)
         .limit(500)
         .snapshots();
@@ -71,7 +71,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                     CupertinoActionSheetAction(
                         onPressed: () {
                           setState(() {
-                            _selectedValue = '전체';
+                            _selectedValue = '카테고리';
                           });
                           Navigator.pop(context);
                         },
@@ -134,7 +134,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                     CupertinoActionSheetAction(
                         onPressed: () {
                           setState(() {
-                            _selectedValue2 = '전체';
+                            _selectedValue2 = '리조트';
                           });
                           Navigator.pop(context);
                         },
@@ -313,7 +313,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                         shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(8))),
                                     child: (_selectedValue == null)
-                                        ? Text('전체',
+                                        ? Text('카테고리',
                                             style: TextStyle(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.bold,
@@ -367,7 +367,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                         shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(8))),
                                     child: (_selectedValue2 == null)
-                                        ? Text('전체',
+                                        ? Text('리조트',
                                         style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
