@@ -3,16 +3,13 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
+import 'package:snowlive3/controller/vm_webviewController.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_My_Screen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_chatroom_List.dart';
-
-import '../../model/m_brandModel.dart';
 import '../../model/m_shopModel.dart';
-import '../../widget/w_fullScreenDialog.dart';
 import '../v_webPage.dart';
 
 class FleaMarketScreen extends StatefulWidget {
@@ -66,6 +63,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
     //TODO : ****************************************************************
     Get.put(FleaModelController(), permanent: true);
     Get.put(FleaChatModelController(), permanent: true);
+    Get.put(WebviewController(), permanent: true);
     //TODO : ****************************************************************
 
     Size _size = MediaQuery.of(context).size;
@@ -477,6 +475,9 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
 }
 
 Widget clothWebGridView(BuildContext context) {
+
+  WebviewController _webviewController = Get.find<WebviewController>();
+
   Stream<QuerySnapshot> newStream() {
     return FirebaseFirestore.instance
         .collection('brandList')
@@ -514,7 +515,8 @@ Widget clothWebGridView(BuildContext context) {
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: () {
+                    onTap: () async{
+                      await _webviewController.visitCountUpdate(brandName: brandDocs[index]['brandName']);
                       Get.to(
                               () => WebPage(url: '${brandDocs[index]['url']}'));
                     },

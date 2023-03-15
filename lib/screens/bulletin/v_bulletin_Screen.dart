@@ -1,22 +1,11 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
-import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/screens/bulletin/Crew/v_bulletin_Crew_List_Screen.dart';
 import 'package:snowlive3/screens/bulletin/Room/v_bulletin_Room_List_Screen.dart';
-import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
-import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_My_Screen.dart';
-import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_chatroom_List.dart';
-
 import '../../controller/vm_bulletinCrewController.dart';
 import '../../controller/vm_bulletinRoomController.dart';
-import '../../model/m_brandModel.dart';
-import '../../model/m_shopModel.dart';
-import '../../widget/w_fullScreenDialog.dart';
-import '../v_webPage.dart';
 
 class BulletinScreen extends StatefulWidget {
   BulletinScreen({Key? key}) : super(key: key);
