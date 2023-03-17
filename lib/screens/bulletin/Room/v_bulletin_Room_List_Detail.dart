@@ -849,11 +849,30 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                                             fontWeight: FontWeight.w300),
                                                                                       ),
                                                                                       SizedBox(
-                                                                                          width: 8),
-                                                                                      Icon(Icons.brightness_1, size: 6.0,
-                                                                                          color:
-                                                                                          (replyDocs[index].get('uid')==_bulletinRoomModelController.uid)
-                                                                                              ?Color(0xFFD32F2F):Colors.white)
+                                                                                          width: 6),
+                                                                                      Padding(
+                                                                                        padding: EdgeInsets.only(top: 1),
+                                                                                        child: Container(
+                                                                                          decoration: BoxDecoration(
+                                                                                            borderRadius: BorderRadius.circular(30),
+                                                                                            color:
+                                                                                            (replyDocs[index].get('uid')==_bulletinRoomModelController.uid)
+                                                                                                ? Color(0xFFE1EDFF)
+                                                                                                : Colors.white,
+                                                                                          ),
+                                                                                          child: Padding(
+                                                                                            padding: const EdgeInsets.only(top: 1, bottom: 3, left: 6, right: 6),
+                                                                                            child: Text(
+                                                                                              '글쓴이',
+                                                                                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.normal,
+                                                                                                color:
+                                                                                                (replyDocs[index].get('uid')==_bulletinRoomModelController.uid)
+                                                                                                    ? Color(0xFF3D83ED)
+                                                                                                    : Colors.white),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
                                                                                     ],
                                                                                   ),
                                                                                   SizedBox(
