@@ -63,8 +63,6 @@ dependencies:
   avoid_keyboard: ^0.3.0
   currency_text_input_formatter: ^2.1.8
   flutter_chat_bubble: ^2.0.0
-  flutter_local_notifications: ^8.2.0
-  firebase_messaging: ^14.3.0
   lottie: ^2.2.0
 
 dev_dependencies:

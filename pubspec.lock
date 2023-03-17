@@ -289,30 +289,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.2"
-  firebase_messaging:
-    dependency: "direct main"
-    description:
-      name: firebase_messaging
-      sha256: e82c99bcccf707db4d82ac3fb07be629a392c4cc2a6756aaf1a74c009114846f
-      url: "https://pub.dev"
-    source: hosted
-    version: "14.3.0"
-  firebase_messaging_platform_interface:
-    dependency: transitive
-    description:
-      name: firebase_messaging_platform_interface
-      sha256: "710bb139ff6e27fe47a0684ba88df4b7517a44d814dc6b7f54a2537568a82fcf"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.2.16"
-  firebase_messaging_web:
-    dependency: transitive
-    description:
-      name: firebase_messaging_web
-      sha256: "66ece031cb17fb771cda4b3328858395fa48aa4c3b3e6a5d1bcaff928086cacd"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.17"
   firebase_storage:
     dependency: "direct main"
     description:
@@ -390,22 +366,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
-  flutter_local_notifications:
-    dependency: "direct main"
-    description:
-      name: flutter_local_notifications
-      sha256: bb962bd4cca75452fe81c6c4e36642ac7b2131abbe4de416def12b763670d406
-      url: "https://pub.dev"
-    source: hosted
-    version: "8.2.0"
-  flutter_local_notifications_platform_interface:
-    dependency: transitive
-    description:
-      name: flutter_local_notifications_platform_interface
-      sha256: "7744aad0b3637e6004929efe9ac2dfd3b878f4cecebfb1e9c2dfea5ac7d5c2e7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.1"
   flutter_native_splash:
     dependency: "direct main"
     description:
@@ -989,14 +949,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.16"
-  timezone:
-    dependency: transitive
-    description:
-      name: timezone
-      sha256: "57b35f6e8ef731f18529695bffc62f92c6189fac2e52c12d478dec1931afb66e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.8.0"
   toggle_switch:
     dependency: "direct main"
     description:

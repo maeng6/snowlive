@@ -25,6 +25,7 @@ class _CommentTile_liveTalk_resortHomeState
   final _controller = TextEditingController();
   var _newComment = '';
   final _formKey = GlobalKey<FormState>();
+  var _firstPress = true;
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
@@ -35,7 +36,6 @@ class _CommentTile_liveTalk_resortHomeState
 
   var _stream;
   bool _isVisible = false;
-  bool _firstPress = true;
 
   ScrollController _scrollController = ScrollController();
 
@@ -278,9 +278,12 @@ class _CommentTile_liveTalk_resortHomeState
                                                                           var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
                                                                           print(likeUid);
                                                                           HapticFeedback.vibrate();
+                                                                          if (_firstPress) {
+                                                                            _firstPress = false;
                                                                             await _userModelController.deleteLikeUid(likeUid);
                                                                             await _commentModelController.likeDelete(likeUid);
-
+                                                                            _firstPress = true;
+                                                                          }
                                                                         },
                                                                         icon:
                                                                             Icon(Icons.favorite,
@@ -299,11 +302,13 @@ class _CommentTile_liveTalk_resortHomeState
                                                                             () async {
                                                                           var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
                                                                           print(likeUid);
-                                                                          Clipboard.setData(ClipboardData());
                                                                           HapticFeedback.vibrate();
+                                                                          if (_firstPress) {
+                                                                            _firstPress = false;
                                                                             await _userModelController.updateLikeUid(likeUid);
                                                                             await _commentModelController.likeUpdate(likeUid);
-
+                                                                            _firstPress = true;
+                                                                          }
                                                                         },
                                                                         icon: Icon(Icons.favorite_border,
                                                                           size: 16,
