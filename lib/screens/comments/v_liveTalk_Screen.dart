@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
@@ -276,13 +277,10 @@ class _CommentTile_liveTalk_resortHomeState
                                                                             () async {
                                                                           var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
                                                                           print(likeUid);
-
-                                                                          if (_firstPress) {
-                                                                            _firstPress = false;
+                                                                          HapticFeedback.vibrate();
                                                                             await _userModelController.deleteLikeUid(likeUid);
                                                                             await _commentModelController.likeDelete(likeUid);
-                                                                            _firstPress = true;
-                                                                          }
+
                                                                         },
                                                                         icon:
                                                                             Icon(Icons.favorite,
@@ -301,13 +299,11 @@ class _CommentTile_liveTalk_resortHomeState
                                                                             () async {
                                                                           var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
                                                                           print(likeUid);
-
-                                                                          if (_firstPress) {
-                                                                            _firstPress = false;
+                                                                          Clipboard.setData(ClipboardData());
+                                                                          HapticFeedback.vibrate();
                                                                             await _userModelController.updateLikeUid(likeUid);
                                                                             await _commentModelController.likeUpdate(likeUid);
-                                                                            _firstPress = true;
-                                                                          }
+
                                                                         },
                                                                         icon: Icon(Icons.favorite_border,
                                                                           size: 16,
