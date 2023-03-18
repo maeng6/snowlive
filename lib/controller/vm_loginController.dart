@@ -134,7 +134,8 @@ class LoginController extends GetxController {
       'phoneAuth' : false,
       'phoneNum' : '',
       'resistDate' : Timestamp.now(),
-      'likeUidList' : []
+      'likeUidList' : [],
+      'newChat' : false
     });
 
 

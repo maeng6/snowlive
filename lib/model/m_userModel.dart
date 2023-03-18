@@ -18,7 +18,8 @@ class UserModel {
     this.phoneAuth,
     this.phoneNum,
     this.likeUidList,
-    this.resistDate
+    this.resistDate,
+    this.newChat
   });
 
   final auth = FirebaseAuth.instance;
@@ -36,6 +37,7 @@ class UserModel {
   DocumentReference? reference;
   String? resortNickname;
   bool? phoneAuth;
+  bool? newChat;
   String? phoneNum;
   List? likeUidList;
   List? fleaChatUidList;
@@ -58,6 +60,7 @@ class UserModel {
       likeUidList = json['likeUidList'];
       resistDate = json['resistDate'];
       fleaChatUidList = json['fleaChatUidList'];
+      newChat = json['newChat'];
 
   }
 
