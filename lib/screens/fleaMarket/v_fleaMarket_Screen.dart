@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
@@ -97,6 +98,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                               fontSize: 14),
                         ),
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           isFlea = true;
                           print('중고거래로 전환');
                           setState(() {});
@@ -122,8 +124,8 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                                   : Color(0xFFFFFFFF)),
                         ),
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           isFlea = false;
-
                           print('샵페이지로 전환');
                           setState(() {});
                         },
@@ -201,6 +203,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                                         fontSize: 16),
                                   ),
                                   onPressed: () {
+                                    HapticFeedback.lightImpact();
                                     print('판매목록페이지로 전환');
                                     setState(() {
                                       isTap[0] = true;
@@ -252,6 +255,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                                         fontSize: 16),
                                   ),
                                   onPressed: () {
+                                    HapticFeedback.lightImpact();
                                     print('판매내역 페이지로 전환');
                                     setState(() {
                                       isTap[0] = false;
@@ -312,6 +316,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                                                     fontSize: 16),
                                               ),
                                               onPressed: () {
+                                                HapticFeedback.lightImpact();
                                                 print('채팅목록 페이지로 전환');
                                                 _userModelController
                                                     .updateNewChatRead();

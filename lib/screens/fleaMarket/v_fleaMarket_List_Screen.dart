@@ -65,6 +65,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                   actions: [
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue = '전체';
                           });
@@ -75,6 +76,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                         )),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue = '데크';
                           });
@@ -83,6 +85,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                         child: Text('데크')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue = '바인딩';
                           });
@@ -91,6 +94,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                         child: Text('바인딩')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue = '부츠';
                           });
@@ -99,6 +103,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                         child: Text('부츠')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue = '의류';
                           });
@@ -107,6 +112,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                         child: Text('의류')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue = '기타';
                           });
