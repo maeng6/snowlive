@@ -117,7 +117,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                       ),
                       ElevatedButton(
                         child: Text(
-                          '샵',
+                          '쇼핑',
                           style: TextStyle(
                               color: (isFlea)
                                   ? Color(0xFF111111)
@@ -126,7 +126,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           isFlea = false;
-                          print('샵페이지로 전환');
+                          print('쇼핑페이지로 전환');
                           setState(() {});
                         },
                         style: ElevatedButton.styleFrom(
