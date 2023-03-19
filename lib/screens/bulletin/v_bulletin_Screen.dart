@@ -61,7 +61,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
               title: Padding(
                   padding: const EdgeInsets.only(left: 16),
                   child: Text(
-                    '게시판',
+                    '커뮤니티',
                     style: TextStyle(
                         color: Color(0xFF111111),
                         fontWeight: FontWeight.bold,
