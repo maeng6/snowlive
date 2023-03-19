@@ -86,22 +86,26 @@ class _MainHomeState extends State<MainHome> {
                 ),
                 BottomNavigationBarItem(
                   icon: Image.asset(
-                    'assets/imgs/icons/icon_brand_off.png',
+                    'assets/imgs/icons/icon_bul_off.png',
                     scale: 4,
                   ),
                   activeIcon:
-                  Image.asset('assets/imgs/icons/icon_brand_on.png', scale: 4),
+                  Image.asset('assets/imgs/icons/icon_bul_on.png', scale: 4),
                   label: 'Brand',
                 ),
                 BottomNavigationBarItem(
                   icon: Stack(
                     children: [
-                      SizedBox(width: 3),
-                      Icon(Icons.brightness_1,
-                          size: 6.0,
-                          color: (_userModelController.newChat == true)
-                              ? Color(0xFFD32F2F)
-                              : Colors.white),
+
+                      Positioned(
+                        top: 3,
+                        right: 3,
+                        child: Icon(Icons.brightness_1,
+                            size: 6.0,
+                            color: (_userModelController.newChat == true)
+                                ? Color(0xFFD32F2F)
+                                : Colors.white),
+                      ),
                       Image.asset(
                         'assets/imgs/icons/icon_market_off.png',
                         scale: 4,
