@@ -65,7 +65,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Container(
-                height: 440,
+                height: 400,
                 padding: EdgeInsets.only(left: 20, right: 20),
                 child: CupertinoActionSheet(
                   actions: [
