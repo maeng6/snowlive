@@ -64,7 +64,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Container(
-                height: 360,
+                height: 400,
                 padding: EdgeInsets.only(left: 16, right: 16),
                 child: CupertinoActionSheet(
                   actions: [
