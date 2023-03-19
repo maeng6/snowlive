@@ -674,7 +674,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                             height: 4,
                                           ),
                                           Text(
-                                            '상세설명',
+                                            '내용',
                                             style: TextStyle(
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.normal,
