@@ -98,6 +98,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                               fontSize: 14),
                         ),
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           isFlea = true;
                           print('중고거래로 전환');
                           setState(() {});
@@ -123,8 +124,8 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                                   : Color(0xFFFFFFFF)),
                         ),
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           isFlea = false;
-
                           print('샵페이지로 전환');
                           setState(() {});
                         },
