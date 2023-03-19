@@ -414,6 +414,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                                         fontSize: 16),
                                   ),
                                   onPressed: () {
+                                    HapticFeedback.lightImpact();
                                     print('브랜드페이지로 전환');
                                     setState(() {
                                       isBrand = true;
@@ -463,6 +464,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                                     ),
                                   ),
                                   onPressed: () {
+                                    HapticFeedback.lightImpact();
                                     print('샵페이지로 전환');
                                     setState(() {
                                       isBrand = false;
