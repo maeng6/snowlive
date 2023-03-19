@@ -555,6 +555,7 @@ Widget clothWebGridView(BuildContext context) {
                   Expanded(
                     child: GestureDetector(
                       onTap: () async {
+                        HapticFeedback.lightImpact();
                         await _webviewController.visitCountUpdate(
                             brandName: brandDocs[index]['brandName']);
                         Get.to(
@@ -739,8 +740,10 @@ Widget shopWebGridView(BuildContext context) {
             children: [
               Expanded(
                 child: GestureDetector(
-                  onTap: () =>
-                      Get.to(() => WebPage(url: '${shopHomeUrlList[index]}')),
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    Get.to(() => WebPage(url: '${shopHomeUrlList[index]}'));
+                    },
                   child: Padding(
                     padding: EdgeInsets.only(top: 4),
                     child: Container(
