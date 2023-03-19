@@ -81,6 +81,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         )),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue = '단톡방';
                           });
@@ -89,6 +90,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         child: Text('단톡방')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue = '동호회(크루)';
                           });
@@ -97,6 +99,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         child: Text('동호회(크루)')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue = '기타';
                           });
@@ -151,6 +154,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                   actions: [
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '지역';
                           });
@@ -161,6 +165,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         )),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '전국';
                           });
@@ -171,6 +176,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         )),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '곤지암리조트';
                           });
@@ -179,6 +185,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         child: Text('곤지암리조트')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '무주덕유산리조트';
                           });
@@ -187,6 +194,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         child: Text('무주덕유산리조트')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '비발디파크';
                           });
@@ -195,6 +203,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         child: Text('비발디파크')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '알펜시아';
                           });
@@ -203,6 +212,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         child: Text('알펜시아')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '에덴벨리리조트';
                           });
@@ -211,6 +221,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         child: Text('에덴벨리리조트')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '엘리시안강촌';
                           });
@@ -219,6 +230,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         child: Text('엘리시안강촌')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '오크밸리리조트';
                           });
@@ -227,6 +239,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         child: Text('오크밸리리조트')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '오투리조트';
                           });
@@ -235,6 +248,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         child: Text('오투리조트')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '용평리조트';
                           });
@@ -243,6 +257,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         child: Text('용평리조트')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '웰리힐리파크';
                           });
@@ -251,6 +266,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         child: Text('웰리힐리파크')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '지산리조트';
                           });
@@ -259,6 +275,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         child: Text('지산리조트')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '하이원리조트';
                           });
@@ -267,6 +284,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         child: Text('하이원리조트')),
                     CupertinoActionSheetAction(
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '휘닉스평창';
                           });

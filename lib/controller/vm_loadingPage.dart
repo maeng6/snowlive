@@ -45,7 +45,7 @@ class _LoadingPageState extends State<LoadingPage> {
                   return FutureBuilder(
                       future: _resortModelController.getSelectedResort(_userModelController.favoriteResort),
                       builder: (context, AsyncSnapshot<dynamic> snapshot){
-                          return MainHome();
+                          return MainHome(uid: _logInController.loginUid,);
                       }
                   );
               }

@@ -277,7 +277,7 @@ class _CommentTile_liveTalk_resortHomeState
                                                                             () async {
                                                                           var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
                                                                           print(likeUid);
-                                                                          HapticFeedback.vibrate();
+                                                                          HapticFeedback.lightImpact();
                                                                           if (_firstPress) {
                                                                             _firstPress = false;
                                                                             await _userModelController.deleteLikeUid(likeUid);
@@ -302,7 +302,7 @@ class _CommentTile_liveTalk_resortHomeState
                                                                             () async {
                                                                           var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
                                                                           print(likeUid);
-                                                                          HapticFeedback.vibrate();
+                                                                          HapticFeedback.lightImpact();
                                                                           if (_firstPress) {
                                                                             _firstPress = false;
                                                                             await _userModelController.updateLikeUid(likeUid);

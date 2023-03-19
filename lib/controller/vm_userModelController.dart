@@ -132,7 +132,14 @@ class UserModelController extends GetxController{
     await getCurrentUser(auth.currentUser!.uid);
   }
 
-
+  Future<void> updateNewChatRead() async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'newChat': false,
+    });
+    await getCurrentUser(auth.currentUser!.uid);
+  }
 
   Future<void> updateProfileImageUrl(url) async {
     final User? user = auth.currentUser;

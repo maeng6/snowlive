@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
@@ -111,6 +112,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                         fontSize: 16),
                                   ),
                                   onPressed: () {
+                                    HapticFeedback.lightImpact();
                                     print('시즌방페이지로 전환');
                                     setState(() {
                                       isTap[0] = true;
@@ -160,6 +162,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                         fontSize: 16),
                                   ),
                                   onPressed: () {
+                                    HapticFeedback.lightImpact();
                                     print('동호회 페이지로 전환');
                                     setState(() {
                                       isTap[0] = false;

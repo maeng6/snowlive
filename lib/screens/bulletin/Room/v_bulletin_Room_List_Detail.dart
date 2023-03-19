@@ -865,10 +865,10 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                                             child: Text(
                                                                                               '글쓴이',
                                                                                               style: TextStyle(fontSize: 11, fontWeight: FontWeight.normal,
-                                                                                                color:
-                                                                                                (replyDocs[index].get('uid')==_bulletinRoomModelController.uid)
-                                                                                                    ? Color(0xFF3D83ED)
-                                                                                                    : Colors.white),
+                                                                                                  color:
+                                                                                                  (replyDocs[index].get('uid')==_bulletinRoomModelController.uid)
+                                                                                                      ? Color(0xFF3D83ED)
+                                                                                                      : Colors.white),
                                                                                             ),
                                                                                           ),
                                                                                         ),

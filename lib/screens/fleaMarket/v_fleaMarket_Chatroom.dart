@@ -98,8 +98,10 @@ class _FleaChatroomState
                     try{
                       if(_userModelController.uid == _fleaChatModelController.otherUid){
                         await _fleaChatModelController.resetMyChatCheckCount(chatRoomName: _fleaChatModelController.chatRoomName);
+                        await _userModelController.updateNewChatRead();
                       }else{
                         await _fleaChatModelController.resetOtherChatCheckCount(chatRoomName: _fleaChatModelController.chatRoomName);
+                        await _userModelController.updateNewChatRead();
                       }
                       CustomFullScreenDialog.cancelDialog();
                       Get.to(()=>FleaChatroom());

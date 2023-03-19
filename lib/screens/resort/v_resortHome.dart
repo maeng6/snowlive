@@ -55,6 +55,7 @@ class _ResortHomeState extends State<ResortHome>
       title: Text('${resortNameList[index]}'),
       //selected: _isSelected[index]!,
       onTap: () async {
+        HapticFeedback.lightImpact();
         Navigator.pop(context);
         _isSelected = List<bool?>.filled(13, false);
         _isSelected[index] = true;
