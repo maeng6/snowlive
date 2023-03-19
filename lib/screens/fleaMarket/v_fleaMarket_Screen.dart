@@ -288,22 +288,22 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                       ),
                       Padding(
                         padding: EdgeInsets.only(right: 12),
-                        child: Column(
+                        child: Stack(
                           children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 2),
-                              child: Container(
-                                  height: 40,
-                                  child:
-                                  FutureBuilder(
-                                      future: _userModelController
-                                          .getCurrentUser(
-                                          _userModelController.uid),
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot<dynamic> snapshot) {
-                                        return Row(
-                                          children: [
-                                            ElevatedButton(
+                            Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: 2),
+                                  child: Container(
+                                      height: 40,
+                                      child:
+                                      FutureBuilder(
+                                          future: _userModelController
+                                              .getCurrentUser(
+                                              _userModelController.uid),
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<dynamic> snapshot) {
+                                            return ElevatedButton(
                                               child: Text(
                                                 '채팅목록',
                                                 style: TextStyle(
@@ -338,27 +338,29 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                                                     BorderRadius.circular(8)),
                                                 elevation: 0,
                                               ),
-                                            ),
-                                            SizedBox(
-                                                width: 5),
-                                            Icon(Icons.brightness_1, size: 6.0,
-                                                color:
-                                                (_userModelController.newChat ==
-                                                    true)
-                                                    ? Color(0xFFD32F2F) : Colors
-                                                    .white)
-                                          ],
-                                        );
-                                      })
-                              ),
+                                            );
+                                          })
+                                  ),
+                                ),
+                                Container(
+                                  width: 68,
+                                  height: 3,
+                                  color: (isTap[2])
+                                      ? Color(0xFF111111)
+                                      : Colors.transparent,
+                                )
+                              ],
                             ),
-                            Container(
-                              width: 68,
-                              height: 3,
-                              color: (isTap[2])
-                                  ? Color(0xFF111111)
-                                  : Colors.transparent,
-                            )
+                            Positioned(
+                              top: 9,
+                              left: 63,
+                              child: Icon(Icons.brightness_1, size: 5,
+                                  color:
+                                  (_userModelController.newChat ==
+                                      true)
+                                      ? Color(0xFFD32F2F) : Colors
+                                      .white),
+                            ),
                           ],
                         ),
                       ),

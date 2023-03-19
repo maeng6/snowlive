@@ -625,23 +625,27 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                   children: [
                                     Row(
                                       children: [
-                                        Text(
-                                          '${_bulletinCrewModelController.location}',
+                                        Text('${_bulletinCrewModelController.displayName}',
+                                          //chatDocs[index].get('displayName'),
                                           style: TextStyle(
                                               fontWeight: FontWeight.normal,
                                               fontSize: 14,
                                               color: Color(0xFF949494)),
                                         ),
-                                        Text('   $_time',
+                                        Text(
+                                          '·${_bulletinCrewModelController.location}',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 14,
+                                              color: Color(0xFF949494)),
+                                        ),
+                                        Text('    $_time',
                                           style: TextStyle(
                                               fontSize: 14,
                                               color: Color(0xFF949494),
                                               fontWeight: FontWeight.normal),
                                         ),
                                       ],
-                                    ),
-                                    SizedBox(
-                                      height: 6,
                                     ),
                                   ],
                                 ),
@@ -663,60 +667,6 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          if (_bulletinCrewModelController.profileImageUrl!.isEmpty)
-                                            ExtendedImage.asset(
-                                              'assets/imgs/profile/img_profile_default_circle.png',
-                                              shape: BoxShape.circle,
-                                              borderRadius: BorderRadius.circular(20),
-                                              width: 32,
-                                              height: 32,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          if (_bulletinCrewModelController.profileImageUrl!.isNotEmpty)
-                                            ExtendedImage.network('${_bulletinCrewModelController.profileImageUrl}',
-                                              shape: BoxShape.circle,
-                                              borderRadius: BorderRadius.circular(20),
-                                              width: 32,
-                                              height: 32,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          SizedBox(width: 12),
-                                          Padding(
-                                            padding: const EdgeInsets.only(bottom: 2),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Text('${_bulletinCrewModelController.displayName}',
-                                                          //chatDocs[index].get('displayName'),
-                                                          style: TextStyle(
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: 14,
-                                                              color: Color(0xFF111111)),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Divider(
-                                        color: Color(0xFFECECEC),
-                                        height: 32,
-                                        thickness: 0.5,
-                                      ),
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
