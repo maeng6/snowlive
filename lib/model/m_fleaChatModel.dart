@@ -168,6 +168,12 @@ class FleaChatModel {
         .update({
       'comment' : comment,
     });
+    await ref
+        .collection('user')
+        .doc(otherUid)
+        .update({
+      'newChat' : true,
+    });
   }
 
 

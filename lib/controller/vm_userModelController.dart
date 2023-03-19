@@ -31,6 +31,7 @@ class UserModelController extends GetxController{
   RxInt? _fleaChatCount = 0.obs;
   RxString? _phoneNum=''.obs;
   RxBool? _phoneAuth=false.obs;
+  RxBool? _newChat=false.obs;
   Timestamp? _resistDate;
 
 
@@ -52,6 +53,7 @@ class UserModelController extends GetxController{
   int? get fleaChatCount => _fleaChatCount!.value;
   String? get phoneNum => _phoneNum!.value;
   bool? get phoneAuth => _phoneAuth!.value;
+  bool? get newChat => _newChat!.value;
   Timestamp? get resistDate => _resistDate;
 
 
@@ -92,6 +94,7 @@ class UserModelController extends GetxController{
       this._phoneAuth!.value = userModel.phoneAuth!;
       this._likeUidList!.value = userModel.likeUidList!;
       this._resistDate = userModel.resistDate!;
+      this._newChat!.value = userModel.newChat!;
       try {
         this._fleaChatUidList!.value = userModel.fleaChatUidList!;
       }catch(e){};
@@ -123,7 +126,8 @@ class UserModelController extends GetxController{
       'phoneNum' : '',
       'likeUidList' : [],
       'resistDate' : Timestamp.fromDate(DateTime(1990)),
-      'fleaChatUidList' : fleaChatUidList
+      'fleaChatUidList' : fleaChatUidList,
+      'newChat' : false
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
