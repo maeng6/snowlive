@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snowlive3/model/m_userModel.dart';
+import 'package:snowlive3/screens/login/v_loginpage.dart';
 
 import '../model/m_resortModel.dart';
 
@@ -61,11 +62,15 @@ class UserModelController extends GetxController{
   void onInit()  async{
     // TODO: implement onInit
     String? loginUid = await FlutterSecureStorage().read(key: 'uid');
-      getCurrentUser(loginUid).catchError((e){
+    if(loginUid != null) {
+      getCurrentUser(loginUid).catchError((e) {
         setNewField();
-      }).catchError((){
+      }).catchError(() {
         print('로그인 전');
       });
+    }else{
+      Get.to(()=>LoginPage());
+    }
     super.onInit();
   }
 
@@ -79,26 +84,37 @@ class UserModelController extends GetxController{
     if(FirebaseAuth.instance.currentUser != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       //String uid = FirebaseAuth.instance.currentUser!.uid;
-      UserModel userModel = await UserModel().getUserModel(uid);
-      this._uid!.value = userModel.uid!;
-      this._displayName!.value = userModel.displayName!;
-      this._userEmail!.value = userModel.userEmail!;
-      this._favoriteResort!.value = userModel.favoriteResort!;
-      this._instantResort!.value = userModel.instantResort!;
-      this._commentCount!.value = userModel.commentCount!;
-      this._fleaCount!.value = userModel.fleaCount!;
-      this._bulletinRoomCount!.value = userModel.bulletinRoomCount!;
-      this._profileImageUrl!.value = userModel.profileImageUrl!;
-      this._resortNickname!.value = userModel.resortNickname!;
-      this._phoneNum!.value = userModel.phoneNum!;
-      this._phoneAuth!.value = userModel.phoneAuth!;
-      this._likeUidList!.value = userModel.likeUidList!;
-      this._resistDate = userModel.resistDate!;
-      this._newChat!.value = userModel.newChat!;
-      try {
-        this._fleaChatUidList!.value = userModel.fleaChatUidList!;
-      }catch(e){};
-      await prefs.setInt('favoriteResort', userModel.favoriteResort!);
+      if(uid!=null) {
+        UserModel? userModel = await UserModel().getUserModel(uid);
+      if (userModel != null) {
+        this._uid!.value = userModel.uid!;
+        this._displayName!.value = userModel.displayName!;
+        this._userEmail!.value = userModel.userEmail!;
+        this._favoriteResort!.value = userModel.favoriteResort!;
+        this._instantResort!.value = userModel.instantResort!;
+        this._commentCount!.value = userModel.commentCount!;
+        this._fleaCount!.value = userModel.fleaCount!;
+        this._bulletinRoomCount!.value = userModel.bulletinRoomCount!;
+        this._profileImageUrl!.value = userModel.profileImageUrl!;
+        this._resortNickname!.value = userModel.resortNickname!;
+        this._phoneNum!.value = userModel.phoneNum!;
+        this._phoneAuth!.value = userModel.phoneAuth!;
+        this._likeUidList!.value = userModel.likeUidList!;
+        this._resistDate = userModel.resistDate!;
+        this._newChat!.value = userModel.newChat!;
+        try {
+          this._fleaChatUidList!.value = userModel.fleaChatUidList!;
+        }catch(e){};
+        await prefs.setInt('favoriteResort', userModel.favoriteResort!);
+        //
+      }else {
+        Get.to(()=>LoginPage());
+        // handle the case where the userModel is null
+      }} else {
+        Get.to(()=>LoginPage());
+        // handle the case where the userModel is null
+      }
+
     } else {}
   }
 
