@@ -67,13 +67,19 @@ class UserModel {
   UserModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
       :this.fromJson(snapshot.data(), snapshot.reference);
 
-  Future<UserModel> getUserModel(String uid) async {
-    DocumentReference<Map<String, dynamic>> documentReference =
-    ref.collection('user').doc(uid);
-    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-    await documentReference.get();
-    UserModel userModel = UserModel.fromSnapShot(documentSnapshot);
-    return userModel;
+
+  Future<UserModel?> getUserModel(String uid) async {
+    if (uid != null) {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+      if (documentSnapshot.exists) {
+        UserModel userModel = UserModel.fromSnapShot(documentSnapshot);
+        return userModel;
+      }
+    }
+    return null;
   }
 
 
