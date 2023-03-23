@@ -39,6 +39,7 @@ class _LoadingPageState extends State<LoadingPage> {
         print('uid : ${_logInController.loginUid}');
         if (snapshot.connectionState == ConnectionState.done &&
              _logInController.loginUid!=null) {
+          print('shared => ${_logInController.loginUid}');
           return FutureBuilder(
               future: _userModelController.getCurrentUser(_logInController.loginUid),
               builder: (context, AsyncSnapshot<dynamic> snapshot){

@@ -22,7 +22,6 @@ class MainHome extends StatefulWidget {
 
 class _MainHomeState extends State<MainHome> {
   int _currentPage = 0;
-  var _stream;
   bool? wait;
 
   PageController _pageController = PageController();
@@ -64,7 +63,7 @@ class _MainHomeState extends State<MainHome> {
     return Scaffold(
         bottomNavigationBar:
         FutureBuilder(
-          future: _userModelController.getCurrentUser(_userModelController.uid),
+          future: _userModelController.getCurrentUser(widget.uid),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             return BottomNavigationBar(
               backgroundColor: Colors.white,

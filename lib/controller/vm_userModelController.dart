@@ -115,7 +115,9 @@ class UserModelController extends GetxController{
         // handle the case where the userModel is null
       }
 
-    } else {}
+    } else {
+      Get.to(()=>LoginPage());
+    }
   }
 
 
