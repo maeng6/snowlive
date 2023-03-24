@@ -176,7 +176,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                             resortNickname: _userModelController.resortNickname
                         );
                         CustomFullScreenDialog.cancelDialog();
-                        Get.to(()=> MainHome());
+                        Get.to(()=> MainHome(uid: _userModelController.uid,));
                       }
                       _imageController.imagesUrlList.clear();
 
