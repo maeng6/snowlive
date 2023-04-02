@@ -64,6 +64,8 @@ dependencies:
   currency_text_input_formatter: ^2.1.9
   flutter_chat_bubble: ^2.0.0
   lottie: ^2.2.0
+  platform: ^3.1.0
+  package_info_plus: ^3.0.3
 
 dev_dependencies:
   flutter_test:
