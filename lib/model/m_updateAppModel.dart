@@ -48,7 +48,7 @@ import 'package:package_info_plus/package_info_plus.dart';
   }
 
 
-Future<bool> initialize() async {
+Future<bool?> initialize() async {
 
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
@@ -75,7 +75,7 @@ String getStoreUrlValue(String packageName, String appName) {
   if (Platform.isAndroid) {
     return "https://play.google.com/store/apps/details?id=$packageName";
   } else if (Platform.isIOS)
-    return "http://apps.apple.com/kr/app/$appName/id${ConstantString.APP_STORE_ID}";
+    return "https://apps.apple.com/kr/app/%EC%8A%A4%EB%85%B8%EC%9A%B0%EB%9D%BC%EC%9D%B4%EB%B8%8C/id6444235991";
   else
-    return null;
+    return "";
 }
