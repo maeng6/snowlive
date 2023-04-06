@@ -28,6 +28,7 @@ class NotificationController extends GetxController {
   }
   /// 디바이스 고유 토큰을 얻기 위한 메소드, 처음 한번만 사용해서 토큰을 확보하자.
   /// 이는 파이어베이스 콘솔에서 손쉽게 디바이스에 테스팅을 할 때 쓰인다.
+  /// //ㅇㅇ
   void _getToken() async{
     String? token= await messaging.getToken();
     try{
