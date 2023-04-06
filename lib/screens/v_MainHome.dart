@@ -14,7 +14,7 @@ import 'more/v_moreTab.dart';
 
 class MainHome extends StatefulWidget {
 
-  MainHome({Key? key, this.uid}) : super(key: key);
+  MainHome({Key? key,required this.uid}) : super(key: key);
   String? uid;
   @override
   State<MainHome> createState() => _MainHomeState();

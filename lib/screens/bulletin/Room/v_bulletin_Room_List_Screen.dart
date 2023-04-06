@@ -434,7 +434,21 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                     }
                     final chatDocs = snapshot.data!.docs;
                     return Scrollbar(
-                      child: ListView.builder(
+                      child:
+                      (chatDocs.length == 0)
+                      ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('첫 게시글을 남겨 주세요!',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.normal,
+                            color: Color(0xFF949494)
+                          ),
+                          ),
+                        ],
+                      )
+                      : ListView.builder(
                         itemCount: chatDocs.length,
                         itemBuilder: (context, index) {
                           String _time = _timeStampController

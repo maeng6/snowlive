@@ -155,7 +155,7 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
                           await FlutterSecureStorage()
                               .write(key: 'login', value: auth.currentUser!.displayName);
                           CustomFullScreenDialog.cancelDialog();
-                          Get.offAll(() => MainHome());
+                          Get.offAll(() => MainHome(uid: userModelController.uid,));
                         }else{
                           null;
                         }

@@ -146,7 +146,7 @@ class _FleaChatroomState
                               await _fleaChatModelController.resetMyChatCount(chatRoomName: _fleaChatModelController.chatRoomName);
                             }
                             CustomFullScreenDialog.cancelDialog();
-                            Get.offAll(()=>MainHome());
+                            Get.offAll(()=>MainHome(uid: _userModelController.uid,));
                         }catch(e){
                           CustomFullScreenDialog.cancelDialog();
                         }

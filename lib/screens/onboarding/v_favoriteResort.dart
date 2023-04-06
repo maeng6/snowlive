@@ -179,7 +179,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
                           await resortModelController.getSelectedResort(
                               userModelController.favoriteResort!);
                           CustomFullScreenDialog.cancelDialog();
-                          Get.offAll(() => MainHome());
+                          Get.offAll(() => MainHome(uid: userModelController.uid,));
                         }else{
                           null;
                         }
