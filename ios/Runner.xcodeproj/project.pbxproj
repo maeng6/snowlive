@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+<<<<<<< HEAD
+		0261F45729DEFB57009CB6F1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0261F45629DEFB57009CB6F1 /* GoogleService-Info.plist */; };
+=======
+>>>>>>> bbd069dc2d24bc0b1e16fc8778dec390f92805a2
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		1EF5B4974E476AB5A2FEE450 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4C9D6E071236482D9643E06 /* Pods_Runner.framework */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
@@ -32,6 +36,10 @@
 
 /* Begin PBXFileReference section */
 		023F3AD928AA329800568B5D /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+<<<<<<< HEAD
+		0261F45629DEFB57009CB6F1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+=======
+>>>>>>> bbd069dc2d24bc0b1e16fc8778dec390f92805a2
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
@@ -97,7 +105,11 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+<<<<<<< HEAD
+				0261F45629DEFB57009CB6F1 /* GoogleService-Info.plist */,
+=======
 				BCCC1CC129DF008E006E37CE /* GoogleService-Info.plist */,
+>>>>>>> bbd069dc2d24bc0b1e16fc8778dec390f92805a2
 				023F3AD928AA329800568B5D /* Runner.entitlements */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
@@ -197,7 +209,11 @@
 			files = (
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
+<<<<<<< HEAD
+				0261F45729DEFB57009CB6F1 /* GoogleService-Info.plist in Resources */,
+=======
 				BCCC1CC229DF008E006E37CE /* GoogleService-Info.plist in Resources */,
+>>>>>>> bbd069dc2d24bc0b1e16fc8778dec390f92805a2
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 			);
