@@ -56,8 +56,7 @@ class LicenseListPage extends StatelessWidget {
               ));
             },
             child: Container(
-              padding: EdgeInsets.only(left: 16, right: 16),
-              height: _size.width * 0.2,
+              padding: EdgeInsets.only(left: 16, right: 16, top: 18, bottom: 18),
               color: Colors.transparent,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -66,7 +65,7 @@ class LicenseListPage extends StatelessWidget {
                     child: Text(
                       '${licenseNameList[index]} ${versionList[index]}',
                       style: TextStyle(
-                          fontSize: 17,
+                          fontSize: 16,
                       ),
                     ),
                   ),

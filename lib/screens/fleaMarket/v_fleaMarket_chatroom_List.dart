@@ -61,20 +61,29 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
       child: Container(
         color: Colors.white,
         child: Scaffold(
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Color(0xFF3D6FED),
-            onPressed: () async{
-              await _userModelController.getCurrentUser(_userModelController.uid);
-              if(_userModelController.phoneAuth == true){
-                Get.to(() => FleaMarket_Upload());
-              }else if(_userModelController.phoneAuth == false){
-                Get.to(()=>PhoneAuthScreen());
-              }else{
+          floatingActionButton: Transform.translate(
+            offset: Offset(12, -4),
+            child: SizedBox(
+              width: 112,
+              height: 52,
+              child: FloatingActionButton.extended(
+                onPressed: () async{
+                  await _userModelController.getCurrentUser(_userModelController.uid);
+                  if(_userModelController.phoneAuth == true){
+                    Get.to(() => FleaMarket_Upload());
+                  }else if(_userModelController.phoneAuth == false){
+                    Get.to(()=>PhoneAuthScreen());
+                  }else{
 
-              }
-            },
-            child: Icon(Icons.add),
+                  }
+                },
+                icon: Icon(Icons.add),
+                label: Text('글쓰기', style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold,overflow: TextOverflow.ellipsis),),
+                backgroundColor: Color(0xFF3D6FED),
+              ),
+            ),
           ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           backgroundColor: Colors.white,
           body: Column(
             children: [
@@ -94,7 +103,37 @@ class _FleaMarket_Chatroom_ListState extends State<FleaMarket_Chatroom_List> {
                     }
                     final chatDocs = snapshot.data!.docs;
                     return Scrollbar(
-                      child: ListView.builder(
+                      child:
+                      (chatDocs.length == 0)
+                          ? Transform.translate(
+                        offset: Offset(0, -34),
+                        child: Container(
+                          width: _size.width,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/imgs/icons/icon_nodata.png',
+                                scale: 4,
+                                width: 73,
+                                height: 73,
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text('게시판에 글이 없습니다.',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                    color: Color(0xFF949494)
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                          : ListView.builder(
                         itemCount: chatDocs.length,
                         itemBuilder: (context, index) {
                           String _time = _fleaModelController
