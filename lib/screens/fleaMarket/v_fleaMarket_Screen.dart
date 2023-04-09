@@ -104,6 +104,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                           setState(() {});
                         },
                         style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.only(right: 14, left: 14, top: 6, bottom: 8),
                           minimumSize: Size(54, 32),
                           backgroundColor:
                           (isFlea) ? Color(0xFF111111) : Color(0xFFFFFFFF),
@@ -111,9 +112,6 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                               borderRadius: BorderRadius.circular(20)),
                           elevation: 0,
                         ),
-                      ),
-                      SizedBox(
-                        width: 3,
                       ),
                       ElevatedButton(
                         child: Text(
@@ -130,6 +128,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                           setState(() {});
                         },
                         style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.only(right: 14, left: 14, top: 6, bottom: 8),
                             minimumSize: Size(54, 32),
                             backgroundColor: (isFlea)
                                 ? Color(0xFFFFFFFF)
@@ -615,23 +614,27 @@ Widget clothWebGridView(BuildContext context) {
                                       (brandDocs[index]['new'] == true) ?
                                       Row(
                                         children: [
-                                          Container(
-                                            padding: EdgeInsets.only(top: 1,
-                                                left: 3,
-                                                right: 3,
-                                                bottom: 4),
-                                            child: Text(
-                                              'NEW',
-                                              style: TextStyle(
-                                                  color: Color(0xFF3D6FED),
-                                                  fontSize: 10),
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius
-                                                  .circular(10),
-                                              border: Border.all(
-                                                  color: Color(0xFF3D6FED),
-                                                  width: 1),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 2),
+                                            child: Container(
+                                              padding: EdgeInsets.only(top: 1,
+                                                  left: 4,
+                                                  right: 4,
+                                                  bottom: 3),
+                                              child: Text(
+                                                'NEW',
+                                                style: TextStyle(
+                                                    color: Color(0xFF3D6FED),
+                                                    fontSize: 10,
+                                                fontWeight: FontWeight.bold),
+                                              ),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius
+                                                    .circular(10),
+                                                border: Border.all(
+                                                    color: Color(0xFF3D6FED),
+                                                    width: 1),
+                                              ),
                                             ),
                                           ),
                                           SizedBox(
@@ -643,23 +646,28 @@ Widget clothWebGridView(BuildContext context) {
                                       (brandDocs[index]['hot'] == true) ?
                                       Row(
                                         children: [
-                                          Container(
-                                            padding: EdgeInsets.only(top: 1,
-                                                left: 3,
-                                                right: 3,
-                                                bottom: 4),
-                                            child: Text(
-                                              'HOT',
-                                              style: TextStyle(
-                                                  color: Color(0xFFF9A441),
-                                                  fontSize: 10),
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius
-                                                  .circular(10),
-                                              border: Border.all(
-                                                  color: Color(0xFFF9A441),
-                                                  width: 1),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 2),
+                                            child: Container(
+                                              padding: EdgeInsets.only(top: 1,
+                                                  left: 4,
+                                                  right: 4,
+                                                  bottom: 3),
+                                              child: Text(
+                                                'HOT',
+                                                style: TextStyle(
+                                                    color: Color(0xFFF9A441),
+                                                    fontSize: 10,
+                                                  fontWeight: FontWeight.bold
+                                                ),
+                                              ),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius
+                                                    .circular(10),
+                                                border: Border.all(
+                                                    color: Color(0xFFF9A441),
+                                                    width: 1),
+                                              ),
                                             ),
                                           ),
                                           SizedBox(
@@ -673,14 +681,15 @@ Widget clothWebGridView(BuildContext context) {
                                         children: [
                                           Container(
                                             padding: EdgeInsets.only(top: 1,
-                                                left: 3,
-                                                right: 3,
-                                                bottom: 4),
+                                                left: 4,
+                                                right: 4,
+                                                bottom: 3),
                                             child: Text(
                                               'EVENT',
                                               style: TextStyle(
                                                   color: Color(0xFF17AD4A),
-                                                  fontSize: 10),
+                                                  fontSize: 10,
+                                              fontWeight: FontWeight.bold),
                                             ),
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius

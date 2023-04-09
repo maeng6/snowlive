@@ -291,15 +291,24 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
       child: Container(
         color: Colors.white,
         child: Scaffold(
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Color(0xFF3D6FED),
-            onPressed: () async {
-              await _userModelController
-                  .getCurrentUser(_userModelController.uid);
-                Get.to(() => Bulletin_Room_Upload());
-            },
-            child: Icon(Icons.add),
+          floatingActionButton: Transform.translate(
+            offset: Offset(12, -4),
+            child: SizedBox(
+              width: 112,
+              height: 52,
+              child: FloatingActionButton.extended(
+                onPressed: () async {
+                  await _userModelController
+                      .getCurrentUser(_userModelController.uid);
+                  Get.to(() => Bulletin_Room_Upload());
+                },
+                icon: Icon(Icons.add),
+                label: Text('글쓰기', style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold,overflow: TextOverflow.ellipsis),),
+                backgroundColor: Color(0xFF3D6FED),
+              ),
+            ),
           ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           backgroundColor: Colors.white,
           body: Column(
             children: [
@@ -436,17 +445,29 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                     return Scrollbar(
                       child:
                       (chatDocs.length == 0)
-                      ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('첫 게시글을 남겨 주세요!',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.normal,
-                            color: Color(0xFF949494)
-                          ),
-                          ),
-                        ],
+                      ? Transform.translate(
+                        offset: Offset(0, -40),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/imgs/icons/icon_nodata.png',
+                              scale: 4,
+                              width: 73,
+                              height: 73,
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            Text('게시판에 글이 없습니다.',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                  color: Color(0xFF949494)
+                              ),
+                            ),
+                          ],
+                        ),
                       )
                       : ListView.builder(
                         itemCount: chatDocs.length,
