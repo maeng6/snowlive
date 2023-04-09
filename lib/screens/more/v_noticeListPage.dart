@@ -43,14 +43,11 @@ class _NoticeListState extends State<NoticeList> {
         elevation: 0.0,
         titleSpacing: 0,
         centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Text('공지사항',
-            style: GoogleFonts.notoSans(
-                color: Color(0xFF111111),
-                fontWeight: FontWeight.w900,
-                fontSize: 20),
-          ),
+        title: Text('공지사항',
+          style: TextStyle(
+              color: Color(0xFF111111),
+              fontWeight: FontWeight.bold,
+              fontSize: 20),
         ),
       ),
       body: StreamBuilder(
@@ -81,26 +78,32 @@ class _NoticeListState extends State<NoticeList> {
                   Get.to(()=>NoticeDetail(noticeTile: noticeDocs[index].get('noticeTitle'),));
                 },
                 child: Container(
-                  padding: EdgeInsets.only(left: 16, right: 16),
-                  height: _size.width * 0.2,
+                  padding: EdgeInsets.only(left: 16, right: 16, top: 18, bottom: 18),
                   color: Colors.transparent,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(_timeStampController.yyyymmddFormat(noticeDocs[index].get('timeStamp'))),
-                      SizedBox(width: 20,),
                       Container(
-                        constraints: BoxConstraints(maxWidth: _size.width - 100),
+                        constraints: BoxConstraints(maxWidth: _size.width - 180),
                         child: Text(
                           noticeDocs[index].get('noticeTitle'),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 17
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal,
+                            color: Color(0xFF111111)
                           ),
                         ),
                       ),
                       Expanded(child: SizedBox()),
+                      Text(_timeStampController.yyyymmddFormat(noticeDocs[index].get('timeStamp')),style: TextStyle(
+                        fontWeight: FontWeight.normal, color: Color(0xFF111111), fontSize: 14
+                      ),),
+                      SizedBox(
+                        width: 12,
+                      ),
                       Image.asset('assets/imgs/icons/icon_arrow_g.png',
                         height: 24,
                         width: 24,
