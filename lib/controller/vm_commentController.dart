@@ -14,18 +14,30 @@ class CommentModelController extends GetxController {
   RxString? _resortNickname = ''.obs;
   RxInt? _likeCount = 0.obs;
   RxInt? _replyCount = 0.obs;
-
+  RxString? _livetalkImageUrl = ''.obs;
 
   String? get uid => _uid!.value;
+
   String? get displayName => _displayName!.value;
+
   int? get commentCount => _commentCount!.value;
+
   String? get profileImageUrl => _profileImageUrl!.value;
+
   String? get comment => _comment!.value;
+
   Timestamp? get timeStamp => _timeStamp;
+
   String? get agoTime => _agoTime!.value;
+
   String? get resortNickname => _resortNickname!.value;
+
   int? get likeCount => _likeCount!.value;
+
   int? get replyCount => _replyCount!.value;
+
+  String? get livetalkImageUrl => _livetalkImageUrl!.value;
+
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
@@ -38,7 +50,9 @@ class CommentModelController extends GetxController {
       required commentCount,
       required resortNickname,
       required likeCount,
-      required replyCount}) async {
+      required replyCount,
+        required livetalkImageUrl,
+      }) async {
     await CommentModel().uploadComment(
       comment: comment,
       displayName: displayName,
@@ -48,8 +62,10 @@ class CommentModelController extends GetxController {
       uid: uid,
       resortNickname: resortNickname,
       likeCount: likeCount,
-      replyCount: replyCount
+      replyCount: replyCount,
+      livetalkImageUrl: livetalkImageUrl,
     );
+    print("sendMessage 함수에서의 livetalkImageUrl 값: $livetalkImageUrl"); // 로그 추가
     CommentModel commentModel =
         await CommentModel().getCommentModel(uid, commentCount);
     this._uid!.value = commentModel.uid!;
@@ -61,16 +77,16 @@ class CommentModelController extends GetxController {
     this._resortNickname!.value = commentModel.resortNickname!;
     this._likeCount!.value = commentModel.likeCount!;
     this._replyCount!.value = commentModel.replyCount!;
+    this._livetalkImageUrl!.value = commentModel.livetalkImageUrl!;
   }
 
   Future<void> likeUpdate(uid) async {
-
     try {
       DocumentReference<Map<String, dynamic>> documentReference =
-      ref.collection('liveTalk').doc(uid);
+          ref.collection('liveTalk').doc(uid);
 
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-      await documentReference.get();
+          await documentReference.get();
 
       int likeCount = documentSnapshot.get('likeCount');
       int likeCountPlus = likeCount + 1;
@@ -78,19 +94,18 @@ class CommentModelController extends GetxController {
       await ref.collection('liveTalk').doc(uid).update({
         'likeCount': likeCountPlus,
       });
-    }catch(e){
+    } catch (e) {
       print('탈퇴한 회원');
     }
   }
 
   Future<void> likeDelete(uid) async {
-
     try {
       DocumentReference<Map<String, dynamic>> documentReference =
-      ref.collection('liveTalk').doc(uid);
+          ref.collection('liveTalk').doc(uid);
 
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-      await documentReference.get();
+          await documentReference.get();
 
       int likeCount = documentSnapshot.get('likeCount');
       int likeCountMinus = likeCount - 1;
@@ -98,19 +113,18 @@ class CommentModelController extends GetxController {
       await ref.collection('liveTalk').doc(uid).update({
         'likeCount': likeCountMinus,
       });
-    }catch(e){
+    } catch (e) {
       print('탈퇴한 회원');
     }
   }
 
   Future<void> replyCountUpdate(uid) async {
-
     try {
       DocumentReference<Map<String, dynamic>> documentReference =
-      ref.collection('liveTalk').doc(uid);
+          ref.collection('liveTalk').doc(uid);
 
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-      await documentReference.get();
+          await documentReference.get();
 
       int replyCount = documentSnapshot.get('replyCount');
       int replyCountPlus = replyCount + 1;
@@ -118,19 +132,18 @@ class CommentModelController extends GetxController {
       await ref.collection('liveTalk').doc(uid).update({
         'replyCount': replyCountPlus,
       });
-    }catch(e){
+    } catch (e) {
       print('탈퇴한 회원');
     }
   }
 
   Future<void> replyCountDelete(uid) async {
-
     try {
       DocumentReference<Map<String, dynamic>> documentReference =
-      ref.collection('liveTalk').doc(uid);
+          ref.collection('liveTalk').doc(uid);
 
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-      await documentReference.get();
+          await documentReference.get();
 
       int replyCount = documentSnapshot.get('replyCount');
       int replyCountMinus = replyCount - 1;
@@ -138,11 +151,33 @@ class CommentModelController extends GetxController {
       await ref.collection('liveTalk').doc(uid).update({
         'replyCount': replyCountMinus,
       });
-    }catch(e){
+    } catch (e) {
       print('탈퇴한 회원');
     }
   }
 
+
+  Future<void> updateLivetalkImageUrl(imageUrls) async {
+    try {
+      final User? user = auth.currentUser;
+      final uid = user!.uid;
+      DocumentReference<Map<String, dynamic>> documentReference = ref.collection('livetalk').doc(uid);
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await documentReference.get();
+
+      if (documentSnapshot.exists) {
+        await documentReference.update({
+          'livetalkImageUrl': imageUrls,
+        });
+      } else {
+        await documentReference.set({
+          'livetalkImageUrl': imageUrls,
+          // 필요한 다른 필드를 여기에 추가하세요.
+        });
+      }
+    } catch (e) {
+      print('라이브톡 이미지 업데이트 오류: $e');
+    }
+  }
 
 
   String getAgoTime(timestamp) {

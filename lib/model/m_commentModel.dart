@@ -11,7 +11,8 @@ class CommentModel {
       this.commentCount,
       this.resortNickname,
       this.likeCount,
-      this.replyCount});
+      this.replyCount,
+      this.livetalkImageUrl});
 
   String? displayName;
   String? uid;
@@ -24,6 +25,7 @@ class CommentModel {
   String? resortNickname;
   int? likeCount;
   int? replyCount;
+  String? livetalkImageUrl;
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseFirestore.instance;
@@ -40,7 +42,7 @@ class CommentModel {
     resortNickname = json['resortNickname'];
     likeCount = json['likeCount'];
     replyCount = json['replyCount'];
-
+    livetalkImageUrl = json['livetalkImageUrl'];
   }
 
   CommentModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -58,7 +60,7 @@ class CommentModel {
   }
 
   Future<void> uploadComment(
-      {displayName, uid, profileImageUrl, comment, timeStamp,commentCount, resortNickname, likeCount, replyCount}) async{
+      {displayName, uid, profileImageUrl, comment, timeStamp,commentCount, resortNickname, likeCount, replyCount,livetalkImageUrl}) async{
 
     await ref
         .collection('liveTalk')
@@ -72,7 +74,8 @@ class CommentModel {
       'commentCount' : commentCount,
     'resortNickname' : resortNickname,
       'likeCount' : likeCount,
-      'replyCount' : replyCount
+      'replyCount' : replyCount,
+      'livetalkImageUrl' : livetalkImageUrl,
     });
   }
 

@@ -19,7 +19,6 @@ class ImageController extends GetxController {
   //TODO : ****************************************************************
 
   Future<XFile?> getSingleImage(ImageSource) async {
-
     final ImagePicker _picker = ImagePicker();
     final XFile? image =
         await _picker.pickImage(imageQuality: 100, source: ImageSource);
@@ -31,9 +30,8 @@ class ImageController extends GetxController {
     return image;
   }
 
+
   Future<List<XFile>> getMultiImage(ImageSource) async {
-
-
     List<XFile> selectedImages = [];
     final ImagePicker _picker = ImagePicker();
     selectedImages =
@@ -132,4 +130,20 @@ class ImageController extends GetxController {
     await FirebaseStorage.instance.ref().child('images/profile/$uid.jpg').delete();
 }
 
+  Future<String> setNewImage_livetalk(XFile newImage, commentCount) async {
+    String? uid = await FlutterSecureStorage().read(key: 'uid');
+    var metaData = SettableMetadata(contentType: 'image/jpeg');
+    String downloadUrl = '';
+    if (newImage != null) {
+      Reference ref = FirebaseStorage.instance.ref('images/livetalk/$uid#$commentCount.jpg');
+      await ref.putFile(File(newImage.path), metaData);
+      downloadUrl = await ref.getDownloadURL();
+      print("이미지 업로드 완료: $downloadUrl"); // 로그 추가
+    } else {
+      CustomFullScreenDialog.cancelDialog();
+    }
+    return downloadUrl;
+  }
+
 }
+
