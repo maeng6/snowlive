@@ -74,15 +74,12 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
           elevation: 0.0,
           centerTitle: false,
           titleSpacing: 0,
-          title: Padding(
-            padding: const EdgeInsets.only(left: 16),
-            child: Text(
-              '',
-              style: TextStyle(
-                  color: Color(0xFF111111),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22),
-            ),
+          title: Text(
+            '',
+            style: TextStyle(
+                color: Color(0xFF111111),
+                fontWeight: FontWeight.bold,
+                fontSize: 20),
           ),
         ),
       ),
