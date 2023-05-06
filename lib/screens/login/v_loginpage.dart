@@ -108,7 +108,7 @@ class LoginPage extends StatelessWidget {
                         width: 12,
                       ),
                       (Platform.isIOS)
-                      ?LoginButton(
+                          ?LoginButton(
                         buttonText: 'Apple로 로그인하기',
                         logoAddress: 'assets/imgs/logos/logos_apple.png',
                         signInMethod: SignInMethod.apple,
@@ -116,7 +116,7 @@ class LoginPage extends StatelessWidget {
                         borderColor: Colors.transparent,
                         textColor: Colors.white,
                       )
-                      :SizedBox(width: 0,),
+                          :SizedBox(width: 0,),
                     ],
                   ),
                   SizedBox(
@@ -127,14 +127,14 @@ class LoginPage extends StatelessWidget {
                       Get.to(()=>EmailLoginPage());
                     },
                     child: Text('이메일로 로그인하기',
-                    style: TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         color: Color(0xFF949494),
                         fontWeight: FontWeight.normal,
-                    ),),
+                      ),),
                   ),
                   SizedBox(
-                   height: (Platform.isIOS)
+                    height: (Platform.isIOS)
                         ? 64
                         : 40,
                   )

@@ -10,52 +10,44 @@ import 'package:snowlive3/controller/vm_timeStampController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/screens/login/v_loginpage.dart';
-//ddddd
+
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key? key}) : super(key: key);
 
   @override
   State<LoadingPage> createState() => _LoadingPageState();
-
 }
 
 class _LoadingPageState extends State<LoadingPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Dependency Injection
+    Get.put(ResortModelController(), permanent: true);
+    Get.put(UserModelController(), permanent: true);
+    Get.put(GetDateTimeController(), permanent: true);
+    Get.put(TimeStampController(), permanent: true);
+
+    LoginController _logInController = Get.put(LoginController());
+
+    // 로그인 관련 작업
+    _logInController.loginAgain().then((_) {
+      if (_logInController.loginUid != null) {
+        Get.offAll(() => MainHome(uid: _logInController.loginUid));
+      } else {
+        Get.offAll(() => LoginPage());
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Dependency Injection************************************************
-    Get.put(ResortModelController(), permanent: true);
-    ResortModelController _resortModelController = ResortModelController();
-    Get.put(UserModelController(), permanent: true);
-    UserModelController _userModelController = UserModelController();
-    Get.put(GetDateTimeController(), permanent: true);
-    LoginController _logInController = LoginController();
-    TimeStampController _timeStampController = Get.put(TimeStampController(),permanent: true, );
-    //TODO: Dependency Injection************************************************
-
-    return FutureBuilder(
-      future: _logInController.loginAgain(),
-      builder: (context, AsyncSnapshot<dynamic> snapshot) {
-        print('uid : ${_logInController.loginUid}');
-        if (snapshot.connectionState == ConnectionState.done &&
-             _logInController.loginUid!=null) {
-          print('shared => ${_logInController.loginUid}');
-          return FutureBuilder(
-              future: _userModelController.getCurrentUser(_logInController.loginUid),
-              builder: (context, AsyncSnapshot<dynamic> snapshot){
-                  return FutureBuilder(
-                      future: _resortModelController.getSelectedResort(_userModelController.favoriteResort),
-                      builder: (context, AsyncSnapshot<dynamic> snapshot){
-                          return MainHome(uid: _logInController.loginUid,);
-                      }
-                  );
-              }
-          );
-        }  else if (snapshot.connectionState == ConnectionState.done &&
-             _logInController.loginUid==null) {
-          return LoginPage();
-        } return LoginPage();
-      },
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }

@@ -6,8 +6,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:snowlive3/controller/vm_loadingPage.dart';
 import 'package:snowlive3/screens/login/v_loginpage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+
+import '../screens/onboarding/v_FirstPage.dart';
 
 class LoginController extends GetxController {
   final auth = FirebaseAuth.instance;
@@ -22,14 +25,14 @@ class LoginController extends GetxController {
       CustomFullScreenDialog.cancelDialog();
     } else {
       GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount.authentication;
+      await googleSignInAccount.authentication;
       OAuthCredential oAuthCredential = GoogleAuthProvider.credential(
           accessToken: googleSignInAuthentication.accessToken,
           idToken: googleSignInAuthentication.idToken);
       await auth.signInWithCredential(oAuthCredential);
       CustomFullScreenDialog.cancelDialog();
+      Get.offAll(() => FirstPage());
     }
-    CustomFullScreenDialog.cancelDialog();
   }
 
   Future<void> signInWithFacebook() async {
@@ -41,8 +44,8 @@ class LoginController extends GetxController {
           FacebookAuthProvider.credential(loginResult.accessToken!.token);
       await auth.signInWithCredential(facebookAuthCredential);
       CustomFullScreenDialog.cancelDialog();
+      Get.offAll(() => FirstPage());
     }
-    CustomFullScreenDialog.cancelDialog();
   }
 
   Future<UserCredential> signInWithApple() async {
