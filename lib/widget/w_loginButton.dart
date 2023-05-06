@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_loginController.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
+import '../controller/vm_loadingPage.dart';
 import '../screens/onboarding/v_FirstPage.dart';
 
 enum SignInMethod { google, facebook, apple }
@@ -23,11 +24,11 @@ class LoginButton extends StatelessWidget {
 
   LoginButton(
       {this.buttonText,
-      this.logoAddress,
-      this.signInMethod,
-      this.buttonColor,
-      this.textColor,
-      this.borderColor});
+        this.logoAddress,
+        this.signInMethod,
+        this.buttonColor,
+        this.textColor,
+        this.borderColor});
 
   @override
   Widget build(BuildContext context) {
@@ -51,44 +52,20 @@ class LoginButton extends StatelessWidget {
         try {
           if (signInMethod == SignInMethod.google) {
             await _loginController.signInWithGoogle();
-            if(auth.currentUser != null){
-            try {
-              print(auth.currentUser!.providerData[0].providerId);
-                print('신규회원 온보딩코스 진입');
-                CustomFullScreenDialog.cancelDialog();
-                print('Google 로그인');
-                Get.offAll(() => FirstPage());
-              } catch(e){
-            }}
-            else{
-              CustomFullScreenDialog.cancelDialog();
-              Get.back();
-            }
           }
           else if (signInMethod == SignInMethod.facebook) {
             await _loginController.signInWithFacebook();
-            if(auth.currentUser != null){
-            try {
-              CustomFullScreenDialog.cancelDialog();
-              print('Google 로그인');
-              Get.offAll(() => FirstPage());
-            } catch(e){
-            }}
-            else{
-              CustomFullScreenDialog.cancelDialog();
-              Get.back();
-            }
           }
           else {
-              await _loginController.signInWithApple();
-              if(auth.currentUser != null){
+            await _loginController.signInWithApple();
+            if(auth.currentUser != null){
               try {
-              CustomFullScreenDialog.cancelDialog();
-              print(auth.currentUser!.providerData[0].providerId);
-              print('Apple 로그인');
-              Get.offAll(() => FirstPage());
-            }catch(e){
-            }}
+                CustomFullScreenDialog.cancelDialog();
+                print(auth.currentUser!.providerData[0].providerId);
+                print('Apple 로그인');
+                Get.offAll(() => FirstPage());
+              }catch(e){
+              }}
             else {
               CustomFullScreenDialog.cancelDialog();
               Get.back();
