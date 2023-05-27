@@ -855,14 +855,13 @@ class _CommentTile_liveTalk_resortHomeState
                                                     Expanded(
                                                       child: ElevatedButton(
                                                         onPressed: () async {
-                                                          CustomFullScreenDialog
-                                                              .showDialog();
+                                                          Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           try {
                                                             _imageFile = await _imageController.getSingleImage(ImageSource.camera);
                                                             CustomFullScreenDialog.cancelDialog();
                                                             livetalkImage = true;
                                                             setState(() {});
-                                                            Navigator.pop(context);
                                                           } catch (e) {
                                                             CustomFullScreenDialog.cancelDialog();
                                                             print('사진촬영 오류');
@@ -894,13 +893,13 @@ class _CommentTile_liveTalk_resortHomeState
                                                     Expanded(
                                                       child: ElevatedButton(
                                                         onPressed: () async {
+                                                          Navigator.pop(context);
                                                           CustomFullScreenDialog.showDialog();
                                                           try {
                                                             _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
                                                             CustomFullScreenDialog.cancelDialog();
                                                             livetalkImage = true;
                                                             setState(() {});
-                                                            Navigator.pop(context);
                                                           } catch (e) {
                                                             CustomFullScreenDialog.cancelDialog();
                                                             print('앨범 오류');
@@ -989,13 +988,13 @@ class _CommentTile_liveTalk_resortHomeState
                                                     Expanded(
                                                       child: ElevatedButton(
                                                         onPressed: () async {
+                                                          Navigator.pop(context);
                                                           CustomFullScreenDialog.showDialog();
                                                           try {
                                                             _imageFile = await _imageController.getSingleImage(ImageSource.camera);
                                                             CustomFullScreenDialog.cancelDialog();
                                                             livetalkImage = true;
                                                             setState(() {});
-                                                            Navigator.pop(context);
                                                           } catch (e) {
                                                             CustomFullScreenDialog.cancelDialog();
                                                           }
@@ -1023,13 +1022,13 @@ class _CommentTile_liveTalk_resortHomeState
                                                     Expanded(
                                                       child: ElevatedButton(
                                                         onPressed: () async {
+                                                          Navigator.pop(context);
                                                           CustomFullScreenDialog.showDialog();
                                                           try {
                                                             _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
                                                             CustomFullScreenDialog.cancelDialog();
                                                             livetalkImage = true;
                                                             setState(() {});
-                                                            Navigator.pop(context);
                                                           } catch (e) {
                                                             CustomFullScreenDialog.cancelDialog();
                                                           }
@@ -1165,7 +1164,7 @@ class _CommentTile_liveTalk_resortHomeState
                       ),
                     ],
                   ),
-                  (livetalkImage) //이 값이 true이면 이미지업로드가 된 상태이므로, 미리보기 띄움
+                  (_imageFile != null)
                       ? Positioned(
                     bottom: 72,
                     child: Stack(
