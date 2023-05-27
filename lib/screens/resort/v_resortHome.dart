@@ -13,6 +13,7 @@ import 'package:snowlive3/model/m_resortModel.dart';
 import 'package:snowlive3/screens/comments/v_commentTile_resortHome.dart';
 import 'package:snowlive3/screens/more/v_noticeListPage.dart';
 import 'package:snowlive3/screens/more/v_noticeTile_resortHome.dart';
+import 'package:snowlive3/screens/resort/v_searchUserPage.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
@@ -129,6 +130,16 @@ class _ResortHomeState extends State<ResortHome>
                       ),
                       backgroundColor: Color(0xFFF1F1F3),
                       elevation: 0.0,
+                      actions: [
+                        GestureDetector(
+                          onTap: (){
+                            Get.to(()=>SearchUserPage());
+                          },
+                          child: Padding(
+                              padding: const EdgeInsets.only(right: 20),
+                              child: Icon(Icons.search)),
+                        )
+                      ],
                     )
                   ],
                 ),

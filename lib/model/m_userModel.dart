@@ -18,6 +18,7 @@ class UserModel {
     this.phoneAuth,
     this.phoneNum,
     this.likeUidList,
+    this.friendUidList,
     this.resistDate,
     this.newChat
   });
@@ -40,6 +41,7 @@ class UserModel {
   bool? newChat;
   String? phoneNum;
   List? likeUidList;
+  List? friendUidList;
   List? fleaChatUidList;
   Timestamp? resistDate;
 
@@ -58,6 +60,7 @@ class UserModel {
       phoneAuth = json['phoneAuth'];
       phoneNum = json['phoneNum'];
       likeUidList = json['likeUidList'];
+      friendUidList = json['friendUidList'];
       resistDate = json['resistDate'];
       fleaChatUidList = json['fleaChatUidList'];
       newChat = json['newChat'];
