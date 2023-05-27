@@ -23,11 +23,14 @@ class MainHome extends StatefulWidget {
 class _MainHomeState extends State<MainHome> {
   int _currentPage = 0;
   bool? wait;
+  bool getUserComp=false;
 
   PageController _pageController = PageController();
 
   void _onItemTapped(int index) {
-    _pageController.jumpToPage(index);
+    if (getUserComp == true){
+      _pageController.jumpToPage(index);
+    }else null;
   }
 
   void changePage(int index) {
@@ -65,6 +68,7 @@ class _MainHomeState extends State<MainHome> {
         FutureBuilder(
           future: _userModelController.getCurrentUser(widget.uid),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            getUserComp = true;
             return BottomNavigationBar(
               backgroundColor: Colors.white,
               elevation: 10,
