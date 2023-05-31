@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:snowlive3/screens/discover/v_discover_Calendar_Detail.dart';
 
 
 class DiscoverScreen_Calendar extends StatefulWidget {
@@ -36,7 +37,6 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
         .collection('schedule')
         .doc('${_userModelController.favoriteResort}')
         .collection('1')
-        .where('date', isGreaterThanOrEqualTo: startOfWeek, isLessThanOrEqualTo: endOfWeek)
         .get();
 
     setState(() {
@@ -63,13 +63,13 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
   }
 
   List<Event> _getEventsForWeek(DateTime selectedDate) {
-    final List<Event> eventsForWeek = [];
-
-    for (int i = 0; i < 7; i++) {
-      final DateTime day = selectedDate.add(Duration(days: i));
-      final List<Event> eventsForDay = _getEventsForDay(day);
-      eventsForWeek.addAll(eventsForDay);
-    }
+    final List<Event> eventsForWeek = _events.where((event) {
+      final eventDate = event.date;
+      final startDate = selectedDate.subtract(Duration(days: selectedDate.weekday - 1));
+      final endDate = startDate.add(Duration(days: 6));
+      return eventDate.isAfter(startDate.subtract(Duration(days: 1))) &&
+          eventDate.isBefore(endDate.add(Duration(days: 1)));
+    }).toList();
 
     eventsForWeek.sort((a, b) => a.date.compareTo(b.date));
 
@@ -97,7 +97,7 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
           borderRadius: BorderRadius.circular(8),
           color: isToday ? Colors.blue : Colors.transparent,
         ),
-        height: 80,
+        height: 70,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -128,7 +128,7 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
         ),
       ),
     );
-  }
+  } // 달력 날짜 표시 영역 위젯
 
   //TODO: Calendar**************************************************
 
@@ -146,16 +146,36 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: EdgeInsets.only(left: 4),
-            child: Text(
-              '캘린더',
-              style: TextStyle(
-                color: Color(0xFF111111),
-                fontWeight: FontWeight.w700,
-                fontSize: 20,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 4),
+                child: Text(
+                  '캘린더',
+                  style: TextStyle(
+                    color: Color(0xFF111111),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20,
+                  ),
+                ),
               ),
-            ),
+              GestureDetector(
+                onTap: (){
+                  Get.to(()=>Discover_Calendar_Detail_Screen());
+                },
+                child: Container(
+                  padding: EdgeInsets.only(left: 4),
+                  child: Text(
+                    '일정 더보기 >',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 10),
           Container(

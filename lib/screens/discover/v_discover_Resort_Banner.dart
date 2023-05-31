@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:snowlive3/screens/v_webPage.dart';
 
 import '../../controller/vm_userModelController.dart';
 
@@ -55,38 +57,54 @@ class _DiscoverScreen_ResortBannerState extends State<DiscoverScreen_ResortBanne
               (imageUrls!.isNotEmpty)
               ? Column(
                 children: [
-                  CarouselSlider(
-                    carouselController: _carouselController,
-                    options: CarouselOptions(
-                      height: 107,
-                      viewportFraction: 1.0,
-                      aspectRatio: 2.0,
-                      enlargeCenterPage: true,
-                      initialPage: 0,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          _currentIndex = index;
-                        });
-                      },
-                    ),
-                    items: imageUrls.map((url) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return Image.network(
-                            url,
-                            loadingBuilder: (context, child, progress) {
-                              if (progress == null) return child;
-                              return Center(
-                                child: Lottie.asset('assets/json/loadings_wht_final.json'),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return Icon(Icons.error);
-                            },
-                          );
+                  GestureDetector(
+
+                    onTap: () async{
+                      final urlSnapshot = await FirebaseFirestore.instance
+                          .collection('discover_banner_url')
+                          .doc('${_userModelController.favoriteResort}')
+                          .collection('1')
+                          .where('url', isEqualTo: imageUrls[_currentIndex])
+                          .get();
+                      if (urlSnapshot.docs.isNotEmpty) {
+                        String landingUrl = urlSnapshot.docs.first['landingUrl'];
+                        Get.to(() => WebPage(url: landingUrl));
+                      }
+
+                    },
+                    child: CarouselSlider(
+                      carouselController: _carouselController,
+                      options: CarouselOptions(
+                        height: 107,
+                        viewportFraction: 1.0,
+                        aspectRatio: 2.0,
+                        enlargeCenterPage: true,
+                        initialPage: 0,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            _currentIndex = index;
+                          });
                         },
-                      );
-                    }).toList(),
+                      ),
+                      items: imageUrls.map((url) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return Image.network(
+                              url,
+                              loadingBuilder: (context, child, progress) {
+                                if (progress == null) return child;
+                                return Center(
+                                  child: Lottie.asset('assets/json/loadings_wht_final.json'),
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(Icons.error);
+                              },
+                            );
+                          },
+                        );
+                      }).toList(),
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
