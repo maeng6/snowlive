@@ -52,7 +52,7 @@ class _DiscoverScreen_ResortBannerState extends State<DiscoverScreen_ResortBanne
           if (snapshot.hasData) {
             List<String>? imageUrls = snapshot.data;
             return Padding(
-              padding: EdgeInsets.only(left: 12, right: 12),
+              padding: EdgeInsets.only(left: 16, right: 16),
               child:
               (imageUrls!.isNotEmpty)
               ? Column(
@@ -75,7 +75,7 @@ class _DiscoverScreen_ResortBannerState extends State<DiscoverScreen_ResortBanne
                     child: CarouselSlider(
                       carouselController: _carouselController,
                       options: CarouselOptions(
-                        height: 107,
+                        height: 86,
                         viewportFraction: 1.0,
                         aspectRatio: 2.0,
                         enlargeCenterPage: true,
@@ -111,10 +111,10 @@ class _DiscoverScreen_ResortBannerState extends State<DiscoverScreen_ResortBanne
                     children: imageUrls.map((url) {
                       int index = imageUrls.indexOf(url);
                       return Container(
-                        width: 8.0,
-                        height: 8.0,
+                        width: 6,
+                        height: 6,
                         margin:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
+                        EdgeInsets.only(top: 12, right: 6),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color:
@@ -125,27 +125,7 @@ class _DiscoverScreen_ResortBannerState extends State<DiscoverScreen_ResortBanne
                   ),
                 ],
               )
-              : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/imgs/icons/icon_nodata.png',
-                    scale: 4,
-                    width: 73,
-                    height: 73,
-                  ),
-                  SizedBox(
-                    height: 6,
-                  ),
-                  Text('게시물이 없습니다.',
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
-                        color: Color(0xFF949494)
-                    ),
-                  ),
-                ],
-              ),
+              : Container(),
             );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
