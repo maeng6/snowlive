@@ -107,7 +107,8 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
             Text(
               weekday, // 요일 출력
               style: TextStyle(
-                  fontSize: 11
+                  fontSize: 11,
+                color: isToday ? Colors.white : Color(0xFF111111),
               ),
             ),
             SizedBox(height: 2),
@@ -116,7 +117,7 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: isToday ? Colors.white : Colors.black,
+                color: isToday ? Colors.white : Color(0xFF111111),
               ),
             ),
             SizedBox(height: 6),
@@ -167,10 +168,11 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
                 },
                 child: Container(
                   child: Text(
-                    '일정 더보기 >',
+                    '더보기',
                     style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 13,
+                      color: Color(0xFF949494),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -199,14 +201,21 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
                 (_events.isNotEmpty)
                     ? Column(
                   children: eventsForWeek.entries.map((entry) {
-                    return Column(
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          '${entry.key.day}/${entry.key.month}/${entry.key.year}',
+                          '${entry.key.year}.${entry.key.month}.${entry.key.day}',
                         ),
-                        ...entry.value.map((event) => ListTile(
-                          title: Text(event.title),
-                        )).toList(),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: entry.value.map((event) => ListTile(
+                              title: Text(event.title),
+                            )).toList(),
+                          ),
+                        ),
                       ],
                     );
                   }).toList(),
@@ -214,28 +223,16 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
                     : Center(
                   child: Column(
                     children: [
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Image.asset(
-                        'assets/imgs/icons/icon_nodata.png',
-                        scale: 4,
-                        width: 73,
-                        height: 73,
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text('일정이 없습니다.',
+                      SizedBox(height: 10),
+                      Text(
+                        '일정이 없습니다.',
                         style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.normal,
-                            color: Color(0xFF949494)
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                          color: Color(0xFF949494),
                         ),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 10),
                     ],
                   ),
                 ),
