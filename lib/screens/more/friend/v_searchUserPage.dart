@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
-import '../../controller/vm_searchUserController.dart';
-import '../../controller/vm_userModelController.dart';
-import '../../model/m_userModel.dart';
+import '../../../controller/vm_searchUserController.dart';
+import '../../../controller/vm_userModelController.dart';
+import '../../../model/m_userModel.dart';
 
 class SearchUserPage extends StatefulWidget {
   const SearchUserPage({Key? key}) : super(key: key);
@@ -43,25 +43,35 @@ class _SearchUserPageState extends State<SearchUserPage> {
           top: false,
           bottom: true,
           child: Scaffold(
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(58),
-              child: AppBar(
-                leading: GestureDetector(
-                  child: Image.asset(
-                    'assets/imgs/icons/icon_snowLive_back.png',
-                    scale: 4,
-                    width: 26,
-                    height: 26,
-                  ),
-                  onTap: () {
-                    Get.back();
-                  },
+            appBar:AppBar(
+              backgroundColor: Colors.white,
+              leading: GestureDetector(
+                child: Image.asset(
+                  'assets/imgs/icons/icon_snowLive_back.png',
+                  scale: 4,
+                  width: 26,
+                  height: 26,
                 ),
-                actions: [
-
-                ],
-                backgroundColor: Colors.white,
-                elevation: 0.0,
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              actions: [
+                GestureDetector(
+                  onTap: (){
+                    Get.to(()=>SearchUserPage());
+                  },
+                  child: Icon(Icons.search),
+                )
+              ],
+              elevation: 0.0,
+              titleSpacing: 0,
+              centerTitle: true,
+              title: Text('친구',
+                style: TextStyle(
+                    color: Color(0xFF111111),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
               ),
             ),
             body: Container(
@@ -218,9 +228,20 @@ class _SearchUserPageState extends State<SearchUserPage> {
                           Row(
                             children: [
                               TextButton(
-                                  onPressed: () {
+                                  onPressed: () async{
                                     CustomFullScreenDialog.showDialog();
-                                    _userModelController.updateFriendUid(foundUserModel!.uid);
+                                    await _userModelController.updateFriendUid(foundUserModel!.uid);
+                                    await _userModelController.createFriendDoc(
+                                        foundUid: foundUserModel!.uid,
+                                        userEmail: foundUserModel!.userEmail,
+                                        displayName: foundUserModel!.displayName,
+                                        favoriteResort: foundUserModel!.favoriteResort,
+                                        profileImageUrl: foundUserModel!.profileImageUrl,
+                                        friendUidList: foundUserModel!.friendUidList,
+                                        resortNickname: foundUserModel!.resortNickname,
+                                        phoneNum: foundUserModel!.phoneNum,
+                                        resistDate: foundUserModel!.resistDate);
+                                    await _userModelController.updateWhoResistMe(friendUid: foundUserModel!.uid);
                                     Navigator.pop(context);
                                     CustomFullScreenDialog.cancelDialog();
                                   },
