@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -96,18 +97,10 @@ class _DiscoverScreen_InfoState extends State<DiscoverScreen_Info> {
                     items: imageUrls!.map((url) {
                       return Builder(
                         builder: (BuildContext context) {
-                          return Image.network(
+                          return ExtendedImage.network(
                             url,
                             fit: BoxFit.cover,
-                            loadingBuilder: (context, child, progress) {
-                              if (progress == null) return child;
-                              return Center(
-                                child: Lottie.asset('assets/json/loadings_wht_final.json'),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return Icon(Icons.error);
-                            },
+                            cache: true,
                           );
                         },
                       );
