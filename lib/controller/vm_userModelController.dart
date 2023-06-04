@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snowlive3/model/m_userModel.dart';
 import 'package:snowlive3/screens/login/v_loginpage.dart';
-import 'package:snowlive3/screens/resort/v_searchUserPage.dart';
+import 'package:snowlive3/screens/more/friend/v_searchUserPage.dart';
 
 import '../model/m_resortModel.dart';
 
@@ -150,7 +150,8 @@ class UserModelController extends GetxController{
       'resistDate' : Timestamp.fromDate(DateTime(1990)),
       'fleaChatUidList' : fleaChatUidList,
       'newChat' : false,
-      'friendUidList' : []
+      'friendUidList' : [],
+      'stateMsg':''
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -470,6 +471,35 @@ class UserModelController extends GetxController{
     this._friendUidList!.value = friendUidList;
   }
 
+  Future<void> createFriendDoc({
+    required foundUid,
+    required userEmail,
+    required displayName,
+    required favoriteResort,
+    required profileImageUrl,
+    required friendUidList,
+    required resortNickname,
+    required phoneNum,
+    required resistDate,
+
+  }) async {
+    final User? user = auth.currentUser;
+
+    await ref.collection('user').doc(uid).collection('friendList').doc(foundUid)
+        .set({
+      'uid': foundUid,
+      'userEmail': userEmail,
+      'displayName': displayName,
+      'favoriteResort': favoriteResort,
+      'profileImageUrl' : profileImageUrl,
+      'friendUidList' : friendUidList,
+      'resortNickname' : resortNickname,
+      'phoneNum' : phoneNum,
+      'resistDate' : resistDate,
+    });
+
+  }
+
   Future<void> updateFriendUidList() async {
     final  userMe = auth.currentUser!.uid;
     DocumentReference<Map<String, dynamic>> documentReference =
@@ -480,7 +510,35 @@ class UserModelController extends GetxController{
     this._friendUidList!.value = friendUidList;
   }
 
+  Future<void> updateWhoResistMe({required friendUid}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(friendUid).update({
+      'whoResistMe': FieldValue.arrayUnion([uid])
+    });
   }
+  Future<void> updateWhoResistMeBF({required friendUid}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(friendUid).update({
+      'whoResistMeBF': FieldValue.arrayUnion([uid])
+    });
+  }
+  Future<void> deleteWhoResistMeBF({required friendUid}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(friendUid).update({
+      'whoResistMeBF': FieldValue.arrayRemove([uid])
+    });
+  }
+  Future<void> deleteWhoResistMe({required friendUid}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(friendUid).update({
+      'whoResistMe': FieldValue.arrayRemove([uid])
+    });
+  }
+}
 
 
 

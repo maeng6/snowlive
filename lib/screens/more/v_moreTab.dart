@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/screens/more/v_contactUsPage.dart';
 import 'package:snowlive3/screens/more/v_favoriteResort_moreTab.dart';
+import 'package:snowlive3/screens/more/friend/v_friendListPage.dart';
 import 'package:snowlive3/screens/more/v_licenseListPage.dart';
 import 'package:snowlive3/screens/more/v_noticeListPage.dart';
 import 'package:snowlive3/screens/more/v_resortTab.dart';
@@ -12,6 +13,8 @@ import 'package:snowlive3/screens/more/v_setting_moreTab.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
 import '../../controller/vm_noticeController.dart';
 import '../../controller/vm_userModelController.dart';
+import '../bulletin/v_bulletin_Screen.dart';
+import '../fleaMarket/v_fleaMarket_Screen.dart';
 
 class MoreTab extends StatefulWidget {
   MoreTab({Key? key}) : super(key: key);
@@ -495,7 +498,127 @@ class _MoreTabState extends State<MoreTab> {
                   ),
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 25),
+              Container(
+                height: 140,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: (){
+                            Get.to(()=> FriendListPage());
+                          },
+                          child: Column(
+                            children: [
+                              Icon(Icons.snowboarding_outlined,size: 30,),
+                              SizedBox(height: 5,),
+                              Text('친구',style: TextStyle(
+                                fontSize: 14
+                              ),)
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 25,),
+                        Column(
+                          children: [
+                            Icon(Icons.snowboarding_outlined,size: 30,),
+                            SizedBox(height: 5,),
+                            Text('',style: TextStyle(
+                                fontSize: 14
+                            ),)
+                          ],
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Column(
+                          children: [
+                            Icon(Icons.snowboarding_outlined,size: 30,),
+                            SizedBox(height: 5,),
+                            Text('라이브크루',style: TextStyle(
+                                fontSize: 14
+                            ),)
+                          ],
+                        ),
+                        SizedBox(height: 25,),
+                        Column(
+                          children: [
+                            Icon(Icons.snowboarding_outlined,size: 30,),
+                            SizedBox(height: 5,),
+                            Text('',style: TextStyle(
+                                fontSize: 14
+                            ),)
+                          ],
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: (){
+                            Get.to(()=>BulletinScreen());
+                          },
+                          child: Column(
+                            children: [
+                              Icon(Icons.snowboarding_outlined,size: 30,),
+                              SizedBox(height: 5,),
+                              Text('단톡방/동호회',style: TextStyle(
+                                  fontSize: 14
+                              ),)
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 25,),
+                        Column(
+                          children: [
+                            Icon(Icons.snowboarding_outlined,size: 30,),
+                            SizedBox(height: 5,),
+                            Text('',style: TextStyle(
+                                fontSize: 14
+                            ),)
+                          ],
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: (){
+                            Get.to(()=>FleaMarketScreen());
+                          },
+                          child: Column(
+                            children: [
+                              Icon(Icons.snowboarding_outlined,size: 30,),
+                              SizedBox(height: 5,),
+                              Text('스노우마켓',style: TextStyle(
+                                  fontSize: 14
+                              ),)
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 25,),
+                        Column(
+                          children: [
+                            Icon(Icons.snowboarding_outlined,size: 30,),
+                            SizedBox(height: 5,),
+                            Text('',style: TextStyle(
+                                fontSize: 14
+                            ),)
+                          ],
+                        ),
+                      ],
+                    ),
+
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(height: 8,color: Color(0xFFEEEEEE),),
+              SizedBox(height: 30),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
@@ -690,25 +813,6 @@ class _MoreTabState extends State<MoreTab> {
                 },
                 title: Text(
                   '설정',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Color(0xFF111111)),
-                ),
-                trailing: Image.asset(
-                  'assets/imgs/icons/icon_arrow_g.png',
-                  height: 24,
-                  width: 24,
-                ),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                minVerticalPadding: 20,
-                onTap: () {
-                  Get.to(() => setting_moreTab());
-                },
-                title: Text(
-                  '친구관리',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
