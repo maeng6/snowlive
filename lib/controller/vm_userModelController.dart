@@ -1,19 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snowlive3/model/m_userModel.dart';
 import 'package:snowlive3/screens/login/v_loginpage.dart';
-import 'package:snowlive3/screens/more/friend/v_searchUserPage.dart';
-
 import '../model/m_resortModel.dart';
 
 class UserModelController extends GetxController{
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
+  final GeolocatorPlatform _geolocator = GeolocatorPlatform.instance;
 
   RxString? _uid = ''.obs;
   RxString? _displayName = ''.obs;
@@ -550,6 +549,15 @@ class UserModelController extends GetxController{
     final uid = user!.uid;
     await ref.collection('user').doc(friendUid).update({
       'whoResistMe': FieldValue.arrayRemove([uid])
+    });
+  }
+
+  Future<void> setPosition({required uid}) async {
+    _geolocator.getPositionStream().listen((Position position) async {
+      // Update firestore with new position
+      await FirebaseFirestore.instance.collection('user').doc(uid).update({
+        'location': GeoPoint(position.latitude, position.longitude),
+      });
     });
   }
 }

@@ -101,15 +101,6 @@ class _MainHomeState extends State<MainHome> {
                   label: 'Discover',
                 ),
                 BottomNavigationBarItem(
-                  icon: Image.asset(
-                    'assets/imgs/icons/icon_bul_off.png',
-                    scale: 4,
-                  ),
-                  activeIcon:
-                  Image.asset('assets/imgs/icons/icon_bul_on.png', scale: 4),
-                  label: 'Brand',
-                ),
-                BottomNavigationBarItem(
                   icon: Stack(
                     children: [
 
@@ -133,7 +124,7 @@ class _MainHomeState extends State<MainHome> {
                     scale: 4,
                   ),
                   label: 'Flea',
-                ),
+                ), //브랜드
                 BottomNavigationBarItem(
                   icon: Image.asset(
                     'assets/imgs/icons/icon_livetalk_off.png',
@@ -142,7 +133,7 @@ class _MainHomeState extends State<MainHome> {
                   activeIcon: Image.asset('assets/imgs/icons/icon_livetalk_on.png',
                       scale: 4),
                   label: 'Weather',
-                ),
+                ), //라톡
                 BottomNavigationBarItem(
                   icon: Stack(
                     children: [
@@ -178,7 +169,7 @@ class _MainHomeState extends State<MainHome> {
                     ],
                   ),
                   label: 'More',
-                ),
+                ), //모어
               ],
               showUnselectedLabels: false,
               showSelectedLabels: false,
@@ -192,7 +183,6 @@ class _MainHomeState extends State<MainHome> {
           children: [
             ResortHome(),
             DiscoverScreen(),
-            BulletinScreen(),
             FleaMarketScreen(),
             CommentTile_liveTalk_resortHome(),
             MoreTab(),
