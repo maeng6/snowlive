@@ -20,7 +20,11 @@ class UserModel {
     this.likeUidList,
     this.friendUidList,
     this.resistDate,
-    this.newChat
+    this.newChat,
+    this.stateMsg,
+    this.isOnLive,
+    this.whoResistMe,
+    this.whoResistMeBF,
   });
 
   final auth = FirebaseAuth.instance;
@@ -44,6 +48,10 @@ class UserModel {
   List? friendUidList;
   List? fleaChatUidList;
   Timestamp? resistDate;
+  String? stateMsg;
+  bool? isOnLive;
+  List? whoResistMe;
+  List? whoResistMeBF;
 
   UserModel.fromJson(dynamic json, this.reference) {
       uid = json['uid'];
@@ -64,6 +72,11 @@ class UserModel {
       resistDate = json['resistDate'];
       fleaChatUidList = json['fleaChatUidList'];
       newChat = json['newChat'];
+      stateMsg = json['stateMsg'];
+      isOnLive = json['isOnLive'];
+      whoResistMe = json['whoResistMe'];
+      whoResistMeBF = json['whoResistMeBF'];
+
 
   }
 

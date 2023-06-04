@@ -16,9 +16,7 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
   UserModelController _userModelController = Get.find<UserModelController>();
   //TODO: Dependency Injection**************************************************
 
-
   List<Event> _events = [];
-
 
   @override
   void initState() {
@@ -62,31 +60,35 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
     return weekDates;
   }
 
-  List<Event> _getEventsForWeek(DateTime selectedDate) {
-    final List<Event> eventsForWeek = _events.where((event) {
+  Map<DateTime, List<Event>> _getEventsForWeek(DateTime selectedDate) {
+    final Map<DateTime, List<Event>> eventsForWeek = {};
+
+    _events.forEach((event) {
       final eventDate = event.date;
       final startDate = selectedDate.subtract(Duration(days: selectedDate.weekday - 1));
       final endDate = startDate.add(Duration(days: 6));
-      return eventDate.isAfter(startDate.subtract(Duration(days: 1))) &&
-          eventDate.isBefore(endDate.add(Duration(days: 1)));
-    }).toList();
 
-    eventsForWeek.sort((a, b) => a.date.compareTo(b.date));
+      if (eventDate.isAfter(startDate.subtract(Duration(days: 1))) &&
+          eventDate.isBefore(endDate.add(Duration(days: 1)))) {
+        if (eventsForWeek.containsKey(DateTime(eventDate.year, eventDate.month, eventDate.day))) {
+          eventsForWeek[DateTime(eventDate.year, eventDate.month, eventDate.day)]!.add(event);
+        } else {
+          eventsForWeek[DateTime(eventDate.year, eventDate.month, eventDate.day)] = [event];
+        }
+      }
+    });
 
     return eventsForWeek;
   }
 
-  List<Event> _getEventsForDay(DateTime day) {
-    return _events.where((event) {
+  Widget _buildDayCell(DateTime day) {
+    final List<Event> events = _events.where((event) {
       final eventDate = event.date;
       return eventDate.year == day.year &&
           eventDate.month == day.month &&
           eventDate.day == day.day;
     }).toList();
-  }
 
-  Widget _buildDayCell(DateTime day) {
-    final List<Event> events = _getEventsForDay(day);
     final bool isToday = DateTime.now().day == day.day && DateTime.now().month == day.month && DateTime.now().year == day.year;
     final List<String> weekdays = ['월', '화', '수', '목', '금', '토', '일'];
     final String weekday = weekdays[day.weekday - 1]; // 날짜의 요일 가져오기
@@ -105,7 +107,7 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
             Text(
               weekday, // 요일 출력
               style: TextStyle(
-                fontSize: 11
+                  fontSize: 11
               ),
             ),
             SizedBox(height: 2),
@@ -134,14 +136,12 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
 
   //TODO: Calendar**************************************************
 
-
-
   @override
   Widget build(BuildContext context) {
 
     final DateTime today = DateTime.now();
     final List<DateTime> weekDates = _getWeekDates(today);
-    final List<Event> eventsForWeek = _getEventsForWeek(today);
+    final Map<DateTime, List<Event>> eventsForWeek = _getEventsForWeek(today);
 
     return Padding(
       padding: EdgeInsets.only(left: 16, right: 16),
@@ -181,8 +181,8 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
             decoration: BoxDecoration(
-              color: Color(0xFFF5F5F5),
-              borderRadius: BorderRadius.circular(8)
+                color: Color(0xFFF5F5F5),
+                borderRadius: BorderRadius.circular(8)
             ),
             child: Row(
               children: weekDates.map((day) => _buildDayCell(day)).toList(),
@@ -197,15 +197,21 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
                 ),
                 child:
                 (_events.isNotEmpty)
-                ? Column(
-                  children: eventsForWeek.map((event) => ListTile(
-                    title: Text(event.title),
-                    subtitle: Text(
-                      '${event.date.day}/${event.date.month}/${event.date.year}',
-                    ),
-                  )).toList(),
+                    ? Column(
+                  children: eventsForWeek.entries.map((entry) {
+                    return Column(
+                      children: <Widget>[
+                        Text(
+                          '${entry.key.day}/${entry.key.month}/${entry.key.year}',
+                        ),
+                        ...entry.value.map((event) => ListTile(
+                          title: Text(event.title),
+                        )).toList(),
+                      ],
+                    );
+                  }).toList(),
                 )
-                : Center(
+                    : Center(
                   child: Column(
                     children: [
                       SizedBox(
