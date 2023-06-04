@@ -36,6 +36,10 @@ class UserModelController extends GetxController{
   RxBool? _phoneAuth=false.obs;
   RxBool? _newChat=false.obs;
   Timestamp? _resistDate;
+  RxString? _stateMsg = ''.obs;
+  RxBool? _isOnLive = false.obs;
+  RxList? _whoResistMe = [].obs;
+  RxList? _whoResistMeBF = [].obs;
 
 
   String? get uid => _uid!.value;
@@ -59,7 +63,10 @@ class UserModelController extends GetxController{
   bool? get phoneAuth => _phoneAuth!.value;
   bool? get newChat => _newChat!.value;
   Timestamp? get resistDate => _resistDate;
-
+  String? get stateMsg =>_stateMsg!.value;
+  bool? get isOnLive =>_isOnLive!.value;
+  List? get whoResistMe =>_whoResistMe;
+  List? get whoResistMeBF =>_whoResistMeBF;
 
   @override
   void onInit()  async{
@@ -106,6 +113,10 @@ class UserModelController extends GetxController{
         this._friendUidList!.value = userModel.friendUidList!;
         this._resistDate = userModel.resistDate!;
         this._newChat!.value = userModel.newChat!;
+        this._stateMsg!.value = userModel.stateMsg!;
+        this._isOnLive!.value = userModel.isOnLive!;
+        this._whoResistMe!.value = userModel.whoResistMe!;
+        this._whoResistMeBF!.value = userModel.whoResistMeBF!;
         try {
           this._fleaChatUidList!.value = userModel.fleaChatUidList!;
         }catch(e){};
@@ -151,7 +162,10 @@ class UserModelController extends GetxController{
       'fleaChatUidList' : fleaChatUidList,
       'newChat' : false,
       'friendUidList' : [],
-      'stateMsg':''
+      'stateMsg':'',
+      'isOnLive': false,
+      'whoResistMe':[],
+      'whoResistMeBF':[]
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
