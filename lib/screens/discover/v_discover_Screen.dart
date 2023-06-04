@@ -18,6 +18,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final double _statusBarSize = MediaQuery.of(context).padding.top;
+
     return Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
@@ -42,20 +45,23 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-                padding: EdgeInsets.only(top: 107),
-                child: DiscoverScreen_ResortBanner()),
-            SizedBox(height: 30),
-            Container(
-              height: 250,
-                child: DiscoverScreen_Calendar()),
-            SizedBox(height: 60),
-            DiscoverScreen_Tip(),
-            SizedBox(height: 60),
-            DiscoverScreen_Info(),
-          ],
+        child: Padding(
+          padding: EdgeInsets.only(top: _statusBarSize+58),
+          child: Column(
+            children: [
+              Container(
+                  padding: EdgeInsets.only(top: 10),
+                  child: DiscoverScreen_ResortBanner()),
+              SizedBox(height: 40),
+              Container(
+                height: 250,
+                  child: DiscoverScreen_Calendar()),
+              SizedBox(height: 60),
+              DiscoverScreen_Tip(),
+              SizedBox(height: 60),
+              DiscoverScreen_Info(),
+            ],
+          ),
         ),
       ),
     );

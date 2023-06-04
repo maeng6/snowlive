@@ -95,33 +95,35 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: isToday ? Colors.blue : Colors.transparent,
+          color: isToday ? Color(0xFF3D83ED) : Colors.transparent,
         ),
-        height: 70,
+        height: 68,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               weekday, // 요일 출력
               style: TextStyle(
-                fontSize: 10
+                fontSize: 11
               ),
             ),
             SizedBox(height: 2),
             Text(
               '${day.day}',
               style: TextStyle(
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
                 color: isToday ? Colors.white : Colors.black,
               ),
             ),
-            SizedBox(height: 4),
+            SizedBox(height: 6),
             Container(
               height: 4,
               width: 4,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: events.isNotEmpty ? Colors.red : Colors.transparent,
+                color: events.isNotEmpty ? isToday ? Color(0xFFFFFFFF) : Color(0xFF666666) : Colors.transparent,
               ),
             ),
           ],
@@ -142,7 +144,7 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
     final List<Event> eventsForWeek = _getEventsForWeek(today);
 
     return Padding(
-      padding: EdgeInsets.only(left: 12, right: 12),
+      padding: EdgeInsets.only(left: 16, right: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -150,13 +152,12 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: EdgeInsets.only(left: 4),
                 child: Text(
                   '캘린더',
                   style: TextStyle(
                     color: Color(0xFF111111),
                     fontWeight: FontWeight.w700,
-                    fontSize: 20,
+                    fontSize: 18,
                   ),
                 ),
               ),
@@ -165,7 +166,6 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
                   Get.to(()=>Discover_Calendar_Detail_Screen());
                 },
                 child: Container(
-                  padding: EdgeInsets.only(left: 4),
                   child: Text(
                     '일정 더보기 >',
                     style: TextStyle(
@@ -177,8 +177,9 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
               ),
             ],
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 12),
           Container(
+            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
             decoration: BoxDecoration(
               color: Color(0xFFF5F5F5),
               borderRadius: BorderRadius.circular(8)
@@ -187,7 +188,6 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
               children: weekDates.map((day) => _buildDayCell(day)).toList(),
             ),
           ),
-          SizedBox(height: 10),
           Expanded(
             child: SingleChildScrollView(
               child: Container(
