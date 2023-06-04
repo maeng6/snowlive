@@ -132,6 +132,7 @@ class LoginController extends GetxController {
       'bulletinRoomCount' : 0,
       'bulletinCrewCount' : 0,
       'repoUidList' : List.empty(),
+      'friendUidList' : List.empty(),
       'commentCount' : 0,
       'resortNickname' : '',
       'phoneAuth' : false,

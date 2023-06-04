@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snowlive3/model/m_userModel.dart';
 import 'package:snowlive3/screens/login/v_loginpage.dart';
+import 'package:snowlive3/screens/resort/v_searchUserPage.dart';
 
 import '../model/m_resortModel.dart';
 
@@ -26,6 +27,7 @@ class UserModelController extends GetxController{
   int? _favoriteSaved=0;
   RxString? _profileImageUrl=''.obs;
   RxList? _repoUidList=[].obs;
+  RxList? _friendUidList=[].obs;
   RxList? _likeUidList=[].obs;
   RxList? _fleaChatUidList=[].obs;
   RxString? _resortNickname =''.obs;
@@ -48,6 +50,7 @@ class UserModelController extends GetxController{
   int? get favoriteSaved => _favoriteSaved;
   String? get profileImageUrl => _profileImageUrl!.value;
   List? get repoUidList => _repoUidList;
+  List? get friendUidList => _friendUidList;
   List? get likeUidList => _likeUidList;
   List? get fleaChatUidList => _fleaChatUidList;
   String? get resortNickname => _resortNickname!.value;
@@ -100,6 +103,7 @@ class UserModelController extends GetxController{
         this._phoneNum!.value = userModel.phoneNum!;
         this._phoneAuth!.value = userModel.phoneAuth!;
         this._likeUidList!.value = userModel.likeUidList!;
+        this._friendUidList!.value = userModel.friendUidList!;
         this._resistDate = userModel.resistDate!;
         this._newChat!.value = userModel.newChat!;
         try {
@@ -145,7 +149,8 @@ class UserModelController extends GetxController{
       'likeUidList' : [],
       'resistDate' : Timestamp.fromDate(DateTime(1990)),
       'fleaChatUidList' : fleaChatUidList,
-      'newChat' : false
+      'newChat' : false,
+      'friendUidList' : []
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -414,7 +419,71 @@ class UserModelController extends GetxController{
     });
     await getCurrentUser(auth.currentUser!.uid);
   } //선택한 리조트를 파베유저문서에 업데이트
-}
+
+
+  Future<bool> checkDuplicateDisplayName(String displayName) async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('user')
+        .where('displayName', isEqualTo: displayName)
+        .get();
+    return querySnapshot.docs.isEmpty;
+  }//회원 닉네임 중복방지
+
+  Future<UserModel?> getFoundUser(uid) async{
+    UserModel? foundUserModel= UserModel();
+      if(uid!=null) {
+         foundUserModel = await UserModel().getUserModel(uid);
+        if (foundUserModel != null) {
+          foundUserModel.uid = foundUserModel.uid!;
+          foundUserModel.displayName = foundUserModel.displayName!;
+          foundUserModel.userEmail = foundUserModel.userEmail!;
+          foundUserModel.favoriteResort = foundUserModel.favoriteResort!;
+          foundUserModel.instantResort = foundUserModel.instantResort!;
+          foundUserModel.commentCount = foundUserModel.commentCount!;
+          foundUserModel.fleaCount = foundUserModel.fleaCount!;
+          foundUserModel.bulletinRoomCount = foundUserModel.bulletinRoomCount!;
+          foundUserModel.profileImageUrl = foundUserModel.profileImageUrl!;
+          foundUserModel.resortNickname = foundUserModel.resortNickname!;
+          foundUserModel.phoneNum = foundUserModel.phoneNum!;
+          foundUserModel.phoneAuth = foundUserModel.phoneAuth!;
+          foundUserModel.likeUidList = foundUserModel.likeUidList!;
+          foundUserModel.resistDate = foundUserModel.resistDate!;
+          foundUserModel.newChat = foundUserModel.newChat!;
+        } else {
+          // handle the case where the userModel is null
+        }
+      } else{
+      }
+    return foundUserModel;
+      }
+
+  Future<void> updateFriendUid(uid) async {
+    final  userMe = auth.currentUser!.uid;
+    await ref.collection('user').doc(userMe).update({
+      'friendUidList': FieldValue.arrayUnion([uid])
+    });
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(userMe);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List friendUidList = documentSnapshot.get('friendUidList');
+    this._friendUidList!.value = friendUidList;
+  }
+
+  Future<void> updateFriendUidList() async {
+    final  userMe = auth.currentUser!.uid;
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(userMe);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List friendUidList = documentSnapshot.get('friendUidList');
+    this._friendUidList!.value = friendUidList;
+  }
+
+  }
+
+
+
 
 // Future<void> updatefleaChatUid(uid) async {
 //   final  userMe = auth.currentUser!.uid;

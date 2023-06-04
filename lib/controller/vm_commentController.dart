@@ -161,7 +161,7 @@ class CommentModelController extends GetxController {
     try {
       final User? user = auth.currentUser;
       final uid = user!.uid;
-      DocumentReference<Map<String, dynamic>> documentReference = ref.collection('livetalk').doc(uid);
+      DocumentReference<Map<String, dynamic>> documentReference = ref.collection('liveTalk').doc(uid);
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await documentReference.get();
 
       if (documentSnapshot.exists) {

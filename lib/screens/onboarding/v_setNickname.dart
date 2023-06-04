@@ -19,6 +19,7 @@ class _SetNicknameState extends State<SetNickname> {
   TextEditingController _textEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   var _nickName;
+  bool? isCheckedDispName;
 
   bool isLoading = false;
 
@@ -191,10 +192,54 @@ class _SetNicknameState extends State<SetNickname> {
                       });
                       if (_formKey.currentState!.validate()) {
                         _nickName = _textEditingController.text;
-                        Get.to(() => SetProfileImage(nickName: _nickName,));
-                      } else {
-
-                      }
+                       isCheckedDispName =  await userModelController.checkDuplicateDisplayName(_nickName);
+                       if (isCheckedDispName == true) {
+                         Get.to(() => SetProfileImage(nickName: _nickName,));
+                       }
+                       else{
+                         Get.dialog(AlertDialog(
+                           contentPadding: EdgeInsets.only(
+                               bottom: 0,
+                               left: 20,
+                               right: 20,
+                               top: 30),
+                           elevation: 0,
+                           shape: RoundedRectangleBorder(
+                               borderRadius:
+                               BorderRadius.circular(
+                                   10.0)),
+                           buttonPadding:
+                           EdgeInsets.symmetric(
+                               horizontal: 20,
+                               vertical: 0),
+                           content: Text(
+                             '이미 존재하는 활동명입니다.\n다른 활동명을 입력해주세요.',
+                             style: TextStyle(
+                                 fontWeight: FontWeight.w600,
+                                 fontSize: 15),
+                           ),
+                           actions: [
+                             Row(
+                               children: [
+                                 TextButton(
+                                     onPressed: () {
+                                       Navigator.pop(context);
+                                     },
+                                     child: Text(
+                                       '확인',
+                                       style: TextStyle(
+                                         fontSize: 15,
+                                         color: Color(0xff377EEA),
+                                         fontWeight: FontWeight.bold,
+                                       ),
+                                     )),
+                               ],
+                               mainAxisAlignment: MainAxisAlignment.center,
+                             )
+                           ],
+                         ));
+                       }
+                      } else {}
                       setState(() {
                         isLoading = false;
                       });

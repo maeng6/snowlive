@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:snowlive3/screens/bulletin/v_bulletin_Screen.dart';
 import 'package:snowlive3/screens/comments/v_liveTalk_Screen.dart';
 import 'package:snowlive3/screens/resort/v_resortHome.dart';
+import 'package:snowlive3/screens/discover/v_discover_Resort_Banner.dart';
+import 'package:snowlive3/screens/discover/v_discover_Screen.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../controller/vm_loginController.dart';
 import '../controller/vm_noticeController.dart';
@@ -23,11 +25,14 @@ class MainHome extends StatefulWidget {
 class _MainHomeState extends State<MainHome> {
   int _currentPage = 0;
   bool? wait;
+  bool getUserComp=false;
 
   PageController _pageController = PageController();
 
   void _onItemTapped(int index) {
-    _pageController.jumpToPage(index);
+    if (getUserComp == true){
+      _pageController.jumpToPage(index);
+    }else null;
   }
 
   void changePage(int index) {
@@ -65,6 +70,7 @@ class _MainHomeState extends State<MainHome> {
         FutureBuilder(
           future: _userModelController.getCurrentUser(widget.uid),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            getUserComp = true;
             return BottomNavigationBar(
               backgroundColor: Colors.white,
               elevation: 10,
@@ -82,6 +88,17 @@ class _MainHomeState extends State<MainHome> {
                     scale: 4,
                   ),
                   label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Image.asset(
+                    'assets/imgs/icons/icon_home_off.png',
+                    scale: 4,
+                  ),
+                  activeIcon: Image.asset(
+                    'assets/imgs/icons/icon_home_on.png',
+                    scale: 4,
+                  ),
+                  label: 'Discover',
                 ),
                 BottomNavigationBarItem(
                   icon: Image.asset(
@@ -174,6 +191,7 @@ class _MainHomeState extends State<MainHome> {
           physics: NeverScrollableScrollPhysics(),
           children: [
             ResortHome(),
+            DiscoverScreen(),
             BulletinScreen(),
             FleaMarketScreen(),
             CommentTile_liveTalk_resortHome(),
