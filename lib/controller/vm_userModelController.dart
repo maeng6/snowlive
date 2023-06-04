@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snowlive3/model/m_userModel.dart';
@@ -12,7 +11,6 @@ class UserModelController extends GetxController{
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
-  final GeolocatorPlatform _geolocator = GeolocatorPlatform.instance;
 
   RxString? _uid = ''.obs;
   RxString? _displayName = ''.obs;
@@ -552,62 +550,5 @@ class UserModelController extends GetxController{
     });
   }
 
-  Future<void> setPosition({required uid}) async {
-    _geolocator.getPositionStream().listen((Position position) async {
-      // Update firestore with new position
-      await FirebaseFirestore.instance.collection('user').doc(uid).update({
-        'location': GeoPoint(position.latitude, position.longitude),
-      });
-    });
-  }
 }
 
-
-
-
-// Future<void> updatefleaChatUid(uid) async {
-//   final  userMe = auth.currentUser!.uid;
-//   await ref.collection('user').doc(userMe).update({
-//     'fleaChatUidList': FieldValue.arrayUnion([uid])
-//   });
-//   DocumentReference<Map<String, dynamic>> documentReference =
-//   ref.collection('user').doc(userMe);
-//   final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-//   await documentReference.get();
-//   List fleaChatUidList = documentSnapshot.get('fleaChatUidList');
-//   this._fleaChatUidList!.value = fleaChatUidList;
-// }
-
-// Future<void> fleaChatCountUpdate(uid) async {
-//
-//   try {
-//     DocumentReference<Map<String, dynamic>> documentReference =
-//     ref.collection('user').doc(uid);
-//
-//     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-//     await documentReference.get();
-//
-//     int fleaChatCount = documentSnapshot.get('fleaChatCount');
-//     int fleaChatCountPlus = fleaChatCount + 1;
-//
-//     await ref.collection('user').doc(uid).update({
-//       'fleaChatCount': fleaChatCountPlus,
-//     });
-//     this._fleaChatCount!.value = fleaChatCountPlus;
-//   }catch(e){
-//     await ref.collection('user').doc(uid).update({
-//       'fleaChatCount': 1,
-//     });
-//     DocumentReference<Map<String, dynamic>> documentReference =
-//     ref.collection('user').doc(uid);
-//
-//     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-//     await documentReference.get();
-//
-//     int fleaChatCount = documentSnapshot.get('fleaChatCount');
-//
-//     this._fleaChatCount!.value = fleaChatCount;
-//
-//   }
-//
-// }
