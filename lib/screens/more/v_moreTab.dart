@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:snowlive3/screens/more/liveMap/v_liveMap_Screen.dart';
 import 'package:snowlive3/screens/more/v_contactUsPage.dart';
 import 'package:snowlive3/screens/more/v_favoriteResort_moreTab.dart';
 import 'package:snowlive3/screens/more/friend/v_friendListPage.dart';
@@ -524,6 +525,7 @@ class _MoreTabState extends State<MoreTab> {
                         SizedBox(height: 25,),
                         GestureDetector(
                           onTap: (){
+                            Get.to(()=>LiveMap_Screen());
                           },
                           child: Column(
                             children: [
