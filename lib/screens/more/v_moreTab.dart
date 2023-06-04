@@ -522,14 +522,18 @@ class _MoreTabState extends State<MoreTab> {
                           ),
                         ),
                         SizedBox(height: 25,),
-                        Column(
-                          children: [
-                            Icon(Icons.snowboarding_outlined,size: 30,),
-                            SizedBox(height: 5,),
-                            Text('',style: TextStyle(
-                                fontSize: 14
-                            ),)
-                          ],
+                        GestureDetector(
+                          onTap: (){
+                          },
+                          child: Column(
+                            children: [
+                              Icon(Icons.snowboarding_outlined,size: 30,),
+                              SizedBox(height: 5,),
+                              Text('라이브맵',style: TextStyle(
+                                  fontSize: 14
+                              ),)
+                            ],
+                          ),
                         ),
                       ],
                     ),
