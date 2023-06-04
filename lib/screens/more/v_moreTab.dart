@@ -566,7 +566,7 @@ class _MoreTabState extends State<MoreTab> {
                             children: [
                               Icon(Icons.snowboarding_outlined,size: 30,),
                               SizedBox(height: 5,),
-                              Text('단톡방/동호회',style: TextStyle(
+                              Text('커뮤니티',style: TextStyle(
                                   fontSize: 14
                               ),)
                             ],
