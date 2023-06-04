@@ -285,6 +285,7 @@ class _FriendListPageState extends State<FriendListPage> {
                       ),
                       Column(
                         children: friendDocs.map((doc) {
+                          List whoResistMe = doc.get('whoResistMe');
                           List whoResistMeBF = doc.get('whoResistMeBF');
                           return ListTile(
                             onTap: () async{
@@ -472,8 +473,79 @@ class _FriendListPageState extends State<FriendListPage> {
                                             enableDrag: false,
                                             context: context,
                                             builder: (context) {
-                                              return Container(
+                                              return Padding(
+                                                padding: EdgeInsets.only(top:50),
+                                                child: Container(
+                                                    height: 200,
+                                                    child: GestureDetector(
+                                                        onTap: (){
+                                                          Get.dialog(AlertDialog(
+                                                            contentPadding: EdgeInsets.only(
+                                                                bottom: 0,
+                                                                left: 20,
+                                                                right: 20,
+                                                                top: 30),
+                                                            elevation: 0,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                BorderRadius.circular(
+                                                                    10.0)),
+                                                            buttonPadding:
+                                                            EdgeInsets.symmetric(
+                                                                horizontal: 20,
+                                                                vertical: 0),
+                                                            content: Text(
+                                                              '친구목록에서 삭제하시겠습니까?',
+                                                              style: TextStyle(
+                                                                  fontWeight: FontWeight.w600,
+                                                                  fontSize: 15),
+                                                            ),
+                                                            actions: [
+                                                              Row(
+                                                                children: [
+                                                                  TextButton(
+                                                                      onPressed: () {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      },
+                                                                      child: Text(
+                                                                        '취소',
+                                                                        style: TextStyle(
+                                                                          fontSize: 15,
+                                                                          color: Color(
+                                                                              0xFF949494),
+                                                                          fontWeight:
+                                                                          FontWeight.bold,
+                                                                        ),
+                                                                      )),
+                                                                  TextButton(
+                                                                      onPressed: () async {
+                                                                        CustomFullScreenDialog.showDialog();
+                                                                        await _userModelController.deleteWhoResistMe(friendUid: doc.get('uid'));
+                                                                        Navigator.pop(context);
+                                                                        Navigator.pop(context);
+                                                                        CustomFullScreenDialog.cancelDialog();
+                                                                      },
+                                                                      child: Text(
+                                                                        '확인',
+                                                                        style: TextStyle(
+                                                                          fontSize: 15,
+                                                                          color: Color(
+                                                                              0xFF3D83ED),
+                                                                          fontWeight:
+                                                                          FontWeight.bold,
+                                                                        ),
+                                                                      ))
+                                                                ],
+                                                                mainAxisAlignment:
+                                                                MainAxisAlignment.end,
+                                                              )
+                                                            ],
+                                                          ));
+                                                        },
+                                                        child: Text('친구 삭제'))
 
+                                                ),
                                               );
                                             }),
                                         child: Icon(

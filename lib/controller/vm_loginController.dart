@@ -139,7 +139,12 @@ class LoginController extends GetxController {
       'phoneNum' : '',
       'resistDate' : Timestamp.now(),
       'likeUidList' : [],
-      'newChat' : false
+      'newChat' : false,
+      'friendUidList' : [],
+      'stateMsg':'',
+      'isOnLive': false,
+      'whoResistMe':[],
+      'whoResistMeBF':[]
     });
 
 
