@@ -52,8 +52,7 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
   void listenToFriendLocations(List<String> friendIds) {
     FirebaseFirestore.instance
         .collection('user')
-        .doc(_userModelController.uid)
-        .collection('friendList')
+        .where('whoResistMe', arrayContains: _userModelController.uid!)
         .snapshots()
         .listen((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((document) {
