@@ -167,78 +167,116 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
                   Get.to(()=>Discover_Calendar_Detail_Screen());
                 },
                 child: Container(
-                  child: Text(
-                    '더보기',
-                    style: TextStyle(
-                      color: Color(0xFF949494),
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Text(
+                      '더보기',
+                      style: TextStyle(
+                        color: Color(0xFF949494),
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold
+                      ),
                     ),
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 12),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-            decoration: BoxDecoration(
-                color: Color(0xFFF5F5F5),
-                borderRadius: BorderRadius.circular(8)
-            ),
-            child: Row(
-              children: weekDates.map((day) => _buildDayCell(day)).toList(),
-            ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Container(
+          SizedBox(height: 16),
+          Stack(
+            children: [
+              Container(
                 decoration: BoxDecoration(
                     color: Color(0xFFFAFAFB),
                     borderRadius: BorderRadius.circular(8)
                 ),
-                child:
-                (_events.isNotEmpty)
-                    ? Column(
-                  children: eventsForWeek.entries.map((entry) {
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          '${entry.key.year}.${entry.key.month}.${entry.key.day}',
+                child: Padding(
+                  padding: EdgeInsets.only(top: 82),
+                  child: Expanded(
+                    child: SingleChildScrollView(
+                      child: (_events.isNotEmpty)
+                          ? Padding(
+                        padding: EdgeInsets.only(right: 20, left: 20, top: 20),
+                        child: Column(
+                          children: eventsForWeek.entries.map((entry) {
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: 16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    height: 28,
+                                    width: 72,
+                                    child: Text(
+                                      '${entry.key.year}.${entry.key.month}.${entry.key.day}',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF3D83ED)
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: entry.value.map((event) => Container(
+                                        height: 32,
+                                        child: Transform.translate(
+                                          offset: Offset(0,-19),
+                                          child: ListTile(
+                                            title: Text(event.title,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                color: Color(0xFF111111)
+                                            ),),
+                                          ),
+                                        ),
+                                      )).toList(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
                         ),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: entry.value.map((event) => ListTile(
-                              title: Text(event.title),
-                            )).toList(),
-                          ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                )
-                    : Center(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 10),
-                      Text(
-                        '일정이 없습니다.',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
-                          color: Color(0xFF949494),
+                      )
+                          : Center(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 48),
+                              child: Text(
+                                '일정이 없습니다.',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                  color: Color(0xFF111111),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(height: 10),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                decoration: BoxDecoration(
+                    color: Color(0xFFF5F5F5),
+                    borderRadius: BorderRadius.circular(8)
+                ),
+                child: Row(
+                  children: weekDates.map((day) => _buildDayCell(day)).toList(),
+                ),
+              ),
+
+            ],
           ),
+
         ],
       ),
     );

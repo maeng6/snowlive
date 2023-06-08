@@ -88,6 +88,7 @@ class _DiscoverScreen_InfoState extends State<DiscoverScreen_Info> {
                     options: CarouselOptions(
                       initialPage: 0,
                       viewportFraction: 0.7,
+                      aspectRatio: 16/9,
                       onPageChanged: (index, reason) {
                         setState(() {
                           _currentIndex = index;

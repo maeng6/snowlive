@@ -52,13 +52,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               Container(
                   padding: EdgeInsets.only(top: 10),
                   child: DiscoverScreen_ResortBanner()),
-              SizedBox(height: 40),
-              Container(
-                height: 250,
-                  child: DiscoverScreen_Calendar()),
-              SizedBox(height: 60),
+              SizedBox(height: 10),
+              DiscoverScreen_Calendar(),
+              SizedBox(height: 48),
               DiscoverScreen_Tip(),
-              SizedBox(height: 60),
+              SizedBox(height: 48),
               DiscoverScreen_Info(),
             ],
           ),

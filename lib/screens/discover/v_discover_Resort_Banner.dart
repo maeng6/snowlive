@@ -115,6 +115,8 @@ class _DiscoverScreen_ResortBannerState extends State<DiscoverScreen_ResortBanne
                       );
                     }).toList(),
                   ),
+                  SizedBox(height: 26),
+
                 ],
               )
               : Container(),

@@ -54,61 +54,58 @@ class _DiscoverScreen_TipState extends State<DiscoverScreen_Tip> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<String>? imageUrls = snapshot.data;
-          return Padding(
-            padding: EdgeInsets.only(left: 12, right: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: EdgeInsets.only(left: 4),
-                  child: Text(
-                    '알아두면 쓸모있는 짧은 지식',
-                    style: TextStyle(
-                      color: Color(0xFF111111),
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20,
-                    ),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  '알아두면 쓸모있는 짧은 지식',
+                  style: TextStyle(
+                    color: Color(0xFF111111),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
                   ),
                 ),
-                SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () async{
-
-                    final urlSnapshot = await FirebaseFirestore.instance
-                        .collection('discover_tip_url')
-                        .where('url', isEqualTo: imageUrls![_currentIndex])
-                        .get();
-                    if (urlSnapshot.docs.isNotEmpty) {
-                      String instaUrl = urlSnapshot.docs.first['instaUrl'];
-                      Get.to(() => WebPage(url: instaUrl));
-                    }
-                  },
-                  child: CarouselSlider(
-                    carouselController: _carouselController,
-                    options: CarouselOptions(
-                      initialPage: 0,
-                      viewportFraction: 0.7,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          _currentIndex = index;
-                        });
+              ),
+              SizedBox(height: 16),
+              GestureDetector(
+                onTap: () async{
+                  final urlSnapshot = await FirebaseFirestore.instance
+                      .collection('discover_tip_url')
+                      .where('url', isEqualTo: imageUrls![_currentIndex])
+                      .get();
+                  if (urlSnapshot.docs.isNotEmpty) {
+                    String instaUrl = urlSnapshot.docs.first['instaUrl'];
+                    Get.to(() => WebPage(url: instaUrl));
+                  }
+                },
+                child: CarouselSlider(
+                  carouselController: _carouselController,
+                  options: CarouselOptions(
+                    initialPage: 0,
+                    viewportFraction: 0.53,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                    enableInfiniteScroll: false,
+                  ),
+                  items: imageUrls!.map((url) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return ExtendedImage.network(
+                          url,
+                          fit: BoxFit.cover,
+                          cache: true,
+                        );
                       },
-                    ),
-                    items: imageUrls!.map((url) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return ExtendedImage.network(
-                            url,
-                            fit: BoxFit.cover,
-                            cache: true,
-                          );
-                        },
-                      );
-                    }).toList(),
-                  ),
+                    );
+                  }).toList(),
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
