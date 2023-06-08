@@ -550,5 +550,21 @@ class UserModelController extends GetxController{
     });
   }
 
+  Future<void> updateIsOnLiveOn() async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'isOnLive': true,
+    });
+  }
+
+  Future<void> updateIsOnLiveOff() async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'isOnLive': false,
+    });
+  }
+
 }
 

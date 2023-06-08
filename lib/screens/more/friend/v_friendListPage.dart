@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_timeStampController.dart';
 import 'package:snowlive3/screens/more/v_noticeDetailPage.dart';
 import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
@@ -180,100 +181,125 @@ class _FriendListPageState extends State<FriendListPage> {
                               builder: (context,
                                   AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
 
-                                if (!snapshot.hasData || snapshot.data == null){
+                                try {
+                                  if (!snapshot.hasData ||
+                                      snapshot.data == null) {
+                                    return Container(
+                                      color: Colors.white,
+                                      child: Text('친한친구를 등록해주세요.'),
+                                    );
+                                  }
+                                  else if (snapshot.data!.docs.isNotEmpty) {
+                                    final bestfriendDocs = snapshot.data!.docs;
+                                    Size _size = MediaQuery
+                                        .of(context)
+                                        .size;
+                                    return SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: bestfriendDocs.map((BFdoc) {
+                                            return (BFdoc
+                                                .get('profileImageUrl')
+                                                .isNotEmpty)
+                                                ? GestureDetector(
+                                              onTap: () {},
+                                              child: Container(
+                                                width: 102,
+                                                height: 82,
+                                                child: Column(
+                                                  children: [
+                                                    Stack(
+                                                        children: [
+                                                          ExtendedImage.network(
+                                                            BFdoc.get('profileImageUrl'),
+                                                            enableMemoryCache: true,
+                                                            shape: BoxShape.circle,
+                                                            borderRadius: BorderRadius.circular(8),
+                                                            width: 50,
+                                                            height: 50,
+                                                            fit: BoxFit.cover,),
+                                                          (BFdoc.get('isOnLive') == true)
+                                                              ? Positioned(
+                                                            child: Text('live'),
+                                                            right: 0,
+                                                            top: 30,
+                                                          )
+                                                              : Text('')
+                                                        ]
+                                                    ),
+                                                    Text(BFdoc.get(
+                                                        'displayName'))
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                                : GestureDetector(
+                                              onTap: () {},
+                                              child: Container(
+                                                width: 102,
+                                                height: 82,
+                                                child: Column(
+                                                  children: [
+                                                    Stack(
+                                                      children: [
+                                                        ExtendedImage.asset(
+                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                          enableMemoryCache: true,
+                                                          shape: BoxShape
+                                                              .circle,
+                                                          borderRadius: BorderRadius
+                                                              .circular(8),
+                                                          width: 50,
+                                                          height: 50,
+                                                          fit: BoxFit.cover,
+                                                        ),
+
+                                                        (BFdoc.get(
+                                                            'isOnLive') == true)
+                                                            ? Positioned(
+                                                          child: Text('live'),
+                                                          right: 0,
+                                                          top: 30,
+                                                        )
+                                                            : Text('')
+                                                      ],
+                                                    ),
+                                                    Text(BFdoc.get(
+                                                        'displayName'))
+                                                  ],
+                                                ),
+
+                                              ),
+                                            );
+                                          }).toList(),
+                                        )
+                                    );
+                                  } else if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
                                   return Container(
                                     color: Colors.white,
-                                    child: Text('친한친구를 등록해주세요.'),
+                                    child: Text('친한친구를 등록해주세요.',
+                                      style: TextStyle(color: Colors.grey),),
+                                  );
+                                }catch(e){
+                                  Center(
+                                      child: Container(
+                                          height: 10,
+                                          width: 10,
+                                         )
                                   );
                                 }
-                                  else if (snapshot.data!.docs.isNotEmpty) {
-
-                                  final bestfriendDocs = snapshot.data!.docs;
-                                  Size _size = MediaQuery.of(context).size;
-                                  return SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        children: bestfriendDocs.map((BFdoc) {
-                                          return (BFdoc.get('profileImageUrl').isNotEmpty)
-                                              ? GestureDetector(
-                                            onTap: () {},
-                                            child: Container(
-                                              width: 102,
-                                              height: 82,
-                                              child: Column(
-                                                children: [
-                                                  Stack(
-                                                    children : [
-                                                      ExtendedImage.network(
-                                                        BFdoc.get('profileImageUrl'),
-                                                        enableMemoryCache: true,
-                                                        shape: BoxShape.circle,
-                                                        borderRadius: BorderRadius.circular(8),
-                                                        width: 50,
-                                                        height: 50,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                      (BFdoc.get('isOnLive') == true)
-                                                          ? Positioned(
-                                                        child: Text('live'),
-                                                        right: 0,
-                                                        top: 20,
-                                                      )
-                                                          : Text('')
-                                                    ]
-                                                  ),
-                                                  Text(BFdoc.get('displayName'))
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                              : GestureDetector(
-                                            onTap: (){},
-                                            child: Container(
-                                              width: 102,
-                                              height: 82,
-                                              child: Column(
-                                                      children: [
-                                                        Stack(
-                                                          children: [
-                                                            ExtendedImage.asset(
-                                                              'assets/imgs/profile/img_profile_default_circle.png',
-                                                              enableMemoryCache: true,
-                                                              shape: BoxShape.circle,
-                                                              borderRadius: BorderRadius.circular(8),
-                                                              width: 50,
-                                                              height: 50,
-                                                              fit: BoxFit.cover,
-                                                            ),
-
-                                                            (BFdoc.get('isOnLive') == true)
-                                                                ? Positioned(
-                                                              child: Text('live'),
-                                                              right: 0,
-                                                              top: 20,
-                                                            )
-                                                                : Text('')
-                                                          ],
-                                                        ),
-                                                        Text(BFdoc.get('displayName'))
-                                                ],
-                                              ),
-
-                                            ),
-                                          );
-                                        }).toList(),
-                                      )
-                                  );
-                                } else if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                                return Container(
-                                  color: Colors.white,
-                                  child: Text('친한친구를 등록해주세요.',
-                                  style: TextStyle(color: Colors.grey),),
+                                return Center(
+                                    child: Container(
+                                        height: 10,
+                                        width: 10,
+                                        )
                                 );
+
                               },
                             ),
                           ),
