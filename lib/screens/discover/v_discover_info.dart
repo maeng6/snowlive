@@ -43,7 +43,6 @@ class _DiscoverScreen_InfoState extends State<DiscoverScreen_Info> {
       }
 
       yield urls;
-
     }
   }
 
@@ -54,67 +53,60 @@ class _DiscoverScreen_InfoState extends State<DiscoverScreen_Info> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<String>? imageUrls = snapshot.data;
-          return Padding(
-            padding: EdgeInsets.only(left: 12, right: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: EdgeInsets.only(left: 4),
-                  child: Text(
-                    '이모저모 소식통',
-                    style: TextStyle(
-                      color: Color(0xFF111111),
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20,
-                    ),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  '이모저모 소식통',
+                  style: TextStyle(
+                    color: Color(0xFF111111),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
                   ),
                 ),
-                SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () async{
-
-                    final urlSnapshot = await FirebaseFirestore.instance
-                        .collection('discover_info_url')
-                        .where('url', isEqualTo: imageUrls![_currentIndex])
-                        .get();
-                    if (urlSnapshot.docs.isNotEmpty) {
-                      String instaUrl = urlSnapshot.docs.first['instaUrl'];
-                      Get.to(() => WebPage(url: instaUrl));
-                    }
-                  },
-                  child: CarouselSlider(
-                    carouselController: _carouselController,
-                    options: CarouselOptions(
-                      initialPage: 0,
-                      viewportFraction: 0.7,
-                      aspectRatio: 16/9,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          _currentIndex = index;
-                        });
+              ),
+              SizedBox(height: 14),
+              Container(
+                height: 180, // maintain a 16:9 aspect ratio
+                child: ListView.builder(
+                  padding: EdgeInsets.only(left: 16),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: imageUrls!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () async {
+                        final urlSnapshot = await FirebaseFirestore.instance
+                            .collection('discover_info_url')
+                            .where('url', isEqualTo: imageUrls[index])
+                            .get();
+                        if (urlSnapshot.docs.isNotEmpty) {
+                          String instaUrl = urlSnapshot.docs
+                              .first['instaUrl'];
+                          Get.to(() => WebPage(url: instaUrl));
+                        }
                       },
-                    ),
-                    items: imageUrls!.map((url) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return ExtendedImage.network(
-                            url,
-                            fit: BoxFit.cover,
-                            cache: true,
-                          );
-                        },
-                      );
-                    }).toList(),
-                  ),
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        // space between images
+                        child: ExtendedImage.network(
+                          imageUrls[index],
+                          fit: BoxFit.cover,
+                          cache: true,
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          return Center(child: Lottie.asset('assets/json/loadings_wht_final.json'));
+          return Center(
+              child: Lottie.asset('assets/json/loadings_wht_final.json'));
         }
       },
     );

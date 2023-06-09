@@ -82,19 +82,16 @@ class _Discover_Calendar_Detail_ScreenState extends State<Discover_Calendar_Deta
               Get.back();
             },
           ),
-          title: Padding(
-            padding: const EdgeInsets.only(left: 0),
-            child: Column(
-              children: [
-                Text(
-                  '캘린더',
-                  style: GoogleFonts.notoSans(
-                      color: Color(0xFF111111),
-                      fontWeight: FontWeight.w900,
-                      fontSize: 20),
-                ),
-              ],
-            ),
+          title: Column(
+            children: [
+              Text(
+                '캘린더',
+                style: GoogleFonts.notoSans(
+                    color: Color(0xFF111111),
+                    fontWeight: FontWeight.w900,
+                    fontSize: 20),
+              ),
+            ],
           ),
           centerTitle: true,
           titleSpacing: 0,
@@ -102,117 +99,180 @@ class _Discover_Calendar_Detail_ScreenState extends State<Discover_Calendar_Deta
           elevation: 0.0,
         ),
       ),
-      body: Column(
-        children: [
-          TableCalendar(
-            headerStyle: HeaderStyle(
-              formatButtonVisible: false,
-              titleCentered: true,
-              leftChevronVisible: false,
-              rightChevronVisible: false,
-            ),
-            daysOfWeekHeight: 30,
-            rowHeight: 50,
-            firstDay: DateTime.utc(2021),
-            lastDay: DateTime.utc(2099),
-            focusedDay: _focusedDay,
-            calendarFormat: _calendarFormat,
-            eventLoader: (day) {
-              final dateTime = DateTime(day.year, day.month, day.day);
-              return _events[dateTime] ?? [];
-            },
-            calendarStyle: CalendarStyle(
-              markerSize: 5,
-              markerMargin: EdgeInsets.only(top: 3),
-              markerDecoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(5)
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: [
+            TableCalendar(
+              headerStyle: HeaderStyle(
+                titleCentered: false,
+                rightChevronIcon: Icon(Icons.arrow_forward_ios_sharp, size: 20, color: Color(0xFF444444),),
+                leftChevronIcon: Icon(Icons.arrow_back_ios_sharp, size: 20, color: Color(0xFF444444),),
+                titleTextStyle: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF444444)
+                ),
+                rightChevronPadding: EdgeInsets.only(right: 5, top: 3),
+                rightChevronMargin: EdgeInsets.only(right: 0),
+                leftChevronMargin: EdgeInsets.only(left: 0),
+                leftChevronPadding: EdgeInsets.only(left: 5, top: 3, right: 10),
+                formatButtonVisible: false,
               ),
-              todayDecoration: BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-              selectedDecoration: BoxDecoration(
-                color: Colors.blue,
-                shape: BoxShape.circle,
-              ),
-            ),
-            onDaySelected: _onDaySelected,
-            onFormatChanged: (format) {
-              setState(() {
-                _calendarFormat = format;
-              });
-            },
-            selectedDayPredicate: (day) {
-              return isSameDay(_selectedDay, day);
-            },
-            calendarBuilders: CalendarBuilders(
-              dowBuilder: (context, day) {
-                switch(day.weekday){
-                  case 1:
-                    return Center(child: Text('월'),);
-                  case 2:
-                    return Center(child: Text('화'),);
-                  case 3:
-                    return Center(child: Text('수'),);
-                  case 4:
-                    return Center(child: Text('목'),);
-                  case 5:
-                    return Center(child: Text('금'),);
-                  case 6:
-                    return Center(child: Text('토', style: TextStyle(color: Colors.blue),),);
-                  case 7:
-                    return Center(child: Text('일',style: TextStyle(color: Colors.red),),);
-                }
+              daysOfWeekHeight: 48,
+              rowHeight: 58,
+              firstDay: DateTime.utc(2021),
+              lastDay: DateTime.utc(2099),
+              focusedDay: _focusedDay,
+              calendarFormat: _calendarFormat,
+              eventLoader: (day) {
+                final dateTime = DateTime(day.year, day.month, day.day);
+                return _events[dateTime] ?? [];
               },
-              defaultBuilder: (context, date, events) {
-                final isSelectedDay = isSameDay(_selectedDay, date);
-                final isToday = isSameDay(DateTime.now(), date);
+              calendarStyle: CalendarStyle(
+                markersMaxCount: 1,
+                markerSize: 5,
+                markerDecoration: BoxDecoration(
+                  color: Color(0xFF3D83ED),
+                  borderRadius: BorderRadius.circular(5)
+                ),
+                todayDecoration: BoxDecoration(
+                  color: Colors.transparent,
+                  shape: BoxShape.circle,
+                ),
+                todayTextStyle: TextStyle(
+                  color: Color(0xFF3D83ED),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16
+                ),
+                selectedTextStyle: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16
+                ),
+                selectedDecoration: BoxDecoration(
+                  color: Color(0xFF3D83ED),
+                  shape: BoxShape.circle,
+                ),
+                cellPadding: EdgeInsets.only(bottom: 2, left: 1),
+              ),
+              onDaySelected: _onDaySelected,
+              onFormatChanged: (format) {
+                setState(() {
+                  _calendarFormat = format;
+                });
+              },
+              selectedDayPredicate: (day) {
+                return isSameDay(_selectedDay, day);
+              },
+              calendarBuilders: CalendarBuilders(
+                dowBuilder: (context, day) {
+                  switch(day.weekday){
+                    case 1:
+                      return Center(child: Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text('월', style: TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF444444)
+                        ),),
+                      ),);
+                    case 2:
+                      return Center(child: Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text('화', style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF444444)),),
+                      ));
+                    case 3:
+                      return Center(child: Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text('수', style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF444444)),),
+                      ));
+                    case 4:
+                      return Center(child: Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text('목', style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF444444)),),
+                      ));
+                    case 5:
+                      return Center(child: Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text('금', style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF444444)),),
+                      ));
+                    case 6:
+                      return Center(child: Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text('토', style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF444444)),),
+                      ));
+                    case 7:
+                      return Center(child: Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text('일', style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFFFF3726)),),
+                      ));
+                  }
+                },
+                defaultBuilder: (context, date, events) {
+                  final isSelectedDay = isSameDay(_selectedDay, date);
+                  final isToday = isSameDay(DateTime.now(), date);
 
-                return Center(
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    margin: const EdgeInsets.all(4.0),
-                    padding: const EdgeInsets.all(4.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isSelectedDay ? Colors.blue : Colors.transparent,
-                        width: isSelectedDay ? 2.0 : 0.0,
+                  return Center(
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isSelectedDay ? Color(0xFF3D83ED) : Colors.transparent,
+                        ),
                       ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        '${date.day}',
-                        style: TextStyle().copyWith(
-                          color: isToday ? Colors.red : Colors.black,
-                          fontSize: isSelectedDay ? 16.0 : 14.0,
-                          fontWeight: isSelectedDay ? FontWeight.bold : FontWeight.normal,
+                      child: Center(
+                        child: Text(
+                          '${date.day}',
+                          style: TextStyle().copyWith(
+                            color: isToday ? Colors.white : Color(0xFF444444),
+                            fontSize: isSelectedDay ? 15 : 15,
+                            fontWeight: isSelectedDay ? FontWeight.bold : FontWeight.normal,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-          SizedBox(height: 15),
-          Expanded(
-            child: ListView(
-              children: _events[DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day)] != null
-                  ? _events[DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day)]!.map((event) {
-                return ListTile(
-                  title: Text(event.title),
-                  subtitle: Text(
-                    '${event.date.day}/${event.date.month}/${event.date.year}',
-                  ),
-                );
-              }).toList()
-                  : [],
+            SizedBox(height: 16),
+            Expanded(
+              child: ListView(
+                children: _events[DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day)] != null
+                    ? _events[DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day)]!.map((event) {
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ListTile(
+                      title: Padding(
+                        padding: const EdgeInsets.only(bottom: 2, right: 6, left: 6),
+                        child: Text(event.title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
+                      ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(right: 6, left: 6),
+                        child: Text(
+                          '${event.date.day}/${event.date.month}/${event.date.year}',
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.only(top: 4, bottom: 4, right: 16, left: 16),
+                    ),
+                  );
+                }).toList()
+                    : [],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

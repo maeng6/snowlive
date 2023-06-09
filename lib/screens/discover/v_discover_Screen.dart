@@ -58,6 +58,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               DiscoverScreen_Tip(),
               SizedBox(height: 48),
               DiscoverScreen_Info(),
+              SizedBox(height: 40),
             ],
           ),
         ),

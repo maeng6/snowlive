@@ -68,41 +68,35 @@ class _DiscoverScreen_TipState extends State<DiscoverScreen_Tip> {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
-              GestureDetector(
-                onTap: () async{
-                  final urlSnapshot = await FirebaseFirestore.instance
-                      .collection('discover_tip_url')
-                      .where('url', isEqualTo: imageUrls![_currentIndex])
-                      .get();
-                  if (urlSnapshot.docs.isNotEmpty) {
-                    String instaUrl = urlSnapshot.docs.first['instaUrl'];
-                    Get.to(() => WebPage(url: instaUrl));
-                  }
-                },
-                child: CarouselSlider(
-                  carouselController: _carouselController,
-                  options: CarouselOptions(
-                    initialPage: 0,
-                    viewportFraction: 0.53,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
-                    },
-                    enableInfiniteScroll: false,
-                  ),
-                  items: imageUrls!.map((url) {
-                    return Builder(
-                      builder: (BuildContext context) {
-                        return ExtendedImage.network(
-                          url,
+              SizedBox(height: 14),
+              Container(
+                height: 180, // adjust this height to fit your needs
+                child: ListView.builder(
+                  padding: EdgeInsets.only(left: 16),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: imageUrls!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () async {
+                        final urlSnapshot = await FirebaseFirestore.instance
+                            .collection('discover_tip_url')
+                            .where('url', isEqualTo: imageUrls[index])
+                            .get();
+                        if (urlSnapshot.docs.isNotEmpty) {
+                          String instaUrl = urlSnapshot.docs.first['instaUrl'];
+                          Get.to(() => WebPage(url: instaUrl));
+                        }
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 10), // space between images
+                        child: ExtendedImage.network(
+                          imageUrls[index],
                           fit: BoxFit.cover,
                           cache: true,
-                        );
-                      },
+                        ),
+                      ),
                     );
-                  }).toList(),
+                  },
                 ),
               ),
             ],
