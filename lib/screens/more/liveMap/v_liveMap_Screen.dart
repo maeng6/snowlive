@@ -1,3 +1,5 @@
+import 'dart:math';
+import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -26,28 +28,79 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
     _setPosition();
+    startTracking();
     listenToFriendLocations(friendIds);
   }
 
+
   void _setPosition() {
     Geolocator.getPositionStream().listen((Position position) async {
-      final marker = Marker(
-        markerId: MarkerId('current_location'),
-        position: LatLng(position.latitude, position.longitude),
-      );
+      // Check if the user's position is within the defined radius of Phoenix Pyeongchang Ski Resort center
+      bool withinBoundary = _checkPositionWithinRadius(position, _resortModelController.latitude, _resortModelController.longitude, 3000); // 2km radius
 
-      setState(() {
-        // Add or update the marker for the current location
-        _markers['current_location'] = marker;
-      });
+      if (withinBoundary) {
+        final marker = Marker(
+          markerId: MarkerId('current_location'),
+          position: LatLng(position.latitude, position.longitude),
+        );
 
-      // Update the user's location in Firestore
-      await FirebaseFirestore.instance.collection('user').doc(_userModelController.uid).update({
-        'latitude': position.latitude,
-        'longitude': position.longitude,
-      });
+        setState(() {
+          // Add or update the marker for the current location
+          _markers['current_location'] = marker;
+        });
+
+        // Update the user's location in Firestore
+        await FirebaseFirestore.instance.collection('user').doc(_userModelController.uid).update({
+          'latitude': position.latitude,
+          'longitude': position.longitude,
+        });
+      }
     });
   }
+
+  void startTracking() {
+    bg.BackgroundGeolocation.onLocation((bg.Location location) {
+      // Called whenever a location update is received.
+      print('[location] - $location');
+      // You can update the user's location to Firestore here.
+    });
+
+    bg.BackgroundGeolocation.ready(bg.Config(
+        desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
+        distanceFilter: 10.0,
+        stopOnTerminate: false,
+        startOnBoot: true,
+        debug: true,
+        logLevel: bg.Config.LOG_LEVEL_VERBOSE
+    )).then((bg.State state) {
+      if (!state.enabled) {
+        bg.BackgroundGeolocation.start();
+      }
+    });
+  }
+
+// This function checks if the user's position is within a predefined radius of the center.
+  bool _checkPositionWithinRadius(Position position, double centerLat, double centerLng, double maxDistanceInMeters) {
+    const double earthRadiusInKm = 6371.0;
+
+    double dLat = _degreesToRadians(position.latitude - centerLat);
+    double dLng = _degreesToRadians(position.longitude - centerLng);
+
+    double a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_degreesToRadians(centerLat)) * cos(_degreesToRadians(position.latitude)) *
+            sin(dLng / 2) * sin(dLng / 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    double distanceInMeters = earthRadiusInKm * c * 1000;
+
+    return distanceInMeters <= maxDistanceInMeters;
+  }
+
+  double _degreesToRadians(double degrees) {
+    return degrees * pi / 180;
+  }
+
+
 
   void listenToFriendLocations(List<String> friendIds) {
     FirebaseFirestore.instance
@@ -93,7 +146,7 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
           title: Padding(
             padding: const EdgeInsets.only(left: 16),
             child: Text(
-              'Live Map',
+              '라이브맵',
               style: TextStyle(
                 color: Color(0xFF111111),
                 fontWeight: FontWeight.w700,
@@ -109,6 +162,7 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
         children: [
           Expanded(
             child: GoogleMap(
+              mapType: MapType.satellite,
               onMapCreated: _onMapCreated,
               myLocationButtonEnabled: true,
               myLocationEnabled: true,
