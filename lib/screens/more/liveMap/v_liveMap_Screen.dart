@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 
@@ -21,14 +22,21 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
   //TODO: Dependency Injection**************************************************
 
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkPermission();
+    _setPosition();
+    startTracking();
+  }
+
   late GoogleMapController mapController;
   Map<String, Marker> _markers = {};
   List<String> friendIds = [];  // Replace with actual friend IDs
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    _setPosition();
-    startTracking();
     listenToFriendLocations(friendIds);
   }
 
@@ -77,7 +85,18 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
         bg.BackgroundGeolocation.start();
       }
     });
+    print('백그라운드 추적 시작');
   }
+
+  void checkPermission() async {
+    PermissionStatus permission = await Permission.locationWhenInUse.status;
+
+    if (permission != PermissionStatus.granted) {
+      await Permission.locationWhenInUse.request();
+    }
+    print('권한체크');
+  }
+
 
 // This function checks if the user's position is within a predefined radius of the center.
   bool _checkPositionWithinRadius(Position position, double centerLat, double centerLng, double maxDistanceInMeters) {
