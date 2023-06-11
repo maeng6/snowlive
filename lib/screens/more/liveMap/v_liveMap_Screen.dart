@@ -21,16 +21,10 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
   Map<String, Marker> _markers = {};
   List<String> friendIds = [];
 
-  @override
-  void initState() {
-    super.initState();
-    checkPermission();
-    _setPosition();
-    startTracking();
-  }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+    _setPosition();
     listenToFriendLocations(friendIds);
   }
 
@@ -65,6 +59,11 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
   void startTracking() {
     bg.BackgroundGeolocation.onLocation((bg.Location location) {
       print('[location] - $location');
+      // 위치 업데이트 시 Firestore에 업데이트
+      FirebaseFirestore.instance.collection('user').doc(_userModelController.uid).update({
+        'latitude': location.coords.latitude,
+        'longitude': location.coords.longitude,
+      });
     });
 
     bg.BackgroundGeolocation.ready(bg.Config(
@@ -82,14 +81,6 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
     print('백그라운드 추적 시작');
   }
 
-  void checkPermission() async {
-    PermissionStatus permission = await Permission.locationWhenInUse.status;
-
-    if (permission != PermissionStatus.granted) {
-      await Permission.locationWhenInUse.request();
-    }
-    print('권한체크');
-  }
 
   bool _checkPositionWithinRadius(Position position, double centerLat, double centerLng, double maxDistanceInMeters) {
     const double earthRadiusInKm = 6371.0;
@@ -175,6 +166,12 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
         });
       });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startTracking(); // 위치 추적 시작
   }
 
   @override
