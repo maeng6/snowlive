@@ -74,7 +74,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
             ),
             Positioned(
                 top: 140,
-                left: _size.width/ 4,
+                left: _size.width/ 3.2,
                 child: Column(
                   children: [
                     (friendDocs[0]['profileImageUrl'].isNotEmpty)
@@ -137,7 +137,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                             Text('라이브 크루')
                           ],
                         ),
-
                       ],
                     )
 

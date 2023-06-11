@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 
@@ -14,29 +15,28 @@ class LiveMap_Screen extends StatefulWidget {
 }
 
 class _LiveMap_ScreenState extends State<LiveMap_Screen> {
-
-  //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
-  //TODO: Dependency Injection**************************************************
-
-
   late GoogleMapController mapController;
   Map<String, Marker> _markers = {};
-  List<String> friendIds = [];  // Replace with actual friend IDs
+  List<String> friendIds = [];
+
+  @override
+  void initState() {
+    super.initState();
+    checkPermission();
+    _setPosition();
+    startTracking();
+  }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    _setPosition();
-    startTracking();
     listenToFriendLocations(friendIds);
   }
 
-
   void _setPosition() {
     Geolocator.getPositionStream().listen((Position position) async {
-      // Check if the user's position is within the defined radius of Phoenix Pyeongchang Ski Resort center
-      bool withinBoundary = _checkPositionWithinRadius(position, _resortModelController.latitude, _resortModelController.longitude, 3000); // 2km radius
+      bool withinBoundary = _checkPositionWithinRadius(position, _resortModelController.latitude, _resortModelController.longitude, 5000);
 
       if (withinBoundary) {
         final marker = Marker(
@@ -45,41 +45,52 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
         );
 
         setState(() {
-          // Add or update the marker for the current location
           _markers['current_location'] = marker;
         });
 
-        // Update the user's location in Firestore
         await FirebaseFirestore.instance.collection('user').doc(_userModelController.uid).update({
           'latitude': position.latitude,
           'longitude': position.longitude,
         });
+      } else {
+        if (_markers.containsKey('current_location')) {
+          setState(() {
+            _markers.remove('current_location');
+          });
+        }
       }
     });
   }
 
   void startTracking() {
     bg.BackgroundGeolocation.onLocation((bg.Location location) {
-      // Called whenever a location update is received.
       print('[location] - $location');
-      // You can update the user's location to Firestore here.
     });
 
     bg.BackgroundGeolocation.ready(bg.Config(
-        desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
-        distanceFilter: 10.0,
-        stopOnTerminate: false,
-        startOnBoot: true,
-        debug: true,
-        logLevel: bg.Config.LOG_LEVEL_VERBOSE
+      desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
+      distanceFilter: 10.0,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      debug: true,
+      logLevel: bg.Config.LOG_LEVEL_VERBOSE,
     )).then((bg.State state) {
       if (!state.enabled) {
         bg.BackgroundGeolocation.start();
       }
     });
+    print('백그라운드 추적 시작');
   }
 
-// This function checks if the user's position is within a predefined radius of the center.
+  void checkPermission() async {
+    PermissionStatus permission = await Permission.locationWhenInUse.status;
+
+    if (permission != PermissionStatus.granted) {
+      await Permission.locationWhenInUse.request();
+    }
+    print('권한체크');
+  }
+
   bool _checkPositionWithinRadius(Position position, double centerLat, double centerLng, double maxDistanceInMeters) {
     const double earthRadiusInKm = 6371.0;
 
@@ -100,34 +111,67 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
     return degrees * pi / 180;
   }
 
-
-
   void listenToFriendLocations(List<String> friendIds) {
     FirebaseFirestore.instance
         .collection('user')
         .where('whoResistMe', arrayContains: _userModelController.uid!)
         .snapshots()
         .listen((QuerySnapshot querySnapshot) {
+      Set<String> updatedFriendIds = Set<String>();
       querySnapshot.docs.forEach((document) {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
         double latitude = (data['latitude'] as num).toDouble();
         double longitude = (data['longitude'] as num).toDouble();
-        String friendId = data['displayName']; // Assuming that the document id is the friend's id
-        final marker = Marker(
-          markerId: MarkerId('friend_$friendId'),
-          position: LatLng(latitude, longitude),
-          infoWindow: InfoWindow(
-              title: 'Friend ID: $friendId', // Set the title of the info window to the friend's ID
-            ),
-          visible: true,
-          icon: BitmapDescriptor.defaultMarker,
-          anchor: Offset(0.5, 0.5)
+        String friendId = data['displayName'];
+
+        updatedFriendIds.add(friendId);
+
+        bool withinBoundary = _checkPositionWithinRadius(
+          Position(
+            latitude: latitude,
+            longitude: longitude,
+            accuracy: 0.0,
+            altitude: 0.0,
+            heading: 0.0,
+            speed: 0.0,
+            speedAccuracy: 0.0,
+            timestamp: DateTime.now(),
+          ),
+          _resortModelController.latitude,
+          _resortModelController.longitude,
+          3000,
         );
 
+        if (withinBoundary) {
+          final marker = Marker(
+            markerId: MarkerId('friend_$friendId'),
+            position: LatLng(latitude, longitude),
+            infoWindow: InfoWindow(
+              title: 'Friend ID: $friendId',
+            ),
+            visible: true,
+            icon: BitmapDescriptor.defaultMarker,
+            anchor: Offset(0.5, 0.5),
+          );
+
+          setState(() {
+            _markers['friend_$friendId'] = marker;
+          });
+        } else {
+          if (_markers.containsKey('friend_$friendId')) {
+            setState(() {
+              _markers.remove('friend_$friendId');
+            });
+          }
+        }
+      });
+
+      _markers.keys
+          .where((markerId) => markerId.startsWith('friend_') && !updatedFriendIds.contains(markerId.substring(7)))
+          .toList()
+          .forEach((markerId) {
         setState(() {
-          // Add or update the marker for the friend's location
-          _markers['friend_$friendId'] = marker;
-          print(marker);
+          _markers.remove(markerId);
         });
       });
     });
@@ -167,7 +211,7 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
               myLocationButtonEnabled: true,
               myLocationEnabled: true,
               initialCameraPosition: CameraPosition(
-                target: LatLng(_resortModelController.latitude, _resortModelController.longitude),  // Initial position of the map
+                target: LatLng(_resortModelController.latitude, _resortModelController.longitude),
                 zoom: 14.0,
               ),
               markers: _markers.values.toSet(),
