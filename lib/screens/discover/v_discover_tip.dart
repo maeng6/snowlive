@@ -26,87 +26,100 @@ class _DiscoverScreen_TipState extends State<DiscoverScreen_Tip> {
     super.initState();
   }
 
-  Stream<List<String>> getImagesStream() async* {
-    firebase_storage.FirebaseStorage storage =
-        firebase_storage.FirebaseStorage.instance;
-    String prefixPath =
-        'images/discover_tip';
 
-    while (true) {
-      firebase_storage.ListResult result =
-      await storage.ref().child(prefixPath).listAll();
-
-      List<String> urls = [];
-      for (firebase_storage.Reference ref in result.items) {
-        String downloadUrl = await ref.getDownloadURL();
-        urls.add(downloadUrl);
-      }
-
-      yield urls;
-
-    }
-  }
+  // Stream<List<String>> getImagesStream2() async* {
+  //   firebase_storage.FirebaseStorage storage =
+  //       firebase_storage.FirebaseStorage.instance;
+  //   String prefixPath =
+  //       'images/discover_tip';
+  //
+  //   while (true) {
+  //     firebase_storage.ListResult result =
+  //     await storage.ref().child(prefixPath).listAll();
+  //
+  //     List<String> urls = [];
+  //     for (firebase_storage.Reference ref in result.items) {
+  //       String downloadUrl = await ref.getDownloadURL();
+  //       urls.add(downloadUrl);
+  //     }
+  //
+  //     yield urls;
+  //
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<String>>(
-      stream: getImagesStream(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          List<String>? imageUrls = snapshot.data;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  '알아두면 쓸모있는 짧은 지식',
-                  style: TextStyle(
-                    color: Color(0xFF111111),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
+    return StreamBuilder(
+        stream:  FirebaseFirestore.instance
+            .collection('discover_tip_url')
+            .where('visable', isEqualTo: true)
+            .snapshots(),
+        builder: (context,
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+          if (!snapshot.hasData ||
+              snapshot.data == null) {
+            return Center(child: Lottie.asset('assets/json/loadings_wht_final.json'));
+          }
+          else if (snapshot.data!.docs.isNotEmpty) {
+            final _imageUrls = snapshot.data!.docs;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    '알아두면 쓸모있는 짧은 지식',
+                    style: TextStyle(
+                      color: Color(0xFF111111),
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 14),
-              Container(
-                height: 180, // adjust this height to fit your needs
-                child: ListView.builder(
-                  padding: EdgeInsets.only(left: 16),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: imageUrls!.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () async {
-                        final urlSnapshot = await FirebaseFirestore.instance
-                            .collection('discover_tip_url')
-                            .where('url', isEqualTo: imageUrls[index])
-                            .get();
-                        if (urlSnapshot.docs.isNotEmpty) {
-                          String instaUrl = urlSnapshot.docs.first['instaUrl'];
-                          Get.to(() => WebPage(url: instaUrl));
-                        }
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 10), // space between images
-                        child: ExtendedImage.network(
-                          imageUrls[index],
-                          fit: BoxFit.cover,
-                          cache: true,
+                SizedBox(height: 14),
+                Container(
+                  height: 180, // adjust this height to fit your needs
+                  child: ListView.builder(
+                    padding: EdgeInsets.only(left: 16),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _imageUrls.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () async {
+                          final urlSnapshot = await FirebaseFirestore.instance
+                              .collection('discover_tip_url')
+                              .where('url', isEqualTo: _imageUrls[index])
+                              .get();
+                          if (urlSnapshot.docs.isNotEmpty) {
+                            String instaUrl = urlSnapshot.docs.first['instaUrl'];
+                            Get.to(() => WebPage(url: instaUrl));
+                          }
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 10),
+                          // space between images
+                          child: ExtendedImage.network(
+                            _imageUrls[index]['url'],
+                            fit: BoxFit.cover,
+                            cache: true,
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
-          );
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
+              ],
+            );
+          }
+          else if (snapshot.connectionState ==
+              ConnectionState.waiting) {
+            return Center(
+                child: Lottie.asset('assets/json/loadings_wht_final.json'));
+          }
           return Center(child: Lottie.asset('assets/json/loadings_wht_final.json'));
         }
-      },
     );
   }
 }
+
