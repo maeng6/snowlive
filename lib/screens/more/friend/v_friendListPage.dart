@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_timeStampController.dart';
+import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import 'package:snowlive3/screens/more/v_noticeDetailPage.dart';
 import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
@@ -115,7 +116,9 @@ class _FriendListPageState extends State<FriendListPage> {
                       onTap: (){},
                       leading: (_userModelController.profileImageUrl!.isNotEmpty)
                           ? GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Get.to(() => FriendDetailPage(uid: _userModelController.uid));
+                        },
                         child: Container(
                           width: 52,
                           height: 52,
@@ -132,7 +135,9 @@ class _FriendListPageState extends State<FriendListPage> {
                         ),
                       )
                           : GestureDetector(
-                        onTap: () => Get.to(() => SetProfileImage_moreTab()),
+                        onTap: (){
+                          Get.to(() => FriendDetailPage(uid: _userModelController.uid));
+                        },
                         child: Container(
                           width: 52,
                           height: 52,
