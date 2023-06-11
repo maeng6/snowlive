@@ -228,61 +228,79 @@ class _ResortHomeState extends State<ResortHome>
                         },
                       ),
                       floatingActionButton: SizedBox(
-                        width: 118,
+                        width: 112,
                         height: 54,
-                        child: FloatingActionButton.extended(
-                            onPressed: () async {
-                              if (_userModelController.isOnLive == true) {
-                                HapticFeedback.lightImpact();
-                                CustomFullScreenDialog.showDialog();
-                                await _userModelController
-                                    .updateIsOnLiveOff();
-                                await _userModelController
-                                    .getCurrentUser(_userModelController.uid);
-                                setState(() {});
-                                CustomFullScreenDialog.cancelDialog();
-                                print('라이브 OFF');
-                              } else {
-                                HapticFeedback.lightImpact();
-                                CustomFullScreenDialog.showDialog();
-                                await _userModelController.updateIsOnLiveOn();
-                                await _userModelController
-                                    .getCurrentUser(_userModelController.uid);
-                                setState(() {});
-                                CustomFullScreenDialog.cancelDialog();
-                                print('라이브 ON');
-                              }
-                            },
-                            icon:  (_userModelController.isOnLive == true)
-                                ? Image.asset('assets/imgs/icons/icon_live_on.png', width: 50)
-                                : Image.asset('assets/imgs/icons/icon_live_off.png', width: 50),
-                            label: (_userModelController.isOnLive == true)
-                                ? Transform.translate(
-                                  offset: Offset(-4,-5),
-                                  child: Text(
-                                      'ON',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          color: Color(0xFFFFFFFF),
-                                          fontWeight: FontWeight.bold,
-                                          overflow: TextOverflow.ellipsis),
-                                    ),
-                                )
-                                : Transform.translate(
-                              offset: Offset(-4,-5),
-                                  child: Text(
-                                      'OFF',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          color: Color(0xFFC8C8C8),
-                                          fontWeight: FontWeight.bold,
-                                          overflow: TextOverflow.ellipsis),
-                                    ),
-                                ),
-                            backgroundColor:
-                                (_userModelController.isOnLive == true)
-                                    ? Color(0xFF3D6FED)
-                                    : Color(0xFFFFFFFF)),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                spreadRadius: 4,
+                                blurRadius: 12,
+                                offset: Offset(0, 4), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: FloatingActionButton.extended(
+                              onPressed: () async {
+                                if (_userModelController.isOnLive == true) {
+                                  HapticFeedback.lightImpact();
+                                  CustomFullScreenDialog.showDialog();
+                                  await _userModelController
+                                      .updateIsOnLiveOff();
+                                  await _userModelController
+                                      .getCurrentUser(_userModelController.uid);
+                                  setState(() {});
+                                  CustomFullScreenDialog.cancelDialog();
+                                  print('라이브 OFF');
+                                } else {
+                                  HapticFeedback.lightImpact();
+                                  CustomFullScreenDialog.showDialog();
+                                  await _userModelController.updateIsOnLiveOn();
+                                  await _userModelController
+                                      .getCurrentUser(_userModelController.uid);
+                                  setState(() {});
+                                  CustomFullScreenDialog.cancelDialog();
+                                  print('라이브 ON');
+                                }
+                              },
+                              elevation: 0,
+                              icon:  (_userModelController.isOnLive == true)
+                                  ? Transform.translate(
+                                  offset: Offset(4,0),
+                                  child: Image.asset('assets/imgs/icons/icon_live_on.png', width: 50))
+                                  : Transform.translate(
+                                  offset: Offset(4,0),
+                                  child: Image.asset('assets/imgs/icons/icon_live_off.png', width: 50)),
+                              label: (_userModelController.isOnLive == true)
+                                  ? Transform.translate(
+                                    offset: Offset(0,-5),
+                                    child: Text(
+                                        'ON',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xFFFFFFFF),
+                                            fontWeight: FontWeight.bold,
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
+                                  )
+                                  : Transform.translate(
+                                offset: Offset(0,-5),
+                                    child: Text(
+                                        'OFF',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xFFC8C8C8),
+                                            fontWeight: FontWeight.bold,
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
+                                  ),
+                              backgroundColor:
+                                  (_userModelController.isOnLive == true)
+                                      ? Color(0xFF3D6FED)
+                                      : Color(0xFFFFFFFF)),
+                        ),
                       ),
                       floatingActionButtonLocation:
                           FloatingActionButtonLocation.endFloat,
