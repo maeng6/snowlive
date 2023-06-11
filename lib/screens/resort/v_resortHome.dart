@@ -227,57 +227,62 @@ class _ResortHomeState extends State<ResortHome>
                           }
                         },
                       ),
-                      floatingActionButton: Transform.translate(
-                        offset: Offset(12, -4),
-                        child: SizedBox(
-                          width: 112,
-                          height: 52,
-                          child: FloatingActionButton.extended(
-                              onPressed: () async {
-                                if (_userModelController.isOnLive == true) {
-                                  HapticFeedback.lightImpact();
-                                  CustomFullScreenDialog.showDialog();
-                                  await _userModelController
-                                      .updateIsOnLiveOff();
-                                  await _userModelController
-                                      .getCurrentUser(_userModelController.uid);
-                                  setState(() {});
-                                  CustomFullScreenDialog.cancelDialog();
-                                  print('라이브 OFF');
-                                } else {
-                                  HapticFeedback.lightImpact();
-                                  CustomFullScreenDialog.showDialog();
-                                  await _userModelController.updateIsOnLiveOn();
-                                  await _userModelController
-                                      .getCurrentUser(_userModelController.uid);
-                                  setState(() {});
-                                  CustomFullScreenDialog.cancelDialog();
-                                  print('라이브 ON');
-                                }
-                              },
-                              icon: Icon(Icons.add),
-                              label: (_userModelController.isOnLive == true)
-                                  ? Text(
-                                      'live on',
+                      floatingActionButton: SizedBox(
+                        width: 118,
+                        height: 54,
+                        child: FloatingActionButton.extended(
+                            onPressed: () async {
+                              if (_userModelController.isOnLive == true) {
+                                HapticFeedback.lightImpact();
+                                CustomFullScreenDialog.showDialog();
+                                await _userModelController
+                                    .updateIsOnLiveOff();
+                                await _userModelController
+                                    .getCurrentUser(_userModelController.uid);
+                                setState(() {});
+                                CustomFullScreenDialog.cancelDialog();
+                                print('라이브 OFF');
+                              } else {
+                                HapticFeedback.lightImpact();
+                                CustomFullScreenDialog.showDialog();
+                                await _userModelController.updateIsOnLiveOn();
+                                await _userModelController
+                                    .getCurrentUser(_userModelController.uid);
+                                setState(() {});
+                                CustomFullScreenDialog.cancelDialog();
+                                print('라이브 ON');
+                              }
+                            },
+                            icon:  (_userModelController.isOnLive == true)
+                                ? Image.asset('assets/imgs/icons/icon_live_on.png', width: 50)
+                                : Image.asset('assets/imgs/icons/icon_live_off.png', width: 50),
+                            label: (_userModelController.isOnLive == true)
+                                ? Transform.translate(
+                                  offset: Offset(-4,-5),
+                                  child: Text(
+                                      'ON',
                                       style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          overflow: TextOverflow.ellipsis),
-                                    )
-                                  : Text(
-                                      'live off',
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.white,
+                                          fontSize: 12,
+                                          color: Color(0xFFFFFFFF),
                                           fontWeight: FontWeight.bold,
                                           overflow: TextOverflow.ellipsis),
                                     ),
-                              backgroundColor:
-                                  (_userModelController.isOnLive == true)
-                                      ? Color(0xFF3D6FED)
-                                      : Colors.grey),
-                        ),
+                                )
+                                : Transform.translate(
+                              offset: Offset(-4,-5),
+                                  child: Text(
+                                      'OFF',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFFC8C8C8),
+                                          fontWeight: FontWeight.bold,
+                                          overflow: TextOverflow.ellipsis),
+                                    ),
+                                ),
+                            backgroundColor:
+                                (_userModelController.isOnLive == true)
+                                    ? Color(0xFF3D6FED)
+                                    : Color(0xFFFFFFFF)),
                       ),
                       floatingActionButtonLocation:
                           FloatingActionButtonLocation.endFloat,
@@ -1393,59 +1398,56 @@ class _ResortHomeState extends State<ResortHome>
                   }
                   return Scaffold(
                     endDrawer: Center(child: CircularProgressIndicator()),
-                    floatingActionButton: Transform.translate(
-                      offset: Offset(12, -4),
-                      child: SizedBox(
-                        width: 112,
-                        height: 52,
-                        child: FloatingActionButton.extended(
-                            onPressed: () async {
-                              if (_userModelController.isOnLive == true) {
-                                HapticFeedback.lightImpact();
-                                CustomFullScreenDialog.showDialog();
-                                await _userModelController.updateIsOnLiveOff();
-                                await _userModelController
-                                    .getCurrentUser(_userModelController.uid);
-                                setState(() {});
-                                CustomFullScreenDialog.cancelDialog();
-                                print('라이브 OFF');
-                              } else {
-                                HapticFeedback.lightImpact();
-                                CustomFullScreenDialog.showDialog();
-                                await _userModelController.updateIsOnLiveOn();
-                                await _userModelController
-                                    .getCurrentUser(_userModelController.uid);
-                                setState(() {});
-                                CustomFullScreenDialog.cancelDialog();
-                                print('라이브 ON');
-                              }
-                            },
-                            icon:
-                            (_userModelController.isOnLive == true)
-                            ? Image.asset('assets/imgs/icons/icon_live_on', width: 50)
-                            : Image.asset('assets/imgs/icons/icon_live_off', width: 50),
-                            label: (_userModelController.isOnLive == true)
-                                ? Text(
-                                    'live on',
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        overflow: TextOverflow.ellipsis),
-                                  )
-                                : Text(
-                                    'live off',
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        overflow: TextOverflow.ellipsis),
-                                  ),
-                            backgroundColor:
-                                (_userModelController.isOnLive == true)
-                                    ? Color(0xFF3D6FED)
-                                    : Colors.grey),
-                      ),
+                    floatingActionButton: SizedBox(
+                      width: 118,
+                      height: 54,
+                      child: FloatingActionButton.extended(
+                          onPressed: () async {
+                            if (_userModelController.isOnLive == true) {
+                              HapticFeedback.lightImpact();
+                              CustomFullScreenDialog.showDialog();
+                              await _userModelController.updateIsOnLiveOff();
+                              await _userModelController
+                                  .getCurrentUser(_userModelController.uid);
+                              setState(() {});
+                              CustomFullScreenDialog.cancelDialog();
+                              print('라이브 OFF');
+                            } else {
+                              HapticFeedback.lightImpact();
+                              CustomFullScreenDialog.showDialog();
+                              await _userModelController.updateIsOnLiveOn();
+                              await _userModelController
+                                  .getCurrentUser(_userModelController.uid);
+                              setState(() {});
+                              CustomFullScreenDialog.cancelDialog();
+                              print('라이브 ON');
+                            }
+                          },
+                          icon:
+                          (_userModelController.isOnLive == true)
+                          ? Image.asset('assets/imgs/icons/icon_live_on', width: 50)
+                          : Image.asset('assets/imgs/icons/icon_live_off', width: 50),
+                          label: (_userModelController.isOnLive == true)
+                              ? Text(
+                                  'live on',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      overflow: TextOverflow.ellipsis),
+                                )
+                              : Text(
+                                  'live off',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                          backgroundColor:
+                              (_userModelController.isOnLive == true)
+                                  ? Color(0xFF3D6FED)
+                                  : Colors.grey),
                     ),
                     floatingActionButtonLocation:
                         FloatingActionButtonLocation.endFloat,
