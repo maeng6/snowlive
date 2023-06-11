@@ -136,6 +136,7 @@ class _FriendListPageState extends State<FriendListPage> {
                       )
                           : GestureDetector(
                         onTap: (){
+                          print('${_userModelController.uid}');
                           Get.to(() => FriendDetailPage(uid: _userModelController.uid));
                         },
                         child: Container(
