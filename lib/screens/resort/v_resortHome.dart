@@ -1420,7 +1420,10 @@ class _ResortHomeState extends State<ResortHome>
                                 print('라이브 ON');
                               }
                             },
-                            icon: Icon(Icons.add),
+                            icon:
+                            (_userModelController.isOnLive == true)
+                            ? Image.asset('assets/imgs/icons/icon_live_on', width: 50)
+                            : Image.asset('assets/imgs/icons/icon_live_off', width: 50),
                             label: (_userModelController.isOnLive == true)
                                 ? Text(
                                     'live on',
@@ -1771,51 +1774,34 @@ class _ResortHomeState extends State<ResortHome>
                                                 children: [
                                                   Column(
                                                     children: [
-                                                      Text(
-                                                        '바람',
+                                                      Text('바람',
                                                         style: TextStyle(
-                                                            color:
-                                                                Colors.white60,
+                                                            color: Colors.white60,
                                                             fontSize: 13),
                                                       ),
-                                                      SizedBox(
-                                                        height: 6,
-                                                      ),
+                                                      SizedBox(height: 6,),
                                                       Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
+                                                        crossAxisAlignment: CrossAxisAlignment.end,
                                                         children: [
                                                           Obx(
                                                             () => Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      right: 3),
+                                                              padding: const EdgeInsets.only(right: 3),
                                                               child: Text(
                                                                 '${_resortModelController.resortWind}',
-                                                                style: GoogleFonts
-                                                                    .bebasNeue(
-                                                                        fontSize:
-                                                                            28,
-                                                                        color: Colors
-                                                                            .white),
+                                                                style: GoogleFonts.bebasNeue(
+                                                                        fontSize: 28,
+                                                                        color: Colors.white),
                                                               ),
                                                             ),
                                                           ),
                                                           Padding(
                                                             padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    bottom: 5),
+                                                                const EdgeInsets.only(bottom: 5),
                                                             child: Text(
                                                               'M/S',
-                                                              style: GoogleFonts
-                                                                  .bebasNeue(
-                                                                      fontSize:
-                                                                          16,
-                                                                      color: Colors
-                                                                          .white),
+                                                              style: GoogleFonts.bebasNeue(
+                                                                      fontSize: 16,
+                                                                      color: Colors.white),
                                                             ),
                                                           ),
                                                         ],
@@ -1824,51 +1810,34 @@ class _ResortHomeState extends State<ResortHome>
                                                   ),
                                                   Column(
                                                     children: [
-                                                      Text(
-                                                        '습도',
+                                                      Text('습도',
                                                         style: TextStyle(
-                                                            color:
-                                                                Colors.white60,
+                                                            color: Colors.white60,
                                                             fontSize: 13),
                                                       ),
                                                       SizedBox(
                                                         height: 6,
                                                       ),
                                                       Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
+                                                        crossAxisAlignment: CrossAxisAlignment.end,
                                                         children: [
                                                           Obx(
                                                             () => Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      right: 3),
+                                                              padding: const EdgeInsets.only(right: 3),
                                                               child: Text(
                                                                 '${_resortModelController.resortWet}',
-                                                                style: GoogleFonts
-                                                                    .bebasNeue(
-                                                                        fontSize:
-                                                                            28,
-                                                                        color: Colors
-                                                                            .white),
+                                                                style: GoogleFonts.bebasNeue(
+                                                                        fontSize: 28,
+                                                                        color: Colors.white),
                                                               ),
                                                             ),
                                                           ),
                                                           Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    bottom: 5),
-                                                            child: Text(
-                                                              '%',
-                                                              style: GoogleFonts
-                                                                  .bebasNeue(
-                                                                      fontSize:
-                                                                          16,
-                                                                      color: Colors
-                                                                          .white),
+                                                            padding: const EdgeInsets.only(bottom: 5),
+                                                            child: Text('%',
+                                                              style: GoogleFonts.bebasNeue(
+                                                                      fontSize: 16,
+                                                                      color: Colors.white),
                                                             ),
                                                           ),
                                                         ],
