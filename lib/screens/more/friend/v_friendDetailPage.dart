@@ -22,6 +22,21 @@ class FriendDetailPage extends StatefulWidget {
 
 class _FriendDetailPageState extends State<FriendDetailPage> {
 
+  var _stream;
+
+  @override
+  void initState() {
+    _stream = newStream();
+    // TODO: implement initState
+    super.initState();
+  }
+  Stream<QuerySnapshot> newStream() {
+    return FirebaseFirestore.instance
+        .collection('user')
+        .doc('${widget.uid}')
+        .collection('friendsComment')
+        .snapshots();
+  }
 
   final _formKey = GlobalKey<FormState>();
   final _controller = TextEditingController();
@@ -268,17 +283,14 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                             child: Column(
                               children: [
                                 StreamBuilder(
-                                  stream: FirebaseFirestore.instance
-                                      .collection('user')
-                                      .doc('${widget.uid}')
-                                      .collection('friendsComment')
-                                      .snapshots(),
+                                  stream: _stream,
                                   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                                     if (!snapshot.hasData || snapshot.data == null) {
                                       return Text('첫 일촌평을 남겨보세요.');
                                     } else if (snapshot.connectionState == ConnectionState.waiting) {
                                       return CircularProgressIndicator();
-                                    } else if (snapshot.data!.docs.isNotEmpty) {
+                                    }
+                                    else if (snapshot.data!.docs.isNotEmpty) {
                                       List commentDocs = snapshot.data!.docs;
                                       return ListView.builder(
                                         shrinkWrap: true,
@@ -307,9 +319,35 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                           );
                                         },
                                       );
-                                    } else {
-                                      return Text('첫 일촌평을 남겨보세요.');
                                     }
+                                    List commentDocs = snapshot.data!.docs;
+                                    return ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: commentDocs.length,
+                                      itemBuilder: (context, index) {
+                                        Timestamp timestamp = commentDocs[index].get('timeStamp');
+                                        String formattedDate = DateFormat('yyyy.MM.dd').format(timestamp.toDate()); // 원하는 형식으로 날짜 변환
+                                        return Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              child: Text(commentDocs[index]['comment']),
+                                              width: _size.width / 5,
+                                            ),
+                                            Text(commentDocs[index]['displayName']),
+                                            Text(
+                                              formattedDate,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(0xFF949494),
+                                                fontWeight: FontWeight.w300,
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
                                   },
                                 )
                               ],
@@ -333,9 +371,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                   if (_controller.text.trim().isEmpty) {
                                     return;
                                   }
-                                  _controller.clear();
                                   try {
-                                    await _userModelController.updateCommentCount(_userModelController.commentCount);
                                     await _friendsCommentModelController.sendMessage(
                                         displayName: _userModelController.displayName,
                                         profileImageUrl: _userModelController.profileImageUrl,
@@ -347,7 +383,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                     );
                                     FocusScope.of(context).unfocus();
                                     _controller.clear();
-                                    setState(() {});
                                   } catch (e) {
                                     CustomFullScreenDialog.cancelDialog();
                                   }
