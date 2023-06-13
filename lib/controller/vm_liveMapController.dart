@@ -8,21 +8,12 @@ import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 
 class LiveMapController extends GetxController {
-
-  //TODO: Dependency Injection********************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
-  //TODO: Dependency Injection********************************************
 
   RxList<Marker> _markers = RxList<Marker>();
+
   List<Marker> get markers => _markers.toList();
-
-  @override
-  void onInit() {
-    super.onInit();
-    listenToFriendLocations();
-  }
-
 
   Future<void> updateFirebaseWithLocation(Position position) async {
     double latitude = position.latitude;
@@ -67,7 +58,7 @@ class LiveMapController extends GetxController {
     });
   }
 
-  void stopBackgroundLocationService() {
+  Future<void> stopBackgroundLocationService() async {
     Geolocator.getPositionStream().listen((Position position) {}).cancel();
   }
 
@@ -82,7 +73,7 @@ class LiveMapController extends GetxController {
     return distanceInMeters <= 5000;
   }
 
-  void listenToFriendLocations() {
+  Future<void> listenToFriendLocations() async {
     FirebaseFirestore.instance
         .collection('user')
         .where('whoResistMe', arrayContains: _userModelController.uid!)
