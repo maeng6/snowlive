@@ -105,7 +105,7 @@ class _Discover_Calendar_Detail_ScreenState extends State<Discover_Calendar_Deta
           children: [
             TableCalendar(
               headerStyle: HeaderStyle(
-                titleCentered: false,
+                titleCentered: true,
                 rightChevronIcon: Icon(Icons.arrow_forward_ios_sharp, size: 20, color: Color(0xFF444444),),
                 leftChevronIcon: Icon(Icons.arrow_back_ios_sharp, size: 20, color: Color(0xFF444444),),
                 titleTextStyle: TextStyle(

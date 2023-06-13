@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/screens/more/liveMap/v_liveMap_Screen.dart';
 import 'package:snowlive3/screens/more/v_contactUsPage.dart';
 import 'package:snowlive3/screens/more/v_favoriteResort_moreTab.dart';
@@ -40,6 +41,7 @@ class _MoreTabState extends State<MoreTab> {
 
     //TODO: Dependency Injection************************************************
     Get.put(NoticeController(), permanent: true);
+    Get.put(LiveMapController(), permanent: true);
     NoticeController _noticeController = Get.find<NoticeController>();
     //TODO: Dependency Injection************************************************
 

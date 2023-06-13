@@ -127,99 +127,191 @@ class _ResortHomeState extends State<ResortHome>
                           if (snapshot.hasData) {
                             // 문서가 없는 경우 처리
                             if (liveFriendDocs.isEmpty) {
-                              return Drawer(
-                                child: ListView(
-                                  padding: EdgeInsets.zero,
-                                  children: <Widget>[
-                                    Container(
-                                      height: 150,
-                                      child: DrawerHeader(
-                                        child: Text('라이브중인 친구'),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  canvasColor: Colors.white,),
+                                child: Drawer(
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: ListView(
+                                          children: <Widget>[
+                                            Container(
+                                              height: 72,
+                                              child: DrawerHeader(
+                                                child: Text('라이브중인 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            ListView.builder(
+                                                shrinkWrap: true,
+                                                // 사용하면 안의 ListView의 높이를 자식 위젯의 전체 높이로 설정합니다.
+                                                physics: NeverScrollableScrollPhysics(),
+                                                // 부모 ListView의 스크롤과 겹치지 않도록 합니다.
+                                                itemCount: 1,
+                                                itemBuilder: (context, index) {
+                                                  return ListTile(
+                                                    contentPadding: EdgeInsets.only(top: 0, bottom: 0, right: 16, left: 16),
+                                                    title: Row(
+                                                      children: [
+                                                        Text('라이브중인 친구가 없습니다.'),
+                                                      ],
+                                                    ),
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                  );
+                                                }),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                    ListView.builder(
-                                        shrinkWrap: true,
-                                        // 사용하면 안의 ListView의 높이를 자식 위젯의 전체 높이로 설정합니다.
-                                        physics: NeverScrollableScrollPhysics(),
-                                        // 부모 ListView의 스크롤과 겹치지 않도록 합니다.
-                                        itemCount: 1,
-                                        itemBuilder: (context, index) {
-                                          return ListTile(
-                                            title: Row(
-                                              children: [
-                                                Text('라이브중인 친구가 없습니다.'),
-                                              ],
+                                      Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: ElevatedButton(
+                                          onPressed: () {},
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(bottom: 1),
+                                            child: Text('라이브맵 보기',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15),
                                             ),
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                            },
-                                          );
-                                        }),
-                                  ],
+                                          ),
+                                          style: TextButton.styleFrom(
+                                              shape: const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.all(Radius.circular(6))),
+                                              elevation: 0,
+                                              splashFactory:
+                                              InkRipple.splashFactory,
+                                              minimumSize: Size(1000, 50),
+                                              backgroundColor: Color(0xff377EEA)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             }
-                            return Drawer(
-                              child: ListView(
-                                padding: EdgeInsets.zero,
-                                children: <Widget>[
-                                  Container(
-                                    height: 150,
-                                    child: DrawerHeader(
-                                      child: Text('라이브중인 친구'),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
+                            return Theme(
+                              data: Theme.of(context).copyWith(
+                                  canvasColor: Colors.white,),
+                              child: Drawer(
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: ListView(
+                                        children: <Widget>[
+                                          Container(
+                                            height: 72,
+                                            child: DrawerHeader(
+                                              child: Text('라이브중인 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          ListView.builder(
+                                              shrinkWrap: true,
+                                              // 사용하면 안의 ListView의 높이를 자식 위젯의 전체 높이로 설정합니다.
+                                              physics: NeverScrollableScrollPhysics(),
+                                              // 부모 ListView의 스크롤과 겹치지 않도록 합니다.
+                                              itemCount: liveFriendDocs.length,
+                                              itemBuilder: (context, index) {
+                                                return Column(
+                                                  children: [
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.only(top: 0, bottom: 0, right: 16, left: 16),
+                                                      title: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              (liveFriendDocs[index]['profileImageUrl'] != "")
+                                                                  ? ExtendedImage.network(
+                                                                      liveFriendDocs[index]
+                                                                          ['profileImageUrl'],
+                                                                      enableMemoryCache: true,
+                                                                      shape: BoxShape.circle,
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(8),
+                                                                      width: 36,
+                                                                      height: 36,
+                                                                      fit: BoxFit.cover,
+                                                                    )
+                                                                  : ExtendedImage.asset(
+                                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                                      enableMemoryCache: true,
+                                                                      shape: BoxShape.circle,
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(8),
+                                                                      width: 36,
+                                                                      height: 36,
+                                                                      fit: BoxFit.cover,
+                                                                    ),
+                                                              SizedBox(width: 10),
+                                                              Text(
+                                                                  '${liveFriendDocs[index]['displayName']}', style: TextStyle(
+                                                                fontSize: 15,
+                                                                fontWeight: FontWeight.normal,
+                                                                color: Color(0xFF111111)
+                                                              ),),
+                                                            ],
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap:(){},
+                                                            child: Image.asset(
+                                                              'assets/imgs/icons/icon_live_map.png',
+                                                              scale: 4,
+                                                              width: 26,
+                                                              height: 26,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      onTap: () {
+                                                      },
+                                                    ),
+                                                    if (index != liveFriendDocs.length - 1)  // 마지막 요소가 아니라면
+                                                      Padding(
+                                                        padding: EdgeInsets.symmetric(horizontal: 16),
+                                                        child: Divider(
+                                                          color: Color(0xFFECECEC),
+                                                        ),
+                                                      ),
+                                                  ],
+                                                );
+                                              }),
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                  ListView.builder(
-                                      shrinkWrap: true,
-                                      // 사용하면 안의 ListView의 높이를 자식 위젯의 전체 높이로 설정합니다.
-                                      physics: NeverScrollableScrollPhysics(),
-                                      // 부모 ListView의 스크롤과 겹치지 않도록 합니다.
-                                      itemCount: liveFriendDocs.length,
-                                      itemBuilder: (context, index) {
-                                        return ListTile(
-                                          title: Row(
-                                            children: [
-                                              (liveFriendDocs[index]['profileImageUrl'] != "")
-                                                  ? ExtendedImage.network(
-                                                      liveFriendDocs[index]
-                                                          ['profileImageUrl'],
-                                                      enableMemoryCache: true,
-                                                      shape: BoxShape.circle,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8),
-                                                      width: 30,
-                                                      height: 30,
-                                                      fit: BoxFit.cover,
-                                                    )
-                                                  : ExtendedImage.asset(
-                                                      'assets/imgs/profile/img_profile_default_circle.png',
-                                                      enableMemoryCache: true,
-                                                      shape: BoxShape.circle,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8),
-                                                      width: 30,
-                                                      height: 30,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                              SizedBox(width: 10,),
-                                              Text(
-                                                  '${liveFriendDocs[index]['displayName']}'),
-                                            ],
+                                    Padding(
+                                      padding: const EdgeInsets.all(16),
+                                      child: ElevatedButton(
+                                        onPressed: () {},
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom: 1),
+                                          child: Text('라이브맵 보기',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15),
                                           ),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                          },
-                                        );
-                                      }),
-                                ],
+                                        ),
+                                        style: TextButton.styleFrom(
+                                            shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(Radius.circular(6))),
+                                            elevation: 0,
+                                            splashFactory:
+                                            InkRipple.splashFactory,
+                                            minimumSize: Size(1000, 50),
+                                            backgroundColor: Color(0xff377EEA)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             );
                           } else {
@@ -227,11 +319,21 @@ class _ResortHomeState extends State<ResortHome>
                           }
                         },
                       ),
-                      floatingActionButton: Transform.translate(
-                        offset: Offset(12, -4),
-                        child: SizedBox(
-                          width: 112,
-                          height: 52,
+                      floatingActionButton: SizedBox(
+                        width: 112,
+                        height: 54,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                spreadRadius: 4,
+                                blurRadius: 12,
+                                offset: Offset(0, 4), // changes position of shadow
+                              ),
+                            ],
+                          ),
                           child: FloatingActionButton.extended(
                               onPressed: () async {
                                 if (_userModelController.isOnLive == true) {
@@ -255,28 +357,41 @@ class _ResortHomeState extends State<ResortHome>
                                   print('라이브 ON');
                                 }
                               },
-                              icon: Icon(Icons.add),
+                              elevation: 0,
+                              icon:  (_userModelController.isOnLive == true)
+                                  ? Transform.translate(
+                                  offset: Offset(4,0),
+                                  child: Image.asset('assets/imgs/icons/icon_live_on.png', width: 50))
+                                  : Transform.translate(
+                                  offset: Offset(4,0),
+                                  child: Image.asset('assets/imgs/icons/icon_live_off.png', width: 50)),
                               label: (_userModelController.isOnLive == true)
-                                  ? Text(
-                                      'live on',
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          overflow: TextOverflow.ellipsis),
-                                    )
-                                  : Text(
-                                      'live off',
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          overflow: TextOverflow.ellipsis),
-                                    ),
+                                  ? Transform.translate(
+                                    offset: Offset(0,-5),
+                                    child: Text(
+                                        'ON',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xFFFFFFFF),
+                                            fontWeight: FontWeight.bold,
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
+                                  )
+                                  : Transform.translate(
+                                offset: Offset(0,-5),
+                                    child: Text(
+                                        'OFF',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xFFC8C8C8),
+                                            fontWeight: FontWeight.bold,
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
+                                  ),
                               backgroundColor:
                                   (_userModelController.isOnLive == true)
                                       ? Color(0xFF3D6FED)
-                                      : Colors.grey),
+                                      : Color(0xFFFFFFFF)),
                         ),
                       ),
                       floatingActionButtonLocation:
@@ -1393,56 +1508,56 @@ class _ResortHomeState extends State<ResortHome>
                   }
                   return Scaffold(
                     endDrawer: Center(child: CircularProgressIndicator()),
-                    floatingActionButton: Transform.translate(
-                      offset: Offset(12, -4),
-                      child: SizedBox(
-                        width: 112,
-                        height: 52,
-                        child: FloatingActionButton.extended(
-                            onPressed: () async {
-                              if (_userModelController.isOnLive == true) {
-                                HapticFeedback.lightImpact();
-                                CustomFullScreenDialog.showDialog();
-                                await _userModelController.updateIsOnLiveOff();
-                                await _userModelController
-                                    .getCurrentUser(_userModelController.uid);
-                                setState(() {});
-                                CustomFullScreenDialog.cancelDialog();
-                                print('라이브 OFF');
-                              } else {
-                                HapticFeedback.lightImpact();
-                                CustomFullScreenDialog.showDialog();
-                                await _userModelController.updateIsOnLiveOn();
-                                await _userModelController
-                                    .getCurrentUser(_userModelController.uid);
-                                setState(() {});
-                                CustomFullScreenDialog.cancelDialog();
-                                print('라이브 ON');
-                              }
-                            },
-                            icon: Icon(Icons.add),
-                            label: (_userModelController.isOnLive == true)
-                                ? Text(
-                                    'live on',
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        overflow: TextOverflow.ellipsis),
-                                  )
-                                : Text(
-                                    'live off',
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        overflow: TextOverflow.ellipsis),
-                                  ),
-                            backgroundColor:
-                                (_userModelController.isOnLive == true)
-                                    ? Color(0xFF3D6FED)
-                                    : Colors.grey),
-                      ),
+                    floatingActionButton: SizedBox(
+                      width: 118,
+                      height: 54,
+                      child: FloatingActionButton.extended(
+                          onPressed: () async {
+                            if (_userModelController.isOnLive == true) {
+                              HapticFeedback.lightImpact();
+                              CustomFullScreenDialog.showDialog();
+                              await _userModelController.updateIsOnLiveOff();
+                              await _userModelController
+                                  .getCurrentUser(_userModelController.uid);
+                              setState(() {});
+                              CustomFullScreenDialog.cancelDialog();
+                              print('라이브 OFF');
+                            } else {
+                              HapticFeedback.lightImpact();
+                              CustomFullScreenDialog.showDialog();
+                              await _userModelController.updateIsOnLiveOn();
+                              await _userModelController
+                                  .getCurrentUser(_userModelController.uid);
+                              setState(() {});
+                              CustomFullScreenDialog.cancelDialog();
+                              print('라이브 ON');
+                            }
+                          },
+                          icon:
+                          (_userModelController.isOnLive == true)
+                          ? Image.asset('assets/imgs/icons/icon_live_on', width: 50)
+                          : Image.asset('assets/imgs/icons/icon_live_off', width: 50),
+                          label: (_userModelController.isOnLive == true)
+                              ? Text(
+                                  'live on',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      overflow: TextOverflow.ellipsis),
+                                )
+                              : Text(
+                                  'live off',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                          backgroundColor:
+                              (_userModelController.isOnLive == true)
+                                  ? Color(0xFF3D6FED)
+                                  : Colors.grey),
                     ),
                     floatingActionButtonLocation:
                         FloatingActionButtonLocation.endFloat,
@@ -1771,51 +1886,34 @@ class _ResortHomeState extends State<ResortHome>
                                                 children: [
                                                   Column(
                                                     children: [
-                                                      Text(
-                                                        '바람',
+                                                      Text('바람',
                                                         style: TextStyle(
-                                                            color:
-                                                                Colors.white60,
+                                                            color: Colors.white60,
                                                             fontSize: 13),
                                                       ),
-                                                      SizedBox(
-                                                        height: 6,
-                                                      ),
+                                                      SizedBox(height: 6,),
                                                       Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
+                                                        crossAxisAlignment: CrossAxisAlignment.end,
                                                         children: [
                                                           Obx(
                                                             () => Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      right: 3),
+                                                              padding: const EdgeInsets.only(right: 3),
                                                               child: Text(
                                                                 '${_resortModelController.resortWind}',
-                                                                style: GoogleFonts
-                                                                    .bebasNeue(
-                                                                        fontSize:
-                                                                            28,
-                                                                        color: Colors
-                                                                            .white),
+                                                                style: GoogleFonts.bebasNeue(
+                                                                        fontSize: 28,
+                                                                        color: Colors.white),
                                                               ),
                                                             ),
                                                           ),
                                                           Padding(
                                                             padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    bottom: 5),
+                                                                const EdgeInsets.only(bottom: 5),
                                                             child: Text(
                                                               'M/S',
-                                                              style: GoogleFonts
-                                                                  .bebasNeue(
-                                                                      fontSize:
-                                                                          16,
-                                                                      color: Colors
-                                                                          .white),
+                                                              style: GoogleFonts.bebasNeue(
+                                                                      fontSize: 16,
+                                                                      color: Colors.white),
                                                             ),
                                                           ),
                                                         ],
@@ -1824,51 +1922,34 @@ class _ResortHomeState extends State<ResortHome>
                                                   ),
                                                   Column(
                                                     children: [
-                                                      Text(
-                                                        '습도',
+                                                      Text('습도',
                                                         style: TextStyle(
-                                                            color:
-                                                                Colors.white60,
+                                                            color: Colors.white60,
                                                             fontSize: 13),
                                                       ),
                                                       SizedBox(
                                                         height: 6,
                                                       ),
                                                       Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
+                                                        crossAxisAlignment: CrossAxisAlignment.end,
                                                         children: [
                                                           Obx(
                                                             () => Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      right: 3),
+                                                              padding: const EdgeInsets.only(right: 3),
                                                               child: Text(
                                                                 '${_resortModelController.resortWet}',
-                                                                style: GoogleFonts
-                                                                    .bebasNeue(
-                                                                        fontSize:
-                                                                            28,
-                                                                        color: Colors
-                                                                            .white),
+                                                                style: GoogleFonts.bebasNeue(
+                                                                        fontSize: 28,
+                                                                        color: Colors.white),
                                                               ),
                                                             ),
                                                           ),
                                                           Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    bottom: 5),
-                                                            child: Text(
-                                                              '%',
-                                                              style: GoogleFonts
-                                                                  .bebasNeue(
-                                                                      fontSize:
-                                                                          16,
-                                                                      color: Colors
-                                                                          .white),
+                                                            padding: const EdgeInsets.only(bottom: 5),
+                                                            child: Text('%',
+                                                              style: GoogleFonts.bebasNeue(
+                                                                      fontSize: 16,
+                                                                      color: Colors.white),
                                                             ),
                                                           ),
                                                         ],
