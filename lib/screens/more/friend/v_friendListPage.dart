@@ -136,7 +136,6 @@ class _FriendListPageState extends State<FriendListPage> {
                       )
                           : GestureDetector(
                         onTap: (){
-                          print('${_userModelController.uid}');
                           Get.to(() => FriendDetailPage(uid: _userModelController.uid));
                         },
                         child: Container(
@@ -208,7 +207,9 @@ class _FriendListPageState extends State<FriendListPage> {
                                                 .get('profileImageUrl')
                                                 .isNotEmpty)
                                                 ? GestureDetector(
-                                              onTap: () {},
+                                              onTap: () {
+                                                Get.to(() => FriendDetailPage(uid: BFdoc.get('uid')));
+                                              },
                                               child: Container(
                                                 width: 102,
                                                 height: 82,
@@ -240,7 +241,9 @@ class _FriendListPageState extends State<FriendListPage> {
                                               ),
                                             )
                                                 : GestureDetector(
-                                              onTap: () {},
+                                              onTap: () {
+                                                Get.to(() => FriendDetailPage(uid: BFdoc.get('uid')));
+                                              },
                                               child: Container(
                                                 width: 102,
                                                 height: 82,
@@ -324,7 +327,9 @@ class _FriendListPageState extends State<FriendListPage> {
                               },
                             leading: (doc.get('profileImageUrl').isNotEmpty)
                                 ? GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                Get.to(() => FriendDetailPage(uid: doc.get('uid')));
+                              },
                               child: Container(
                                 width: 52,
                                 height: 52,
@@ -345,7 +350,9 @@ class _FriendListPageState extends State<FriendListPage> {
                               ),
                             )
                                 : GestureDetector(
-                              onTap: (){},
+                              onTap: (){
+                                Get.to(() => FriendDetailPage(uid: doc.get('uid')));
+                              },
                               child: Container(
                                 width: 52,
                                 height: 52,
