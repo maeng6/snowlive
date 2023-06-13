@@ -57,7 +57,7 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
           elevation: 0.0,
         ),
       ),
-      body: Column(
+      body: Obx(() => Column(
         children: [
           Expanded(
             child: GoogleMap(
@@ -74,6 +74,6 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
           ),
         ],
       ),
-    );
+    ));
   }
 }
