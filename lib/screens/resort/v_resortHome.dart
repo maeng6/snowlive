@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
+import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/controller/vm_replyModelController.dart';
 import 'package:snowlive3/model/m_resortModel.dart';
 import 'package:snowlive3/screens/comments/v_commentTile_resortHome.dart';
@@ -88,6 +89,7 @@ class _ResortHomeState extends State<ResortHome>
     Get.put(ReplyModelController(), permanent: true);
     Get.put(FleaModelController(), permanent: true);
     Get.put(FleaChatModelController(), permanent: true);
+    Get.put(LiveMapController(), permanent: true);
     //TODO: Dependency Injection**************************************************
 
     final Size _size = MediaQuery.of(context).size;

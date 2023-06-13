@@ -41,7 +41,6 @@ class _MoreTabState extends State<MoreTab> {
 
     //TODO: Dependency Injection************************************************
     Get.put(NoticeController(), permanent: true);
-    Get.put(LiveMapController(), permanent: true);
     NoticeController _noticeController = Get.find<NoticeController>();
     //TODO: Dependency Injection************************************************
 

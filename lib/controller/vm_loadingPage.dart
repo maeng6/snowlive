@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:snowlive3/controller/vm_friendsCommentController.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
 import 'package:snowlive3/controller/vm_loginController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
@@ -28,6 +29,7 @@ class _LoadingPageState extends State<LoadingPage> {
     Get.put(UserModelController(), permanent: true);
     Get.put(GetDateTimeController(), permanent: true);
     Get.put(TimeStampController(), permanent: true);
+    Get.put(FriendsCommentModelController(), permanent: true);
 
     LoginController _logInController = Get.put(LoginController());
 
