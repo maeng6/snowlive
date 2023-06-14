@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,14 +7,17 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:snowlive3/model/m_slopeLocationModel.dart';
 
 class LiveMapController extends GetxController {
   UserModelController _userModelController = Get.find<UserModelController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
-
   RxList<Marker> _markers = RxList<Marker>();
 
   List<Marker> get markers => _markers.toList();
+
+  int passCount = 0;
+  DateTime? lastPassTime;
 
   Future<void> updateFirebaseWithLocation(Position position) async {
     double latitude = position.latitude;
@@ -55,11 +59,63 @@ class LiveMapController extends GetxController {
 
     Geolocator.getPositionStream().listen((Position position) {
       updateFirebaseWithLocation(position);
+      checkAndUpdatePassCount(position);
     });
   }
 
   Future<void> stopBackgroundLocationService() async {
     Geolocator.getPositionStream().listen((Position position) {}).cancel();
+  }
+
+  Future<void> checkAndUpdatePassCount(Position position) async {
+    for (LocationModel location in locations) {
+      double distanceInMeters = Geolocator.distanceBetween(
+        position.latitude,
+        position.longitude,
+        location.coordinates.latitude,
+        location.coordinates.longitude,
+      );
+
+      bool withinBoundary = distanceInMeters <= 100;
+
+      if (withinBoundary) {
+        DateTime now = DateTime.now();
+        if (lastPassTime == null || now.difference(lastPassTime!).inMinutes >= 10) {
+          passCount++;
+          lastPassTime = now;
+
+          if (_userModelController.uid != null) {
+            DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+                .collection('user')
+                .doc(_userModelController.uid)
+                .get();
+
+            int storedPassCount = userSnapshot.get('passCount') ?? 0;
+            DateTime storedLastPassTime = userSnapshot.get('lastPassTime')?.toDate();
+
+            if (storedLastPassTime != null && now.difference(storedLastPassTime).inMinutes < 10) {
+              // 파이어베이스에 저장된 시간과 현재 시간을 비교하여 10분 이내에 재시작한 경우에는 업데이트를 건너뜁니다.
+              passCount = storedPassCount;
+              lastPassTime = storedLastPassTime;
+            } else {
+              passCount = storedPassCount + 1;
+              lastPassTime = now;
+            }
+
+            await FirebaseFirestore.instance
+                .collection('user')
+                .doc(_userModelController.uid)
+                .update({
+              'passCount': passCount,
+              'lastPassTime': lastPassTime,
+            })
+                .catchError((error) {
+              print('Firestore 업데이트 에러: $error');
+            });
+          }
+        }
+      }
+    }
   }
 
   bool _checkPositionWithinBoundary(LatLng position) {
