@@ -36,12 +36,11 @@ class _ResortHomeState extends State<ResortHome>
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
-  ResortModelController _resortModelController =
-      Get.find<ResortModelController>();
-  GetDateTimeController _getDateTimeController =
-      Get.find<GetDateTimeController>();
-
+  ResortModelController _resortModelController = Get.find<ResortModelController>();
+  GetDateTimeController _getDateTimeController = Get.find<GetDateTimeController>();
+  LiveMapController _liveMapController = Get.find<LiveMapController>();
   //TODO: Dependency Injection**************************************************
+
 
   List<bool?> _isSelected = List<bool?>.filled(13, false);
 
@@ -70,6 +69,7 @@ class _ResortHomeState extends State<ResortHome>
     if (mounted) setState(() {});
   }
 
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(
@@ -89,8 +89,9 @@ class _ResortHomeState extends State<ResortHome>
     Get.put(ReplyModelController(), permanent: true);
     Get.put(FleaModelController(), permanent: true);
     Get.put(FleaChatModelController(), permanent: true);
-    Get.put(LiveMapController(), permanent: true);
     //TODO: Dependency Injection**************************************************
+
+
 
     final Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
@@ -345,6 +346,7 @@ class _ResortHomeState extends State<ResortHome>
                                       .updateIsOnLiveOff();
                                   await _userModelController
                                       .getCurrentUser(_userModelController.uid);
+                                  await _liveMapController.stopBackgroundLocationService();
                                   setState(() {});
                                   CustomFullScreenDialog.cancelDialog();
                                   print('라이브 OFF');
@@ -354,6 +356,7 @@ class _ResortHomeState extends State<ResortHome>
                                   await _userModelController.updateIsOnLiveOn();
                                   await _userModelController
                                       .getCurrentUser(_userModelController.uid);
+                                  await _liveMapController.startBackgroundLocationService();
                                   setState(() {});
                                   CustomFullScreenDialog.cancelDialog();
                                   print('라이브 ON');
@@ -1521,6 +1524,7 @@ class _ResortHomeState extends State<ResortHome>
                               await _userModelController.updateIsOnLiveOff();
                               await _userModelController
                                   .getCurrentUser(_userModelController.uid);
+                              await _liveMapController.stopBackgroundLocationService();
                               setState(() {});
                               CustomFullScreenDialog.cancelDialog();
                               print('라이브 OFF');
@@ -1530,6 +1534,7 @@ class _ResortHomeState extends State<ResortHome>
                               await _userModelController.updateIsOnLiveOn();
                               await _userModelController
                                   .getCurrentUser(_userModelController.uid);
+                              await _liveMapController.startBackgroundLocationService();
                               setState(() {});
                               CustomFullScreenDialog.cancelDialog();
                               print('라이브 ON');

@@ -24,7 +24,6 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
   @override
   void initState() {
     super.initState();
-    _liveMapController.startBackgroundLocationService();
     _liveMapController.listenToFriendLocations();
   }
 

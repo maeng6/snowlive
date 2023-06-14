@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/screens/bulletin/v_bulletin_Screen.dart';
 import 'package:snowlive3/screens/comments/v_liveTalk_Screen.dart';
 import 'package:snowlive3/screens/resort/v_resortHome.dart';
@@ -51,7 +52,6 @@ class _MainHomeState extends State<MainHome> {
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
   }
 
 
@@ -59,8 +59,10 @@ class _MainHomeState extends State<MainHome> {
   Widget build(BuildContext context) {
     //TODO: Dependency Injection************************************************
     Get.put(NoticeController(), permanent: true);
+    Get.put(LiveMapController(), permanent: true);
     NoticeController _noticeController = Get.find<NoticeController>();
     UserModelController _userModelController = Get.find<UserModelController>();
+    LiveMapController _liveMapController = Get.find<LiveMapController>();
     //TODO: Dependency Injection************************************************
 
     _noticeController.getIsNewNotice();
@@ -68,6 +70,11 @@ class _MainHomeState extends State<MainHome> {
     return FutureBuilder(
       future: _userModelController.getCurrentUser(widget.uid),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+
+        if(_userModelController.isOnLive == true) {
+          _liveMapController.startBackgroundLocationService();
+        }
+
         getUserComp = true;
         return Scaffold(
           bottomNavigationBar: BottomNavigationBar(

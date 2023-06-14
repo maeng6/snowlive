@@ -10,14 +10,21 @@ import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/model/m_slopeLocationModel.dart';
 
 class LiveMapController extends GetxController {
+
+  //TODO: Dependency Injection********************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
+  //TODO: Dependency Injection********************************************
+
   RxList<Marker> _markers = RxList<Marker>();
 
   List<Marker> get markers => _markers.toList();
 
   int passCount = 0;
   DateTime? lastPassTime;
+
+
+  StreamSubscription<Position>? _positionStreamSubscription;
 
   Future<void> updateFirebaseWithLocation(Position position) async {
     double latitude = position.latitude;
@@ -35,6 +42,7 @@ class LiveMapController extends GetxController {
       });
     }
   }
+
 
   Future<void> startBackgroundLocationService() async {
     bool serviceEnabled;
@@ -57,14 +65,15 @@ class LiveMapController extends GetxController {
       }
     }
 
-    Geolocator.getPositionStream().listen((Position position) {
+    _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) {
       updateFirebaseWithLocation(position);
       checkAndUpdatePassCount(position);
     });
   }
 
   Future<void> stopBackgroundLocationService() async {
-    Geolocator.getPositionStream().listen((Position position) {}).cancel();
+    await _positionStreamSubscription?.cancel();
+    _positionStreamSubscription = null;
   }
 
   Future<void> checkAndUpdatePassCount(Position position) async {
@@ -133,6 +142,7 @@ class LiveMapController extends GetxController {
     FirebaseFirestore.instance
         .collection('user')
         .where('whoResistMe', arrayContains: _userModelController.uid!)
+        .where('isOnLive', isEqualTo: true)  // Only get data where isLiveOn is true
         .snapshots()
         .listen((QuerySnapshot querySnapshot) {
       Set<String> updatedFriendIds = Set<String>();
@@ -165,6 +175,7 @@ class LiveMapController extends GetxController {
             newMarkers.add(marker);
           }
         }
+
       });
 
       _markers.value = newMarkers;
