@@ -153,7 +153,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                           ),
                         ),//프사 + 닉네임 + 상메
                         SizedBox(height: 30,),
-                        Row(
+                        (widget.uid == _userModelController.uid)
+                        ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Column(
@@ -180,7 +181,85 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                               ],
                             ),
                           ],
-                        ),//프로필수정 + 라이브크루
+                        ) //프로필수정 + 라이브크루
+                        : (friendDocs[0]['uid']==widget.uid)
+                        ? GestureDetector(
+                          onTap: (){},
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Column(
+                                children: [
+                                  Container()
+                                ],
+                              ),
+                            ],
+                          ),
+                        ) //빈칸
+                        :GestureDetector(
+                          onTap: (){
+                            Get.dialog(AlertDialog(
+                              contentPadding: EdgeInsets.only(
+                                  bottom: 0,
+                                  left: 20,
+                                  right: 20,
+                                  top: 30),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.circular(
+                                      10.0)),
+                              buttonPadding:
+                              EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 0),
+                              content: Text(
+                                '친구로 등록하시겠습니까?',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15),
+                              ),
+                              actions: [
+                                Row(
+                                  children: [
+                                    TextButton(
+                                        onPressed: () async{
+                                          CustomFullScreenDialog.showDialog();
+                                          await _userModelController.updateFriendUid(widget.uid);
+                                          await _userModelController.updateWhoResistMe(friendUid: widget.uid!);
+                                          Navigator.pop(context);
+                                          CustomFullScreenDialog.cancelDialog();
+                                        },
+                                        child: Text(
+                                          '친구 추가',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: Color(0xff377EEA),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                )
+                              ],
+                            ));
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Column(
+                                children: [
+                                  IconButton(
+                                      onPressed: (){},
+                                      iconSize: _size.width/10 ,
+                                      icon: Image.asset('assets/imgs/icons/icon_edit_profile.png')
+                                  ),
+                                  Text('친구로 등록하기')
+                                ],
+                              ),
+                            ],
+                          ),
+                        ), //친구로등록하기
                         SizedBox(height: 30,),
                         Divider(thickness: 1,height: 20, color: Color(0xFFEEEEEE),),
                         SizedBox(height: 10,),
