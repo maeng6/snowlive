@@ -23,23 +23,25 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 
   var _stream;
   final _formKeyProfile = GlobalKey<FormState>();
+  final _formKeyProfile2 = GlobalKey<FormState>();
+  final _formKeyProfile3 = GlobalKey<FormState>();
   final _stateMsgController = TextEditingController();
   final _displayNameController = TextEditingController();
   ScrollController _scrollController = ScrollController();
   var _newComment = '';
   bool edit= false;
-  String _initTitle='';
+  String _initStateMsg='';
   String _initialDisplayName='';
-
 
   @override
   void initState() {
     _stream = newStream();
     // TODO: implement initState
     super.initState();
-    _initTitle = _userModelController.stateMsg!;
+    _initStateMsg = _userModelController.stateMsg!;
     _initialDisplayName = _userModelController.displayName!;
   }
+
   Stream<QuerySnapshot> newStream() {
     return FirebaseFirestore.instance
         .collection('user')
@@ -94,8 +96,9 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                     ),
                   ),
                   onTap: () {
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => FriendListPage()));
 
-                    Get.back();
                   },
                 )
                 : GestureDetector(
@@ -129,8 +132,14 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                       onTap: () async{
                         CustomFullScreenDialog.showDialog();
                         try {
+                          if(_displayNameController.text == '' || _displayNameController.text ==null) {
+                            await _userModelController.updateNickname(
+                                _userModelController.displayName);
+                          }else{
+                            await _userModelController.updateNickname(
+                                _displayNameController.text);
+                          }
                           await _userModelController.updateStateMsg(_stateMsgController.text);
-                          await _userModelController.updateNickname(_displayNameController.text);
                           await _userModelController.getCurrentUser(_userModelController.uid);
                           _stateMsgController.clear();
                           _displayNameController.clear();
@@ -273,7 +282,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                 cursorWidth: 2,
                                                                 autovalidateMode:
                                                                 AutovalidateMode.onUserInteraction,
-                                                                controller: _displayNameController,
+                                                                controller: _displayNameController..text=_initialDisplayName,
                                                                 strutStyle:
                                                                 StrutStyle(leading: 0.3),
                                                                 decoration: InputDecoration(
@@ -346,7 +355,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                             child: InkWell(
                                                               child: ElevatedButton(
                                                                 onPressed: () {
-                                                                  _displayNameController.clear();
+                                                                  _displayNameController.text = _userModelController.displayName!;
                                                                   Navigator.pop(context);
                                                                 },
                                                                 child: Text('취소',
@@ -443,21 +452,22 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                               ? Container(
                                   width: _size.width*2/3,
                                   child: TextFormField(
-                                    key: _formKeyProfile,
+                                    key: _formKeyProfile2,
                                     cursorColor: Color(0xff377EEA),
-                                    controller: _stateMsgController..text=_initTitle,
+                                    controller: _stateMsgController..text=_initStateMsg,
                                     strutStyle: StrutStyle(leading: 0.3),
                                     autovalidateMode: AutovalidateMode.onUserInteraction,
                                     maxLines: 1,
                                     enableSuggestions: false,
                                     autocorrect: false,
                                     textInputAction: TextInputAction.newline,
+                                    onTap: () {
+                                      // 텍스트 필드 선택시 커서를 맨 오른쪽으로 이동
+                                      _stateMsgController.selection = TextSelection.fromPosition(TextPosition(offset: _stateMsgController.text.length));
+                                    },
                                     decoration: InputDecoration(
                                         suffixIcon: TextButton(
                                           onPressed: () async {
-                                            setState(() {
-                                             _initTitle = _stateMsgController.text;
-                                            });
                                             FocusScope.of(context).unfocus();
                                           },
                                         child: Text('확인'),
@@ -509,10 +519,12 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                 IconButton(
                                     onPressed: (){
                                       setState(() {
-                                        _initTitle = _userModelController.stateMsg!;
+                                        _initStateMsg = _userModelController.stateMsg!;
                                         _initialDisplayName = _userModelController.displayName!;
                                         edit = true;
                                       });
+                                      print(_displayNameController.text);
+                                      print(_stateMsgController.text);
                                     },
                                     iconSize: _size.width/10 ,
                                     icon: Image.asset('assets/imgs/icons/icon_edit_profile.png')
@@ -1196,7 +1208,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                         ),
                         (widget.uid != _userModelController.uid)
                         ?  TextFormField(
-                          key: _formKeyProfile,
+                          key: _formKeyProfile3,
                           cursorColor: Color(0xff377EEA),
                           controller: _stateMsgController,
                           strutStyle: StrutStyle(leading: 0.3),
@@ -1289,7 +1301,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
     );
   }
 }
-
+//
 // if (!snapshot.hasData || snapshot.data == null) {}
 // else if (snapshot.data!.docs.isNotEmpty) {
 // Column(
