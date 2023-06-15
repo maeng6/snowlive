@@ -94,7 +94,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                     ),
                   ),
                   onTap: () {
-                    Get.to(()=> FriendListPage());
+
+                    Get.back();
                   },
                 )
                 : GestureDetector(

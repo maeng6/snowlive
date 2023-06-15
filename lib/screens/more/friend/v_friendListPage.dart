@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_timeStampController.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
+import 'package:snowlive3/screens/more/v_moreTab.dart';
 import 'package:snowlive3/screens/more/v_noticeDetailPage.dart';
 import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
@@ -47,7 +48,7 @@ class _FriendListPageState extends State<FriendListPage> {
             height: 26,
           ),
           onTap: () {
-            Navigator.pop(context);
+            Get.back();
           },
         ),
         elevation: 0.0,
