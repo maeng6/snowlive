@@ -1549,8 +1549,8 @@ class _ResortHomeState extends State<ResortHome>
                           },
                           icon:
                           (_userModelController.isOnLive == true)
-                          ? Image.asset('assets/imgs/icons/icon_live_on', width: 50)
-                          : Image.asset('assets/imgs/icons/icon_live_off', width: 50),
+                          ? Image.asset('assets/imgs/icons/icon_live_on.png', width: 50)
+                          : Image.asset('assets/imgs/icons/icon_live_off.png', width: 50),
                           label: (_userModelController.isOnLive == true)
                               ? Text(
                                   'live on',
