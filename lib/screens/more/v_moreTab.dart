@@ -104,12 +104,17 @@ class _MoreTabState extends State<MoreTab> {
                                           Container(
                                             width: 52,
                                             height: 52,
-                                            child: CircleAvatar(
-                                                backgroundColor:
-                                                    Colors.grey[100],
-                                                backgroundImage: NetworkImage(
-                                                  _userModelController
-                                                      .profileImageUrl!,
+                                            child: Container(
+                                                width: _size.width/5,
+                                                height: _size.width/5,
+                                                child: ExtendedImage.network(
+                                                  '${_userModelController.profileImageUrl}',
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape.circle,
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  width: _size.width/5,
+                                                  height: _size.width/5,
+                                                  fit: BoxFit.cover,
                                                 )),
                                           ),
                                           Positioned(
@@ -130,11 +135,18 @@ class _MoreTabState extends State<MoreTab> {
                                           Container(
                                             width: 52,
                                             height: 52,
-                                            child: CircleAvatar(
-                                              backgroundColor:
-                                                  Colors.yellow[100],
-                                              backgroundImage: AssetImage(
-                                                  'assets/imgs/profile/img_profile_default_circle.png'),
+                                            child: Container(
+                                              width: 120,
+                                              height: 120,
+                                              child: ExtendedImage.asset(
+                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                enableMemoryCache: true,
+                                                shape: BoxShape.circle,
+                                                borderRadius: BorderRadius.circular(8),
+                                                width: 120,
+                                                height: 120,
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                           ),
                                           Positioned(

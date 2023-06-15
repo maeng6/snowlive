@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:snowlive3/controller/vm_friendsCommentController.dart';
-
-import '../../../controller/vm_commentController.dart';
-import '../../../controller/vm_replyModelController.dart';
+import 'package:snowlive3/screens/more/friend/v_friendListPage.dart';
 import '../../../controller/vm_timeStampController.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../../widget/w_fullScreenDialog.dart';
+import '../v_setProfileImage_moreTab.dart';
 
 class FriendDetailPage extends StatefulWidget {
   FriendDetailPage({Key? key, required this.uid}) : super(key: key);
@@ -23,12 +22,23 @@ class FriendDetailPage extends StatefulWidget {
 class _FriendDetailPageState extends State<FriendDetailPage> {
 
   var _stream;
+  final _formKeyProfile = GlobalKey<FormState>();
+  final _stateMsgController = TextEditingController();
+  final _displayNameController = TextEditingController();
+  ScrollController _scrollController = ScrollController();
+  var _newComment = '';
+  bool edit= false;
+  String _initTitle='';
+  String _initialDisplayName='';
+
 
   @override
   void initState() {
     _stream = newStream();
     // TODO: implement initState
     super.initState();
+    _initTitle = _userModelController.stateMsg!;
+    _initialDisplayName = _userModelController.displayName!;
   }
   Stream<QuerySnapshot> newStream() {
     return FirebaseFirestore.instance
@@ -38,16 +48,10 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
         .snapshots();
   }
 
-  final _formKey = GlobalKey<FormState>();
-  final _controller = TextEditingController();
-  ScrollController _scrollController = ScrollController();
-  var _newComment = '';
-
   //TODO: Dependency Injection**************************************************
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   UserModelController _userModelController = Get.find<UserModelController>();
   FriendsCommentModelController _friendsCommentModelController = Get.find<FriendsCommentModelController>();
-
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -72,7 +76,9 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
             children: [
               AppBar(
                 backgroundColor: Color(0xFF3D83ED),
-                leading: GestureDetector(
+                leading:
+                (edit == false)
+                ? GestureDetector(
                   child: Padding(
                     padding: EdgeInsets.only(top: _statusBarSize - 30),
                     child: Column(
@@ -88,9 +94,55 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                     ),
                   ),
                   onTap: () {
-                    Navigator.pop(context);
+                    Get.to(()=> FriendListPage());
+                  },
+                )
+                : GestureDetector(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: _statusBarSize - 30),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text('취소'),
+                      ],
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      edit=false;
+                    });
                   },
                 ),
+                actions: [
+                  if(edit == true)
+                    GestureDetector(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: _statusBarSize - 30, right: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text('완료'),
+                          ],
+                        ),
+                      ),
+                      onTap: () async{
+                        CustomFullScreenDialog.showDialog();
+                        try {
+                          await _userModelController.updateStateMsg(_stateMsgController.text);
+                          await _userModelController.updateNickname(_displayNameController.text);
+                          await _userModelController.getCurrentUser(_userModelController.uid);
+                          _stateMsgController.clear();
+                          _displayNameController.clear();
+                        } catch (e) {
+                          CustomFullScreenDialog.cancelDialog();
+                        }
+                        setState(() {
+                          edit=false;
+                        });
+                        CustomFullScreenDialog.cancelDialog();
+                      },
+                    ),
+                ],
                 elevation: 0.0,
                 titleSpacing: 0,
                 centerTitle: true,
@@ -115,40 +167,334 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                         Center(
                           child: Column(
                             children: [
-                              (friendDocs[0]['profileImageUrl'].isNotEmpty)
-                                  ? GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                    width: _size.width/5,
-                                    height: _size.width/5,
-                                    child: ExtendedImage.network(
-                                      friendDocs[0]['profileImageUrl'],
-                                      enableMemoryCache: true,
-                                      shape: BoxShape.circle,
-                                      borderRadius: BorderRadius.circular(8),
-                                      width: _size.width/5,
-                                      height: _size.width/5,
-                                      fit: BoxFit.cover,
-                                    )),
-                              )
-                                  : GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  width: 120,
-                                  height: 120,
-                                  child: ExtendedImage.asset(
-                                    'assets/imgs/profile/img_profile_default_circle.png',
-                                    enableMemoryCache: true,
-                                    shape: BoxShape.circle,
-                                    borderRadius: BorderRadius.circular(8),
-                                    width: 120,
-                                    height: 120,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
+                              Stack(
+                                children: [
+                                  (friendDocs[0]['profileImageUrl'].isNotEmpty)
+                                      ? GestureDetector(
+                                    onTap: () {
+
+                                    },
+                                    child: Container(
+                                        width: _size.width/5,
+                                        height: _size.width/5,
+                                        child: ExtendedImage.network(
+                                          friendDocs[0]['profileImageUrl'],
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.circle,
+                                          borderRadius: BorderRadius.circular(8),
+                                          width: _size.width/5,
+                                          height: _size.width/5,
+                                          fit: BoxFit.cover,
+                                        )),
+                                  )
+                                      : Container(
+                                        width: 120,
+                                        height: 120,
+                                        child: ExtendedImage.asset(
+                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.circle,
+                                          borderRadius: BorderRadius.circular(8),
+                                          width: 120,
+                                          height: 120,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                  if(widget.uid == _userModelController.uid && edit == false)
+                                  Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          Get.to(() => SetProfileImage_moreTab());
+                                        },
+                                        child: ExtendedImage.asset(
+                                            'assets/imgs/icons/icon_profile_add.png',
+                                            height: 22,
+                                            width: 22),
+                                      ))
+                                ],
                               ),
-                              Text('${friendDocs[0]['displayName']}'),//활동명
-                              Text('${friendDocs[0]['stateMsg']}'),//상태메세지
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  (edit ==true)
+                                  ? Text(_initialDisplayName)
+                                  : Text('${friendDocs[0]['displayName']}'),
+                                  if(edit == true)
+                                  GestureDetector(
+                                      onTap: () {
+                                        _displayNameController.clear();
+                                        showModalBottomSheet(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          builder: (BuildContext context) {
+                                            return SingleChildScrollView(
+                                              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                              child: Container(
+                                                height: 300,
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 20, right: 20),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 30,
+                                                      ),
+                                                      Text(
+                                                        '변경할 활동명을 입력해주세요.',
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Color(
+                                                                0xFF111111)),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 24,
+                                                      ),
+                                                      Container(
+                                                        height: 130,
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Form(
+                                                              key: _formKeyProfile,
+                                                              child:
+                                                              TextFormField(
+                                                                cursorColor: Color(0xff377EEA),
+                                                                cursorHeight: 16,
+                                                                cursorWidth: 2,
+                                                                autovalidateMode:
+                                                                AutovalidateMode.onUserInteraction,
+                                                                controller: _displayNameController,
+                                                                strutStyle:
+                                                                StrutStyle(leading: 0.3),
+                                                                decoration: InputDecoration(
+                                                                    errorStyle: TextStyle(
+                                                                      fontSize: 12,
+                                                                    ),
+                                                                    hintStyle: TextStyle(
+                                                                        color: Color(0xff949494),
+                                                                        fontSize: 16),
+                                                                    hintText: '활동명 입력',
+                                                                    labelText: '활동명',
+                                                                    contentPadding: EdgeInsets.only(
+                                                                        top: 20,
+                                                                        bottom: 20,
+                                                                        left: 20,
+                                                                        right: 20),
+                                                                    border: OutlineInputBorder(
+                                                                      borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                                                      borderRadius: BorderRadius.circular(6),
+                                                                    ),
+                                                                    enabledBorder: OutlineInputBorder(
+                                                                      borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                                                      borderRadius: BorderRadius.circular(6),
+                                                                    ),
+                                                                    errorBorder: OutlineInputBorder(
+                                                                      borderSide: BorderSide(color: Color(0xFFFF3726)),
+                                                                      borderRadius: BorderRadius.circular(6),
+                                                                    )),
+                                                                validator:
+                                                                    (val) {
+                                                                  if (val!.length <=
+                                                                      20 &&
+                                                                      val.length >=
+                                                                          1) {
+                                                                    return null;
+                                                                  } else if (val
+                                                                      .length ==
+                                                                      0) {
+                                                                    return '닉네임을 입력해주세요.';
+                                                                  } else {
+                                                                    return '최대 글자 수를 초과했습니다.';
+                                                                  }
+                                                                },
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 6,
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  left:
+                                                                  19),
+                                                              child: Text(
+                                                                '최대 20글자까지 입력 가능합니다.',
+                                                                style: TextStyle(
+                                                                    color: Color(
+                                                                        0xff949494),
+                                                                    fontSize:
+                                                                    12),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: InkWell(
+                                                              child: ElevatedButton(
+                                                                onPressed: () {
+                                                                  _displayNameController.clear();
+                                                                  Navigator.pop(context);
+                                                                },
+                                                                child: Text('취소',
+                                                                  style: TextStyle(
+                                                                      color: Colors.white,
+                                                                      fontSize: 15,
+                                                                      fontWeight: FontWeight.bold),
+                                                                ),
+                                                                style: TextButton.styleFrom(
+                                                                    splashFactory:
+                                                                    InkRipple.splashFactory,
+                                                                    elevation: 0,
+                                                                    minimumSize: Size(100, 56),
+                                                                    backgroundColor: Color(0xff555555),
+                                                                    padding: EdgeInsets.symmetric(
+                                                                        horizontal: 0)),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Expanded(
+                                                            child: InkWell(
+                                                              child:
+                                                              ElevatedButton(
+                                                                onPressed: () {
+
+                                                                  if (_formKeyProfile.currentState!.validate()) {
+                                                                    setState(() {
+                                                                      _initialDisplayName = _displayNameController.text;
+                                                                    });
+                                                                    FocusScope.of(context).unfocus();
+                                                                    Navigator.pop(context);
+                                                                  } else {
+                                                                    Get.snackbar(
+                                                                        '입력 실패',
+                                                                        '올바른 활동명을 입력해주세요.',
+                                                                        snackPosition: SnackPosition
+                                                                            .BOTTOM,
+                                                                        margin: EdgeInsets.only(
+                                                                            right:
+                                                                            20,
+                                                                            left:
+                                                                            20,
+                                                                            bottom:
+                                                                            12),
+                                                                        backgroundColor: Colors
+                                                                            .black87,
+                                                                        colorText: Colors
+                                                                            .white,
+                                                                        duration:
+                                                                        Duration(milliseconds: 3000));
+                                                                  }
+                                                                },
+                                                                child: Text(
+                                                                  '변경',
+                                                                  style: TextStyle(
+                                                                      color: Colors.white,
+                                                                      fontSize: 15,
+                                                                      fontWeight: FontWeight.bold),
+                                                                ),
+                                                                style: TextButton.styleFrom(
+                                                                    splashFactory:
+                                                                    InkRipple.splashFactory,
+                                                                    elevation: 0,
+                                                                    minimumSize: Size(100, 56),
+                                                                    backgroundColor: Color(0xff2C97FB),
+                                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Image.asset(
+                                        'assets/imgs/icons/icon_edit_pencil.png',
+                                        height: 22,
+                                        width: 22,
+                                      )),
+                                ],
+                              ), //활동명//상태메세지
+                              SizedBox(
+                                height: 20,
+                              ),
+                              (edit == true)
+                              ? Container(
+                                  width: _size.width*2/3,
+                                  child: TextFormField(
+                                    key: _formKeyProfile,
+                                    cursorColor: Color(0xff377EEA),
+                                    controller: _stateMsgController..text=_initTitle,
+                                    strutStyle: StrutStyle(leading: 0.3),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                                    maxLines: 1,
+                                    enableSuggestions: false,
+                                    autocorrect: false,
+                                    textInputAction: TextInputAction.newline,
+                                    decoration: InputDecoration(
+                                        suffixIcon: TextButton(
+                                          onPressed: () async {
+                                            setState(() {
+                                             _initTitle = _stateMsgController.text;
+                                            });
+                                            FocusScope.of(context).unfocus();
+                                          },
+                                        child: Text('확인'),
+                                        ),
+                                        labelText: '상태메세지',
+                                        errorStyle: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                        hintStyle: TextStyle(
+                                            color: Color(0xff949494), fontSize: 14),
+                                        hintText: '상태메세지를 입력해주세요.',
+                                        contentPadding: EdgeInsets.only(
+                                            top: 10, bottom: 10, left: 16, right: 16),
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xFFDEDEDE)),
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xFFDEDEDE)),
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xFFFF3726)),
+                                          borderRadius: BorderRadius.circular(6),
+                                        )),
+                                    validator: (val) {
+                                      if (val!.length <= 20 ) {
+                                        return null;
+                                      }  else {
+                                        return '20자 미만으로 적어주세요.';
+                                      }
+                                    },
+                                  ),
+                                )
+                                  : Text('${friendDocs[0]['stateMsg']}'),
                             ],
                           ),
                         ),//프사 + 닉네임 + 상메
@@ -160,7 +506,13 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                             Column(
                               children: [
                                 IconButton(
-                                    onPressed: (){},
+                                    onPressed: (){
+                                      setState(() {
+                                        _initTitle = _userModelController.stateMsg!;
+                                        _initialDisplayName = _userModelController.displayName!;
+                                        edit = true;
+                                      });
+                                    },
                                     iconSize: _size.width/10 ,
                                     icon: Image.asset('assets/imgs/icons/icon_edit_profile.png')
                                 ),
@@ -825,6 +1177,9 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                   color: Color(0xFFdedede),
                                                   size: 20,
                                                 ),
+                                              ),
+                                              SizedBox(
+                                                height: 30,
                                               )
                                             ],
                                           );
@@ -840,9 +1195,9 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                         ),
                         (widget.uid != _userModelController.uid)
                         ?  TextFormField(
-                          key: _formKey,
+                          key: _formKeyProfile,
                           cursorColor: Color(0xff377EEA),
-                          controller: _controller,
+                          controller: _stateMsgController,
                           strutStyle: StrutStyle(leading: 0.3),
                           maxLines: 1,
                           enableSuggestions: false,
@@ -852,7 +1207,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                               suffixIcon: IconButton(
                                 splashColor: Colors.transparent,
                                 onPressed: () async {
-                                  if (_controller.text.trim().isEmpty) {
+                                  if (_stateMsgController.text.trim().isEmpty) {
                                     return;
                                   }
                                   try {
@@ -866,13 +1221,13 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                       friendsUid: widget.uid,
                                     );
                                     FocusScope.of(context).unfocus();
-                                    _controller.clear();
+                                    _stateMsgController.clear();
                                   } catch (e) {
                                     CustomFullScreenDialog.cancelDialog();
                                   }
                                   CustomFullScreenDialog.cancelDialog();
                                 },
-                                icon: (_controller.text.trim().isEmpty)
+                                icon: (_stateMsgController.text.trim().isEmpty)
                                     ? Image.asset(
                                   'assets/imgs/icons/icon_livetalk_send_g.png',
                                   width: 27,

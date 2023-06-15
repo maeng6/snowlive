@@ -570,5 +570,13 @@ class UserModelController extends GetxController{
     });
   }
 
+  Future<void> updateStateMsg(msg) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'stateMsg': msg,
+    });
+  }
+
 }
 
