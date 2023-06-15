@@ -37,6 +37,7 @@ class UserModelController extends GetxController{
   RxBool? _isOnLive = false.obs;
   RxList? _whoResistMe = [].obs;
   RxList? _whoResistMeBF = [].obs;
+  RxBool? _withinBoundary = false.obs;
 
 
   String? get uid => _uid!.value;
@@ -64,6 +65,7 @@ class UserModelController extends GetxController{
   bool? get isOnLive =>_isOnLive!.value;
   List? get whoResistMe =>_whoResistMe;
   List? get whoResistMeBF =>_whoResistMeBF;
+  bool? get withinBoundary => _withinBoundary!.value;
 
   @override
   void onInit()  async{
@@ -114,6 +116,7 @@ class UserModelController extends GetxController{
         this._isOnLive!.value = userModel.isOnLive!;
         this._whoResistMe!.value = userModel.whoResistMe!;
         this._whoResistMeBF!.value = userModel.whoResistMeBF!;
+        this._withinBoundary!.value = userModel.withinBoundary!;
         try {
           this._fleaChatUidList!.value = userModel.fleaChatUidList!;
         }catch(e){};
@@ -162,7 +165,8 @@ class UserModelController extends GetxController{
       'stateMsg':'',
       'isOnLive': false,
       'whoResistMe':[],
-      'whoResistMeBF':[]
+      'whoResistMeBF':[],
+      'withinBoundary': false
     });
     await getCurrentUser(auth.currentUser!.uid);
   }

@@ -26,6 +26,7 @@ class LiveMapController extends GetxController {
 
   StreamSubscription<Position>? _positionStreamSubscription;
 
+
   Future<void> updateFirebaseWithLocation(Position position) async {
     double latitude = position.latitude;
     double longitude = position.longitude;
@@ -42,7 +43,6 @@ class LiveMapController extends GetxController {
       });
     }
   }
-
 
   Future<void> startBackgroundLocationService() async {
     bool serviceEnabled;
@@ -68,7 +68,37 @@ class LiveMapController extends GetxController {
     _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) {
       updateFirebaseWithLocation(position);
       checkAndUpdatePassCount(position);
+      _updateBoundaryStatus(position);
     });
+  }
+
+  Future<void> _updateBoundaryStatus(Position position) async {
+    LatLng currentLatLng = LatLng(position.latitude, position.longitude);
+    bool withinBoundary = _checkPositionWithinBoundary(currentLatLng);
+
+    if (_userModelController.uid != null) {
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(_userModelController.uid)
+          .set({
+        'withinBoundary': withinBoundary,
+      }, SetOptions(merge: true)).catchError((error) {
+        print('Firestore 업데이트 에러: $error');
+      });
+    }
+  }
+
+  Future<void> withinBoundaryOff() async{
+    if (_userModelController.uid != null) {
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(_userModelController.uid)
+          .set({
+        'withinBoundary': false,
+      }, SetOptions(merge: true)).catchError((error) {
+        print('Firestore 업데이트 에러: $error');
+      });
+    }
   }
 
   Future<void> stopBackgroundLocationService() async {
@@ -181,4 +211,7 @@ class LiveMapController extends GetxController {
       _markers.value = newMarkers;
     });
   }
+
+
+
 }

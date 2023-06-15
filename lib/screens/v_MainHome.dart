@@ -52,6 +52,7 @@ class _MainHomeState extends State<MainHome> {
   @override
   void initState() {
     // TODO: implement initState
+    super.initState();
   }
 
 
@@ -62,7 +63,6 @@ class _MainHomeState extends State<MainHome> {
     Get.put(LiveMapController(), permanent: true);
     NoticeController _noticeController = Get.find<NoticeController>();
     UserModelController _userModelController = Get.find<UserModelController>();
-    LiveMapController _liveMapController = Get.find<LiveMapController>();
     //TODO: Dependency Injection************************************************
 
     _noticeController.getIsNewNotice();
@@ -70,11 +70,6 @@ class _MainHomeState extends State<MainHome> {
     return FutureBuilder(
       future: _userModelController.getCurrentUser(widget.uid),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-
-        if(_userModelController.isOnLive == true) {
-          _liveMapController.startBackgroundLocationService();
-        }
-
         getUserComp = true;
         return Scaffold(
           bottomNavigationBar: BottomNavigationBar(

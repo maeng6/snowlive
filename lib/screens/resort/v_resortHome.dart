@@ -69,6 +69,13 @@ class _ResortHomeState extends State<ResortHome>
     if (mounted) setState(() {});
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _userModelController.updateIsOnLiveOff();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -347,19 +354,19 @@ class _ResortHomeState extends State<ResortHome>
                                   await _userModelController
                                       .getCurrentUser(_userModelController.uid);
                                   await _liveMapController.stopBackgroundLocationService();
+                                  await _liveMapController.withinBoundaryOff();
                                   setState(() {});
                                   CustomFullScreenDialog.cancelDialog();
                                   print('라이브 OFF');
                                 } else {
                                   HapticFeedback.lightImpact();
                                   CustomFullScreenDialog.showDialog();
-                                  await _userModelController.updateIsOnLiveOn();
-                                  await _userModelController
-                                      .getCurrentUser(_userModelController.uid);
-                                  await _liveMapController.startBackgroundLocationService();
-                                  setState(() {});
-                                  CustomFullScreenDialog.cancelDialog();
-                                  print('라이브 ON');
+                                    await _userModelController.updateIsOnLiveOn();
+                                    await _userModelController.getCurrentUser(_userModelController.uid);
+                                    await _liveMapController.startBackgroundLocationService();
+                                    setState(() {});
+                                    CustomFullScreenDialog.cancelDialog();
+                                    print('라이브 ON');
                                 }
                               },
                               elevation: 0,
@@ -1525,6 +1532,7 @@ class _ResortHomeState extends State<ResortHome>
                               await _userModelController
                                   .getCurrentUser(_userModelController.uid);
                               await _liveMapController.stopBackgroundLocationService();
+                              await _liveMapController.withinBoundaryOff();
                               setState(() {});
                               CustomFullScreenDialog.cancelDialog();
                               print('라이브 OFF');
@@ -1532,8 +1540,7 @@ class _ResortHomeState extends State<ResortHome>
                               HapticFeedback.lightImpact();
                               CustomFullScreenDialog.showDialog();
                               await _userModelController.updateIsOnLiveOn();
-                              await _userModelController
-                                  .getCurrentUser(_userModelController.uid);
+                              await _userModelController.getCurrentUser(_userModelController.uid);
                               await _liveMapController.startBackgroundLocationService();
                               setState(() {});
                               CustomFullScreenDialog.cancelDialog();
