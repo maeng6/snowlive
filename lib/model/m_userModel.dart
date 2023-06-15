@@ -25,6 +25,7 @@ class UserModel {
     this.isOnLive,
     this.whoResistMe,
     this.whoResistMeBF,
+    this.withinBoundary
   });
 
   final auth = FirebaseAuth.instance;
@@ -52,6 +53,7 @@ class UserModel {
   bool? isOnLive;
   List? whoResistMe;
   List? whoResistMeBF;
+  bool? withinBoundary;
 
   UserModel.fromJson(dynamic json, this.reference) {
       uid = json['uid'];
@@ -76,6 +78,7 @@ class UserModel {
       isOnLive = json['isOnLive'];
       whoResistMe = json['whoResistMe'];
       whoResistMeBF = json['whoResistMeBF'];
+      withinBoundary = json['withinBoundary'];
 
 
   }

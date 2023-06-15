@@ -231,16 +231,6 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                   onPressed: () async{
                                     CustomFullScreenDialog.showDialog();
                                     await _userModelController.updateFriendUid(foundUserModel!.uid);
-                                    await _userModelController.createFriendDoc(
-                                        foundUid: foundUserModel!.uid,
-                                        userEmail: foundUserModel!.userEmail,
-                                        displayName: foundUserModel!.displayName,
-                                        favoriteResort: foundUserModel!.favoriteResort,
-                                        profileImageUrl: foundUserModel!.profileImageUrl,
-                                        friendUidList: foundUserModel!.friendUidList,
-                                        resortNickname: foundUserModel!.resortNickname,
-                                        phoneNum: foundUserModel!.phoneNum,
-                                        resistDate: foundUserModel!.resistDate);
                                     await _userModelController.updateWhoResistMe(friendUid: foundUserModel!.uid);
                                     Navigator.pop(context);
                                     CustomFullScreenDialog.cancelDialog();
