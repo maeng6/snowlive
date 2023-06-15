@@ -514,7 +514,7 @@ class _MoreTabState extends State<MoreTab> {
               ),
               SizedBox(height: 25),
               Container(
-                height: 140,
+                height: 155,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -527,10 +527,11 @@ class _MoreTabState extends State<MoreTab> {
                           },
                           child: Column(
                             children: [
-                              Icon(Icons.snowboarding_outlined,size: 30,),
-                              SizedBox(height: 5,),
+                              Image.asset('assets/imgs/icons/icon_moretab_friends.png', width: 40,),
+                              SizedBox(height: 2),
                               Text('친구',style: TextStyle(
-                                fontSize: 14
+                                fontSize: 14,
+                                  color: Color(0xFF555555)
                               ),)
                             ],
                           ),
@@ -542,10 +543,11 @@ class _MoreTabState extends State<MoreTab> {
                           },
                           child: Column(
                             children: [
-                              Icon(Icons.snowboarding_outlined,size: 30,),
-                              SizedBox(height: 5,),
+                              Image.asset('assets/imgs/icons/icon_moretab_livemap.png', width: 40),
+                              SizedBox(height: 2),
                               Text('라이브맵',style: TextStyle(
-                                  fontSize: 14
+                                  fontSize: 14,
+                                color: Color(0xFF555555)
                               ),)
                             ],
                           ),
@@ -556,20 +558,11 @@ class _MoreTabState extends State<MoreTab> {
                       children: [
                         Column(
                           children: [
-                            Icon(Icons.snowboarding_outlined,size: 30,),
-                            SizedBox(height: 5,),
+                            Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 40),
+                            SizedBox(height: 2,),
                             Text('라이브크루',style: TextStyle(
-                                fontSize: 14
-                            ),)
-                          ],
-                        ),
-                        SizedBox(height: 25,),
-                        Column(
-                          children: [
-                            Icon(Icons.snowboarding_outlined,size: 30,),
-                            SizedBox(height: 5,),
-                            Text('',style: TextStyle(
-                                fontSize: 14
+                                fontSize: 14,
+                                color: Color(0xFF555555)
                             ),)
                           ],
                         ),
@@ -583,23 +576,13 @@ class _MoreTabState extends State<MoreTab> {
                           },
                           child: Column(
                             children: [
-                              Icon(Icons.snowboarding_outlined,size: 30,),
-                              SizedBox(height: 5,),
-                              Text('커뮤니티',style: TextStyle(
+                              Image.asset('assets/imgs/icons/icon_moretab_room.png', width: 40),
+                              SizedBox(height: 2),
+                              Text('커뮤니티', style: TextStyle(
                                   fontSize: 14
                               ),)
                             ],
                           ),
-                        ),
-                        SizedBox(height: 25,),
-                        Column(
-                          children: [
-                            Icon(Icons.snowboarding_outlined,size: 30,),
-                            SizedBox(height: 5,),
-                            Text('',style: TextStyle(
-                                fontSize: 14
-                            ),)
-                          ],
                         ),
                       ],
                     ),
@@ -611,32 +594,21 @@ class _MoreTabState extends State<MoreTab> {
                           },
                           child: Column(
                             children: [
-                              Icon(Icons.snowboarding_outlined,size: 30,),
-                              SizedBox(height: 5,),
+                              Image.asset('assets/imgs/icons/icon_moretab_snowmarket.png', width: 40),
+                              SizedBox(height: 2),
                               Text('스노우마켓',style: TextStyle(
                                   fontSize: 14
                               ),)
                             ],
                           ),
                         ),
-                        SizedBox(height: 25,),
-                        Column(
-                          children: [
-                            Icon(Icons.snowboarding_outlined,size: 30,),
-                            SizedBox(height: 5,),
-                            Text('',style: TextStyle(
-                                fontSize: 14
-                            ),)
-                          ],
-                        ),
                       ],
                     ),
-
                   ],
                 ),
               ),
               SizedBox(height: 20),
-              Container(height: 8,color: Color(0xFFEEEEEE),),
+              Container(height: 1,color: Color(0xFFECECEC),),
               SizedBox(height: 30),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),

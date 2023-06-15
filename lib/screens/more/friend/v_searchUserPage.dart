@@ -67,7 +67,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
               elevation: 0.0,
               titleSpacing: 0,
               centerTitle: true,
-              title: Text('친구',
+              title: Text('친구 검색',
                 style: TextStyle(
                     color: Color(0xFF111111),
                     fontWeight: FontWeight.bold,
