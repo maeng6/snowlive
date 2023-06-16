@@ -89,7 +89,7 @@ class _DiscoverScreen_TipState extends State<DiscoverScreen_Tip> {
                         onTap: () async {
                           final urlSnapshot = await FirebaseFirestore.instance
                               .collection('discover_tip_url')
-                              .where('url', isEqualTo: _imageUrls[index])
+                              .where('url', isEqualTo: _imageUrls[index]['url'])
                               .get();
                           if (urlSnapshot.docs.isNotEmpty) {
                             String instaUrl = urlSnapshot.docs.first['instaUrl'];

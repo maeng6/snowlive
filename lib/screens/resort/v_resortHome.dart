@@ -13,6 +13,7 @@ import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/controller/vm_replyModelController.dart';
 import 'package:snowlive3/model/m_resortModel.dart';
 import 'package:snowlive3/screens/comments/v_commentTile_resortHome.dart';
+import 'package:snowlive3/screens/more/liveMap/v_liveMap_Screen.dart';
 import 'package:snowlive3/screens/more/v_noticeListPage.dart';
 import 'package:snowlive3/screens/more/v_noticeTile_resortHome.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
@@ -180,7 +181,9 @@ class _ResortHomeState extends State<ResortHome>
                                       Padding(
                                         padding: const EdgeInsets.all(16),
                                         child: ElevatedButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Get.to(()=>LiveMap_Screen());
+                                          },
                                           child: Padding(
                                             padding: const EdgeInsets.only(bottom: 1),
                                             child: Text('라이브맵 보기',
@@ -300,7 +303,9 @@ class _ResortHomeState extends State<ResortHome>
                                     Padding(
                                       padding: const EdgeInsets.all(16),
                                       child: ElevatedButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Get.to(()=>LiveMap_Screen());
+                                        },
                                         child: Padding(
                                           padding: const EdgeInsets.only(bottom: 1),
                                           child: Text('라이브맵 보기',
@@ -363,10 +368,19 @@ class _ResortHomeState extends State<ResortHome>
                                   if(_userModelController.withinBoundary == true) {
                                     await _userModelController.updateIsOnLiveOn();
                                     await _userModelController.getCurrentUser(_userModelController.uid);
-                                  }else{}
+                                    CustomFullScreenDialog.cancelDialog();
+                                    print('라이브 ON');
+                                  }else{
+                                    CustomFullScreenDialog.cancelDialog();
+                                    Get.snackbar('라이브 불가 지역입니다', '자주가는 리조트에서만 라이브가 활성화됩니다.',
+                                        margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                        snackPosition: SnackPosition.BOTTOM,
+                                        backgroundColor: Colors.black87,
+                                        colorText: Colors.white,
+                                        duration: Duration(milliseconds: 3000));
+                                    print('라이브 불가 지역');
+                                  }
                                   setState(() {});
-                                  CustomFullScreenDialog.cancelDialog();
-                                  print('라이브 ON');
                                 }
                               },
                               elevation: 0,
@@ -406,8 +420,7 @@ class _ResortHomeState extends State<ResortHome>
                                   : Color(0xFFFFFFFF)),
                         ),
                       ),
-                      floatingActionButtonLocation:
-                      FloatingActionButtonLocation.endFloat,
+                      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
                       backgroundColor: Color(0xFFF1F1F3),
                       extendBodyBehindAppBar: true,
                       appBar: PreferredSize(
@@ -1541,10 +1554,19 @@ class _ResortHomeState extends State<ResortHome>
                               if(_userModelController.withinBoundary == true) {
                                 await _userModelController.updateIsOnLiveOn();
                                 await _userModelController.getCurrentUser(_userModelController.uid);
-                              }else{}
+                                CustomFullScreenDialog.cancelDialog();
+                                print('라이브 ON');
+                              }else{
+                                CustomFullScreenDialog.cancelDialog();
+                                Get.snackbar('라이브 불가 지역입니다', '자주가는 리조트에서만 라이브가 활성화됩니다.',
+                                    margin: EdgeInsets.only(right: 20, left: 20,bottom: 12),
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: Colors.black87,
+                                    colorText: Colors.white,
+                                    duration: Duration(milliseconds: 3000));
+                                print('라이브 불가 지역');
+                              }
                               setState(() {});
-                              CustomFullScreenDialog.cancelDialog();
-                              print('라이브 ON');
                             }
                           },
                           icon:

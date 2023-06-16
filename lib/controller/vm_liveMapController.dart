@@ -172,7 +172,7 @@ class LiveMapController extends GetxController {
   Future<void> listenToFriendLocations() async {
     FirebaseFirestore.instance
         .collection('user')
-        .where('whoResistMe', arrayContains: _userModelController.uid!)
+        .where('whoResistMeBF', arrayContains: _userModelController.uid!)
         .where('isOnLive', isEqualTo: true)  // Only get data where isLiveOn is true
         .snapshots()
         .listen((QuerySnapshot querySnapshot) {
