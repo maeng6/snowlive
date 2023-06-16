@@ -124,7 +124,7 @@ class _ResortHomeState extends State<ResortHome>
                   if (snapshot.hasData) {
                     final liveFriendDocs = snapshot.data!.docs;
                     lengthOfLivefriends = snapshot.data!.docs.length;
-                    return Scaffold(
+                    return Obx(()=>Scaffold(
                       endDrawer: StreamBuilder(
                         stream: FirebaseFirestore.instance
                             .collection('user')
@@ -353,31 +353,31 @@ class _ResortHomeState extends State<ResortHome>
                                       .updateIsOnLiveOff();
                                   await _userModelController
                                       .getCurrentUser(_userModelController.uid);
-                                  await _liveMapController.stopBackgroundLocationService();
-                                  await _liveMapController.withinBoundaryOff();
                                   setState(() {});
                                   CustomFullScreenDialog.cancelDialog();
                                   print('라이브 OFF');
                                 } else {
                                   HapticFeedback.lightImpact();
                                   CustomFullScreenDialog.showDialog();
-                                  await _userModelController.updateIsOnLiveOn();
-                                  await _userModelController.getCurrentUser(_userModelController.uid);
                                   await _liveMapController.startBackgroundLocationService();
+                                  if(_userModelController.withinBoundary == true) {
+                                    await _userModelController.updateIsOnLiveOn();
+                                    await _userModelController.getCurrentUser(_userModelController.uid);
+                                  }else{}
                                   setState(() {});
                                   CustomFullScreenDialog.cancelDialog();
                                   print('라이브 ON');
                                 }
                               },
                               elevation: 0,
-                              icon:  (_userModelController.isOnLive == true)
+                              icon:  (_userModelController.isOnLive == true && _userModelController.withinBoundary ==true)
                                   ? Transform.translate(
                                   offset: Offset(4,0),
                                   child: Image.asset('assets/imgs/icons/icon_live_on.png', width: 50))
                                   : Transform.translate(
                                   offset: Offset(4,0),
                                   child: Image.asset('assets/imgs/icons/icon_live_off.png', width: 50)),
-                              label: (_userModelController.isOnLive == true)
+                              label: (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true)
                                   ? Transform.translate(
                                 offset: Offset(0,-5),
                                 child: Text(
@@ -401,7 +401,7 @@ class _ResortHomeState extends State<ResortHome>
                                 ),
                               ),
                               backgroundColor:
-                              (_userModelController.isOnLive == true)
+                              (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true)
                                   ? Color(0xFF3D6FED)
                                   : Color(0xFFFFFFFF)),
                         ),
@@ -1516,9 +1516,9 @@ class _ResortHomeState extends State<ResortHome>
                           ),
                         ),
                       ),
-                    );
+                    ));
                   }
-                  return Scaffold(
+                  return Obx(()=>Scaffold(
                     endDrawer: Center(child: CircularProgressIndicator()),
                     floatingActionButton: SizedBox(
                       width: 118,
@@ -1531,27 +1531,27 @@ class _ResortHomeState extends State<ResortHome>
                               await _userModelController.updateIsOnLiveOff();
                               await _userModelController
                                   .getCurrentUser(_userModelController.uid);
-                              await _liveMapController.stopBackgroundLocationService();
-                              await _liveMapController.withinBoundaryOff();
                               setState(() {});
                               CustomFullScreenDialog.cancelDialog();
                               print('라이브 OFF');
                             } else {
                               HapticFeedback.lightImpact();
                               CustomFullScreenDialog.showDialog();
-                              await _userModelController.updateIsOnLiveOn();
-                              await _userModelController.getCurrentUser(_userModelController.uid);
                               await _liveMapController.startBackgroundLocationService();
+                              if(_userModelController.withinBoundary == true) {
+                                await _userModelController.updateIsOnLiveOn();
+                                await _userModelController.getCurrentUser(_userModelController.uid);
+                              }else{}
                               setState(() {});
                               CustomFullScreenDialog.cancelDialog();
                               print('라이브 ON');
                             }
                           },
                           icon:
-                          (_userModelController.isOnLive == true)
+                          (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true )
                               ? Image.asset('assets/imgs/icons/icon_live_on.png', width: 50)
                               : Image.asset('assets/imgs/icons/icon_live_off.png', width: 50),
-                          label: (_userModelController.isOnLive == true)
+                          label: (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true)
                               ? Text(
                             'live on',
                             style: TextStyle(
@@ -1569,7 +1569,7 @@ class _ResortHomeState extends State<ResortHome>
                                 overflow: TextOverflow.ellipsis),
                           ),
                           backgroundColor:
-                          (_userModelController.isOnLive == true)
+                          (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true)
                               ? Color(0xFF3D6FED)
                               : Colors.grey),
                     ),
@@ -2625,7 +2625,7 @@ class _ResortHomeState extends State<ResortHome>
                         ),
                       ),
                     ),
-                  );
+                  ));
                 },
               ));
         });

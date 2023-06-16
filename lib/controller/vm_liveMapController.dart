@@ -65,10 +65,11 @@ class LiveMapController extends GetxController {
       }
     }
 
-    _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) {
+    _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async{
       updateFirebaseWithLocation(position);
       checkAndUpdatePassCount(position);
       _updateBoundaryStatus(position);
+      await _userModelController.getCurrentUser(_userModelController.uid);
     });
   }
 
