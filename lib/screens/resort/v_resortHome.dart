@@ -353,16 +353,20 @@ class _ResortHomeState extends State<ResortHome>
                           child: FloatingActionButton.extended(
                               onPressed: () async {
                                 if (_userModelController.isOnLive == true) {
-                                  HapticFeedback.lightImpact();
-                                  CustomFullScreenDialog.showDialog();
-                                  await _userModelController
-                                      .updateIsOnLiveOff();
-                                  await _userModelController
-                                      .getCurrentUser(_userModelController.uid);
-                                  setState(() {});
-                                  CustomFullScreenDialog.cancelDialog();
-                                  print('라이브 OFF');
+                                  if(!isSnackbarShown) {
+                                    HapticFeedback.lightImpact();
+                                    CustomFullScreenDialog.showDialog();
+                                    await _userModelController
+                                        .updateIsOnLiveOff();
+                                    await _userModelController
+                                        .getCurrentUser(
+                                        _userModelController.uid);
+                                    setState(() {});
+                                    CustomFullScreenDialog.cancelDialog();
+                                    print('라이브 OFF');
+                                  }
                                 } else {
+                                  if(!isSnackbarShown) {
                                   CustomFullScreenDialog.showDialog();
                                   HapticFeedback.lightImpact();
                                   await _liveMapController
@@ -388,12 +392,12 @@ class _ResortHomeState extends State<ResortHome>
                                         colorText: Colors.white,
                                         duration: Duration(milliseconds: 3000),
                                       );
-                                      Future.delayed(Duration(milliseconds: 2500), () {
+                                      Future.delayed(Duration(milliseconds: 4500), () {
                                         isSnackbarShown = false;
                                       });
                                       print('라이브 불가 지역');
                                     }
-                                  }
+                                  }}
                                   setState(() {});
                                 }
 
