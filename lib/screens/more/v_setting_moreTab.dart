@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
+import 'package:snowlive3/screens/more/friend/v_repoList_setting_moreTab.dart';
 import '../../controller/vm_loginController.dart';
 import '../../controller/vm_userModelController.dart';
 
@@ -33,6 +34,25 @@ class setting_moreTab extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 16),
+            minVerticalPadding: 20,
+            onTap: () {
+              Get.to(()=>RepoList_setting_moreTab());
+            },
+            title: Text(
+              '차단목록',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Color(0xFF111111)),
+            ),
+            trailing: Image.asset(
+              'assets/imgs/icons/icon_arrow_g.png',
+              height: 24,
+              width: 24,
+            ),
+          ),
           ListTile(
             contentPadding: EdgeInsets.symmetric(horizontal: 16),
             minVerticalPadding: 20,
@@ -106,8 +126,8 @@ class setting_moreTab extends StatelessWidget {
                                       }catch(e){print('프사 없음');}
                                       await _loginController
                                           .deleteUser(
-                                        uid: _userModelController.uid,
-                                        fleaCount: _userModelController.fleaCount
+                                          uid: _userModelController.uid,
+                                          fleaCount: _userModelController.fleaCount
                                       );
                                     },
                                     child: Text(
