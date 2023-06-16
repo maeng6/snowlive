@@ -392,7 +392,7 @@ class _ResortHomeState extends State<ResortHome>
                                         colorText: Colors.white,
                                         duration: Duration(milliseconds: 3000),
                                       );
-                                      Future.delayed(Duration(milliseconds: 2500), () {
+                                      Future.delayed(Duration(milliseconds: 4500), () {
                                         isSnackbarShown = false;
                                       });
                                       print('라이브 불가 지역');
