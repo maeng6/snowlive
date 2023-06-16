@@ -75,7 +75,7 @@ class _DiscoverScreen_ResortBannerState
                     .collection('discover_banner_url')
                     .doc('${_userModelController.favoriteResort}')
                     .collection('1')
-                    .where('url', isEqualTo: _imageUrls[_currentIndex])
+                    .where('url', isEqualTo: _imageUrls[_currentIndex]['url'])
                     .get();
                 if (urlSnapshot.docs.isNotEmpty) {
                   String landingUrl =

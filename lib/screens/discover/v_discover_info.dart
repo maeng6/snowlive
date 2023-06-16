@@ -66,8 +66,8 @@ class _DiscoverScreen_InfoState extends State<DiscoverScreen_Info> {
                       return GestureDetector(
                         onTap: () async {
                           final urlSnapshot = await FirebaseFirestore.instance
-                              .collection('discover_tip_url')
-                              .where('url', isEqualTo: _imageUrls[index])
+                              .collection('discover_info_url')
+                              .where('url', isEqualTo: _imageUrls[index]['url'])
                               .get();
                           if (urlSnapshot.docs.isNotEmpty) {
                             String instaUrl = urlSnapshot.docs.first['instaUrl'];
