@@ -34,6 +34,7 @@ class _ResortHomeState extends State<ResortHome>
   @override
   bool get wantKeepAlive => true;
   int lengthOfLivefriends = 0;
+  bool isSnackbarShown = false;
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
@@ -362,26 +363,40 @@ class _ResortHomeState extends State<ResortHome>
                                   CustomFullScreenDialog.cancelDialog();
                                   print('라이브 OFF');
                                 } else {
-                                  HapticFeedback.lightImpact();
                                   CustomFullScreenDialog.showDialog();
-                                  await _liveMapController.startBackgroundLocationService();
-                                  if(_userModelController.withinBoundary == true) {
-                                    await _userModelController.updateIsOnLiveOn();
-                                    await _userModelController.getCurrentUser(_userModelController.uid);
+                                  HapticFeedback.lightImpact();
+                                  await _liveMapController
+                                      .startBackgroundLocationService();
+                                  if (_userModelController.withinBoundary ==
+                                      true) {
+                                    await _userModelController
+                                        .updateIsOnLiveOn();
+                                    await _userModelController.getCurrentUser(
+                                        _userModelController.uid);
                                     CustomFullScreenDialog.cancelDialog();
                                     print('라이브 ON');
-                                  }else{
+                                  } else {
                                     CustomFullScreenDialog.cancelDialog();
-                                    Get.snackbar('라이브 불가 지역입니다', '자주가는 리조트에서만 라이브가 활성화됩니다.',
+                                    if(!isSnackbarShown){
+                                      isSnackbarShown = true;
+                                     Get.snackbar(
+                                        '라이브 불가 지역입니다',
+                                        '자주가는 리조트에서만 라이브가 활성화됩니다.',
                                         margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
                                         snackPosition: SnackPosition.BOTTOM,
                                         backgroundColor: Colors.black87,
                                         colorText: Colors.white,
-                                        duration: Duration(milliseconds: 3000));
-                                    print('라이브 불가 지역');
+                                        duration: Duration(milliseconds: 3000),
+                                      );
+                                      Future.delayed(Duration(milliseconds: 2500), () {
+                                        isSnackbarShown = false;
+                                      });
+                                      print('라이브 불가 지역');
+                                    }
                                   }
                                   setState(() {});
                                 }
+
                               },
                               elevation: 0,
                               icon:  (_userModelController.isOnLive == true && _userModelController.withinBoundary ==true)
@@ -1558,13 +1573,22 @@ class _ResortHomeState extends State<ResortHome>
                                 print('라이브 ON');
                               }else{
                                 CustomFullScreenDialog.cancelDialog();
-                                Get.snackbar('라이브 불가 지역입니다', '자주가는 리조트에서만 라이브가 활성화됩니다.',
-                                    margin: EdgeInsets.only(right: 20, left: 20,bottom: 12),
+                                if(!isSnackbarShown){
+                                  isSnackbarShown = true;
+                                  Get.snackbar(
+                                    '라이브 불가 지역입니다',
+                                    '자주가는 리조트에서만 라이브가 활성화됩니다.',
+                                    margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
                                     snackPosition: SnackPosition.BOTTOM,
                                     backgroundColor: Colors.black87,
                                     colorText: Colors.white,
-                                    duration: Duration(milliseconds: 3000));
-                                print('라이브 불가 지역');
+                                    duration: Duration(milliseconds: 3000),
+                                  );
+                                  Future.delayed(Duration(milliseconds: 2500), () {
+                                    isSnackbarShown = false;
+                                  });
+                                  print('라이브 불가 지역');
+                                }
                               }
                               setState(() {});
                             }

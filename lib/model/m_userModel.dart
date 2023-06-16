@@ -25,6 +25,7 @@ class UserModel {
     this.isOnLive,
     this.whoResistMe,
     this.whoResistMeBF,
+    this.whoRepoMe,
     this.withinBoundary
   });
 
@@ -53,6 +54,7 @@ class UserModel {
   bool? isOnLive;
   List? whoResistMe;
   List? whoResistMeBF;
+  List? whoRepoMe;
   bool? withinBoundary;
 
   UserModel.fromJson(dynamic json, this.reference) {
@@ -79,6 +81,7 @@ class UserModel {
       whoResistMe = json['whoResistMe'];
       whoResistMeBF = json['whoResistMeBF'];
       withinBoundary = json['withinBoundary'];
+      whoRepoMe = json['whoRepoMe'];
 
 
   }

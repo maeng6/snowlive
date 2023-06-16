@@ -144,7 +144,9 @@ class LoginController extends GetxController {
       'stateMsg':'',
       'isOnLive': false,
       'whoResistMe':[],
-      'whoResistMeBF':[]
+      'whoResistMeBF':[],
+      'withinBoundary': false,
+      'whoRepoMe':[]
     });
 
 

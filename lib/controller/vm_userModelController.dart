@@ -37,6 +37,7 @@ class UserModelController extends GetxController{
   RxBool? _isOnLive = false.obs;
   RxList? _whoResistMe = [].obs;
   RxList? _whoResistMeBF = [].obs;
+  RxList? _whoRepoMe = [].obs;
   RxBool? _withinBoundary = false.obs;
 
 
@@ -65,6 +66,7 @@ class UserModelController extends GetxController{
   bool? get isOnLive =>_isOnLive!.value;
   List? get whoResistMe =>_whoResistMe;
   List? get whoResistMeBF =>_whoResistMeBF;
+  List? get whoRepoMe =>_whoRepoMe;
   bool? get withinBoundary => _withinBoundary!.value;
 
   @override
@@ -73,7 +75,9 @@ class UserModelController extends GetxController{
     String? loginUid = await FlutterSecureStorage().read(key: 'uid');
     if(loginUid != null) {
       getCurrentUser(loginUid).catchError((e) {
-        setNewField();
+        setNewField2().catchError((e){
+          setNewField();
+        });
       }).catchError(() {
         print('로그인 전');
       });
@@ -116,6 +120,7 @@ class UserModelController extends GetxController{
         this._isOnLive!.value = userModel.isOnLive!;
         this._whoResistMe!.value = userModel.whoResistMe!;
         this._whoResistMeBF!.value = userModel.whoResistMeBF!;
+        this._whoRepoMe!.value = userModel.whoRepoMe!;
         this._withinBoundary!.value = userModel.withinBoundary!;
         try {
           this._fleaChatUidList!.value = userModel.fleaChatUidList!;
@@ -166,7 +171,21 @@ class UserModelController extends GetxController{
       'isOnLive': false,
       'whoResistMe':[],
       'whoResistMeBF':[],
-      'withinBoundary': false
+      'withinBoundary': false,
+      'whoRepoMe':[]
+    });
+    await getCurrentUser(auth.currentUser!.uid);
+  }
+  Future<void> setNewField2() async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'stateMsg':'',
+      'isOnLive': false,
+      'whoResistMe':[],
+      'whoResistMeBF':[],
+      'withinBoundary': false,
+      'whoRepoMe':[]
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -323,6 +342,9 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(userMe).update({
       'repoUidList': FieldValue.arrayUnion([uid])
     });
+    await ref.collection('user').doc(uid).update({
+      'whoRepoMe': FieldValue.arrayUnion([userMe])
+    });
     DocumentReference<Map<String, dynamic>> documentReference =
     ref.collection('user').doc(userMe);
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
@@ -377,7 +399,21 @@ class UserModelController extends GetxController{
     List likeUidList = documentSnapshot.get('likeUidList');
     this._likeUidList!.value = likeUidList;
   }
-
+  Future<void> deleteRepoUid(uid) async {
+    final  userMe = auth.currentUser!.uid;
+    await ref.collection('user').doc(userMe).update({
+      'repoUidList': FieldValue.arrayRemove([uid])
+    });
+    await ref.collection('user').doc(uid).update({
+      'whoRepoMe': FieldValue.arrayRemove([userMe])
+    });
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(userMe);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List likeUidList = documentSnapshot.get('likeUidList');
+    this._likeUidList!.value = likeUidList;
+  }
 
   Future<void> updateLikeUidList() async {
     final  userMe = auth.currentUser!.uid;
