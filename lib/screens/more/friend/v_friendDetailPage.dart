@@ -27,7 +27,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   final _formKeyProfile3 = GlobalKey<FormState>();
   final _stateMsgController = TextEditingController();
   final _displayNameController = TextEditingController();
-  ScrollController _scrollController = ScrollController();
   var _newComment = '';
   bool edit= false;
   String _initStateMsg='';
@@ -38,6 +37,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
     _stream = newStream();
     // TODO: implement initState
     super.initState();
+    _stateMsgController.text = '';
     _initStateMsg = _userModelController.stateMsg!;
     _initialDisplayName = _userModelController.displayName!;
   }
@@ -454,7 +454,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                   child: TextFormField(
                                     key: _formKeyProfile2,
                                     cursorColor: Color(0xff377EEA),
-                                    controller: _stateMsgController..text=_initStateMsg,
+                                    controller: _stateMsgController,
                                     strutStyle: StrutStyle(leading: 0.3),
                                     autovalidateMode: AutovalidateMode.onUserInteraction,
                                     maxLines: 1,
@@ -462,49 +462,46 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                     autocorrect: false,
                                     textInputAction: TextInputAction.newline,
                                     onTap: () {
-                                      // 텍스트 필드 선택시 커서를 맨 오른쪽으로 이동
+                                      // 텍스트 필드 선택 시 커서를 맨 오른쪽으로 이동
                                       _stateMsgController.selection = TextSelection.fromPosition(TextPosition(offset: _stateMsgController.text.length));
                                     },
                                     decoration: InputDecoration(
-                                        suffixIcon: TextButton(
-                                          onPressed: () async {
+                                      suffixIcon: TextButton(
+                                        onPressed: () {
                                             FocusScope.of(context).unfocus();
-                                          },
+                                        },
                                         child: Text('확인'),
-                                        ),
-                                        labelText: '상태메세지',
-                                        errorStyle: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                        hintStyle: TextStyle(
-                                            color: Color(0xff949494), fontSize: 14),
-                                        hintText: '상태메세지를 입력해주세요.',
-                                        contentPadding: EdgeInsets.only(
-                                            top: 10, bottom: 10, left: 16, right: 16),
-                                        border: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0xFFDEDEDE)),
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0xFFDEDEDE)),
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
-                                        errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0xFFFF3726)),
-                                          borderRadius: BorderRadius.circular(6),
-                                        )),
+                                      ),
+                                      labelText: '상태메세지',
+                                      errorStyle: TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                      hintStyle: TextStyle(color: Color(0xff949494), fontSize: 14),
+                                      hintText: '상태메세지를 입력해주세요.',
+                                      contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Color(0xFFFF3726)),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                    ),
                                     validator: (val) {
-                                      if (val!.length <= 20 ) {
+                                      if (val!.length <= 20) {
                                         return null;
-                                      }  else {
+                                      } else {
                                         return '20자 미만으로 적어주세요.';
                                       }
                                     },
                                   ),
-                                )
+
+                              )
                                   : Text('${friendDocs[0]['stateMsg']}'),
                             ],
                           ),
