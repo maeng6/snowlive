@@ -588,6 +588,9 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(friendUid).update({
       'whoResistMe': FieldValue.arrayRemove([uid])
     });
+    await ref.collection('user').doc(friendUid).update({
+      'whoResistMeBF': FieldValue.arrayRemove([uid])
+    });
   }
 
   Future<void> updateIsOnLiveOn() async {

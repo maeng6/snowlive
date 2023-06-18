@@ -16,7 +16,6 @@ import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import 'v_searchUserPage.dart';
 
-
 class FriendListPage extends StatefulWidget {
   const FriendListPage({Key? key}) : super(key: key);
 
@@ -25,7 +24,6 @@ class FriendListPage extends StatefulWidget {
 }
 
 class _FriendListPageState extends State<FriendListPage> {
-
   //TODO: Dependency Injection**************************************************
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   UserModelController _userModelController = Get.find<UserModelController>();
@@ -55,7 +53,8 @@ class _FriendListPageState extends State<FriendListPage> {
         elevation: 0.0,
         titleSpacing: 0,
         centerTitle: true,
-        title: Text('친구',
+        title: Text(
+          '친구',
           style: TextStyle(
               color: Color(0xFF111111),
               fontWeight: FontWeight.bold,
@@ -64,7 +63,9 @@ class _FriendListPageState extends State<FriendListPage> {
       ),
       body: Column(
         children: [
-          SizedBox(height: _statusBarSize + 58,),
+          SizedBox(
+            height: _statusBarSize + 58,
+          ),
           GestureDetector(
             onTap: () {
               Get.to(() => SearchUserPage());
@@ -84,13 +85,16 @@ class _FriendListPageState extends State<FriendListPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(bottom: 1),
-                        child: Text('친구 검색',
-                          style: TextStyle(
-                            fontSize: 15,
-                              color: Color(0xFF666666)
-                          ),),
+                        child: Text(
+                          '친구 검색',
+                          style:
+                              TextStyle(fontSize: 15, color: Color(0xFF666666)),
+                        ),
                       ),
-                      Icon(Icons.search, color: Color(0xFF666666),)
+                      Icon(
+                        Icons.search,
+                        color: Color(0xFF666666),
+                      )
                     ],
                   ),
                 ),
@@ -101,8 +105,7 @@ class _FriendListPageState extends State<FriendListPage> {
           StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection('user')
-                .where(
-                'whoResistMe', arrayContains: _userModelController.uid!)
+                .where('whoResistMe', arrayContains: _userModelController.uid!)
                 .snapshots(),
             builder: (context,
                 AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
@@ -110,8 +113,7 @@ class _FriendListPageState extends State<FriendListPage> {
                 return Container(
                   color: Colors.white,
                 );
-              } else
-              if (snapshot.connectionState == ConnectionState.waiting) {
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
@@ -130,98 +132,149 @@ class _FriendListPageState extends State<FriendListPage> {
                           .where('uid', isEqualTo: _userModelController.uid!)
                           .snapshots(),
                       builder: (context,
-                          AsyncSnapshot<QuerySnapshot<
-                              Map<String, dynamic>>> snapshot) {
+                          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                              snapshot) {
                         try {
-                          if (!snapshot.hasData ||
-                              snapshot.data == null) {
+                          if (!snapshot.hasData || snapshot.data == null) {
                             return Container(
                               color: Colors.white,
                               child: Text('친한친구를 등록해주세요.'),
                             );
-                          }
-                          else if (snapshot.data!.docs.isNotEmpty) {
+                          } else if (snapshot.data!.docs.isNotEmpty) {
                             final myDoc = snapshot.data!.docs;
                             Size _size = MediaQuery.of(context).size;
                             return Row(
                               children: myDoc.map((myDoc) {
-                                return
-                                  Expanded(
-                                    child: ListTile(
-                                      onTap: () {},
-                                      leading: (myDoc.get('profileImageUrl').isNotEmpty)
-                                          ? GestureDetector(
-                                        onTap: () {
-                                          Get.to(() => FriendDetailPage(
-                                              uid: _userModelController.uid));
-                                        },
-                                        child: Container(
-                                            width: 56,
-                                            height: 56,
-                                            child: ExtendedImage.network(
-                                              _userModelController.profileImageUrl!,
-                                              enableMemoryCache: true,
-                                              shape: BoxShape.circle,
-                                              borderRadius: BorderRadius.circular(8),
-                                              width: 100,
-                                              height: 100,
-                                              fit: BoxFit.cover,
-                                            )
-
-                                        ),
-                                      )
-                                          : GestureDetector(
-                                        onTap: () {
-                                          Get.to(() => FriendDetailPage(
-                                              uid: _userModelController.uid));
-                                        },
-                                        child: Container(
-                                          width: 56,
-                                          height: 56,
-                                          child: ExtendedImage.asset(
-                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                            enableMemoryCache: true,
-                                            shape: BoxShape.circle,
-                                            borderRadius: BorderRadius.circular(8),
-                                            width: 100,
-                                            height: 100,
-                                            fit: BoxFit.cover,
+                                return Expanded(
+                                  child: ListTile(
+                                    onTap: () {},
+                                    leading: (myDoc
+                                            .get('profileImageUrl')
+                                            .isNotEmpty)
+                                        ? GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => FriendDetailPage(
+                                                  uid: _userModelController
+                                                      .uid));
+                                            },
+                                            child: Container(
+                                              width: 72,
+                                              child: Column(
+                                                children: [
+                                                  Stack(
+                                                    children: [
+                                                      Container(
+                                                          width: 56,
+                                                          height: 56,
+                                                          child: ExtendedImage.network(
+                                                            _userModelController
+                                                                .profileImageUrl!,
+                                                            enableMemoryCache: true,
+                                                            shape: BoxShape.circle,
+                                                            borderRadius:
+                                                                BorderRadius.circular(8),
+                                                            width: 100,
+                                                            height: 100,
+                                                            fit: BoxFit.cover,
+                                                          )),
+                                                      (_userModelController.isOnLive == true)
+                                                          ? Positioned(
+                                                        child: Image
+                                                            .asset(
+                                                          'assets/imgs/icons/icon_badge_live.png',
+                                                          width:
+                                                          32,
+                                                        ),
+                                                        right:
+                                                        0,
+                                                        bottom:
+                                                        0,
+                                                      )
+                                                          : Container()
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        : GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => FriendDetailPage(
+                                                  uid: _userModelController
+                                                      .uid));
+                                            },
+                                            child: Container(
+                                              width: 72,
+                                              child: Column(
+                                                children: [
+                                                  Stack(
+                                                    children: [
+                                                      Container(
+                                                        width: 56,
+                                                        height: 56,
+                                                        child: ExtendedImage.asset(
+                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                          enableMemoryCache: true,
+                                                          shape: BoxShape.circle,
+                                                          borderRadius:
+                                                              BorderRadius.circular(8),
+                                                          width: 100,
+                                                          height: 100,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                      (_userModelController.isOnLive == true)
+                                                          ? Positioned(
+                                                        child: Image
+                                                            .asset(
+                                                          'assets/imgs/icons/icon_badge_live.png',
+                                                          width:
+                                                          32,
+                                                        ),
+                                                        right:
+                                                        0,
+                                                        bottom:
+                                                        0,
+                                                      )
+                                                          : Container()
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      title: Text(
-                                        _userModelController.displayName!,
-                                        style: TextStyle(
-                                            color: Color(0xFF111111),
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 16),
-                                      ),
-                                      subtitle: Text(
-                                        _userModelController.stateMsg!,
-                                        style: TextStyle(
-                                            color: Color(0xFF949494),
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 14),
-                                      ),
+                                    title: Text(
+                                      _userModelController.displayName!,
+                                      style: TextStyle(
+                                          color: Color(0xFF111111),
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 16),
                                     ),
-                                  );
+                                    subtitle: Text(
+                                      _userModelController.stateMsg!,
+                                      style: TextStyle(
+                                          color: Color(0xFF949494),
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 14),
+                                    ),
+                                  ),
+                                );
                               }).toList(),
                             );
-                          } else if (snapshot.connectionState == ConnectionState.waiting) {}
+                          } else if (snapshot.connectionState ==
+                              ConnectionState.waiting) {}
                         } catch (e) {
                           Center(
                               child: Container(
-                                height: 10,
-                                width: 10,
-                              )
-                          );
+                            height: 10,
+                            width: 10,
+                          ));
                         }
                         return Center(
                             child: Container(
-                              height: 10,
-                              width: 10,
-                            )
-                        );
+                          height: 10,
+                          width: 10,
+                        ));
                       },
                     ), //내 프로필
                     Padding(
@@ -236,11 +289,13 @@ class _FriendListPageState extends State<FriendListPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text('친한친구', style: TextStyle(
-                            fontWeight: FontWeight.normal,
-                            fontSize: 13,
-                            color: Color(0xFF949494)
-                          ),),
+                          child: Text(
+                            '친한친구',
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 13,
+                                color: Color(0xFF949494)),
+                          ),
                         ),
                         SizedBox(height: 12),
                         Container(
@@ -248,139 +303,203 @@ class _FriendListPageState extends State<FriendListPage> {
                           child: StreamBuilder(
                             stream: FirebaseFirestore.instance
                                 .collection('user')
-                                .where('whoResistMeBF',
-                                arrayContains: _userModelController.uid!)
+                                .where('whoResistMeBF', arrayContains: _userModelController.uid!)
                                 .snapshots(),
                             builder: (context,
-                                AsyncSnapshot<QuerySnapshot<
-                                    Map<String, dynamic>>> snapshot) {
+                                AsyncSnapshot<
+                                        QuerySnapshot<Map<String, dynamic>>>
+                                    snapshot) {
                               try {
-                                if (!snapshot.hasData || snapshot.data == null) {
+                                if (!snapshot.hasData ||
+                                    snapshot.data == null) {
                                   return Container(
                                     color: Colors.white,
                                     child: Text('친한친구를 등록해주세요.'),
                                   );
-                                }
-                                else if (snapshot.data!.docs.isNotEmpty) {
+                                } else if (snapshot.data!.docs.isNotEmpty) {
                                   final bestfriendDocs = snapshot.data!.docs;
                                   Size _size = MediaQuery.of(context).size;
                                   return SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
                                       child: Row(
                                         children: bestfriendDocs.map((BFdoc) {
-                                          return (BFdoc.get('profileImageUrl').isNotEmpty)
+                                          return (BFdoc.get('profileImageUrl')
+                                                  .isNotEmpty)
                                               ? GestureDetector(
-                                            onTap: () {
-                                              Get.to(() =>
-                                                  FriendDetailPage(uid: BFdoc.get('uid')));
-                                            },
-                                            child: Container(
-                                              width: 72,
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(left: 8),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Stack(
-                                                      fit: StackFit.loose,
+                                                  onTap: () {
+                                                    Get.to(() =>
+                                                        FriendDetailPage(
+                                                            uid: BFdoc.get(
+                                                                'uid')));
+                                                  },
+                                                  child: Container(
+                                                    width: 72,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 8),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
                                                         children: [
+                                                          Stack(
+                                                              fit: StackFit
+                                                                  .loose,
+                                                              children: [
+                                                                Container(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .center,
+                                                                  child: ExtendedImage
+                                                                      .network(
+                                                                    BFdoc.get(
+                                                                        'profileImageUrl'),
+                                                                    enableMemoryCache:
+                                                                        true,
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(8),
+                                                                    width: 48,
+                                                                    height: 48,
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  ),
+                                                                ),
+                                                                (BFdoc.get('isOnLive') ==
+                                                                        true)
+                                                                    ? Positioned(
+                                                                        child: Image
+                                                                            .asset(
+                                                                          'assets/imgs/icons/icon_badge_live.png',
+                                                                          width:
+                                                                              32,
+                                                                        ),
+                                                                        right:
+                                                                            0,
+                                                                        bottom:
+                                                                            0,
+                                                                      )
+                                                                    : Container()
+                                                              ]),
+                                                          SizedBox(
+                                                            height: 5,
+                                                          ),
                                                           Container(
-                                                            alignment: Alignment.center,
-                                                            child: ExtendedImage.network(
-                                                              BFdoc.get('profileImageUrl'),
-                                                              enableMemoryCache: true,
-                                                              shape: BoxShape.circle,
-                                                              borderRadius: BorderRadius.circular(8),
-                                                              width: 48,
-                                                              height: 48,
-                                                              fit: BoxFit.cover,),
-                                                          ),
-                                                          (BFdoc.get('isOnLive') == true)
-                                                              ? Positioned(
-                                                            child: Image.asset('assets/imgs/icons/icon_badge_live.png', width: 32,),
-                                                            right: 0,
-                                                            bottom: 0,
+                                                            width: 72,
+                                                            child: Text(
+                                                              BFdoc.get(
+                                                                  'displayName'),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .normal,
+                                                                  color: Color(
+                                                                      0xFF111111)),
+                                                            ),
                                                           )
-                                                              : Container()
-                                                        ]
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                    Container(
-                                                      width: 72,
-                                                      child: Text(BFdoc.get('displayName'),
-                                                        overflow: TextOverflow.ellipsis,
-                                                        textAlign: TextAlign.center,
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.normal,
-                                                            color: Color(0xFF111111)
-                                                      ),),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                              : GestureDetector(
-                                            onTap: () {
-                                              Get.to(() => FriendDetailPage(uid: BFdoc.get('uid')));
-                                            },
-                                            child: Container(
-                                              width: 72,
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(left: 8),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Stack(
-                                                      fit: StackFit.loose,
-                                                      children: [
-                                                        Container(
-                                                          alignment: Alignment.center,
-                                                          child: ExtendedImage.asset(
-                                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                                            enableMemoryCache: true,
-                                                            shape: BoxShape.circle,
-                                                            borderRadius: BorderRadius.circular(8),
-                                                            width: 48,
-                                                            height: 48,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                        (BFdoc.get('isOnLive') == true)
-                                                            ? Positioned(
-                                                          child: Image.asset('assets/imgs/icons/icon_badge_live.png', width: 32,),
-                                                          right: 0,
-                                                          bottom: 0,
-                                                        )
-                                                            : Container()
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                    Container(
-                                                      width: 72,
-                                                      child: Text(BFdoc.get('displayName'),
-                                                        textAlign: TextAlign.center,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.normal,
-                                                            color: Color(0xFF111111)
+                                                        ],
                                                       ),
-                                                    )
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          );
+                                                    ),
+                                                  ),
+                                                )
+                                              : GestureDetector(
+                                                  onTap: () {
+                                                    Get.to(() =>
+                                                        FriendDetailPage(
+                                                            uid: BFdoc.get(
+                                                                'uid')));
+                                                  },
+                                                  child: Container(
+                                                    width: 72,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 8),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Stack(
+                                                            fit: StackFit.loose,
+                                                            children: [
+                                                              Container(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .center,
+                                                                child:
+                                                                    ExtendedImage
+                                                                        .asset(
+                                                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                                                  enableMemoryCache:
+                                                                      true,
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8),
+                                                                  width: 48,
+                                                                  height: 48,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                ),
+                                                              ),
+                                                              (BFdoc.get('isOnLive') ==
+                                                                      true)
+                                                                  ? Positioned(
+                                                                      child: Image
+                                                                          .asset(
+                                                                        'assets/imgs/icons/icon_badge_live.png',
+                                                                        width:
+                                                                            32,
+                                                                      ),
+                                                                      right: 0,
+                                                                      bottom: 0,
+                                                                    )
+                                                                  : Container()
+                                                            ],
+                                                          ),
+                                                          SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          Container(
+                                                              width: 72,
+                                                              child: Text(
+                                                                BFdoc.get(
+                                                                    'displayName'),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                    color: Color(
+                                                                        0xFF111111)),
+                                                              ))
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
                                         }).toList(),
-                                      )
-                                  );
+                                      ));
                                 } else if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
                                   return Center(
@@ -391,26 +510,29 @@ class _FriendListPageState extends State<FriendListPage> {
                                   color: Colors.white,
                                   child: Center(
                                     child: Padding(
-                                      padding: const EdgeInsets.only(bottom: 28),
-                                      child: Text('친한 친구를 등록해 주세요.',
-                                        style: TextStyle(fontSize: 13, color: Color(0xFF666666)),),
+                                      padding:
+                                          const EdgeInsets.only(bottom: 28),
+                                      child: Text(
+                                        '친한 친구를 등록해 주세요.',
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            color: Color(0xFF666666)),
+                                      ),
                                     ),
                                   ),
                                 );
                               } catch (e) {
                                 Center(
                                     child: Container(
-                                      height: 10,
-                                      width: 10,
-                                    )
-                                );
+                                  height: 10,
+                                  width: 10,
+                                ));
                               }
                               return Center(
                                   child: Container(
-                                    height: 10,
-                                    width: 10,
-                                  )
-                              );
+                                height: 10,
+                                width: 10,
+                              ));
                             },
                           ),
                         ),
@@ -425,13 +547,15 @@ class _FriendListPageState extends State<FriendListPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text('친구 200', style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 13,
-                          color: Color(0xFF949494)
-                      ),),
+                      child: Text(
+                        '친구 200',
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 13,
+                            color: Color(0xFF949494)),
+                      ),
                     ),
-                    SizedBox(height: 12),
+                    SizedBox(height: 10),
                     Column(
                       children: friendDocs.map((doc) {
                         List whoResistMe = doc.get('whoResistMe');
@@ -441,40 +565,128 @@ class _FriendListPageState extends State<FriendListPage> {
                           leading: (doc.get('profileImageUrl').isNotEmpty)
                               ? GestureDetector(
                             onTap: () {
-                              Get.to(() => FriendDetailPage(uid: doc.get('uid')));
+                              Get.to(() =>
+                                  FriendDetailPage(
+                                      uid: doc.get(
+                                          'uid')));
                             },
                             child: Container(
-                              width: 52,
-                              height: 52,
-                              child: ExtendedImage.network(
-                                doc.get('profileImageUrl'),
-                                enableMemoryCache: true,
-                                shape: BoxShape.circle,
-                                borderRadius:
-                                BorderRadius.circular(8),
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
+                              width: 72,
+                              child: Padding(
+                                padding:
+                                const EdgeInsets.only(
+                                    left: 8),
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .center,
+                                  children: [
+                                    Stack(
+                                        fit: StackFit
+                                            .loose,
+                                        children: [
+                                          Container(
+                                            alignment:
+                                            Alignment
+                                                .center,
+                                            child: ExtendedImage
+                                                .network(
+                                              doc.get(
+                                                  'profileImageUrl'),
+                                              enableMemoryCache:
+                                              true,
+                                              shape: BoxShape
+                                                  .circle,
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(8),
+                                              width: 48,
+                                              height: 48,
+                                              fit: BoxFit
+                                                  .cover,
+                                            ),
+                                          ),
+                                          (doc.get('isOnLive') ==
+                                              true)
+                                              ? Positioned(
+                                            child: Image
+                                                .asset(
+                                              'assets/imgs/icons/icon_badge_live.png',
+                                              width:
+                                              32,
+                                            ),
+                                            right:
+                                            0,
+                                            bottom:
+                                            0,
+                                          )
+                                              : Container()
+                                        ]),
+                                  ],
+                                ),
                               ),
-
                             ),
                           )
                               : GestureDetector(
                             onTap: () {
                               Get.to(() =>
-                                  FriendDetailPage(uid: doc.get('uid')));
+                                  FriendDetailPage(
+                                      uid: doc.get(
+                                          'uid')));
                             },
                             child: Container(
-                              width: 52,
-                              height: 52,
-                              child: ExtendedImage.asset(
-                                'assets/imgs/profile/img_profile_default_circle.png',
-                                enableMemoryCache: true,
-                                shape: BoxShape.circle,
-                                borderRadius: BorderRadius.circular(8),
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
+                              width: 72,
+                              child: Padding(
+                                padding:
+                                const EdgeInsets.only(
+                                    left: 8),
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .center,
+                                  children: [
+                                    Stack(
+                                      fit: StackFit.loose,
+                                      children: [
+                                        Container(
+                                          alignment:
+                                          Alignment
+                                              .center,
+                                          child:
+                                          ExtendedImage
+                                              .asset(
+                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                            enableMemoryCache:
+                                            true,
+                                            shape: BoxShape
+                                                .circle,
+                                            borderRadius:
+                                            BorderRadius
+                                                .circular(
+                                                8),
+                                            width: 48,
+                                            height: 48,
+                                            fit: BoxFit
+                                                .cover,
+                                          ),
+                                        ),
+                                        (doc.get('isOnLive') ==
+                                            true)
+                                            ? Positioned(
+                                          child: Image
+                                              .asset(
+                                            'assets/imgs/icons/icon_badge_live.png',
+                                            width:
+                                            32,
+                                          ),
+                                          right: 0,
+                                          bottom: 0,
+                                        )
+                                            : Container()
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -492,249 +704,308 @@ class _FriendListPageState extends State<FriendListPage> {
                                 fontWeight: FontWeight.normal,
                                 fontSize: 13),
                           ),
-                          trailing: (whoResistMeBF.contains(
-                              _userModelController.uid))
-                              ? Container(
-                            width: 56,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                GestureDetector(
-                                    onTap: () async {
-                                      List whoResistMeBF = doc.get(
-                                          'whoResistMeBF');
-                                      HapticFeedback.lightImpact();
-                                      if (whoResistMeBF.contains(
-                                          _userModelController.uid)) {
-                                        await _userModelController.deleteWhoResistMeBF(friendUid: doc.get('uid'));
-                                        print('친한친구 삭제완료!');
-                                      } else {
-                                        await _userModelController.updateWhoResistMeBF(friendUid: doc.get('uid'));
-                                        print('친한친구 등록완료!');
-                                      }
-                                    },
-                                    child: Icon(Icons.star_rounded, color: Color(0xFFFDAF04),)),
-                                GestureDetector(
-                                  onTap: () =>
-                                      showModalBottomSheet(
-                                          enableDrag: false,
-                                          context: context,
-                                          builder: (context) {
-                                            return SafeArea(
-                                              child: Container(
-                                                  height: 120,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
-                                                    child: Column(
-                                                      children: [
-                                                        GestureDetector(
-                                                            onTap: () {
-                                                              Get.dialog(
-                                                                  AlertDialog(
-                                                                    contentPadding: EdgeInsets
-                                                                        .only(
-                                                                        bottom: 0,
-                                                                        left: 20,
-                                                                        right: 20,
-                                                                        top: 30),
-                                                                    elevation: 0,
-                                                                    shape: RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(
-                                                                            10.0)),
-                                                                    buttonPadding:
-                                                                    EdgeInsets
-                                                                        .symmetric(
-                                                                        horizontal: 20,
-                                                                        vertical: 0),
-                                                                    content: Text(
-                                                                      '친구목록에서 삭제하시겠습니까?',
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .w600,
-                                                                          fontSize: 15),
+                          trailing:
+                              (whoResistMeBF.contains(_userModelController.uid))
+                                  ? Container(
+                                      width: 56,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          GestureDetector(
+                                              onTap: () async {
+                                                List whoResistMeBF =
+                                                    doc.get('whoResistMeBF');
+                                                HapticFeedback.lightImpact();
+                                                if (whoResistMeBF.contains(
+                                                    _userModelController.uid)) {
+                                                  await _userModelController
+                                                      .deleteWhoResistMeBF(
+                                                          friendUid:
+                                                              doc.get('uid'));
+                                                  print('친한친구 삭제완료!');
+                                                } else {
+                                                  await _userModelController
+                                                      .updateWhoResistMeBF(
+                                                          friendUid:
+                                                              doc.get('uid'));
+                                                  print('친한친구 등록완료!');
+                                                }
+                                              },
+                                              child: Icon(
+                                                Icons.star_rounded,
+                                                color: Color(0xFFFDAF04),
+                                              )),
+                                          GestureDetector(
+                                            onTap: () => showModalBottomSheet(
+                                                enableDrag: false,
+                                                context: context,
+                                                builder: (context) {
+                                                  return SafeArea(
+                                                    child: Container(
+                                                        height: 120,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      20.0,
+                                                                  vertical: 14),
+                                                          child: Column(
+                                                            children: [
+                                                              GestureDetector(
+                                                                  onTap: () {
+                                                                    Get.dialog(
+                                                                        AlertDialog(
+                                                                      contentPadding: EdgeInsets.only(
+                                                                          bottom:
+                                                                              0,
+                                                                          left:
+                                                                              20,
+                                                                          right:
+                                                                              20,
+                                                                          top:
+                                                                              30),
+                                                                      elevation:
+                                                                          0,
+                                                                      shape: RoundedRectangleBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(10.0)),
+                                                                      buttonPadding: EdgeInsets.symmetric(
+                                                                          horizontal:
+                                                                              20,
+                                                                          vertical:
+                                                                              0),
+                                                                      content:
+                                                                          Text(
+                                                                        '친구목록에서 삭제하시겠습니까?',
+                                                                        style: TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            fontSize: 15),
+                                                                      ),
+                                                                      actions: [
+                                                                        Row(
+                                                                          children: [
+                                                                            TextButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                child: Text(
+                                                                                  '취소',
+                                                                                  style: TextStyle(
+                                                                                    fontSize: 15,
+                                                                                    color: Color(0xFF949494),
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                  ),
+                                                                                )),
+                                                                            TextButton(
+                                                                                onPressed: () async {
+                                                                                  CustomFullScreenDialog.showDialog();
+                                                                                  await _userModelController.deleteWhoResistMe(friendUid: doc.get('uid'));
+                                                                                  Navigator.pop(context);
+                                                                                  Navigator.pop(context);
+                                                                                  CustomFullScreenDialog.cancelDialog();
+                                                                                },
+                                                                                child: Text(
+                                                                                  '확인',
+                                                                                  style: TextStyle(
+                                                                                    fontSize: 15,
+                                                                                    color: Color(0xFF3D83ED),
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                  ),
+                                                                                ))
+                                                                          ],
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.end,
+                                                                        )
+                                                                      ],
+                                                                    ));
+                                                                  },
+                                                                  child: Center(
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .only(
+                                                                          top:
+                                                                              24),
+                                                                      child:
+                                                                          Text(
+                                                                        '친구 삭제',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              15,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                      ),
                                                                     ),
-                                                                    actions: [
-                                                                      Row(
-                                                                        children: [
-                                                                          TextButton(
-                                                                              onPressed: () {Navigator.pop(context);
-                                                                              },
-                                                                              child: Text('취소',
-                                                                                style: TextStyle(
-                                                                                  fontSize: 15,
-                                                                                  color: Color(0xFF949494),
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
-                                                                              )),
-                                                                          TextButton(
-                                                                              onPressed: () async {
-                                                                                CustomFullScreenDialog.showDialog();
-                                                                                await _userModelController
-                                                                                    .deleteWhoResistMe(
-                                                                                    friendUid: doc.get('uid'));
-                                                                                Navigator.pop(context);
-                                                                                Navigator.pop(context);
-                                                                                CustomFullScreenDialog.cancelDialog();
-                                                                              },
-                                                                              child: Text('확인',
-                                                                                style: TextStyle(
-                                                                                  fontSize: 15,
-                                                                                  color: Color(
-                                                                                      0xFF3D83ED),
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
-                                                                              ))
-                                                                        ],
-                                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                                      )
-                                                                    ],
-                                                                  ));
-                                                            },
-                                                            child: Center(
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.only(top: 24),
-                                                                child: Text('친구 삭제',
-                                                                  style: TextStyle(
-                                                                    fontSize: 15,
-                                                                    fontWeight: FontWeight.bold,
-                                                                  ),),
-                                                              ),
-                                                            )),
-                                                      ],
-                                                    ),
-                                                  )
-
-                                              ),
-                                            );
-                                          }),
-                                  child: Icon(
-                                    Icons.more_vert,
-                                    color: Color(0xFFdedede),
-                                    size: 24,
-                                  ),
-                                )
-                              ],
-                            ),
-                          )
-                              : Container(
-                            width: 56,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                GestureDetector(
-                                    onTap: () async {
-                                      List whoResistMeBF = doc.get('whoResistMeBF');
-                                      HapticFeedback.lightImpact();
-                                      if (whoResistMeBF.contains(
-                                          _userModelController.uid)) {
-                                        await _userModelController
-                                            .deleteWhoResistMeBF(
-                                            friendUid: doc.get('uid'));
-                                        print('친한친구 삭제완료!');
-                                      } else {
-                                        await _userModelController
-                                            .updateWhoResistMeBF(
-                                            friendUid: doc.get('uid'));
-                                        print('친한친구 등록완료!');
-                                      }
-                                    },
-                                    child: Icon(Icons.star_rounded, color: Color(0xFFdedede),)),
-                                GestureDetector(
-                                  onTap: () =>
-                                      showModalBottomSheet(
-                                          enableDrag: false,
-                                          context: context,
-                                          builder: (context) {
-                                            return SafeArea(
-                                              child: Container(
-                                                  height: 120,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
-                                                    child: Column(
-                                                      children: [
-                                                        GestureDetector(
-                                                            onTap: () {
-                                                              Get.dialog(
-                                                                  AlertDialog(
-                                                                    contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                    elevation: 0,
-                                                                    shape: RoundedRectangleBorder(
-                                                                        borderRadius: BorderRadius.circular(10.0)),
-                                                                    buttonPadding:
-                                                                    EdgeInsets.symmetric(
-                                                                        horizontal: 20,
-                                                                        vertical: 0),
-                                                                    content: Text(
-                                                                      '친구목록에서 삭제하시겠습니까?',
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight.w600,
-                                                                          fontSize: 15),
+                                                                  )),
+                                                            ],
+                                                          ),
+                                                        )),
+                                                  );
+                                                }),
+                                            child: Icon(
+                                              Icons.more_vert,
+                                              color: Color(0xFFdedede),
+                                              size: 24,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  : Container(
+                                      width: 56,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          GestureDetector(
+                                              onTap: () async {
+                                                List whoResistMeBF =
+                                                    doc.get('whoResistMeBF');
+                                                HapticFeedback.lightImpact();
+                                                if (whoResistMeBF.contains(
+                                                    _userModelController.uid)) {
+                                                  await _userModelController
+                                                      .deleteWhoResistMeBF(
+                                                          friendUid:
+                                                              doc.get('uid'));
+                                                  print('친한친구 삭제완료!');
+                                                } else {
+                                                  await _userModelController
+                                                      .updateWhoResistMeBF(
+                                                          friendUid:
+                                                              doc.get('uid'));
+                                                  print('친한친구 등록완료!');
+                                                }
+                                              },
+                                              child: Icon(
+                                                Icons.star_rounded,
+                                                color: Color(0xFFdedede),
+                                              )),
+                                          GestureDetector(
+                                            onTap: () => showModalBottomSheet(
+                                                enableDrag: false,
+                                                context: context,
+                                                builder: (context) {
+                                                  return SafeArea(
+                                                    child: Container(
+                                                        height: 120,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      20.0,
+                                                                  vertical: 14),
+                                                          child: Column(
+                                                            children: [
+                                                              GestureDetector(
+                                                                  onTap: () {
+                                                                    Get.dialog(
+                                                                        AlertDialog(
+                                                                      contentPadding: EdgeInsets.only(
+                                                                          bottom:
+                                                                              0,
+                                                                          left:
+                                                                              20,
+                                                                          right:
+                                                                              20,
+                                                                          top:
+                                                                              30),
+                                                                      elevation:
+                                                                          0,
+                                                                      shape: RoundedRectangleBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(10.0)),
+                                                                      buttonPadding: EdgeInsets.symmetric(
+                                                                          horizontal:
+                                                                              20,
+                                                                          vertical:
+                                                                              0),
+                                                                      content:
+                                                                          Text(
+                                                                        '친구목록에서 삭제하시겠습니까?',
+                                                                        style: TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            fontSize: 15),
+                                                                      ),
+                                                                      actions: [
+                                                                        Row(
+                                                                          children: [
+                                                                            TextButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                child: Text(
+                                                                                  '취소',
+                                                                                  style: TextStyle(
+                                                                                    fontSize: 15,
+                                                                                    color: Color(0xFF949494),
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                  ),
+                                                                                )),
+                                                                            TextButton(
+                                                                                onPressed: () async {
+                                                                                  CustomFullScreenDialog.showDialog();
+                                                                                  await _userModelController.deleteWhoResistMe(friendUid: doc.get('uid'));
+                                                                                  Navigator.pop(context);
+                                                                                  Navigator.pop(context);
+                                                                                  CustomFullScreenDialog.cancelDialog();
+                                                                                },
+                                                                                child: Text(
+                                                                                  '확인',
+                                                                                  style: TextStyle(
+                                                                                    fontSize: 15,
+                                                                                    color: Color(0xFF3D83ED),
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                  ),
+                                                                                ))
+                                                                          ],
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.end,
+                                                                        )
+                                                                      ],
+                                                                    ));
+                                                                  },
+                                                                  child: Center(
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .only(
+                                                                          top:
+                                                                              24),
+                                                                      child:
+                                                                          Text(
+                                                                        '친구 삭제',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              15,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                      ),
                                                                     ),
-                                                                    actions: [
-                                                                      Row(
-                                                                        children: [
-                                                                          TextButton(
-                                                                              onPressed: () {
-                                                                                Navigator.pop(context);
-                                                                              },
-                                                                              child: Text('취소',
-                                                                                style: TextStyle(
-                                                                                  fontSize: 15,
-                                                                                  color: Color(0xFF949494),
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
-                                                                              )),
-                                                                          TextButton(
-                                                                              onPressed: () async {
-                                                                                CustomFullScreenDialog.showDialog();
-                                                                                await _userModelController.deleteWhoResistMe(
-                                                                                    friendUid: doc.get('uid'));
-                                                                                Navigator.pop(context);
-                                                                                Navigator.pop(context);
-                                                                                CustomFullScreenDialog.cancelDialog();
-                                                                              },
-                                                                              child: Text('확인',
-                                                                                style: TextStyle(
-                                                                                  fontSize: 15,
-                                                                                  color: Color(0xFF3D83ED),
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
-                                                                              ))
-                                                                        ],
-                                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                                      )
-                                                                    ],
-                                                                  ));
-                                                            },
-                                                            child: Center(
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.only(top: 24),
-                                                                child: Text('친구 삭제',
-                                                                  style: TextStyle(
-                                                                    fontSize: 15,
-                                                                    fontWeight: FontWeight.bold,
-                                                                  ),),
-                                                              ),
-                                                            )),
-                                                      ],
-                                                    ),
-                                                  )
-
-                                              ),
-                                            );
-                                          }),
-                                  child: Icon(
-                                    Icons.more_vert,
-                                    color: Color(0xFFdedede),
-                                    size: 24,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-
+                                                                  )),
+                                                            ],
+                                                          ),
+                                                        )),
+                                                  );
+                                                }),
+                                            child: Icon(
+                                              Icons.more_vert,
+                                              color: Color(0xFFdedede),
+                                              size: 24,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
                         );
                       }).toList(),
                     ), //친구목록
