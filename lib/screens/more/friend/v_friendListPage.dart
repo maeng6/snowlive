@@ -61,69 +61,69 @@ class _FriendListPageState extends State<FriendListPage> {
               fontSize: 20),
         ),
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: _statusBarSize + 58,
-          ),
-          GestureDetector(
-            onTap: () {
-              Get.to(() => SearchUserPage());
-            },
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: Color(0xFFEFEFEF),
-                ),
-                height: 50,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 1),
-                        child: Text(
-                          '친구 검색',
-                          style:
-                              TextStyle(fontSize: 15, color: Color(0xFF666666)),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: _statusBarSize + 58,
+            ),
+            GestureDetector(
+              onTap: () {
+                Get.to(() => SearchUserPage());
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    color: Color(0xFFEFEFEF),
+                  ),
+                  height: 50,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 1),
+                          child: Text(
+                            '친구 검색',
+                            style:
+                                TextStyle(fontSize: 15, color: Color(0xFF666666)),
+                          ),
                         ),
-                      ),
-                      Icon(
-                        Icons.search,
-                        color: Color(0xFF666666),
-                      )
-                    ],
+                        Icon(
+                          Icons.search,
+                          color: Color(0xFF666666),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          SizedBox(height: 20),
-          StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection('user')
-                .where('whoResistMe', arrayContains: _userModelController.uid!)
-                .snapshots(),
-            builder: (context,
-                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-              if (!snapshot.hasData) {
-                return Container(
-                  color: Colors.white,
-                );
-              } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
+            SizedBox(height: 20),
+            StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('user')
+                  .where('whoResistMe', arrayContains: _userModelController.uid!)
+                  .snapshots(),
+              builder: (context,
+                  AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                if (!snapshot.hasData) {
+                  return Container(
+                    color: Colors.white,
+                  );
+                } else if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-              final friendDocs = snapshot.data!.docs;
-              Size _size = MediaQuery.of(context).size;
+                final friendDocs = snapshot.data!.docs;
+                Size _size = MediaQuery.of(context).size;
 
-              return SingleChildScrollView(
-                child: Column(
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     StreamBuilder(
@@ -146,8 +146,7 @@ class _FriendListPageState extends State<FriendListPage> {
                             return Row(
                               children: myDoc.map((myDoc) {
                                 return Expanded(
-                                  child: ListTile(
-                                    onTap: () {},
+                                  child: Obx(()=>ListTile(
                                     leading: (myDoc
                                             .get('profileImageUrl')
                                             .isNotEmpty)
@@ -257,7 +256,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                           fontWeight: FontWeight.normal,
                                           fontSize: 14),
                                     ),
-                                  ),
+                                  )),
                                 );
                               }).toList(),
                             );
@@ -561,7 +560,6 @@ class _FriendListPageState extends State<FriendListPage> {
                         List whoResistMe = doc.get('whoResistMe');
                         List whoResistMeBF = doc.get('whoResistMeBF');
                         return ListTile(
-                          onTap: () async {},
                           leading: (doc.get('profileImageUrl').isNotEmpty)
                               ? GestureDetector(
                             onTap: () {
@@ -698,7 +696,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                 fontSize: 15),
                           ),
                           subtitle: Text(
-                            '상태메시지 내용',
+                            '${doc.get('stateMsg')}',
                             style: TextStyle(
                                 color: Color(0xFF949494),
                                 fontWeight: FontWeight.normal,
@@ -1010,11 +1008,11 @@ class _FriendListPageState extends State<FriendListPage> {
                       }).toList(),
                     ), //친구목록
                   ],
-                ),
-              );
-            },
-          ),
-        ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

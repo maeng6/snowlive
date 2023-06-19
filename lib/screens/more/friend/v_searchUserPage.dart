@@ -242,7 +242,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
                           actions: [
                             Row(
                               children: [
-                                TextButton(
+                                (_userModelController.uid != foundUserModel!.uid)
+                                ? TextButton(
                                     onPressed: () async{
                                       CustomFullScreenDialog.showDialog();
                                       await _userModelController.updateFriendUid(foundUserModel!.uid);
@@ -257,7 +258,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                         color: Color(0xff377EEA),
                                         fontWeight: FontWeight.bold,
                                       ),
-                                    )),
+                                    ))
+                                : Container()
                               ],
                               mainAxisAlignment: MainAxisAlignment.center,
                             )
