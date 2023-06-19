@@ -14,6 +14,7 @@ import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_ModifyPage.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Screen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_phone_Auth_Screen.dart';
+import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 class FleaMarket_List_Detail extends StatefulWidget {
@@ -529,23 +530,33 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                               children: [
                                 if (_fleaModelController
                                     .profileImageUrl!.isEmpty)
-                                  ExtendedImage.asset(
-                                    'assets/imgs/profile/img_profile_default_circle.png',
-                                    shape: BoxShape.circle,
-                                    borderRadius: BorderRadius.circular(20),
-                                    width: 32,
-                                    height: 32,
-                                    fit: BoxFit.cover,
+                                  GestureDetector(
+                                    onTap: (){
+                                      Get.to(()=>FriendDetailPage(uid: _fleaModelController.uid));
+                                    },
+                                    child: ExtendedImage.asset(
+                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                      shape: BoxShape.circle,
+                                      borderRadius: BorderRadius.circular(20),
+                                      width: 32,
+                                      height: 32,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 if (_fleaModelController
                                     .profileImageUrl!.isNotEmpty)
-                                  ExtendedImage.network(
-                                    '${_fleaModelController.profileImageUrl}',
-                                    shape: BoxShape.circle,
-                                    borderRadius: BorderRadius.circular(20),
-                                    width: 32,
-                                    height: 32,
-                                    fit: BoxFit.cover,
+                                  GestureDetector(
+                                    onTap: (){
+                                      Get.to(()=>FriendDetailPage(uid: _fleaModelController.uid));
+                                    },
+                                    child: ExtendedImage.network(
+                                      '${_fleaModelController.profileImageUrl}',
+                                      shape: BoxShape.circle,
+                                      borderRadius: BorderRadius.circular(20),
+                                      width: 32,
+                                      height: 32,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 SizedBox(width: 12),
                                 Padding(

@@ -138,7 +138,7 @@ class _FriendListPageState extends State<FriendListPage> {
                           if (!snapshot.hasData || snapshot.data == null) {
                             return Container(
                               color: Colors.white,
-                              child: Text('친한친구를 등록해주세요.'),
+                              child: Text('친한 친구를 등록해주세요.'),
                             );
                           } else if (snapshot.data!.docs.isNotEmpty) {
                             final myDoc = snapshot.data!.docs;
@@ -290,7 +290,7 @@ class _FriendListPageState extends State<FriendListPage> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
-                            '친한친구',
+                            '친한 친구',
                             style: TextStyle(
                                 fontWeight: FontWeight.normal,
                                 fontSize: 13,
@@ -314,7 +314,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                     snapshot.data == null) {
                                   return Container(
                                     color: Colors.white,
-                                    child: Text('친한친구를 등록해주세요.'),
+                                    child: Text('친한 친구를 등록해주세요.'),
                                   );
                                 } else if (snapshot.data!.docs.isNotEmpty) {
                                   final bestfriendDocs = snapshot.data!.docs;
@@ -548,7 +548,7 @@ class _FriendListPageState extends State<FriendListPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
-                        '친구 200',
+                        '친구 ${friendDocs.length}',
                         style: TextStyle(
                             fontWeight: FontWeight.normal,
                             fontSize: 13,
@@ -698,7 +698,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                 fontSize: 15),
                           ),
                           subtitle: Text(
-                            '상태메세지 내용',
+                            '상태메시지 내용',
                             style: TextStyle(
                                 color: Color(0xFF949494),
                                 fontWeight: FontWeight.normal,

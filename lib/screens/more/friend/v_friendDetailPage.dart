@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:snowlive3/controller/vm_friendsCommentController.dart';
+import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/more/friend/v_friendListPage.dart';
 import '../../../controller/vm_timeStampController.dart';
 import '../../../controller/vm_userModelController.dart';
@@ -11,7 +12,7 @@ import '../../../widget/w_fullScreenDialog.dart';
 import '../v_setProfileImage_moreTab.dart';
 
 class FriendDetailPage extends StatefulWidget {
-  FriendDetailPage({Key? key, required this.uid}) : super(key: key);
+  FriendDetailPage({Key? key, required this.uid,}) : super(key: key);
 
   String? uid;
 
@@ -96,9 +97,9 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                     ),
                   ),
                   onTap: () {
-                    Navigator.popUntil(context, (route) => route.isFirst);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => FriendListPage()));
-
+                    // Navigator.popUntil(context, (route) => route.isFirst);
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => FriendListPage()));
+                    Get.back();
                   },
                 )
                 : GestureDetector(
@@ -184,6 +185,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                     (friendDocs[0]['profileImageUrl'].isNotEmpty)
                                         ? GestureDetector(
                                       onTap: () {
+                                        Get.to(()=>ProfileImagePage(CommentProfileUrl: friendDocs[0]['profileImageUrl']));
                                       },
                                       child: Container(
                                           width: 120,
@@ -198,17 +200,22 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             fit: BoxFit.cover,
                                           )),
                                     )
-                                        : Container(
-                                          width: 120,
-                                          height: 120,
-                                          child: ExtendedImage.asset(
-                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                            enableMemoryCache: true,
-                                            shape: BoxShape.circle,
-                                            borderRadius: BorderRadius.circular(8),
+                                        : GestureDetector(
+                                      onTap: (){
+                                        Get.to(()=>ProfileImagePage(CommentProfileUrl: ''));
+                                      },
+                                          child: Container(
                                             width: 120,
                                             height: 120,
-                                            fit: BoxFit.cover,
+                                            child: ExtendedImage.asset(
+                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                              enableMemoryCache: true,
+                                              shape: BoxShape.circle,
+                                              borderRadius: BorderRadius.circular(8),
+                                              width: 120,
+                                              height: 120,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
                                     if(widget.uid == _userModelController.uid && edit == false)
@@ -437,7 +444,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                           ),
                                         )),
                                   ],
-                                ), //활동명//상태메세지
+                                ), //활동명//상태메시지
                                 SizedBox(
                                   height: 4,
                                 ),
@@ -469,7 +476,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             child: Text('확인', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF377EEA))),
                                           ),
                                           floatingLabelBehavior: FloatingLabelBehavior.never,
-                                          labelText: '상태메세지',
+                                          labelText: '상태메시지',
                                           labelStyle: TextStyle(
                                             fontSize: 14, fontWeight: FontWeight.normal,color: Color(0xFF666666),
                                           ),
@@ -480,7 +487,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             fontSize: 12,
                                           ),
                                           hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 14),
-                                          hintText: '상태메세지를 입력해주세요.',
+                                          hintText: '상태메시지를 입력해주세요.',
                                           contentPadding: EdgeInsets.only(left: 12, right: 12),
                                           border: OutlineInputBorder(
                                             borderSide: BorderSide(color: Colors.transparent),
@@ -753,12 +760,12 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                           SizedBox(height: 20,),
                           Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: Text('일촌평',
+                              child: Text('친구톡',
                                 style: TextStyle(
                                     fontWeight: FontWeight.normal,
                                     fontSize: 13,
                                     color: Color(0xFF949494)
-                                ),)), //일촌평
+                                ),)), //친구톡
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: Column(
@@ -769,7 +776,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                     if (!snapshot.hasData || snapshot.data == null) {
                                       return Center(child: Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 24),
-                                        child: Text('첫 일촌평을 남겨보세요.', style: TextStyle(fontSize: 13, color: Color(0xFF666666)),),
+                                        child: Text('친구톡이 없습니다', style: TextStyle(fontSize: 13, color: Color(0xFF666666)),),
                                       ));
                                     } else if (snapshot.connectionState == ConnectionState.waiting) {
                                       return CircularProgressIndicator();
@@ -915,7 +922,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                                         .collection('friendsComment')
                                                                                                                         .doc(commentDocs[index]['myUid']).delete();
                                                                                                                   } catch (e) {}
-                                                                                                                  print('일촌평 삭제 완료');
+                                                                                                                  print(' 삭제 완료');
                                                                                                                   Navigator.pop(context);
                                                                                                                   CustomFullScreenDialog.cancelDialog();
                                                                                                                 },
@@ -1181,7 +1188,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                                       .collection('friendsComment')
                                                                                                                       .doc('${_userModelController.uid}').delete();
                                                                                                                 } catch (e) {}
-                                                                                                                print('일촌평 삭제 완료');
+                                                                                                                print('친구톡 삭제 완료');
                                                                                                                 Navigator.pop(context);
                                                                                                                 CustomFullScreenDialog.cancelDialog();
                                                                                                               },
@@ -1257,7 +1264,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                     }
                                     return Center(child: Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 24),
-                                      child: Text('일촌평이 없습니다.', style: TextStyle(fontSize: 13, color: Color(0xFF666666)),),
+                                      child: Text('친구톡이 없습니다.', style: TextStyle(fontSize: 13, color: Color(0xFF666666)),),
                                     ));
                                   },
                                 )
@@ -1280,6 +1287,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                   suffixIcon: IconButton(
                                     splashColor: Colors.transparent,
                                     onPressed: () async {
+                                      CustomFullScreenDialog.showDialog();
                                       if (_stateMsgController.text.trim().isEmpty) {
                                         return;
                                       }
@@ -1317,7 +1325,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                   ),
                                   hintStyle: TextStyle(
                                       color: Color(0xff949494), fontSize: 14),
-                                  hintText: '일촌평 남기기',
+                                  hintText: '친구톡 남기기',
                                   contentPadding: EdgeInsets.only(
                                       top: 2, bottom: 2, left: 16, right: 16),
                                   border: OutlineInputBorder(

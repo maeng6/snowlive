@@ -23,10 +23,12 @@ class SetProfileImage extends StatefulWidget {
 class _SetProfileImageState extends State<SetProfileImage> {
   bool profileImage = false;
   XFile? _imageFile;
+  XFile? _croppedFile;
 
   @override
   void initState() {
     _imageFile = null;
+    _croppedFile = null;
     // TODO: implement initState
     super.initState();
   }
@@ -189,6 +191,8 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                               await _imageController
                                                   .getSingleImage(
                                                   ImageSource.camera);
+                                              _croppedFile =
+                                              await _imageController.cropImage(_imageFile);
                                               CustomFullScreenDialog
                                                   .cancelDialog();
                                               profileImage = true;
@@ -229,6 +233,8 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                               await _imageController
                                                   .getSingleImage(
                                                   ImageSource.gallery);
+                                              _croppedFile =
+                                              await _imageController.cropImage(_imageFile);
                                               CustomFullScreenDialog
                                                   .cancelDialog();
                                               profileImage = true;
@@ -275,7 +281,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                           child: CircleAvatar(
                             backgroundColor: Colors.grey[100],
                             backgroundImage:
-                                FileImage(File(_imageFile!.path)),
+                                FileImage(File(_croppedFile!.path)),
                           ),
                         ),
                         Positioned(
@@ -287,7 +293,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                   scale: 4),
                               onTap: () {
                                 profileImage = false;
-                                _imageFile = null;
+                                _croppedFile = null;
                                 setState(() {});
                               },
                             )),
@@ -356,6 +362,8 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                               await _imageController
                                                   .getSingleImage(
                                                   ImageSource.camera);
+                                              _croppedFile =
+                                              await _imageController.cropImage(_imageFile);
                                               CustomFullScreenDialog
                                                   .cancelDialog();
                                               profileImage = true;
@@ -396,6 +404,8 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                               await _imageController
                                                   .getSingleImage(
                                                   ImageSource.gallery);
+                                              _croppedFile =
+                                              await _imageController.cropImage(_imageFile);
                                               CustomFullScreenDialog
                                                   .cancelDialog();
                                               profileImage = true;
@@ -466,10 +476,10 @@ class _SetProfileImageState extends State<SetProfileImage> {
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  if (_imageFile != null) {
+                  if (_croppedFile != null) {
                     CustomFullScreenDialog.showDialog();
                     String _profileImageUrl =
-                        await _imageController.setNewImage(_imageFile!);
+                        await _imageController.setNewImage(_croppedFile!);
                     CustomFullScreenDialog.cancelDialog();
                     Get.to(() => FavoriteResort(getNickname: widget.nickName,getProfileImageUrl: _profileImageUrl,));
                   } else {

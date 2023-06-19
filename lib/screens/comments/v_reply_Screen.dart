@@ -8,6 +8,7 @@ import 'package:snowlive3/controller/vm_commentController.dart';
 import 'package:snowlive3/controller/vm_replyModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
+import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 class ReplyScreen extends StatefulWidget {
@@ -184,10 +185,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                             child: GestureDetector(
                                               onTap: () {
                                                 Get.to(() =>
-                                                    ProfileImagePage(
-                                                      CommentProfileUrl:
-                                                      widget.replyImage,
-                                                    ));
+                                                    FriendDetailPage(uid: widget.replyUid));
                                               },
                                               child:
                                               ExtendedImage.network(widget.replyImage,
@@ -207,9 +205,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                             child: GestureDetector(
                                               onTap: () {
                                                 Get.to(() =>
-                                                    ProfileImagePage(
-                                                        CommentProfileUrl:
-                                                        ''));
+                                                    FriendDetailPage(uid: widget.replyUid));
                                               },
                                               child: ExtendedImage.asset(
                                                 'assets/imgs/profile/img_profile_default_circle.png',
@@ -354,10 +350,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                             child: GestureDetector(
                                                               onTap: () {
                                                                 Get.to(() =>
-                                                                    ProfileImagePage(
-                                                                      CommentProfileUrl:
-                                                                      replyDocs[index]['profileImageUrl'],
-                                                                    ));
+                                                                    FriendDetailPage(uid: replyDocs[index]['uid']));
                                                               },
                                                               child: ExtendedImage.network(
                                                                 replyDocs[index]['profileImageUrl'],
@@ -376,8 +369,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                             child: GestureDetector(
                                                               onTap: () {
                                                                 Get.to(() =>
-                                                                    ProfileImagePage(
-                                                                        CommentProfileUrl: ''));
+                                                                    FriendDetailPage(uid: replyDocs[index]['uid']));
                                                               },
                                                               child: ExtendedImage.asset(
                                                                 'assets/imgs/profile/img_profile_default_circle.png',

@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
+import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
@@ -219,11 +220,7 @@ class _FleaChatroomState
                                               ? GestureDetector(
                                             onTap: () {
                                               Get.to(() =>
-                                                  ProfileImagePage(
-                                                    CommentProfileUrl:
-                                                    chatDocs[index]
-                                                    ['myProfileImageUrl'],
-                                                  ));
+                                                  FriendDetailPage(uid: chatDocs[index]['senderUid']));
                                             },
                                             child: ExtendedImage.network(
                                               chatDocs[index]['myProfileImageUrl'],
@@ -251,9 +248,7 @@ class _FleaChatroomState
                                               ? GestureDetector(
                                             onTap: () {
                                               Get.to(() =>
-                                                  ProfileImagePage(
-                                                      CommentProfileUrl:
-                                                      ''));
+                                                  FriendDetailPage(uid: chatDocs[index]['senderUid']));
                                             },
                                             child: ExtendedImage
                                                 .asset(

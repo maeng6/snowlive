@@ -13,6 +13,7 @@ import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/controller/vm_replyModelController.dart';
 import 'package:snowlive3/model/m_resortModel.dart';
 import 'package:snowlive3/screens/comments/v_commentTile_resortHome.dart';
+import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import 'package:snowlive3/screens/more/liveMap/v_liveMap_Screen.dart';
 import 'package:snowlive3/screens/more/v_noticeListPage.dart';
 import 'package:snowlive3/screens/more/v_noticeTile_resortHome.dart';
@@ -151,7 +152,7 @@ class _ResortHomeState extends State<ResortHome>
                                             Container(
                                               height: 72,
                                               child: DrawerHeader(
-                                                child: Text('라이브중인 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
+                                                child: Text('라이브중인 친한 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
                                                 decoration: BoxDecoration(
                                                   color: Colors.white,
                                                 ),
@@ -168,7 +169,7 @@ class _ResortHomeState extends State<ResortHome>
                                                     contentPadding: EdgeInsets.only(top: 0, bottom: 0, right: 16, left: 16),
                                                     title: Row(
                                                       children: [
-                                                        Text('라이브중인 친구가 없습니다.'),
+                                                        Text('라이브중인 친한 친구가 없습니다.'),
                                                       ],
                                                     ),
                                                     onTap: () {
@@ -221,7 +222,7 @@ class _ResortHomeState extends State<ResortHome>
                                           Container(
                                             height: 72,
                                             child: DrawerHeader(
-                                              child: Text('라이브중인 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
+                                              child: Text('라이브중인 친한 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
                                               ),
@@ -244,7 +245,11 @@ class _ResortHomeState extends State<ResortHome>
                                                           Row(
                                                             children: [
                                                               (liveFriendDocs[index]['profileImageUrl'] != "")
-                                                                  ? ExtendedImage.network(
+                                                                  ? GestureDetector(
+                                                                onTap: (){
+                                                                  Get.to(()=>FriendDetailPage(uid: liveFriendDocs[index]['uid']));
+                                                                },
+                                                                    child: ExtendedImage.network(
                                                                 liveFriendDocs[index]
                                                                 ['profileImageUrl'],
                                                                 enableMemoryCache: true,
@@ -254,8 +259,13 @@ class _ResortHomeState extends State<ResortHome>
                                                                 width: 36,
                                                                 height: 36,
                                                                 fit: BoxFit.cover,
-                                                              )
-                                                                  : ExtendedImage.asset(
+                                                              ),
+                                                                  )
+                                                                  : GestureDetector(
+                                                                onTap: (){
+                                                                  Get.to(()=>FriendDetailPage(uid: liveFriendDocs[index]['uid']));
+                                                                },
+                                                                    child: ExtendedImage.asset(
                                                                 'assets/imgs/profile/img_profile_default_circle.png',
                                                                 enableMemoryCache: true,
                                                                 shape: BoxShape.circle,
@@ -265,6 +275,7 @@ class _ResortHomeState extends State<ResortHome>
                                                                 height: 36,
                                                                 fit: BoxFit.cover,
                                                               ),
+                                                                  ),
                                                               SizedBox(width: 10),
                                                               Text(
                                                                 '${liveFriendDocs[index]['displayName']}', style: TextStyle(
@@ -285,8 +296,7 @@ class _ResortHomeState extends State<ResortHome>
                                                           ),
                                                         ],
                                                       ),
-                                                      onTap: () {
-                                                      },
+
                                                     ),
                                                     if (index != liveFriendDocs.length - 1)  // 마지막 요소가 아니라면
                                                       Padding(

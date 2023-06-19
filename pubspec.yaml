@@ -78,6 +78,7 @@ dependencies:
       url: https://github.com/hilalbaig/background_location.git
       ref: master
   google_maps_flutter_platform_interface: ^2.2.7
+  image_cropper: ^4.0.1
 
 dev_dependencies:
   flutter_test:

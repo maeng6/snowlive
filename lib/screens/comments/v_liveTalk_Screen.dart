@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/comments/v_reply_Screen.dart';
+import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
@@ -220,9 +221,7 @@ class _CommentTile_liveTalk_resortHomeState
                                                                     if (chatDocs[index]['profileImageUrl'] != "")
                                                                       GestureDetector(
                                                                         onTap: () {Get.to(() =>
-                                                                              ProfileImagePage(
-                                                                                CommentProfileUrl: chatDocs[index]['profileImageUrl'],
-                                                                              ));
+                                                                              FriendDetailPage(uid: chatDocs[index]['uid']));
                                                                         },
                                                                         child: ExtendedImage.network(
                                                                           chatDocs[index]['profileImageUrl'],
@@ -237,7 +236,7 @@ class _CommentTile_liveTalk_resortHomeState
                                                                     if (chatDocs[index]['profileImageUrl'] == "")
                                                                       GestureDetector(
                                                                         onTap: () {Get.to(() =>
-                                                                              ProfileImagePage(CommentProfileUrl: ''));
+                                                                            FriendDetailPage(uid: chatDocs[index]['uid']));
                                                                         },
                                                                         child: ExtendedImage
                                                                             .asset(
@@ -736,9 +735,7 @@ class _CommentTile_liveTalk_resortHomeState
                                                                             child:
                                                                             IconButton(
                                                                               onPressed:
-                                                                                  () {
-                                                                                Get
-                                                                                    .to(() =>
+                                                                                  () {Get.to(() =>
                                                                                     ReplyScreen(
                                                                                       replyUid: chatDocs[index]['uid'],
                                                                                       replyCount: chatDocs[index]['commentCount'],

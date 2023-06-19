@@ -20,11 +20,13 @@ class SetProfileImage_moreTab extends StatefulWidget {
 class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
   bool profileImage = false;
   XFile? _imageFile;
+  XFile? _croppedFile;
   bool _isSelected = true;
 
   @override
   void initState() {
     _imageFile = null;
+    _croppedFile = null;
     // TODO: implement initState
     super.initState();
   }
@@ -154,6 +156,8 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                               await _imageController
                                                   .getSingleImage(
                                                   ImageSource.camera);
+                                              _croppedFile =
+                                              await _imageController.cropImage(_imageFile);
                                               CustomFullScreenDialog
                                                   .cancelDialog();
                                               profileImage = true;
@@ -194,6 +198,8 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                                   await _imageController
                                                       .getSingleImage(
                                                           ImageSource.gallery);
+                                              _croppedFile =
+                                              await _imageController.cropImage(_imageFile);
                                               CustomFullScreenDialog
                                                   .cancelDialog();
                                               profileImage = true;
@@ -240,9 +246,9 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                           height: 160,
                           child: CircleAvatar(
                             backgroundColor: Colors.grey[100],
-                            backgroundImage: (_imageFile == null)
+                            backgroundImage: (_croppedFile == null)
                                 ? null
-                                : FileImage(File(_imageFile!.path)),
+                                : FileImage(File(_croppedFile!.path)),
                           ),
                         ),
                         Positioned(
@@ -254,7 +260,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                   scale: 4),
                               onTap: () {
                                 profileImage = false;
-                                _imageFile = null;
+                                _croppedFile = null;
                                 setState(() {});
                               },
                             )),
@@ -312,6 +318,8 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                               await _imageController
                                                   .getSingleImage(
                                                   ImageSource.camera);
+                                              _croppedFile =
+                                              await _imageController.cropImage(_imageFile);
                                               CustomFullScreenDialog
                                                   .cancelDialog();
                                               profileImage = true;
@@ -352,6 +360,8 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                               await _imageController
                                                   .getSingleImage(
                                                   ImageSource.gallery);
+                                              _croppedFile =
+                                              await _imageController.cropImage(_imageFile);
                                               CustomFullScreenDialog
                                                   .cancelDialog();
                                               profileImage = true;
@@ -400,10 +410,20 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                               ),
-                              child: CircleAvatar(
-                                backgroundColor: Colors.grey[100],
-                                backgroundImage: NetworkImage(
-                                    _userModelController.profileImageUrl!),
+                              child: ClipOval(
+                                child: ExtendedImage.network(
+                                  _userModelController.profileImageUrl!,
+                                  fit: BoxFit.cover,
+                                  width: 160,
+                                  height: 160,
+                                  cache: true,
+                                  loadStateChanged: (state) {
+                                    if (state.extendedImageLoadState == LoadState.loading) {
+                                      return CircularProgressIndicator();
+                                    }
+                                    return null;
+                                  },
+                                ),
                               ),
                             ),
                           if (!_isSelected)
@@ -436,9 +456,9 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  if (_imageFile != null) {
+                  if (_croppedFile != null) {
                     CustomFullScreenDialog.showDialog();
-                    String profileImageUrl = await _imageController.setNewImage(_imageFile!);
+                    String profileImageUrl = await _imageController.setNewImage(_croppedFile!);
                     await _userModelController.updateProfileImageUrl(profileImageUrl);
                     CustomFullScreenDialog.cancelDialog();
                     Navigator.pop(context);
@@ -465,7 +485,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                     elevation: 0,
                     splashFactory: InkRipple.splashFactory,
                     minimumSize: Size(1000, 56),
-                    backgroundColor: (_imageFile != null)
+                    backgroundColor: (_croppedFile != null)
                         ? Color(0xff377EEA)
                         : Color(0xffDEDEDE)),
               ),

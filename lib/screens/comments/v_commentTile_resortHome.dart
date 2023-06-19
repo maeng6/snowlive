@@ -3,6 +3,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_userModelController.dart';
 
@@ -107,29 +108,39 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                         "")
                                       Transform.translate(
                                         offset: Offset(0, 6),
-                                        child: ExtendedImage.network(
-                                          chatDocs[index]['profileImageUrl'],
-                                          cache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          width: 32,
-                                          height: 32,
-                                          fit: BoxFit.cover,
+                                        child: GestureDetector(
+                                          onTap: (){
+                                            Get.to(()=>FriendDetailPage(uid: chatDocs[index]['uid']));
+                                          },
+                                          child: ExtendedImage.network(
+                                            chatDocs[index]['profileImageUrl'],
+                                            cache: true,
+                                            shape: BoxShape.circle,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            width: 32,
+                                            height: 32,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     if (chatDocs[index]['profileImageUrl'] ==
                                         "")
                                       Transform.translate(
                                         offset: Offset(0, 6),
-                                        child: ExtendedImage.asset(
-                                          'assets/imgs/profile/img_profile_default_circle.png',
-                                          shape: BoxShape.circle,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          width: 32,
-                                          height: 32,
-                                          fit: BoxFit.cover,
+                                        child: GestureDetector(
+                                          onTap: (){
+                                            Get.to(()=>FriendDetailPage(uid: chatDocs[index]['uid']));
+                                          },
+                                          child: ExtendedImage.asset(
+                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                            shape: BoxShape.circle,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            width: 32,
+                                            height: 32,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     SizedBox(width: 12),
