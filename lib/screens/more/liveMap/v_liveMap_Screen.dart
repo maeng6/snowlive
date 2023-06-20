@@ -25,6 +25,7 @@ class _LiveMap_ScreenState extends State<LiveMap_Screen> {
   void initState() {
     super.initState();
     _liveMapController.listenToFriendLocations();
+    _liveMapController.initializeIsTapped();
   }
 
   void _onMapCreated(GoogleMapController controller) {

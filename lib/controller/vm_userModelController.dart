@@ -167,12 +167,6 @@ class UserModelController extends GetxController{
       'fleaChatUidList' : fleaChatUidList,
       'newChat' : false,
       'friendUidList' : [],
-      'stateMsg':'',
-      'isOnLive': false,
-      'whoResistMe':[],
-      'whoResistMeBF':[],
-      'withinBoundary': false,
-      'whoRepoMe':[]
     });
     await getCurrentUser(auth.currentUser!.uid);
   }

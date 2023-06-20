@@ -107,6 +107,7 @@ class _FriendListPageState extends State<FriendListPage> {
               stream: FirebaseFirestore.instance
                   .collection('user')
                   .where('whoResistMe', arrayContains: _userModelController.uid!)
+                  .orderBy('isOnLive', descending: true)
                   .snapshots(),
               builder: (context,
                   AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
@@ -303,6 +304,7 @@ class _FriendListPageState extends State<FriendListPage> {
                             stream: FirebaseFirestore.instance
                                 .collection('user')
                                 .where('whoResistMeBF', arrayContains: _userModelController.uid!)
+                                .orderBy('isOnLive', descending: true)
                                 .snapshots(),
                             builder: (context,
                                 AsyncSnapshot<

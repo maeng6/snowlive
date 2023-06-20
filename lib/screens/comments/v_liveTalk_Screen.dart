@@ -17,17 +17,17 @@ import '../../widget/w_fullScreenDialog.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
 
 
-class CommentTile_liveTalk_resortHome extends StatefulWidget {
-  const CommentTile_liveTalk_resortHome({Key? key}) : super(key: key);
+class LiveTalkScreen extends StatefulWidget {
+  const LiveTalkScreen({Key? key}) : super(key: key);
 
   @override
-  State<CommentTile_liveTalk_resortHome> createState() =>
-      _CommentTile_liveTalk_resortHomeState();
+  State<LiveTalkScreen> createState() =>
+      _LiveTalkScreenState();
 }
 
 
-class _CommentTile_liveTalk_resortHomeState
-    extends State<CommentTile_liveTalk_resortHome> {
+class _LiveTalkScreenState
+    extends State<LiveTalkScreen> {
   final _controller = TextEditingController();
   var _newComment = '';
   final _formKey = GlobalKey<FormState>();

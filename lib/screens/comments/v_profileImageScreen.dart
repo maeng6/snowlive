@@ -16,7 +16,6 @@ class _ProfileImagePageState extends State<ProfileImagePage> {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      background: CommentTile_liveTalk_resortHome(),
       direction: DismissDirection.down,
       key: UniqueKey(),
       onDismissed: (_)=>Navigator.pop(context),

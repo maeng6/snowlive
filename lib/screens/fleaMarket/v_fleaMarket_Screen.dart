@@ -9,7 +9,7 @@ import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/controller/vm_webviewController.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
 import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_My_Screen.dart';
-import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_chatroom_List.dart';
+import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_Chatroom_List.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../model/m_shopModel.dart';
 import '../v_webPage.dart';

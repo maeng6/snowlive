@@ -183,7 +183,7 @@ class _MainHomeState extends State<MainHome> {
               ResortHome(),
               DiscoverScreen(),
               FleaMarketScreen(),
-              CommentTile_liveTalk_resortHome(),
+              LiveTalkScreen(),
               MoreTab(),
             ],
           )); },
