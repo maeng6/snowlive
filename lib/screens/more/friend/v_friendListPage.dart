@@ -8,6 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_timeStampController.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
+import 'package:snowlive3/screens/more/friend/v_repoList.dart';
+import 'package:snowlive3/screens/more/friend/v_setting_friendList.dart';
 import 'package:snowlive3/screens/more/v_moreTab.dart';
 import 'package:snowlive3/screens/more/v_noticeDetailPage.dart';
 import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
@@ -39,6 +41,22 @@ class _FriendListPageState extends State<FriendListPage> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 5),
+            child: IconButton(
+                onPressed: (){
+                  Get.to(Setting_friendList());
+                },
+                icon: Image.asset(
+                  'assets/imgs/icons/icon_settings.png',
+                  scale: 4,
+                  width: 26,
+                  height: 26,
+                ),
+            ),
+          )
+        ],
         leading: GestureDetector(
           child: Image.asset(
             'assets/imgs/icons/icon_snowLive_back.png',

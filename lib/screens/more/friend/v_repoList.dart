@@ -6,14 +6,14 @@ import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_loginController.dart';
 import '../../../controller/vm_userModelController.dart';
 
-class RepoList_setting_moreTab extends StatefulWidget {
-  const RepoList_setting_moreTab({Key? key}) : super(key: key);
+class RepoList extends StatefulWidget {
+  const RepoList({Key? key}) : super(key: key);
 
   @override
-  State<RepoList_setting_moreTab> createState() => _RepoList_setting_moreTabState();
+  State<RepoList> createState() => _RepoListState();
 }
 
-class _RepoList_setting_moreTabState extends State<RepoList_setting_moreTab> {
+class _RepoListState extends State<RepoList> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();

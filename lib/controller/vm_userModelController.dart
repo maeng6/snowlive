@@ -75,8 +75,10 @@ class UserModelController extends GetxController{
     String? loginUid = await FlutterSecureStorage().read(key: 'uid');
     if(loginUid != null) {
       getCurrentUser(loginUid).catchError((e) {
-        setNewField2().catchError((e){
+        setNewField2();
+        getCurrentUser(loginUid).catchError((e){
           setNewField();
+          getCurrentUser(loginUid);
         });
       }).catchError(() {
         print('로그인 전');
