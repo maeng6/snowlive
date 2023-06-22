@@ -645,6 +645,12 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(uid).update({
       'whoIinvite': FieldValue.arrayRemove([friendUid])
     });
+    await ref.collection('user').doc(uid).update({
+      'whoInviteMe': FieldValue.arrayRemove([friendUid])
+    });
+    await ref.collection('user').doc(friendUid).update({
+      'whoIinvite': FieldValue.arrayRemove([uid])
+    });
   }
   Future<void> updateFriend({required friendUid}) async {
     final  userMe = auth.currentUser!.uid;
