@@ -8,6 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_timeStampController.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
+import 'package:snowlive3/screens/more/friend/v_invitation_Screen.dart';
+import 'package:snowlive3/screens/more/friend/v_inviteListPage.dart';
 import 'package:snowlive3/screens/more/friend/v_repoList.dart';
 import 'package:snowlive3/screens/more/friend/v_setting_friendList.dart';
 import 'package:snowlive3/screens/more/v_moreTab.dart';
@@ -42,6 +44,20 @@ class _FriendListPageState extends State<FriendListPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 5),
+            child: IconButton(
+              onPressed: (){
+                Get.to(InvitationScreen());
+              },
+              icon: Image.asset(
+                'assets/imgs/icons/icon_settings.png',
+                scale: 4,
+                width: 26,
+                height: 26,
+              ),
+            ),
+          ),
           Padding(
             padding: EdgeInsets.only(right: 5),
             child: IconButton(
@@ -516,14 +532,11 @@ class _FriendListPageState extends State<FriendListPage> {
                                                                           .cover,
                                                                     ),
                                                                   ),
-                                                                  (BFdoc.get('isOnLive') ==
-                                                                      true)
+                                                                  (BFdoc.get('isOnLive') == true)
                                                                       ? Positioned(
-                                                                    child: Image
-                                                                        .asset(
+                                                                    child: Image.asset(
                                                                       'assets/imgs/icons/icon_badge_live.png',
-                                                                      width:
-                                                                      32,
+                                                                      width: 32,
                                                                     ),
                                                                     right: 0,
                                                                     bottom: 0,
@@ -652,18 +665,6 @@ class _FriendListPageState extends State<FriendListPage> {
                                                     fit: BoxFit.cover,
                                                   ),
                                                 ),
-                                                (doc.get('isOnLive') == true)
-                                                    ? Positioned(
-                                                  child: Image.asset(
-                                                    'assets/imgs/icons/icon_badge_live.png',
-                                                    width: 32,
-                                                  ),
-                                                  right:
-                                                  0,
-                                                  bottom:
-                                                  0,
-                                                )
-                                                    : Container()
                                               ]),
                                         ],
                                       ),
@@ -801,24 +802,17 @@ class _FriendListPageState extends State<FriendListPage> {
                                                                 Get.dialog(
                                                                     AlertDialog(
                                                                       contentPadding: EdgeInsets.only(
-                                                                          bottom:
-                                                                          0,
-                                                                          left:
-                                                                          20,
-                                                                          right:
-                                                                          20,
-                                                                          top:
-                                                                          30),
-                                                                      elevation:
-                                                                      0,
+                                                                          bottom: 0,
+                                                                          left: 20,
+                                                                          right: 20,
+                                                                          top: 30),
+                                                                      elevation: 0,
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius:
                                                                           BorderRadius.circular(10.0)),
                                                                       buttonPadding: EdgeInsets.symmetric(
-                                                                          horizontal:
-                                                                          20,
-                                                                          vertical:
-                                                                          0),
+                                                                          horizontal: 20,
+                                                                          vertical: 0),
                                                                       content:
                                                                       Text(
                                                                         '친구목록에서 삭제하시겠습니까?',
@@ -833,6 +827,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                                                             TextButton(
                                                                                 onPressed: () {
                                                                                   Navigator.pop(context);
+                                                                                  Get.back();
                                                                                 },
                                                                                 child: Text(
                                                                                   '취소',
@@ -845,7 +840,8 @@ class _FriendListPageState extends State<FriendListPage> {
                                                                             TextButton(
                                                                                 onPressed: () async {
                                                                                   CustomFullScreenDialog.showDialog();
-                                                                                  await _userModelController.deleteWhoResistMe(friendUid: doc.get('uid'));
+                                                                                  await _userModelController.deleteFriend(friendUid: doc.get('uid'));
+                                                                                  await _userModelController.getCurrentUser(_userModelController.uid);
                                                                                   Navigator.pop(context);
                                                                                   Navigator.pop(context);
                                                                                   CustomFullScreenDialog.cancelDialog();
@@ -912,16 +908,12 @@ class _FriendListPageState extends State<FriendListPage> {
                                             HapticFeedback.lightImpact();
                                             if (whoResistMeBF.contains(
                                                 _userModelController.uid)) {
-                                              await _userModelController
-                                                  .deleteWhoResistMeBF(
-                                                  friendUid:
-                                                  doc.get('uid'));
+                                              await _userModelController.deleteWhoResistMeBF(
+                                                  friendUid: doc.get('uid'));
                                               print('친한친구 삭제완료!');
                                             } else {
-                                              await _userModelController
-                                                  .updateWhoResistMeBF(
-                                                  friendUid:
-                                                  doc.get('uid'));
+                                              await _userModelController.updateWhoResistMeBF(
+                                                  friendUid: doc.get('uid'));
                                               print('친한친구 등록완료!');
                                             }
                                           },
@@ -939,10 +931,8 @@ class _FriendListPageState extends State<FriendListPage> {
                                                     height: 120,
                                                     child: Padding(
                                                       padding:
-                                                      const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal:
-                                                          20.0,
+                                                      const EdgeInsets.symmetric(
+                                                          horizontal: 20.0,
                                                           vertical: 14),
                                                       child: Column(
                                                         children: [
@@ -951,24 +941,17 @@ class _FriendListPageState extends State<FriendListPage> {
                                                                 Get.dialog(
                                                                     AlertDialog(
                                                                       contentPadding: EdgeInsets.only(
-                                                                          bottom:
-                                                                          0,
-                                                                          left:
-                                                                          20,
-                                                                          right:
-                                                                          20,
-                                                                          top:
-                                                                          30),
-                                                                      elevation:
-                                                                      0,
+                                                                          bottom: 0,
+                                                                          left: 20,
+                                                                          right: 20,
+                                                                          top: 30),
+                                                                      elevation: 0,
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius:
                                                                           BorderRadius.circular(10.0)),
                                                                       buttonPadding: EdgeInsets.symmetric(
-                                                                          horizontal:
-                                                                          20,
-                                                                          vertical:
-                                                                          0),
+                                                                          horizontal: 20,
+                                                                          vertical: 0),
                                                                       content:
                                                                       Text(
                                                                         '친구목록에서 삭제하시겠습니까?',
@@ -995,7 +978,8 @@ class _FriendListPageState extends State<FriendListPage> {
                                                                             TextButton(
                                                                                 onPressed: () async {
                                                                                   CustomFullScreenDialog.showDialog();
-                                                                                  await _userModelController.deleteWhoResistMe(friendUid: doc.get('uid'));
+                                                                                  await _userModelController.deleteFriend(friendUid: doc.get('uid'));
+                                                                                  await _userModelController.getCurrentUser(_userModelController.uid);
                                                                                   Navigator.pop(context);
                                                                                   Navigator.pop(context);
                                                                                   CustomFullScreenDialog.cancelDialog();
@@ -1018,17 +1002,12 @@ class _FriendListPageState extends State<FriendListPage> {
                                                               child: Center(
                                                                 child:
                                                                 Padding(
-                                                                  padding: const EdgeInsets
-                                                                      .only(
-                                                                      top:
-                                                                      24),
-                                                                  child:
-                                                                  Text(
+                                                                  padding: const EdgeInsets.only(
+                                                                      top: 24),
+                                                                  child: Text(
                                                                     '친구 삭제',
-                                                                    style:
-                                                                    TextStyle(
-                                                                      fontSize:
-                                                                      15,
+                                                                    style: TextStyle(
+                                                                      fontSize: 15,
                                                                       fontWeight:
                                                                       FontWeight.bold,
                                                                     ),

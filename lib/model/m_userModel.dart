@@ -19,11 +19,14 @@ class UserModel {
     this.phoneNum,
     this.likeUidList,
     this.friendUidList,
+    this.liveFriendUidList,
     this.resistDate,
     this.newChat,
     this.stateMsg,
     this.isOnLive,
     this.whoResistMe,
+    this.whoInviteMe,
+    this.whoIinvite,
     this.whoResistMeBF,
     this.whoRepoMe,
     this.withinBoundary
@@ -48,11 +51,14 @@ class UserModel {
   String? phoneNum;
   List? likeUidList;
   List? friendUidList;
+  List? liveFriendUidList;
   List? fleaChatUidList;
   Timestamp? resistDate;
   String? stateMsg;
   bool? isOnLive;
   List? whoResistMe;
+  List? whoInviteMe;
+  List? whoIinvite;
   List? whoResistMeBF;
   List? whoRepoMe;
   bool? withinBoundary;
@@ -73,12 +79,15 @@ class UserModel {
       phoneNum = json['phoneNum'];
       likeUidList = json['likeUidList'];
       friendUidList = json['friendUidList'];
+      liveFriendUidList = json['liveFriendUidList'];
       resistDate = json['resistDate'];
       fleaChatUidList = json['fleaChatUidList'];
       newChat = json['newChat'];
       stateMsg = json['stateMsg'];
       isOnLive = json['isOnLive'];
       whoResistMe = json['whoResistMe'];
+      whoInviteMe = json['whoInviteMe'];
+      whoIinvite = json['whoIinvite'];
       whoResistMeBF = json['whoResistMeBF'];
       withinBoundary = json['withinBoundary'];
       whoRepoMe = json['whoRepoMe'];

@@ -25,6 +25,7 @@ class UserModelController extends GetxController{
   RxString? _profileImageUrl=''.obs;
   RxList? _repoUidList=[].obs;
   RxList? _friendUidList=[].obs;
+  RxList? _liveFriendUidList=[].obs;
   RxList? _likeUidList=[].obs;
   RxList? _fleaChatUidList=[].obs;
   RxString? _resortNickname =''.obs;
@@ -36,6 +37,8 @@ class UserModelController extends GetxController{
   RxString? _stateMsg = ''.obs;
   RxBool? _isOnLive = false.obs;
   RxList? _whoResistMe = [].obs;
+  RxList? _whoInviteMe = [].obs;
+  RxList? _whoIinvite = [].obs;
   RxList? _whoResistMeBF = [].obs;
   RxList? _whoRepoMe = [].obs;
   RxBool? _withinBoundary = false.obs;
@@ -54,6 +57,7 @@ class UserModelController extends GetxController{
   String? get profileImageUrl => _profileImageUrl!.value;
   List? get repoUidList => _repoUidList;
   List? get friendUidList => _friendUidList;
+  List? get liveFriendUidList => _liveFriendUidList;
   List? get likeUidList => _likeUidList;
   List? get fleaChatUidList => _fleaChatUidList;
   String? get resortNickname => _resortNickname!.value;
@@ -65,6 +69,8 @@ class UserModelController extends GetxController{
   String? get stateMsg =>_stateMsg!.value;
   bool? get isOnLive =>_isOnLive!.value;
   List? get whoResistMe =>_whoResistMe;
+  List? get whoInviteMe =>_whoInviteMe;
+  List? get whoIinvite =>_whoIinvite;
   List? get whoResistMeBF =>_whoResistMeBF;
   List? get whoRepoMe =>_whoRepoMe;
   bool? get withinBoundary => _withinBoundary!.value;
@@ -116,11 +122,14 @@ class UserModelController extends GetxController{
         this._phoneAuth!.value = userModel.phoneAuth!;
         this._likeUidList!.value = userModel.likeUidList!;
         this._friendUidList!.value = userModel.friendUidList!;
+        this._liveFriendUidList!.value = userModel.liveFriendUidList!;
         this._resistDate = userModel.resistDate!;
         this._newChat!.value = userModel.newChat!;
         this._stateMsg!.value = userModel.stateMsg!;
         this._isOnLive!.value = userModel.isOnLive!;
         this._whoResistMe!.value = userModel.whoResistMe!;
+        this._whoInviteMe!.value = userModel.whoInviteMe!;
+        this._whoIinvite!.value = userModel.whoIinvite!;
         this._whoResistMeBF!.value = userModel.whoResistMeBF!;
         this._whoRepoMe!.value = userModel.whoRepoMe!;
         this._withinBoundary!.value = userModel.withinBoundary!;
@@ -179,9 +188,12 @@ class UserModelController extends GetxController{
       'stateMsg':'',
       'isOnLive': false,
       'whoResistMe':[],
+      'whoInviteMe':[],
+      'whoIinvite':[],
       'whoResistMeBF':[],
       'withinBoundary': false,
-      'whoRepoMe':[]
+      'whoRepoMe':[],
+      'liveFriendUidList':[]
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -564,6 +576,7 @@ class UserModelController extends GetxController{
       'whoResistMe': FieldValue.arrayUnion([uid])
     });
   }
+
   Future<void> updateWhoResistMeBF({required friendUid}) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
@@ -612,6 +625,82 @@ class UserModelController extends GetxController{
       'stateMsg': msg,
     });
   }
+
+  Future<void> updateInvitation({required friendUid}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(friendUid).update({
+      'whoInviteMe': FieldValue.arrayUnion([uid])
+    });
+    await ref.collection('user').doc(uid).update({
+      'whoIinvite': FieldValue.arrayUnion([friendUid])
+    });
+  }
+  Future<void> deleteInvitation({required friendUid}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(friendUid).update({
+      'whoInviteMe': FieldValue.arrayRemove([uid])
+    });
+    await ref.collection('user').doc(uid).update({
+      'whoIinvite': FieldValue.arrayRemove([friendUid])
+    });
+  }
+  Future<void> updateFriend({required friendUid}) async {
+    final  userMe = auth.currentUser!.uid;
+
+    await ref.collection('user').doc(userMe).update({
+      'friendUidList': FieldValue.arrayUnion([friendUid])
+    });
+    await ref.collection('user').doc(friendUid).update({
+      'friendUidList': FieldValue.arrayUnion([userMe])
+    });
+    await ref.collection('user').doc(userMe).update({
+      'whoResistMe': FieldValue.arrayUnion([friendUid])
+    });
+    await ref.collection('user').doc(friendUid).update({
+      'whoResistMe': FieldValue.arrayUnion([userMe])
+    });
+
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(userMe);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List friendUidList = documentSnapshot.get('friendUidList');
+    this._friendUidList!.value = friendUidList;
+  }
+  Future<void> deleteFriend({required friendUid}) async {
+    final  userMe = auth.currentUser!.uid;
+
+    await ref.collection('user').doc(userMe).update({
+      'friendUidList': FieldValue.arrayRemove([friendUid])
+    });
+    await ref.collection('user').doc(friendUid).update({
+      'friendUidList': FieldValue.arrayRemove([userMe])
+    });
+    await ref.collection('user').doc(userMe).update({
+      'whoResistMe': FieldValue.arrayRemove([friendUid])
+    });
+    await ref.collection('user').doc(friendUid).update({
+      'whoResistMe': FieldValue.arrayRemove([userMe])
+    });
+    await ref.collection('user').doc(userMe).update({
+      'whoResistMeBF': FieldValue.arrayRemove([friendUid])
+    });
+    await ref.collection('user').doc(friendUid).update({
+      'whoResistMeBF': FieldValue.arrayRemove([userMe])
+    });
+
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(userMe);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List friendUidList = documentSnapshot.get('friendUidList');
+    this._friendUidList!.value = friendUidList;
+  }
+
+
+
 
 }
 

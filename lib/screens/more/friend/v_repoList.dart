@@ -136,7 +136,7 @@ class _RepoListState extends State<RepoList> {
                                               try{
                                               Navigator.pop(context);
                                               CustomFullScreenDialog.showDialog();
-                                              _userModelController.deleteRepoUid(repoDocs[index]['uid']);
+                                              await _userModelController.deleteRepoUid(repoDocs[index]['uid']);
                                               CustomFullScreenDialog.cancelDialog();
                                               }catch(e){
                                                 Navigator.pop(context);

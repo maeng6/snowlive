@@ -576,84 +576,157 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                               ],
                             ),
                           ) //프로필수정 + 라이브크루
-                          : (friendDocs[0]['uid']==widget.uid)
-                          ? GestureDetector(
-                            onTap: (){},
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Column(
-                                  children: [
-                                    Container()
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ) //빈칸
-                          :GestureDetector(
-                            onTap: (){
-                              Get.dialog(AlertDialog(
-                                contentPadding: EdgeInsets.only(
-                                    bottom: 0,
-                                    left: 20,
-                                    right: 20,
-                                    top: 30),
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(
-                                        10.0)),
-                                buttonPadding:
-                                EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 0),
-                                content: Text(
-                                  '친구로 등록하시겠습니까?',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15),
-                                ),
-                                actions: [
-                                  Row(
-                                    children: [
-                                      TextButton(
-                                          onPressed: () async{
-                                            CustomFullScreenDialog.showDialog();
-                                            await _userModelController.updateFriendUid(widget.uid);
-                                            await _userModelController.updateWhoResistMe(friendUid: widget.uid!);
-                                            Navigator.pop(context);
-                                            CustomFullScreenDialog.cancelDialog();
-                                          },
-                                          child: Text(
-                                            '친구 추가',
+                          : StreamBuilder(
+                            stream: FirebaseFirestore.instance
+                                .collection('user')
+                                .where('uid', isEqualTo: _userModelController.uid )
+                                .snapshots(),
+                            builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                              if (!snapshot.hasData || snapshot.data == null) {}
+                              else if (snapshot.data!.docs.isNotEmpty) {
+                                final userDocs = snapshot.data!.docs;
+                                return
+                                  (userDocs[0]['friendUidList'].contains(widget.uid) )
+                                      ? Container()//빈칸
+                                      :Padding(
+                                    padding: const EdgeInsets.only(top: 30),
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        Get.dialog(AlertDialog(
+                                          contentPadding: EdgeInsets.only(
+                                              bottom: 0,
+                                              left: 20,
+                                              right: 20,
+                                              top: 30),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  10.0)),
+                                          buttonPadding:
+                                          EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 0),
+                                          content: Text(
+                                            '친구등록 요청을 보내시겠습니까?',
                                             style: TextStyle(
-                                              fontSize: 15,
-                                              color: Color(0xff377EEA),
-                                              fontWeight: FontWeight.bold,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 15),
+                                          ),
+                                          actions: [
+                                            Row(
+                                              children: [
+                                                TextButton(
+                                                    onPressed: () async{
+                                                      await _userModelController.getCurrentUser(_userModelController.uid);
+                                                      if(_userModelController.whoInviteMe!.contains(widget.uid)){
+                                                        Get.dialog(AlertDialog(
+                                                          contentPadding: EdgeInsets.only(
+                                                              bottom: 0,
+                                                              left: 20,
+                                                              right: 20,
+                                                              top: 30),
+                                                          elevation: 0,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                              BorderRadius.circular(
+                                                                  10.0)),
+                                                          buttonPadding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 20,
+                                                              vertical: 0),
+                                                          content: Text(
+                                                            '이미 요청받은 회원입니다.',
+                                                            style: TextStyle(
+                                                                fontWeight: FontWeight.w600,
+                                                                fontSize: 15),
+                                                          ),
+                                                          actions: [
+                                                            Row(
+                                                              children: [
+                                                                TextButton(
+                                                                    onPressed: () {
+                                                                      Navigator.pop(context);
+                                                                      Get.back();
+                                                                    },
+                                                                    child: Text(
+                                                                      '확인',
+                                                                      style: TextStyle(
+                                                                        fontSize: 15,
+                                                                        color: Color(
+                                                                            0xFF949494),
+                                                                        fontWeight:
+                                                                        FontWeight.bold,
+                                                                      ),
+                                                                    )),
+                                                              ],
+                                                              mainAxisAlignment:
+                                                              MainAxisAlignment.end,
+                                                            )
+                                                          ],
+                                                        ));
+                                                      }else{
+                                                        CustomFullScreenDialog.showDialog();
+                                                        await _userModelController.updateInvitation(friendUid: widget.uid);
+                                                        await _userModelController.getCurrentUser(_userModelController.uid);
+                                                        //await _userModelController.updateFriendUid(widget.uid);
+                                                        //await _userModelController.updateWhoResistMe(friendUid: widget.uid!);
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      }
+                                                    },
+                                                    child: Text(
+                                                      '보내기',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(0xff377EEA),
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    )),
+                                                TextButton(
+                                                    onPressed: () async{
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text(
+                                                      '취소',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(0xff377EEA),
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    )),
+                                              ],
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                            )
+                                          ],
+                                        ));
+                                      },
+                                      child: Container(
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Image.asset('assets/imgs/icons/icon_profile_friend_add.png',
+                                                  height: _size.width/10,
+                                                  width: _size.width/10,
+                                                ),
+                                                SizedBox(height: 5,),
+                                                Text('친구로 등록하기')
+                                              ],
                                             ),
-                                          )),
-                                    ],
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                  )
-                                ],
-                              ));
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Column(
-                                  children: [
-                                    IconButton(
-                                        onPressed: (){},
-                                        iconSize: _size.width/10 ,
-                                        icon: Image.asset('assets/imgs/icons/icon_edit_profile.png')
+                                          ],
+                                        ),
+                                      ),
                                     ),
-                                    Text('친구로 등록하기')
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ), //친구로등록하기
+                                  ); //친구로등록하기
+                              }
+                              else if (snapshot.connectionState == ConnectionState.waiting) {}
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            },),
+
                           SizedBox(height: 30,),
                           Divider(thickness: 1,height: 20, color: Color(0xFFEEEEEE),),
                           SingleChildScrollView(
