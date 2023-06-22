@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -17,14 +18,19 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
   //TODO: Dependency Injection**************************************************
 
   List<Event> _events = [];
+  List<Event> _events2 = [];
+  List<Event> _events3 = [];
+
 
   @override
   void initState() {
     super.initState();
     _fetchEvents();
+    _fetchEvents2();
+    _fetchEvents3();
   }
 
-  //TODO: Calendar**************************************************
+  //TODO: Calendar_week1**************************************************
 
   Future<void> _fetchEvents() async {
     final today = DateTime.now();
@@ -135,14 +141,255 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
     );
   } // 달력 날짜 표시 영역 위젯
 
-  //TODO: Calendar**************************************************
+  //TODO: Calendar_week1**************************************************
+
+ //TODO: Calendar_week2**************************************************
+
+  Future<void> _fetchEvents2() async {
+    final today = DateTime.now();
+    final startOfWeek = today.subtract(Duration(days: today.weekday - 1));
+    final endOfWeek = startOfWeek.add(Duration(days: 6));
+
+    final startOfNextWeek = startOfWeek.add(Duration(days: 7));
+    final endOfNextWeek = endOfWeek.add(Duration(days: 7));
+
+    final eventsSnapshot = await FirebaseFirestore.instance
+        .collection('schedule')
+        .doc('${_userModelController.favoriteResort}')
+        .collection('1')
+        .where('date', isGreaterThanOrEqualTo: startOfNextWeek, isLessThanOrEqualTo: endOfNextWeek)
+        .get();
+
+    setState(() {
+      _events2 = eventsSnapshot.docs.map((doc) {
+        final title = doc['title'] as String;
+        final date = (doc['date'] as Timestamp).toDate();
+        return Event(title, date);
+      }).toList();
+    });
+  }
+
+  List<DateTime> _getNextWeekDates(DateTime selectedDate) {
+    final List<DateTime> weekDates2 = [];
+    final DateTime firstDayOfNextWeek = selectedDate.add(Duration(days: 7 - selectedDate.weekday + 1));
+
+    for (int i = 0; i < 7; i++) {
+      final DateTime day = firstDayOfNextWeek.add(Duration(days: i));
+      weekDates2.add(day);
+    }
+
+    return weekDates2;
+  }
+
+  Map<DateTime, List<Event>> _getEventsForWeek2(DateTime selectedDate) {
+    final Map<DateTime, List<Event>> eventsForWeek2 = {};
+
+    final startOfNextWeek = selectedDate.add(Duration(days: 7 - selectedDate.weekday + 1));
+    final endOfNextWeek = startOfNextWeek.add(Duration(days: 6));
+
+    _events2.forEach((event) {
+      final eventDate = event.date;
+
+      if (eventDate.isAfter(startOfNextWeek.subtract(Duration(days: 1))) &&
+          eventDate.isBefore(endOfNextWeek.add(Duration(days: 1)))) {
+        if (eventsForWeek2.containsKey(DateTime(eventDate.year, eventDate.month, eventDate.day))) {
+          eventsForWeek2[DateTime(eventDate.year, eventDate.month, eventDate.day)]!.add(event);
+        } else {
+          eventsForWeek2[DateTime(eventDate.year, eventDate.month, eventDate.day)] = [event];
+        }
+      }
+    });
+
+    return eventsForWeek2;
+  }
+  Widget _buildDayCell2(DateTime day) {
+    final List<Event> events = _events2.where((event) {
+      final eventDate = event.date;
+      return eventDate.year == day.year &&
+          eventDate.month == day.month &&
+          eventDate.day == day.day;
+    }).toList();
+
+    final bool isToday =
+        DateTime.now().day == day.day && DateTime.now().month == day.month && DateTime.now().year == day.year;
+    final List<String> weekdays = ['월', '화', '수', '목', '금', '토', '일'];
+    final String weekday = weekdays[day.weekday - 1]; // 날짜의 요일 가져오기
+
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: isToday ? Color(0xFF3D83ED) : Colors.transparent,
+        ),
+        height: 68,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              weekday, // 요일 출력
+              style: TextStyle(
+                fontSize: 11,
+                color: isToday ? Colors.white : Color(0xFF111111),
+              ),
+            ),
+            SizedBox(height: 2),
+            Text(
+              '${day.day}',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: isToday ? Colors.white : Color(0xFF111111),
+              ),
+            ),
+            SizedBox(height: 6),
+            Container(
+              height: 4,
+              width: 4,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: events.isNotEmpty ? isToday ? Color(0xFFFFFFFF) : Color(0xFF666666) : Colors.transparent,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+ //TODO: Calendar_week2**************************************************
+
+  //TODO: Calendar_week3**************************************************
+
+  Future<void> _fetchEvents3() async {
+    final today = DateTime.now();
+    final startOfWeek = today.subtract(Duration(days: today.weekday - 1));
+    final endOfWeek = startOfWeek.add(Duration(days: 6));
+
+    final startOfNextNextWeek = startOfWeek.add(Duration(days: 14));
+    final endOfNextNextWeek = endOfWeek.add(Duration(days: 14));
+
+    final eventsSnapshot = await FirebaseFirestore.instance
+        .collection('schedule')
+        .doc('${_userModelController.favoriteResort}')
+        .collection('1')
+        .where('date', isGreaterThanOrEqualTo: startOfNextNextWeek, isLessThanOrEqualTo: endOfNextNextWeek)
+        .get();
+
+    setState(() {
+      _events3 = eventsSnapshot.docs.map((doc) {
+        final title = doc['title'] as String;
+        final date = (doc['date'] as Timestamp).toDate();
+        return Event(title, date);
+      }).toList();
+    });
+  }
+
+  List<DateTime> _getNextNextWeekDates(DateTime selectedDate) {
+    final List<DateTime> weekDates3 = [];
+    final DateTime firstDayOfNextNextWeek = selectedDate.add(Duration(days: 14 - selectedDate.weekday + 1));
+
+    for (int i = 0; i < 7; i++) {
+      final DateTime day = firstDayOfNextNextWeek.add(Duration(days: i));
+      weekDates3.add(day);
+    }
+
+    return weekDates3;
+  }
+
+  Map<DateTime, List<Event>> _getEventsForWeek3(DateTime selectedDate) {
+    final Map<DateTime, List<Event>> eventsForWeek3 = {};
+
+    final startOfNextNextWeek = selectedDate.add(Duration(days: 14 - selectedDate.weekday + 1));
+    final endOfNextNextWeek = startOfNextNextWeek.add(Duration(days: 6));
+
+    _events3.forEach((event) {
+      final eventDate = event.date;
+
+      if (eventDate.isAfter(startOfNextNextWeek.subtract(Duration(days: 1))) &&
+          eventDate.isBefore(endOfNextNextWeek.add(Duration(days: 1)))) {
+        if (eventsForWeek3.containsKey(DateTime(eventDate.year, eventDate.month, eventDate.day))) {
+          eventsForWeek3[DateTime(eventDate.year, eventDate.month, eventDate.day)]!.add(event);
+        } else {
+          eventsForWeek3[DateTime(eventDate.year, eventDate.month, eventDate.day)] = [event];
+        }
+      }
+    });
+
+    return eventsForWeek3;
+  }
+  Widget _buildDayCell3(DateTime day) {
+    final List<Event> events = _events3.where((event) {
+      final eventDate = event.date;
+      return eventDate.year == day.year &&
+          eventDate.month == day.month &&
+          eventDate.day == day.day;
+    }).toList();
+
+    final bool isToday =
+        DateTime.now().day == day.day && DateTime.now().month == day.month && DateTime.now().year == day.year;
+    final List<String> weekdays = ['월', '화', '수', '목', '금', '토', '일'];
+    final String weekday = weekdays[day.weekday - 1]; // 날짜의 요일 가져오기
+
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: isToday ? Color(0xFF3D83ED) : Colors.transparent,
+        ),
+        height: 68,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              weekday, // 요일 출력
+              style: TextStyle(
+                fontSize: 11,
+                color: isToday ? Colors.white : Color(0xFF111111),
+              ),
+            ),
+            SizedBox(height: 2),
+            Text(
+              '${day.day}',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: isToday ? Colors.white : Color(0xFF111111),
+              ),
+            ),
+            SizedBox(height: 6),
+            Container(
+              height: 4,
+              width: 4,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: events.isNotEmpty ? isToday ? Color(0xFFFFFFFF) : Color(0xFF666666) : Colors.transparent,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+//TODO: Calendar_week3**************************************************
+
+
+
 
   @override
   Widget build(BuildContext context) {
 
     final DateTime today = DateTime.now();
     final List<DateTime> weekDates = _getWeekDates(today);
+    final List<DateTime> weekDates2 = _getNextWeekDates(today);
+    final List<DateTime> weekDates3 = _getNextNextWeekDates(today);
+
     final Map<DateTime, List<Event>> eventsForWeek = _getEventsForWeek(today);
+    final Map<DateTime, List<Event>> eventsForWeek2 = _getEventsForWeek2(today);
+    final Map<DateTime, List<Event>> eventsForWeek3 = _getEventsForWeek3(today);
+
 
     return Padding(
       padding: EdgeInsets.only(left: 16, right: 16),
@@ -183,94 +430,278 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
             ],
           ),
           SizedBox(height: 16),
-          Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: Color(0xFFFAFAFB),
-                    borderRadius: BorderRadius.circular(8)
-                ),
-                child: Padding(
-                  padding: EdgeInsets.only(top: 82),
-                  child: (_events.isNotEmpty)
-                      ? Padding(
-                    padding: EdgeInsets.only(right: 20, left: 20, top: 20),
-                    child: Column(
-                      children: eventsForWeek.entries.map((entry) {
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                height: 28,
-                                width: 72,
-                                child: Text(
-                                  '${entry.key.year}.${entry.key.month}.${entry.key.day}',
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF3D83ED)
+          CarouselSlider(items: [
+            Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: Color(0xFFFAFAFB),
+                      borderRadius: BorderRadius.circular(8)
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 82),
+                    child: (_events.isNotEmpty)
+                        ? Padding(
+                      padding: EdgeInsets.only(right: 20, left: 20, top: 20),
+                      child: Column(
+                        children: eventsForWeek.entries.map((entry) {
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  height: 28,
+                                  width: 72,
+                                  child: Text(
+                                    '${entry.key.year}.${entry.key.month}.${entry.key.day}',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF3D83ED)
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: entry.value.map((event) => Container(
-                                    height: 32,
-                                    child: Transform.translate(
-                                      offset: Offset(0,-19),
-                                      child: ListTile(
-                                        title: Text(event.title,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              color: Color(0xFF111111)
-                                          ),),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: entry.value.map((event) => Container(
+                                      height: 32,
+                                      child: Transform.translate(
+                                        offset: Offset(0,-19),
+                                        child: ListTile(
+                                          title: Text(event.title,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                color: Color(0xFF111111)
+                                            ),),
+                                        ),
                                       ),
-                                    ),
-                                  )).toList(),
+                                    )).toList(),
+                                  ),
                                 ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                        : Center(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 30),
+                            child: Text(
+                              '일정이 없습니다.',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                                color: Color(0xFF111111),
                               ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  )
-                      : Center(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 48),
-                          child: Text(
-                            '일정이 없습니다.',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.normal,
-                              color: Color(0xFF111111),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                decoration: BoxDecoration(
-                    color: Color(0xFFF5F5F5),
-                    borderRadius: BorderRadius.circular(8)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                  decoration: BoxDecoration(
+                      color: Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.circular(8)
+                  ),
+                  child: Row(
+                    children: weekDates.map((day) => _buildDayCell(day)).toList(),
+                  ),
                 ),
-                child: Row(
-                  children: weekDates.map((day) => _buildDayCell(day)).toList(),
+              ],
+            ),
+            Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: Color(0xFFFAFAFB),
+                      borderRadius: BorderRadius.circular(8)
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 82),
+                    child: (_events2.isNotEmpty)
+                        ? Padding(
+                      padding: EdgeInsets.only(right: 20, left: 20, top: 20),
+                      child: Column(
+                        children: eventsForWeek2.entries.map((entry) {
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  height: 28,
+                                  width: 72,
+                                  child: Text(
+                                    '${entry.key.year}.${entry.key.month}.${entry.key.day}',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF3D83ED)
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: entry.value.map((event) => Container(
+                                      height: 32,
+                                      child: Transform.translate(
+                                        offset: Offset(0,-19),
+                                        child: ListTile(
+                                          title: Text(event.title,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                color: Color(0xFF111111)
+                                            ),),
+                                        ),
+                                      ),
+                                    )).toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                        : Center(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 30),
+                            child: Text(
+                              '일정이 없습니다.',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                                color: Color(0xFF111111),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                  decoration: BoxDecoration(
+                      color: Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.circular(8)
+                  ),
+                  child: Row(
+                    children: weekDates2.map((day) => _buildDayCell2(day)).toList(),
+                  ),
+                ),
+              ],
+            ),
+            Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: Color(0xFFFAFAFB),
+                      borderRadius: BorderRadius.circular(8)
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 82),
+                    child: (_events3.isNotEmpty)
+                        ? Padding(
+                      padding: EdgeInsets.only(right: 20, left: 20, top: 20),
+                      child: Column(
+                        children: eventsForWeek3.entries.map((entry) {
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  height: 28,
+                                  width: 72,
+                                  child: Text(
+                                    '${entry.key.year}.${entry.key.month}.${entry.key.day}',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF3D83ED)
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: entry.value.map((event) => Container(
+                                      height: 32,
+                                      child: Transform.translate(
+                                        offset: Offset(0,-19),
+                                        child: ListTile(
+                                          title: Text(event.title,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                color: Color(0xFF111111)
+                                            ),),
+                                        ),
+                                      ),
+                                    )).toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                        : Center(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 30),
+                            child: Text(
+                              '일정이 없습니다.',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                                color: Color(0xFF111111),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                  decoration: BoxDecoration(
+                      color: Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.circular(8)
+                  ),
+                  child: Row(
+                    children: weekDates3.map((day) => _buildDayCell3(day)).toList(),
+                  ),
+                ),
+              ],
+            ),
+          ], options: CarouselOptions(
+            aspectRatio: 2.0,
+            enlargeCenterPage: true,
+            initialPage: 0,
+            viewportFraction: 1
+          ),)
+
 
         ],
       ),

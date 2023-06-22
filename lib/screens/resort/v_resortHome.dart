@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:snowlive3/controller/vm_DialogController_resortHome.dart';
 import 'package:snowlive3/controller/vm_fleaChatController.dart';
 import 'package:snowlive3/controller/vm_fleaMarketController.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
@@ -99,6 +100,7 @@ class _ResortHomeState extends State<ResortHome>
     Get.put(ReplyModelController(), permanent: true);
     Get.put(FleaModelController(), permanent: true);
     Get.put(FleaChatModelController(), permanent: true);
+    DialogController _dialogController = Get.put(DialogController(), permanent: true);
     //TODO: Dependency Injection**************************************************
 
 
@@ -365,6 +367,7 @@ class _ResortHomeState extends State<ResortHome>
                                 if (_userModelController.isOnLive == true) {
                                   if(!isSnackbarShown) {
                                     HapticFeedback.lightImpact();
+                                    _dialogController.isChecked.value = false;
                                     CustomFullScreenDialog.showDialog();
                                     await _userModelController
                                         .updateIsOnLiveOff();
@@ -379,16 +382,124 @@ class _ResortHomeState extends State<ResortHome>
                                   if(!isSnackbarShown) {
                                   CustomFullScreenDialog.showDialog();
                                   HapticFeedback.lightImpact();
-                                  await _liveMapController
-                                      .startBackgroundLocationService();
-                                  if (_userModelController.withinBoundary ==
-                                      true) {
-                                    await _userModelController
-                                        .updateIsOnLiveOn();
-                                    await _userModelController.getCurrentUser(
-                                        _userModelController.uid);
-                                    CustomFullScreenDialog.cancelDialog();
-                                    print('라이브 ON');
+                                  await _liveMapController.startBackgroundLocationService();
+                                  if (_userModelController.withinBoundary == true) {
+                                    Get.dialog(
+                                      WillPopScope(
+                                        onWillPop: () async => false, // Prevents dialog from closing on Android back button press
+                                        child: GestureDetector(
+                                          behavior: HitTestBehavior.translucent,
+                                          onTap: () {
+                                            _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                            Get.back();
+                                            CustomFullScreenDialog.cancelDialog();
+                                            print('라이브 OFF');
+                                          },
+                                          child: GestureDetector(
+                                            onTap: () {},
+                                            child: AlertDialog(
+                                              title: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text("내 위치 공유 하기"),
+                                                  IconButton(
+                                                    icon: Icon(Icons.cancel_outlined),
+                                                    onPressed: () {
+                                                      _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                                      Get.back();
+                                                      CustomFullScreenDialog.cancelDialog();
+                                                      print('라이브 OFF');
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text("내 위치를 공유하고 친구 위치도 확인하세요",
+                                                    style: TextStyle(
+                                                        fontSize: 13
+                                                    ),
+                                                  ),
+                                                  Text("위치는 리조트 범위 내에서만 확인 가능합니다",
+                                                    style: TextStyle(
+                                                        fontSize: 13
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 10,),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 12, bottom: 20),
+                                                    child: Divider(
+                                                      height: 1,
+                                                      color: Color(0xFFFDEDEDE),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 10,),
+                                                  Obx(() => Row(
+                                                    children: [
+                                                      Checkbox(
+                                                        value: _dialogController.isChecked.value,
+                                                        onChanged: (newValue) {
+                                                          _dialogController.isChecked.value = newValue!;
+                                                        },
+                                                      ),
+                                                      Text('위치 정보 제3자 제공에 동의합니다.',
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  ),
+                                                  TextButton(
+                                                      onPressed: (){
+                                                        Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88'));
+                                                      },
+                                                      child: Text('약관보기>',
+                                                        style: TextStyle(
+                                                            fontSize: 11,
+                                                            color: Colors.grey
+                                                        ),
+                                                      )),
+                                                ],
+                                              ),
+                                              actions: [
+                                                ButtonBar(
+                                                  alignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Obx(
+                                                          () => TextButton(
+                                                        style: TextButton.styleFrom(
+                                                          backgroundColor: _dialogController.isChecked.value ? Colors.blue : Colors.grey,
+                                                          foregroundColor: Colors.white,
+                                                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                          ),
+                                                        ),
+                                                        child: Text("위치 공유 시작하기"),
+                                                        onPressed: _dialogController.isChecked.value
+                                                            ? () async {
+                                                          Get.back();
+                                                          await _userModelController.updateIsOnLiveOn();
+                                                          await _userModelController.getCurrentUser(_userModelController.uid);
+                                                          CustomFullScreenDialog.cancelDialog();
+                                                          print('라이브 ON');
+                                                        }
+                                                            : null,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      barrierDismissible: true,
+                                    );
+
+
                                   } else {
                                     CustomFullScreenDialog.cancelDialog();
                                     if(!isSnackbarShown){
@@ -1569,10 +1680,10 @@ class _ResortHomeState extends State<ResortHome>
                           onPressed: () async {
                             if (_userModelController.isOnLive == true) {
                               HapticFeedback.lightImpact();
+                              _dialogController.isChecked.value = false;
                               CustomFullScreenDialog.showDialog();
                               await _userModelController.updateIsOnLiveOff();
-                              await _userModelController
-                                  .getCurrentUser(_userModelController.uid);
+                              await _userModelController.getCurrentUser(_userModelController.uid);
                               setState(() {});
                               CustomFullScreenDialog.cancelDialog();
                               print('라이브 OFF');
@@ -1581,10 +1692,123 @@ class _ResortHomeState extends State<ResortHome>
                               CustomFullScreenDialog.showDialog();
                               await _liveMapController.startBackgroundLocationService();
                               if(_userModelController.withinBoundary == true) {
-                                await _userModelController.updateIsOnLiveOn();
-                                await _userModelController.getCurrentUser(_userModelController.uid);
-                                CustomFullScreenDialog.cancelDialog();
-                                print('라이브 ON');
+                                Get.dialog(
+                                  WillPopScope(
+                                    onWillPop: () async => false, // Prevents dialog from closing on Android back button press
+                                    child: GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
+                                      onTap: () {
+                                        _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                        Get.back();
+                                        CustomFullScreenDialog.cancelDialog();
+                                        print('라이브 OFF');
+                                      },
+                                      child: GestureDetector(
+                                        onTap: () {},
+                                        child: AlertDialog(
+                                          title: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text("내 위치 공유 하기"),
+                                              IconButton(
+                                                icon: Icon(Icons.cancel_outlined),
+                                                onPressed: () {
+                                                  _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                                  Get.back();
+                                                  CustomFullScreenDialog.cancelDialog();
+                                                  print('라이브 OFF');
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                          content: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text("내 위치를 공유하고 친구 위치도 확인하세요",
+                                                style: TextStyle(
+                                                    fontSize: 13
+                                                ),
+                                              ),
+                                              Text("위치는 리조트 범위 내에서만 확인 가능합니다",
+                                                style: TextStyle(
+                                                    fontSize: 13
+                                                ),
+                                              ),
+                                              SizedBox(height: 10,),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 12, bottom: 20),
+                                                child: Divider(
+                                                  height: 1,
+                                                  color: Color(0xFFFDEDEDE),
+                                                ),
+                                              ),
+                                              SizedBox(height: 10,),
+                                              Obx(() => Row(
+                                                children: [
+                                                  Checkbox(
+                                                    value: _dialogController.isChecked.value,
+                                                    onChanged: (newValue) {
+                                                      _dialogController.isChecked.value = newValue!;
+                                                    },
+                                                  ),
+                                                  Text('위치 정보 제3자 제공에 동의합니다.',
+                                                    style: TextStyle(
+                                                        fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              ),
+                                              TextButton(
+                                                  onPressed: (){
+                                                    Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88'));
+                                                  },
+                                                  child: Text('약관보기>',
+                                                    style: TextStyle(
+                                                        fontSize: 11,
+                                                        color: Colors.grey
+                                                    ),
+                                                  )),
+                                            ],
+                                          ),
+                                          actions: [
+                                            ButtonBar(
+                                              alignment: MainAxisAlignment.center,
+                                              children: [
+                                                Obx(
+                                                      () => TextButton(
+                                                    style: TextButton.styleFrom(
+                                                      backgroundColor: _dialogController.isChecked.value ? Colors.blue : Colors.grey,
+                                                      foregroundColor: Colors.white,
+                                                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(10),
+                                                      ),
+                                                    ),
+                                                    child: Text("위치 공유 시작하기"),
+                                                    onPressed: _dialogController.isChecked.value
+                                                        ? () async {
+                                                      Get.back();
+                                                      await _userModelController.updateIsOnLiveOn();
+                                                      await _userModelController.getCurrentUser(_userModelController.uid);
+                                                      CustomFullScreenDialog.cancelDialog();
+                                                      print('라이브 ON');
+                                                    }
+                                                        : null,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  barrierDismissible: true,
+                                );
+
+
+
                               }else{
                                 CustomFullScreenDialog.cancelDialog();
                                 if(!isSnackbarShown){
@@ -1607,8 +1831,7 @@ class _ResortHomeState extends State<ResortHome>
                               setState(() {});
                             }
                           },
-                          icon:
-                          (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true )
+                          icon: (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true)
                               ? Image.asset('assets/imgs/icons/icon_live_on.png', width: 50)
                               : Image.asset('assets/imgs/icons/icon_live_off.png', width: 50),
                           label: (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true)
@@ -1628,11 +1851,11 @@ class _ResortHomeState extends State<ResortHome>
                                 fontWeight: FontWeight.bold,
                                 overflow: TextOverflow.ellipsis),
                           ),
-                          backgroundColor:
-                          (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true)
+                          backgroundColor: (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true)
                               ? Color(0xFF3D6FED)
                               : Colors.grey),
-                    ),
+
+                  ),
                     floatingActionButtonLocation:
                     FloatingActionButtonLocation.endFloat,
                     backgroundColor: Color(0xFFF1F1F3),
