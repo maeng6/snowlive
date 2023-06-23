@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:snowlive3/screens/more/friend/v_inviteListPage.dart';
 import 'package:snowlive3/screens/more/friend/v_invitedListPage.dart';
 
@@ -37,6 +39,17 @@ class _InvitationScreenState extends State<InvitationScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             AppBar(
+              leading: GestureDetector(
+                child: Image.asset(
+                  'assets/imgs/icons/icon_snowLive_back.png',
+                  scale: 4,
+                  width: 26,
+                  height: 26,
+                ),
+                onTap: () {
+                  Get.back();
+                },
+              ),
               iconTheme: IconThemeData(size: 26, color: Colors.black87),
               centerTitle: false,
               titleSpacing: 0,

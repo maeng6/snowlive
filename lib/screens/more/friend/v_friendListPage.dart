@@ -28,10 +28,9 @@ class FriendListPage extends StatefulWidget {
 }
 
 class _FriendListPageState extends State<FriendListPage> {
-  //TODO: Dependency Injection**************************************************
-  TimeStampController _timeStampController = Get.find<TimeStampController>();
-  UserModelController _userModelController = Get.find<UserModelController>();
 
+  //TODO: Dependency Injection**************************************************
+  UserModelController _userModelController = Get.find<UserModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -44,20 +43,54 @@ class _FriendListPageState extends State<FriendListPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 5),
-            child: IconButton(
-              onPressed: (){
-                Get.to(InvitationScreen());
-              },
-              icon: Image.asset(
-                'assets/imgs/icons/icon_settings.png',
-                scale: 4,
-                width: 26,
-                height: 26,
+          StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection('user')
+          .where('uid', isEqualTo: _userModelController.uid!)
+          .snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
+        if (!snapshot.hasData || snapshot.data == null) {}
+        else if (snapshot.data!.docs.isNotEmpty) {
+          final myDocs = snapshot.data!.docs;
+          List whoInviteMe = myDocs[0]['whoInviteMe'];
+          return  Stack(
+            children: [
+              IconButton(
+                onPressed: (){
+                  Get.to(InvitationScreen());
+                },
+                icon: Image.asset(
+                  'assets/imgs/icons/icon_settings.png',
+                  scale: 4,
+                  width: 26,
+                  height: 26,
+                ),
               ),
-            ),
+              Positioned(  // draw a red marble
+                top: 5,
+                left: 30,
+                child: new Icon(Icons.brightness_1, size: 6.0,
+                    color:
+                    (whoInviteMe.length >0)
+                        ?Color(0xFFD32F2F):Colors.white),
+              )
+            ],
+          );
+        }
+        else if (snapshot.connectionState == ConnectionState.waiting) {}
+        return IconButton(
+          onPressed: (){
+            Get.to(InvitationScreen());
+          },
+          icon: Image.asset(
+            'assets/imgs/icons/icon_settings.png',
+            scale: 4,
+            width: 26,
+            height: 26,
           ),
+        );
+      }),
+
           Padding(
             padding: EdgeInsets.only(right: 5),
             child: IconButton(
