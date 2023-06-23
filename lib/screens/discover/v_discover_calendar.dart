@@ -21,6 +21,9 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
   List<Event> _events2 = [];
   List<Event> _events3 = [];
 
+  int _current = 0;
+
+
 
   @override
   void initState() {
@@ -376,6 +379,17 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
 //TODO: Calendar_week3**************************************************
 
 
+  Widget buildIndicator(int index) {
+    return Container(
+      margin: EdgeInsets.only(top: 12, right: 6),
+      width: 6,
+      height: 6,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: _current == index ? Colors.blue : Colors.grey,  // 현재 인덱스에 따라 색상을 변경합니다.
+      ),
+    );
+  }
 
 
   @override
@@ -699,10 +713,17 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
             aspectRatio: 2.0,
             enlargeCenterPage: true,
             initialPage: 0,
-            viewportFraction: 1
-          ),)
-
-
+            viewportFraction: 1,
+            onPageChanged: (index, reason){
+              setState(() {
+                _current = index;
+              });
+            }
+          ),),
+          SizedBox(height: 5),
+          Row(
+           mainAxisAlignment: MainAxisAlignment.center,
+           children: List.generate(3, (index) => buildIndicator(index))), // 3은 슬라이드의 총 개수입니다.
         ],
       ),
     );
@@ -715,3 +736,4 @@ class Event {
 
   Event(this.title, this.date);
 }
+

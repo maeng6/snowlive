@@ -66,7 +66,7 @@ class _DiscoverScreen_ResortBannerState
       final _imageUrls = snapshot.data!.docs;
       return Padding(
         padding: EdgeInsets.only(left: 16, right: 16),
-        child: (_imageUrls!.isNotEmpty)
+        child: (_imageUrls.isNotEmpty)
             ? Column(
           children: [
             GestureDetector(
