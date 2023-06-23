@@ -47,6 +47,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         return '하이원리조트';
       case '휘닉스':
         return '휘닉스평창';
+      case '알펜시아':
+        return '알펜시아리조트';
       default:
         return resortNickname;
     }
@@ -92,7 +94,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                               )
                             ),
                             TextSpan(
-                                text: ' 님!'
+                                text: '님!'
                             ),
                           ]
                         )),
@@ -105,7 +107,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             ),
                             children: <TextSpan>[
                               TextSpan(
-                                  text: ' 의 소식을 확인해 보세요!',
+                                  text: '의 소식을 확인해 보세요!',
                                   style: TextStyle(
                                       color: Colors.black,
                                     fontWeight: FontWeight.normal

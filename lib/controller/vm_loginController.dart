@@ -146,7 +146,12 @@ class LoginController extends GetxController {
       'whoResistMe':[],
       'whoResistMeBF':[],
       'withinBoundary': false,
-      'whoRepoMe':[]
+      'whoRepoMe':[],
+      'liveFriendUidList':[],
+      'myFriendCommentUidList':[],
+      'commentCheck':false,
+      'whoIinvite':[],
+      'whoInviteMe':[]
     });
 
 

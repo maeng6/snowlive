@@ -28,6 +28,7 @@ class UserModelController extends GetxController{
   RxList? _liveFriendUidList=[].obs;
   RxList? _likeUidList=[].obs;
   RxList? _fleaChatUidList=[].obs;
+  RxList? _myFriendCommentUidList=[].obs;
   RxString? _resortNickname =''.obs;
   RxInt? _fleaChatCount = 0.obs;
   RxString? _phoneNum=''.obs;
@@ -36,6 +37,7 @@ class UserModelController extends GetxController{
   Timestamp? _resistDate;
   RxString? _stateMsg = ''.obs;
   RxBool? _isOnLive = false.obs;
+  RxBool? _commentCheck = false.obs;
   RxList? _whoResistMe = [].obs;
   RxList? _whoInviteMe = [].obs;
   RxList? _whoIinvite = [].obs;
@@ -60,6 +62,7 @@ class UserModelController extends GetxController{
   List? get liveFriendUidList => _liveFriendUidList;
   List? get likeUidList => _likeUidList;
   List? get fleaChatUidList => _fleaChatUidList;
+  List? get myFriendCommentUidList => _myFriendCommentUidList;
   String? get resortNickname => _resortNickname!.value;
   int? get fleaChatCount => _fleaChatCount!.value;
   String? get phoneNum => _phoneNum!.value;
@@ -68,6 +71,7 @@ class UserModelController extends GetxController{
   Timestamp? get resistDate => _resistDate;
   String? get stateMsg =>_stateMsg!.value;
   bool? get isOnLive =>_isOnLive!.value;
+  bool? get commentCheck =>_commentCheck!.value;
   List? get whoResistMe =>_whoResistMe;
   List? get whoInviteMe =>_whoInviteMe;
   List? get whoIinvite =>_whoIinvite;
@@ -122,11 +126,13 @@ class UserModelController extends GetxController{
         this._phoneAuth!.value = userModel.phoneAuth!;
         this._likeUidList!.value = userModel.likeUidList!;
         this._friendUidList!.value = userModel.friendUidList!;
+        this._myFriendCommentUidList!.value = userModel.myFriendCommentUidList!;
         this._liveFriendUidList!.value = userModel.liveFriendUidList!;
         this._resistDate = userModel.resistDate!;
         this._newChat!.value = userModel.newChat!;
         this._stateMsg!.value = userModel.stateMsg!;
         this._isOnLive!.value = userModel.isOnLive!;
+        this._commentCheck!.value = userModel.commentCheck!;
         this._whoResistMe!.value = userModel.whoResistMe!;
         this._whoInviteMe!.value = userModel.whoInviteMe!;
         this._whoIinvite!.value = userModel.whoIinvite!;
@@ -193,7 +199,11 @@ class UserModelController extends GetxController{
       'whoResistMeBF':[],
       'withinBoundary': false,
       'whoRepoMe':[],
-      'liveFriendUidList':[]
+      'liveFriendUidList':[],
+      'myFriendCommentUidList':[],
+      'commentCheck':false,
+      'whoIinvite':[],
+      'whoInviteMe':[]
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -704,6 +714,37 @@ class UserModelController extends GetxController{
     List friendUidList = documentSnapshot.get('friendUidList');
     this._friendUidList!.value = friendUidList;
   }
+
+  Future<void> updateMyFriendCommentUidList({required friendUid}) async {
+    final  userMe = auth.currentUser!.uid;
+    await ref.collection('user').doc(userMe).update({
+      'myFriendCommentUidList': FieldValue.arrayUnion([friendUid])
+    });
+
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(userMe);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List myFriendCommentUidList = documentSnapshot.get('myFriendCommentUidList');
+    this._myFriendCommentUidList!.value = myFriendCommentUidList;
+  }
+
+  Future<void> updateCommentCheck() async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'commentCheck': true,
+    });
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(uid);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    bool commentCheck = documentSnapshot.get('commentCheck');
+    this._commentCheck!.value = commentCheck;
+  }
+
+
+
 
 
 

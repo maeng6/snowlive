@@ -3,6 +3,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:snowlive3/controller/vm_DialogController_resortHome.dart';
 import 'package:snowlive3/controller/vm_friendsCommentController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/more/friend/v_friendListPage.dart';
@@ -52,7 +53,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   }
 
   //TODO: Dependency Injection**************************************************
-  TimeStampController _timeStampController = Get.find<TimeStampController>();
+  DialogController _dialogController = Get.find<DialogController>();
   UserModelController _userModelController = Get.find<UserModelController>();
   FriendsCommentModelController _friendsCommentModelController = Get.find<FriendsCommentModelController>();
   //TODO: Dependency Injection**************************************************
@@ -1173,8 +1174,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                         enableDrag:
                                                                         false,
                                                                         context: context,
-                                                                        builder: (
-                                                                            context) {
+                                                                        builder: (context) {
                                                                           return Container(
                                                                             height: 100,
                                                                             child:
@@ -1360,22 +1360,146 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                   suffixIcon: IconButton(
                                     splashColor: Colors.transparent,
                                     onPressed: () async {
-                                      CustomFullScreenDialog.showDialog();
+
                                       if (_stateMsgController.text.trim().isEmpty) {
                                         return;
                                       }
                                       try {
-                                        await _friendsCommentModelController.sendMessage(
+
+                                        if(_userModelController.myFriendCommentUidList!.contains(widget.uid)
+                                        && _userModelController.commentCheck! == false){
+                                          Get.dialog(
+                                            AlertDialog(
+                                              title: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text("친구톡 새로 등록하기"),
+                                                  IconButton(
+                                                    icon: Icon(Icons.cancel_outlined),
+                                                    onPressed: () {
+                                                      _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text("기존 친구톡은 삭제됩니다.",
+                                                    style: TextStyle(
+                                                        fontSize: 13
+                                                    ),
+                                                  ),
+                                                  Text("계속하시겠습니까?",
+                                                    style: TextStyle(
+                                                        fontSize: 13
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top:10,bottom: 10),
+                                                    child: Divider(
+                                                      height: 1,
+                                                      color: Color(0xFFFDEDEDE),
+                                                    ),
+                                                  ),
+                                                  Obx(() => Row(
+                                                    children: [
+                                                      Checkbox(
+                                                        value: _dialogController.isChecked.value,
+                                                        onChanged: (newValue) {
+                                                          _dialogController.isChecked.value = newValue!;
+                                                        },
+                                                      ),
+                                                      Text('다시 보지 않기.',
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  ),
+                                                ],
+                                              ),
+                                              actions: [
+                                                ButtonBar(
+                                                  alignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Obx(
+                                                          () => TextButton(
+                                                        style: TextButton.styleFrom(
+                                                          backgroundColor: Colors.blue ,
+                                                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                          ),
+                                                        ),
+                                                        child: Text("친구톡 등록",
+                                                        style: TextStyle(
+                                                          color: Colors.white
+                                                        ),
+                                                        ),
+                                                        onPressed: _dialogController.isChecked.value
+                                                            ? () async {
+                                                          CustomFullScreenDialog.showDialog();
+                                                          await _userModelController.updateCommentCheck();
+                                                          await _friendsCommentModelController.sendMessage(
+                                                            displayName: _userModelController.displayName,
+                                                            profileImageUrl: _userModelController.profileImageUrl,
+                                                            comment: _newComment,
+                                                            commentCount: _userModelController.commentCount,
+                                                            resortNickname: _userModelController.resortNickname,
+                                                            myUid: _userModelController.uid,
+                                                            friendsUid: widget.uid,
+                                                          );
+                                                          await _userModelController.getCurrentUser(_userModelController.uid);
+                                                          _stateMsgController.clear();
+                                                          Navigator.pop(context);
+                                                          FocusScope.of(context).unfocus();
+                                                          CustomFullScreenDialog.cancelDialog();
+                                                        }
+                                                            : () async{
+                                                          CustomFullScreenDialog.showDialog();
+                                                          await _friendsCommentModelController.sendMessage(
+                                                            displayName: _userModelController.displayName,
+                                                            profileImageUrl: _userModelController.profileImageUrl,
+                                                            comment: _newComment,
+                                                            commentCount: _userModelController.commentCount,
+                                                            resortNickname: _userModelController.resortNickname,
+                                                            myUid: _userModelController.uid,
+                                                            friendsUid: widget.uid,
+                                                          );
+                                                          _stateMsgController.clear();
+                                                          Navigator.pop(context);
+                                                          FocusScope.of(context).unfocus();
+                                                          CustomFullScreenDialog.cancelDialog();
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            )
+                                          );
+                                          Get.dialog(
+                                            AlertDialog()
+                                          );//빈 다이얼로그. 이거없으면 위 다이얼로그가 안나옴..
+
+                                        }else{
+                                          CustomFullScreenDialog.showDialog();
+                                          await _friendsCommentModelController.sendMessage(
                                             displayName: _userModelController.displayName,
                                             profileImageUrl: _userModelController.profileImageUrl,
                                             comment: _newComment,
                                             commentCount: _userModelController.commentCount,
                                             resortNickname: _userModelController.resortNickname,
-                                          myUid: _userModelController.uid,
-                                          friendsUid: widget.uid,
-                                        );
-                                        FocusScope.of(context).unfocus();
-                                        _stateMsgController.clear();
+                                            myUid: _userModelController.uid,
+                                            friendsUid: widget.uid,
+                                          );
+                                          await _userModelController.updateMyFriendCommentUidList(friendUid: widget.uid);
+                                          FocusScope.of(context).unfocus();
+                                          _stateMsgController.clear();
+                                        }
                                       } catch (e) {
                                         CustomFullScreenDialog.cancelDialog();
                                       }

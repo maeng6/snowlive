@@ -42,13 +42,6 @@ class _MainHomeState extends State<MainHome> {
     });
   }
 
-
-  @override
-  void setState(VoidCallback fn) {
-    // TODO: implement setState
-    super.setState(fn);
-  }
-
   @override
   void initState() {
     // TODO: implement initState

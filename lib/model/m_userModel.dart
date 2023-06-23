@@ -18,12 +18,14 @@ class UserModel {
     this.phoneAuth,
     this.phoneNum,
     this.likeUidList,
+    this.myFriendCommentUidList,
     this.friendUidList,
     this.liveFriendUidList,
     this.resistDate,
     this.newChat,
     this.stateMsg,
     this.isOnLive,
+    this.commentCheck,
     this.whoResistMe,
     this.whoInviteMe,
     this.whoIinvite,
@@ -50,12 +52,14 @@ class UserModel {
   bool? newChat;
   String? phoneNum;
   List? likeUidList;
+  List? myFriendCommentUidList;
   List? friendUidList;
   List? liveFriendUidList;
   List? fleaChatUidList;
   Timestamp? resistDate;
   String? stateMsg;
   bool? isOnLive;
+  bool? commentCheck;
   List? whoResistMe;
   List? whoInviteMe;
   List? whoIinvite;
@@ -78,6 +82,7 @@ class UserModel {
       phoneAuth = json['phoneAuth'];
       phoneNum = json['phoneNum'];
       likeUidList = json['likeUidList'];
+      myFriendCommentUidList = json['myFriendCommentUidList'];
       friendUidList = json['friendUidList'];
       liveFriendUidList = json['liveFriendUidList'];
       resistDate = json['resistDate'];
@@ -85,6 +90,7 @@ class UserModel {
       newChat = json['newChat'];
       stateMsg = json['stateMsg'];
       isOnLive = json['isOnLive'];
+      commentCheck = json['commentCheck'];
       whoResistMe = json['whoResistMe'];
       whoInviteMe = json['whoInviteMe'];
       whoIinvite = json['whoIinvite'];
