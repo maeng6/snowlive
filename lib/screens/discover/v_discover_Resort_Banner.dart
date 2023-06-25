@@ -120,8 +120,8 @@ class _DiscoverScreen_ResortBannerState
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: _currentIndex == index
-                        ? Colors.blue
-                        : Colors.grey,
+                        ? Color(0xFF949494)
+                        : Color(0xFFDEDEDE),
                   ),
                 );
               }).toList(),

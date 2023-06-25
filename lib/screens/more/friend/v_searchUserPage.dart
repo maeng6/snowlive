@@ -109,7 +109,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                   hintText: '활동명 입력',
                                   labelText: '친구 검색',
                                   contentPadding: EdgeInsets.only(
-                                      top: 11, bottom: 11, left: 16, right: 16),
+                                      top: 14, bottom: 8, left: 16, right: 16),
                                   fillColor: Color(0xFFEFEFEF),
                                   hoverColor: Colors.transparent,
                                   filled: true,

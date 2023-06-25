@@ -73,11 +73,11 @@ class _DiscoverScreen_TipState extends State<DiscoverScreen_Tip> {
                     style: TextStyle(
                       color: Color(0xFF111111),
                       fontWeight: FontWeight.w700,
-                      fontSize: 18,
+                      fontSize: 16,
                     ),
                   ),
                 ),
-                SizedBox(height: 14),
+                SizedBox(height: 12),
                 Container(
                   height: 180, // adjust this height to fit your needs
                   child: ListView.builder(

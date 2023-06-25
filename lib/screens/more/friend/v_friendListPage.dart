@@ -53,28 +53,31 @@ class _FriendListPageState extends State<FriendListPage> {
         else if (snapshot.data!.docs.isNotEmpty) {
           final myDocs = snapshot.data!.docs;
           List whoInviteMe = myDocs[0]['whoInviteMe'];
-          return  Stack(
-            children: [
-              IconButton(
-                onPressed: (){
-                  Get.to(InvitationScreen());
-                },
-                icon: Image.asset(
-                  'assets/imgs/icons/icon_settings.png',
-                  scale: 4,
-                  width: 26,
-                  height: 26,
+          return  Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Stack(
+              children: [
+                IconButton(
+                  onPressed: (){
+                    Get.to(InvitationScreen());
+                  },
+                  icon: Image.asset(
+                    'assets/imgs/icons/icon_noti_off.png',
+                    scale: 4,
+                    width: 26,
+                    height: 26,
+                  ),
                 ),
-              ),
-              Positioned(  // draw a red marble
-                top: 5,
-                left: 30,
-                child: new Icon(Icons.brightness_1, size: 6.0,
-                    color:
-                    (whoInviteMe.length >0)
-                        ?Color(0xFFD32F2F):Colors.white),
-              )
-            ],
+                Positioned(  // draw a red marble
+                  top: 10,
+                  left: 32,
+                  child: new Icon(Icons.brightness_1, size: 6.0,
+                      color:
+                      (whoInviteMe.length >0)
+                          ?Color(0xFFD32F2F):Colors.white),
+                )
+              ],
+            ),
           );
         }
         else if (snapshot.connectionState == ConnectionState.waiting) {}
@@ -83,14 +86,13 @@ class _FriendListPageState extends State<FriendListPage> {
             Get.to(InvitationScreen());
           },
           icon: Image.asset(
-            'assets/imgs/icons/icon_settings.png',
+            'assets/imgs/icons/icon_noti_off.png',
             scale: 4,
             width: 26,
             height: 26,
           ),
         );
       }),
-
           Padding(
             padding: EdgeInsets.only(right: 5),
             child: IconButton(
@@ -379,7 +381,7 @@ class _FriendListPageState extends State<FriendListPage> {
                             child: Text(
                               '등록된 친구가 없습니다',
                               style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 14,
                                   color: Color(0xFF666666)),
                             ),
                           ),
@@ -387,7 +389,7 @@ class _FriendListPageState extends State<FriendListPage> {
                             child: Text(
                               '친구를 검색해 추가해 보세요',
                               style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 14,
                                   color: Color(0xFF666666)),
                             ),
                           ),
@@ -400,7 +402,8 @@ class _FriendListPageState extends State<FriendListPage> {
                               child: Text('친구 추가하기',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF666666)
+                                color: Color(0xFF666666),
+                                fontSize: 14
                               ),
                               ),
                               style: OutlinedButton.styleFrom(

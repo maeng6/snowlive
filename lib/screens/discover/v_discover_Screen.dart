@@ -81,36 +81,42 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   children: [
                     RichText(
                         text: TextSpan(
-                          text: '안녕하세요, ',
+                          text: '',
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Color(0xFF111111),
+                            fontSize: 20,
+                              fontWeight: FontWeight.normal
                           ),
                           children: <TextSpan>[
                             TextSpan(
                               text: '${_userModelController.displayName}',
                               style: TextStyle(
-                                color: Colors.blueAccent,
+                                  color: Color(0xFF111111),
+                                  fontSize: 20,
                                 fontWeight: FontWeight.bold
                               )
                             ),
                             TextSpan(
-                                text: '님!'
+                                text: '님,'
                             ),
                           ]
                         )),
+                    SizedBox(height: 2,),
                     RichText(
                         text: TextSpan(
                             text: getResortName(_userModelController.resortNickname!),
                             style: TextStyle(
-                                color: Colors.blueAccent,
-                              fontWeight: FontWeight.bold
+                                color: Color(0xFF111111),
+                                fontSize: 20,
+                                fontWeight: FontWeight.normal
                             ),
                             children: <TextSpan>[
                               TextSpan(
                                   text: '의 소식을 확인해 보세요!',
                                   style: TextStyle(
-                                      color: Colors.black,
-                                    fontWeight: FontWeight.normal
+                                      color: Color(0xFF111111),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.normal
                                   )
                               ),
                             ]
@@ -118,13 +124,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: Divider(
-                  color: Color(0xFFDEDEDE),
-                  height: 24,
-                  thickness: 0.5,
-                ),
+              SizedBox(
+                height: 16,
               ),
               Container(
                   padding: EdgeInsets.only(top: 10),

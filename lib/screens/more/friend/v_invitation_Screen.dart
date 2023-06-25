@@ -51,17 +51,15 @@ class _InvitationScreenState extends State<InvitationScreen> {
                 },
               ),
               iconTheme: IconThemeData(size: 26, color: Colors.black87),
-              centerTitle: false,
+              centerTitle: true,
               titleSpacing: 0,
-              title: Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    '친구등록',
-                    style: TextStyle(
-                        color: Color(0xFF111111),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
-                  )),
+              title: Text(
+                '친구등록',
+                style: TextStyle(
+                    color: Color(0xFF111111),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
+              ),
               backgroundColor: Colors.white,
               elevation: 0.0,
             )
@@ -127,7 +125,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
                               ),
                             ),
                             Container(
-                              width: 56,
+                              width: 90,
                               height: 3,
                               color:
                               (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
@@ -177,7 +175,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
                               ),
                             ),
                             Container(
-                              width: 106,
+                              width: 90,
                               height: 3,
                               color:
                               (isTap[1]) ? Color(0xFF111111) : Colors.transparent,
