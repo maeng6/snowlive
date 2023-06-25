@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:snowlive3/controller/vm_DialogController_resortHome.dart';
@@ -60,8 +63,10 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+
     final Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
+
     return GestureDetector(
       onTap: (){
         FocusScope.of(context).unfocus();
@@ -72,102 +77,105 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
             .where('uid', isEqualTo: widget.uid )
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-      if (!snapshot.hasData || snapshot.data == null) {}
+      if (!snapshot.hasData || snapshot.data == null) {
+      }
       else if (snapshot.data!.docs.isNotEmpty) {
         final friendDocs = snapshot.data!.docs;
         return Scaffold(
-          body: Stack(
-            children: [
-              AppBar(
-                leading:
-                (edit == false)
+          backgroundColor: Colors.white,
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            leading:
+            (edit == false)
                 ? GestureDetector(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: _statusBarSize - 30),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          'assets/imgs/icons/icon_snowLive_back.png',
-                          scale: 4,
-                          width: 26,
-                          height: 26,
-                        ),
-                      ],
+              child: Padding(
+                padding: EdgeInsets.only(top: _statusBarSize - 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image.asset(
+                      'assets/imgs/icons/icon_snowLive_back.png',
+                      scale: 4,
+                      width: 26,
+                      height: 26,
                     ),
-                  ),
-                  onTap: () {
-                    // Navigator.popUntil(context, (route) => route.isFirst);
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) => FriendListPage()));
-                    Get.back();
-                  },
-                )
+                  ],
+                ),
+              ),
+              onTap: () {
+                // Navigator.popUntil(context, (route) => route.isFirst);
+                // Navigator.push(context, MaterialPageRoute(builder: (context) => FriendListPage()));
+                Get.back();
+              },
+            )
                 : GestureDetector(
+              child: Padding(
+                padding: EdgeInsets.only(top: _statusBarSize - 30, left: 12),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: Text('취소', style: TextStyle(fontSize: 16, color: Color(0xFF111111), fontWeight: FontWeight.bold),),
+                    ),
+                  ],
+                ),
+              ),
+              onTap: () {
+                setState(() {
+                  edit=false;
+                });
+              },
+            ),
+            actions: [
+              if(edit == true)
+                GestureDetector(
                   child: Padding(
-                    padding: EdgeInsets.only(top: _statusBarSize - 30, left: 12),
+                    padding: EdgeInsets.only(top: _statusBarSize - 30, right: 20),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 4),
-                          child: Text('취소', style: TextStyle(fontSize: 16, color: Color(0xFF111111), fontWeight: FontWeight.bold),),
+                          padding: const EdgeInsets.only(right: 4),
+                          child: Text('완료', style: TextStyle(fontSize: 16, color: Color(0xFF111111), fontWeight: FontWeight.bold),),
                         ),
                       ],
                     ),
                   ),
-                  onTap: () {
+                  onTap: () async{
+                    CustomFullScreenDialog.showDialog();
+                    try {
+                      if(_displayNameController.text == '' || _displayNameController.text ==null) {
+                        await _userModelController.updateNickname(
+                            _userModelController.displayName);
+                      }else{
+                        await _userModelController.updateNickname(
+                            _displayNameController.text);
+                      }
+                      await _userModelController.updateStateMsg(_stateMsgController.text);
+                      await _userModelController.getCurrentUser(_userModelController.uid);
+                      _stateMsgController.clear();
+                      _displayNameController.clear();
+                    } catch (e) {
+                      CustomFullScreenDialog.cancelDialog();
+                    }
                     setState(() {
                       edit=false;
                     });
+                    CustomFullScreenDialog.cancelDialog();
                   },
                 ),
-                actions: [
-                  if(edit == true)
-                    GestureDetector(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: _statusBarSize - 30, right: 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 4),
-                              child: Text('완료', style: TextStyle(fontSize: 16, color: Color(0xFF111111), fontWeight: FontWeight.bold),),
-                            ),
-                          ],
-                        ),
-                      ),
-                      onTap: () async{
-                        CustomFullScreenDialog.showDialog();
-                        try {
-                          if(_displayNameController.text == '' || _displayNameController.text ==null) {
-                            await _userModelController.updateNickname(
-                                _userModelController.displayName);
-                          }else{
-                            await _userModelController.updateNickname(
-                                _displayNameController.text);
-                          }
-                          await _userModelController.updateStateMsg(_stateMsgController.text);
-                          await _userModelController.getCurrentUser(_userModelController.uid);
-                          _stateMsgController.clear();
-                          _displayNameController.clear();
-                        } catch (e) {
-                          CustomFullScreenDialog.cancelDialog();
-                        }
-                        setState(() {
-                          edit=false;
-                        });
-                        CustomFullScreenDialog.cancelDialog();
-                      },
-                    ),
-                ],
-                elevation: 0.0,
-                titleSpacing: 0,
-                centerTitle: true,
-                toolbarHeight: 58.0, // 이 부분은 AppBar의 높이를 조절합니다.
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 100),
-                child: Container(
+            ],
+            elevation: 0.0,
+            titleSpacing: 0,
+            centerTitle: true,
+            toolbarHeight: 58.0, // 이 부분은 AppBar의 높이를 조절합니다.
+          ),
+          body: Padding(
+            padding:  EdgeInsets.only(top: _statusBarSize+58),
+            child: Stack(
+              children: [
+                Container(
                   height: _size.height-160,
                   width: _size.width,
                   child: SingleChildScrollView(
@@ -1536,8 +1544,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       }

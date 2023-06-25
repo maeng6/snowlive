@@ -3,20 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
-import 'package:snowlive3/controller/vm_timeStampController.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import 'package:snowlive3/screens/more/friend/v_invitation_Screen.dart';
-import 'package:snowlive3/screens/more/friend/v_inviteListPage.dart';
-import 'package:snowlive3/screens/more/friend/v_repoList.dart';
 import 'package:snowlive3/screens/more/friend/v_setting_friendList.dart';
-import 'package:snowlive3/screens/more/v_moreTab.dart';
-import 'package:snowlive3/screens/more/v_noticeDetailPage.dart';
-import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
-
 import '../../../controller/vm_userModelController.dart';
 import 'v_searchUserPage.dart';
 
