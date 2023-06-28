@@ -30,6 +30,7 @@ class UserModelController extends GetxController{
   RxList? _fleaChatUidList=[].obs;
   RxList? _myFriendCommentUidList=[].obs;
   RxString? _resortNickname =''.obs;
+  RxString? _myCrew =''.obs;
   RxInt? _fleaChatCount = 0.obs;
   RxString? _phoneNum=''.obs;
   RxBool? _phoneAuth=false.obs;
@@ -64,6 +65,7 @@ class UserModelController extends GetxController{
   List? get fleaChatUidList => _fleaChatUidList;
   List? get myFriendCommentUidList => _myFriendCommentUidList;
   String? get resortNickname => _resortNickname!.value;
+  String? get myCrew => _myCrew!.value;
   int? get fleaChatCount => _fleaChatCount!.value;
   String? get phoneNum => _phoneNum!.value;
   bool? get phoneAuth => _phoneAuth!.value;
@@ -129,6 +131,7 @@ class UserModelController extends GetxController{
         this._myFriendCommentUidList!.value = userModel.myFriendCommentUidList!;
         this._liveFriendUidList!.value = userModel.liveFriendUidList!;
         this._resistDate = userModel.resistDate!;
+        this._myCrew!.value = userModel.myCrew!;
         this._newChat!.value = userModel.newChat!;
         this._stateMsg!.value = userModel.stateMsg!;
         this._isOnLive!.value = userModel.isOnLive!;
@@ -203,7 +206,8 @@ class UserModelController extends GetxController{
       'myFriendCommentUidList':[],
       'commentCheck':false,
       'whoIinvite':[],
-      'whoInviteMe':[]
+      'whoInviteMe':[],
+      'myCrew':''
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -231,6 +235,16 @@ class UserModelController extends GetxController{
     final uid = user!.uid;
     await ref.collection('user').doc(uid).update({
       'profileImageUrl': '',
+    });
+    await getCurrentUser(auth.currentUser!.uid);
+  }
+
+
+  Future<void> deleteMyCrew() async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'myCrew': '',
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -490,6 +504,14 @@ class UserModelController extends GetxController{
     await getCurrentUser(auth.currentUser!.uid);
   } //선택한 리조트를 파베유저문서에 업데이트
 
+  Future<void> updateMyCrew(crewID) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'myCrew': crewID,
+    });
+    await getCurrentUser(auth.currentUser!.uid);
+  }
 
   Future<bool> checkDuplicateDisplayName(String displayName) async {
     final querySnapshot = await FirebaseFirestore.instance
@@ -645,6 +667,17 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(uid).update({
       'whoIinvite': FieldValue.arrayUnion([friendUid])
     });
+
+  }
+  Future<void> updateInvitationAlarm({required friendUid}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('newAlarm')
+        .doc(friendUid)
+        .set({
+      'uid': friendUid,
+      'newInvited': true
+    });
   }
   Future<void> deleteInvitation({required friendUid}) async {
     final User? user = auth.currentUser;
@@ -660,6 +693,13 @@ class UserModelController extends GetxController{
     });
     await ref.collection('user').doc(friendUid).update({
       'whoIinvite': FieldValue.arrayRemove([uid])
+    });
+  }
+  Future<void> deleteInvitationAlarm({required uid}) async {
+    await ref.collection('newAlarm')
+        .doc(uid)
+        .update({
+      'newInvited': false
     });
   }
   Future<void> updateFriend({required friendUid}) async {

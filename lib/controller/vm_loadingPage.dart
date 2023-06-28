@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_friendsCommentController.dart';
 import 'package:snowlive3/controller/vm_getDateTimeController.dart';
+import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
+import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/controller/vm_loginController.dart';
+import 'package:snowlive3/controller/vm_mainHomeController.dart';
+import 'package:snowlive3/controller/vm_noticeController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_timeStampController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
@@ -27,6 +31,8 @@ class _LoadingPageState extends State<LoadingPage> {
     Get.put(GetDateTimeController(), permanent: true);
     Get.put(TimeStampController(), permanent: true);
     Get.put(FriendsCommentModelController(), permanent: true);
+    Get.put(MainHomeController(), permanent: true);
+    Get.put(LiveCrewModelController(), permanent: true);
 
     LoginController _logInController = Get.put(LoginController());
 
