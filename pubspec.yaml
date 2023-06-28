@@ -45,7 +45,7 @@ dependencies:
   cloud_firestore: ^4.0.4
   firebase_storage: ^11.0.4
   firebase_core: ^2.1.1
-  extended_image: ^7.0.2
+  extended_image: ^8.0.2
   flutter_facebook_auth: ^5.0.6
   intl: ^0.18.0
   shared_preferences: ^2.0.15
@@ -79,6 +79,8 @@ dependencies:
       ref: master
   google_maps_flutter_platform_interface: ^2.2.7
   image_cropper: ^4.0.1
+  flutter_speed_dial: ^7.0.0
+  flutter_colorpicker: ^1.0.3
 
 dev_dependencies:
   flutter_test:

@@ -26,14 +26,11 @@ class MainHome extends StatefulWidget {
 class _MainHomeState extends State<MainHome> {
   int _currentPage = 0;
   bool? wait;
-  bool getUserComp=false;
 
   PageController _pageController = PageController();
 
   void _onItemTapped(int index) {
-    if (getUserComp == true){
       _pageController.jumpToPage(index);
-    }else null;
   }
 
   void changePage(int index) {
@@ -60,126 +57,170 @@ class _MainHomeState extends State<MainHome> {
 
     _noticeController.getIsNewNotice();
 
-    return FutureBuilder(
-      future: _userModelController.getCurrentUser(widget.uid),
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        getUserComp = true;
-        return Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Colors.white,
-            elevation: 10,
-            type: BottomNavigationBarType.fixed,
-            currentIndex: _currentPage,
-            onTap: _onItemTapped,
-            items: [
-              BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/imgs/icons/icon_home_off.png',
-                  scale: 4,
-                ),
-                activeIcon: Image.asset(
-                  'assets/imgs/icons/icon_home_on.png',
-                  scale: 4,
-                ),
-                label: 'Home',
+    return Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.white,
+          elevation: 10,
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _currentPage,
+          onTap: _onItemTapped,
+          items: [
+            BottomNavigationBarItem(
+              icon: Image.asset(
+                'assets/imgs/icons/icon_home_off.png',
+                scale: 4,
               ),
-              BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/imgs/icons/icon_discover_off.png',
-                  scale: 4,
-                ),
-                activeIcon: Image.asset(
-                  'assets/imgs/icons/icon_discover_on.png',
-                  scale: 4,
-                ),
-                label: 'Discover',
+              activeIcon: Image.asset(
+                'assets/imgs/icons/icon_home_on.png',
+                scale: 4,
               ),
-              BottomNavigationBarItem(
-                icon: Stack(
-                  children: [
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Image.asset(
+                'assets/imgs/icons/icon_discover_off.png',
+                scale: 4,
+              ),
+              activeIcon: Image.asset(
+                'assets/imgs/icons/icon_discover_on.png',
+                scale: 4,
+              ),
+              label: 'Discover',
+            ),
+            BottomNavigationBarItem(
+              icon: Stack(
+                children: [
 
-                    Positioned(
-                      top: 3,
-                      right: 3,
-                      child: Icon(Icons.brightness_1,
-                          size: 6.0,
-                          color: (_userModelController.newChat == true)
-                              ? Color(0xFFD32F2F)
-                              : Colors.white),
-                    ),
-                    Image.asset(
-                      'assets/imgs/icons/icon_market_off.png',
-                      scale: 4,
-                    ),
-                  ],
-                ),
-                activeIcon: Image.asset(
-                  'assets/imgs/icons/icon_market_on.png',
-                  scale: 4,
-                ),
-                label: 'Flea',
-              ), //브랜드
-              BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/imgs/icons/icon_livetalk_off.png',
-                  scale: 4,
-                ),
-                activeIcon: Image.asset('assets/imgs/icons/icon_livetalk_on.png',
-                    scale: 4),
-                label: 'Weather',
-              ), //라톡
-              BottomNavigationBarItem(
-                icon: Stack(
-                  children: [
-                    Image.asset(
-                      'assets/imgs/icons/icon_more_off.png',
-                      scale: 4,
-                    ),
-                    Positioned(
-                      // draw a red marble
-                      top: 2,
-                      right: 0.0,
-                      child: new Icon(Icons.brightness_1,
-                          size: 7.0,
-                          color: (_noticeController.isNewNotice == true)
-                              ? Color(0xFFD32F2F)
-                              : Colors.white),
+                  Positioned(
+                    top: 3,
+                    right: 3,
+                    child: Icon(Icons.brightness_1,
+                        size: 6.0,
+                        color: Colors.white),
+                  ),
+                  Image.asset(
+                    'assets/imgs/icons/icon_market_off.png',
+                    scale: 4,
+                  ),
+                ],
+              ),
+              activeIcon: Image.asset(
+                'assets/imgs/icons/icon_market_on.png',
+                scale: 4,
+              ),
+              label: 'Flea',
+            ), //브랜드
+            BottomNavigationBarItem(
+              icon: Image.asset(
+                'assets/imgs/icons/icon_livetalk_off.png',
+                scale: 4,
+              ),
+              activeIcon: Image.asset('assets/imgs/icons/icon_livetalk_on.png',
+                  scale: 4),
+              label: 'Weather',
+            ), //라톡
+            BottomNavigationBarItem(
+              icon: Stack(
+                children: [
+                  Image.asset(
+                    'assets/imgs/icons/icon_more_off.png',
+                    scale: 4,
+                  ),
+                  Positioned(
+                    // draw a red marble
+                    top: 2,
+                    right: 0.0,
+                    child:
+                    StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('newAlarm')
+                          .where('uid', isEqualTo: _userModelController.uid!)
+                          .snapshots(),
+                      builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                        if (!snapshot.hasData || snapshot.data == null) {
+                          return new Icon(Icons.brightness_1,
+                              size: 7.0,
+                              color: Colors.white);
+                        }
+                        else if (snapshot.data!.docs.isNotEmpty) {
+                          final alarmDocs = snapshot.data!.docs;
+                          return new Icon(Icons.brightness_1,
+                              size: 7.0,
+                              color: (alarmDocs[0]['newInvited'] == true)
+                                  ? Color(0xFFD32F2F)
+                                  : Colors.white);
+                        }
+                        else if (snapshot.connectionState == ConnectionState.waiting) {
+                          return new Icon(Icons.brightness_1,
+                              size: 7.0,
+                              color: Colors.white);
+                        }
+                        return new Icon(Icons.brightness_1,
+                            size: 7.0,
+                            color: Colors.white);
+
+                      },
                     )
-                  ],
-                ),
-                activeIcon: Stack(
-                  children: [
-                    Image.asset('assets/imgs/icons/icon_more_on.png', scale: 4),
-                    Positioned(
-                      // draw a red marble
-                      top: 2,
-                      right: 0.0,
-                      child: new Icon(Icons.brightness_1,
-                          size: 7.0,
-                          color: (_noticeController.isNewNotice == true)
-                              ? Color(0xFFD32F2F)
-                              : Colors.white),
+                  )
+                ],
+              ),
+              activeIcon: Stack(
+                children: [
+                  Image.asset('assets/imgs/icons/icon_more_on.png', scale: 4),
+                  Positioned(
+                    // draw a red marble
+                    top: 2,
+                    right: 0.0,
+                    child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('newAlarm')
+                          .where('uid', isEqualTo: _userModelController.uid!)
+                          .snapshots(),
+                      builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                        if (!snapshot.hasData || snapshot.data == null) {
+                          return new Icon(Icons.brightness_1,
+                              size: 7.0,
+                              color: Colors.white);
+                        }
+                        else if (snapshot.data!.docs.isNotEmpty) {
+                          final alarmDocs = snapshot.data!.docs;
+                          return new Icon(Icons.brightness_1,
+                              size: 7.0,
+                              color: (alarmDocs[0]['newInvited'] == true)
+                                  ? Color(0xFFD32F2F)
+                                  : Colors.white);
+                        }
+                        else if (snapshot.connectionState == ConnectionState.waiting) {
+                          return new Icon(Icons.brightness_1,
+                              size: 7.0,
+                              color: Colors.white);
+                        }
+                        return new Icon(Icons.brightness_1,
+                            size: 7.0,
+                            color: Colors.white);
+
+                      },
                     )
-                  ],
-                ),
-                label: 'More',
-              ), //모어
-            ],
-            showUnselectedLabels: false,
-            showSelectedLabels: false,
-          ),
-          body: PageView(
-            controller: _pageController,
-            onPageChanged: changePage,
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              ResortHome(),
-              DiscoverScreen(),
-              FleaMarketScreen(),
-              LiveTalkScreen(),
-              MoreTab(),
-            ],
-          )); },
-    );
+                  )
+                ],
+              ),
+              label: 'More',
+            ), //모어
+          ],
+          showUnselectedLabels: false,
+          showSelectedLabels: false,
+        ),
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: changePage,
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            ResortHome(),
+            DiscoverScreen(),
+            FleaMarketScreen(),
+            LiveTalkScreen(),
+            MoreTab(),
+          ],
+        ));
   }
 }

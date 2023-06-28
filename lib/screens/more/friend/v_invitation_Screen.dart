@@ -4,6 +4,9 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:snowlive3/screens/more/friend/v_inviteListPage.dart';
 import 'package:snowlive3/screens/more/friend/v_invitedListPage.dart';
+import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+
+import '../../../controller/vm_userModelController.dart';
 
 class InvitationScreen extends StatefulWidget {
   InvitationScreen({Key? key}) : super(key: key);
@@ -19,6 +22,9 @@ class _InvitationScreenState extends State<InvitationScreen> {
     false,
   ];
 
+  //TODO: Dependency Injection**************************************************
+  UserModelController _userModelController = Get.find<UserModelController>();
+  //TODO: Dependency Injection**************************************************
 
   @override
   void setState(VoidCallback fn) {
@@ -104,7 +110,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
                                         : FontWeight.normal,
                                         fontSize: 16),
                                   ),
-                                  onPressed: () {
+                                  onPressed: () async{
                                     HapticFeedback.lightImpact();
                                     print('요청받은 목록으로 전환');
                                     setState(() {

@@ -3,20 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
-import 'package:snowlive3/controller/vm_timeStampController.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import 'package:snowlive3/screens/more/friend/v_invitation_Screen.dart';
-import 'package:snowlive3/screens/more/friend/v_inviteListPage.dart';
-import 'package:snowlive3/screens/more/friend/v_repoList.dart';
 import 'package:snowlive3/screens/more/friend/v_setting_friendList.dart';
-import 'package:snowlive3/screens/more/v_moreTab.dart';
-import 'package:snowlive3/screens/more/v_noticeDetailPage.dart';
-import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
-
 import '../../../controller/vm_userModelController.dart';
 import 'v_searchUserPage.dart';
 
@@ -43,56 +33,140 @@ class _FriendListPageState extends State<FriendListPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         actions: [
+
           StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('user')
-          .where('uid', isEqualTo: _userModelController.uid!)
-          .snapshots(),
-      builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
-        if (!snapshot.hasData || snapshot.data == null) {}
-        else if (snapshot.data!.docs.isNotEmpty) {
-          final myDocs = snapshot.data!.docs;
-          List whoInviteMe = myDocs[0]['whoInviteMe'];
-          return  Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Stack(
-              children: [
-                IconButton(
-                  onPressed: (){
-                    Get.to(InvitationScreen());
-                  },
-                  icon: Image.asset(
-                    'assets/imgs/icons/icon_noti_off.png',
-                    scale: 4,
-                    width: 26,
-                    height: 26,
+            stream: FirebaseFirestore.instance
+                .collection('newAlarm')
+                .where('uid', isEqualTo: _userModelController.uid!)
+                .snapshots(),
+            builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+              if (!snapshot.hasData || snapshot.data == null) {
+                return  Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Stack(
+                    children: [
+                      IconButton(
+                        onPressed: () async{
+                          CustomFullScreenDialog.showDialog();
+                          try {
+                            await _userModelController.deleteInvitationAlarm(uid: _userModelController.uid);
+                          }catch(e){}
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.to(()=>InvitationScreen());
+                        },
+                        icon: Image.asset(
+                          'assets/imgs/icons/icon_noti_off.png',
+                          scale: 4,
+                          width: 26,
+                          height: 26,
+                        ),
+                      ),
+                      Positioned(  // draw a red marble
+                        top: 10,
+                        left: 32,
+                        child: new Icon(Icons.brightness_1, size: 6.0,
+                            color:Colors.white),
+                      )
+                    ],
                   ),
+                );
+              }
+              else if (snapshot.data!.docs.isNotEmpty) {
+                final alarmDocs = snapshot.data!.docs;
+                return  Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Stack(
+                    children: [
+                      IconButton(
+                        onPressed: () async{
+                          CustomFullScreenDialog.showDialog();
+                          try {
+                            await _userModelController.deleteInvitationAlarm(uid: _userModelController.uid);
+                          }catch(e){}
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.to(()=>InvitationScreen());
+                        },
+                        icon: Image.asset(
+                          'assets/imgs/icons/icon_noti_off.png',
+                          scale: 4,
+                          width: 26,
+                          height: 26,
+                        ),
+                      ),
+                      Positioned(  // draw a red marble
+                        top: 10,
+                        left: 32,
+                        child: new Icon(Icons.brightness_1, size: 6.0,
+                            color:
+                            (alarmDocs[0]['newInvited'] == true)
+                                ?Color(0xFFD32F2F):Colors.white),
+                      )
+                    ],
+                  ),
+                );
+              }
+              else if (snapshot.connectionState == ConnectionState.waiting) {
+                return  Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Stack(
+                    children: [
+                      IconButton(
+                        onPressed: () async{
+                          CustomFullScreenDialog.showDialog();
+                          try {
+                            await _userModelController.deleteInvitationAlarm(uid: _userModelController.uid);
+                          }catch(e){}
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.to(()=>InvitationScreen());
+                        },
+                        icon: Image.asset(
+                          'assets/imgs/icons/icon_noti_off.png',
+                          scale: 4,
+                          width: 26,
+                          height: 26,
+                        ),
+                      ),
+                      Positioned(  // draw a red marble
+                        top: 10,
+                        left: 32,
+                        child: new Icon(Icons.brightness_1, size: 6.0,
+                            color:Colors.white),
+                      )
+                    ],
+                  ),
+                );
+              }
+              return  Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Stack(
+                  children: [
+                    IconButton(
+                      onPressed: () async{
+                        CustomFullScreenDialog.showDialog();
+                        try {
+                          await _userModelController.deleteInvitationAlarm(uid: _userModelController.uid);
+                        }catch(e){}
+                        CustomFullScreenDialog.cancelDialog();
+                        Get.to(()=>InvitationScreen());
+                      },
+                      icon: Image.asset(
+                        'assets/imgs/icons/icon_noti_off.png',
+                        scale: 4,
+                        width: 26,
+                        height: 26,
+                      ),
+                    ),
+                    Positioned(  // draw a red marble
+                      top: 10,
+                      left: 32,
+                      child: new Icon(Icons.brightness_1, size: 6.0,
+                          color:Colors.white),
+                    )
+                  ],
                 ),
-                Positioned(  // draw a red marble
-                  top: 10,
-                  left: 32,
-                  child: new Icon(Icons.brightness_1, size: 6.0,
-                      color:
-                      (whoInviteMe.length >0)
-                          ?Color(0xFFD32F2F):Colors.white),
-                )
-              ],
-            ),
-          );
-        }
-        else if (snapshot.connectionState == ConnectionState.waiting) {}
-        return IconButton(
-          onPressed: (){
-            Get.to(InvitationScreen());
-          },
-          icon: Image.asset(
-            'assets/imgs/icons/icon_noti_off.png',
-            scale: 4,
-            width: 26,
-            height: 26,
+              );
+            },
           ),
-        );
-      }),
           Padding(
             padding: EdgeInsets.only(right: 5),
             child: IconButton(
