@@ -129,34 +129,43 @@ class LiveMapController extends GetxController {
       if (withinBoundary) {
         DateTime now = DateTime.now();
         if (lastPassTime == null || now.difference(lastPassTime!).inMinutes >= 10) {
-          passCount++;
-          lastPassTime = now;
-
           if (_userModelController.uid != null) {
             DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
                 .collection('user')
                 .doc(_userModelController.uid)
+                .collection('Ranking')
+                .doc("${_userModelController.favoriteResort}")
+                .collection('2324').doc('1')
                 .get();
 
-            int storedPassCount = userSnapshot.get('passCount') ?? 0;
-            DateTime storedLastPassTime = userSnapshot.get('lastPassTime')?.toDate();
+            Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
+            Map<String, dynamic> passCountData = data['passCountData'] ?? {};
+
+            int storedPassCount = passCountData[location.name] ?? 0;
+            DateTime? storedLastPassTime = data['lastPassTime'] != null
+                ? (data['lastPassTime'] as Timestamp).toDate()
+                : null;
 
             if (storedLastPassTime != null && now.difference(storedLastPassTime).inMinutes < 10) {
               // 파이어베이스에 저장된 시간과 현재 시간을 비교하여 10분 이내에 재시작한 경우에는 업데이트를 건너뜁니다.
-              passCount = storedPassCount;
               lastPassTime = storedLastPassTime;
             } else {
-              passCount = storedPassCount + 1;
+              storedPassCount += 1;
               lastPassTime = now;
             }
+
+            // Update passCountData
+            passCountData[location.name] = storedPassCount;
+            data['passCountData'] = passCountData;
+            data['lastPassTime'] = lastPassTime;
 
             await FirebaseFirestore.instance
                 .collection('user')
                 .doc(_userModelController.uid)
-                .update({
-              'passCount': passCount,
-              'lastPassTime': lastPassTime,
-            })
+                .collection('Ranking')
+                .doc("${_userModelController.favoriteResort}")
+                .collection('2324').doc('1')
+                .set(data, SetOptions(merge: true))
                 .catchError((error) {
               print('Firestore 업데이트 에러: $error');
             });
@@ -165,6 +174,7 @@ class LiveMapController extends GetxController {
       }
     }
   }
+
 
   bool _checkPositionWithinBoundary(LatLng position) {
     double distanceInMeters = Geolocator.distanceBetween(
