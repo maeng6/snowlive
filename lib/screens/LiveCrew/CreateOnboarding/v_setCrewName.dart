@@ -54,7 +54,7 @@ class _SetCrewNameState extends State<SetCrewName> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: currentColor,
+        backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false,
         extendBodyBehindAppBar: true,
         appBar: PreferredSize(
@@ -82,7 +82,7 @@ class _SetCrewNameState extends State<SetCrewName> {
                 ),
               ),
             ],
-            backgroundColor: currentColor,
+            backgroundColor: Colors.white,
             elevation: 0.0,
             centerTitle: false,
             titleSpacing: 0,
@@ -110,7 +110,7 @@ class _SetCrewNameState extends State<SetCrewName> {
               Column(
                 children: [
                   Text(
-                    '라이브크루 이름과\n대표 색상을 설정해주세요.',
+                    '라이브 크루 이름을 설정해주세요.',
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -119,7 +119,7 @@ class _SetCrewNameState extends State<SetCrewName> {
                 height: 10,
               ),
               Text(
-                '라이브크루 이름은 추후 변경이 불가능합니다.\n대표 컬러는 크루 설정에서 언제든지 변경할 수 있습니다.',
+                '라이브크루 이름은 추후 변경이 불가능합니다.\n신중하게 입력해주세요.',
                 style: TextStyle(
                   color: Color(0xff949494),
                   fontSize: 14,
@@ -184,35 +184,6 @@ class _SetCrewNameState extends State<SetCrewName> {
               SizedBox(
                 height: 20,
               ),
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        titlePadding: const EdgeInsets.all(0.0),
-                        contentPadding: const EdgeInsets.all(0.0),
-                        content: SingleChildScrollView(
-                          child: ColorPicker(
-                            pickerColor: currentColor,
-                            onColorChanged: changeColor,
-                            colorPickerWidth: 300.0,
-                            pickerAreaHeightPercent: 0.7,
-                            enableAlpha: true,
-                            displayThumbColor: true,
-                            paletteType: PaletteType.hsv,
-                            pickerAreaBorderRadius: const BorderRadius.only(
-                              topLeft: const Radius.circular(2.0),
-                              topRight: const Radius.circular(2.0),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: Text('색상 고르기'),
-              ),
               Expanded(child: SizedBox()),
               Center(
                 child: Padding(
@@ -228,7 +199,7 @@ class _SetCrewNameState extends State<SetCrewName> {
                         _crewName = _textEditingController.text;
                         isCheckedDispName =  await _liveCrewModelController.checkDuplicateCrewName(_crewName);
                         if (isCheckedDispName == true) {
-                          Get.to(() => SetCrewImage(crewName: _crewName, crewColor: currentColor));
+                          Get.to(() => SetCrewImage(crewName: _crewName));
                         }
                         else{
                           Get.dialog(AlertDialog(

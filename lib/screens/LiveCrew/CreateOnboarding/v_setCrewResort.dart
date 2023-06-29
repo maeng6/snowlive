@@ -10,9 +10,6 @@ import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_mainHomeController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/more/v_moreTab.dart';
-import 'package:snowlive3/screens/v_MainHome.dart';
-
 import '../../../model/m_resortModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 import '../v_liveCrewHome.dart';
@@ -109,7 +106,8 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
         ));
     bool? isSelected=_isChecked.contains(true);
 
-    return Scaffold(backgroundColor: widget.crewColor,
+    return Scaffold(
+      backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(58),
@@ -136,7 +134,7 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
               ),
             ),
           ],
-          backgroundColor: widget.crewColor,
+          backgroundColor: Colors.white,
           elevation: 0.0,
           centerTitle: false,
           titleSpacing: 0,
@@ -155,7 +153,7 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
       body: Padding(
         padding:  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),
         child: Container(
-          color: widget.crewColor,
+          color: Colors.white,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
