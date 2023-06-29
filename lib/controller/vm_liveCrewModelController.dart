@@ -122,6 +122,7 @@ class LiveCrewModelController extends GetxController {
     }catch(e){
       print('삭제 에러');
     }
+    getCurrnetCrew(crewID);
   }
 
   Future<dynamic> searchCrewByCrewName(String crewName) async {

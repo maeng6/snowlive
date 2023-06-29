@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
-import '../../../controller/vm_loginController.dart';
-import '../../../controller/vm_userModelController.dart';
+import '../../../../controller/vm_loginController.dart';
+import '../../../../controller/vm_userModelController.dart';
 
-class InvitedListPage extends StatefulWidget {
-  const InvitedListPage({Key? key}) : super(key: key);
+class InvitedListPage_friend extends StatefulWidget {
+  const InvitedListPage_friend({Key? key}) : super(key: key);
 
   @override
-  State<InvitedListPage> createState() => _InvitedListPageState();
+  State<InvitedListPage_friend> createState() => _InvitedListPage_friendState();
 }
 
-class _InvitedListPageState extends State<InvitedListPage> {
+class _InvitedListPage_friendState extends State<InvitedListPage_friend> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();

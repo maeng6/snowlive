@@ -131,6 +131,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                 child: ListView.builder(
                   itemCount: crewMemberDocs.length,
                   itemBuilder: (BuildContext context, int index) {
+                    if(crewMemberDocs[index]['uid'] != _userModelController.uid)
                     return Column(
                       children: [
                         Container(

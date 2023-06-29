@@ -6,7 +6,7 @@ import 'package:snowlive3/screens/LiveCrew/CreateOnboarding/v_FirstPage_createCr
 import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_home.dart';
 import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_main.dart';
 import 'package:snowlive3/screens/LiveCrew/v_searchCrewPage.dart';
-import 'package:snowlive3/screens/more/friend/v_invitation_Screen_friend.dart';
+import 'package:snowlive3/screens/more/friend/invitation/v_invitation_Screen_friend.dart';
 import 'package:snowlive3/screens/more/friend/v_setting_friendList.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
@@ -87,72 +87,6 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        actions: [
-          StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('user')
-                  .where('uid', isEqualTo: _userModelController.uid!)
-                  .snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
-                if (!snapshot.hasData || snapshot.data == null) {}
-                else if (snapshot.data!.docs.isNotEmpty) {
-                  final myDocs = snapshot.data!.docs;
-                  List whoInviteMe = myDocs[0]['whoInviteMe'];
-                  return  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Stack(
-                      children: [
-                        IconButton(
-                          onPressed: (){
-                            Get.to(InvitationScreen());
-                          },
-                          icon: Image.asset(
-                            'assets/imgs/icons/icon_noti_off.png',
-                            scale: 4,
-                            width: 26,
-                            height: 26,
-                          ),
-                        ),
-                        Positioned(  // draw a red marble
-                          top: 10,
-                          left: 32,
-                          child: new Icon(Icons.brightness_1, size: 6.0,
-                              color:
-                              (whoInviteMe.length >0)
-                                  ?Color(0xFFD32F2F):Colors.white),
-                        )
-                      ],
-                    ),
-                  );
-                }
-                else if (snapshot.connectionState == ConnectionState.waiting) {}
-                return IconButton(
-                  onPressed: (){
-                    Get.to(InvitationScreen());
-                  },
-                  icon: Image.asset(
-                    'assets/imgs/icons/icon_noti_off.png',
-                    scale: 4,
-                    width: 26,
-                    height: 26,
-                  ),
-                );
-              }),
-          Padding(
-            padding: EdgeInsets.only(right: 5),
-            child: IconButton(
-              onPressed: (){
-                Get.to(Setting_friendList());
-              },
-              icon: Image.asset(
-                'assets/imgs/icons/icon_settings.png',
-                scale: 4,
-                width: 26,
-                height: 26,
-              ),
-            ),
-          )
-        ],
         leading: GestureDetector(
           child: Image.asset(
             'assets/imgs/icons/icon_snowLive_back.png',

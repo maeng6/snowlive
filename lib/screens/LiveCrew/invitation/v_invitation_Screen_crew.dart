@@ -1,28 +1,20 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:snowlive3/screens/LiveCrew/invitation/v_invitation_Screen_crew.dart';
-import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_home.dart';
-import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_member.dart';
-import 'package:snowlive3/screens/LiveCrew/v_setting_crewDetail.dart';
-import 'package:snowlive3/screens/more/friend/invitation/v_inviteListPage_friend.dart';
-import 'package:snowlive3/screens/more/friend/invitation/v_invitedListPage_friend.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import 'package:snowlive3/screens/LiveCrew/invitation/v_inviteListPage_crew.dart';
+import 'package:snowlive3/screens/LiveCrew/invitation/v_invitedListPage_crew.dart';
 
 import '../../../controller/vm_userModelController.dart';
-import '../../controller/vm_liveCrewModelController.dart';
 
-class CrewDetailPage_main extends StatefulWidget {
-  CrewDetailPage_main({Key? key,}) : super(key: key);
-
+class InvitationScreen_crew extends StatefulWidget {
+  InvitationScreen_crew({Key? key}) : super(key: key);
 
   @override
-  State<CrewDetailPage_main> createState() => _CrewDetailPage_mainState();
+  State<InvitationScreen_crew> createState() => _InvitationScreen_crewState();
 }
 
-class _CrewDetailPage_mainState extends State<CrewDetailPage_main> {
+class _InvitationScreen_crewState extends State<InvitationScreen_crew> {
   int counter = 0;
   List<bool> isTap = [
     true,
@@ -31,7 +23,6 @@ class _CrewDetailPage_mainState extends State<CrewDetailPage_main> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
-  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -53,65 +44,6 @@ class _CrewDetailPage_mainState extends State<CrewDetailPage_main> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             AppBar(
-              actions: [
-                if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid))
-                StreamBuilder(
-                    stream: FirebaseFirestore.instance
-                        .collection('user')
-                        .where('uid', isEqualTo: _userModelController.uid!)
-                        .snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
-                      if (!snapshot.hasData || snapshot.data == null) {}
-                      else if (snapshot.data!.docs.isNotEmpty) {
-                        final myDocs = snapshot.data!.docs;
-                        List whoInviteMe = myDocs[0]['whoInviteMe'];
-                        return  Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Stack(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(right: 5),
-                                child: IconButton(
-                                  onPressed: (){
-                                    Get.to(Setting_crewDetail(crewID: _liveCrewModelController.crewID));
-                                  },
-                                  icon: Image.asset(
-                                    'assets/imgs/icons/icon_settings.png',
-                                    scale: 4,
-                                    width: 26,
-                                    height: 26,
-                                  ),
-                                ),
-                              ),
-                              Positioned(  // draw a red marble
-                                top: 10,
-                                left: 32,
-                                child: new Icon(Icons.brightness_1, size: 6.0,
-                                    color:
-                                    (whoInviteMe.length >0)
-                                        ?Color(0xFFD32F2F):Colors.white),
-                              )
-                            ],
-                          ),
-                        );
-                      }
-                      else if (snapshot.connectionState == ConnectionState.waiting) {}
-                      return Padding(
-                        padding: EdgeInsets.only(right: 5),
-                        child: IconButton(
-                          onPressed: (){
-                            Get.to(Setting_crewDetail(crewID: _liveCrewModelController.crewID));
-                          },
-                          icon: Image.asset(
-                            'assets/imgs/icons/icon_settings.png',
-                            scale: 4,
-                            width: 26,
-                            height: 26,
-                          ),
-                        ),
-                      );
-                    }),
-              ],
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
@@ -127,7 +59,7 @@ class _CrewDetailPage_mainState extends State<CrewDetailPage_main> {
               centerTitle: true,
               titleSpacing: 0,
               title: Text(
-                '라이브 크루',
+                '친구등록',
                 style: TextStyle(
                     color: Color(0xFF111111),
                     fontWeight: FontWeight.bold,
@@ -167,7 +99,7 @@ class _CrewDetailPage_mainState extends State<CrewDetailPage_main> {
                                 height: 40,
                                 child: ElevatedButton(
                                   child: Text(
-                                    '홈',
+                                    '요청받은 목록',
                                     style: TextStyle(
                                         color: (isTap[0])
                                             ? Color(0xFF111111)
@@ -179,12 +111,12 @@ class _CrewDetailPage_mainState extends State<CrewDetailPage_main> {
                                   ),
                                   onPressed: () async{
                                     HapticFeedback.lightImpact();
-                                    print('크루 홈으로 전환');
+                                    print('요청받은 목록으로 전환');
                                     setState(() {
                                       isTap[0] = true;
                                       isTap[1] = false;
                                     });
-                                    print('crewID: ${_liveCrewModelController.crewID}');
+                                    print(isTap);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     padding: EdgeInsets.only(top: 0),
@@ -206,7 +138,6 @@ class _CrewDetailPage_mainState extends State<CrewDetailPage_main> {
                           ],
                         ),
                       ),
-                      if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid))
                       Padding(
                         padding: EdgeInsets.only(right: 12),
                         child: Column(
@@ -217,7 +148,7 @@ class _CrewDetailPage_mainState extends State<CrewDetailPage_main> {
                                 height: 40,
                                 child: ElevatedButton(
                                   child: Text(
-                                    '멤버',
+                                    '요청중인 목록',
                                     style: TextStyle(
                                         color: (isTap[1])
                                             ? Color(0xFF111111)
@@ -230,12 +161,12 @@ class _CrewDetailPage_mainState extends State<CrewDetailPage_main> {
                                   ),
                                   onPressed: () {
                                     HapticFeedback.lightImpact();
-                                    print('크루 멤버 목록으로 전환');
+                                    print('요청중인 목록으로 전환');
                                     setState(() {
                                       isTap[0] = false;
                                       isTap[1] = true;
                                     });
-                                    print('crewID: ${_liveCrewModelController.crewID}');
+                                    print(isTap);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     padding: EdgeInsets.only(top: 0),
@@ -260,9 +191,9 @@ class _CrewDetailPage_mainState extends State<CrewDetailPage_main> {
                     ],
                   ),
                   if(isTap[0]==true)
-                    Expanded(child: CrewDetailPage_home()),
+                    Expanded(child: InvitedListPage_crew()),
                   if(isTap[1]==true)
-                    Expanded(child: CrewDetailPage_member()),
+                    Expanded(child: InviteListPage_crew()),
                 ],
               ),
             ),

@@ -2,16 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
-import '../../../controller/vm_userModelController.dart';
+import '../../../../controller/vm_userModelController.dart';
 
-class InviteListPage extends StatefulWidget {
-  const InviteListPage({Key? key}) : super(key: key);
+class InviteListPage_friend extends StatefulWidget {
+  const InviteListPage_friend({Key? key}) : super(key: key);
 
   @override
-  State<InviteListPage> createState() => _InviteListPageState();
+  State<InviteListPage_friend> createState() => _InviteListPage_friendState();
 }
 
-class _InviteListPageState extends State<InviteListPage> {
+class _InviteListPage_friendState extends State<InviteListPage_friend> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
