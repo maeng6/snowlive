@@ -64,73 +64,69 @@ class _DiscoverScreen_ResortBannerState
     }
     else if (snapshot.data!.docs.isNotEmpty) {
       final _imageUrls = snapshot.data!.docs;
-      return Padding(
-        padding: EdgeInsets.only(left: 16, right: 16),
-        child: (_imageUrls.isNotEmpty)
-            ? Column(
-          children: [
-            GestureDetector(
-              onTap: () async {
-                final urlSnapshot = await FirebaseFirestore.instance
-                    .collection('discover_banner_url')
-                    .doc('${_userModelController.favoriteResort}')
-                    .collection('1')
-                    .where('url', isEqualTo: _imageUrls[_currentIndex]['url'])
-                    .get();
-                if (urlSnapshot.docs.isNotEmpty) {
-                  String landingUrl =
-                  urlSnapshot.docs.first['landingUrl'];
-                  Get.to(() => WebPage(url: landingUrl));
-                }
-              },
-              child: CarouselSlider(
-                carouselController: _carouselController,
-                options: CarouselOptions(
-                  height: 86,
-                  viewportFraction: 1.0,
-                  aspectRatio: 2.0,
-                  enlargeCenterPage: true,
-                  initialPage: 0,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                  },
-                ),
-                items: _imageUrls.map((url) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return ExtendedImage.network(
-                        url['url'],
-                        cache: true,
-                      );
-                    },
-                  );
-                }).toList(),
+      return (_imageUrls.isNotEmpty)
+          ? Column(
+        children: [
+          GestureDetector(
+            onTap: () async {
+              final urlSnapshot = await FirebaseFirestore.instance
+                  .collection('discover_banner_url')
+                  .doc('${_userModelController.favoriteResort}')
+                  .collection('1')
+                  .where('url', isEqualTo: _imageUrls[_currentIndex]['url'])
+                  .get();
+              if (urlSnapshot.docs.isNotEmpty) {
+                String landingUrl =
+                urlSnapshot.docs.first['landingUrl'];
+                Get.to(() => WebPage(url: landingUrl));
+              }
+            },
+            child: CarouselSlider(
+              carouselController: _carouselController,
+              options: CarouselOptions(
+                height: 86,
+                viewportFraction: 1.0,
+                aspectRatio: 2.0,
+                enlargeCenterPage: true,
+                initialPage: 0,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: _imageUrls.map((url) {
-                int index = _imageUrls.indexOf(url);
-                return Container(
-                  width: 6,
-                  height: 6,
-                  margin: EdgeInsets.only(top: 12, right: 6),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentIndex == index
-                        ? Color(0xFF949494)
-                        : Color(0xFFDEDEDE),
-                  ),
+              items: _imageUrls.map((url) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return ExtendedImage.network(
+                      url['url'],
+                      cache: true,
+                    );
+                  },
                 );
               }).toList(),
             ),
-            SizedBox(height: 26),
-          ],
-        )
-            : Container(),
-      );
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: _imageUrls.map((url) {
+              int index = _imageUrls.indexOf(url);
+              return Container(
+                width: 6,
+                height: 6,
+                margin: EdgeInsets.only(top: 12, right: 6),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _currentIndex == index
+                      ? Color(0xFF949494)
+                      : Color(0xFFDEDEDE),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      )
+          : Container();
     }
     else if (snapshot.hasError) {
       return Text('Error: ${snapshot.error}');
