@@ -2,20 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:snowlive3/screens/more/friend/v_inviteListPage.dart';
-import 'package:snowlive3/screens/more/friend/v_invitedListPage.dart';
+import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_home.dart';
+import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_member.dart';
+import 'package:snowlive3/screens/more/friend/v_inviteListPage_friend.dart';
+import 'package:snowlive3/screens/more/friend/v_invitedListPage_friend.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 import '../../../controller/vm_userModelController.dart';
+import '../../controller/vm_liveCrewModelController.dart';
 
-class InvitationScreen extends StatefulWidget {
-  InvitationScreen({Key? key}) : super(key: key);
+class CrewDetailPage_main extends StatefulWidget {
+  CrewDetailPage_main({Key? key,}) : super(key: key);
+
 
   @override
-  State<InvitationScreen> createState() => _InvitationScreenState();
+  State<CrewDetailPage_main> createState() => _CrewDetailPage_mainState();
 }
 
-class _InvitationScreenState extends State<InvitationScreen> {
+class _CrewDetailPage_mainState extends State<CrewDetailPage_main> {
   int counter = 0;
   List<bool> isTap = [
     true,
@@ -24,6 +28,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -60,7 +65,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
               centerTitle: true,
               titleSpacing: 0,
               title: Text(
-                '친구등록',
+                '라이브 크루',
                 style: TextStyle(
                     color: Color(0xFF111111),
                     fontWeight: FontWeight.bold,
@@ -100,7 +105,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
                                 height: 40,
                                 child: ElevatedButton(
                                   child: Text(
-                                    '요청받은 목록',
+                                    '홈',
                                     style: TextStyle(
                                         color: (isTap[0])
                                             ? Color(0xFF111111)
@@ -112,12 +117,12 @@ class _InvitationScreenState extends State<InvitationScreen> {
                                   ),
                                   onPressed: () async{
                                     HapticFeedback.lightImpact();
-                                    print('요청받은 목록으로 전환');
+                                    print('크루 홈으로 전환');
                                     setState(() {
                                       isTap[0] = true;
                                       isTap[1] = false;
                                     });
-                                    print(isTap);
+                                    print('crewID: ${_liveCrewModelController.crewID}');
                                   },
                                   style: ElevatedButton.styleFrom(
                                     padding: EdgeInsets.only(top: 0),
@@ -139,6 +144,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
                           ],
                         ),
                       ),
+                      if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid))
                       Padding(
                         padding: EdgeInsets.only(right: 12),
                         child: Column(
@@ -149,7 +155,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
                                 height: 40,
                                 child: ElevatedButton(
                                   child: Text(
-                                    '요청중인 목록',
+                                    '멤버',
                                     style: TextStyle(
                                         color: (isTap[1])
                                             ? Color(0xFF111111)
@@ -162,12 +168,12 @@ class _InvitationScreenState extends State<InvitationScreen> {
                                   ),
                                   onPressed: () {
                                     HapticFeedback.lightImpact();
-                                    print('요청중인 목록으로 전환');
+                                    print('크루 멤버 목록으로 전환');
                                     setState(() {
                                       isTap[0] = false;
                                       isTap[1] = true;
                                     });
-                                    print(isTap);
+                                    print('crewID: ${_liveCrewModelController.crewID}');
                                   },
                                   style: ElevatedButton.styleFrom(
                                     padding: EdgeInsets.only(top: 0),
@@ -192,9 +198,9 @@ class _InvitationScreenState extends State<InvitationScreen> {
                     ],
                   ),
                   if(isTap[0]==true)
-                    Expanded(child: InvitedListPage()),
+                    Expanded(child: CrewDetailPage_home()),
                   if(isTap[1]==true)
-                    Expanded(child: InviteListPage()),
+                    Expanded(child: CrewDetailPage_member()),
                 ],
               ),
             ),

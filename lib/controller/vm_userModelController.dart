@@ -31,6 +31,7 @@ class UserModelController extends GetxController{
   RxList? _myFriendCommentUidList=[].obs;
   RxString? _resortNickname =''.obs;
   RxString? _myCrew =''.obs;
+  RxList? _liveCrew =[].obs;
   RxInt? _fleaChatCount = 0.obs;
   RxString? _phoneNum=''.obs;
   RxBool? _phoneAuth=false.obs;
@@ -66,6 +67,7 @@ class UserModelController extends GetxController{
   List? get myFriendCommentUidList => _myFriendCommentUidList;
   String? get resortNickname => _resortNickname!.value;
   String? get myCrew => _myCrew!.value;
+  List? get liveCrew => _liveCrew!;
   int? get fleaChatCount => _fleaChatCount!.value;
   String? get phoneNum => _phoneNum!.value;
   bool? get phoneAuth => _phoneAuth!.value;
@@ -113,44 +115,44 @@ class UserModelController extends GetxController{
       //String uid = FirebaseAuth.instance.currentUser!.uid;
       if(uid!=null) {
         UserModel? userModel = await UserModel().getUserModel(uid);
-      if (userModel != null) {
-        this._uid!.value = userModel.uid!;
-        this._displayName!.value = userModel.displayName!;
-        this._userEmail!.value = userModel.userEmail!;
-        this._favoriteResort!.value = userModel.favoriteResort!;
-        this._instantResort!.value = userModel.instantResort!;
-        this._commentCount!.value = userModel.commentCount!;
-        this._fleaCount!.value = userModel.fleaCount!;
-        this._bulletinRoomCount!.value = userModel.bulletinRoomCount!;
-        this._profileImageUrl!.value = userModel.profileImageUrl!;
-        this._resortNickname!.value = userModel.resortNickname!;
-        this._phoneNum!.value = userModel.phoneNum!;
-        this._phoneAuth!.value = userModel.phoneAuth!;
-        this._likeUidList!.value = userModel.likeUidList!;
-        this._friendUidList!.value = userModel.friendUidList!;
-        this._myFriendCommentUidList!.value = userModel.myFriendCommentUidList!;
-        this._liveFriendUidList!.value = userModel.liveFriendUidList!;
-        this._resistDate = userModel.resistDate!;
-        this._myCrew!.value = userModel.myCrew!;
-        this._newChat!.value = userModel.newChat!;
-        this._stateMsg!.value = userModel.stateMsg!;
-        this._isOnLive!.value = userModel.isOnLive!;
-        this._commentCheck!.value = userModel.commentCheck!;
-        this._whoResistMe!.value = userModel.whoResistMe!;
-        this._whoInviteMe!.value = userModel.whoInviteMe!;
-        this._whoIinvite!.value = userModel.whoIinvite!;
-        this._whoResistMeBF!.value = userModel.whoResistMeBF!;
-        this._whoRepoMe!.value = userModel.whoRepoMe!;
-        this._withinBoundary!.value = userModel.withinBoundary!;
-        try {
-          this._fleaChatUidList!.value = userModel.fleaChatUidList!;
-        }catch(e){};
-        await prefs.setInt('favoriteResort', userModel.favoriteResort!);
-        //
-      }else {
-        Get.to(()=>LoginPage());
-        // handle the case where the userModel is null
-      }} else {
+        if (userModel != null) {
+          this._uid!.value = userModel.uid!;
+          this._displayName!.value = userModel.displayName!;
+          this._userEmail!.value = userModel.userEmail!;
+          this._favoriteResort!.value = userModel.favoriteResort!;
+          this._instantResort!.value = userModel.instantResort!;
+          this._commentCount!.value = userModel.commentCount!;
+          this._fleaCount!.value = userModel.fleaCount!;
+          this._bulletinRoomCount!.value = userModel.bulletinRoomCount!;
+          this._profileImageUrl!.value = userModel.profileImageUrl!;
+          this._resortNickname!.value = userModel.resortNickname!;
+          this._phoneNum!.value = userModel.phoneNum!;
+          this._phoneAuth!.value = userModel.phoneAuth!;
+          this._likeUidList!.value = userModel.likeUidList!;
+          this._friendUidList!.value = userModel.friendUidList!;
+          this._myFriendCommentUidList!.value = userModel.myFriendCommentUidList!;
+          this._liveFriendUidList!.value = userModel.liveFriendUidList!;
+          this._resistDate = userModel.resistDate!;
+          this._myCrew!.value = userModel.myCrew!;
+          this._newChat!.value = userModel.newChat!;
+          this._stateMsg!.value = userModel.stateMsg!;
+          this._isOnLive!.value = userModel.isOnLive!;
+          this._commentCheck!.value = userModel.commentCheck!;
+          this._whoResistMe!.value = userModel.whoResistMe!;
+          this._whoInviteMe!.value = userModel.whoInviteMe!;
+          this._whoIinvite!.value = userModel.whoIinvite!;
+          this._whoResistMeBF!.value = userModel.whoResistMeBF!;
+          this._whoRepoMe!.value = userModel.whoRepoMe!;
+          this._withinBoundary!.value = userModel.withinBoundary!;
+          try {
+            this._fleaChatUidList!.value = userModel.fleaChatUidList!;
+          }catch(e){};
+          await prefs.setInt('favoriteResort', userModel.favoriteResort!);
+          //
+        }else {
+          Get.to(()=>LoginPage());
+          // handle the case where the userModel is null
+        }} else {
         Get.to(()=>LoginPage());
         // handle the case where the userModel is null
       }
@@ -159,6 +161,7 @@ class UserModelController extends GetxController{
       Get.to(()=>LoginPage());
     }
   }
+
 
 
   Future<void> addChatUidList({required otherAddUid, required myAddUid}) async {
@@ -207,7 +210,8 @@ class UserModelController extends GetxController{
       'commentCheck':false,
       'whoIinvite':[],
       'whoInviteMe':[],
-      'myCrew':''
+      'myCrew':'',
+      'liveCrew':[]
     });
     await getCurrentUser(auth.currentUser!.uid);
   }

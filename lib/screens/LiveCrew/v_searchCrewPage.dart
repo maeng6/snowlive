@@ -6,7 +6,8 @@ import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_searchUserController.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../../model/m_userModel.dart';
-import '../../model/m_crewModel.dart';
+import '../../controller/vm_liveCrewModelController.dart';
+import '../../model/m_liveCrewModel.dart';
 
 class SearchCrewPage extends StatefulWidget {
   const SearchCrewPage({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
   bool? isCheckedCrewName;
   var foundCrewID;
   bool isFound=false;
-  CrewModel? foundCrewModel;
+  LiveCrewModel? foundCrewModel;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +37,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
     TimeStampController _timeStampController = Get.find<TimeStampController>();
     UserModelController _userModelController = Get.find<UserModelController>();
     SearchCrewController _searchCrewController = Get.find<SearchCrewController>();
+    LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
     //TODO: Dependency Injection**************************************************
     return GestureDetector(
       onTap: (){
@@ -159,9 +161,9 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                               isCheckedCrewName =  await _searchCrewController.checkDuplicateCrewName(_crewName);
                               print(isCheckedCrewName);
                               if (isCheckedCrewName == false) {
-                              foundCrewID = await _searchCrewController.searchCrewByCrewName(_crewName);
+                              foundCrewID = await _liveCrewModelController.searchCrewByCrewName(_crewName);
                               print(foundCrewID);
-                              foundCrewModel = await _searchCrewController.getFoundCrew(foundCrewID!);
+                              foundCrewModel = await _liveCrewModelController.getFoundCrew(foundCrewID!);
                               isFound = true;
                             }
                               else{

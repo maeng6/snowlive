@@ -94,5 +94,38 @@ class ResortModelController extends GetxController{
   dynamic get weatherColors => _weatherColors;
   dynamic get weatherIcons => _weatherIcons;
 
+  String getResortName(String resortNickname) {
+    switch (resortNickname) {
+      case '곤지암':
+        return '곤지암리조트';
+      case '무주':
+        return '무주덕유산리조트';
+      case '비발디':
+        return '비발디파크';
+      case '에덴벨리':
+        return '에덴벨리리조트';
+      case '강촌':
+        return '엘리시안강촌';
+      case '오크밸리':
+        return '오크밸리리조트';
+      case '오투':
+        return '오투리조트';
+      case '용평':
+        return '용평리조트';
+      case '웰리힐리':
+        return '웰리힐리파크';
+      case '지산':
+        return '지산리조트';
+      case '하이원':
+        return '하이원리조트';
+      case '휘닉스':
+        return '휘닉스평창';
+      case '알펜시아':
+        return '알펜시아리조트';
+      default:
+        return resortNickname;
+    }
+  }
+
 }
 
