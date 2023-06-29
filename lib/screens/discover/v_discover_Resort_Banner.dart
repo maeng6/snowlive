@@ -51,18 +51,26 @@ class _DiscoverScreen_ResortBannerState
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('discover_banner_url')
-          .doc('${_userModelController.favoriteResort}')
+          .doc('${_userModelController.instantResort}')
           .collection('1')
           .where('visable', isEqualTo: true)
           .snapshots(),
       builder: (context,
           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-    if (!snapshot.hasData ||
-    snapshot.data == null) {
-      return Center(
-          child: Lottie.asset('assets/json/loadings_wht_final.json'));
-    }
-    else if (snapshot.data!.docs.isNotEmpty) {
+        // 데이터 로드 중이라면
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+              child: Lottie.asset('assets/json/loadings_wht_final.json'));
+        }
+        // 오류가 발생했다면
+        else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+        // 데이터가 없다면
+        else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Container(); // 빈 컨테이너 반환
+        }
+        else if (snapshot.data!.docs.isNotEmpty) {
       final _imageUrls = snapshot.data!.docs;
       return (_imageUrls.isNotEmpty)
           ? Column(
