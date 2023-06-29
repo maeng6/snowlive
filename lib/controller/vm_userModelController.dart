@@ -46,6 +46,7 @@ class UserModelController extends GetxController{
   RxList? _whoResistMeBF = [].obs;
   RxList? _whoRepoMe = [].obs;
   RxBool? _withinBoundary = false.obs;
+  RxList? _applyCrewList = [].obs;
 
 
   String? get uid => _uid!.value;
@@ -82,6 +83,7 @@ class UserModelController extends GetxController{
   List? get whoResistMeBF =>_whoResistMeBF;
   List? get whoRepoMe =>_whoRepoMe;
   bool? get withinBoundary => _withinBoundary!.value;
+  List? get applyCrewList => _applyCrewList;
 
   @override
   void onInit()  async{
@@ -144,6 +146,7 @@ class UserModelController extends GetxController{
           this._whoResistMeBF!.value = userModel.whoResistMeBF!;
           this._whoRepoMe!.value = userModel.whoRepoMe!;
           this._withinBoundary!.value = userModel.withinBoundary!;
+          this._applyCrewList!.value = userModel.applyCrewList!;
           try {
             this._fleaChatUidList!.value = userModel.fleaChatUidList!;
           }catch(e){};
@@ -211,7 +214,8 @@ class UserModelController extends GetxController{
       'whoIinvite':[],
       'whoInviteMe':[],
       'myCrew':'',
-      'liveCrew':[]
+      'liveCrew':[],
+      'applyCrewList':[]
     });
     await getCurrentUser(auth.currentUser!.uid);
   }

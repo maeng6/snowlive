@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import '../../../controller/vm_liveCrewModelController.dart';
 import '../../../controller/vm_userModelController.dart';
 
 class InvitedListPage_crew extends StatefulWidget {
@@ -15,6 +16,7 @@ class _InvitedListPage_crewState extends State<InvitedListPage_crew> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -25,7 +27,7 @@ class _InvitedListPage_crewState extends State<InvitedListPage_crew> {
         body: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('user')
-              .where('whoIinvite', arrayContains: _userModelController.uid!)
+              .where('applyCrewList', arrayContains: _liveCrewModelController.crewID)
               .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
@@ -77,7 +79,7 @@ class _InvitedListPage_crewState extends State<InvitedListPage_crew> {
                                                     height: 30,
                                                   ),
                                                   Text(
-                                                    '친구로 등록하시겠습니까?',
+                                                    '크루원으로 등록하시겠습니까?',
                                                     style: TextStyle(
                                                         fontSize: 18,
                                                         fontWeight: FontWeight.bold,
@@ -120,10 +122,9 @@ class _InvitedListPage_crewState extends State<InvitedListPage_crew> {
                                                             try{
                                                               Navigator.pop(context);
                                                               CustomFullScreenDialog.showDialog();
-                                                              await _userModelController.updateFriend(friendUid:inviDocs[index]['uid']);
-                                                              await _userModelController.deleteInvitation(friendUid: inviDocs[index]['uid']);
-                                                              await _userModelController.deleteInvitationAlarm(uid:_userModelController.uid);
-                                                              await _userModelController.getCurrentUser(_userModelController.uid);
+                                                              await _liveCrewModelController.updateCrewMember(applyUid: inviDocs[index]['uid'], crewID: _liveCrewModelController.crewID);
+                                                              await _liveCrewModelController.deleteInvitation_crew(crewID: _liveCrewModelController.crewID, applyUid: inviDocs[index]['uid']);
+                                                              await _liveCrewModelController.getCurrnetCrew(_liveCrewModelController.crewID);
                                                               CustomFullScreenDialog.cancelDialog();
                                                             }catch(e){
                                                               Navigator.pop(context);
@@ -230,9 +231,8 @@ class _InvitedListPage_crewState extends State<InvitedListPage_crew> {
                                                               try{
                                                                 Navigator.pop(context);
                                                                 CustomFullScreenDialog.showDialog();
-                                                                await _userModelController.deleteInvitation(friendUid:inviDocs[index]['uid']);
-                                                                await _userModelController.deleteInvitationAlarm(uid:_userModelController.uid);
-                                                                await _userModelController.getCurrentUser(_userModelController.uid);
+                                                                await _liveCrewModelController.deleteInvitation_crew(crewID: _liveCrewModelController.crewID, applyUid: inviDocs[index]['uid']);
+                                                                await _liveCrewModelController.getCurrnetCrew(_liveCrewModelController.crewID);
                                                                 CustomFullScreenDialog.cancelDialog();
                                                               }catch(e){
                                                                 Navigator.pop(context);

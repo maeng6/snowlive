@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import '../../../controller/vm_liveCrewModelController.dart';
 import '../../../controller/vm_userModelController.dart';
 
 class InviteListPage_crew extends StatefulWidget {
@@ -15,6 +18,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -24,13 +28,11 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
         backgroundColor: Colors.white,
         body: StreamBuilder(
           stream: FirebaseFirestore.instance
-              .collection('user')
-              .where('whoInviteMe', arrayContains: _userModelController.uid!)
+              .collection('liveCrew')
+              .where('applyUidList', arrayContains: _userModelController.uid!)
               .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
-              print(_userModelController.uid);
-              print('null');
               return Center();
             } else if (snapshot.data!.docs.isNotEmpty) {
               final inviDocs = snapshot.data!.docs;
@@ -45,13 +47,64 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                           child: ListTile(
                             contentPadding: EdgeInsets.symmetric(horizontal: 0),
                             onTap: () {},
-                            title: Text(
-                              inviDocs[index]['displayName'],
-                              style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16,
-                                color: Color(0xFF111111),
-                              ),
+                            title: Row(
+                              children: [
+                                (inviDocs[index]['profileImageUrl'].isNotEmpty)
+                                    ? GestureDetector(
+                                  onTap: () async{
+                                    CustomFullScreenDialog.showDialog();
+                                    await _liveCrewModelController.getCurrnetCrew(inviDocs[index]['crewID']);
+                                    CustomFullScreenDialog.cancelDialog();
+                                    Get.to(()=>CrewDetailPage_screen());
+                                  },
+                                  child: Container(
+                                      width: 50,
+                                      height: 50,
+                                      child: ExtendedImage.network(
+                                        inviDocs[index]['profileImageUrl'],
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.circle,
+                                        borderRadius: BorderRadius.circular(8),
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      )),
+                                )
+                                    : GestureDetector(
+                                  onTap: () async{
+                                    CustomFullScreenDialog.showDialog();
+                                    await _liveCrewModelController.getCurrnetCrew(inviDocs[index]['crewID']);
+                                    CustomFullScreenDialog.cancelDialog();
+                                    Get.to(()=>CrewDetailPage_screen());
+                                  },
+                                  child: Container(
+                                    width: 50,
+                                    height: 50,
+                                    child: ExtendedImage.asset(
+                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                      enableMemoryCache: true,
+                                      shape: BoxShape.circle,
+                                      borderRadius: BorderRadius.circular(8),
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  inviDocs[index]['crewName'],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                    color: Color(0xFF111111),
+                                  ),
+                                ),
+                                Container(
+                                  width: 20,
+                                  height: 20,
+                                  color: Color(inviDocs[index]['crewColor']),
+                                )
+                              ],
                             ),
                             trailing: ElevatedButton(
                               onPressed: (){
@@ -122,8 +175,8 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                                         try{
                                                           Navigator.pop(context);
                                                           CustomFullScreenDialog.showDialog();
-                                                          await _userModelController.deleteInvitation(friendUid:inviDocs[index]['uid']);
-                                                          await _userModelController.deleteInvitationAlarm(uid:inviDocs[index]['uid']);
+                                                          await _liveCrewModelController.deleteInvitation_crew(crewID: inviDocs[index]['crewID'], applyUid: _userModelController.uid);
+                                                          await _liveCrewModelController.getCurrnetCrew(inviDocs[index]['crewID']);
                                                           await _userModelController.getCurrentUser(_userModelController.uid);
                                                           CustomFullScreenDialog.cancelDialog();
                                                         }catch(e){

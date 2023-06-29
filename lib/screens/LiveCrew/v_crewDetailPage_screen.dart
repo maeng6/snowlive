@@ -14,15 +14,15 @@ import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../controller/vm_liveCrewModelController.dart';
 
-class CrewDetailPage_main extends StatefulWidget {
-  CrewDetailPage_main({Key? key,}) : super(key: key);
+class CrewDetailPage_screen extends StatefulWidget {
+  CrewDetailPage_screen({Key? key,}) : super(key: key);
 
 
   @override
-  State<CrewDetailPage_main> createState() => _CrewDetailPage_mainState();
+  State<CrewDetailPage_screen> createState() => _CrewDetailPage_screenState();
 }
 
-class _CrewDetailPage_mainState extends State<CrewDetailPage_main> {
+class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
   int counter = 0;
   List<bool> isTap = [
     true,
@@ -73,7 +73,7 @@ class _CrewDetailPage_mainState extends State<CrewDetailPage_main> {
                                 padding: EdgeInsets.only(right: 5),
                                 child: IconButton(
                                   onPressed: (){
-                                    Get.to(Setting_crewDetail(crewID: _liveCrewModelController.crewID));
+                                    Get.to(Setting_crewDetail());
                                   },
                                   icon: Image.asset(
                                     'assets/imgs/icons/icon_settings.png',
@@ -100,7 +100,7 @@ class _CrewDetailPage_mainState extends State<CrewDetailPage_main> {
                         padding: EdgeInsets.only(right: 5),
                         child: IconButton(
                           onPressed: (){
-                            Get.to(Setting_crewDetail(crewID: _liveCrewModelController.crewID));
+                            Get.to(Setting_crewDetail());
                           },
                           icon: Image.asset(
                             'assets/imgs/icons/icon_settings.png',

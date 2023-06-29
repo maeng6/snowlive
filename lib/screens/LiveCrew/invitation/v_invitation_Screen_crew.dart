@@ -5,6 +5,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:snowlive3/screens/LiveCrew/invitation/v_inviteListPage_crew.dart';
 import 'package:snowlive3/screens/LiveCrew/invitation/v_invitedListPage_crew.dart';
 
+import '../../../controller/vm_liveCrewModelController.dart';
 import '../../../controller/vm_userModelController.dart';
 
 class InvitationScreen_crew extends StatefulWidget {
@@ -17,12 +18,13 @@ class InvitationScreen_crew extends StatefulWidget {
 class _InvitationScreen_crewState extends State<InvitationScreen_crew> {
   int counter = 0;
   List<bool> isTap = [
-    true,
     false,
+    true,
   ];
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -59,7 +61,7 @@ class _InvitationScreen_crewState extends State<InvitationScreen_crew> {
               centerTitle: true,
               titleSpacing: 0,
               title: Text(
-                '친구등록',
+                '크루 가입신청 현황',
                 style: TextStyle(
                     color: Color(0xFF111111),
                     fontWeight: FontWeight.bold,
@@ -89,54 +91,51 @@ class _InvitationScreen_crewState extends State<InvitationScreen_crew> {
                 children: [
                   Row(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: 16),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 2),
-                              child: Container(
-                                height: 40,
-                                child: ElevatedButton(
-                                  child: Text(
-                                    '요청받은 목록',
-                                    style: TextStyle(
-                                        color: (isTap[0])
-                                            ? Color(0xFF111111)
-                                            : Color(0xFFc8c8c8),
-                                        fontWeight: (isTap[0])
-                                            ? FontWeight.bold
-                                        : FontWeight.normal,
-                                        fontSize: 16),
-                                  ),
-                                  onPressed: () async{
-                                    HapticFeedback.lightImpact();
-                                    print('요청받은 목록으로 전환');
-                                    setState(() {
-                                      isTap[0] = true;
-                                      isTap[1] = false;
-                                    });
-                                    print(isTap);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.only(top: 0),
-                                    minimumSize: Size(40, 10),
-                                    backgroundColor: Color(0xFFFFFFFF),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8)),
-                                    elevation: 0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 90,
-                              height: 3,
-                              color:
-                              (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
-                            )
-                          ],
-                        ),
+                      Column(
+                        children: [
+                          // Padding(
+                          //   padding: EdgeInsets.only(bottom: 2),
+                          //   child: Container(
+                          //     height: 40,
+                          //     child: ElevatedButton(
+                          //       child: Text(
+                          //         '요청받은 목록',
+                          //         style: TextStyle(
+                          //             color: (isTap[0])
+                          //                 ? Color(0xFF111111)
+                          //                 : Color(0xFFc8c8c8),
+                          //             fontWeight: (isTap[0])
+                          //                 ? FontWeight.bold
+                          //             : FontWeight.normal,
+                          //             fontSize: 16),
+                          //       ),
+                          //       onPressed: () async{
+                          //         HapticFeedback.lightImpact();
+                          //         print('요청받은 목록으로 전환');
+                          //         setState(() {
+                          //           isTap[0] = true;
+                          //           isTap[1] = false;
+                          //         });
+                          //         print(isTap);
+                          //       },
+                          //       style: ElevatedButton.styleFrom(
+                          //         padding: EdgeInsets.only(top: 0),
+                          //         minimumSize: Size(40, 10),
+                          //         backgroundColor: Color(0xFFFFFFFF),
+                          //         shape: RoundedRectangleBorder(
+                          //             borderRadius: BorderRadius.circular(8)),
+                          //         elevation: 0,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          // Container(
+                          //   width: 90,
+                          //   height: 3,
+                          //   color:
+                          //   (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
+                          // )
+                        ],
                       ),
                       Padding(
                         padding: EdgeInsets.only(right: 12),
@@ -190,8 +189,8 @@ class _InvitationScreen_crewState extends State<InvitationScreen_crew> {
                       ),
                     ],
                   ),
-                  if(isTap[0]==true)
-                    Expanded(child: InvitedListPage_crew()),
+                  // if(isTap[0]==true)
+                  //   Expanded(child: InvitedListPage_crew()),
                   if(isTap[1]==true)
                     Expanded(child: InviteListPage_crew()),
                 ],

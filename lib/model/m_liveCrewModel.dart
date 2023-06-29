@@ -17,6 +17,7 @@ class LiveCrewModel {
     this.baseResort,
     this.profileImageUrl,
     this.memberUidList,
+    this.applyUidList,
     this.description,
     this.notice,
     this.resistDate,
@@ -31,6 +32,7 @@ class LiveCrewModel {
   int? baseResort;
   String? profileImageUrl;
   List? memberUidList;
+  List? applyUidList;
   String? description;
   String? notice;
   Timestamp? resistDate;
@@ -46,6 +48,7 @@ class LiveCrewModel {
     baseResort = json['baseResort'];
     profileImageUrl = json['profileImageUrl'];
     memberUidList = json['memberUidList'];
+    applyUidList = json['applyUidList'];
     description = json['description'];
     notice = json['notice'];
     resistDate = json['resistDate'];
