@@ -3,13 +3,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/screens/LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
-import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage.dart';
+import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_home.dart';
+import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_main.dart';
 import 'package:snowlive3/screens/LiveCrew/v_searchCrewPage.dart';
-import 'package:snowlive3/screens/more/friend/v_invitation_Screen.dart';
+import 'package:snowlive3/screens/more/friend/invitation/v_invitation_Screen_friend.dart';
 import 'package:snowlive3/screens/more/friend/v_setting_friendList.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
+import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+
+import '../../controller/vm_liveCrewModelController.dart';
 
 class LiveCrewHome extends StatefulWidget {
   const LiveCrewHome({Key? key}) : super(key: key);
@@ -22,6 +26,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
 
   SpeedDial buildSpeedDial1() {
@@ -82,72 +87,6 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        actions: [
-          StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('user')
-                  .where('uid', isEqualTo: _userModelController.uid!)
-                  .snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
-                if (!snapshot.hasData || snapshot.data == null) {}
-                else if (snapshot.data!.docs.isNotEmpty) {
-                  final myDocs = snapshot.data!.docs;
-                  List whoInviteMe = myDocs[0]['whoInviteMe'];
-                  return  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Stack(
-                      children: [
-                        IconButton(
-                          onPressed: (){
-                            Get.to(InvitationScreen());
-                          },
-                          icon: Image.asset(
-                            'assets/imgs/icons/icon_noti_off.png',
-                            scale: 4,
-                            width: 26,
-                            height: 26,
-                          ),
-                        ),
-                        Positioned(  // draw a red marble
-                          top: 10,
-                          left: 32,
-                          child: new Icon(Icons.brightness_1, size: 6.0,
-                              color:
-                              (whoInviteMe.length >0)
-                                  ?Color(0xFFD32F2F):Colors.white),
-                        )
-                      ],
-                    ),
-                  );
-                }
-                else if (snapshot.connectionState == ConnectionState.waiting) {}
-                return IconButton(
-                  onPressed: (){
-                    Get.to(InvitationScreen());
-                  },
-                  icon: Image.asset(
-                    'assets/imgs/icons/icon_noti_off.png',
-                    scale: 4,
-                    width: 26,
-                    height: 26,
-                  ),
-                );
-              }),
-          Padding(
-            padding: EdgeInsets.only(right: 5),
-            child: IconButton(
-              onPressed: (){
-                Get.to(Setting_friendList());
-              },
-              icon: Image.asset(
-                'assets/imgs/icons/icon_settings.png',
-                scale: 4,
-                width: 26,
-                height: 26,
-              ),
-            ),
-          )
-        ],
         leading: GestureDetector(
           child: Image.asset(
             'assets/imgs/icons/icon_snowLive_back.png',
@@ -245,7 +184,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                               itemBuilder: (BuildContext context, int index) {
                                 return GestureDetector(
                                   onTap: () async {
-                                    Get.to(()=>CrewDetailPage(crewID: crewDocs[index]['crewID']));
+                                    Get.to(()=>CrewDetailPage_home());
                                   },
                                   child: Padding(
                                     padding: EdgeInsets.only(right: 10),
@@ -270,7 +209,60 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                           );
                         }
                     ),
-                  )
+                  ),
+                  Text('${_userModelController.resortNickname } 라이브 크루'),
+                  SizedBox(height: 20,),
+                  Container(
+                    height: 100,
+                    width: _size.width,
+                    child: StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection('liveCrew')
+                            .where('baseResort', isEqualTo: _userModelController.favoriteResort!)
+                            .snapshots(),
+                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
+                          if (!snapshot.hasData || snapshot.data == null) {
+                            return Center(
+                              child: Text('가입한 크루가 없습니다'),
+                            );
+                          } else if (snapshot.data!.docs.isNotEmpty) {
+                            final crewDocs = snapshot.data!.docs;
+                            return  ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: crewDocs.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return GestureDetector(
+                                  onTap: () async {
+                                    CustomFullScreenDialog.showDialog();
+                                    await _liveCrewModelController.getCurrnetCrew(crewDocs[index]['crewID']);
+                                    CustomFullScreenDialog.cancelDialog();
+                                    Get.to(()=>CrewDetailPage_main());
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: 10),
+                                    child: Container(
+                                      height: 100,
+                                      width: 100,
+                                      color: Color(crewDocs[index]['crewColor']),
+                                      child: Text(crewDocs[index]['crewName']),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                          else if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return Center(
+                            child: Text('가입한 크루가 없습니다'),
+                          );
+                        }
+                    ),
+                  ),
+
                 ],
               ),
             ),

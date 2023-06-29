@@ -3,56 +3,26 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:snowlive3/controller/vm_DialogController_resortHome.dart';
-import 'package:snowlive3/controller/vm_friendsCommentController.dart';
-import 'package:snowlive3/screens/LiveCrew/v_setting_crewDetail.dart';
+import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
+import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import '../../../controller/vm_userModelController.dart';
-import '../../../widget/w_fullScreenDialog.dart';
+import '../../controller/vm_timeStampController.dart';
 
-class CrewDetailPage extends StatefulWidget {
-  CrewDetailPage({Key? key, required this.crewID,}) : super(key: key);
-
-  String? crewID;
+class CrewDetailPage_home extends StatefulWidget {
+  CrewDetailPage_home({Key? key, }) : super(key: key);
 
   @override
-  State<CrewDetailPage> createState() => _CrewDetailPageState();
+  State<CrewDetailPage_home> createState() => _CrewDetailPage_homeState();
 }
 
-class _CrewDetailPageState extends State<CrewDetailPage> {
-
-  var _stream;
-  final _formKeyProfile = GlobalKey<FormState>();
-  final _formKeyProfile2 = GlobalKey<FormState>();
-  final _formKeyProfile3 = GlobalKey<FormState>();
-  final _stateMsgController = TextEditingController();
-  final _displayNameController = TextEditingController();
-  var _newComment = '';
-  bool edit= false;
-  String _initStateMsg='';
-  String _initialDisplayName='';
-
-  @override
-  void initState() {
-    _stream = newStream();
-    // TODO: implement initState
-    super.initState();
-    _stateMsgController.text = '';
-    _initStateMsg = _userModelController.stateMsg!;
-    _initialDisplayName = _userModelController.displayName!;
-  }
-
-  Stream<QuerySnapshot> newStream() {
-    return FirebaseFirestore.instance
-        .collection('liveCrew')
-        .doc('${widget.crewID}')
-        .collection('friendsComment')
-        .snapshots();
-  }
+class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
+  TimeStampController _timeStampController = Get.find<TimeStampController>();
+  ResortModelController _resortModelController = Get.find<ResortModelController>();
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -68,54 +38,10 @@ class _CrewDetailPageState extends State<CrewDetailPage> {
       child: Scaffold(
           backgroundColor: Colors.white,
           extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            systemOverlayStyle: SystemUiOverlayStyle.dark,
-            leading: GestureDetector(
-              child: Padding(
-                padding: EdgeInsets.only(top: _statusBarSize - 30),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      'assets/imgs/icons/icon_snowLive_back.png',
-                      scale: 4,
-                      width: 26,
-                      height: 26,
-                    ),
-                  ],
-                ),
-              ),
-              onTap: () {
-                // Navigator.popUntil(context, (route) => route.isFirst);
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => FriendListPage()));
-                Get.back();
-              },
-            ),
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(right: 5),
-                child: IconButton(
-                  onPressed: (){
-                    Get.to(()=>Setting_crewDetail(crewID: widget.crewID,));
-                  },
-                  icon: Image.asset(
-                    'assets/imgs/icons/icon_settings.png',
-                    scale: 4,
-                    width: 26,
-                    height: 26,
-                  ),
-                ),
-              )
-            ],
-            elevation: 0.0,
-            titleSpacing: 0,
-            centerTitle: true,
-            toolbarHeight: 58.0, // 이 부분은 AppBar의 높이를 조절합니다.
-          ),
           body: StreamBuilder(
     stream: FirebaseFirestore.instance
         .collection('liveCrew')
-        .where('crewID', isEqualTo: widget.crewID )
+        .where('crewID', isEqualTo: _liveCrewModelController.crewID )
         .snapshots(),
     builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
       if (!snapshot.hasData || snapshot.data == null) {}
@@ -186,8 +112,7 @@ class _CrewDetailPageState extends State<CrewDetailPage> {
                                 SizedBox(
                                   height: 16,
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                Column(
                                   children: [
                                     Text(
                                       '크루 이름 : ${crewDocs[0]['crewName']}',
@@ -196,14 +121,6 @@ class _CrewDetailPageState extends State<CrewDetailPage> {
                                           fontWeight: FontWeight.bold,
                                           color: Color(0xFF111111)
                                       ),),
-                                  ],
-                                ), //활동명//상태메시지
-                                SizedBox(
-                                  height: 4,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
                                     Text(
                                       '크루 마스터 : ${crewDocs[0]['crewLeader']}',
                                       style: TextStyle(
@@ -211,13 +128,43 @@ class _CrewDetailPageState extends State<CrewDetailPage> {
                                           fontWeight: FontWeight.bold,
                                           color: Color(0xFF111111)
                                       ),),
+                                    Text(
+                                      '크루 소개 : ${crewDocs[0]['description']}',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF111111)
+                                      ),),
+                                    if(memberUidList.contains(_userModelController.uid))
+                                   Text(
+                                      '공지사항 : ${crewDocs[0]['notice']}',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF111111)
+                                      ),),
+                                    Text(
+                                      '멤버수 : ${memberUidList.length}',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF111111)
+                                      ),),
+                                    Text(
+                                      '창단일 : ${_timeStampController.yyyymmddFormat(crewDocs[0]['resistDate'])}',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF111111)
+                                      ),),
+                                    Text(
+                                      '베이스 : ${_resortModelController.getResortName(crewDocs[0]['baseResortNickName'])}',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF111111)
+                                      ),),
                                   ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 26),
-                                  child: Text('크루 소개 : ${crewDocs[0]['description']}',
-                                    style: TextStyle(fontSize: 14,
-                                        color: Color(0xFF949494)),),
                                 ),
                               ],
                             ),
@@ -225,6 +172,52 @@ class _CrewDetailPageState extends State<CrewDetailPage> {
                         ],
                       ),
                     ),
+                    Row(
+                      children: [
+                        if(memberUidList.contains(_userModelController.uid) == false)
+                        Expanded(
+                          child:
+                          ElevatedButton(
+                            onPressed:
+                                () {},
+                            child: Text(
+                              '가입하기',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            style: TextButton.styleFrom(
+                                splashFactory: InkRipple.splashFactory,
+                                elevation: 0,
+                                minimumSize: Size(100, 56),
+                                backgroundColor: Color(0xff555555),
+                                padding: EdgeInsets.symmetric(horizontal: 0)),
+                          ),
+                        ),
+                        SizedBox(width: 10,),
+                        Expanded(
+                          child:
+                          ElevatedButton(
+                            onPressed:
+                                () {},
+                            child: Text(
+                              'SNS 링크',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            style: TextButton.styleFrom(
+                                splashFactory: InkRipple.splashFactory,
+                                elevation: 0,
+                                minimumSize: Size(100, 56),
+                                backgroundColor: Color(0xff555555),
+                                padding: EdgeInsets.symmetric(horizontal: 0)),
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),

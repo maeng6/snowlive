@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:snowlive3/screens/more/friend/v_inviteListPage.dart';
-import 'package:snowlive3/screens/more/friend/v_invitedListPage.dart';
+import 'package:snowlive3/screens/more/friend/invitation/v_inviteListPage_friend.dart';
+import 'package:snowlive3/screens/more/friend/invitation/v_invitedListPage_friend.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
-import '../../../controller/vm_userModelController.dart';
+import '../../../../controller/vm_userModelController.dart';
 
-class InvitationScreen extends StatefulWidget {
-  InvitationScreen({Key? key}) : super(key: key);
+class InvitationScreen_friend extends StatefulWidget {
+  InvitationScreen_friend({Key? key}) : super(key: key);
 
   @override
-  State<InvitationScreen> createState() => _InvitationScreenState();
+  State<InvitationScreen_friend> createState() => _InvitationScreen_friendState();
 }
 
-class _InvitationScreenState extends State<InvitationScreen> {
+class _InvitationScreen_friendState extends State<InvitationScreen_friend> {
   int counter = 0;
   List<bool> isTap = [
     true,
@@ -192,9 +192,9 @@ class _InvitationScreenState extends State<InvitationScreen> {
                     ],
                   ),
                   if(isTap[0]==true)
-                    Expanded(child: InvitedListPage()),
+                    Expanded(child: InvitedListPage_friend()),
                   if(isTap[1]==true)
-                    Expanded(child: InviteListPage()),
+                    Expanded(child: InviteListPage_friend()),
                 ],
               ),
             ),

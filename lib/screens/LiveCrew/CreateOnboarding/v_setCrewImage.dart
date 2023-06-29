@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,7 +13,7 @@ import '../../../controller/vm_userModelController.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
 class SetCrewImage extends StatefulWidget {
-  SetCrewImage({Key? key,required this.crewName,required this.crewColor}) : super(key: key);
+  SetCrewImage({Key? key,required this.crewName}) : super(key: key);
 
   String? _profileImageUrl;
   var crewName;
@@ -26,6 +27,8 @@ class _SetCrewImageState extends State<SetCrewImage> {
   bool crewImage = false;
   XFile? _imageFile;
   XFile? _croppedFile;
+  Color currentColor = Colors.white;
+  void changeColor(Color color) => setState(() => currentColor = color);
 
   @override
   void initState() {
@@ -472,6 +475,44 @@ class _SetCrewImageState extends State<SetCrewImage> {
                 ), //이 컨테이너가 이미지업로드 전에 보여주는 아이콘임
               ),
             ),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        titlePadding: const EdgeInsets.all(0.0),
+                        contentPadding: const EdgeInsets.all(0.0),
+                        content: SingleChildScrollView(
+                          child: ColorPicker(
+                            pickerColor: currentColor,
+                            onColorChanged: changeColor,
+                            colorPickerWidth: 300.0,
+                            pickerAreaHeightPercent: 0.7,
+                            enableAlpha: true,
+                            displayThumbColor: true,
+                            paletteType: PaletteType.hsv,
+                            pickerAreaBorderRadius: const BorderRadius.only(
+                              topLeft: const Radius.circular(2.0),
+                              topRight: const Radius.circular(2.0),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Text('색상 고르기'),
+              ),
+            ),
+            Center(
+              child: Container(
+                width: 20,
+                height: 20,
+                color: currentColor,
+              ),
+            ),
             Expanded(child: SizedBox()),
             Center(
               child: ElevatedButton(
@@ -517,7 +558,7 @@ class _SetCrewImageState extends State<SetCrewImage> {
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  Get.to(() => CrewFavoriteResort(crewName: widget.crewName, CrewImageUrl: '', crewColor: widget.crewColor,));
+                  Get.to(() => CrewFavoriteResort(crewName: widget.crewName, CrewImageUrl: '', crewColor: currentColor,));
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 4),

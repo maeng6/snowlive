@@ -32,7 +32,8 @@ class UserModel {
     this.whoResistMeBF,
     this.whoRepoMe,
     this.withinBoundary,
-    this.myCrew
+    this.myCrew,
+    this.liveCrew
   });
 
   final auth = FirebaseAuth.instance;
@@ -68,6 +69,7 @@ class UserModel {
   List? whoRepoMe;
   bool? withinBoundary;
   String? myCrew;
+  List? liveCrew;
 
   UserModel.fromJson(dynamic json, this.reference) {
       uid = json['uid'];
@@ -100,6 +102,7 @@ class UserModel {
       withinBoundary = json['withinBoundary'];
       whoRepoMe = json['whoRepoMe'];
       myCrew = json['myCrew'];
+      liveCrew = json['liveCrew'];
 
 
   }
