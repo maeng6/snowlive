@@ -35,7 +35,7 @@ class _Discover_Calendar_Detail_ScreenState extends State<Discover_Calendar_Deta
   Future<void> _fetchEvents() async {
     final eventsSnapshot = await FirebaseFirestore.instance
         .collection('schedule')
-        .doc('${_userModelController.favoriteResort}')
+        .doc('${_userModelController.instantResort}')
         .collection('1')
         .get();
 

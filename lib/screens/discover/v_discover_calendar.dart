@@ -4,46 +4,162 @@ import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/discover/v_discover_Calendar_Detail.dart';
 
-
 class DiscoverScreen_Calendar extends StatefulWidget {
   @override
   _DiscoverScreen_CalendarState createState() => _DiscoverScreen_CalendarState();
 }
 
 class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
-
-  //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
-  //TODO: Dependency Injection**************************************************
-
-  List<Event> _events = [];
 
   @override
-  void initState() {
-    super.initState();
-    _fetchEvents();
-  }
+  Widget build(BuildContext context) {
+    final DateTime today = DateTime.now();
+    final DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
+    final DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
 
-  //TODO: Calendar**************************************************
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('schedule')
+          .doc('${_userModelController.instantResort}')
+          .collection('1')
+          .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(startOfWeek))
+          .where('date', isLessThanOrEqualTo: Timestamp.fromDate(endOfWeek))
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
+        }
 
-  Future<void> _fetchEvents() async {
-    final today = DateTime.now();
-    final startOfWeek = today.subtract(Duration(days: today.weekday - (today.weekday - 1)));
-    final endOfWeek = startOfWeek.add(Duration(days: 6));
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
 
-    final eventsSnapshot = await FirebaseFirestore.instance
-        .collection('schedule')
-        .doc('${_userModelController.favoriteResort}')
-        .collection('1')
-        .get();
+        final eventsSnapshot = snapshot.data!;
+        final events = eventsSnapshot.docs.map((doc) {
+          final title = doc['title'] as String;
+          final date = (doc['date'] as Timestamp).toDate();
+          return Event(title, date);
+        }).toList();
 
-    setState(() {
-      _events = eventsSnapshot.docs.map((doc) {
-        final title = doc['title'] as String;
-        final date = (doc['date'] as Timestamp).toDate();
-        return Event(title, date);
-      }).toList();
-    });
+        final List<DateTime> weekDates = _getWeekDates(today);
+        final Map<DateTime, List<Event>> eventsForWeek = _getEventsForWeek(weekDates, events);
+
+        final List<DateTime> datesWithEvents = eventsForWeek.keys.toList();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.zero,
+                      topRight: Radius.zero,
+                      bottomLeft: Radius.circular(14),
+                      bottomRight: Radius.circular(14),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 82),
+                    child: (events.isNotEmpty)
+                        ? Padding(
+                      padding: EdgeInsets.only(right: 20, left: 20, top: 20),
+                      child: Column(
+                        children: weekDates.map((day) {
+                          final bool hasEvents = datesWithEvents.contains(day);
+                          final List<Event> dayEvents = eventsForWeek[day] ?? [];
+                          return hasEvents
+                              ? Padding(
+                            padding: EdgeInsets.only(bottom: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  height: 28,
+                                  width: 72,
+                                  child: Text(
+                                    '${day.year}.${day.month}.${day.day}',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF3D83ED),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: dayEvents.map((event) => Container(
+                                      height: 32,
+                                      child: Transform.translate(
+                                        offset: Offset(0, -19),
+                                        child: ListTile(
+                                          title: Text(
+                                            event.title,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                              color: Color(0xFF111111),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )).toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                              : Container(); // 이벤트가 없는 경우에는 빈 컨테이너 반환
+                        }).toList(),
+                      ),
+                    )
+                        : Center(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 48),
+                            child: Text(
+                              '일정이 없습니다.',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                                color: Color(0xFF111111),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFFAFAFB),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: weekDates.map((day) {
+                      final bool hasEvents = datesWithEvents.contains(day);
+                      return _buildDayCell(day, hasEvents);
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 
   List<DateTime> _getWeekDates(DateTime selectedDate) {
@@ -60,38 +176,27 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
     return weekDates;
   }
 
-  Map<DateTime, List<Event>> _getEventsForWeek(DateTime selectedDate) {
+  Map<DateTime, List<Event>> _getEventsForWeek(List<DateTime> weekDates, List<Event> events) {
     final Map<DateTime, List<Event>> eventsForWeek = {};
 
-    _events.forEach((event) {
-      final eventDate = event.date;
-      final startDate = selectedDate.subtract(Duration(days: selectedDate.weekday - 1));
-      final endDate = startDate.add(Duration(days: 6));
-
-      if (eventDate.isAfter(startDate.subtract(Duration(days: 1))) &&
-          eventDate.isBefore(endDate.add(Duration(days: 1)))) {
-        if (eventsForWeek.containsKey(DateTime(eventDate.year, eventDate.month, eventDate.day))) {
-          eventsForWeek[DateTime(eventDate.year, eventDate.month, eventDate.day)]!.add(event);
-        } else {
-          eventsForWeek[DateTime(eventDate.year, eventDate.month, eventDate.day)] = [event];
-        }
+    weekDates.forEach((day) {
+      final List<Event> dayEvents = events.where((event) =>
+      event.date.year == day.year &&
+          event.date.month == day.month &&
+          event.date.day == day.day).toList();
+      if (dayEvents.isNotEmpty) {
+        eventsForWeek[day] = dayEvents;
       }
     });
 
     return eventsForWeek;
   }
 
-  Widget _buildDayCell(DateTime day) {
-    final List<Event> events = _events.where((event) {
-      final eventDate = event.date;
-      return eventDate.year == day.year &&
-          eventDate.month == day.month &&
-          eventDate.day == day.day;
-    }).toList();
-
-    final bool isToday = DateTime.now().day == day.day && DateTime.now().month == day.month && DateTime.now().year == day.year;
+  Widget _buildDayCell(DateTime day, bool hasEvents) {
+    final DateTime now = DateTime.now();
+    final bool isToday = now.day == day.day && now.month == day.month && now.year == day.year;
     final List<String> weekdays = ['월', '화', '수', '목', '금', '토', '일'];
-    final String weekday = weekdays[day.weekday - 1]; // 날짜의 요일 가져오기
+    final String weekday = weekdays[day.weekday - 1];
 
     return Expanded(
       child: Container(
@@ -105,7 +210,7 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              weekday, // 요일 출력
+              weekday,
               style: TextStyle(
                 fontSize: 11,
                 color: isToday ? Colors.white : Color(0xFF111111),
@@ -126,122 +231,12 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
               width: 4,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: events.isNotEmpty ? isToday ? Color(0xFFFFFFFF) : Color(0xFF666666) : Colors.transparent,
+                color: hasEvents ? (isToday ? Color(0xFFFFFFFF) : Color(0xFF666666)) : Colors.transparent,
               ),
             ),
           ],
         ),
       ),
-    );
-  } // 달력 날짜 표시 영역 위젯
-
-  //TODO: Calendar**************************************************
-
-  @override
-  Widget build(BuildContext context) {
-
-    final DateTime today = DateTime.now();
-    final List<DateTime> weekDates = _getWeekDates(today);
-    final Map<DateTime, List<Event>> eventsForWeek = _getEventsForWeek(today);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Stack(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.zero,
-                    topRight: Radius.zero,
-                    bottomLeft: Radius.circular(14),
-                    bottomRight: Radius.circular(14),
-                  ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(top: 82),
-                child: (_events.isNotEmpty)
-                    ? Padding(
-                  padding: EdgeInsets.only(right: 20, left: 20, top: 20),
-                  child: Column(
-                    children: eventsForWeek.entries.map((entry) {
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              height: 28,
-                              width: 72,
-                              child: Text(
-                                '${entry.key.year}.${entry.key.month}.${entry.key.day}',
-                                style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF3D83ED)
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: entry.value.map((event) => Container(
-                                  height: 32,
-                                  child: Transform.translate(
-                                    offset: Offset(0,-19),
-                                    child: ListTile(
-                                      title: Text(event.title,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                            color: Color(0xFF111111)
-                                        ),),
-                                    ),
-                                  ),
-                                )).toList(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                )
-                    : Center(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 48),
-                        child: Text(
-                          '일정이 없습니다.',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.normal,
-                            color: Color(0xFF111111),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              decoration: BoxDecoration(
-                  color: Color(0xFFFAFAFB),
-                  borderRadius: BorderRadius.circular(8)
-              ),
-              child: Row(
-                children: weekDates.map((day) => _buildDayCell(day)).toList(),
-              ),
-            ),
-          ],
-        ),
-
-      ],
     );
   }
 }
