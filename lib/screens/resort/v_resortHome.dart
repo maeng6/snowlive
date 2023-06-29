@@ -14,6 +14,9 @@ import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/controller/vm_replyModelController.dart';
 import 'package:snowlive3/model/m_resortModel.dart';
 import 'package:snowlive3/screens/comments/v_commentTile_resortHome.dart';
+import 'package:snowlive3/screens/discover/v_discover_Calendar_Detail.dart';
+import 'package:snowlive3/screens/discover/v_discover_Resort_Banner.dart';
+import 'package:snowlive3/screens/discover/v_discover_calendar.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import 'package:snowlive3/screens/more/liveMap/v_liveMap_Screen.dart';
 import 'package:snowlive3/screens/more/v_noticeListPage.dart';
@@ -31,10 +34,9 @@ class ResortHome extends StatefulWidget {
   State<ResortHome> createState() => _ResortHomeState();
 }
 
-class _ResortHomeState extends State<ResortHome>
-    with AutomaticKeepAliveClientMixin {
+class _ResortHomeState extends State<ResortHome> {
+
   @override
-  bool get wantKeepAlive => true;
   int lengthOfLivefriends = 0;
   bool isSnackbarShown = false;
 
@@ -1278,6 +1280,62 @@ class _ResortHomeState extends State<ResortHome>
                                                 ),
                                               ),
                                             ),
+                                            SizedBox(
+                                              height: 12,
+                                            ),
+                                            DiscoverScreen_ResortBanner(),
+                                            SizedBox(
+                                              height: 12,
+                                            ),
+                                            Container(
+                                                padding: EdgeInsets.only(
+                                                    left: 20,
+                                                    right: 20,
+                                                    top: 20,
+                                                    bottom: 5),
+                                                width: double.infinity,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                    BorderRadius.only(
+                                                      topLeft: Radius.circular(14),
+                                                      topRight: Radius.circular(14),
+                                                      bottomLeft: Radius.zero,
+                                                      bottomRight: Radius.zero,
+                                                    ),),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      '캘린더',
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                          FontWeight.bold,
+                                                          color:
+                                                          Color(0xFFC8C8C8)),
+                                                    ),
+                                                    GestureDetector(
+                                                      onTap: (){
+                                                        Get.to(()=>Discover_Calendar_Detail_Screen());
+                                                      },
+                                                      child: Container(
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.only(right: 10),
+                                                          child: Text(
+                                                            '더보기',
+                                                            style: TextStyle(
+                                                                color: Color(0xFF949494),
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.bold
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),),
+                                            DiscoverScreen_Calendar(),
                                             SizedBox(
                                               height: 12,
                                             ),
@@ -2530,6 +2588,62 @@ class _ResortHomeState extends State<ResortHome>
                                               ),
                                             ),
                                           ),
+                                          SizedBox(
+                                            height: 12,
+                                          ),
+                                          DiscoverScreen_ResortBanner(),
+                                          SizedBox(
+                                            height: 12,
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                left: 20,
+                                                right: 20,
+                                                top: 20,
+                                                bottom: 5),
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                              BorderRadius.only(
+                                                topLeft: Radius.circular(14),
+                                                topRight: Radius.circular(14),
+                                                bottomLeft: Radius.zero,
+                                                bottomRight: Radius.zero,
+                                              ),),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  '캘린더',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                      FontWeight.bold,
+                                                      color:
+                                                      Color(0xFFC8C8C8)),
+                                                ),
+                                                GestureDetector(
+                                                  onTap: (){
+                                                    Get.to(()=>Discover_Calendar_Detail_Screen());
+                                                  },
+                                                  child: Container(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(right: 10),
+                                                      child: Text(
+                                                        '더보기',
+                                                        style: TextStyle(
+                                                            color: Color(0xFF949494),
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.bold
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),),
+                                          DiscoverScreen_Calendar(),
                                           SizedBox(
                                             height: 12,
                                           ),
