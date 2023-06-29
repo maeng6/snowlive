@@ -516,7 +516,6 @@ class _MoreTabState extends State<MoreTab> {
               ),
               SizedBox(height: 25),
               Container(
-                height: 155,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -578,21 +577,6 @@ class _MoreTabState extends State<MoreTab> {
                           ),
                         ),
                         SizedBox(height: 25,),
-                        GestureDetector(
-                          onTap: (){
-                            Get.to(()=>LiveMap_Screen());
-                          },
-                          child: Column(
-                            children: [
-                              Image.asset('assets/imgs/icons/icon_moretab_livemap.png', width: 40),
-                              SizedBox(height: 2),
-                              Text('라이브맵',style: TextStyle(
-                                  fontSize: 14,
-                                color: Color(0xFF555555)
-                              ),)
-                            ],
-                          ),
-                        ),
                       ],
                     ),
                     Column(

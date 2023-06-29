@@ -77,17 +77,6 @@ class _MainHomeState extends State<MainHome> {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/imgs/icons/icon_discover_off.png',
-                scale: 4,
-              ),
-              activeIcon: Image.asset(
-                'assets/imgs/icons/icon_discover_on.png',
-                scale: 4,
-              ),
-              label: 'Discover',
-            ),
-            BottomNavigationBarItem(
               icon: Stack(
                 children: [
 
@@ -216,7 +205,6 @@ class _MainHomeState extends State<MainHome> {
           physics: NeverScrollableScrollPhysics(),
           children: [
             ResortHome(),
-            DiscoverScreen(),
             FleaMarketScreen(),
             LiveTalkScreen(),
             MoreTab(),

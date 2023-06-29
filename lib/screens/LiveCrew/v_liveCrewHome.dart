@@ -270,7 +270,57 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                           );
                         }
                     ),
-                  )
+                  ),
+                  Text('${_userModelController.resortNickname } 라이브 크루'),
+                  SizedBox(height: 20,),
+                  Container(
+                    height: 100,
+                    width: _size.width,
+                    child: StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection('liveCrew')
+                            .where('baseResort', isEqualTo: _userModelController.favoriteResort!)
+                            .snapshots(),
+                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
+                          if (!snapshot.hasData || snapshot.data == null) {
+                            return Center(
+                              child: Text('가입한 크루가 없습니다'),
+                            );
+                          } else if (snapshot.data!.docs.isNotEmpty) {
+                            final crewDocs = snapshot.data!.docs;
+                            return  ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: crewDocs.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return GestureDetector(
+                                  onTap: () async {
+                                    Get.to(()=>CrewDetailPage(crewID: crewDocs[index]['crewID']));
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: 10),
+                                    child: Container(
+                                      height: 100,
+                                      width: 100,
+                                      color: Color(crewDocs[index]['crewColor']),
+                                      child: Text(crewDocs[index]['crewName']),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                          else if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return Center(
+                            child: Text('가입한 크루가 없습니다'),
+                          );
+                        }
+                    ),
+                  ),
+
                 ],
               ),
             ),
