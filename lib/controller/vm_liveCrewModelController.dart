@@ -18,6 +18,7 @@ class LiveCrewModelController extends GetxController {
   RxInt? _baseResort=0.obs;
   RxString? _profileImageUrl=''.obs;
   RxList? _memberUidList=[].obs;
+  RxList? _applyUidList=[].obs;
   RxString? _description=''.obs;
   RxString? _notice=''.obs;
   Timestamp? _resistDate;
@@ -31,6 +32,7 @@ class LiveCrewModelController extends GetxController {
   int? get baseResort => _baseResort!.value;
   String? get profileImageUrl => _profileImageUrl!.value;
   List? get memberUidList => _memberUidList!;
+  List? get applyUidList => _applyUidList!;
   String? get description => _description!.value;
   String? get notice => _notice!.value;
   Timestamp? get resistDate => _resistDate!;
@@ -47,6 +49,7 @@ class LiveCrewModelController extends GetxController {
       this._baseResort!.value = crewModel.baseResort!;
       this._profileImageUrl!.value = crewModel.profileImageUrl!;
       this._memberUidList!.value = crewModel.memberUidList!;
+      this._applyUidList!.value = crewModel.applyUidList!;
       this._description!.value = crewModel.description!;
       this._notice!.value = crewModel.notice!;
     }
@@ -82,6 +85,7 @@ class LiveCrewModelController extends GetxController {
       'baseResort': resortNum,
       'profileImageUrl' : crewImageUrl,
       'memberUidList' : FieldValue.arrayUnion([uid]),
+      'applyUidList' : [],
       'description':'',
       'notice':'',
       'resistDate' : Timestamp.now(),
@@ -164,6 +168,47 @@ class LiveCrewModelController extends GetxController {
     } else{
     }
     return foundCrewModel;
+  }
+
+  Future<void> updateInvitation_crew({required crewID}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'applyCrewList': FieldValue.arrayUnion([crewID])
+    });
+    await ref.collection('liveCrew').doc(crewID).update({
+      'applyUidList': FieldValue.arrayUnion([uid])
+    });
+
+  }
+
+  Future<void> deleteInvitation_crew({required crewID,required applyUid}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(applyUid).update({
+      'applyCrewList': FieldValue.arrayRemove([crewID])
+    });
+
+    await ref.collection('liveCrew').doc(crewID).update({
+      'applyUidList': FieldValue.arrayRemove([applyUid])
+    });
+  }
+
+  Future<void> updateCrewMember({required applyUid,required crewID}) async {
+
+    await ref.collection('user').doc(applyUid).update({
+      'liveCrew': FieldValue.arrayUnion([crewID])
+    });
+    await ref.collection('liveCrew').doc(crewID).update({
+      'memberUidList': FieldValue.arrayUnion([applyUid])
+    });
+
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('liveCrew').doc(crewID);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List memberUidList = documentSnapshot.get('memberUidList');
+    this._memberUidList!.value = memberUidList;
   }
 
 

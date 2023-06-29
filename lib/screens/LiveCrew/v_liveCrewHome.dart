@@ -3,17 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/screens/LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
-import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_home.dart';
-import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_main.dart';
+import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:snowlive3/screens/LiveCrew/v_searchCrewPage.dart';
-import 'package:snowlive3/screens/more/friend/invitation/v_invitation_Screen_friend.dart';
-import 'package:snowlive3/screens/more/friend/v_setting_friendList.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-
 import '../../controller/vm_liveCrewModelController.dart';
+import 'invitation/v_invitation_Screen_crew.dart';
 
 class LiveCrewHome extends StatefulWidget {
   const LiveCrewHome({Key? key}) : super(key: key);
@@ -86,6 +83,22 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       appBar: AppBar(
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 5),
+            child: IconButton(
+              onPressed: (){
+                Get.to(()=>InvitationScreen_crew());
+              },
+              icon: Image.asset(
+                'assets/imgs/icons/icon_settings.png',
+                scale: 4,
+                width: 26,
+                height: 26,
+              ),
+            ),
+          )
+        ],
         backgroundColor: Colors.white,
         leading: GestureDetector(
           child: Image.asset(
@@ -184,7 +197,10 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                               itemBuilder: (BuildContext context, int index) {
                                 return GestureDetector(
                                   onTap: () async {
-                                    Get.to(()=>CrewDetailPage_home());
+                                    CustomFullScreenDialog.showDialog();
+                                    await _liveCrewModelController.getCurrnetCrew(crewDocs[index]['crewID']);
+                                    CustomFullScreenDialog.cancelDialog();
+                                    Get.to(()=>CrewDetailPage_screen());
                                   },
                                   child: Padding(
                                     padding: EdgeInsets.only(right: 10),
@@ -236,7 +252,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                     CustomFullScreenDialog.showDialog();
                                     await _liveCrewModelController.getCurrnetCrew(crewDocs[index]['crewID']);
                                     CustomFullScreenDialog.cancelDialog();
-                                    Get.to(()=>CrewDetailPage_main());
+                                    Get.to(()=>CrewDetailPage_screen());
                                   },
                                   child: Padding(
                                     padding: EdgeInsets.only(right: 10),

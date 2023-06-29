@@ -171,7 +171,7 @@ class _FriendListPageState extends State<FriendListPage> {
             padding: EdgeInsets.only(right: 5),
             child: IconButton(
                 onPressed: (){
-                  Get.to(Setting_friendList());
+                  Get.to(()=>Setting_friendList());
                 },
                 icon: Image.asset(
                   'assets/imgs/icons/icon_settings.png',

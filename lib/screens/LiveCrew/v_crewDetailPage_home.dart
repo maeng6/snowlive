@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
+import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../controller/vm_timeStampController.dart';
 
@@ -179,7 +180,106 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                           child:
                           ElevatedButton(
                             onPressed:
-                                () {},
+                                () {
+                              if(_userModelController.liveCrew!.length<=2){
+                                Get.dialog(AlertDialog(
+                                  contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                  content: Text(
+                                    '가입신청을 하시겠습니까?',
+                                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                                  ),
+                                  actions: [
+                                    Row(
+                                      children: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              '취소',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Color(0xFF949494),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            )),
+                                        TextButton(
+                                            onPressed: () async {
+                                              if(_userModelController.applyCrewList!.contains(_liveCrewModelController.crewID)){
+                                                Get.dialog(AlertDialog(
+                                                  contentPadding: EdgeInsets.only(
+                                                      bottom: 0,
+                                                      left: 20,
+                                                      right: 20,
+                                                      top: 30),
+                                                  elevation: 0,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0)),
+                                                  buttonPadding:
+                                                  EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 0),
+                                                  content: Text(
+                                                    '이미 요청중입니다.',
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.w600,
+                                                        fontSize: 15),
+                                                  ),
+                                                  actions: [
+                                                    Row(
+                                                      children: [
+                                                        TextButton(
+                                                            onPressed: () async {
+                                                              Navigator.pop(context);
+                                                              Navigator.pop(context);
+                                                            },
+                                                            child: Text(
+                                                              '확인',
+                                                              style: TextStyle(
+                                                                fontSize: 15,
+                                                                color: Color(
+                                                                    0xff377EEA),
+                                                                fontWeight: FontWeight
+                                                                    .bold,
+                                                              ),
+                                                            )),
+                                                      ],
+                                                      mainAxisAlignment: MainAxisAlignment
+                                                          .center,
+                                                    )
+                                                  ],
+                                                ));
+                                              } else {
+                                                CustomFullScreenDialog.showDialog();
+                                                await _liveCrewModelController.updateInvitation_crew(crewID: _liveCrewModelController.crewID);
+                                                await _userModelController.getCurrentUser(_userModelController.uid);
+                                                CustomFullScreenDialog.cancelDialog();
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                              }
+                                            },
+                                            child: Text(
+                                              '확인',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Color(0xFF3D83ED),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ))
+                                      ],
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                    )
+                                  ],
+                                ));
+                              }else{
+
+                              }
+                                },
                             child: Text(
                               '가입하기',
                               style: TextStyle(
