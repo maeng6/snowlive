@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/screens/LiveCrew/v_liveCrewHome.dart';
+import 'package:snowlive3/screens/LiveCrew/v_setting_delegation.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
@@ -340,7 +341,7 @@ class Setting_crewDetail extends StatelessWidget {
 
           ),
           Container(
-            height: 200,
+            height: 50,
             child: ListView(
               children: [
                 (_liveCrewModelController.leaderUid == _userModelController.uid)
@@ -640,6 +641,127 @@ class Setting_crewDetail extends StatelessWidget {
                     width: 24,
                   ),
                 ),
+              ],
+            ),
+          ),
+          if(_liveCrewModelController.leaderUid == _userModelController.uid)
+          Container(
+            height: 200,
+            child: ListView(
+              children: [
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
+                  onTap: () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            color: Colors.white,
+                            height: 200,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0),
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 30,
+                                  ),
+                                  Text(
+                                    '리더 권한을 위임하면 되돌릴 수 없으며,\n위임하는 즉시 적용됩니다.\n계속하시겠습니까?',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF111111)),
+                                  ),
+                                  SizedBox(
+                                    height: 30,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text(
+                                            '취소',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight:
+                                                FontWeight.bold),
+                                          ),
+                                          style: TextButton.styleFrom(
+                                              splashFactory: InkRipple
+                                                  .splashFactory,
+                                              elevation: 0,
+                                              minimumSize:
+                                              Size(100, 56),
+                                              backgroundColor:
+                                              Color(0xff555555),
+                                              padding:
+                                              EdgeInsets.symmetric(
+                                                  horizontal: 0)),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            Navigator.pop(context);
+                                            Get.to(()=>Setting_delegation());
+                                          },
+                                          child: Text(
+                                            '확인',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight:
+                                                FontWeight.bold),
+                                          ),
+                                          style: TextButton.styleFrom(
+                                              splashFactory: InkRipple
+                                                  .splashFactory,
+                                              elevation: 0,
+                                              minimumSize:
+                                              Size(100, 56),
+                                              backgroundColor:
+                                              Color(0xff2C97FB),
+                                              padding:
+                                              EdgeInsets.symmetric(
+                                                  horizontal: 0)),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        });
+                  },
+                  title: Text(
+                    '크루 리더 위임',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Color(0xFF111111)),
+                  ),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                )
               ],
             ),
           ),
