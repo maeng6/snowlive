@@ -101,6 +101,7 @@ class _MainHomeState extends State<MainHome> {
               ),
               label: 'Flea',
             ), //브랜드
+            if(_userModelController.favoriteResort == 12)
             BottomNavigationBarItem(
               icon: Stack(
                 children: [
@@ -231,6 +232,7 @@ class _MainHomeState extends State<MainHome> {
           children: [
             ResortHome(),
             FleaMarketScreen(),
+            if(_userModelController.favoriteResort == 12)
             RankingScreen(),
             LiveTalkScreen(),
             MoreTab(),

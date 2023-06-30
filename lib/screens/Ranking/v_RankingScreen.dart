@@ -17,6 +17,35 @@ class _RankingScreenState extends State<RankingScreen> {
   UserModelController _userModelController = Get.find<UserModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
 
+  Future<Map<String, int>> _calculateRank(int myScore) async {
+    int totalUsers = 0;
+    int myRank = -1;
+
+    QuerySnapshot userCollection = await FirebaseFirestore.instance
+        .collection('user')
+        .where('favoriteResort', isEqualTo: _userModelController.favoriteResort)
+        .get();
+
+    totalUsers = userCollection.docs.length;
+
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('user')
+        .orderBy('totalScores.${_userModelController.favoriteResort}', descending: true)
+        .get();
+
+    List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+
+    for (int i = 0; i < documents.length; i++) {
+      if (documents[i].id == _userModelController.uid) {
+        myRank = i + 1; // 등수는 1부터 시작하기 때문에 1을 더해줍니다.
+        break;
+      }
+    }
+
+    return {'totalUsers': totalUsers, 'rank': myRank};
+  }
+
+
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
@@ -142,6 +171,18 @@ class _RankingScreenState extends State<RankingScreen> {
 
                 return Column(
                   children: [
+                    FutureBuilder<Map<String, int>>(
+                      future: _calculateRank(totalScore),
+                      builder: (BuildContext context, AsyncSnapshot<Map<String, int>> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Text('랭킹: 계산 중...');
+                        } else if (snapshot.hasError) {
+                          return Text('랭킹: 오류 발생');
+                        } else {
+                          return Text('랭킹: ${snapshot.data?['rank']}/${snapshot.data?['totalUsers']}');
+                        }
+                      },
+                    ),
                     Text('총 점수: $totalScore'),
                     Expanded(
                       child: ListView.builder(
