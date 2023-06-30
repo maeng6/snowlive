@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_liveMapController.dart';
+import 'package:snowlive3/controller/vm_seasonController.dart';
+import 'package:snowlive3/screens/Ranking/v_RankingScreen.dart';
 import 'package:snowlive3/screens/bulletin/v_bulletin_Screen.dart';
 import 'package:snowlive3/screens/comments/v_liveTalk_Screen.dart';
 import 'package:snowlive3/screens/resort/v_resortHome.dart';
@@ -100,13 +102,36 @@ class _MainHomeState extends State<MainHome> {
               label: 'Flea',
             ), //브랜드
             BottomNavigationBarItem(
+              icon: Stack(
+                children: [
+
+                  Positioned(
+                    top: 3,
+                    right: 3,
+                    child: Icon(Icons.brightness_1,
+                        size: 6.0,
+                        color: Colors.white),
+                  ),
+                  Image.asset(
+                    'assets/imgs/icons/icon_discover_off.png',
+                    scale: 4,
+                  ),
+                ],
+              ),
+              activeIcon: Image.asset(
+                'assets/imgs/icons/icon_discover_on.png',
+                scale: 4,
+              ),
+              label: 'Ranking',
+            ),
+            BottomNavigationBarItem(
               icon: Image.asset(
                 'assets/imgs/icons/icon_livetalk_off.png',
                 scale: 4,
               ),
               activeIcon: Image.asset('assets/imgs/icons/icon_livetalk_on.png',
                   scale: 4),
-              label: 'Weather',
+              label: 'LiveTalk',
             ), //라톡
             BottomNavigationBarItem(
               icon: Stack(
@@ -206,6 +231,7 @@ class _MainHomeState extends State<MainHome> {
           children: [
             ResortHome(),
             FleaMarketScreen(),
+            RankingScreen(),
             LiveTalkScreen(),
             MoreTab(),
           ],

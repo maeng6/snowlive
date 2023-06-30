@@ -8,12 +8,15 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
+import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/model/m_slopeLocationModel.dart';
+import 'package:snowlive3/model/m_slopeScoreModel.dart';
 
 class LiveMapController extends GetxController {
 
   //TODO: Dependency Injection********************************************
+  SeasonController _seasonController = Get.find<SeasonController>();
   UserModelController _userModelController = Get.find<UserModelController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   //TODO: Dependency Injection********************************************
@@ -116,6 +119,8 @@ class LiveMapController extends GetxController {
   }
 
   Future<void> checkAndUpdatePassCount(Position position) async {
+    await _seasonController.getCurrentSeason();
+
     for (LocationModel location in locations) {
       double distanceInMeters = Geolocator.distanceBetween(
         position.latitude,
@@ -128,45 +133,64 @@ class LiveMapController extends GetxController {
 
       if (withinBoundary) {
         DateTime now = DateTime.now();
-        if (lastPassTime == null || now.difference(lastPassTime!).inMinutes >= 10) {
-          if (_userModelController.uid != null) {
-            DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-                .collection('user')
-                .doc(_userModelController.uid)
-                .collection('Ranking')
-                .doc("${_userModelController.favoriteResort}")
-                .collection('2324').doc('1')
-                .get();
 
-            Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
-            Map<String, dynamic> passCountData = data['passCountData'] ?? {};
+        if (_userModelController.uid != null) {
+          DocumentReference docRef = FirebaseFirestore.instance
+              .collection('user')
+              .doc(_userModelController.uid)
+              .collection('Ranking')
+              .doc("${_userModelController.favoriteResort}")
+              .collection('${_seasonController.currentSeason}')
+              .doc('1');
 
-            int storedPassCount = passCountData[location.name] ?? 0;
-            DateTime? storedLastPassTime = data['lastPassTime'] != null
-                ? (data['lastPassTime'] as Timestamp).toDate()
-                : null;
+          DocumentSnapshot userSnapshot = await docRef.get();
 
-            if (storedLastPassTime != null && now.difference(storedLastPassTime).inMinutes < 10) {
-              // 파이어베이스에 저장된 시간과 현재 시간을 비교하여 10분 이내에 재시작한 경우에는 업데이트를 건너뜁니다.
-              lastPassTime = storedLastPassTime;
-            } else {
-              storedPassCount += 1;
-              lastPassTime = now;
-            }
+          if (!userSnapshot.exists) {
+            // Document doesn't exist. Let's create it!
+            await docRef.set({
+              'passCountData': {},
+              'lastPassTime': null,
+              'slopeScores': {}, // Add field for storing slope scores
+              'totalScore': 0, // Add field for storing total score
+            });
+
+            // Re-fetch the document after creating it
+            userSnapshot = await docRef.get();
+          }
+
+          // Now, we are sure document exists. Let's proceed with the rest of the logic.
+          Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
+          Map<String, dynamic> passCountData = data['passCountData'] ?? {};
+
+          int storedPassCount = passCountData[location.name] ?? 0;
+          DateTime? storedLastPassTime = data['lastPassTime'] != null
+              ? (data['lastPassTime'] as Timestamp).toDate()
+              : null;
+
+          if (storedLastPassTime == null || now.difference(storedLastPassTime).inMinutes >= 10) {
+            storedPassCount += 1;
+            DateTime lastPassTime = now;
 
             // Update passCountData
             passCountData[location.name] = storedPassCount;
             data['passCountData'] = passCountData;
+
+            // Calculate slope score
+            int slopeScore = slopeScoresModel.slopeScores[location.name] ?? 0;
+            int updatedScore = slopeScore * storedPassCount;
+
+            // Update slopeScores
+            Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
+            slopeScores[location.name] = updatedScore;
+            data['slopeScores'] = slopeScores;
+
+            // Calculate total score
+            int totalScore = slopeScores.values.fold<int>(0, (int sum, dynamic score) => sum + (score as int? ?? 0),);
+            data['totalScore'] = totalScore;
+
             data['lastPassTime'] = lastPassTime;
 
-            await FirebaseFirestore.instance
-                .collection('user')
-                .doc(_userModelController.uid)
-                .collection('Ranking')
-                .doc("${_userModelController.favoriteResort}")
-                .collection('2324').doc('1')
-                .set(data, SetOptions(merge: true))
-                .catchError((error) {
+            docRef.set(data, SetOptions(merge: true)).catchError((error) {
               print('Firestore 업데이트 에러: $error');
             });
           }

@@ -34,9 +34,10 @@ class ResortHome extends StatefulWidget {
   State<ResortHome> createState() => _ResortHomeState();
 }
 
-class _ResortHomeState extends State<ResortHome> {
-
+class _ResortHomeState extends State<ResortHome>
+    with AutomaticKeepAliveClientMixin {
   @override
+  bool get wantKeepAlive => true;
   int lengthOfLivefriends = 0;
   bool isSnackbarShown = false;
 
