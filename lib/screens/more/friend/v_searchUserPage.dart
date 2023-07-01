@@ -232,12 +232,20 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                             borderRadius: BorderRadius.circular(8),
                                             color: Colors.black12
                                           ),
-                                          child: ExtendedImage.network(
-                                            '${foundUserModel!.profileImageUrl}',
-                                            enableMemoryCache: true,
-                                            borderRadius: BorderRadius.circular(8),
-                                            fit: BoxFit.cover,
-                                          ),
+                                          child:
+                                          (foundUserModel!.profileImageUrl!.isNotEmpty)
+                                              ? ExtendedImage.network(
+                                                '${foundUserModel!.profileImageUrl}',
+                                                enableMemoryCache: true,
+                                                borderRadius: BorderRadius.circular(8),
+                                                fit: BoxFit.cover,
+                                              )
+                                              : ExtendedImage.asset(
+                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                enableMemoryCache: true,
+                                                borderRadius: BorderRadius.circular(8),
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                       ),
                                       Padding(
