@@ -47,6 +47,7 @@ class UserModelController extends GetxController{
   RxList? _whoRepoMe = [].obs;
   RxBool? _withinBoundary = false.obs;
   RxList? _applyCrewList = [].obs;
+  RxMap? _totalScores = <String, dynamic>{}.obs;
 
 
   String? get uid => _uid!.value;
@@ -84,6 +85,7 @@ class UserModelController extends GetxController{
   List? get whoRepoMe =>_whoRepoMe;
   bool? get withinBoundary => _withinBoundary!.value;
   List? get applyCrewList => _applyCrewList;
+  Map? get totalScores => _totalScores;
 
   @override
   void onInit()  async{
@@ -147,6 +149,7 @@ class UserModelController extends GetxController{
           this._whoRepoMe!.value = userModel.whoRepoMe!;
           this._withinBoundary!.value = userModel.withinBoundary!;
           this._applyCrewList!.value = userModel.applyCrewList!;
+          this._totalScores!.value = userModel.totalScores!;
           try {
             this._fleaChatUidList!.value = userModel.fleaChatUidList!;
           }catch(e){};
@@ -215,7 +218,8 @@ class UserModelController extends GetxController{
       'whoInviteMe':[],
       'myCrew':'',
       'liveCrew':[],
-      'applyCrewList':[]
+      'applyCrewList':[],
+      'totalScores':<String, dynamic>{},
     });
     await getCurrentUser(auth.currentUser!.uid);
   }

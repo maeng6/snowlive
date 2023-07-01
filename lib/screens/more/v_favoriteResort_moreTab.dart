@@ -147,6 +147,7 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
                           print('즐겨찾는 리조트 업뎃완료');
                           await FlutterSecureStorage().write(key: 'login', value: auth.currentUser!.displayName);
                           await userModelController.updateWithinBoundaryOff();
+                          await userModelController.updateIsOnLiveOff();
                           await Get.offAll(()=>MainHome(uid: userModelController.uid));
                           CustomFullScreenDialog.cancelDialog();
                         }else{

@@ -154,7 +154,8 @@ class LoginController extends GetxController {
       'whoInviteMe':[],
       'myCrew':'',
       'liveCrew':[],
-      'applyCrewList':[]
+      'applyCrewList':[],
+      'totalScores':<String, dynamic>{},
     });
 
 
