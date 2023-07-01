@@ -91,6 +91,20 @@ class ImageController extends GetxController {
     return downloadUrl;
   }
 
+  Future<String> setNewImage_Crew({required XFile newImage,required crewID}) async {
+    String? uid = await FlutterSecureStorage().read(key: 'uid');
+    var metaData = SettableMetadata(contentType: 'image/jpeg');
+    String downloadUrl = '';
+    if (newImage != null) {
+      Reference ref = FirebaseStorage.instance.ref('images/crewLogo/$crewID.jpg');
+      await ref.putFile(File(newImage.path), metaData);
+      downloadUrl = await ref.getDownloadURL();
+    } else {
+      CustomFullScreenDialog.cancelDialog();
+    }
+    return downloadUrl;
+  }
+
   Future<List<String>> setNewMultiImage(List<XFile> newImages,fleaCount) async {
     int i =0;
     var downloadUrlsingle;

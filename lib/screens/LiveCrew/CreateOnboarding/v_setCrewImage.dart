@@ -404,13 +404,9 @@ class _SetCrewImageState extends State<SetCrewImage> {
                                       CustomFullScreenDialog.showDialog();
                                       try {
                                         _imageFile =
-                                        await _imageController
-                                            .getSingleImage(
-                                            ImageSource.gallery);
-                                        _croppedFile =
-                                        await _imageController.cropImage(_imageFile);
-                                        CustomFullScreenDialog
-                                            .cancelDialog();
+                                        await _imageController.getSingleImage(ImageSource.gallery);
+                                        _croppedFile = await _imageController.cropImage(_imageFile);
+                                        CustomFullScreenDialog.cancelDialog();
                                         crewImage = true;
                                         setState(() {});
                                         Navigator.pop(context);
@@ -520,9 +516,9 @@ class _SetCrewImageState extends State<SetCrewImage> {
                   if (_croppedFile != null) {
                     CustomFullScreenDialog.showDialog();
                     String _profileImageUrl =
-                    await _imageController.setNewImage(_croppedFile!);
+                    await _imageController.setNewImage_Crew(newImage: _croppedFile!, crewID: widget.crewName);
                     CustomFullScreenDialog.cancelDialog();
-                    Get.to(() => CrewFavoriteResort(crewName: widget.crewName, CrewImageUrl: _profileImageUrl, crewColor: widget.crewColor,));
+                    Get.to(() => CrewFavoriteResort(crewName: widget.crewName, CrewImageUrl: _profileImageUrl, crewColor: currentColor,));
                   } else {
                     Get.snackbar('이미지를 선택해주세요.', '다음에 설정하시려면 기본 이미지로 설정해주세요.',
                         snackPosition: SnackPosition.BOTTOM,
