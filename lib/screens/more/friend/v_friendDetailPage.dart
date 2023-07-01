@@ -872,25 +872,14 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                           ],
                                                         ));
                                                       } else {
-                                                        CustomFullScreenDialog
-                                                            .showDialog();
-                                                        await _userModelController
-                                                            .updateInvitation(
-                                                            friendUid: widget
-                                                                .uid);
-                                                        await _userModelController
-                                                            .updateInvitationAlarm(
-                                                            friendUid: widget
-                                                                .uid);
-                                                        await _userModelController
-                                                            .getCurrentUser(
-                                                            _userModelController
-                                                                .uid);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        await _userModelController.updateInvitation(friendUid: widget.uid);
+                                                        await _userModelController.updateInvitationAlarm(friendUid: widget.uid);
+                                                        await _userModelController.getCurrentUser(_userModelController.uid);
                                                         //await _userModelController.updateFriendUid(widget.uid);
                                                         //await _userModelController.updateWhoResistMe(friendUid: widget.uid!);
                                                         Navigator.pop(context);
-                                                        CustomFullScreenDialog
-                                                            .cancelDialog();
+                                                        CustomFullScreenDialog.cancelDialog();
                                                       }
                                                     },
                                                     child: Text(

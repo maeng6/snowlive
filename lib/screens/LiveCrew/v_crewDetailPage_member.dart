@@ -96,6 +96,8 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                               trailing:
                               (_liveCrewModelController.leaderUid == _userModelController.uid)
                               ?
+                              ( _userModelController.uid != crewMemberDocs[index]['uid'])
+                              ?
                               (_userModelController.friendUidList!.contains(crewMemberDocs[index]['uid']))
                               ? ElevatedButton(
                                 onPressed: (){
@@ -294,11 +296,14 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                             ],
                                                           ));
                                                         } else{
+
                                                           CustomFullScreenDialog.showDialog();
                                                           await _userModelController.updateInvitation(friendUid: crewMemberDocs[index]['uid']);
+                                                          await _userModelController.updateInvitationAlarm(friendUid:crewMemberDocs[index]['uid']);
                                                           await _userModelController.getCurrentUser(_userModelController.uid);
                                                           Navigator.pop(context);
                                                           CustomFullScreenDialog.cancelDialog();
+
                                                         }
                                                       }catch(e){
                                                         Navigator.pop(context);
@@ -429,8 +434,9 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                   ],
                                 ),
                               )
+                              :SizedBox(height: 10, width: 10, child: Container())
                                   :
-                              (_userModelController.friendUidList!.contains(crewMemberDocs[index]['uid']))
+                              (_userModelController.friendUidList!.contains(crewMemberDocs[index]['uid']) || _userModelController.uid == crewMemberDocs[index]['uid'])
                               ? SizedBox(height: 10, width: 10, child: Container())
                                 :ElevatedButton(
                                 onPressed: (){
