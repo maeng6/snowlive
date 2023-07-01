@@ -127,7 +127,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
               centerTitle: true,
               titleSpacing: 0,
               title: Text(
-                '라이브 크루',
+                '${_liveCrewModelController.crewName}',
                 style: TextStyle(
                     color: Color(0xFF111111),
                     fontWeight: FontWeight.bold,

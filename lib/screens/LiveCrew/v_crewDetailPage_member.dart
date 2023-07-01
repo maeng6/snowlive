@@ -26,101 +26,11 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
     final Size _size = MediaQuery.of(context).size;
     return Column(
       children: [
-        Obx(()=>ListTile(
-          leading: (_userModelController.profileImageUrl!.isNotEmpty)
-              ? GestureDetector(
-            onTap: () {
-              Get.to(() => FriendDetailPage(uid: _userModelController.uid));
-            },
-            child: Container(
-              width: 72,
-              child: Column(
-                children: [
-                  Stack(
-                    children: [
-                      Container(
-                          width: 56,
-                          height: 56,
-                          child: ExtendedImage.network(_userModelController.profileImageUrl!,
-                            enableMemoryCache: true,
-                            shape: BoxShape.circle,
-                            borderRadius: BorderRadius.circular(8),
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          )),
-                      (_userModelController.isOnLive == true)
-                          ? Positioned(
-                        child: Image.asset(
-                          'assets/imgs/icons/icon_badge_live.png',
-                          width: 32,
-                        ),
-                        right: 0,
-                        bottom: 0,
-                      )
-                          : Container()
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          )
-              : GestureDetector(
-            onTap: () {
-              Get.to(() => FriendDetailPage(uid: _userModelController.uid));
-            },
-            child: Container(
-              width: 72,
-              child: Column(
-                children: [
-                  Stack(
-                    children: [
-                      Container(
-                        width: 56,
-                        height: 56,
-                        child: ExtendedImage.asset(
-                          'assets/imgs/profile/img_profile_default_circle.png',
-                          enableMemoryCache: true,
-                          shape: BoxShape.circle,
-                          borderRadius:
-                          BorderRadius.circular(8),
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      (_userModelController.isOnLive == true)
-                          ? Positioned(
-                        child: Image.asset('assets/imgs/icons/icon_badge_live.png',
-                          width: 32,
-                        ),
-                        right: 0,
-                        bottom: 0,
-                      )
-                          : Container()
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          title: Text(_userModelController.displayName!,
-            style: TextStyle(
-                color: Color(0xFF111111),
-                fontWeight: FontWeight.normal,
-                fontSize: 16),
-          ),
-          subtitle: Text(_userModelController.stateMsg!,
-            style: TextStyle(
-                color: Color(0xFF949494),
-                fontWeight: FontWeight.normal,
-                fontSize: 14),
-          ),
-        )),
         StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('user')
               .where('liveCrew', arrayContains: _liveCrewModelController.crewID)
+              .orderBy('displayName', descending: false)
               .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
@@ -131,13 +41,48 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                 child: ListView.builder(
                   itemCount: crewMemberDocs.length,
                   itemBuilder: (BuildContext context, int index) {
-                    if(crewMemberDocs[index]['uid'] != _userModelController.uid)
                     return Column(
                       children: [
                         Container(
                           height: 64,
                           child: Center(
                             child: ListTile(
+                              leading:  (crewMemberDocs[index]['profileImageUrl'].isNotEmpty)
+                                  ? GestureDetector(
+                                onTap: () {
+                                  Get.to(() => FriendDetailPage(uid: crewMemberDocs[index]['uid']));
+                                },
+                                child: Container(
+                                    width: 50,
+                                    height: 50,
+                                    child: ExtendedImage.network(
+                                      crewMemberDocs[index]['profileImageUrl'],
+                                      enableMemoryCache: true,
+                                      shape: BoxShape.circle,
+                                      borderRadius: BorderRadius.circular(8),
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    )),
+                              )
+                                  : GestureDetector(
+                                onTap: () {
+                                  Get.to(() => FriendDetailPage(uid: crewMemberDocs[index]['uid']));
+                                },
+                                child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  child: ExtendedImage.asset(
+                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                    enableMemoryCache: true,
+                                    shape: BoxShape.circle,
+                                    borderRadius: BorderRadius.circular(8),
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
                               contentPadding: EdgeInsets.symmetric(horizontal: 0),
                               onTap: () {},
                               title: Text(
