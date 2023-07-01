@@ -150,8 +150,8 @@ class LiveMapController extends GetxController {
             await docRef.set({
               'passCountData': {},
               'lastPassTime': null,
-              'slopeScores': {}, // Add field for storing slope scores
-              'totalScore': 0, // Add field for storing total score
+              'slopeScores': {},
+              'totalScore': 0,
             });
 
             // Re-fetch the document after creating it
@@ -189,6 +189,17 @@ class LiveMapController extends GetxController {
             data['totalScore'] = totalScore;
 
             data['lastPassTime'] = lastPassTime;
+
+            // Update totalScore in user collection as well
+            DocumentReference userDocRef = FirebaseFirestore.instance
+                .collection('user')
+                .doc(_userModelController.uid);
+
+            userDocRef.set({
+              'totalScores': {
+                "${_userModelController.favoriteResort}": totalScore
+              }
+            }, SetOptions(merge: true));
 
             docRef.set(data, SetOptions(merge: true)).catchError((error) {
               print('Firestore 업데이트 에러: $error');
