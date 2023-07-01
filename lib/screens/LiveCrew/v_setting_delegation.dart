@@ -89,7 +89,105 @@ class _Setting_delegationState extends State<Setting_delegation> {
                               height: 64,
                               child: ListTile(
                                 contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                                onTap: () {},
+                                onTap: () async{
+                                  if(crewMemberDocs[index]['myCrew'] != ""){
+                                    Get.dialog(AlertDialog(
+                                      contentPadding: EdgeInsets.only(
+                                          bottom: 0,
+                                          left: 20,
+                                          right: 20,
+                                          top: 30),
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                              10.0)),
+                                      buttonPadding:
+                                      EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 0),
+                                      content: Text(
+                                        '이미 다른 크루의 리더입니다.\n다른 멤버를 선택해주세요.',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 15),
+                                      ),
+                                      actions: [
+                                        Row(
+                                          children: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text(
+                                                  '확인',
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Color(0xff377EEA),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                )),
+                                          ],
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                        )
+                                      ],
+                                    ));
+                                  }else{
+                                    Get.dialog(AlertDialog(
+                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                      content: Text(
+                                        '${crewMemberDocs[index]['displayName']}에게\n크루리더 권한을 위임하시겠습니까?',
+                                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                                      ),
+                                      actions: [
+                                        Row(
+                                          children: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text(
+                                                  '취소',
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Color(0xFF949494),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                )),
+                                            TextButton(
+                                                onPressed: () async {
+                                                  CustomFullScreenDialog.showDialog();
+                                                  await _userModelController.crewLeaderDelegation(
+                                                      memberUid: crewMemberDocs[index]['uid'],
+                                                      crewID: _liveCrewModelController.crewID);
+                                                  await _liveCrewModelController.crewLeaderDelegation_crewDoc(
+                                                      memberUid: crewMemberDocs[index]['uid'],
+                                                      memberDisplayName: crewMemberDocs[index]['displayName'],
+                                                      crewID: _liveCrewModelController.crewID);
+                                                  CustomFullScreenDialog.cancelDialog();
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                  Get.back();
+                                                },
+                                                child: Text(
+                                                  '위임',
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Color(0xFF3D83ED),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ))
+                                          ],
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                        )
+                                      ],
+                                    ));
+
+                                  }
+                                },
                                 title: Row(
                                   children: [
                                     (crewMemberDocs[index]['profileImageUrl'].isNotEmpty)

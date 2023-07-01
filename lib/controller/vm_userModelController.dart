@@ -790,6 +790,20 @@ class UserModelController extends GetxController{
     bool commentCheck = documentSnapshot.get('commentCheck');
     this._commentCheck!.value = commentCheck;
   }
+  Future<void> crewLeaderDelegation({required memberUid, required crewID}) async {
+    final  userMe = auth.currentUser!.uid;
+
+    await ref.collection('user').doc(userMe).update({
+      'myCrew': '',
+    });
+    await ref.collection('user').doc(memberUid).update({
+      'myCrew': crewID,
+    });
+
+    await getCurrentUser(auth.currentUser!.uid);
+
+  }
+
 
 
 

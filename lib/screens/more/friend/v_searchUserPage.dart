@@ -1,6 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 import '../../../controller/vm_searchUserController.dart';
@@ -354,7 +355,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                       right: 5),
                                   child: TextButton(
                                       onPressed: () {
-
+                                        Get.to(()=> FriendDetailPage(uid: foundUserModel!.uid));
                                       },
                                       style: TextButton.styleFrom(
                                         shape: const RoundedRectangleBorder(

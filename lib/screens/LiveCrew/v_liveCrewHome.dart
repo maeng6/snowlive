@@ -33,8 +33,43 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
         SpeedDialChild(
             child: Icon(Icons.add),
             label: '만들기',
-            onTap: (){
-              Get.to(FirstPage_createCrew());
+            onTap: () async{
+              CustomFullScreenDialog.showDialog();
+              await _userModelController.getCurrentUser(_userModelController.uid);
+              if(_userModelController.myCrew!.isEmpty || _userModelController.myCrew == '') {
+                Get.to(FirstPage_createCrew());
+              } else{
+                Get.dialog(AlertDialog(
+                  contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                  content: Text('크루는 1개만 운영할 수 있습니다.',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15),
+                  ),
+                  actions: [
+                    Row(
+                      children: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Get.back();
+                            },
+                            child: Text('확인',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Color(0xFF949494),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )),
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.end,
+                    )
+                  ],
+                ));
+              }
             },
         ),
         SpeedDialChild(

@@ -148,7 +148,11 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                   color: Color(0xFF111111),
                                 ),
                               ),
-                              trailing: ElevatedButton(
+                              trailing:
+                              (_liveCrewModelController.leaderUid == _userModelController.uid)
+                              ?
+                              (_userModelController.friendUidList!.contains(crewMemberDocs[index]['uid']))
+                              ? ElevatedButton(
                                 onPressed: (){
                                   showModalBottomSheet(
                                       context: context,
@@ -247,7 +251,367 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                         borderRadius: BorderRadius.circular(8)),
                                     side: BorderSide(
                                         color: Color(0xFFDEDEDE))
-                                ),),
+                                ),)
+                              : SizedBox(
+                                width: 200,
+                                height: 50,
+                                child: Row(children: [
+                                    ElevatedButton(
+                                      onPressed: (){
+                                        Get.dialog(AlertDialog(
+                                          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                          buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                          content: Text(
+                                            '${crewMemberDocs[index]['displayName']}님에게 친구요청을 보내시겠습니까?',
+                                            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                                          ),
+                                          actions: [
+                                            Row(
+                                              children: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text(
+                                                      '취소',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(0xFF949494),
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    )),
+                                                TextButton(
+                                                    onPressed: () async {
+                                                      try{
+                                                        await _userModelController.getCurrentUser(_userModelController.uid);
+                                                        if(_userModelController.whoIinvite!.contains(crewMemberDocs[index]['uid'])){
+                                                          Get.dialog(AlertDialog(
+                                                            contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                            elevation: 0,
+                                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                                            buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                            content: Text('이미 요청중인 회원입니다.',
+                                                              style: TextStyle(
+                                                                  fontWeight: FontWeight.w600,
+                                                                  fontSize: 15),
+                                                            ),
+                                                            actions: [
+                                                              Row(
+                                                                children: [
+                                                                  TextButton(
+                                                                      onPressed: () {
+                                                                        Navigator.pop(context);
+                                                                        Get.back();
+                                                                      },
+                                                                      child: Text('확인',
+                                                                        style: TextStyle(
+                                                                          fontSize: 15,
+                                                                          color: Color(0xFF949494),
+                                                                          fontWeight: FontWeight.bold,
+                                                                        ),
+                                                                      )),
+                                                                ],
+                                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                              )
+                                                            ],
+                                                          ));
+                                                        }else if(_userModelController.friendUidList!.contains(crewMemberDocs[index]['uid'])){
+                                                          Get.dialog(AlertDialog(
+                                                            contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                            elevation: 0,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(10.0)),
+                                                            buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                            content: Text('이미 추가된 친구입니다.',
+                                                              style: TextStyle(
+                                                                  fontWeight: FontWeight.w600,
+                                                                  fontSize: 15),
+                                                            ),
+                                                            actions: [
+                                                              Row(
+                                                                children: [
+                                                                  TextButton(
+                                                                      onPressed: () {
+                                                                        Navigator.pop(context);
+                                                                        Get.back();
+                                                                      },
+                                                                      child: Text('확인',
+                                                                        style: TextStyle(fontSize: 15,
+                                                                          color: Color(0xFF949494),
+                                                                          fontWeight: FontWeight.bold,
+                                                                        ),
+                                                                      )),
+                                                                ],
+                                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                              )
+                                                            ],
+                                                          ));
+                                                        } else{
+                                                          CustomFullScreenDialog.showDialog();
+                                                          await _userModelController.updateInvitation(friendUid: crewMemberDocs[index]['uid']);
+                                                          await _userModelController.getCurrentUser(_userModelController.uid);
+                                                          Navigator.pop(context);
+                                                          CustomFullScreenDialog.cancelDialog();
+                                                        }
+                                                      }catch(e){
+                                                        Navigator.pop(context);
+                                                      }
+                                                    },
+                                                    child: Text(
+                                                      '확인',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(0xFF3D83ED),
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ))
+                                              ],
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                            )
+                                          ],
+                                        ));
+                                      }, child: Text('친구추가', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF949494)),),
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: Color(0xFFffffff),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8)),
+                                          side: BorderSide(
+                                              color: Color(0xFFDEDEDE))
+                                      ),), //친추
+                                    ElevatedButton(
+                                      onPressed: (){
+                                        showModalBottomSheet(
+                                            context: context,
+                                            builder: (context) {
+                                              return Container(
+                                                color: Colors.white,
+                                                height: 180,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 30,
+                                                      ),
+                                                      Text(
+                                                        '${crewMemberDocs[index]['displayName']}님을 크루에서 내보내시겠습니까?',
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Color(0xFF111111)),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 30,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                        children: [
+                                                          Expanded(
+                                                            child: ElevatedButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(context);
+                                                              },
+                                                              child: Text(
+                                                                '취소',
+                                                                style: TextStyle(
+                                                                    color: Colors.white,
+                                                                    fontSize: 15,
+                                                                    fontWeight: FontWeight.bold),
+                                                              ),
+                                                              style: TextButton.styleFrom(
+                                                                  splashFactory: InkRipple.splashFactory,
+                                                                  elevation: 0,
+                                                                  minimumSize: Size(100, 56),
+                                                                  backgroundColor: Color(0xff555555),
+                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Expanded(
+                                                            child: ElevatedButton(
+                                                              onPressed: () async {
+                                                                try{
+                                                                  Navigator.pop(context);
+                                                                  CustomFullScreenDialog.showDialog();
+                                                                  await _liveCrewModelController.deleteCrewMember(
+                                                                      crewID: _liveCrewModelController.crewID,
+                                                                      memberUid: crewMemberDocs[index]['uid']
+                                                                  );
+                                                                  CustomFullScreenDialog.cancelDialog();
+                                                                }catch(e){
+                                                                  Navigator.pop(context);
+                                                                }
+                                                              },
+                                                              child: Text(
+                                                                '확인',
+                                                                style: TextStyle(
+                                                                    color: Colors.white,
+                                                                    fontSize: 15,
+                                                                    fontWeight:
+                                                                    FontWeight.bold),
+                                                              ),
+                                                              style: TextButton.styleFrom(
+                                                                  splashFactory: InkRipple.splashFactory,
+                                                                  elevation: 0,
+                                                                  minimumSize: Size(100, 56),
+                                                                  backgroundColor: Color(0xff2C97FB),
+                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            });
+                                      }, child: Text('내보내기', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF949494)),),
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: Color(0xFFffffff),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8)),
+                                          side: BorderSide(
+                                              color: Color(0xFFDEDEDE))
+                                      ),) //내보내기
+                                  ],
+                                ),
+                              )
+                                  :
+                              (_userModelController.friendUidList!.contains(crewMemberDocs[index]['uid']))
+                              ? SizedBox(height: 10, width: 10, child: Container())
+                                :ElevatedButton(
+                                onPressed: (){
+                                  Get.dialog(AlertDialog(
+                                    contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                    content: Text(
+                                      '${crewMemberDocs[index]['displayName']}님에게 친구요청을 보내시겠습니까?',
+                                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                                    ),
+                                    actions: [
+                                      Row(
+                                        children: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                '취소',
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xFF949494),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              )),
+                                          TextButton(
+                                              onPressed: () async {
+                                                try{
+                                                  await _userModelController.getCurrentUser(_userModelController.uid);
+                                                  if(_userModelController.whoIinvite!.contains(crewMemberDocs[index]['uid'])){
+                                                    Get.dialog(AlertDialog(
+                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                      elevation: 0,
+                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                      content: Text('이미 요청중인 회원입니다.',
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: 15),
+                                                      ),
+                                                      actions: [
+                                                        Row(
+                                                          children: [
+                                                            TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(context);
+                                                                  Get.back();
+                                                                },
+                                                                child: Text('확인',
+                                                                  style: TextStyle(
+                                                                    fontSize: 15,
+                                                                    color: Color(0xFF949494),
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
+                                                                )),
+                                                          ],
+                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                        )
+                                                      ],
+                                                    ));
+                                                  }else if(_userModelController.friendUidList!.contains(crewMemberDocs[index]['uid'])){
+                                                    Get.dialog(AlertDialog(
+                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                      elevation: 0,
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(10.0)),
+                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                      content: Text('이미 추가된 친구입니다.',
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: 15),
+                                                      ),
+                                                      actions: [
+                                                        Row(
+                                                          children: [
+                                                            TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(context);
+                                                                  Get.back();
+                                                                },
+                                                                child: Text('확인',
+                                                                  style: TextStyle(fontSize: 15,
+                                                                    color: Color(0xFF949494),
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
+                                                                )),
+                                                          ],
+                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                        )
+                                                      ],
+                                                    ));
+                                                  } else{
+                                                    CustomFullScreenDialog.showDialog();
+                                                    await _userModelController.updateInvitation(friendUid: crewMemberDocs[index]['uid']);
+                                                    await _userModelController.getCurrentUser(_userModelController.uid);
+                                                    Navigator.pop(context);
+                                                    CustomFullScreenDialog.cancelDialog();
+                                                  }
+                                                }catch(e){
+                                                  Navigator.pop(context);
+                                                }
+                                              },
+                                              child: Text(
+                                                '확인',
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xFF3D83ED),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ))
+                                        ],
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                      )
+                                    ],
+                                  ));
+                                }, child: Text('친구추가', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF949494)),),
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xFFffffff),
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    side: BorderSide(
+                                        color: Color(0xFFDEDEDE))
+                                ),) //친추
                             ),
                           ),
                         ),

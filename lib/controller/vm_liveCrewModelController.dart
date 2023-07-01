@@ -211,6 +211,19 @@ class LiveCrewModelController extends GetxController {
     this._memberUidList!.value = memberUidList;
   }
 
+  Future<void> crewLeaderDelegation_crewDoc({required memberUid,required memberDisplayName, required crewID}) async {
+
+    await ref.collection('liveCrew').doc(crewID).update({
+      'leaderUid': memberUid,
+    });
+    await ref.collection('liveCrew').doc(crewID).update({
+      'crewLeader': memberDisplayName,
+    });
+
+    await getCurrnetCrew(crewID);
+
+  }
+
 
 
 

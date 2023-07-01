@@ -151,7 +151,10 @@ class LoginController extends GetxController {
       'myFriendCommentUidList':[],
       'commentCheck':false,
       'whoIinvite':[],
-      'whoInviteMe':[]
+      'whoInviteMe':[],
+      'myCrew':'',
+      'liveCrew':[],
+      'applyCrewList':[]
     });
 
 
