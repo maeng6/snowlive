@@ -14,8 +14,12 @@ class RankingScreen extends StatefulWidget {
 }
 
 class _RankingScreenState extends State<RankingScreen> {
+
+  //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
+  //TODO: Dependency Injection**************************************************
+
 
   Future<Map<String, int>> _calculateRank(int myScore) async {
     int totalUsers = 0;
@@ -44,7 +48,6 @@ class _RankingScreenState extends State<RankingScreen> {
 
     return {'totalUsers': totalUsers, 'rank': myRank};
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +178,7 @@ class _RankingScreenState extends State<RankingScreen> {
                       future: _calculateRank(totalScore),
                       builder: (BuildContext context, AsyncSnapshot<Map<String, int>> snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          return Text('랭킹: 계산 중...');
+                          return Text('랭킹: 집계 중...');
                         } else if (snapshot.hasError) {
                           return Text('랭킹: 오류 발생');
                         } else {
@@ -195,6 +198,45 @@ class _RankingScreenState extends State<RankingScreen> {
                           return ListTile(
                             title: Text('슬로프명: $slopeName'),
                             subtitle: Text('라이딩 횟수: $passCount\n점수: $scoreForSlope'),
+                          );
+                        },
+                      ),
+                    ),
+                    Text('TOP 10'),
+                    Expanded(
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('user')
+                            .orderBy('totalScores.${_userModelController.favoriteResort}', descending: true)
+                            .limit(10)
+                            .snapshots(),
+                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            return Text("오류가 발생했습니다");
+                          }
+
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Lottie.asset('assets/json/loadings_wht_final.json');
+                          }
+
+                          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                            return Text("데이터가 없습니다");
+                          }
+
+                          List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+
+                          return ListView.builder(
+                            itemCount: documents.length,
+                            itemBuilder: (context, index) {
+                              Map<String, dynamic> userData = documents[index].data() as Map<String, dynamic>;
+                              Map<String, dynamic> totalScoresMap = userData['totalScores'] as Map<String, dynamic>;
+                              List<dynamic> totalScore = totalScoresMap.values.toList();
+                              String displayName = userData['displayName'] ?? '';
+                              return ListTile(
+                                title: Text('${index+1}위 - $displayName'),
+                                subtitle: Text('총 점수: ${totalScore[0]}'),
+                              );
+                            },
                           );
                         },
                       ),

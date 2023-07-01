@@ -372,11 +372,8 @@ class _ResortHomeState extends State<ResortHome>
                                     HapticFeedback.lightImpact();
                                     _dialogController.isChecked.value = false;
                                     CustomFullScreenDialog.showDialog();
-                                    await _userModelController
-                                        .updateIsOnLiveOff();
-                                    await _userModelController
-                                        .getCurrentUser(
-                                        _userModelController.uid);
+                                    await _userModelController.updateIsOnLiveOff();
+                                    await _userModelController.getCurrentUser(_userModelController.uid);
                                     setState(() {});
                                     CustomFullScreenDialog.cancelDialog();
                                     print('라이브 OFF');
@@ -386,13 +383,15 @@ class _ResortHomeState extends State<ResortHome>
                                   CustomFullScreenDialog.showDialog();
                                   HapticFeedback.lightImpact();
                                   await _liveMapController.startBackgroundLocationService();
+                                  await Future.delayed(Duration(seconds: 2)); // Wait for 1 second
+                                  await _userModelController.getCurrentUser(_userModelController.uid);
                                   if (_userModelController.withinBoundary == true) {
                                     Get.dialog(
                                       WillPopScope(
                                         onWillPop: () async => false, // Prevents dialog from closing on Android back button press
                                         child: GestureDetector(
                                           behavior: HitTestBehavior.translucent,
-                                          onTap: () {
+                                          onTap: () async {
                                             _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
                                             Get.back();
                                             CustomFullScreenDialog.cancelDialog();
@@ -407,7 +406,7 @@ class _ResortHomeState extends State<ResortHome>
                                                   Text("내 위치 공유 하기"),
                                                   IconButton(
                                                     icon: Icon(Icons.cancel_outlined),
-                                                    onPressed: () {
+                                                    onPressed: () async{
                                                       _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
                                                       Get.back();
                                                       CustomFullScreenDialog.cancelDialog();
@@ -1750,13 +1749,15 @@ class _ResortHomeState extends State<ResortHome>
                               HapticFeedback.lightImpact();
                               CustomFullScreenDialog.showDialog();
                               await _liveMapController.startBackgroundLocationService();
+                              await Future.delayed(Duration(seconds: 2)); // Wait for 1 second
+                              await _userModelController.getCurrentUser(_userModelController.uid);
                               if(_userModelController.withinBoundary == true) {
                                 Get.dialog(
                                   WillPopScope(
                                     onWillPop: () async => false, // Prevents dialog from closing on Android back button press
                                     child: GestureDetector(
                                       behavior: HitTestBehavior.translucent,
-                                      onTap: () {
+                                      onTap: () async{
                                         _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
                                         Get.back();
                                         CustomFullScreenDialog.cancelDialog();
@@ -1771,7 +1772,7 @@ class _ResortHomeState extends State<ResortHome>
                                               Text("내 위치 공유 하기"),
                                               IconButton(
                                                 icon: Icon(Icons.cancel_outlined),
-                                                onPressed: () {
+                                                onPressed: () async{
                                                   _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
                                                   Get.back();
                                                   CustomFullScreenDialog.cancelDialog();
@@ -1865,9 +1866,6 @@ class _ResortHomeState extends State<ResortHome>
                                   ),
                                   barrierDismissible: true,
                                 );
-
-
-
                               }else{
                                 CustomFullScreenDialog.cancelDialog();
                                 if(!isSnackbarShown){

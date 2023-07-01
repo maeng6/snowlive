@@ -59,7 +59,7 @@ class _MainHomeState extends State<MainHome> {
 
     _noticeController.getIsNewNotice();
 
-    return Scaffold(
+    return Obx(()=>Scaffold(
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white,
           elevation: 10,
@@ -237,6 +237,6 @@ class _MainHomeState extends State<MainHome> {
             LiveTalkScreen(),
             MoreTab(),
           ],
-        ));
+        )));
   }
 }

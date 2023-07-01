@@ -518,6 +518,9 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(uid).update({
       'myCrew': crewID,
     });
+    await ref.collection('user').doc(uid).update({
+      'liveCrew': crewID,
+    });
     await getCurrentUser(auth.currentUser!.uid);
   }
 
@@ -655,6 +658,14 @@ class UserModelController extends GetxController{
     final uid = user!.uid;
     await ref.collection('user').doc(uid).update({
       'isOnLive': false,
+    });
+  }
+
+  Future<void> updateWithinBoundaryOff() async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'withinBoundary': false,
     });
   }
 

@@ -77,14 +77,32 @@ class LiveMapController extends GetxController {
     }
 
     _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async{
-      updateFirebaseWithLocation(position);
-      checkAndUpdatePassCount(position);
-      _updateBoundaryStatus(position);
+      await updateFirebaseWithLocation(position);
+      await _resortModelController.getSelectedResort(_userModelController.favoriteResort);
+      // Check if within boundary before updating pass count
+      bool withinBoundary = await _updateBoundaryStatus(position);
+      bool isOnLive = await checkLiveStatus();
+
+      if (withinBoundary && isOnLive) {
+        await checkAndUpdatePassCount(position);
+      }
+
       await _userModelController.getCurrentUser(_userModelController.uid);
     });
+
   }
 
-  Future<void> _updateBoundaryStatus(Position position) async {
+  Future<bool> checkLiveStatus() async {
+    while(true) {
+      await _userModelController.getCurrentUser(_userModelController.uid);
+      if (_userModelController.isOnLive!) {
+        return true;
+      }
+      await Future.delayed(Duration(seconds: 1));
+    }
+  }
+
+  Future<bool> _updateBoundaryStatus(Position position) async {
     LatLng currentLatLng = LatLng(position.latitude, position.longitude);
     bool withinBoundary = _checkPositionWithinBoundary(currentLatLng);
 
@@ -98,6 +116,8 @@ class LiveMapController extends GetxController {
         print('Firestore 업데이트 에러: $error');
       });
     }
+
+    return withinBoundary;
   }
 
   Future<void> withinBoundaryOff() async{
