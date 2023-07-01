@@ -123,9 +123,13 @@ class _InvitedListPage_friendState extends State<InvitedListPage_friend> {
                                                               Navigator.pop(context);
                                                               CustomFullScreenDialog.showDialog();
                                                               await _userModelController.updateFriend(friendUid:inviDocs[index]['uid']);
+                                                              print('1');
                                                               await _userModelController.deleteInvitation(friendUid: inviDocs[index]['uid']);
+                                                              print('2');
                                                               await _userModelController.deleteInvitationAlarm(uid:_userModelController.uid);
+                                                              print('3');
                                                               await _userModelController.getCurrentUser(_userModelController.uid);
+                                                              print('4');
                                                               CustomFullScreenDialog.cancelDialog();
                                                             }catch(e){
                                                               Navigator.pop(context);

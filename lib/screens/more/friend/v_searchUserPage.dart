@@ -468,10 +468,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                     } else{
                                                       CustomFullScreenDialog.showDialog();
                                                       await _userModelController.updateInvitation(friendUid: foundUserModel!.uid);
+                                                      await _userModelController.updateInvitationAlarm(friendUid: foundUserModel!.uid);
                                                       await _userModelController.getCurrentUser(_userModelController.uid);
-
-                                                      //await _userModelController.updateFriendUid(foundUserModel!.uid);
-                                                      //await _userModelController.updateWhoResistMe(friendUid: foundUserModel!.uid);
                                                       Navigator.pop(context);
                                                       CustomFullScreenDialog.cancelDialog();
                                                     }
