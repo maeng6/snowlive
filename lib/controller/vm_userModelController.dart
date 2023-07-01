@@ -522,8 +522,9 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(uid).update({
       'myCrew': crewID,
     });
+
     await ref.collection('user').doc(uid).update({
-      'liveCrew': crewID,
+      'liveCrew': FieldValue.arrayUnion([crewID])
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
