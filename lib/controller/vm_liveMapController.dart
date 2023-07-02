@@ -78,7 +78,7 @@ class LiveMapController extends GetxController {
 
     _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async{
       await updateFirebaseWithLocation(position);
-      await _resortModelController.getSelectedResort(_userModelController.favoriteResort);
+      await _resortModelController.getFavoriteResort(_userModelController.favoriteResort);
       // Check if within boundary before updating pass count
       bool withinBoundary = await _updateBoundaryStatus(position);
       bool isOnLive = await checkLiveStatus();

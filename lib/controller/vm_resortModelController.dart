@@ -73,6 +73,22 @@ class ResortModelController extends GetxController{
 
   }
 
+  Future<void> getFavoriteResort(int? resortNum) async{
+    isLoading.value = true;
+    try {
+      ResortModel resortModel = ResortModel();
+      ResortModel selectedResort = resortModel.resortModelSelection(resortNum);
+      this._index!.value = selectedResort.index!;
+      this._instantIndex!.value = selectedResort.index!;
+      this._latitude!.value = selectedResort.latitude!;
+      this._longitude!.value = selectedResort.longitude!;
+    }catch(e){
+    }
+    isLoading.value = false;
+
+  }
+
+
   int? get index => _index!.value;
   int? get instantIndex => _instantIndex!.value;
   String? get resortName => _resortName.value;
