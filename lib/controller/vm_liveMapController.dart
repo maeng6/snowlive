@@ -219,6 +219,37 @@ class LiveMapController extends GetxController {
             docRef.set(data, SetOptions(merge: true)).catchError((error) {
               print('Firestore 업데이트 에러: $error');
             });
+
+            // Update the same data to the 'crew' collection
+            DocumentReference crewDocRef = FirebaseFirestore.instance
+                .collection('liveCrew')
+                .doc('${_userModelController.liveCrew}');
+
+            DocumentSnapshot crewDocSnapshot = await crewDocRef.get();
+
+            Map<String, dynamic> crewData = crewDocSnapshot.data() as Map<String, dynamic>;
+            Map<String, dynamic> crewPassCountData = crewData['passCountData'] ?? {};
+            Map<String, dynamic> crewSlopeScores = crewData['slopeScores'] ?? {};
+
+            // Update the pass count
+            int crewStoredPassCount = crewPassCountData[location.name] ?? 0;
+            crewPassCountData[location.name] = crewStoredPassCount + 1;
+
+            // Update the slope scores
+            int crewStoredSlopeScore = crewSlopeScores[location.name] ?? 0;
+            crewSlopeScores[location.name] = crewStoredSlopeScore + slopeScore;
+
+            // Update the total score
+            int crewTotalScore = crewData['totalScore'] ?? 0;
+            crewData['totalScore'] = crewTotalScore + slopeScore;
+
+            // Assign updated pass count and slope scores back to crew data
+            crewData['passCountData'] = crewPassCountData;
+            crewData['slopeScores'] = crewSlopeScores;
+
+            crewDocRef.set(crewData, SetOptions(merge: true)).catchError((error) {
+              print('Firestore crew 업데이트 에러: $error');
+            });
           }
         }
       }
