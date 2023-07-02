@@ -156,18 +156,19 @@ class LiveMapController extends GetxController {
 
         if (_userModelController.uid != null) {
           DocumentReference docRef = FirebaseFirestore.instance
-              .collection('user')
-              .doc(_userModelController.uid)
               .collection('Ranking')
-              .doc("${_userModelController.favoriteResort}")
-              .collection('${_seasonController.currentSeason}')
-              .doc('1');
+              .doc('${_seasonController.currentSeason}')
+              .collection('${_userModelController.favoriteResort}')
+              .doc("${_userModelController.uid}");
 
           DocumentSnapshot userSnapshot = await docRef.get();
 
           if (!userSnapshot.exists) {
             // Document doesn't exist. Let's create it!
             await docRef.set({
+              'uid': _userModelController.uid,
+              'displayName': _userModelController.displayName,
+              'profileImageUrl': _userModelController.profileImageUrl,
               'passCountData': {},
               'lastPassTime': null,
               'slopeScores': {},
@@ -210,17 +211,11 @@ class LiveMapController extends GetxController {
 
             data['lastPassTime'] = lastPassTime;
 
-            // Update totalScore in user collection as well
-            DocumentReference userDocRef = FirebaseFirestore.instance
-                .collection('user')
-                .doc(_userModelController.uid);
+            // Ensure data includes the updated displayName & profileImageUrl
+            data['displayName'] = _userModelController.displayName;
+            data['profileImageUrl'] = _userModelController.profileImageUrl;
 
-            userDocRef.set({
-              'totalScores': {
-                "${_userModelController.favoriteResort}": totalScore
-              }
-            }, SetOptions(merge: true));
-
+            // Update document using data
             docRef.set(data, SetOptions(merge: true)).catchError((error) {
               print('Firestore 업데이트 에러: $error');
             });
@@ -229,6 +224,7 @@ class LiveMapController extends GetxController {
       }
     }
   }
+
 
 
   bool _checkPositionWithinBoundary(LatLng position) {
