@@ -167,8 +167,6 @@ class LiveMapController extends GetxController {
             // Document doesn't exist. Let's create it!
             await docRef.set({
               'uid': _userModelController.uid,
-              'displayName': _userModelController.displayName,
-              'profileImageUrl': _userModelController.profileImageUrl,
               'passCountData': {},
               'lastPassTime': null,
               'slopeScores': {},
@@ -210,10 +208,6 @@ class LiveMapController extends GetxController {
             data['totalScore'] = totalScore;
 
             data['lastPassTime'] = lastPassTime;
-
-            // Ensure data includes the updated displayName & profileImageUrl
-            data['displayName'] = _userModelController.displayName;
-            data['profileImageUrl'] = _userModelController.profileImageUrl;
 
             // Update document using data
             docRef.set(data, SetOptions(merge: true)).catchError((error) {
