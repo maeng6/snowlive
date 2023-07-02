@@ -164,10 +164,37 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
         .where('uid', isEqualTo: widget.uid )
         .snapshots(),
     builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-      if (!snapshot.hasData || snapshot.data == null) {}
-      else if (snapshot.data!.docs.isNotEmpty) {
-        final friendDocs = snapshot.data!.docs;
-        final List whoInviteMe = friendDocs[0]['whoInviteMe'];
+      
+      if (snapshot.connectionState == ConnectionState.waiting) {
+      return Center(child: CircularProgressIndicator(),);}
+
+      if (!snapshot.hasData || snapshot.data == null || snapshot.data!.docs.isEmpty) {
+        return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            children: [
+              Center(
+                child: Icon(Icons.no_accounts_outlined,
+                  size: 80,
+                ),
+              ),
+              Center(
+                child: Text('이미 탈퇴한 회원입니다',
+                style: TextStyle(
+                  fontSize: 16
+                ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+      }
+
+      final friendDocs = snapshot.data!.docs;
+      final List whoInviteMe = friendDocs[0]['whoInviteMe'];
+
       return Padding(
         padding: EdgeInsets.only(top: _statusBarSize + 58),
         child: Stack(
@@ -2044,11 +2071,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
           ],
         ),
       );
-      }
-      else if (snapshot.connectionState == ConnectionState.waiting) {}
-      return Center(
-        child: CircularProgressIndicator(),
-      );
+
     }
     ),
         )

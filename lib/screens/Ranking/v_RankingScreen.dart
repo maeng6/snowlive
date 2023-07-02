@@ -33,8 +33,10 @@ class _RankingScreenState extends State<RankingScreen> {
     totalUsers = userCollection.docs.length;
 
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('user')
-        .orderBy('totalScores.${_userModelController.favoriteResort}', descending: true)
+        .collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${_userModelController.favoriteResort}')
+        .orderBy('totalScore', descending: true)
         .get();
 
     List<QueryDocumentSnapshot> documents = querySnapshot.docs;
@@ -84,12 +86,10 @@ class _RankingScreenState extends State<RankingScreen> {
             color: Color(0xFFF1F1F3),
             child: StreamBuilder<DocumentSnapshot>(
               stream: FirebaseFirestore.instance
-                  .collection('user')
-                  .doc(_userModelController.uid)
                   .collection('Ranking')
-                  .doc("${_userModelController.favoriteResort}")
-                  .collection('${_seasonController.currentSeason}')
-                  .doc('1')
+                  .doc('${_seasonController.currentSeason}')
+                  .collection('${_userModelController.favoriteResort}')
+                  .doc("${_userModelController.uid}")
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<DocumentSnapshot> snapshot) {
@@ -206,8 +206,10 @@ class _RankingScreenState extends State<RankingScreen> {
                     Expanded(
                       child: StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance
-                            .collection('user')
-                            .orderBy('totalScores.${_userModelController.favoriteResort}', descending: true)
+                            .collection('Ranking')
+                            .doc('${_seasonController.currentSeason}')
+                            .collection('${_userModelController.favoriteResort}')
+                            .orderBy('totalScore', descending: true)
                             .limit(10)
                             .snapshots(),
                         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -223,18 +225,14 @@ class _RankingScreenState extends State<RankingScreen> {
                             return Text("데이터가 없습니다");
                           }
 
-                          List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+                          final documents = snapshot.data!.docs;
 
                           return ListView.builder(
                             itemCount: documents.length,
                             itemBuilder: (context, index) {
-                              Map<String, dynamic> userData = documents[index].data() as Map<String, dynamic>;
-                              Map<String, dynamic> totalScoresMap = userData['totalScores'] as Map<String, dynamic>;
-                              List<dynamic> totalScore = totalScoresMap.values.toList();
-                              String displayName = userData['displayName'] ?? '';
                               return ListTile(
-                                title: Text('${index+1}위 - $displayName'),
-                                subtitle: Text('총 점수: ${totalScore[0]}'),
+                                title: Text(documents[index].get('displayName')),
+                                subtitle: Text(documents[index].get('totalScore').toString()),
                               );
                             },
                           );
