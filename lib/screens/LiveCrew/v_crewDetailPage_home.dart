@@ -181,7 +181,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                           ElevatedButton(
                             onPressed:
                                 () {
-                              if(_userModelController.liveCrew!.length<=2){
+                              if(_userModelController.liveCrew!.isEmpty || _userModelController.liveCrew == ''){
                                 Get.dialog(AlertDialog(
                                   contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
                                   elevation: 0,
@@ -209,60 +209,60 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                         TextButton(
                                             onPressed: () async {
                                               if(_userModelController.applyCrewList!.contains(_liveCrewModelController.crewID)){
-                                                Get.dialog(AlertDialog(
-                                                  contentPadding: EdgeInsets.only(
-                                                      bottom: 0,
-                                                      left: 20,
-                                                      right: 20,
-                                                      top: 30),
-                                                  elevation: 0,
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0)),
-                                                  buttonPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 20,
-                                                      vertical: 0),
-                                                  content: Text(
-                                                    '이미 요청중입니다.',
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.w600,
-                                                        fontSize: 15),
-                                                  ),
-                                                  actions: [
-                                                    Row(
-                                                      children: [
-                                                        TextButton(
-                                                            onPressed: () async {
-                                                              Navigator.pop(context);
-                                                              Navigator.pop(context);
-                                                            },
-                                                            child: Text(
-                                                              '확인',
-                                                              style: TextStyle(
-                                                                fontSize: 15,
-                                                                color: Color(
-                                                                    0xff377EEA),
-                                                                fontWeight: FontWeight
-                                                                    .bold,
-                                                              ),
-                                                            )),
+                                                    Get.dialog(AlertDialog(
+                                                      contentPadding: EdgeInsets.only(
+                                                          bottom: 0,
+                                                          left: 20,
+                                                          right: 20,
+                                                          top: 30),
+                                                      elevation: 0,
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0)),
+                                                      buttonPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 20,
+                                                          vertical: 0),
+                                                      content: Text(
+                                                        '이미 요청중입니다.',
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: 15),
+                                                      ),
+                                                      actions: [
+                                                        Row(
+                                                          children: [
+                                                            TextButton(
+                                                                onPressed: () async {
+                                                                  Navigator.pop(context);
+                                                                  Navigator.pop(context);
+                                                                },
+                                                                child: Text(
+                                                                  '확인',
+                                                                  style: TextStyle(
+                                                                    fontSize: 15,
+                                                                    color: Color(
+                                                                        0xff377EEA),
+                                                                    fontWeight: FontWeight
+                                                                        .bold,
+                                                                  ),
+                                                                )),
+                                                          ],
+                                                          mainAxisAlignment: MainAxisAlignment
+                                                              .center,
+                                                        )
                                                       ],
-                                                      mainAxisAlignment: MainAxisAlignment
-                                                          .center,
-                                                    )
-                                                  ],
-                                                ));
-                                              } else {
-                                                CustomFullScreenDialog.showDialog();
-                                                await _liveCrewModelController.updateInvitation_crew(crewID: _liveCrewModelController.crewID);
-                                                await _userModelController.getCurrentUser(_userModelController.uid);
-                                                CustomFullScreenDialog.cancelDialog();
-                                                Navigator.pop(context);
-                                                Navigator.pop(context);
-                                              }
-                                            },
+                                                    ));
+                                                  } else{
+                                                  CustomFullScreenDialog.showDialog();
+                                                  await _liveCrewModelController.updateInvitation_crew(crewID: _liveCrewModelController.crewID);
+                                                  await _userModelController.getCurrentUser(_userModelController.uid);
+                                                  CustomFullScreenDialog.cancelDialog();
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                  }
+                                                },
                                             child: Text(
                                               '확인',
                                               style: TextStyle(
@@ -277,6 +277,36 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                   ],
                                 ));
                               }else{
+                                Get.dialog(AlertDialog(
+                                  contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                  content: Text('라이브 크루는 1개만 가입할 수 있습니다.',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 15),
+                                  ),
+                                  actions: [
+                                    Row(
+                                      children: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              Get.back();
+                                            },
+                                            child: Text('확인',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Color(0xFF949494),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            )),
+                                      ],
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                    )
+                                  ],
+                                ));
 
                               }
                                 },

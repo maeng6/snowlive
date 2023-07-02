@@ -32,7 +32,6 @@ class UserModel {
     this.whoResistMeBF,
     this.whoRepoMe,
     this.withinBoundary,
-    this.myCrew,
     this.liveCrew,
     this.applyCrewList,
     this.totalScores
@@ -70,8 +69,7 @@ class UserModel {
   List? whoResistMeBF;
   List? whoRepoMe;
   bool? withinBoundary;
-  String? myCrew;
-  List? liveCrew;
+  String? liveCrew;
   List? applyCrewList;
   Map? totalScores;
 
@@ -105,8 +103,9 @@ class UserModel {
       whoResistMeBF = json['whoResistMeBF'];
       withinBoundary = json['withinBoundary'];
       whoRepoMe = json['whoRepoMe'];
-      myCrew = json['myCrew'];
+      print('1');
       liveCrew = json['liveCrew'];
+      print('2');
       applyCrewList = json['applyCrewList'];
       totalScores = json['totalScores'];
 

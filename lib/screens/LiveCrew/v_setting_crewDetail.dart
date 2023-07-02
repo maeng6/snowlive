@@ -419,8 +419,6 @@ class Setting_crewDetail extends StatelessWidget {
                                                 CustomFullScreenDialog.showDialog();
                                                 await _liveCrewModelController
                                                     .deleteCrew(crewID: _liveCrewModelController.crewID);
-                                                await _userModelController
-                                                    .deleteMyCrew();
                                                 CustomFullScreenDialog.cancelDialog();
                                                 Get.to(() => LiveCrewHome());
                                               } catch (e) {

@@ -30,8 +30,7 @@ class UserModelController extends GetxController{
   RxList? _fleaChatUidList=[].obs;
   RxList? _myFriendCommentUidList=[].obs;
   RxString? _resortNickname =''.obs;
-  RxString? _myCrew =''.obs;
-  RxList? _liveCrew =[].obs;
+  RxString? _liveCrew =''.obs;
   RxInt? _fleaChatCount = 0.obs;
   RxString? _phoneNum=''.obs;
   RxBool? _phoneAuth=false.obs;
@@ -68,8 +67,7 @@ class UserModelController extends GetxController{
   List? get fleaChatUidList => _fleaChatUidList;
   List? get myFriendCommentUidList => _myFriendCommentUidList;
   String? get resortNickname => _resortNickname!.value;
-  String? get myCrew => _myCrew!.value;
-  List? get liveCrew => _liveCrew!;
+  String? get liveCrew => _liveCrew!.value;
   int? get fleaChatCount => _fleaChatCount!.value;
   String? get phoneNum => _phoneNum!.value;
   bool? get phoneAuth => _phoneAuth!.value;
@@ -137,7 +135,6 @@ class UserModelController extends GetxController{
           this._myFriendCommentUidList!.value = userModel.myFriendCommentUidList!;
           this._liveFriendUidList!.value = userModel.liveFriendUidList!;
           this._resistDate = userModel.resistDate!;
-          this._myCrew!.value = userModel.myCrew!;
           this._newChat!.value = userModel.newChat!;
           this._stateMsg!.value = userModel.stateMsg!;
           this._isOnLive!.value = userModel.isOnLive!;
@@ -150,6 +147,7 @@ class UserModelController extends GetxController{
           this._withinBoundary!.value = userModel.withinBoundary!;
           this._applyCrewList!.value = userModel.applyCrewList!;
           this._totalScores!.value = userModel.totalScores!;
+          this._liveCrew!.value = userModel.liveCrew!;
           try {
             this._fleaChatUidList!.value = userModel.fleaChatUidList!;
           }catch(e){};
@@ -216,8 +214,7 @@ class UserModelController extends GetxController{
       'commentCheck':false,
       'whoIinvite':[],
       'whoInviteMe':[],
-      'myCrew':'',
-      'liveCrew':[],
+      'liveCrew':'',
       'applyCrewList':[],
       'totalScores':<String, dynamic>{},
     });
@@ -247,16 +244,6 @@ class UserModelController extends GetxController{
     final uid = user!.uid;
     await ref.collection('user').doc(uid).update({
       'profileImageUrl': '',
-    });
-    await getCurrentUser(auth.currentUser!.uid);
-  }
-
-
-  Future<void> deleteMyCrew() async {
-    final User? user = auth.currentUser;
-    final uid = user!.uid;
-    await ref.collection('user').doc(uid).update({
-      'myCrew': '',
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -516,15 +503,12 @@ class UserModelController extends GetxController{
     await getCurrentUser(auth.currentUser!.uid);
   } //선택한 리조트를 파베유저문서에 업데이트
 
-  Future<void> updateMyCrew(crewID) async {
+  Future<void> updateLiveCrew(crewID) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
-    await ref.collection('user').doc(uid).update({
-      'myCrew': crewID,
-    });
 
     await ref.collection('user').doc(uid).update({
-      'liveCrew': FieldValue.arrayUnion([crewID])
+      'liveCrew': crewID
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -806,28 +790,6 @@ class UserModelController extends GetxController{
     bool commentCheck = documentSnapshot.get('commentCheck');
     this._commentCheck!.value = commentCheck;
   }
-  Future<void> crewLeaderDelegation({required memberUid, required crewID}) async {
-    final  userMe = auth.currentUser!.uid;
-
-    await ref.collection('user').doc(userMe).update({
-      'myCrew': '',
-    });
-    await ref.collection('user').doc(memberUid).update({
-      'myCrew': crewID,
-    });
-
-    await getCurrentUser(auth.currentUser!.uid);
-
-  }
-
-
-
-
-
-
-
-
-
 
 }
 

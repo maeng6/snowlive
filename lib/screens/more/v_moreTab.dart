@@ -3,9 +3,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/screens/LiveCrew/v_liveCrewHome.dart';
-import 'package:snowlive3/screens/more/liveMap/v_liveMap_Screen.dart';
 import 'package:snowlive3/screens/more/v_contactUsPage.dart';
 import 'package:snowlive3/screens/more/v_favoriteResort_moreTab.dart';
 import 'package:snowlive3/screens/more/friend/v_friendListPage.dart';
@@ -17,6 +15,7 @@ import 'package:snowlive3/screens/more/v_setting_moreTab.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
 import '../../controller/vm_noticeController.dart';
 import '../../controller/vm_userModelController.dart';
+import '../LiveCrew/v_liveCrewHome_firstUser.dart';
 import '../bulletin/v_bulletin_Screen.dart';
 import '../fleaMarket/v_fleaMarket_Screen.dart';
 
@@ -583,7 +582,12 @@ class _MoreTabState extends State<MoreTab> {
                       children: [
                         GestureDetector(
                           onTap: (){
+                            if(_userModelController.liveCrew!.isEmpty){
+                              Get.to(()=>LiveCrewHome_firstUser());
+                            }
+                            else{
                             Get.to(()=>LiveCrewHome());
+                            }
                           },
                           child: Column(
                             children: [

@@ -101,11 +101,7 @@ class LiveCrewModelController extends GetxController {
       await crews.doc(crewID).delete();
 
       await ref.collection('user').doc(uid).update({
-        'liveCrew': FieldValue.arrayRemove([crewID])
-      });
-
-      await ref.collection('user').doc(uid).update({
-        'myCrew': FieldValue.arrayRemove([crewID])
+        'liveCrew': ''
       });
 
     }catch(e){
@@ -116,7 +112,7 @@ class LiveCrewModelController extends GetxController {
   Future<void> deleteCrewMember({required crewID, required memberUid}) async {
     try {
       await ref.collection('user').doc(memberUid).update({
-        'liveCrew': FieldValue.arrayRemove([crewID])
+        'liveCrew': ''
       });
 
       await ref.collection('liveCrew').doc(crewID).update({
@@ -197,7 +193,7 @@ class LiveCrewModelController extends GetxController {
   Future<void> updateCrewMember({required applyUid,required crewID}) async {
 
     await ref.collection('user').doc(applyUid).update({
-      'liveCrew': FieldValue.arrayUnion([crewID])
+      'liveCrew': crewID
     });
     await ref.collection('liveCrew').doc(crewID).update({
       'memberUidList': FieldValue.arrayUnion([applyUid])

@@ -152,7 +152,6 @@ class LoginController extends GetxController {
       'commentCheck':false,
       'whoIinvite':[],
       'whoInviteMe':[],
-      'myCrew':'',
       'liveCrew':[],
       'applyCrewList':[],
       'totalScores':<String, dynamic>{},
