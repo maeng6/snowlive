@@ -230,10 +230,24 @@ class _RankingScreenState extends State<RankingScreen> {
                           return ListView.builder(
                             itemCount: documents.length,
                             itemBuilder: (context, index) {
-                              return ListTile(
-                                title: Text(documents[index].get('displayName')),
-                                subtitle: Text(documents[index].get('totalScore').toString()),
-                              );
+                              return
+                                StreamBuilder(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('user')
+                                        .where('uid', isEqualTo: documents[index].get('uid'))
+                                        .snapshots(),
+                                    builder:  (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+
+
+
+                                      final userDoc = snapshot.data!.docs;
+                                      return  ListTile(
+                                        title: Text(userDoc[0]['displayName']),
+                                        subtitle: Text(documents[index].get('totalScore').toString()),
+                                      );
+                                    });
+
+
                             },
                           );
                         },
