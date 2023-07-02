@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/model/m_slopeScoreModel.dart';
+
+import '../more/friend/v_friendDetailPage.dart';
 
 class RankingScreen extends StatefulWidget {
   const RankingScreen({Key? key}) : super(key: key);
@@ -237,17 +240,53 @@ class _RankingScreenState extends State<RankingScreen> {
                                         .where('uid', isEqualTo: documents[index].get('uid'))
                                         .snapshots(),
                                     builder:  (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-
-
-
-                                      final userDoc = snapshot.data!.docs;
-                                      return  ListTile(
-                                        title: Text(userDoc[0]['displayName']),
-                                        subtitle: Text(documents[index].get('totalScore').toString()),
-                                      );
+                                      if (!snapshot.hasData || snapshot.data == null) {}
+                                      else if (snapshot.data!.docs.isNotEmpty) {
+                                        final userDoc = snapshot.data!.docs;
+                                        return  ListTile(
+                                          leading:  (userDoc[0]['profileImageUrl'].isNotEmpty)
+                                              ? GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => FriendDetailPage(uid: userDoc[0]['uid']));
+                                            },
+                                            child: Container(
+                                                width: 50,
+                                                height: 50,
+                                                child: ExtendedImage.network(
+                                                  userDoc[0]['profileImageUrl'],
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape.circle,
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  width: 50,
+                                                  height: 50,
+                                                  fit: BoxFit.cover,
+                                                )),
+                                          )
+                                              : GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => FriendDetailPage(uid: userDoc[0]['uid']));
+                                            },
+                                            child: Container(
+                                              width: 50,
+                                              height: 50,
+                                              child: ExtendedImage.asset(
+                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                enableMemoryCache: true,
+                                                shape: BoxShape.circle,
+                                                borderRadius: BorderRadius.circular(8),
+                                                width: 50,
+                                                height: 50,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          title: Text(userDoc[0]['displayName']),
+                                          subtitle: Text(documents[index].get('totalScore').toString()),
+                                        );
+                                      }
+                                      else if (snapshot.connectionState == ConnectionState.waiting) {}
+                                      return Center(child: CircularProgressIndicator(),);
                                     });
-
-
                             },
                           );
                         },
