@@ -10,7 +10,7 @@ class LocationModel {
 List<LocationModel> locations = [
   LocationModel(
     name: '휘닉스평창 1',
-    coordinates: LatLng(37.576830, 128.314764),
+    coordinates: LatLng(37.391105, 127.109500),
   ),
   LocationModel(
     name: '휘닉스평창 2',

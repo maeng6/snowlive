@@ -167,7 +167,7 @@ class LiveMapController extends GetxController {
         location.coordinates.longitude,
       );
 
-      bool withinBoundary = distanceInMeters <= 100;
+      bool withinBoundary = distanceInMeters <= 10;
 
       if (withinBoundary) {
         DateTime now = DateTime.now();
@@ -204,7 +204,7 @@ class LiveMapController extends GetxController {
               ? (data['lastPassTime'] as Timestamp).toDate()
               : null;
 
-          if (storedLastPassTime == null || now.difference(storedLastPassTime).inMinutes >= 10) {
+          if (storedLastPassTime == null || now.difference(storedLastPassTime).inMinutes >= 1) {
             storedPassCount += 1;
             DateTime lastPassTime = now;
 
