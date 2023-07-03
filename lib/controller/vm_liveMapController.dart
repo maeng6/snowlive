@@ -268,8 +268,10 @@ class LiveMapController extends GetxController {
     }
   }
 
-
-
+  Future<void> stopBackgroundLocationUpdate() async {
+    await bg.BackgroundGeolocation.stop();
+    bg.BackgroundGeolocation.removeListeners();
+  }
 
 
   Future<bool> checkLiveStatus() async {
