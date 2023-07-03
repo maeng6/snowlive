@@ -103,9 +103,7 @@ class UserModel {
       whoResistMeBF = json['whoResistMeBF'];
       withinBoundary = json['withinBoundary'];
       whoRepoMe = json['whoRepoMe'];
-      print('1');
       liveCrew = json['liveCrew'];
-      print('2');
       applyCrewList = json['applyCrewList'];
       totalScores = json['totalScores'];
 
