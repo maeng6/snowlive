@@ -373,6 +373,7 @@ class _ResortHomeState extends State<ResortHome>
                                     _dialogController.isChecked.value = false;
                                     CustomFullScreenDialog.showDialog();
                                     await _userModelController.updateIsOnLiveOff();
+                                    await _liveMapController.stopBackgroundLocationUpdate();
                                     await _userModelController.getCurrentUser(_userModelController.uid);
                                     setState(() {});
                                     CustomFullScreenDialog.cancelDialog();
@@ -393,6 +394,7 @@ class _ResortHomeState extends State<ResortHome>
                                           behavior: HitTestBehavior.translucent,
                                           onTap: () async {
                                             _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                            _liveMapController.stopBackgroundLocationUpdate();
                                             Get.back();
                                             CustomFullScreenDialog.cancelDialog();
                                             print('라이브 OFF');
@@ -408,6 +410,7 @@ class _ResortHomeState extends State<ResortHome>
                                                     icon: Icon(Icons.cancel_outlined),
                                                     onPressed: () async{
                                                       _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                                      _liveMapController.stopBackgroundLocationUpdate();
                                                       Get.back();
                                                       CustomFullScreenDialog.cancelDialog();
                                                       print('라이브 OFF');
@@ -1741,6 +1744,7 @@ class _ResortHomeState extends State<ResortHome>
                               _dialogController.isChecked.value = false;
                               CustomFullScreenDialog.showDialog();
                               await _userModelController.updateIsOnLiveOff();
+                              await _liveMapController.stopBackgroundLocationUpdate();
                               await _userModelController.getCurrentUser(_userModelController.uid);
                               setState(() {});
                               CustomFullScreenDialog.cancelDialog();
@@ -1759,6 +1763,7 @@ class _ResortHomeState extends State<ResortHome>
                                       behavior: HitTestBehavior.translucent,
                                       onTap: () async{
                                         _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                        _liveMapController.stopBackgroundLocationUpdate();
                                         Get.back();
                                         CustomFullScreenDialog.cancelDialog();
                                         print('라이브 OFF');
@@ -1774,6 +1779,7 @@ class _ResortHomeState extends State<ResortHome>
                                                 icon: Icon(Icons.cancel_outlined),
                                                 onPressed: () async{
                                                   _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                                  _liveMapController.stopBackgroundLocationUpdate();
                                                   Get.back();
                                                   CustomFullScreenDialog.cancelDialog();
                                                   print('라이브 OFF');

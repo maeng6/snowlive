@@ -12,6 +12,7 @@ import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/model/m_slopeLocationModel.dart';
 import 'package:snowlive3/model/m_slopeScoreModel.dart';
+import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 
 class LiveMapController extends GetxController {
 
@@ -76,66 +77,83 @@ class LiveMapController extends GetxController {
       }
     }
 
-    _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async{
-      await updateFirebaseWithLocation(position);
-      await _resortModelController.getFavoriteResort(_userModelController.favoriteResort);
-      // Check if within boundary before updating pass count
-      bool withinBoundary = await _updateBoundaryStatus(position);
-      bool isOnLive = await checkLiveStatus();
+    // 위치 서비스를 시작 (포그라운드)
+    _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
+      try {
+        await updateFirebaseWithLocation(position);
+        await _resortModelController.getFavoriteResort(_userModelController.favoriteResort);
+        // Check if within boundary before updating pass count
+        bool withinBoundary = await _updateBoundaryStatus(position);
+        bool isOnLive = await checkLiveStatus();
 
-      if (withinBoundary && isOnLive) {
-        await checkAndUpdatePassCount(position);
+        if (withinBoundary && isOnLive) {
+          await checkAndUpdatePassCount(position).catchError((error) {
+            print('점수 업데이트 오류: $error');
+          });
+        }
+
+        await _userModelController.getCurrentUser(_userModelController.uid);
+      } catch (e, stackTrace) {
+        print('위치 서비스 오류: $e');
+        print('Stack trace: $stackTrace');
       }
-
-      await _userModelController.getCurrentUser(_userModelController.uid);
     });
 
+    // 백그라운드로 전환될 때 위치 업데이트를 시작
+    try {
+      await startBackgroundLocationUpdate();
+    } catch (e, stackTrace) {
+      print('백그라운드 위치 업데이트 오류: $e');
+      print('Stack trace: $stackTrace');
+    }
   }
 
-  Future<bool> checkLiveStatus() async {
-    while(true) {
-      await _userModelController.getCurrentUser(_userModelController.uid);
-      if (_userModelController.isOnLive!) {
-        return true;
+  Future<void> startBackgroundLocationUpdate() async {
+    await bg.BackgroundGeolocation.ready(bg.Config(
+      desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
+      distanceFilter: 1.0,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      logLevel: bg.Config.LOG_LEVEL_VERBOSE,
+      locationUpdateInterval: 10000,
+    ));
+
+    await bg.BackgroundGeolocation.start();
+
+    bg.BackgroundGeolocation.onLocation((bg.Location location) async {
+      try {
+        double latitude = location.coords.latitude;
+        double longitude = location.coords.longitude;
+
+        Position position = Position(
+          latitude: latitude,
+          longitude: longitude,
+          accuracy: location.coords.accuracy,
+          altitude: location.coords.altitude,
+          heading: location.coords.heading,
+          speed: location.coords.speed,
+          speedAccuracy: location.coords.speedAccuracy,
+          timestamp: DateTime.parse(location.timestamp),
+        );
+
+        await updateFirebaseWithLocation(position);
+        await _resortModelController.getFavoriteResort(_userModelController.favoriteResort);
+        // Check if within boundary before updating pass count
+        bool withinBoundary = await _updateBoundaryStatus(position);
+        bool isOnLive = await checkLiveStatus();
+
+        if (withinBoundary && isOnLive) {
+          await checkAndUpdatePassCount(position).catchError((error) {
+            print('점수 업데이트 오류: $error');
+          });
+        }
+
+        await _userModelController.getCurrentUser(_userModelController.uid);
+      } catch (e, stackTrace) {
+        print('백그라운드 위치 업데이트 오류: $e');
+        print('Stack trace: $stackTrace');
       }
-      await Future.delayed(Duration(seconds: 1));
-    }
-  }
-
-  Future<bool> _updateBoundaryStatus(Position position) async {
-    LatLng currentLatLng = LatLng(position.latitude, position.longitude);
-    bool withinBoundary = _checkPositionWithinBoundary(currentLatLng);
-
-    if (_userModelController.uid != null) {
-      await FirebaseFirestore.instance
-          .collection('user')
-          .doc(_userModelController.uid)
-          .set({
-        'withinBoundary': withinBoundary,
-      }, SetOptions(merge: true)).catchError((error) {
-        print('Firestore 업데이트 에러: $error');
-      });
-    }
-
-    return withinBoundary;
-  }
-
-  Future<void> withinBoundaryOff() async{
-    if (_userModelController.uid != null) {
-      await FirebaseFirestore.instance
-          .collection('user')
-          .doc(_userModelController.uid)
-          .set({
-        'withinBoundary': false,
-      }, SetOptions(merge: true)).catchError((error) {
-        print('Firestore 업데이트 에러: $error');
-      });
-    }
-  }
-
-  Future<void> stopBackgroundLocationService() async {
-    await _positionStreamSubscription?.cancel();
-    _positionStreamSubscription = null;
+    });
   }
 
   Future<void> checkAndUpdatePassCount(Position position) async {
@@ -210,7 +228,7 @@ class LiveMapController extends GetxController {
             data['lastPassTime'] = lastPassTime;
 
             // Update document using data
-            docRef.set(data, SetOptions(merge: true)).catchError((error) {
+            await docRef.set(data, SetOptions(merge: true)).catchError((error) {
               print('Firestore 업데이트 에러: $error');
             });
 
@@ -241,7 +259,7 @@ class LiveMapController extends GetxController {
             crewData['passCountData'] = crewPassCountData;
             crewData['slopeScores'] = crewSlopeScores;
 
-            crewDocRef.set(crewData, SetOptions(merge: true)).catchError((error) {
+            await crewDocRef.set(crewData, SetOptions(merge: true)).catchError((error) {
               print('Firestore crew 업데이트 에러: $error');
             });
           }
@@ -249,6 +267,59 @@ class LiveMapController extends GetxController {
       }
     }
   }
+
+  Future<void> stopBackgroundLocationUpdate() async {
+    await bg.BackgroundGeolocation.stop();
+    bg.BackgroundGeolocation.removeListeners();
+  }
+
+
+  Future<bool> checkLiveStatus() async {
+    while(true) {
+      await _userModelController.getCurrentUser(_userModelController.uid);
+      if (_userModelController.isOnLive!) {
+        return true;
+      }
+      await Future.delayed(Duration(seconds: 1));
+    }
+  }
+
+  Future<bool> _updateBoundaryStatus(Position position) async {
+    LatLng currentLatLng = LatLng(position.latitude, position.longitude);
+    bool withinBoundary = _checkPositionWithinBoundary(currentLatLng);
+
+    if (_userModelController.uid != null) {
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(_userModelController.uid)
+          .set({
+        'withinBoundary': withinBoundary,
+      }, SetOptions(merge: true)).catchError((error) {
+        print('Firestore 업데이트 에러: $error');
+      });
+    }
+
+    return withinBoundary;
+  }
+
+  Future<void> withinBoundaryOff() async{
+    if (_userModelController.uid != null) {
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(_userModelController.uid)
+          .set({
+        'withinBoundary': false,
+      }, SetOptions(merge: true)).catchError((error) {
+        print('Firestore 업데이트 에러: $error');
+      });
+    }
+  }
+
+  Future<void> stopBackgroundLocationService() async {
+    await _positionStreamSubscription?.cancel();
+    _positionStreamSubscription = null;
+  }
+
 
 
 
