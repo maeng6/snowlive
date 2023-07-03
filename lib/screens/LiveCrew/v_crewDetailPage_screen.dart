@@ -73,7 +73,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                                 padding: EdgeInsets.only(right: 5),
                                 child: IconButton(
                                   onPressed: (){
-                                    Get.to(Setting_crewDetail());
+                                    Get.to(()=>Setting_crewDetail());
                                   },
                                   icon: Image.asset(
                                     'assets/imgs/icons/icon_settings.png',

@@ -29,12 +29,12 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
         StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('user')
-              .where('liveCrew', arrayContains: _liveCrewModelController.crewID)
+              .where('liveCrew', isEqualTo: _liveCrewModelController.crewID)
               .orderBy('displayName', descending: false)
               .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
-              return Center();
+              return Container();
             } else if (snapshot.data!.docs.isNotEmpty) {
               final crewMemberDocs = snapshot.data!.docs;
               return Expanded(
