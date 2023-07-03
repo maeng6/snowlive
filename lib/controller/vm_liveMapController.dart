@@ -12,6 +12,7 @@ import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/model/m_slopeLocationModel.dart';
 import 'package:snowlive3/model/m_slopeScoreModel.dart';
+import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 
 class LiveMapController extends GetxController {
 
@@ -76,20 +77,75 @@ class LiveMapController extends GetxController {
       }
     }
 
-    _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async{
-      await updateFirebaseWithLocation(position);
-      await _resortModelController.getFavoriteResort(_userModelController.favoriteResort);
-      // Check if within boundary before updating pass count
-      bool withinBoundary = await _updateBoundaryStatus(position);
-      bool isOnLive = await checkLiveStatus();
+    _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
+      try {
+        await updateFirebaseWithLocation(position);
+        await _resortModelController.getFavoriteResort(_userModelController.favoriteResort);
+        // Check if within boundary before updating pass count
+        bool withinBoundary = await _updateBoundaryStatus(position);
+        bool isOnLive = await checkLiveStatus();
 
-      if (withinBoundary && isOnLive) {
-        await checkAndUpdatePassCount(position);
+        if (withinBoundary && isOnLive) {
+          await checkAndUpdatePassCount(position);
+        }
+
+        await _userModelController.getCurrentUser(_userModelController.uid);
+      } catch (e) {
+        // handle the error
       }
-
-      await _userModelController.getCurrentUser(_userModelController.uid);
     });
 
+  }
+
+  Future<void> startBackgroundLocationUpdate() async {
+
+
+    await bg.BackgroundGeolocation.ready(bg.Config(
+      desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
+      distanceFilter: 1.0,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      logLevel: bg.Config.LOG_LEVEL_VERBOSE,
+      locationUpdateInterval: 10000,
+    ));
+
+    await bg.BackgroundGeolocation.start();
+
+
+    bg.BackgroundGeolocation.onLocation((bg.Location location) async {
+      try {
+        double latitude = location.coords.latitude;
+        double longitude = location.coords.longitude;
+
+        Position position = Position(
+          latitude: latitude,
+          longitude: longitude,
+          accuracy: location.coords.accuracy,
+          altitude: location.coords.altitude,
+          heading: location.coords.heading,
+          speed: location.coords.speed,
+          speedAccuracy: location.coords.speedAccuracy,
+          timestamp: DateTime.parse(location.timestamp), // 문자열을 DateTime 객체로 변환
+        );
+
+        await updateFirebaseWithLocation(position);
+        await _resortModelController.getFavoriteResort(_userModelController.favoriteResort);
+        // Check if within boundary before updating pass count
+        bool withinBoundary = await _updateBoundaryStatus(position);
+        bool isOnLive = await checkLiveStatus();
+
+        if (withinBoundary && isOnLive) {
+          await checkAndUpdatePassCount(position);
+        }
+
+        await _userModelController.getCurrentUser(_userModelController.uid);
+      } catch (e) {
+        // handle the error
+      }
+    });
+
+    // Handle other background geolocation events if needed
+    // For example: bg.BackgroundGeolocation.onMotionChange, bg.BackgroundGeolocation.onGeofence, etc.
   }
 
   Future<bool> checkLiveStatus() async {
