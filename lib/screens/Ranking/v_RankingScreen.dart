@@ -285,7 +285,7 @@ class _RankingScreenState extends State<RankingScreen> {
                                         );
                                       }
                                       else if (snapshot.connectionState == ConnectionState.waiting) {}
-                                      return Center(child: CircularProgressIndicator(),);
+                                      return Center();
                                     });
                             },
                           );
