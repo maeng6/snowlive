@@ -383,7 +383,6 @@ class _ResortHomeState extends State<ResortHome>
                                   CustomFullScreenDialog.showDialog();
                                   HapticFeedback.lightImpact();
                                   await _liveMapController.startBackgroundLocationService();
-                                  await _liveMapController.startBackgroundLocationUpdate();
                                   await Future.delayed(Duration(seconds: 2)); // Wait for 1 second
                                   await _userModelController.getCurrentUser(_userModelController.uid);
                                   if (_userModelController.withinBoundary == true) {
@@ -1750,7 +1749,6 @@ class _ResortHomeState extends State<ResortHome>
                               HapticFeedback.lightImpact();
                               CustomFullScreenDialog.showDialog();
                               await _liveMapController.startBackgroundLocationService();
-                              await _liveMapController.startBackgroundLocationUpdate();
                               await Future.delayed(Duration(seconds: 2)); // Wait for 1 second
                               await _userModelController.getCurrentUser(_userModelController.uid);
                               if(_userModelController.withinBoundary == true) {

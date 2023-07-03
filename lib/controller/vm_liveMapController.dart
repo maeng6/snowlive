@@ -77,6 +77,7 @@ class LiveMapController extends GetxController {
       }
     }
 
+    // 위치 서비스를 시작 (포그라운드)
     _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
       try {
         await updateFirebaseWithLocation(position);
@@ -86,20 +87,28 @@ class LiveMapController extends GetxController {
         bool isOnLive = await checkLiveStatus();
 
         if (withinBoundary && isOnLive) {
-          await checkAndUpdatePassCount(position);
+          await checkAndUpdatePassCount(position).catchError((error) {
+            print('점수 업데이트 오류: $error');
+          });
         }
 
         await _userModelController.getCurrentUser(_userModelController.uid);
-      } catch (e) {
-        // handle the error
+      } catch (e, stackTrace) {
+        print('위치 서비스 오류: $e');
+        print('Stack trace: $stackTrace');
       }
     });
 
+    // 백그라운드로 전환될 때 위치 업데이트를 시작
+    try {
+      await startBackgroundLocationUpdate();
+    } catch (e, stackTrace) {
+      print('백그라운드 위치 업데이트 오류: $e');
+      print('Stack trace: $stackTrace');
+    }
   }
 
   Future<void> startBackgroundLocationUpdate() async {
-
-
     await bg.BackgroundGeolocation.ready(bg.Config(
       desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
       distanceFilter: 1.0,
@@ -110,7 +119,6 @@ class LiveMapController extends GetxController {
     ));
 
     await bg.BackgroundGeolocation.start();
-
 
     bg.BackgroundGeolocation.onLocation((bg.Location location) async {
       try {
@@ -125,7 +133,7 @@ class LiveMapController extends GetxController {
           heading: location.coords.heading,
           speed: location.coords.speed,
           speedAccuracy: location.coords.speedAccuracy,
-          timestamp: DateTime.parse(location.timestamp), // 문자열을 DateTime 객체로 변환
+          timestamp: DateTime.parse(location.timestamp),
         );
 
         await updateFirebaseWithLocation(position);
@@ -135,63 +143,17 @@ class LiveMapController extends GetxController {
         bool isOnLive = await checkLiveStatus();
 
         if (withinBoundary && isOnLive) {
-          await checkAndUpdatePassCount(position);
+          await checkAndUpdatePassCount(position).catchError((error) {
+            print('점수 업데이트 오류: $error');
+          });
         }
 
         await _userModelController.getCurrentUser(_userModelController.uid);
-      } catch (e) {
-        // handle the error
+      } catch (e, stackTrace) {
+        print('백그라운드 위치 업데이트 오류: $e');
+        print('Stack trace: $stackTrace');
       }
     });
-
-    // Handle other background geolocation events if needed
-    // For example: bg.BackgroundGeolocation.onMotionChange, bg.BackgroundGeolocation.onGeofence, etc.
-  }
-
-  Future<bool> checkLiveStatus() async {
-    while(true) {
-      await _userModelController.getCurrentUser(_userModelController.uid);
-      if (_userModelController.isOnLive!) {
-        return true;
-      }
-      await Future.delayed(Duration(seconds: 1));
-    }
-  }
-
-  Future<bool> _updateBoundaryStatus(Position position) async {
-    LatLng currentLatLng = LatLng(position.latitude, position.longitude);
-    bool withinBoundary = _checkPositionWithinBoundary(currentLatLng);
-
-    if (_userModelController.uid != null) {
-      await FirebaseFirestore.instance
-          .collection('user')
-          .doc(_userModelController.uid)
-          .set({
-        'withinBoundary': withinBoundary,
-      }, SetOptions(merge: true)).catchError((error) {
-        print('Firestore 업데이트 에러: $error');
-      });
-    }
-
-    return withinBoundary;
-  }
-
-  Future<void> withinBoundaryOff() async{
-    if (_userModelController.uid != null) {
-      await FirebaseFirestore.instance
-          .collection('user')
-          .doc(_userModelController.uid)
-          .set({
-        'withinBoundary': false,
-      }, SetOptions(merge: true)).catchError((error) {
-        print('Firestore 업데이트 에러: $error');
-      });
-    }
-  }
-
-  Future<void> stopBackgroundLocationService() async {
-    await _positionStreamSubscription?.cancel();
-    _positionStreamSubscription = null;
   }
 
   Future<void> checkAndUpdatePassCount(Position position) async {
@@ -266,7 +228,7 @@ class LiveMapController extends GetxController {
             data['lastPassTime'] = lastPassTime;
 
             // Update document using data
-            docRef.set(data, SetOptions(merge: true)).catchError((error) {
+            await docRef.set(data, SetOptions(merge: true)).catchError((error) {
               print('Firestore 업데이트 에러: $error');
             });
 
@@ -297,7 +259,7 @@ class LiveMapController extends GetxController {
             crewData['passCountData'] = crewPassCountData;
             crewData['slopeScores'] = crewSlopeScores;
 
-            crewDocRef.set(crewData, SetOptions(merge: true)).catchError((error) {
+            await crewDocRef.set(crewData, SetOptions(merge: true)).catchError((error) {
               print('Firestore crew 업데이트 에러: $error');
             });
           }
@@ -305,6 +267,57 @@ class LiveMapController extends GetxController {
       }
     }
   }
+
+
+
+
+
+  Future<bool> checkLiveStatus() async {
+    while(true) {
+      await _userModelController.getCurrentUser(_userModelController.uid);
+      if (_userModelController.isOnLive!) {
+        return true;
+      }
+      await Future.delayed(Duration(seconds: 1));
+    }
+  }
+
+  Future<bool> _updateBoundaryStatus(Position position) async {
+    LatLng currentLatLng = LatLng(position.latitude, position.longitude);
+    bool withinBoundary = _checkPositionWithinBoundary(currentLatLng);
+
+    if (_userModelController.uid != null) {
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(_userModelController.uid)
+          .set({
+        'withinBoundary': withinBoundary,
+      }, SetOptions(merge: true)).catchError((error) {
+        print('Firestore 업데이트 에러: $error');
+      });
+    }
+
+    return withinBoundary;
+  }
+
+  Future<void> withinBoundaryOff() async{
+    if (_userModelController.uid != null) {
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(_userModelController.uid)
+          .set({
+        'withinBoundary': false,
+      }, SetOptions(merge: true)).catchError((error) {
+        print('Firestore 업데이트 에러: $error');
+      });
+    }
+  }
+
+  Future<void> stopBackgroundLocationService() async {
+    await _positionStreamSubscription?.cancel();
+    _positionStreamSubscription = null;
+  }
+
 
 
 
