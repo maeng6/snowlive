@@ -39,22 +39,22 @@ class LiveMapController extends GetxController {
   StreamSubscription<Position>? _positionStreamSubscription;
 
 
-  Future<void> updateFirebaseWithLocation(Position position) async {
-    double latitude = position.latitude;
-    double longitude = position.longitude;
-
-    if (_userModelController.uid != null) {
-      await FirebaseFirestore.instance
-          .collection('user')
-          .doc(_userModelController.uid)
-          .update({
-        'latitude': latitude,
-        'longitude': longitude,
-      }).catchError((error) {
-        print('Firestore 업데이트 에러: $error');
-      });
-    }
-  }
+  // Future<void> updateFirebaseWithLocation(Position position) async {
+  //   double latitude = position.latitude;
+  //   double longitude = position.longitude;
+  //
+  //   if (_userModelController.uid != null) {
+  //     await FirebaseFirestore.instance
+  //         .collection('user')
+  //         .doc(_userModelController.uid)
+  //         .update({
+  //       'latitude': latitude,
+  //       'longitude': longitude,
+  //     }).catchError((error) {
+  //       print('Firestore 업데이트 에러: $error');
+  //     });
+  //   }
+  // }
 
   Future<void> startForegroundLocationService() async {
     bool serviceEnabled;
@@ -80,7 +80,7 @@ class LiveMapController extends GetxController {
     // 위치 서비스를 시작 (포그라운드)
     _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
       try {
-        await updateFirebaseWithLocation(position);
+        // await updateFirebaseWithLocation(position);
         await _resortModelController.getFavoriteResort(_userModelController.favoriteResort);
         // Check if within boundary before updating pass count
         bool withinBoundary = await _updateBoundaryStatus(position);
@@ -156,7 +156,7 @@ class LiveMapController extends GetxController {
           timestamp: DateTime.parse(location.timestamp),
         );
 
-        await updateFirebaseWithLocation(position);
+        // await updateFirebaseWithLocation(position);
         // Check if within boundary before updating pass count
         bool withinBoundary = await _updateBoundaryStatus(position);
         bool isOnLive = await checkLiveStatus();
