@@ -18,7 +18,6 @@ import 'package:snowlive3/screens/discover/v_discover_Calendar_Detail.dart';
 import 'package:snowlive3/screens/discover/v_discover_Resort_Banner.dart';
 import 'package:snowlive3/screens/discover/v_discover_calendar.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
-import 'package:snowlive3/screens/more/liveMap/v_liveMap_Screen.dart';
 import 'package:snowlive3/screens/more/v_noticeListPage.dart';
 import 'package:snowlive3/screens/more/v_noticeTile_resortHome.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
@@ -86,6 +85,7 @@ class _ResortHomeState extends State<ResortHome>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
       overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
@@ -183,31 +183,6 @@ class _ResortHomeState extends State<ResortHome>
                                                   );
                                                 }),
                                           ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(16),
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            Get.to(()=>LiveMap_Screen());
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(bottom: 1),
-                                            child: Text('라이브맵 보기',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15),
-                                            ),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                              shape: const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.all(Radius.circular(6))),
-                                              elevation: 0,
-                                              splashFactory:
-                                              InkRipple.splashFactory,
-                                              minimumSize: Size(1000, 50),
-                                              backgroundColor: Color(0xff377EEA)),
                                         ),
                                       ),
                                     ],
@@ -316,31 +291,6 @@ class _ResortHomeState extends State<ResortHome>
                                         ],
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(16),
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          Get.to(()=>LiveMap_Screen());
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(bottom: 1),
-                                          child: Text('라이브맵 보기',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15),
-                                          ),
-                                        ),
-                                        style: TextButton.styleFrom(
-                                            shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(Radius.circular(6))),
-                                            elevation: 0,
-                                            splashFactory:
-                                            InkRipple.splashFactory,
-                                            minimumSize: Size(1000, 50),
-                                            backgroundColor: Color(0xff377EEA)),
-                                      ),
-                                    ),
                                   ],
                                 ),
                               ),
@@ -373,8 +323,9 @@ class _ResortHomeState extends State<ResortHome>
                                     _dialogController.isChecked.value = false;
                                     CustomFullScreenDialog.showDialog();
                                     await _userModelController.updateIsOnLiveOff();
-                                    await _liveMapController.stopBackgroundLocationUpdate();
-                                    await _userModelController.getCurrentUser(_userModelController.uid);
+                                    await _liveMapController.stopForegroundLocationService();
+                                    await _liveMapController.stopBackgroundLocationService();
+                                    await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
                                     setState(() {});
                                     CustomFullScreenDialog.cancelDialog();
                                     print('라이브 OFF');
@@ -383,9 +334,9 @@ class _ResortHomeState extends State<ResortHome>
                                   if(!isSnackbarShown) {
                                   CustomFullScreenDialog.showDialog();
                                   HapticFeedback.lightImpact();
-                                  await _liveMapController.startBackgroundLocationService();
+                                  await _liveMapController.startForegroundLocationService();
                                   await Future.delayed(Duration(seconds: 2)); // Wait for 1 second
-                                  await _userModelController.getCurrentUser(_userModelController.uid);
+                                  await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
                                   if (_userModelController.withinBoundary == true) {
                                     Get.dialog(
                                       WillPopScope(
@@ -394,8 +345,8 @@ class _ResortHomeState extends State<ResortHome>
                                           behavior: HitTestBehavior.translucent,
                                           onTap: () async {
                                             _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                            _liveMapController.stopBackgroundLocationUpdate();
-                                            Get.back();
+                                            await _liveMapController.stopForegroundLocationService();
+                                            await _liveMapController.stopBackgroundLocationService();                                            Get.back();
                                             CustomFullScreenDialog.cancelDialog();
                                             print('라이브 OFF');
                                           },
@@ -410,8 +361,8 @@ class _ResortHomeState extends State<ResortHome>
                                                     icon: Icon(Icons.cancel_outlined),
                                                     onPressed: () async{
                                                       _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                                      _liveMapController.stopBackgroundLocationUpdate();
-                                                      Get.back();
+                                                      await _liveMapController.stopForegroundLocationService();
+                                                      await _liveMapController.stopBackgroundLocationService();                                                      Get.back();
                                                       CustomFullScreenDialog.cancelDialog();
                                                       print('라이브 OFF');
                                                     },
@@ -523,6 +474,8 @@ class _ResortHomeState extends State<ResortHome>
                                       });
                                       print('라이브 불가 지역');
                                     }
+                                    await _liveMapController.stopForegroundLocationService();
+                                    await _liveMapController.stopBackgroundLocationService();
                                   }}
                                   setState(() {});
                                 }
@@ -1744,17 +1697,18 @@ class _ResortHomeState extends State<ResortHome>
                               _dialogController.isChecked.value = false;
                               CustomFullScreenDialog.showDialog();
                               await _userModelController.updateIsOnLiveOff();
-                              await _liveMapController.stopBackgroundLocationUpdate();
-                              await _userModelController.getCurrentUser(_userModelController.uid);
+                              await _liveMapController.stopForegroundLocationService();
+                              await _liveMapController.stopBackgroundLocationService();
+                              await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
                               setState(() {});
                               CustomFullScreenDialog.cancelDialog();
                               print('라이브 OFF');
                             } else {
                               HapticFeedback.lightImpact();
                               CustomFullScreenDialog.showDialog();
-                              await _liveMapController.startBackgroundLocationService();
+                              await _liveMapController.startForegroundLocationService();
                               await Future.delayed(Duration(seconds: 2)); // Wait for 1 second
-                              await _userModelController.getCurrentUser(_userModelController.uid);
+                              await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
                               if(_userModelController.withinBoundary == true) {
                                 Get.dialog(
                                   WillPopScope(
@@ -1763,7 +1717,8 @@ class _ResortHomeState extends State<ResortHome>
                                       behavior: HitTestBehavior.translucent,
                                       onTap: () async{
                                         _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                        _liveMapController.stopBackgroundLocationUpdate();
+                                        await _liveMapController.stopForegroundLocationService();
+                                        await _liveMapController.stopBackgroundLocationService();
                                         Get.back();
                                         CustomFullScreenDialog.cancelDialog();
                                         print('라이브 OFF');
@@ -1779,8 +1734,8 @@ class _ResortHomeState extends State<ResortHome>
                                                 icon: Icon(Icons.cancel_outlined),
                                                 onPressed: () async{
                                                   _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                                  _liveMapController.stopBackgroundLocationUpdate();
-                                                  Get.back();
+                                                  await _liveMapController.stopForegroundLocationService();
+                                                  await _liveMapController.stopBackgroundLocationService();                                                  Get.back();
                                                   CustomFullScreenDialog.cancelDialog();
                                                   print('라이브 OFF');
                                                 },
@@ -1890,6 +1845,8 @@ class _ResortHomeState extends State<ResortHome>
                                   });
                                   print('라이브 불가 지역');
                                 }
+                                await _liveMapController.stopForegroundLocationService();
+                                await _liveMapController.stopBackgroundLocationService();
                               }
                               setState(() {});
                             }

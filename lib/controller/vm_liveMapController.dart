@@ -56,7 +56,7 @@ class LiveMapController extends GetxController {
     }
   }
 
-  Future<void> startBackgroundLocationService() async {
+  Future<void> startForegroundLocationService() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -92,30 +92,50 @@ class LiveMapController extends GetxController {
           });
         }
 
-        await _userModelController.getCurrentUser(_userModelController.uid);
+        if(!withinBoundary && _userModelController.uid != null){
+          await FirebaseFirestore.instance
+              .collection('user')
+              .doc(_userModelController.uid)
+              .set({
+            'isOnLive': false,
+          }, SetOptions(merge: true)).catchError((error) {
+            print('Firestore 업데이트 에러: $error');
+          });
+          await stopForegroundLocationService();
+          await stopBackgroundLocationService();
+        }
+
       } catch (e, stackTrace) {
         print('위치 서비스 오류: $e');
         print('Stack trace: $stackTrace');
       }
     });
 
-    // 백그라운드로 전환될 때 위치 업데이트를 시작
-    try {
-      await startBackgroundLocationUpdate();
-    } catch (e, stackTrace) {
-      print('백그라운드 위치 업데이트 오류: $e');
+    try{
+      await startBackgroundLocationService();
+      print('백그라운드 시작');
+    }catch(e, stackTrace){
+      print('백그라운드 서비스 오류: $e');
       print('Stack trace: $stackTrace');
     }
   }
 
-  Future<void> startBackgroundLocationUpdate() async {
+  Future<void> startBackgroundLocationService() async {
     await bg.BackgroundGeolocation.ready(bg.Config(
       desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
-      distanceFilter: 1.0,
-      stopOnTerminate: false,
-      startOnBoot: true,
+      preventSuspend: true,
+      heartbeatInterval: 5,
+      stopOnStationary: false,
+      distanceFilter: 0,
+      isMoving: true,
+      disableElasticity: true,
+      stopOnTerminate: true,
+      startOnBoot: false,
+      stationaryRadius: 25,
       logLevel: bg.Config.LOG_LEVEL_VERBOSE,
-      locationUpdateInterval: 10000,
+      locationUpdateInterval: 5000,
+      disableLocationAuthorizationAlert: true,
+      showsBackgroundLocationIndicator: true
     ));
 
     await bg.BackgroundGeolocation.start();
@@ -137,7 +157,6 @@ class LiveMapController extends GetxController {
         );
 
         await updateFirebaseWithLocation(position);
-        await _resortModelController.getFavoriteResort(_userModelController.favoriteResort);
         // Check if within boundary before updating pass count
         bool withinBoundary = await _updateBoundaryStatus(position);
         bool isOnLive = await checkLiveStatus();
@@ -148,7 +167,19 @@ class LiveMapController extends GetxController {
           });
         }
 
-        await _userModelController.getCurrentUser(_userModelController.uid);
+        if(!withinBoundary && _userModelController.uid != null){
+          await FirebaseFirestore.instance
+              .collection('user')
+              .doc(_userModelController.uid)
+              .set({
+            'isOnLive': false,
+          }, SetOptions(merge: true)).catchError((error) {
+            print('Firestore 업데이트 에러: $error');
+          });
+          await stopForegroundLocationService();
+          await stopBackgroundLocationService();
+        }
+
       } catch (e, stackTrace) {
         print('백그라운드 위치 업데이트 오류: $e');
         print('Stack trace: $stackTrace');
@@ -179,110 +210,124 @@ class LiveMapController extends GetxController {
               .collection('${_userModelController.favoriteResort}')
               .doc("${_userModelController.uid}");
 
-          DocumentSnapshot userSnapshot = await docRef.get();
+          try {
+            DocumentSnapshot userSnapshot = await docRef.get();
 
-          if (!userSnapshot.exists) {
-            // Document doesn't exist. Let's create it!
-            await docRef.set({
-              'uid': _userModelController.uid,
-              'passCountData': {},
-              'lastPassTime': null,
-              'slopeScores': {},
-              'totalScore': 0,
-            });
+            if (!userSnapshot.exists) {
+              // Document doesn't exist. Let's create it!
+              await docRef.set({
+                'uid': _userModelController.uid,
+                'passCountData': {},
+                'lastPassTime': null,
+                'slopeScores': {},
+                'totalScore': 0,
+              });
 
-            // Re-fetch the document after creating it
-            userSnapshot = await docRef.get();
-          }
+              // Re-fetch the document after creating it
+              userSnapshot = await docRef.get();
+            }
 
-          // Now, we are sure document exists. Let's proceed with the rest of the logic.
-          Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
-          Map<String, dynamic> passCountData = data['passCountData'] ?? {};
+            // Now, we are sure the document exists. Let's proceed with the rest of the logic.
+            Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
+            Map<String, dynamic> passCountData = data['passCountData'] ?? {};
 
-          int storedPassCount = passCountData[location.name] ?? 0;
-          DateTime? storedLastPassTime = data['lastPassTime'] != null
-              ? (data['lastPassTime'] as Timestamp).toDate()
-              : null;
+            int storedPassCount = passCountData[location.name] ?? 0;
+            DateTime? storedLastPassTime = data['lastPassTime'] != null
+                ? (data['lastPassTime'] as Timestamp).toDate()
+                : null;
 
+<<<<<<< HEAD
           if (storedLastPassTime == null || now.difference(storedLastPassTime).inMinutes >= 1) {
             storedPassCount += 1;
             DateTime lastPassTime = now;
+=======
+            if (storedLastPassTime == null || now.difference(storedLastPassTime).inMinutes >= 10) {
+              storedPassCount += 1;
+              DateTime lastPassTime = now;
+>>>>>>> master
 
-            // Update passCountData
-            passCountData[location.name] = storedPassCount;
-            data['passCountData'] = passCountData;
+              // Update passCountData
+              passCountData[location.name] = storedPassCount;
+              data['passCountData'] = passCountData;
 
-            // Calculate slope score
-            int slopeScore = slopeScoresModel.slopeScores[location.name] ?? 0;
-            int updatedScore = slopeScore * storedPassCount;
+              // Calculate slope score
+              int slopeScore = slopeScoresModel.slopeScores[location.name] ?? 0;
+              int updatedScore = slopeScore * storedPassCount;
 
-            // Update slopeScores
-            Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
-            slopeScores[location.name] = updatedScore;
-            data['slopeScores'] = slopeScores;
+              // Update slopeScores
+              Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
+              slopeScores[location.name] = updatedScore;
+              data['slopeScores'] = slopeScores;
 
-            // Calculate total score
-            int totalScore = slopeScores.values.fold<int>(0, (int sum, dynamic score) => sum + (score as int? ?? 0),);
-            data['totalScore'] = totalScore;
+              // Calculate total score
+              int totalScore = slopeScores.values.fold<int>(0, (int sum, dynamic score) => sum + (score as int? ?? 0));
+              data['totalScore'] = totalScore;
 
-            data['lastPassTime'] = lastPassTime;
+              data['lastPassTime'] = lastPassTime;
 
-            // Update document using data
-            await docRef.set(data, SetOptions(merge: true)).catchError((error) {
-              print('Firestore 업데이트 에러: $error');
-            });
+              // Update document using data
+              await docRef.set(data, SetOptions(merge: true));
 
-            // Update the same data to the 'crew' collection
-            DocumentReference crewDocRef = FirebaseFirestore.instance
-                .collection('liveCrew')
-                .doc('${_userModelController.liveCrew}');
-
-            DocumentSnapshot crewDocSnapshot = await crewDocRef.get();
-
-            Map<String, dynamic> crewData = crewDocSnapshot.data() as Map<String, dynamic>;
-            Map<String, dynamic> crewPassCountData = crewData['passCountData'] ?? {};
-            Map<String, dynamic> crewSlopeScores = crewData['slopeScores'] ?? {};
-
-            // Update the pass count
-            int crewStoredPassCount = crewPassCountData[location.name] ?? 0;
-            crewPassCountData[location.name] = crewStoredPassCount + 1;
-
-            // Update the slope scores
-            int crewStoredSlopeScore = crewSlopeScores[location.name] ?? 0;
-            crewSlopeScores[location.name] = crewStoredSlopeScore + slopeScore;
-
-            // Update the total score
-            int crewTotalScore = crewData['totalScore'] ?? 0;
-            crewData['totalScore'] = crewTotalScore + slopeScore;
-
-            // Assign updated pass count and slope scores back to crew data
-            crewData['passCountData'] = crewPassCountData;
-            crewData['slopeScores'] = crewSlopeScores;
-
-            await crewDocRef.set(crewData, SetOptions(merge: true)).catchError((error) {
-              print('Firestore crew 업데이트 에러: $error');
-            });
+              // Update the same data to the 'crew' collection
+              await updateCrewData(location.name, slopeScore);
+            }
+          } catch (error, stackTrace) {
+            print('Firestore 업데이트 에러: $error');
+            print('Stack trace: $stackTrace');
+            // 여기서 추가적인 예외 처리나 로깅을 수행할 수 있습니다.
           }
         }
       }
     }
   }
 
-  Future<void> stopBackgroundLocationUpdate() async {
+  Future<void> updateCrewData(String locationName, int slopeScore) async {
+    DocumentReference crewDocRef = FirebaseFirestore.instance
+        .collection('liveCrew')
+        .doc('${_userModelController.liveCrew}');
+
+    try {
+      DocumentSnapshot crewDocSnapshot = await crewDocRef.get();
+
+      Map<String, dynamic> crewData = crewDocSnapshot.data() as Map<String, dynamic>;
+      Map<String, dynamic> crewPassCountData = crewData['passCountData'] ?? {};
+      Map<String, dynamic> crewSlopeScores = crewData['slopeScores'] ?? {};
+
+      // Update the pass count
+      int crewStoredPassCount = crewPassCountData[locationName] ?? 0;
+      crewPassCountData[locationName] = crewStoredPassCount + 1;
+
+      // Update the slope scores
+      int crewStoredSlopeScore = crewSlopeScores[locationName] ?? 0;
+      crewSlopeScores[locationName] = crewStoredSlopeScore + slopeScore;
+
+      // Update the total score
+      int crewTotalScore = crewData['totalScore'] ?? 0;
+      crewData['totalScore'] = crewTotalScore + slopeScore;
+
+      // Assign updated pass count and slope scores back to crew data
+      crewData['passCountData'] = crewPassCountData;
+      crewData['slopeScores'] = crewSlopeScores;
+
+      await crewDocRef.set(crewData, SetOptions(merge: true));
+    } catch (error, stackTrace) {
+      print('Firestore crew 업데이트 에러: $error');
+      print('Stack trace: $stackTrace');
+      // 여기서 추가적인 예외 처리나 로깅을 수행할 수 있습니다.
+    }
+  }
+
+  Future<void> stopBackgroundLocationService() async {
     await bg.BackgroundGeolocation.stop();
     bg.BackgroundGeolocation.removeListeners();
   }
 
 
   Future<bool> checkLiveStatus() async {
-    while(true) {
-      await _userModelController.getCurrentUser(_userModelController.uid);
-      if (_userModelController.isOnLive!) {
-        return true;
-      }
-      await Future.delayed(Duration(seconds: 1));
-    }
+    await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
+    return _userModelController.isOnLive!;
   }
+
 
   Future<bool> _updateBoundaryStatus(Position position) async {
     LatLng currentLatLng = LatLng(position.latitude, position.longitude);
@@ -315,13 +360,10 @@ class LiveMapController extends GetxController {
     }
   }
 
-  Future<void> stopBackgroundLocationService() async {
+  Future<void> stopForegroundLocationService() async {
     await _positionStreamSubscription?.cancel();
     _positionStreamSubscription = null;
   }
-
-
-
 
   bool _checkPositionWithinBoundary(LatLng position) {
     double distanceInMeters = Geolocator.distanceBetween(
@@ -334,122 +376,125 @@ class LiveMapController extends GetxController {
     return distanceInMeters <= 5000;
   }
 
-  Future<BitmapDescriptor> createCustomMarkerBitmap(String title, bool _isTapped) async {
-    const int maxCharacters = 6; // Maximum number of characters allowed
 
-    // Check if title length is more than maxCharacters and _isTapped is false
-    if (title.length > maxCharacters && !_isTapped) {
-      title = title.substring(0, maxCharacters) + "..."; // add ellipsis if more than maxCharacters
-    }
 
-    ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
 
-    // Draw text on canvas first to get the text width and height
-    TextSpan span = TextSpan(
-        style: TextStyle(
-          color: Colors.yellowAccent,
-          fontSize: 35.0,
-          fontWeight: FontWeight.bold,
-        ),
-        text: title
-    );
-    TextPainter tp = TextPainter(
-        text: span,
-        textAlign: TextAlign.center,
-        textDirection: TextDirection.ltr
-    );
-    tp.layout();
-
-    // Create a canvas large enough to hold the text and image
-    Canvas canvas = Canvas(pictureRecorder, Rect.fromLTWH(0, 0, max(tp.width, 100.0), tp.height + 100.0));
-
-    // Calculate the position for the text to be in the center horizontally
-    final double textOffset = max(tp.width, 100.0) / 2 - tp.width / 2;
-
-    // Position the text on the canvas
-    tp.paint(canvas, Offset(textOffset, 0.0));
-
-    // Load image
-    ByteData data = await rootBundle.load('assets/imgs/icons/icon_live_map.png');
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
-    ui.FrameInfo frameInfo = await codec.getNextFrame();
-    ui.Image img = frameInfo.image;
-
-    // Draw image on canvas
-    Size imgSize = Size(100.0, 100.0);  // Change as needed
-    canvas.drawImageRect(
-        img,
-        Rect.fromLTRB(
-            0.0,
-            0.0,
-            img.width.toDouble(),
-            img.height.toDouble()
-        ),
-        Rect.fromLTRB(
-            (max(tp.width, 100.0) - imgSize.width) / 2, // center the image horizontally
-            tp.height, // position the image below the text
-            (max(tp.width, 100.0) - imgSize.width) / 2 + imgSize.width,
-            tp.height + imgSize.height
-        ),
-        Paint()
-    );
-
-    final imgFinal = await pictureRecorder.endRecording().toImage(
-        max(tp.width, 100.0).toInt(),
-        imgSize.height.toInt() + tp.height.toInt()
-    );
-    final dataFinal = await imgFinal.toByteData(format: ui.ImageByteFormat.png);
-
-    return BitmapDescriptor.fromBytes(dataFinal!.buffer.asUint8List());
-  }
-
-  Future<void> listenToFriendLocations() async {
-    FirebaseFirestore.instance
-        .collection('user')
-        .where('whoResistMeBF', arrayContains: _userModelController.uid!)
-        .where('isOnLive', isEqualTo: true)  // Only get data where isLiveOn is true
-        .snapshots()
-        .listen((QuerySnapshot querySnapshot) async {  // Add async keyword here
-      await _updateMarkers(querySnapshot);
-    });
-  }
-
-  Future<void> _updateMarkers(QuerySnapshot querySnapshot) async {
-    Set<String> updatedFriendIds = Set<String>();
-    List<Marker> newMarkers = [];
-
-    for (var document in querySnapshot.docs) {
-      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      double? latitude = (data['latitude'] as num?)?.toDouble();
-      double? longitude = (data['longitude'] as num?)?.toDouble();
-      String friendId = data['displayName'];
-
-      updatedFriendIds.add(friendId);
-
-      if (latitude != null && longitude != null) {
-        final LatLng friendLatLng = LatLng(latitude, longitude);
-        bool withinBoundary = _checkPositionWithinBoundary(friendLatLng);
-
-        if (withinBoundary) {
-          _isTapped.putIfAbsent(friendId, () => false);
-
-          final marker = Marker(
-              markerId: MarkerId('friend_$friendId'),
-              position: friendLatLng,
-              icon: await createCustomMarkerBitmap('$friendId', _isTapped[friendId]!),
-              onTap: () async {
-                _isTapped[friendId] = !_isTapped[friendId]!;
-                await _updateMarkers(querySnapshot);  // Force markers to update
-              }
-          );
-
-          newMarkers.add(marker);
-        }
-      }
-    }
-
-    _markers.value = newMarkers;
-  }
+  // Future<BitmapDescriptor> createCustomMarkerBitmap(String title, bool _isTapped) async {
+  //   const int maxCharacters = 6; // Maximum number of characters allowed
+  //
+  //   // Check if title length is more than maxCharacters and _isTapped is false
+  //   if (title.length > maxCharacters && !_isTapped) {
+  //     title = title.substring(0, maxCharacters) + "..."; // add ellipsis if more than maxCharacters
+  //   }
+  //
+  //   ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+  //
+  //   // Draw text on canvas first to get the text width and height
+  //   TextSpan span = TextSpan(
+  //       style: TextStyle(
+  //         color: Colors.yellowAccent,
+  //         fontSize: 35.0,
+  //         fontWeight: FontWeight.bold,
+  //       ),
+  //       text: title
+  //   );
+  //   TextPainter tp = TextPainter(
+  //       text: span,
+  //       textAlign: TextAlign.center,
+  //       textDirection: TextDirection.ltr
+  //   );
+  //   tp.layout();
+  //
+  //   // Create a canvas large enough to hold the text and image
+  //   Canvas canvas = Canvas(pictureRecorder, Rect.fromLTWH(0, 0, max(tp.width, 100.0), tp.height + 100.0));
+  //
+  //   // Calculate the position for the text to be in the center horizontally
+  //   final double textOffset = max(tp.width, 100.0) / 2 - tp.width / 2;
+  //
+  //   // Position the text on the canvas
+  //   tp.paint(canvas, Offset(textOffset, 0.0));
+  //
+  //   // Load image
+  //   ByteData data = await rootBundle.load('assets/imgs/icons/icon_live_map.png');
+  //   ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
+  //   ui.FrameInfo frameInfo = await codec.getNextFrame();
+  //   ui.Image img = frameInfo.image;
+  //
+  //   // Draw image on canvas
+  //   Size imgSize = Size(100.0, 100.0);  // Change as needed
+  //   canvas.drawImageRect(
+  //       img,
+  //       Rect.fromLTRB(
+  //           0.0,
+  //           0.0,
+  //           img.width.toDouble(),
+  //           img.height.toDouble()
+  //       ),
+  //       Rect.fromLTRB(
+  //           (max(tp.width, 100.0) - imgSize.width) / 2, // center the image horizontally
+  //           tp.height, // position the image below the text
+  //           (max(tp.width, 100.0) - imgSize.width) / 2 + imgSize.width,
+  //           tp.height + imgSize.height
+  //       ),
+  //       Paint()
+  //   );
+  //
+  //   final imgFinal = await pictureRecorder.endRecording().toImage(
+  //       max(tp.width, 100.0).toInt(),
+  //       imgSize.height.toInt() + tp.height.toInt()
+  //   );
+  //   final dataFinal = await imgFinal.toByteData(format: ui.ImageByteFormat.png);
+  //
+  //   return BitmapDescriptor.fromBytes(dataFinal!.buffer.asUint8List());
+  // }
+  //
+  // Future<void> listenToFriendLocations() async {
+  //   FirebaseFirestore.instance
+  //       .collection('user')
+  //       .where('whoResistMeBF', arrayContains: _userModelController.uid!)
+  //       .where('isOnLive', isEqualTo: true)  // Only get data where isLiveOn is true
+  //       .snapshots()
+  //       .listen((QuerySnapshot querySnapshot) async {  // Add async keyword here
+  //     await _updateMarkers(querySnapshot);
+  //   });
+  // }
+  //
+  // Future<void> _updateMarkers(QuerySnapshot querySnapshot) async {
+  //   Set<String> updatedFriendIds = Set<String>();
+  //   List<Marker> newMarkers = [];
+  //
+  //   for (var document in querySnapshot.docs) {
+  //     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+  //     double? latitude = (data['latitude'] as num?)?.toDouble();
+  //     double? longitude = (data['longitude'] as num?)?.toDouble();
+  //     String friendId = data['displayName'];
+  //
+  //     updatedFriendIds.add(friendId);
+  //
+  //     if (latitude != null && longitude != null) {
+  //       final LatLng friendLatLng = LatLng(latitude, longitude);
+  //       bool withinBoundary = _checkPositionWithinBoundary(friendLatLng);
+  //
+  //       if (withinBoundary) {
+  //         _isTapped.putIfAbsent(friendId, () => false);
+  //
+  //         final marker = Marker(
+  //             markerId: MarkerId('friend_$friendId'),
+  //             position: friendLatLng,
+  //             icon: await createCustomMarkerBitmap('$friendId', _isTapped[friendId]!),
+  //             onTap: () async {
+  //               _isTapped[friendId] = !_isTapped[friendId]!;
+  //               await _updateMarkers(querySnapshot);  // Force markers to update
+  //             }
+  //         );
+  //
+  //         newMarkers.add(marker);
+  //       }
+  //     }
+  //   }
+  //
+  //   _markers.value = newMarkers;
+  // }
 
 
 

@@ -166,6 +166,30 @@ class UserModelController extends GetxController{
     }
   }
 
+  Future<void> getCurrentUserLocationInfo(uid) async{
+    if(FirebaseAuth.instance.currentUser != null) {
+      //String uid = FirebaseAuth.instance.currentUser!.uid;
+      if(uid!=null) {
+        UserModel? userModel = await UserModel().getUserModel(uid);
+        if (userModel != null) {
+          this._uid!.value = userModel.uid!;
+          this._isOnLive!.value = userModel.isOnLive!;
+          this._withinBoundary!.value = userModel.withinBoundary!;
+          this._applyCrewList!.value = userModel.applyCrewList!;
+          this._favoriteResort!.value = userModel.favoriteResort!;
+          this._instantResort!.value = userModel.instantResort!;
+        }else {
+          Get.to(()=>LoginPage());
+          // handle the case where the userModel is null
+        }} else {
+        Get.to(()=>LoginPage());
+        // handle the case where the userModel is null
+      }
+
+    } else {
+      Get.to(()=>LoginPage());
+    }
+  }
 
 
   Future<void> addChatUidList({required otherAddUid, required myAddUid}) async {
