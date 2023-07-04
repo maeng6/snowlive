@@ -6,6 +6,7 @@ import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/screens/LiveCrew/v_liveCrewHome.dart';
 import 'package:snowlive3/screens/LiveCrew/v_setting_delegation.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
+import 'package:snowlive3/screens/v_MainHome.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 import '../comments/v_profileImageScreen.dart';
@@ -165,12 +166,60 @@ class Setting_crewDetail extends StatelessWidget {
                                                               child: ElevatedButton(
                                                                 onPressed: () async {
                                                                   try{
+                                                                    if(applyDocs[index]['liveCrew'] == null || _userModelController.liveCrew == ''){
                                                                     Navigator.pop(context);
                                                                     CustomFullScreenDialog.showDialog();
                                                                     await _liveCrewModelController.updateCrewMember(applyUid: applyDocs[index]['uid'], crewID: _liveCrewModelController.crewID);
                                                                     await _liveCrewModelController.deleteInvitation_crew(crewID: _liveCrewModelController.crewID, applyUid: applyDocs[index]['uid']);
                                                                     await _liveCrewModelController.getCurrnetCrew(_liveCrewModelController.crewID);
                                                                     CustomFullScreenDialog.cancelDialog();
+                                                                    }else{
+                                                                      Get.dialog(AlertDialog(
+                                                                        contentPadding: EdgeInsets.only(
+                                                                            bottom: 0,
+                                                                            left: 20,
+                                                                            right: 20,
+                                                                            top: 30),
+                                                                        elevation: 0,
+                                                                        shape: RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                10.0)),
+                                                                        buttonPadding:
+                                                                        EdgeInsets.symmetric(
+                                                                            horizontal: 20,
+                                                                            vertical: 0),
+                                                                        content: Text(
+                                                                          '이미 다른 크루에 참여중입니다.',
+                                                                          style: TextStyle(
+                                                                              fontWeight: FontWeight.w600,
+                                                                              fontSize: 15),
+                                                                        ),
+                                                                        actions: [
+                                                                          Row(
+                                                                            children: [
+                                                                              TextButton(
+                                                                                  onPressed: () async {
+                                                                                    Navigator.pop(context);
+                                                                                    Navigator.pop(context);
+                                                                                  },
+                                                                                  child: Text(
+                                                                                    '확인',
+                                                                                    style: TextStyle(
+                                                                                      fontSize: 15,
+                                                                                      color: Color(
+                                                                                          0xff377EEA),
+                                                                                      fontWeight: FontWeight
+                                                                                          .bold,
+                                                                                    ),
+                                                                                  )),
+                                                                            ],
+                                                                            mainAxisAlignment: MainAxisAlignment
+                                                                                .center,
+                                                                          )
+                                                                        ],
+                                                                      ));
+                                                                    }
                                                                   }catch(e){
                                                                     Navigator.pop(context);
                                                                   }
@@ -420,7 +469,7 @@ class Setting_crewDetail extends StatelessWidget {
                                                 await _liveCrewModelController
                                                     .deleteCrew(crewID: _liveCrewModelController.crewID);
                                                 CustomFullScreenDialog.cancelDialog();
-                                                Get.to(() => LiveCrewHome());
+                                                Get.to(() => MainHome(uid: _userModelController.uid));
                                               } catch (e) {
                                                 print('삭제 오류');
                                                 Navigator.pop(context);
@@ -590,7 +639,7 @@ class Setting_crewDetail extends StatelessWidget {
                                               CustomFullScreenDialog.showDialog();
                                               await _liveCrewModelController.deleteCrewMember(crewID: _liveCrewModelController.crewID, memberUid: _userModelController.uid);
                                               CustomFullScreenDialog.cancelDialog();
-                                              Get.to(()=>LiveCrewHome());
+                                              Get.to(()=>MainHome(uid: _userModelController.uid));
                                             }catch(e){
                                               print('삭제 오류');
                                               Navigator.pop(context);
