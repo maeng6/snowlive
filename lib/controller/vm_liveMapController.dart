@@ -236,15 +236,10 @@ class LiveMapController extends GetxController {
                 ? (data['lastPassTime'] as Timestamp).toDate()
                 : null;
 
-<<<<<<< HEAD
           if (storedLastPassTime == null || now.difference(storedLastPassTime).inMinutes >= 1) {
             storedPassCount += 1;
             DateTime lastPassTime = now;
-=======
-            if (storedLastPassTime == null || now.difference(storedLastPassTime).inMinutes >= 10) {
-              storedPassCount += 1;
-              DateTime lastPassTime = now;
->>>>>>> master
+
 
               // Update passCountData
               passCountData[location.name] = storedPassCount;
