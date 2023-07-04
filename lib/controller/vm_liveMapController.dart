@@ -92,6 +92,19 @@ class LiveMapController extends GetxController {
           });
         }
 
+        if(!withinBoundary && _userModelController.uid != null){
+          await FirebaseFirestore.instance
+              .collection('user')
+              .doc(_userModelController.uid)
+              .set({
+            'isOnLive': false,
+          }, SetOptions(merge: true)).catchError((error) {
+            print('Firestore 업데이트 에러: $error');
+          });
+          await stopForegroundLocationService();
+          await stopBackgroundLocationService();
+        }
+
       } catch (e, stackTrace) {
         print('위치 서비스 오류: $e');
         print('Stack trace: $stackTrace');
@@ -116,7 +129,7 @@ class LiveMapController extends GetxController {
       distanceFilter: 0,
       isMoving: true,
       disableElasticity: true,
-      stopOnTerminate: false,
+      stopOnTerminate: true,
       startOnBoot: false,
       stationaryRadius: 25,
       logLevel: bg.Config.LOG_LEVEL_VERBOSE,
@@ -153,6 +166,20 @@ class LiveMapController extends GetxController {
             print('점수 업데이트 오류: $error');
           });
         }
+
+        if(!withinBoundary && _userModelController.uid != null){
+          await FirebaseFirestore.instance
+              .collection('user')
+              .doc(_userModelController.uid)
+              .set({
+            'isOnLive': false,
+          }, SetOptions(merge: true)).catchError((error) {
+            print('Firestore 업데이트 에러: $error');
+          });
+          await stopForegroundLocationService();
+          await stopBackgroundLocationService();
+        }
+
       } catch (e, stackTrace) {
         print('백그라운드 위치 업데이트 오류: $e');
         print('Stack trace: $stackTrace');
