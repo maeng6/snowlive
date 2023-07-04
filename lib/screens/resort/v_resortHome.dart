@@ -324,7 +324,8 @@ class _ResortHomeState extends State<ResortHome>
                                     CustomFullScreenDialog.showDialog();
                                     await _userModelController.updateIsOnLiveOff();
                                     await _liveMapController.stopForegroundLocationService();
-                                    await _liveMapController.stopBackgroundLocationService();                                    await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
+                                    await _liveMapController.stopBackgroundLocationService();
+                                    await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
                                     setState(() {});
                                     CustomFullScreenDialog.cancelDialog();
                                     print('라이브 OFF');
@@ -473,6 +474,8 @@ class _ResortHomeState extends State<ResortHome>
                                       });
                                       print('라이브 불가 지역');
                                     }
+                                    await _liveMapController.stopForegroundLocationService();
+                                    await _liveMapController.stopBackgroundLocationService();
                                   }}
                                   setState(() {});
                                 }
@@ -1842,6 +1845,8 @@ class _ResortHomeState extends State<ResortHome>
                                   });
                                   print('라이브 불가 지역');
                                 }
+                                await _liveMapController.stopForegroundLocationService();
+                                await _liveMapController.stopBackgroundLocationService();
                               }
                               setState(() {});
                             }
