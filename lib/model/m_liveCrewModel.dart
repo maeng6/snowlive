@@ -21,6 +21,7 @@ class LiveCrewModel {
     this.description,
     this.notice,
     this.resistDate,
+    this.sns,
   });
 
   String? crewID;
@@ -35,6 +36,7 @@ class LiveCrewModel {
   List? applyUidList;
   String? description;
   String? notice;
+  String? sns;
   Timestamp? resistDate;
   DocumentReference? reference;
 
@@ -53,6 +55,7 @@ class LiveCrewModel {
     notice = json['notice'];
     resistDate = json['resistDate'];
     reference = json['reference'];
+    sns = json['sns'];
 
   }
 

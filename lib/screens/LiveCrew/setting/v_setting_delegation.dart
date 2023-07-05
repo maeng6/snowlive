@@ -8,11 +8,11 @@ import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:snowlive3/screens/LiveCrew/v_searchCrewPage.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
-import '../../../controller/vm_userModelController.dart';
+import '../../../../controller/vm_userModelController.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import '../../controller/vm_liveCrewModelController.dart';
-import '../more/friend/v_friendDetailPage.dart';
-import 'invitation/v_invitation_Screen_crew.dart';
+import '../../../controller/vm_liveCrewModelController.dart';
+import '../../more/friend/v_friendDetailPage.dart';
+import '../invitation/v_invitation_Screen_crew.dart';
 
 class Setting_delegation extends StatefulWidget {
   const Setting_delegation({Key? key}) : super(key: key);

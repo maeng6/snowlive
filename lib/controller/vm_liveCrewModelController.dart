@@ -21,6 +21,7 @@ class LiveCrewModelController extends GetxController {
   RxList? _applyUidList=[].obs;
   RxString? _description=''.obs;
   RxString? _notice=''.obs;
+  RxString? _sns=''.obs;
   Timestamp? _resistDate;
 
   String? get crewID => _crewID!.value;
@@ -35,6 +36,7 @@ class LiveCrewModelController extends GetxController {
   List? get applyUidList => _applyUidList!;
   String? get description => _description!.value;
   String? get notice => _notice!.value;
+  String? get sns => _sns!.value;
   Timestamp? get resistDate => _resistDate!;
 
   Future<void> getCurrnetCrew(crewID) async {
@@ -52,6 +54,7 @@ class LiveCrewModelController extends GetxController {
       this._applyUidList!.value = crewModel.applyUidList!;
       this._description!.value = crewModel.description!;
       this._notice!.value = crewModel.notice!;
+      this._sns!.value = crewModel.sns!;
     }
   }
 
@@ -70,7 +73,8 @@ class LiveCrewModelController extends GetxController {
     required resortNum,
     required crewImageUrl,
     required crewColor,
-    required crewID
+    required crewID,
+    required sns
 } ) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
@@ -89,6 +93,7 @@ class LiveCrewModelController extends GetxController {
       'description':'',
       'notice':'',
       'resistDate' : Timestamp.now(),
+      'sns' : ''
     });
   }
 
@@ -220,7 +225,45 @@ class LiveCrewModelController extends GetxController {
 
   }
 
+  Future<void> updateProfileImageUrl({required url, required crewID}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('liveCrew').doc(crewID).update({
+      'profileImageUrl': url,
+    });
+    await getCurrnetCrew(crewID);
+  }
 
+
+  Future<void> deleteProfileImageUrl({required crewID}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('liveCrew').doc(crewID).update({
+      'profileImageUrl': '',
+    });
+    await getCurrnetCrew(crewID);
+  }
+
+  Future<void> updateDescription({required desc, required crewID}) async {
+    await ref.collection('liveCrew').doc(crewID).update({
+      'description': desc,
+    });
+    await getCurrnetCrew(crewID);
+  }
+
+  Future<void> updateNotice({required notice, required crewID}) async {
+    await ref.collection('liveCrew').doc(crewID).update({
+      'notice': notice,
+    });
+    await getCurrnetCrew(crewID);
+  }
+
+  Future<void> updateSNS({required snsLink, required crewID}) async {
+    await ref.collection('liveCrew').doc(crewID).update({
+      'sns': snsLink,
+    });
+    await getCurrnetCrew(crewID);
+  }
 
 
 }

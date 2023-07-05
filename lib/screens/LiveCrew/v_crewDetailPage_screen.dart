@@ -6,7 +6,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:snowlive3/screens/LiveCrew/invitation/v_invitation_Screen_crew.dart';
 import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_home.dart';
 import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_member.dart';
-import 'package:snowlive3/screens/LiveCrew/v_setting_crewDetail.dart';
+import 'package:snowlive3/screens/LiveCrew/setting/v_setting_crewDetail.dart';
 import 'package:snowlive3/screens/more/friend/invitation/v_inviteListPage_friend.dart';
 import 'package:snowlive3/screens/more/friend/invitation/v_invitedListPage_friend.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';

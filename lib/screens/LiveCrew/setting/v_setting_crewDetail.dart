@@ -3,13 +3,17 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
+import 'package:snowlive3/screens/LiveCrew/setting/v_setting_SNS.dart';
+import 'package:snowlive3/screens/LiveCrew/setting/v_setting_description.dart';
+import 'package:snowlive3/screens/LiveCrew/setting/v_setting_notice.dart';
+import 'package:snowlive3/screens/LiveCrew/setting/v_setting_setProfileImage.dart';
 import 'package:snowlive3/screens/LiveCrew/v_liveCrewHome.dart';
-import 'package:snowlive3/screens/LiveCrew/v_setting_delegation.dart';
+import 'package:snowlive3/screens/LiveCrew/setting/v_setting_delegation.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
-import '../../controller/vm_userModelController.dart';
-import '../../widget/w_fullScreenDialog.dart';
-import '../comments/v_profileImageScreen.dart';
+import '../../../controller/vm_userModelController.dart';
+import '../../../widget/w_fullScreenDialog.dart';
+import '../../comments/v_profileImageScreen.dart';
 
 class Setting_crewDetail extends StatelessWidget {
   Setting_crewDetail({Key? key}) : super(key: key);
@@ -803,7 +807,7 @@ class Setting_crewDetail extends StatelessWidget {
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,
                   onTap: () {
-
+                    Get.to(()=>SetProfileImage_crewDetail());
                   },
                   title: Text(
                     '크루 로고이미지 변경',
@@ -841,7 +845,7 @@ class Setting_crewDetail extends StatelessWidget {
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,
                   onTap: () {
-
+                    Get.to(()=>SetModifyDescription_crewDetail());
                   },
                   title: Text(
                     '크루 소개글 변경',
@@ -860,7 +864,7 @@ class Setting_crewDetail extends StatelessWidget {
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,
                   onTap: () {
-
+                    Get.to(()=>SetModifyNotice_crewDetail());
                   },
                   title: Text(
                     '크루 공지사항 변경',
@@ -879,10 +883,10 @@ class Setting_crewDetail extends StatelessWidget {
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,
                   onTap: () {
-
+                      Get.to(() => SetSNSlink_crewDetail());
                   },
                   title: Text(
-                    '카카오 오픈채팅 링크 연결하기',
+                    'SNS 링크 연결하기',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
