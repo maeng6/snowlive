@@ -334,7 +334,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                             onPressed:
                                 () {
                               if(_liveCrewModelController.sns!.isNotEmpty && _liveCrewModelController.sns != '' ) {
-                              Get.to(()=>WebPage(url: '${_liveCrewModelController.sns}',));
+                              _liveCrewModelController.otherShare(contents: '${_liveCrewModelController.sns}');
                               }else{
                                 Get.dialog(AlertDialog(
                                   contentPadding: EdgeInsets.only(
@@ -417,6 +417,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
       );
   }
 }
+
+
 
 // if (!snapshot.hasData || snapshot.data == null) {}
 // else if (snapshot.data!.docs.isNotEmpty) {
