@@ -3,13 +3,17 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
+import 'package:snowlive3/screens/LiveCrew/setting/v_setting_SNS.dart';
+import 'package:snowlive3/screens/LiveCrew/setting/v_setting_description.dart';
+import 'package:snowlive3/screens/LiveCrew/setting/v_setting_notice.dart';
+import 'package:snowlive3/screens/LiveCrew/setting/v_setting_setProfileImage.dart';
 import 'package:snowlive3/screens/LiveCrew/v_liveCrewHome.dart';
-import 'package:snowlive3/screens/LiveCrew/v_setting_delegation.dart';
+import 'package:snowlive3/screens/LiveCrew/setting/v_setting_delegation.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
-import '../../controller/vm_userModelController.dart';
-import '../../widget/w_fullScreenDialog.dart';
-import '../comments/v_profileImageScreen.dart';
+import '../../../controller/vm_userModelController.dart';
+import '../../../widget/w_fullScreenDialog.dart';
+import '../../comments/v_profileImageScreen.dart';
 
 class Setting_crewDetail extends StatelessWidget {
   Setting_crewDetail({Key? key}) : super(key: key);
@@ -38,7 +42,6 @@ class Setting_crewDetail extends StatelessWidget {
       ),
       body: Column(
         children: [
-
           StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('user')
@@ -389,312 +392,303 @@ class Setting_crewDetail extends StatelessWidget {
               }
 
           ),
-          Container(
-            height: 50,
-            child: ListView(
-              children: [
-                (_liveCrewModelController.leaderUid == _userModelController.uid)
-                ? ListTile(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                  minVerticalPadding: 20,
-                  onTap: () {
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return Container(
-                            color: Colors.white,
-                            height: 180,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20.0),
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: 30,
-                                  ),
-                                  Text(
-                                    '라이브 크루를 삭제하시겠습니까?',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF111111)),
-                                  ),
-                                  SizedBox(
-                                    height: 30,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            '취소',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight:
-                                                FontWeight.bold),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                              splashFactory: InkRipple
-                                                  .splashFactory,
-                                              elevation: 0,
-                                              minimumSize:
-                                              Size(100, 56),
-                                              backgroundColor:
-                                              Color(0xff555555),
-                                              padding:
-                                              EdgeInsets.symmetric(
-                                                  horizontal: 0)),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            if(_liveCrewModelController.memberUidList!.length == 1) {
-                                              try {
-                                                Navigator.pop(context);
-                                                CustomFullScreenDialog.showDialog();
-                                                await _liveCrewModelController
-                                                    .deleteCrew(crewID: _liveCrewModelController.crewID);
-                                                CustomFullScreenDialog.cancelDialog();
-                                                Get.to(() => MainHome(uid: _userModelController.uid));
-                                              } catch (e) {
-                                                print('삭제 오류');
-                                                Navigator.pop(context);
-                                              }
-                                            }else{
-                                              Get.dialog(AlertDialog(
-                                                contentPadding: EdgeInsets.only(
-                                                    bottom: 0,
-                                                    left: 20,
-                                                    right: 20,
-                                                    top: 30),
-                                                elevation: 0,
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        10.0)),
-                                                buttonPadding:
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 20,
-                                                    vertical: 0),
-                                                content: Text(
-                                                  '모든 회원을 내보낸 뒤에 삭제할 수 있습니다.',
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 15),
-                                                ),
-                                                actions: [
-                                                  Row(
-                                                    children: [
-                                                      TextButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          child: Text(
-                                                            '확인',
-                                                            style: TextStyle(
-                                                              fontSize: 15,
-                                                              color: Color(
-                                                                  0xFF949494),
-                                                              fontWeight:
-                                                              FontWeight.bold,
-                                                            ),
-                                                          )),
-                                                    ],
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                  )
-                                                ],
-                                              ));
-
-                                            }
-
-                                          },
-                                          child: Text(
-                                            '확인',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight:
-                                                FontWeight.bold),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                              splashFactory: InkRipple
-                                                  .splashFactory,
-                                              elevation: 0,
-                                              minimumSize:
-                                              Size(100, 56),
-                                              backgroundColor:
-                                              Color(0xff2C97FB),
-                                              padding:
-                                              EdgeInsets.symmetric(
-                                                  horizontal: 0)),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
+          (_liveCrewModelController.leaderUid == _userModelController.uid)
+          ? ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 16),
+            minVerticalPadding: 20,
+            onTap: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return Container(
+                      color: Colors.white,
+                      height: 180,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0),
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                          mainAxisAlignment:
+                          MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 30,
                             ),
-                          );
-                        });
-                  },
-                  title: Text(
-                    '크루 삭제',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Color(0xFF111111)),
-                  ),
-                  trailing: Image.asset(
-                    'assets/imgs/icons/icon_arrow_g.png',
-                    height: 24,
-                    width: 24,
-                  ),
-                )
-                : ListTile(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                  minVerticalPadding: 20,
-                  onTap: () {
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return Container(
-                            color: Colors.white,
-                            height: 180,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20.0),
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: 30,
-                                  ),
-                                  Text(
-                                    '라이브 크루를 탈퇴하시겠습니까?',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF111111)),
-                                  ),
-                                  SizedBox(
-                                    height: 30,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            '취소',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight:
-                                                FontWeight.bold),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                              splashFactory: InkRipple
-                                                  .splashFactory,
-                                              elevation: 0,
-                                              minimumSize:
-                                              Size(100, 56),
-                                              backgroundColor:
-                                              Color(0xff555555),
-                                              padding:
-                                              EdgeInsets.symmetric(
-                                                  horizontal: 0)),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            try{
-                                              Navigator.pop(context);
-                                              CustomFullScreenDialog.showDialog();
-                                              await _liveCrewModelController.deleteCrewMember(crewID: _liveCrewModelController.crewID, memberUid: _userModelController.uid);
-                                              CustomFullScreenDialog.cancelDialog();
-                                              Get.to(()=>MainHome(uid: _userModelController.uid));
-                                            }catch(e){
-                                              print('삭제 오류');
-                                              Navigator.pop(context);
-                                            }
-
-                                          },
-                                          child: Text(
-                                            '확인',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight:
-                                                FontWeight.bold),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                              splashFactory: InkRipple
-                                                  .splashFactory,
-                                              elevation: 0,
-                                              minimumSize:
-                                              Size(100, 56),
-                                              backgroundColor:
-                                              Color(0xff2C97FB),
-                                              padding:
-                                              EdgeInsets.symmetric(
-                                                  horizontal: 0)),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
+                            Text(
+                              '라이브 크루를 삭제하시겠습니까?',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF111111)),
                             ),
-                          );
-                        });
-                  },
-                  title: Text(
-                    '크루 탈퇴',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Color(0xFF111111)),
-                  ),
-                  trailing: Image.asset(
-                    'assets/imgs/icons/icon_arrow_g.png',
-                    height: 24,
-                    width: 24,
-                  ),
-                ),
-              ],
+                            SizedBox(
+                              height: 30,
+                            ),
+                            Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      '취소',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight:
+                                          FontWeight.bold),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                        splashFactory: InkRipple
+                                            .splashFactory,
+                                        elevation: 0,
+                                        minimumSize:
+                                        Size(100, 56),
+                                        backgroundColor:
+                                        Color(0xff555555),
+                                        padding:
+                                        EdgeInsets.symmetric(
+                                            horizontal: 0)),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      if(_liveCrewModelController.memberUidList!.length == 1) {
+                                        try {
+                                          Navigator.pop(context);
+                                          CustomFullScreenDialog.showDialog();
+                                          await _liveCrewModelController
+                                              .deleteCrew(crewID: _liveCrewModelController.crewID);
+                                          CustomFullScreenDialog.cancelDialog();
+                                          Get.to(() => MainHome(uid: _userModelController.uid));
+                                        } catch (e) {
+                                          print('삭제 오류');
+                                          Navigator.pop(context);
+                                        }
+                                      }else{
+                                        Get.dialog(AlertDialog(
+                                          contentPadding: EdgeInsets.only(
+                                              bottom: 0,
+                                              left: 20,
+                                              right: 20,
+                                              top: 30),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  10.0)),
+                                          buttonPadding:
+                                          EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 0),
+                                          content: Text(
+                                            '모든 회원을 내보낸 뒤에 삭제할 수 있습니다.',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 15),
+                                          ),
+                                          actions: [
+                                            Row(
+                                              children: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(
+                                                          context);
+                                                    },
+                                                    child: Text(
+                                                      '확인',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(
+                                                            0xFF949494),
+                                                        fontWeight:
+                                                        FontWeight.bold,
+                                                      ),
+                                                    )),
+                                              ],
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                            )
+                                          ],
+                                        ));
+
+                                      }
+
+                                    },
+                                    child: Text(
+                                      '확인',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight:
+                                          FontWeight.bold),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                        splashFactory: InkRipple
+                                            .splashFactory,
+                                        elevation: 0,
+                                        minimumSize:
+                                        Size(100, 56),
+                                        backgroundColor:
+                                        Color(0xff2C97FB),
+                                        padding:
+                                        EdgeInsets.symmetric(
+                                            horizontal: 0)),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  });
+            },
+            title: Text(
+              '크루 삭제',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Color(0xFF111111)),
+            ),
+            trailing: Image.asset(
+              'assets/imgs/icons/icon_arrow_g.png',
+              height: 24,
+              width: 24,
+            ),
+          )
+          : ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 16),
+            minVerticalPadding: 20,
+            onTap: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return Container(
+                      color: Colors.white,
+                      height: 180,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0),
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                          mainAxisAlignment:
+                          MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 30,
+                            ),
+                            Text(
+                              '라이브 크루를 탈퇴하시겠습니까?',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF111111)),
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      '취소',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight:
+                                          FontWeight.bold),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                        splashFactory: InkRipple
+                                            .splashFactory,
+                                        elevation: 0,
+                                        minimumSize:
+                                        Size(100, 56),
+                                        backgroundColor:
+                                        Color(0xff555555),
+                                        padding:
+                                        EdgeInsets.symmetric(
+                                            horizontal: 0)),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      try{
+                                        Navigator.pop(context);
+                                        CustomFullScreenDialog.showDialog();
+                                        await _liveCrewModelController.deleteCrewMember(crewID: _liveCrewModelController.crewID, memberUid: _userModelController.uid);
+                                        CustomFullScreenDialog.cancelDialog();
+                                        Get.to(()=>MainHome(uid: _userModelController.uid));
+                                      }catch(e){
+                                        print('삭제 오류');
+                                        Navigator.pop(context);
+                                      }
+
+                                    },
+                                    child: Text(
+                                      '확인',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight:
+                                          FontWeight.bold),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                        splashFactory: InkRipple
+                                            .splashFactory,
+                                        elevation: 0,
+                                        minimumSize:
+                                        Size(100, 56),
+                                        backgroundColor:
+                                        Color(0xff2C97FB),
+                                        padding:
+                                        EdgeInsets.symmetric(
+                                            horizontal: 0)),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  });
+            },
+            title: Text(
+              '크루 탈퇴',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Color(0xFF111111)),
+            ),
+            trailing: Image.asset(
+              'assets/imgs/icons/icon_arrow_g.png',
+              height: 24,
+              width: 24,
             ),
           ),
           if(_liveCrewModelController.leaderUid == _userModelController.uid)
-          Container(
-            height: 200,
-            child: ListView(
+            Column(
               children: [
                 ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
@@ -808,10 +802,104 @@ class Setting_crewDetail extends StatelessWidget {
                     height: 24,
                     width: 24,
                   ),
-                )
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
+                  onTap: () {
+                    Get.to(()=>SetProfileImage_crewDetail());
+                  },
+                  title: Text(
+                    '크루 로고이미지 변경',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Color(0xFF111111)),
+                  ),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
+                  onTap: () {
+
+                  },
+                  title: Text(
+                    '크루 컬러 변경',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Color(0xFF111111)),
+                  ),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
+                  onTap: () {
+                    Get.to(()=>SetModifyDescription_crewDetail());
+                  },
+                  title: Text(
+                    '크루 소개글 변경',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Color(0xFF111111)),
+                  ),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
+                  onTap: () {
+                    Get.to(()=>SetModifyNotice_crewDetail());
+                  },
+                  title: Text(
+                    '크루 공지사항 변경',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Color(0xFF111111)),
+                  ),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  minVerticalPadding: 20,
+                  onTap: () {
+                      Get.to(() => SetSNSlink_crewDetail());
+                  },
+                  title: Text(
+                    'SNS 링크 연결하기',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Color(0xFF111111)),
+                  ),
+                  trailing: Image.asset(
+                    'assets/imgs/icons/icon_arrow_g.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
               ],
-            ),
-          ),
+            )
         ],
       ),
     );

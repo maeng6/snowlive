@@ -6,7 +6,7 @@ import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/screens/LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
 import 'package:snowlive3/screens/LiveCrew/v_liveCrewHome.dart';
 import 'package:snowlive3/screens/LiveCrew/v_searchCrewPage.dart';
-import 'package:snowlive3/screens/LiveCrew/v_setting_delegation.dart';
+import 'package:snowlive3/screens/LiveCrew/setting/v_setting_delegation.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';

@@ -6,7 +6,9 @@ import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
+import 'package:snowlive3/screens/v_webPage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../controller/vm_timeStampController.dart';
 
@@ -330,7 +332,56 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                           child:
                           ElevatedButton(
                             onPressed:
-                                () {},
+                                () {
+                              if(_liveCrewModelController.sns!.isNotEmpty && _liveCrewModelController.sns != '' ) {
+                              _liveCrewModelController.otherShare(contents: '${_liveCrewModelController.sns}');
+                              }else{
+                                Get.dialog(AlertDialog(
+                                  contentPadding: EdgeInsets.only(
+                                      bottom: 0,
+                                      left: 20,
+                                      right: 20,
+                                      top: 30),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(
+                                          10.0)),
+                                  buttonPadding:
+                                  EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 0),
+                                  content: Text(
+                                    '연결된 SNS가 없습니다.',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 15),
+                                  ),
+                                  actions: [
+                                    Row(
+                                      children: [
+                                        TextButton(
+                                            onPressed: () async {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              '확인',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Color(
+                                                    0xff377EEA),
+                                                fontWeight: FontWeight
+                                                    .bold,
+                                              ),
+                                            )),
+                                      ],
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .center,
+                                    )
+                                  ],
+                                ));
+                              }
+                                },
                             child: Text(
                               'SNS 링크',
                               style: TextStyle(
@@ -366,6 +417,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
       );
   }
 }
+
+
 
 // if (!snapshot.hasData || snapshot.data == null) {}
 // else if (snapshot.data!.docs.isNotEmpty) {

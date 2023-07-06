@@ -6,18 +6,19 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
-import '../../controller/vm_userModelController.dart';
-import '../../widget/w_fullScreenDialog.dart';
+import '../../../controller/vm_liveCrewModelController.dart';
+import '../../../controller/vm_userModelController.dart';
+import '../../../widget/w_fullScreenDialog.dart';
 
-class SetProfileImage_moreTab extends StatefulWidget {
-  SetProfileImage_moreTab({Key? key}) : super(key: key);
+class SetProfileImage_crewDetail extends StatefulWidget {
+  SetProfileImage_crewDetail({Key? key}) : super(key: key);
 
   @override
-  State<SetProfileImage_moreTab> createState() =>
-      _SetProfileImage_moreTabState();
+  State<SetProfileImage_crewDetail> createState() =>
+      _SetProfileImage_crewDetailState();
 }
 
-class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
+class _SetProfileImage_crewDetailState extends State<SetProfileImage_crewDetail> {
   bool profileImage = false;
   XFile? _imageFile;
   XFile? _croppedFile;
@@ -49,11 +50,11 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
 
     //TODO : ****************************************************************
     Get.put(ImageController(), permanent: true);
-    UserModelController _userModelController = Get.find<UserModelController>();
     ImageController _imageController = Get.find<ImageController>();
+    LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
     //TODO : ****************************************************************
 
-    _isSelected = _userModelController.profileImageUrl!.isNotEmpty;
+    _isSelected = _liveCrewModelController.profileImageUrl!.isNotEmpty;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -93,7 +94,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
             Column(
               children: [
                 Text(
-                  '프로필 이미지를\n선택해 주세요.',
+                  '크루의 로고이미지를\n선택해 주세요.',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -382,7 +383,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                               ),
                               child: ClipOval(
                                 child: ExtendedImage.network(
-                                  _userModelController.profileImageUrl!,
+                                  _liveCrewModelController.profileImageUrl!,
                                   fit: BoxFit.cover,
                                   width: 160,
                                   height: 160,
@@ -428,8 +429,8 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                 onPressed: () async {
                   if (_croppedFile != null) {
                     CustomFullScreenDialog.showDialog();
-                    String profileImageUrl = await _imageController.setNewImage(_croppedFile!);
-                    await _userModelController.updateProfileImageUrl(profileImageUrl);
+                    String profileImageUrl = await _imageController.setNewImage_Crew(newImage: _croppedFile!, crewID: _liveCrewModelController.crewID);
+                    await _liveCrewModelController.updateProfileImageUrl(url: profileImageUrl, crewID: _liveCrewModelController.crewID);
                     CustomFullScreenDialog.cancelDialog();
                     Navigator.pop(context);
                     Get.snackbar('프로필 이미지', '선택한 이미지로 변경이 완료되었습니다.',
@@ -535,8 +536,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                     child: ElevatedButton(
                                       onPressed: () async {
                                         CustomFullScreenDialog.showDialog();
-                                        await _userModelController
-                                            .deleteProfileImageUrl();
+                                        await _liveCrewModelController.deleteProfileImageUrl(crewID: _liveCrewModelController.crewID);
                                         CustomFullScreenDialog.cancelDialog();
                                         Navigator.pop(context);
                                         Get.snackbar('프로필 이미지', '기본 이미지로 변경이 완료되었습니다.',

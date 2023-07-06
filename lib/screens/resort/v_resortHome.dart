@@ -37,6 +37,7 @@ class _ResortHomeState extends State<ResortHome>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
   int lengthOfLivefriends = 0;
   bool isSnackbarShown = false;
 
