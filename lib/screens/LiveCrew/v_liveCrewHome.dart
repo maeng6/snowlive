@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:snowlive3/screens/LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
 import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:snowlive3/screens/LiveCrew/v_searchCrewPage.dart';
+import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
@@ -161,7 +163,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 1),
                           child: Text(
-                            '라이브 크루 검색',
+                            '라이브크루 검색',
                             style:
                             TextStyle(fontSize: 15, color: Color(0xFF666666)),
                           ),
@@ -176,101 +178,305 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
               height: 20,
             ),
             Padding(
-                padding: EdgeInsets.only(left: 16),
+                padding: EdgeInsets.only(left: 16, right: 16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('가입한 크루'),
-                  SizedBox(height: 20,),
                   Container(
-                    height: 100,
+                    height: 215,
                     width: _size.width,
                     child: StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('liveCrew')
-                            .where('memberUidList', arrayContains: _userModelController.uid!)
-                            .snapshots(),
-                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
-                          if (!snapshot.hasData || snapshot.data == null) {
-                            return Center(
-                              child: Text('가입한 크루가 없습니다'),
-                            );
-                          } else if (snapshot.data!.docs.isNotEmpty) {
-                            final crewDocs = snapshot.data!.docs;
-                            return  ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: crewDocs.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return GestureDetector(
-                                  onTap: () async {
-                                    CustomFullScreenDialog.showDialog();
-                                    await _liveCrewModelController.getCurrnetCrew(crewDocs[index]['crewID']);
-                                    CustomFullScreenDialog.cancelDialog();
-                                    Get.to(()=>CrewDetailPage_screen());
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.only(right: 10),
-                                    child: Container(
-                                      height: 100,
-                                      width: 100,
-                                      color: Color(crewDocs[index]['crewColor']),
-                                      child: Text(crewDocs[index]['crewName']),
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          }
-                          else if (snapshot.connectionState == ConnectionState.waiting) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
+                      stream: FirebaseFirestore.instance
+                          .collection('liveCrew')
+                          .where('memberUidList', arrayContains: _userModelController.uid!)
+                          .snapshots(),
+                      builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
+                        if (!snapshot.hasData || snapshot.data == null || snapshot.data!.docs.isEmpty) {
                           return Center(
                             child: Text('가입한 크루가 없습니다'),
                           );
+                        } else {
+                          final crewDoc = snapshot.data!.docs.first;
+                          return StreamBuilder(
+                            stream: FirebaseFirestore.instance
+                                .collection('user')
+                                .where('isOnLive', isEqualTo: true)
+                                .snapshots(),
+                            builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> userSnapshot){
+                              if (!userSnapshot.hasData || userSnapshot.data == null) {
+                                return Center(
+                                  child: Text('유저 정보를 불러오는데 실패했습니다'),
+                                );
+                              } else {
+                                int liveUserCount = 0;
+                                userSnapshot.data!.docs.forEach((userDoc) {
+                                  if ((crewDoc['memberUidList'] as List).contains(userDoc['uid'])) {
+                                    liveUserCount += 1;
+                                  }
+                                });
+                                return GestureDetector(
+                                  onTap: () async {
+                                    CustomFullScreenDialog.showDialog();
+                                    await _liveCrewModelController.getCurrnetCrew(crewDoc['crewID']);
+                                    CustomFullScreenDialog.cancelDialog();
+                                    Get.to(()=>CrewDetailPage_screen());
+                                  },
+                                  child: Container(
+                                    height: 215,
+                                    width: _size.width,
+                                    decoration: BoxDecoration(
+                                      color: Color(crewDoc['crewColor']),
+                                      borderRadius: BorderRadius.circular(14)
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 16, right: 16),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                width: 100,
+                                                height: 98,
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(crewDoc['crewName'],
+                                                    style: TextStyle(
+                                                      color: Color(0xFFFFFFFF),
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 22
+                                                    ),
+                                                    ),
+                                                    SizedBox(height: 10,),
+                                                    Text('LiveOn/전체(명)',
+                                                    style: TextStyle(
+                                                      fontSize: 13,
+                                                      color: Color(0xFFD7BCF9)
+                                                    ),
+                                                    ),
+                                                    RichText(
+                                                      text: TextSpan(
+                                                        children: <TextSpan>[
+                                                          TextSpan(
+                                                            text: '$liveUserCount',
+                                                            style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 28),
+                                                          ),
+                                                          TextSpan(
+                                                            text: ' / ',
+                                                            style: TextStyle(fontSize: 16, color: Colors.black, height: 0.5)
+                                                          ),
+                                                          TextSpan(
+                                                            text: '${(crewDoc['memberUidList'] as List).length}',
+                                                            style: TextStyle(color: Colors.black54, fontSize: 28),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              (crewDoc['profileImageUrl'].isNotEmpty)
+                                                  ? GestureDetector(
+                                                onTap: () {
+                                                  Get.to(() => ProfileImagePage(
+                                                      CommentProfileUrl: crewDoc['profileImageUrl']));
+                                                },
+                                                child: Container(
+                                                    width: 96,
+                                                    height: 96,
+                                                    child: ExtendedImage.network(
+                                                      crewDoc['profileImageUrl'],
+                                                      enableMemoryCache: true,
+                                                      shape: BoxShape.rectangle,
+                                                      borderRadius: BorderRadius.circular(16),
+                                                      width: 100,
+                                                      height: 100,
+                                                      fit: BoxFit.cover,
+                                                    )),
+                                              )
+                                                  : GestureDetector(
+                                                onTap: () {
+                                                  Get.to(() => ProfileImagePage(
+                                                      CommentProfileUrl: ''));
+                                                },
+                                                child: Container(
+                                                  width: 96,
+                                                  height: 96,
+                                                  child: ExtendedImage.asset(
+                                                    'assets/imgs/profile/img_profile_default_.png',
+                                                    enableMemoryCache: true,
+                                                    shape: BoxShape.rectangle,
+                                                    borderRadius: BorderRadius.circular(16),
+                                                    width: 100,
+                                                    height: 100,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 30,),
+                                          Container(
+                                            width: _size.width,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFF772ED3),
+                                                borderRadius: BorderRadius.circular(8)),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(13.0),
+                                                child: Text(crewDoc['notice'],
+                                                style: TextStyle(
+                                                  color: Colors.white
+                                                ),
+                                                ),
+                                              ))
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          );
                         }
+                      },
                     ),
+                  )
+
+                ],
+              ),
+            ),
+            SizedBox(height: 30,),
+            Padding(
+              padding: EdgeInsets.only(left: 16, right: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('${_userModelController.resortNickname } 베이스 크루',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: (){},
+                        child: Text('전체 리스트',
+                          style: TextStyle(
+                              color: Color(0xFF666666),
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        style: TextButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: Color(0xFFF2F3F4),
+                            padding: EdgeInsets.symmetric(horizontal: 10)),
+                      ),
+                    ],
                   ),
-                  Text('${_userModelController.resortNickname } 라이브 크루'),
-                  SizedBox(height: 20,),
                   Container(
-                    height: 100,
-                    width: _size.width,
                     child: StreamBuilder(
                         stream: FirebaseFirestore.instance
                             .collection('liveCrew')
                             .where('baseResort', isEqualTo: _userModelController.favoriteResort!)
                             .snapshots(),
-                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
+                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                           if (!snapshot.hasData || snapshot.data == null) {
                             return Center(
                               child: Text('가입한 크루가 없습니다'),
                             );
                           } else if (snapshot.data!.docs.isNotEmpty) {
                             final crewDocs = snapshot.data!.docs;
-                            return  ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: crewDocs.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return GestureDetector(
-                                  onTap: () async {
-                                    CustomFullScreenDialog.showDialog();
-                                    await _liveCrewModelController.getCurrnetCrew(crewDocs[index]['crewID']);
-                                    CustomFullScreenDialog.cancelDialog();
-                                    Get.to(()=>CrewDetailPage_screen());
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.only(right: 10),
-                                    child: Container(
-                                      height: 100,
-                                      width: 100,
-                                      color: Color(crewDocs[index]['crewColor']),
-                                      child: Text(crewDocs[index]['crewName']),
+                            return Column(
+                              children: crewDocs.map((doc) => GestureDetector(
+                                onTap: () async {
+                                  CustomFullScreenDialog.showDialog();
+                                  await _liveCrewModelController.getCurrnetCrew(doc['crewID']);
+                                  CustomFullScreenDialog.cancelDialog();
+                                  Get.to(()=>CrewDetailPage_screen());
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: Container(
+                                    height: 70,
+                                    width: _size.width,
+                                    child: Row(
+                                      children: [
+                                        (doc['profileImageUrl'].isNotEmpty)
+                                            ? GestureDetector(
+                                          onTap: () {
+                                            Get.to(() => ProfileImagePage(
+                                                CommentProfileUrl: doc['profileImageUrl']));
+                                          },
+                                          child: Container(
+                                              width: 48,
+                                              height: 48,
+                                              decoration: BoxDecoration(
+                                                  color: Color(doc['crewColor']),
+                                                  borderRadius: BorderRadius.circular(8)
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(2.0),
+                                                child: ExtendedImage.network(
+                                                  doc['profileImageUrl'],
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape.rectangle,
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              )),
+                                        )
+                                            : GestureDetector(
+                                          onTap: () {
+                                            Get.to(() => ProfileImagePage(
+                                                CommentProfileUrl: ''));
+                                          },
+                                          child: Container(
+                                            width: 48,
+                                            height: 48,
+                                            decoration: BoxDecoration(
+                                              color: Color(doc['crewColor']),
+                                              borderRadius: BorderRadius.circular(8)
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(2.0),
+                                              child: ExtendedImage.asset(
+                                                'assets/imgs/profile/img_profile_default_.png',
+                                                enableMemoryCache: true,
+                                                shape: BoxShape.rectangle,
+                                                borderRadius: BorderRadius.circular(8),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 15,),
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(doc['crewName'],
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Color(0xFF111111)
+                                            ),
+                                            ),
+                                            Text('${doc['crewLeader']} / ${(doc['memberUidList'] as List).length}명',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Color(0xFF949494)
+                                            ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                );
-                              },
+                                ),
+                              )).toList(),
                             );
                           }
                           else if (snapshot.connectionState == ConnectionState.waiting) {
@@ -284,8 +490,215 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                         }
                     ),
                   ),
-
                 ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('${_userModelController.resortNickname } 베이스 크루',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: (){},
+                    child: Text('전체 랭킹',
+                      style: TextStyle(
+                          color: Color(0xFF666666),
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    style: TextButton.styleFrom(
+                        elevation: 0,
+                        backgroundColor: Color(0xFFF2F3F4),
+                        padding: EdgeInsets.symmetric(horizontal: 10)),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('liveCrew')
+                      .where('baseResort', isEqualTo: _userModelController.favoriteResort!)
+                      .limit(3)
+                      .snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
+                    if (!snapshot.hasData || snapshot.data == null) {
+                      return Center(
+                        child: Text('가입한 크루가 없습니다'),
+                      );
+                    } else if (snapshot.data!.docs.isNotEmpty) {
+                      final crewDocs = snapshot.data!.docs;
+                      return  Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Color(crewDocs[0]['crewColor']),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            height: 154,
+                            width: 107,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                (crewDocs[0]['profileImageUrl'].isNotEmpty)
+                                    ? GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => ProfileImagePage(
+                                        CommentProfileUrl: crewDocs[0]['profileImageUrl']));
+                                  },
+                                  child: Container(
+                                      width: 60,
+                                      height: 60,
+                                      child: ExtendedImage.network(
+                                        crewDocs[0]['profileImageUrl'],
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(10),
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover,
+                                      )),
+                                )
+                                    : GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => ProfileImagePage(
+                                        CommentProfileUrl: ''));
+                                  },
+                                  child: ExtendedImage.asset(
+                                    'assets/imgs/profile/img_profile_default_.png',
+                                    enableMemoryCache: true,
+                                    shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.circular(10),
+                                    width: 60,
+                                    height: 60,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                SizedBox(height: 20,),
+                                Text(crewDocs[0]['crewName']),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Color(crewDocs[1]['crewColor']),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            height: 154,
+                            width: 107,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                (crewDocs[1]['profileImageUrl'].isNotEmpty)
+                                    ? GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => ProfileImagePage(
+                                        CommentProfileUrl: crewDocs[1]['profileImageUrl']));
+                                  },
+                                  child: Container(
+                                      width: 60,
+                                      height: 60,
+                                      child: ExtendedImage.network(
+                                        crewDocs[1]['profileImageUrl'],
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(10),
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover,
+                                      )),
+                                )
+                                    : GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => ProfileImagePage(
+                                        CommentProfileUrl: ''));
+                                  },
+                                  child: ExtendedImage.asset(
+                                    'assets/imgs/profile/img_profile_default_.png',
+                                    enableMemoryCache: true,
+                                    shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.circular(10),
+                                    width: 60,
+                                    height: 60,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                SizedBox(height: 20,),
+
+                                Text(crewDocs[1]['crewName']),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Color(crewDocs[2]['crewColor']),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            height: 154,
+                            width: 107,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                (crewDocs[2]['profileImageUrl'].isNotEmpty)
+                                    ? GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => ProfileImagePage(
+                                        CommentProfileUrl: crewDocs[2]['profileImageUrl']));
+                                  },
+                                  child: Container(
+                                      width: 60,
+                                      height: 60,
+                                      child: ExtendedImage.network(
+                                        crewDocs[2]['profileImageUrl'],
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(10),
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover,
+                                      )),
+                                )
+                                    : GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => ProfileImagePage(
+                                        CommentProfileUrl: ''));
+                                  },
+                                  child: ExtendedImage.asset(
+                                    'assets/imgs/profile/img_profile_default_.png',
+                                    enableMemoryCache: true,
+                                    shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.circular(10),
+                                    width: 60,
+                                    height: 60,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                SizedBox(height: 20,),
+
+                                Text(crewDocs[0]['crewName']),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                    else if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    return Center(
+                      child: Text('가입한 크루가 없습니다'),
+                    );
+                  }
               ),
             ),
 
