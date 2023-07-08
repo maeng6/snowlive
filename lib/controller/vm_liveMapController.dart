@@ -187,6 +187,94 @@ class LiveMapController extends GetxController {
     });
   }
 
+  // Future<void> checkAndUpdatePassCount(Position position) async {
+  //   await _seasonController.getCurrentSeason();
+  //
+  //   for (LocationModel location in locations) {
+  //     double distanceInMeters = Geolocator.distanceBetween(
+  //       position.latitude,
+  //       position.longitude,
+  //       location.coordinates.latitude,
+  //       location.coordinates.longitude,
+  //     );
+  //
+  //     bool withinBoundary = distanceInMeters <= 100;
+  //
+  //     if (withinBoundary) {
+  //       DateTime now = DateTime.now();
+  //
+  //       if (_userModelController.uid != null) {
+  //         DocumentReference docRef = FirebaseFirestore.instance
+  //             .collection('Ranking')
+  //             .doc('${_seasonController.currentSeason}')
+  //             .collection('${_userModelController.favoriteResort}')
+  //             .doc("${_userModelController.uid}");
+  //
+  //         try {
+  //           DocumentSnapshot userSnapshot = await docRef.get();
+  //
+  //           if (!userSnapshot.exists) {
+  //             // Document doesn't exist. Let's create it!
+  //             await docRef.set({
+  //               'uid': _userModelController.uid,
+  //               'passCountData': {},
+  //               'lastPassTime': null,
+  //               'slopeScores': {},
+  //               'totalScore': 0,
+  //             });
+  //
+  //             // Re-fetch the document after creating it
+  //             userSnapshot = await docRef.get();
+  //           }
+  //
+  //           // Now, we are sure the document exists. Let's proceed with the rest of the logic.
+  //           Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
+  //           Map<String, dynamic> passCountData = data['passCountData'] ?? {};
+  //
+  //           int storedPassCount = passCountData[location.name] ?? 0;
+  //           DateTime? storedLastPassTime = data['lastPassTime'] != null
+  //               ? (data['lastPassTime'] as Timestamp).toDate()
+  //               : null;
+  //
+  //           if (storedLastPassTime == null || now.difference(storedLastPassTime).inMinutes >= 10) {
+  //             storedPassCount += 1;
+  //             DateTime lastPassTime = now;
+  //
+  //             // Update passCountData
+  //             passCountData[location.name] = storedPassCount;
+  //             data['passCountData'] = passCountData;
+  //
+  //             // Calculate slope score
+  //             int slopeScore = slopeScoresModel.slopeScores[location.name] ?? 0;
+  //             int updatedScore = slopeScore * storedPassCount;
+  //
+  //             // Update slopeScores
+  //             Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
+  //             slopeScores[location.name] = updatedScore;
+  //             data['slopeScores'] = slopeScores;
+  //
+  //             // Calculate total score
+  //             int totalScore = slopeScores.values.fold<int>(0, (int sum, dynamic score) => sum + (score as int? ?? 0));
+  //             data['totalScore'] = totalScore;
+  //
+  //             data['lastPassTime'] = lastPassTime;
+  //
+  //             // Update document using data
+  //             await docRef.set(data, SetOptions(merge: true));
+  //
+  //             // Update the same data to the 'crew' collection
+  //             await updateCrewData(location.name, slopeScore);
+  //           }
+  //         } catch (error, stackTrace) {
+  //           print('Firestore 업데이트 에러: $error');
+  //           print('Stack trace: $stackTrace');
+  //           // 여기서 추가적인 예외 처리나 로깅을 수행할 수 있습니다.
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+
   Future<void> checkAndUpdatePassCount(Position position) async {
     await _seasonController.getCurrentSeason();
 
@@ -230,7 +318,9 @@ class LiveMapController extends GetxController {
             // Now, we are sure the document exists. Let's proceed with the rest of the logic.
             Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
             Map<String, dynamic> passCountData = data['passCountData'] ?? {};
+            Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
 
+<<<<<<< HEAD
             int storedPassCount = passCountData[location.name] ?? 0;
             DateTime? storedLastPassTime = data['lastPassTime'] != null
                 ? (data['lastPassTime'] as Timestamp).toDate()
@@ -259,56 +349,113 @@ class LiveMapController extends GetxController {
               data['totalScore'] = totalScore;
 
               data['lastPassTime'] = lastPassTime;
+=======
+            if (location.type == 'slope') {
+              // If the user is within the boundary of the slope
+              data['slopeStatus'] ??= {}; // Initialize slopeStatus if it doesn't exist
+              data['slopeStatus'][location.name] = true; // Set slope status to true
+>>>>>>> master
 
               // Update document using data
               await docRef.set(data, SetOptions(merge: true));
+            } else if (location.type == 'respawn') {
+              try {
+                // If the user is within the boundary of the respawn area
+                Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
 
-              // Update the same data to the 'crew' collection
-              await updateCrewData(location.name, slopeScore);
+                // Retrieve slopes with status true
+                List<String> passedSlopes = slopeStatus.entries
+                    .where((entry) => entry.value == true)
+                    .map((entry) => entry.key)
+                    .toList();
+
+                // Update pass count and score for passed slopes
+                for (String slopeName in passedSlopes) {
+                  int storedPassCount = passCountData[slopeName] ?? 0;
+                  int slopeScore = slopeScoresModel.slopeScores[slopeName] ?? 0;
+
+                  storedPassCount += 1;
+                  int updatedScore = storedPassCount * slopeScore;
+
+                  passCountData[slopeName] = storedPassCount;
+                  slopeScores[slopeName] = updatedScore;
+
+                  // Update crew data with slope name and score
+                  await updateCrewData(slopeName, slopeScore);
+                }
+
+                // Reset slopeStatus for all slopes
+                for (String slopeName in slopeStatus.keys) {
+                  slopeStatus[slopeName] = false;
+                }
+
+                // Calculate total score
+                int totalScore = slopeScores.values.fold<int>(0, (sum, score) => sum + (score as int? ?? 0));
+                data['totalScore'] = totalScore;
+
+                // Update document using data
+                await docRef.set(data, SetOptions(merge: true));
+
+              } catch (error, stackTrace) {
+                print('오류 발생: $error');
+                print('스택 트레이스: $stackTrace');
+                // 오류 처리 로직 추가
+              }
             }
           } catch (error, stackTrace) {
             print('Firestore 업데이트 에러: $error');
-            print('Stack trace: $stackTrace');
-            // 여기서 추가적인 예외 처리나 로깅을 수행할 수 있습니다.
+            print('StackTrace: $stackTrace');
           }
         }
       }
     }
   }
 
+
   Future<void> updateCrewData(String locationName, int slopeScore) async {
-    DocumentReference crewDocRef = FirebaseFirestore.instance
-        .collection('liveCrew')
-        .doc('${_userModelController.liveCrew}');
+    String liveCrew = _userModelController.liveCrew ?? ''; // 유효하지 않은 경우 빈 문자열로 초기화
 
-    try {
-      DocumentSnapshot crewDocSnapshot = await crewDocRef.get();
+    if (liveCrew.isNotEmpty) {
+      DocumentReference crewDocRef = FirebaseFirestore.instance
+          .collection('liveCrew')
+          .doc(liveCrew);
 
-      Map<String, dynamic> crewData = crewDocSnapshot.data() as Map<String, dynamic>;
-      Map<String, dynamic> crewPassCountData = crewData['passCountData'] ?? {};
-      Map<String, dynamic> crewSlopeScores = crewData['slopeScores'] ?? {};
+      try {
+        DocumentSnapshot crewDocSnapshot = await crewDocRef.get();
 
-      // Update the pass count
-      int crewStoredPassCount = crewPassCountData[locationName] ?? 0;
-      crewPassCountData[locationName] = crewStoredPassCount + 1;
+        if (crewDocSnapshot.exists) {
+          Map<String, dynamic> crewData = crewDocSnapshot.data() as Map<String, dynamic>;
+          Map<String, dynamic> crewPassCountData = crewData['passCountData'] ?? {};
+          Map<String, dynamic> crewSlopeScores = crewData['slopeScores'] ?? {};
 
-      // Update the slope scores
-      int crewStoredSlopeScore = crewSlopeScores[locationName] ?? 0;
-      crewSlopeScores[locationName] = crewStoredSlopeScore + slopeScore;
+          // Update the pass count
+          int crewStoredPassCount = crewPassCountData[locationName] ?? 0;
+          crewPassCountData[locationName] = crewStoredPassCount + 1;
 
-      // Update the total score
-      int crewTotalScore = crewData['totalScore'] ?? 0;
-      crewData['totalScore'] = crewTotalScore + slopeScore;
+          // Update the slope scores
+          int crewStoredSlopeScore = crewSlopeScores[locationName] ?? 0;
+          crewSlopeScores[locationName] = crewStoredSlopeScore + slopeScore;
 
-      // Assign updated pass count and slope scores back to crew data
-      crewData['passCountData'] = crewPassCountData;
-      crewData['slopeScores'] = crewSlopeScores;
+          // Update the total score
+          int crewTotalScore = crewData['totalScore'] ?? 0;
+          crewTotalScore += slopeScore;
 
-      await crewDocRef.set(crewData, SetOptions(merge: true));
-    } catch (error, stackTrace) {
-      print('Firestore crew 업데이트 에러: $error');
-      print('Stack trace: $stackTrace');
-      // 여기서 추가적인 예외 처리나 로깅을 수행할 수 있습니다.
+          // Assign updated pass count and slope scores back to crew data
+          crewData['passCountData'] = crewPassCountData;
+          crewData['slopeScores'] = crewSlopeScores;
+          crewData['totalScore'] = crewTotalScore;
+
+          await crewDocRef.set(crewData, SetOptions(merge: true));
+        } else {
+          print('크루 문서가 존재하지 않습니다.');
+        }
+      } catch (error, stackTrace) {
+        print('Firestore crew 업데이트 에러: $error');
+        print('Stack trace: $stackTrace');
+        // 여기서 추가적인 예외 처리나 로깅을 수행할 수 있습니다.
+      }
+    } else {
+      print('liveCrew 값이 유효하지 않습니다.');
     }
   }
 
