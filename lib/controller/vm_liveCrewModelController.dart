@@ -76,7 +76,8 @@ class LiveCrewModelController extends GetxController {
     required crewImageUrl,
     required crewColor,
     required crewID,
-    required sns
+    required sns,
+    required totalScore,
 } ) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
@@ -95,7 +96,8 @@ class LiveCrewModelController extends GetxController {
       'description':'',
       'notice':'',
       'resistDate' : Timestamp.now(),
-      'sns' : ''
+      'sns' : '',
+      'totalScore': 0
     });
   }
 
