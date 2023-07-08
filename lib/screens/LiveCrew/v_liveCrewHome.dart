@@ -325,10 +325,21 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                 borderRadius: BorderRadius.circular(8)),
                                               child: Padding(
                                                 padding: const EdgeInsets.all(13.0),
-                                                child: Text(crewDoc['notice'],
-                                                style: TextStyle(
-                                                  color: Colors.white
-                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    ExtendedImage.asset(
+                                                      'assets/imgs/icons/icon_notice.png',
+                                                      enableMemoryCache: true,
+                                                      width: 20,
+                                                      height: 20,
+                                                    ),
+                                                    SizedBox(width: 10,),
+                                                    Text(crewDoc['notice'],
+                                                    style: TextStyle(
+                                                      color: Colors.white
+                                                    ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ))
                                         ],
@@ -493,12 +504,13 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                 ],
               ),
             ),
+            SizedBox(height: 10,),
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('${_userModelController.resortNickname } 베이스 크루',
+                  Text('${_userModelController.resortNickname } 크루 랭킹 TOP3',
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold
@@ -520,12 +532,14 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                 ],
               ),
             ),
+            SizedBox(height: 10,),
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
               child: StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection('liveCrew')
                       .where('baseResort', isEqualTo: _userModelController.favoriteResort!)
+                      .orderBy('totalScore', descending: true)
                       .limit(3)
                       .snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
@@ -582,8 +596,21 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                     fit: BoxFit.cover,
                                   ),
                                 ),
-                                SizedBox(height: 20,),
-                                Text(crewDocs[0]['crewName']),
+                                SizedBox(height: 10,),
+                                ExtendedImage.asset(
+                                  'assets/imgs/icons/icon_crown_1.png',
+                                  enableMemoryCache: true,
+                                  width: 28,
+                                  height: 28,
+                                  fit: BoxFit.cover,
+                                ),
+                                Text(crewDocs[0]['crewName'],
+                                style: TextStyle(
+                                  color: Color(0xFFFFFFFF),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12
+                                ),
+                                ),
                               ],
                             ),
                           ),
@@ -631,9 +658,21 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                     fit: BoxFit.cover,
                                   ),
                                 ),
-                                SizedBox(height: 20,),
-
-                                Text(crewDocs[1]['crewName']),
+                                SizedBox(height: 10,),
+                                ExtendedImage.asset(
+                                  'assets/imgs/icons/icon_crown_2.png',
+                                  enableMemoryCache: true,
+                                  width: 28,
+                                  height: 28,
+                                  fit: BoxFit.cover,
+                                ),
+                                Text(crewDocs[1]['crewName'],
+                                  style: TextStyle(
+                                      color: Color(0xFFFFFFFF),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -681,9 +720,21 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                     fit: BoxFit.cover,
                                   ),
                                 ),
-                                SizedBox(height: 20,),
-
-                                Text(crewDocs[0]['crewName']),
+                                SizedBox(height: 10,),
+                                ExtendedImage.asset(
+                                  'assets/imgs/icons/icon_crown_3.png',
+                                  enableMemoryCache: true,
+                                  width: 28,
+                                  height: 28,
+                                  fit: BoxFit.cover,
+                                ),
+                                Text(crewDocs[2]['crewName'],
+                                  style: TextStyle(
+                                      color: Color(0xFFFFFFFF),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12
+                                  ),
+                                ),
                               ],
                             ),
                           ),

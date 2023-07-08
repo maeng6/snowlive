@@ -220,7 +220,8 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
                                 crewImageUrl: widget.CrewImageUrl,
                                 crewName: widget.crewName,
                                 crewID: crewID,
-                                sns: ''
+                                sns: '',
+                                totalScore: 0
                             );
                             await _userModelController.updateFavoriteResort(baseResort);
                             await _userModelController.updateResortNickname(baseResort);
