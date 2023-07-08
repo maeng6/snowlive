@@ -717,22 +717,14 @@ PODS:
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30910.0, >= 2.30908.0)
   - FirebaseAppCheckInterop (10.11.0)
-<<<<<<< HEAD
-  - FirebaseAuth (10.9.0):
-=======
   - FirebaseAuth (10.10.0):
->>>>>>> master
     - FirebaseAppCheckInterop (~> 10.0)
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
     - GoogleUtilities/Environment (~> 7.8)
     - GTMSessionFetcher/Core (< 4.0, >= 2.1)
   - FirebaseAuthInterop (10.11.0)
-<<<<<<< HEAD
-  - FirebaseCore (10.9.0):
-=======
   - FirebaseCore (10.10.0):
->>>>>>> master
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/Logger (~> 7.8)
@@ -1076,25 +1068,6 @@ SPEC CHECKSUMS:
   FBSDKCoreKit: 2cb033464b2134af0138f87d20b859eb3f9be359
   FBSDKCoreKit_Basics: d37280da2e65872f0e931d15f45d97ea324fec37
   FBSDKLoginKit: c47a3b90920702487b10b647c63520dc2676dad9
-<<<<<<< HEAD
-  Firebase: bd152f0f3d278c4060c5c71359db08ebcfd5a3e2
-  firebase_analytics: 48ed4a230abf9f585f7e7b477791effe96f5a791
-  firebase_auth: 3b4b3d296a504a24c0f518ec1a2dcc43e7b6ed81
-  firebase_core: ce64b0941c6d87c6ef5022ae9116a158236c8c94
-  firebase_messaging: 42912365e62efc1ea3e00724e5eecba6068ddb88
-  firebase_storage: 7e99be67d69a310a307f7be32b93c7412ffc2282
-  FirebaseAnalytics: 5ea0db4893825e7b0149d575352cd838236313dc
-  FirebaseAppCheckInterop: 255b6c0292fe5da995c8b2df0c02f6a3ca7f61b4
-  FirebaseAuth: 21d5e902fcea44d0d961540fc4742966ae6118cc
-  FirebaseAuthInterop: 44e34efef7145776a107b9e7f79ed44beb4738fa
-  FirebaseCore: b68d3616526ec02e4d155166bbafb8eca64af557
-  FirebaseCoreExtension: cacdad57fdb60e0b86dcbcac058ec78237946759
-  FirebaseCoreInternal: 9e46c82a14a3b3a25be4e1e151ce6d21536b89c0
-  FirebaseFirestore: 584d0e1b0f7f1666c516c5157ff06e785bd8836f
-  FirebaseInstallations: 2a2c6859354cbec0a228a863d4daf6de7c74ced4
-  FirebaseMessaging: 6b7052cc3da7bc8e5f72bef871243e8f04a14eed
-  FirebaseStorage: 075a0c10ec43f24193018c539d65e991db65d9ef
-=======
   Firebase: facd334e557a979bd03a0b58d90fd56b52b8aba0
   firebase_analytics: c93e27fe3135d501f68015d9373ee31d29aeb239
   firebase_auth: 27829de4f51a06d305467eebc237157adc145571
@@ -1112,7 +1085,6 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 2a2c6859354cbec0a228a863d4daf6de7c74ced4
   FirebaseMessaging: 8a3b9a8b98ce72a42d22e69865cf662e38d2d6f5
   FirebaseStorage: a12297f786e81e653864d87723ec30381eb90220
->>>>>>> master
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_background_geolocation: cbf42fef11105bc568488a103116ccfd3f099788
   flutter_facebook_auth: 42016bec1574eabf69bc2fe4311e8cd55813d352
@@ -1146,10 +1118,6 @@ SPEC CHECKSUMS:
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
-<<<<<<< HEAD
-PODFILE CHECKSUM: 24b89555b6082cedb543eb755d61f8aae4dd73f0
-=======
-PODFILE CHECKSUM: b17e1ecfe97aba85f3997d462fe23d9e4313a8d8
->>>>>>> master
+PODFILE CHECKSUM: 43d3b7cc60a44f79aba5978f053b90e6f093ba0c
 
 COCOAPODS: 1.12.1
