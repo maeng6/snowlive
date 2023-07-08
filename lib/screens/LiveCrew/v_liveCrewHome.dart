@@ -235,46 +235,52 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Container(
-                                                width: 100,
-                                                height: 98,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(crewDoc['crewName'],
-                                                    style: TextStyle(
-                                                      color: Color(0xFFFFFFFF),
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 22
-                                                    ),
-                                                    ),
-                                                    SizedBox(height: 10,),
-                                                    Text('LiveOn/전체(명)',
-                                                    style: TextStyle(
-                                                      fontSize: 13,
-                                                      color: Color(0xFFD7BCF9)
-                                                    ),
-                                                    ),
-                                                    RichText(
-                                                      text: TextSpan(
-                                                        children: <TextSpan>[
-                                                          TextSpan(
-                                                            text: '$liveUserCount',
-                                                            style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 28),
-                                                          ),
-                                                          TextSpan(
-                                                            text: ' / ',
-                                                            style: TextStyle(fontSize: 16, color: Colors.black, height: 0.5)
-                                                          ),
-                                                          TextSpan(
-                                                            text: '${(crewDoc['memberUidList'] as List).length}',
-                                                            style: TextStyle(color: Colors.black54, fontSize: 28),
-                                                          ),
-                                                        ],
+                                              Expanded(
+                                                child: Container(
+                                                  height: 98,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Padding(
+                                                        padding: EdgeInsets.only(right: 40),
+                                                        child: Text(crewDoc['crewName'],
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 1,
+                                                        style: TextStyle(
+                                                          color: Color(0xFFFFFFFF),
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 22
+                                                        ),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                      SizedBox(height: 10,),
+                                                      Text('LiveOn/전체(명)',
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: Color(0xFFD7BCF9)
+                                                      ),
+                                                      ),
+                                                      RichText(
+                                                        text: TextSpan(
+                                                          children: <TextSpan>[
+                                                            TextSpan(
+                                                              text: '$liveUserCount',
+                                                              style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 28),
+                                                            ),
+                                                            TextSpan(
+                                                              text: ' / ',
+                                                              style: TextStyle(fontSize: 16, color: Colors.black, height: 0.5)
+                                                            ),
+                                                            TextSpan(
+                                                              text: '${(crewDoc['memberUidList'] as List).length}',
+                                                              style: TextStyle(color: Colors.black54, fontSize: 28),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                               (crewDoc['profileImageUrl'].isNotEmpty)
@@ -338,6 +344,8 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                     style: TextStyle(
                                                       color: Colors.white
                                                     ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
                                                     ),
                                                   ],
                                                 ),
@@ -474,12 +482,16 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                               fontSize: 15,
                                               color: Color(0xFF111111)
                                             ),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
                                             ),
                                             Text('${doc['crewLeader']} / ${(doc['memberUidList'] as List).length}명',
                                             style: TextStyle(
                                               fontSize: 15,
                                               color: Color(0xFF949494)
                                             ),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
                                             )
                                           ],
                                         ),
@@ -604,12 +616,17 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                   height: 28,
                                   fit: BoxFit.cover,
                                 ),
-                                Text(crewDocs[0]['crewName'],
-                                style: TextStyle(
-                                  color: Color(0xFFFFFFFF),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12
-                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  child: Text(crewDocs[0]['crewName'],
+                                  style: TextStyle(
+                                    color: Color(0xFFFFFFFF),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12
+                                  ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
                                 ),
                               ],
                             ),
@@ -666,11 +683,16 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                   height: 28,
                                   fit: BoxFit.cover,
                                 ),
-                                Text(crewDocs[1]['crewName'],
-                                  style: TextStyle(
-                                      color: Color(0xFFFFFFFF),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  child: Text(crewDocs[1]['crewName'],
+                                    style: TextStyle(
+                                        color: Color(0xFFFFFFFF),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
                                 ),
                               ],
@@ -728,11 +750,16 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                   height: 28,
                                   fit: BoxFit.cover,
                                 ),
-                                Text(crewDocs[2]['crewName'],
-                                  style: TextStyle(
-                                      color: Color(0xFFFFFFFF),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  child: Text(crewDocs[2]['crewName'],
+                                    style: TextStyle(
+                                        color: Color(0xFFFFFFFF),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
                                 ),
                               ],
