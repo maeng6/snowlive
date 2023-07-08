@@ -1,4 +1,3 @@
-/*
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui;
@@ -123,20 +122,20 @@ class LiveMapController extends GetxController {
 
   Future<void> startBackgroundLocationService() async {
     await bg.BackgroundGeolocation.ready(bg.Config(
-      desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
-      preventSuspend: true,
-      heartbeatInterval: 5,
-      stopOnStationary: false,
-      distanceFilter: 0,
-      isMoving: true,
-      disableElasticity: true,
-      stopOnTerminate: true,
-      startOnBoot: false,
-      stationaryRadius: 25,
-      logLevel: bg.Config.LOG_LEVEL_VERBOSE,
-      locationUpdateInterval: 5000,
-      disableLocationAuthorizationAlert: true,
-      showsBackgroundLocationIndicator: true
+        desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
+        preventSuspend: true,
+        heartbeatInterval: 5,
+        stopOnStationary: false,
+        distanceFilter: 0,
+        isMoving: true,
+        disableElasticity: true,
+        stopOnTerminate: true,
+        startOnBoot: false,
+        stationaryRadius: 25,
+        logLevel: bg.Config.LOG_LEVEL_VERBOSE,
+        locationUpdateInterval: 5000,
+        disableLocationAuthorizationAlert: true,
+        showsBackgroundLocationIndicator: true
     ));
 
     await bg.BackgroundGeolocation.start();
@@ -287,7 +286,7 @@ class LiveMapController extends GetxController {
         location.coordinates.longitude,
       );
 
-      bool withinBoundary = distanceInMeters <= 10;
+      bool withinBoundary = distanceInMeters <= 100;
 
       if (withinBoundary) {
         DateTime now = DateTime.now();
@@ -321,41 +320,10 @@ class LiveMapController extends GetxController {
             Map<String, dynamic> passCountData = data['passCountData'] ?? {};
             Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
 
-<<<<<<< HEAD
-            int storedPassCount = passCountData[location.name] ?? 0;
-            DateTime? storedLastPassTime = data['lastPassTime'] != null
-                ? (data['lastPassTime'] as Timestamp).toDate()
-                : null;
-
-          if (storedLastPassTime == null || now.difference(storedLastPassTime).inMinutes >= 1) {
-            storedPassCount += 1;
-            DateTime lastPassTime = now;
-
-
-              // Update passCountData
-              passCountData[location.name] = storedPassCount;
-              data['passCountData'] = passCountData;
-
-              // Calculate slope score
-              int slopeScore = slopeScoresModel.slopeScores[location.name] ?? 0;
-              int updatedScore = slopeScore * storedPassCount;
-
-              // Update slopeScores
-              Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
-              slopeScores[location.name] = updatedScore;
-              data['slopeScores'] = slopeScores;
-
-              // Calculate total score
-              int totalScore = slopeScores.values.fold<int>(0, (int sum, dynamic score) => sum + (score as int? ?? 0));
-              data['totalScore'] = totalScore;
-
-              data['lastPassTime'] = lastPassTime;
-=======
             if (location.type == 'slope') {
               // If the user is within the boundary of the slope
               data['slopeStatus'] ??= {}; // Initialize slopeStatus if it doesn't exist
               data['slopeStatus'][location.name] = true; // Set slope status to true
->>>>>>> master
 
               // Update document using data
               await docRef.set(data, SetOptions(merge: true));
@@ -522,124 +490,123 @@ class LiveMapController extends GetxController {
 
 
 
-  // Future<BitmapDescriptor> createCustomMarkerBitmap(String title, bool _isTapped) async {
-  //   const int maxCharacters = 6; // Maximum number of characters allowed
-  //
-  //   // Check if title length is more than maxCharacters and _isTapped is false
-  //   if (title.length > maxCharacters && !_isTapped) {
-  //     title = title.substring(0, maxCharacters) + "..."; // add ellipsis if more than maxCharacters
-  //   }
-  //
-  //   ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
-  //
-  //   // Draw text on canvas first to get the text width and height
-  //   TextSpan span = TextSpan(
-  //       style: TextStyle(
-  //         color: Colors.yellowAccent,
-  //         fontSize: 35.0,
-  //         fontWeight: FontWeight.bold,
-  //       ),
-  //       text: title
-  //   );
-  //   TextPainter tp = TextPainter(
-  //       text: span,
-  //       textAlign: TextAlign.center,
-  //       textDirection: TextDirection.ltr
-  //   );
-  //   tp.layout();
-  //
-  //   // Create a canvas large enough to hold the text and image
-  //   Canvas canvas = Canvas(pictureRecorder, Rect.fromLTWH(0, 0, max(tp.width, 100.0), tp.height + 100.0));
-  //
-  //   // Calculate the position for the text to be in the center horizontally
-  //   final double textOffset = max(tp.width, 100.0) / 2 - tp.width / 2;
-  //
-  //   // Position the text on the canvas
-  //   tp.paint(canvas, Offset(textOffset, 0.0));
-  //
-  //   // Load image
-  //   ByteData data = await rootBundle.load('assets/imgs/icons/icon_live_map.png');
-  //   ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
-  //   ui.FrameInfo frameInfo = await codec.getNextFrame();
-  //   ui.Image img = frameInfo.image;
-  //
-  //   // Draw image on canvas
-  //   Size imgSize = Size(100.0, 100.0);  // Change as needed
-  //   canvas.drawImageRect(
-  //       img,
-  //       Rect.fromLTRB(
-  //           0.0,
-  //           0.0,
-  //           img.width.toDouble(),
-  //           img.height.toDouble()
-  //       ),
-  //       Rect.fromLTRB(
-  //           (max(tp.width, 100.0) - imgSize.width) / 2, // center the image horizontally
-  //           tp.height, // position the image below the text
-  //           (max(tp.width, 100.0) - imgSize.width) / 2 + imgSize.width,
-  //           tp.height + imgSize.height
-  //       ),
-  //       Paint()
-  //   );
-  //
-  //   final imgFinal = await pictureRecorder.endRecording().toImage(
-  //       max(tp.width, 100.0).toInt(),
-  //       imgSize.height.toInt() + tp.height.toInt()
-  //   );
-  //   final dataFinal = await imgFinal.toByteData(format: ui.ImageByteFormat.png);
-  //
-  //   return BitmapDescriptor.fromBytes(dataFinal!.buffer.asUint8List());
-  // }
-  //
-  // Future<void> listenToFriendLocations() async {
-  //   FirebaseFirestore.instance
-  //       .collection('user')
-  //       .where('whoResistMeBF', arrayContains: _userModelController.uid!)
-  //       .where('isOnLive', isEqualTo: true)  // Only get data where isLiveOn is true
-  //       .snapshots()
-  //       .listen((QuerySnapshot querySnapshot) async {  // Add async keyword here
-  //     await _updateMarkers(querySnapshot);
-  //   });
-  // }
-  //
-  // Future<void> _updateMarkers(QuerySnapshot querySnapshot) async {
-  //   Set<String> updatedFriendIds = Set<String>();
-  //   List<Marker> newMarkers = [];
-  //
-  //   for (var document in querySnapshot.docs) {
-  //     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-  //     double? latitude = (data['latitude'] as num?)?.toDouble();
-  //     double? longitude = (data['longitude'] as num?)?.toDouble();
-  //     String friendId = data['displayName'];
-  //
-  //     updatedFriendIds.add(friendId);
-  //
-  //     if (latitude != null && longitude != null) {
-  //       final LatLng friendLatLng = LatLng(latitude, longitude);
-  //       bool withinBoundary = _checkPositionWithinBoundary(friendLatLng);
-  //
-  //       if (withinBoundary) {
-  //         _isTapped.putIfAbsent(friendId, () => false);
-  //
-  //         final marker = Marker(
-  //             markerId: MarkerId('friend_$friendId'),
-  //             position: friendLatLng,
-  //             icon: await createCustomMarkerBitmap('$friendId', _isTapped[friendId]!),
-  //             onTap: () async {
-  //               _isTapped[friendId] = !_isTapped[friendId]!;
-  //               await _updateMarkers(querySnapshot);  // Force markers to update
-  //             }
-  //         );
-  //
-  //         newMarkers.add(marker);
-  //       }
-  //     }
-  //   }
-  //
-  //   _markers.value = newMarkers;
-  // }
+// Future<BitmapDescriptor> createCustomMarkerBitmap(String title, bool _isTapped) async {
+//   const int maxCharacters = 6; // Maximum number of characters allowed
+//
+//   // Check if title length is more than maxCharacters and _isTapped is false
+//   if (title.length > maxCharacters && !_isTapped) {
+//     title = title.substring(0, maxCharacters) + "..."; // add ellipsis if more than maxCharacters
+//   }
+//
+//   ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+//
+//   // Draw text on canvas first to get the text width and height
+//   TextSpan span = TextSpan(
+//       style: TextStyle(
+//         color: Colors.yellowAccent,
+//         fontSize: 35.0,
+//         fontWeight: FontWeight.bold,
+//       ),
+//       text: title
+//   );
+//   TextPainter tp = TextPainter(
+//       text: span,
+//       textAlign: TextAlign.center,
+//       textDirection: TextDirection.ltr
+//   );
+//   tp.layout();
+//
+//   // Create a canvas large enough to hold the text and image
+//   Canvas canvas = Canvas(pictureRecorder, Rect.fromLTWH(0, 0, max(tp.width, 100.0), tp.height + 100.0));
+//
+//   // Calculate the position for the text to be in the center horizontally
+//   final double textOffset = max(tp.width, 100.0) / 2 - tp.width / 2;
+//
+//   // Position the text on the canvas
+//   tp.paint(canvas, Offset(textOffset, 0.0));
+//
+//   // Load image
+//   ByteData data = await rootBundle.load('assets/imgs/icons/icon_live_map.png');
+//   ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
+//   ui.FrameInfo frameInfo = await codec.getNextFrame();
+//   ui.Image img = frameInfo.image;
+//
+//   // Draw image on canvas
+//   Size imgSize = Size(100.0, 100.0);  // Change as needed
+//   canvas.drawImageRect(
+//       img,
+//       Rect.fromLTRB(
+//           0.0,
+//           0.0,
+//           img.width.toDouble(),
+//           img.height.toDouble()
+//       ),
+//       Rect.fromLTRB(
+//           (max(tp.width, 100.0) - imgSize.width) / 2, // center the image horizontally
+//           tp.height, // position the image below the text
+//           (max(tp.width, 100.0) - imgSize.width) / 2 + imgSize.width,
+//           tp.height + imgSize.height
+//       ),
+//       Paint()
+//   );
+//
+//   final imgFinal = await pictureRecorder.endRecording().toImage(
+//       max(tp.width, 100.0).toInt(),
+//       imgSize.height.toInt() + tp.height.toInt()
+//   );
+//   final dataFinal = await imgFinal.toByteData(format: ui.ImageByteFormat.png);
+//
+//   return BitmapDescriptor.fromBytes(dataFinal!.buffer.asUint8List());
+// }
+//
+// Future<void> listenToFriendLocations() async {
+//   FirebaseFirestore.instance
+//       .collection('user')
+//       .where('whoResistMeBF', arrayContains: _userModelController.uid!)
+//       .where('isOnLive', isEqualTo: true)  // Only get data where isLiveOn is true
+//       .snapshots()
+//       .listen((QuerySnapshot querySnapshot) async {  // Add async keyword here
+//     await _updateMarkers(querySnapshot);
+//   });
+// }
+//
+// Future<void> _updateMarkers(QuerySnapshot querySnapshot) async {
+//   Set<String> updatedFriendIds = Set<String>();
+//   List<Marker> newMarkers = [];
+//
+//   for (var document in querySnapshot.docs) {
+//     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+//     double? latitude = (data['latitude'] as num?)?.toDouble();
+//     double? longitude = (data['longitude'] as num?)?.toDouble();
+//     String friendId = data['displayName'];
+//
+//     updatedFriendIds.add(friendId);
+//
+//     if (latitude != null && longitude != null) {
+//       final LatLng friendLatLng = LatLng(latitude, longitude);
+//       bool withinBoundary = _checkPositionWithinBoundary(friendLatLng);
+//
+//       if (withinBoundary) {
+//         _isTapped.putIfAbsent(friendId, () => false);
+//
+//         final marker = Marker(
+//             markerId: MarkerId('friend_$friendId'),
+//             position: friendLatLng,
+//             icon: await createCustomMarkerBitmap('$friendId', _isTapped[friendId]!),
+//             onTap: () async {
+//               _isTapped[friendId] = !_isTapped[friendId]!;
+//               await _updateMarkers(querySnapshot);  // Force markers to update
+//             }
+//         );
+//
+//         newMarkers.add(marker);
+//       }
+//     }
+//   }
+//
+//   _markers.value = newMarkers;
+// }
 
 
 
 }
-*/
