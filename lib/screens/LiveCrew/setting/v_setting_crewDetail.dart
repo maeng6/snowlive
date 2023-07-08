@@ -791,7 +791,7 @@ class Setting_crewDetail extends StatelessWidget {
                         });
                   },
                   title: Text(
-                    '크루 리더 위임',
+                    '리더 위임',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
@@ -810,7 +810,7 @@ class Setting_crewDetail extends StatelessWidget {
                     Get.to(()=>SetProfileImage_crewDetail());
                   },
                   title: Text(
-                    '크루 로고이미지 변경',
+                    '로고이미지 변경',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
@@ -848,7 +848,7 @@ class Setting_crewDetail extends StatelessWidget {
                     Get.to(()=>SetModifyDescription_crewDetail());
                   },
                   title: Text(
-                    '크루 소개글 변경',
+                    '소개글 변경',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
@@ -867,7 +867,7 @@ class Setting_crewDetail extends StatelessWidget {
                     Get.to(()=>SetModifyNotice_crewDetail());
                   },
                   title: Text(
-                    '크루 공지사항 변경',
+                    '공지사항 변경',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
