@@ -2,14 +2,11 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/LiveCrew/CreateOnboarding/v_setCrewImage.dart';
-import 'package:snowlive3/screens/onboarding/v_setProfileImage.dart';
-import 'package:get/get.dart';
 
 import '../../../controller/vm_liveCrewModelController.dart';
 
@@ -110,7 +107,7 @@ class _SetCrewNameState extends State<SetCrewName> {
               Column(
                 children: [
                   Text(
-                    '라이브 크루 이름을 설정해주세요.',
+                    '라이브크루 이름을\n정해주세요.',
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -119,7 +116,7 @@ class _SetCrewNameState extends State<SetCrewName> {
                 height: 10,
               ),
               Text(
-                '라이브크루 이름은 추후 변경이 불가능합니다.\n신중하게 입력해주세요.',
+                '라이브크루 이름은 한 번 정하면 변경이 불가능해요.\n크루명은 최대 10글자까지 입력 가능합니다.',
                 style: TextStyle(
                   color: Color(0xff949494),
                   fontSize: 14,
@@ -133,6 +130,9 @@ class _SetCrewNameState extends State<SetCrewName> {
                 child: Container(
                   child: Center(
                     child: TextFormField(
+                      inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]")),
+                      ],
                       textAlignVertical: TextAlignVertical.center,
                       cursorColor: Color(0xff377EEA),
                       cursorHeight: 16,
@@ -147,7 +147,7 @@ class _SetCrewNameState extends State<SetCrewName> {
                           hintStyle:
                           TextStyle(color: Color(0xff949494), fontSize: 16),
                           hintText: '크루 이름 입력',
-                          labelText: '크루 이름',
+                          labelText: '크루명 입력',
                           contentPadding: EdgeInsets.only(
                               top: 20, bottom: 20, left: 20, right: 20),
                           border: OutlineInputBorder(
@@ -159,10 +159,10 @@ class _SetCrewNameState extends State<SetCrewName> {
                             borderRadius: BorderRadius.circular(6),
                           )),
                       validator: (val) {
-                        if (val!.length <= 20 && val.length >= 1) {
+                        if (val!.length <= 10 && val.length >= 1) {
                           return null;
                         } else if (val.length == 0) {
-                          return '크루 이름을 입력해주세요.';
+                          return '크루명을 입력해주세요.';
                         } else {
                           return '최대 입력 가능한 글자 수를 초과했습니다.';
                         }
@@ -177,7 +177,7 @@ class _SetCrewNameState extends State<SetCrewName> {
               Padding(
                 padding: const EdgeInsets.only(left: 19),
                 child: Text(
-                  '최대 20자까지 입력 가능합니다.',
+                  '특수문자는 입력이 불가능합니다.',
                   style: TextStyle(color: Color(0xff949494), fontSize: 12),
                 ),
               ),

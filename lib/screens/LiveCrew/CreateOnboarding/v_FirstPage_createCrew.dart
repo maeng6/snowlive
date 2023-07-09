@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/screens/LiveCrew/CreateOnboarding/v_setCrewName.dart';
-import 'package:snowlive3/screens/onboarding/v_WelcomePage.dart';
 
 class FirstPage_createCrew extends StatefulWidget {
   const FirstPage_createCrew({Key? key}) : super(key: key);
@@ -34,6 +33,7 @@ class _FirstPage_createCrewState extends State<FirstPage_createCrew> {
         ));
 
     final double _statusBarSize = MediaQuery.of(context).padding.top;
+    final Size _size = MediaQuery.of(context).size;
 
     return WillPopScope(
       onWillPop: () {
@@ -71,39 +71,53 @@ class _FirstPage_createCrewState extends State<FirstPage_createCrew> {
             ),
           ),
         ),
-        body: Padding(
-          padding:
-          EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: _statusBarSize+58),
+              child: Image.asset('assets/imgs/liveCrew/img_liveCrew_logo_onboarding.png',
+                scale: 1, width: _size.width, height: 400,),
+            ),
+            Center(
+              child: Column(
                 children: [
-                  Image.asset('assets/imgs/icons/icon_onboarding.png',
-                    scale: 4, width: 73, height: 73,),
+                  Image.asset('assets/imgs/liveCrew/img_liveCrew_title_onboarding.png',
+                    scale: 3, width: _size.width, height: 50,),
                   Text(
-                    '라이브 크루를 만들어봅시다.',
-                    style:
-                    TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    '친구들과 함께 즐길 수 있는',
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    '라이브크루와 함께해요.',
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    '라이브크루를 통해 라이딩 스타일이 같은 친구들과',
+                    style: TextStyle(
+                      color: Color(0xff949494),
+                      fontSize: 14,
+                    ),
+                  ),
+                  Text(
+                    '교류하며 라이딩의 즐거움을 더 높여보세요.',
+                    style: TextStyle(
+                      color: Color(0xff949494),
+                      fontSize: 14,
+                    ),
                   ),
                 ],
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                '몇 가지 간단한 정보를 입력하고\n크루원 모집을 통해 더욱 즐거운 스노우라이브를 즐겨요.',
-                style: TextStyle(
-                  color: Color(0xff949494),
-                  fontSize: 14,
-                ),
-              ),
-              Expanded(
-                  child: Container()
-              ),
-              Center(
+            ),
+            Expanded(
+                child: Container()
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 16, right: 16, bottom: _statusBarSize),
+              child: Center(
                 child: ElevatedButton(
                   onPressed: () async {
                     Get.to(()=>SetCrewName());
@@ -128,10 +142,13 @@ class _FirstPage_createCrewState extends State<FirstPage_createCrew> {
                       Color(0xff3D83ED)),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
+
+
+// EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),

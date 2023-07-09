@@ -716,21 +716,21 @@ PODS:
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseAppCheckInterop (10.11.0)
+  - FirebaseAppCheckInterop (10.10.0)
   - FirebaseAuth (10.10.0):
     - FirebaseAppCheckInterop (~> 10.0)
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
     - GoogleUtilities/Environment (~> 7.8)
     - GTMSessionFetcher/Core (< 4.0, >= 2.1)
-  - FirebaseAuthInterop (10.11.0)
+  - FirebaseAuthInterop (10.10.0)
   - FirebaseCore (10.10.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/Logger (~> 7.8)
-  - FirebaseCoreExtension (10.11.0):
+  - FirebaseCoreExtension (10.10.0):
     - FirebaseCore (~> 10.0)
-  - FirebaseCoreInternal (10.11.0):
+  - FirebaseCoreInternal (10.10.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
   - FirebaseFirestore (10.10.0):
     - abseil/algorithm (~> 1.20220623.0)
@@ -745,7 +745,7 @@ PODS:
     - "gRPC-C++ (~> 1.50.1)"
     - leveldb-library (~> 1.22)
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseInstallations (10.11.0):
+  - FirebaseInstallations (10.10.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
@@ -1075,14 +1075,14 @@ SPEC CHECKSUMS:
   firebase_messaging: 9f80408268f21302e21ac5deaab6ed87c116cfce
   firebase_storage: 9ec3002ce36798541b8acdf9a566f0748936f075
   FirebaseAnalytics: 7bc7de519111dae802f5bc0c9c083918f8b8870d
-  FirebaseAppCheckInterop: 255b6c0292fe5da995c8b2df0c02f6a3ca7f61b4
+  FirebaseAppCheckInterop: 7d3521f56872cf74a01792c0a095a30e054ff6ae
   FirebaseAuth: 5ddbe23ebc4e647469261f5c59cd12a04f37c8e6
-  FirebaseAuthInterop: 44e34efef7145776a107b9e7f79ed44beb4738fa
+  FirebaseAuthInterop: edf6ead0428515d8efc10810c2dabc3a4ec70501
   FirebaseCore: d027ff503d37edb78db98429b11f580a24a7df2a
-  FirebaseCoreExtension: cacdad57fdb60e0b86dcbcac058ec78237946759
-  FirebaseCoreInternal: 9e46c82a14a3b3a25be4e1e151ce6d21536b89c0
+  FirebaseCoreExtension: 8d93ebbf6838a874b4ed82a564c9d6705f8365dd
+  FirebaseCoreInternal: 971029061d326000d65bfdc21f5502c75c8b0893
   FirebaseFirestore: b3bb12a497c9d13e80ec3158dbb75ded03592e8d
-  FirebaseInstallations: 2a2c6859354cbec0a228a863d4daf6de7c74ced4
+  FirebaseInstallations: 52153982b057d3afcb4e1fbb3eb0b6d00611e681
   FirebaseMessaging: 8a3b9a8b98ce72a42d22e69865cf662e38d2d6f5
   FirebaseStorage: a12297f786e81e653864d87723ec30381eb90220
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
@@ -1120,4 +1120,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: b17e1ecfe97aba85f3997d462fe23d9e4313a8d8
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.11.3

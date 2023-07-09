@@ -22,14 +22,12 @@ class ImageController extends GetxController {
 
   Future<XFile?> getSingleImage(ImageSource) async {
     final ImagePicker _picker = ImagePicker();
-    final XFile? image =
-        await _picker.pickImage(imageQuality: 100, source: ImageSource);
+    final XFile? image = await _picker.pickImage(imageQuality: 100, source: ImageSource);
     if (image != null) {
       return image;
     }else {
-      CustomFullScreenDialog.cancelDialog();
+      return null;
     }
-    return image;
   }
 
   Future<XFile?> cropImage(XFile? imageFile) async {

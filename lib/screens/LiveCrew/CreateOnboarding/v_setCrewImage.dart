@@ -10,6 +10,7 @@ import 'package:snowlive3/controller/vm_imageController.dart';
 import 'package:snowlive3/screens/LiveCrew/CreateOnboarding/v_setCrewResort.dart';
 import 'package:snowlive3/screens/onboarding/v_favoriteResort.dart';
 import '../../../controller/vm_userModelController.dart';
+import '../../../model/m_liveCrewModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
 class SetCrewImage extends StatefulWidget {
@@ -27,7 +28,8 @@ class _SetCrewImageState extends State<SetCrewImage> {
   bool crewImage = false;
   XFile? _imageFile;
   XFile? _croppedFile;
-  Color currentColor = Colors.white;
+  Color? currentColor = Color(0xff3D83ED);
+  Color? currentColor_background = Color(0xffF1F1F3);
   void changeColor(Color color) => setState(() => currentColor = color);
 
   @override
@@ -53,17 +55,16 @@ class _SetCrewImageState extends State<SetCrewImage> {
       SystemUiMode.manual,
       overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
     ); // 상단 StatusBar 생성
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(
-            statusBarColor: Colors.white, // Color for Android
-            statusBarIconBrightness: Brightness.dark,
-            statusBarBrightness:
-            (Platform.isAndroid)
-                ?Brightness.light
-                :Brightness.dark //ios:dark, android:light
-        ));
-
-    return Scaffold(backgroundColor: widget.crewColor,
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.white, // Color for Android
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: (Platform.isAndroid)
+            ? Brightness.light
+            : Brightness.dark //ios:dark, android:light
+    ));
+    return Scaffold(
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(58),
@@ -115,7 +116,7 @@ class _SetCrewImageState extends State<SetCrewImage> {
             Column(
               children: [
                 Text(
-                  '라이브 크루의 로고 이미지를\n업로드해주세요.',
+                  '라이브 크루의 로고 이미지와\n대표 컬러를 설정해주세요.',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -124,16 +125,16 @@ class _SetCrewImageState extends State<SetCrewImage> {
               height: 10,
             ),
             Text(
-              '라이브 크루를 대표할 이미지를 설정해 주세요.\n로고 이미지는 크루 설정에서 언제든지 변경할 수 있습니다.',
+              '이미지와 색상은 설정 메뉴에서 언제든지 변경하실 수 있습니다.',
               style: TextStyle(
                 color: Color(0xff949494),
                 fontSize: 14,
               ),
             ),
             SizedBox(
-              height: _size.height * 0.12,
+              height: _size.height * 0.07,
             ),
-            (crewImage) //이 값이 true이면 이미지업로드가 된 상태이므로, 미리보기 띄움
+            (crewImage && _imageFile!=null) //이 값이 true이면 이미지업로드가 된 상태이므로, 미리보기 띄움
                 ? Center(
               child: GestureDetector(
                 onTap: () {
@@ -192,20 +193,14 @@ class _SetCrewImageState extends State<SetCrewImage> {
                                     onPressed: () async {
                                       CustomFullScreenDialog.showDialog();
                                       try {
-                                        _imageFile =
-                                        await _imageController
-                                            .getSingleImage(
-                                            ImageSource.camera);
-                                        _croppedFile =
-                                        await _imageController.cropImage(_imageFile);
-                                        CustomFullScreenDialog
-                                            .cancelDialog();
+                                        _imageFile = await _imageController.getSingleImage(ImageSource.camera);
+                                        _croppedFile = await _imageController.cropImage(_imageFile);
+                                        CustomFullScreenDialog.cancelDialog();
                                         crewImage = true;
                                         setState(() {});
                                         Navigator.pop(context);
                                       } catch (e) {
-                                        CustomFullScreenDialog
-                                            .cancelDialog();
+                                        CustomFullScreenDialog.cancelDialog();
                                       }
                                     },
                                     child: Text(
@@ -234,17 +229,14 @@ class _SetCrewImageState extends State<SetCrewImage> {
                                     onPressed: () async {
                                       CustomFullScreenDialog.showDialog();
                                       try {
-                                        _imageFile =
-                                        await _imageController
-                                            .getSingleImage(
-                                            ImageSource.gallery);
-                                        _croppedFile =
-                                        await _imageController.cropImage(_imageFile);
+                                        _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
+                                        _croppedFile = await _imageController.cropImage(_imageFile);
                                         CustomFullScreenDialog.cancelDialog();
                                         crewImage = true;
                                         setState(() {});
                                         Navigator.pop(context);
                                       } catch (e) {
+                                        crewImage = false;
                                         CustomFullScreenDialog.cancelDialog();
                                       }
                                     },
@@ -260,8 +252,7 @@ class _SetCrewImageState extends State<SetCrewImage> {
                                         InkRipple.splashFactory,
                                         elevation: 0,
                                         minimumSize: Size(100, 56),
-                                        backgroundColor:
-                                        Color(0xff2C97FB),
+                                        backgroundColor: currentColor,
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 0)),
                                   ),
@@ -278,18 +269,31 @@ class _SetCrewImageState extends State<SetCrewImage> {
                   );
                 },
                 child: Stack(children: [
+
                   Container(
-                    width: 160,
-                    height: 160,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.grey[100],
-                      backgroundImage:
-                      FileImage(File(_croppedFile!.path)),
+                    decoration: BoxDecoration(
+                      color: currentColor_background,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
+                    padding: EdgeInsets.all(80),
+                    width: _size.width*2/3,
+                    height: _size.width*2/3,
+                    child: Container(
+                      width: 147,
+                      height: 147,
+                      child: ExtendedImage.file(
+                        File(_croppedFile!.path),
+                        fit: BoxFit.fill,
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        cacheRawData: true,
+                        enableLoadState: true,
+                      ),
+                    )
                   ),
                   Positioned(
-                      bottom: 13,
-                      right: 8,
+                      bottom: 180,
+                      right: 70,
                       child: GestureDetector(
                         child: ExtendedImage.asset(
                             'assets/imgs/icons/icon_profile_delete.png',
@@ -427,8 +431,7 @@ class _SetCrewImageState extends State<SetCrewImage> {
                                         InkRipple.splashFactory,
                                         elevation: 0,
                                         minimumSize: Size(100, 56),
-                                        backgroundColor:
-                                        Color(0xff2C97FB),
+                                        backgroundColor: currentColor,
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 0)),
                                   ),
@@ -444,69 +447,242 @@ class _SetCrewImageState extends State<SetCrewImage> {
                     ),
                   );
                 },
-                child: Stack(
-                  children: [
-                    Container(
-                      width: 160,
-                      height: 160,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: Image.asset(
-                        'assets/imgs/profile/img_profile_default_circle.png',
-                        width: 147,
-                        height: 147,
-                      ),
+                child: Container(decoration: BoxDecoration(
+                  color: currentColor_background,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                  padding: EdgeInsets.all(80),
+                  width: _size.width*2/3,
+                  height: _size.width*2/3,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    Positioned(
-                        bottom: 13,
-                        right: 8,
-                        child: GestureDetector(
-                          child: ExtendedImage.asset(
-                              'assets/imgs/icons/icon_profile_add.png',
-                              scale: 4),
-                          onTap: () {},
-                        )),
-                  ],
+                    child: ExtendedImage.asset(
+                      'assets/imgs/icons/icon_liveCrew_logoAdd.png',
+                      fit: BoxFit.fitHeight,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      cacheRawData: true,
+                      enableLoadState: true,
+                    ),
+                  ),
                 ), //이 컨테이너가 이미지업로드 전에 보여주는 아이콘임
               ),
             ),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        titlePadding: const EdgeInsets.all(0.0),
-                        contentPadding: const EdgeInsets.all(0.0),
-                        content: SingleChildScrollView(
-                          child: ColorPicker(
-                            pickerColor: currentColor,
-                            onColorChanged: changeColor,
-                            colorPickerWidth: 300.0,
-                            pickerAreaHeightPercent: 0.7,
-                            enableAlpha: true,
-                            displayThumbColor: true,
-                            paletteType: PaletteType.hsv,
-                            pickerAreaBorderRadius: const BorderRadius.only(
-                              topLeft: const Radius.circular(2.0),
-                              topRight: const Radius.circular(2.0),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: Text('색상 고르기'),
-              ),
+            SizedBox(
+              height: 20,
             ),
             Center(
               child: Container(
-                width: 20,
-                height: 20,
-                color: currentColor,
+                height: 100,
+                width: _size.width*2/3,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.all(5),
+                            child: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  currentColor = crewColorList[0];
+                                  currentColor_background = crewColorList[0];
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: crewColorList[0],
+                                ),
+                              ),
+                            )
+                        ),
+                        Padding(
+                            padding: EdgeInsets.all(5),
+                            child: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  currentColor = crewColorList[1];
+                                  currentColor_background = crewColorList[1];
+
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: crewColorList[1],
+                                ),
+                              ),
+                            )
+                        ),
+                        Padding(
+                            padding: EdgeInsets.all(5),
+                            child: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  currentColor = crewColorList[2];
+                                  currentColor_background = crewColorList[2];
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: crewColorList[2],
+                                ),
+                              ),
+                            )
+                        ),
+                        Padding(
+                            padding: EdgeInsets.all(5),
+                            child: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  currentColor = crewColorList[3];
+                                  currentColor_background = crewColorList[3];
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: crewColorList[3],
+                                ),
+                              ),
+                            )
+                        ),
+                        Padding(
+                            padding: EdgeInsets.all(5),
+                            child: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  currentColor = crewColorList[4];
+                                  currentColor_background = crewColorList[4];
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: crewColorList[4],
+                                ),
+                              ),
+                            )
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.all(5),
+                            child: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  currentColor = crewColorList[5];
+                                  currentColor_background = crewColorList[5];
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: crewColorList[5],
+                                ),
+                              ),
+                            )
+                        ),
+                        Padding(
+                            padding: EdgeInsets.all(5),
+                            child: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  currentColor = crewColorList[6];
+                                  currentColor_background = crewColorList[6];
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: crewColorList[6],
+                                ),
+                              ),
+                            )
+                        ),
+                        Padding(
+                            padding: EdgeInsets.all(5),
+                            child: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  currentColor = crewColorList[7];
+                                  currentColor_background = crewColorList[7];
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: crewColorList[7],
+                                ),
+                              ),
+                            )
+                        ),
+                        Padding(
+                            padding: EdgeInsets.all(5),
+                            child: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  currentColor = crewColorList[8];
+                                  currentColor_background = crewColorList[8];
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: crewColorList[8],
+                                ),
+                              ),
+                            )
+                        ),
+                        Padding(
+                            padding: EdgeInsets.all(5),
+                            child: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  currentColor = crewColorList[9];
+                                  currentColor_background = crewColorList[9];
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: crewColorList[9],
+                                ),
+                              ),
+                            )
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             Expanded(child: SizedBox()),
@@ -545,7 +721,7 @@ class _SetCrewImageState extends State<SetCrewImage> {
                     elevation: 0,
                     splashFactory: InkRipple.splashFactory,
                     minimumSize: Size(1000, 56),
-                    backgroundColor: Color(0xff377EEA)),
+                    backgroundColor: currentColor),
               ),
             ),
             SizedBox(
@@ -561,7 +737,6 @@ class _SetCrewImageState extends State<SetCrewImage> {
                   child: Text(
                     '기본 이미지로 설정',
                     style: TextStyle(fontFamily: 'NotoSansKR', color: Color(0xff949494), fontSize: 16, fontWeight: FontWeight.w300),
-
                   ),
                 ),
                 style: TextButton.styleFrom(

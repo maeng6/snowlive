@@ -170,7 +170,7 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
                 height: 10,
               ),
               Text(
-                '베이스 리조트를 바꾸면 자주가는 리조트도 함께 변경됩니다.',
+                '베이스 리조트를 변경하면 자주가는 리조트도 함께 바뀝니다.',
                 style: TextStyle(
                   color: Color(0xff949494),
                   fontSize: 14,
@@ -258,7 +258,7 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
                             minimumSize: Size(1000, 56),
                             backgroundColor:
                             (isSelected)
-                                ? Color(0xff377EEA)
+                                ? widget.crewColor
                                 : Color(0xffDEDEDE))
                     ),
                   ),
