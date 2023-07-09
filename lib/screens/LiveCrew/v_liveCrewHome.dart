@@ -340,12 +340,14 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                       height: 20,
                                                     ),
                                                     SizedBox(width: 10,),
-                                                    Text(crewDoc['notice'],
-                                                    style: TextStyle(
-                                                      color: Colors.white
-                                                    ),
-                                                      overflow: TextOverflow.ellipsis,
-                                                      maxLines: 1,
+                                                    Expanded(
+                                                      child: Text(crewDoc['notice'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                      ),
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 1,
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
@@ -562,8 +564,8 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                     } else if (snapshot.data!.docs.isNotEmpty) {
                       final crewDocs = snapshot.data!.docs;
                       return  Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          if(crewDocs.length > 0)
                           Container(
                             decoration: BoxDecoration(
                               color: Color(crewDocs[0]['crewColor']),
@@ -631,6 +633,8 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                               ],
                             ),
                           ),
+                          SizedBox(width: 11,),
+                          if(crewDocs.length > 1)
                           Container(
                             decoration: BoxDecoration(
                               color: Color(crewDocs[1]['crewColor']),
@@ -698,6 +702,8 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                               ],
                             ),
                           ),
+                          SizedBox(width: 11,),
+                          if(crewDocs.length > 2)
                           Container(
                             decoration: BoxDecoration(
                               color: Color(crewDocs[2]['crewColor']),
