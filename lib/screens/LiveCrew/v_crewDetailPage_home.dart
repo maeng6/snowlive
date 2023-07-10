@@ -445,116 +445,134 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                     .where('crewID', isEqualTo: _liveCrewModelController.crewID)
                                     .snapshots(),
                                 builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                  if (!snapshot.hasData || snapshot.data == null) {}
-                                  else if (snapshot.data!.docs.isNotEmpty) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                                     final crewDocs = snapshot.data!.docs;
                                     List memberList = crewDocs[0]['memberUidList'];
                                     return StreamBuilder(
-                                    stream: FirebaseFirestore.instance
-                                        .collection('Ranking')
-                                        .doc('${_seasonController.currentSeason}')
-                                        .collection('${_liveCrewModelController.baseResort}')
-                                        .where('uid', whereIn: memberList)
-                                        .orderBy('totalScore', descending: false)
-                                        .snapshots(),
-                                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                          if (!snapshot.hasData || snapshot.data == null) {}
-                                          else if (snapshot.data!.docs.isNotEmpty) {
-                                            final memberScoreDocs = snapshot.data!.docs;
-                                            int? memberlength;
-                                            if(memberScoreDocs.length<3){
-                                              memberlength = memberScoreDocs.length;
-                                            }else{
-                                              memberlength = 3;
-                                            }
-                                            return Padding(
-                                              padding: EdgeInsets.only(left: 16),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    height: 180,
-                                                    child: ListView.builder(
-                                                        scrollDirection: Axis.horizontal,
-                                                        itemCount: memberlength,
-                                                        itemBuilder: (BuildContext context, int index) {
-                                                          return StreamBuilder(
-                                                              stream: FirebaseFirestore.instance
-                                                                  .collection('user')
-                                                                  .where('uid', isEqualTo: memberScoreDocs[index]['uid'])
-                                                                  .snapshots(),
-                                                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                                if (!snapshot.hasData || snapshot.data == null) {
-                                                                } else if (snapshot.data!.docs.isNotEmpty) {
-                                                                  final memberUserDocs = snapshot.data!.docs;
-                                                                  return Container(
-                                                                    width: 150,
-                                                                    color: Color(0xFFEEEEF5),
-                                                                    child: Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                                      children: [
-                                                                        (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
-                                                                            ? GestureDetector(
-                                                                          onTap: () {
-                                                                            Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
-                                                                          },
-                                                                          child: Container(
-                                                                              width: 50,
-                                                                              height: 50,
-                                                                              child: ExtendedImage.network(
-                                                                                memberUserDocs[0]['profileImageUrl'],
-                                                                                enableMemoryCache: true,
-                                                                                shape: BoxShape.circle,
-                                                                                borderRadius: BorderRadius.circular(8),
-                                                                                width: 50,
-                                                                                height: 50,
-                                                                                fit: BoxFit.cover,
-                                                                              )),
-                                                                        )
-                                                                            : GestureDetector(
-                                                                          onTap: () {
-                                                                            Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
-                                                                          },
-                                                                          child: Container(
+                                      stream: FirebaseFirestore.instance
+                                          .collection('Ranking')
+                                          .doc('${_seasonController.currentSeason}')
+                                          .collection('${_liveCrewModelController.baseResort}')
+                                          .where('uid', whereIn: memberList)
+                                          .orderBy('totalScore', descending: true)
+                                          .snapshots(),
+                                      builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                          return Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        } else if (snapshot.hasError) {
+                                          return Text('Error: ${snapshot.error}');
+                                        } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                          final memberScoreDocs = snapshot.data!.docs;
+                                          int? memberlength;
+                                          if(memberScoreDocs.length<3){
+                                            memberlength = memberScoreDocs.length;
+                                          } else {
+                                            memberlength = 3;
+                                          }
+                                          return Padding(
+                                            padding: EdgeInsets.only(left: 16),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(height: 10,),
+                                                Container(
+                                                  height: 120,
+                                                  child: ListView.builder(
+                                                    scrollDirection: Axis.horizontal,
+                                                    physics: NeverScrollableScrollPhysics(),
+                                                    itemCount: memberlength,
+                                                    itemBuilder: (BuildContext context, int index) {
+                                                      return StreamBuilder(
+                                                          stream: FirebaseFirestore.instance
+                                                              .collection('user')
+                                                              .where('uid', isEqualTo: memberScoreDocs[index]['uid'])
+                                                              .snapshots(),
+                                                          builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                                              return Center(
+                                                                child: CircularProgressIndicator(),
+                                                              );
+                                                            } else if (snapshot.hasError) {
+                                                              return Text('Error: ${snapshot.error}');
+                                                            } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                                              final memberUserDocs = snapshot.data!.docs;
+                                                              return Container(
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.only(left: 10, right: 10),
+                                                                  child: Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                                    children: [
+                                                                      (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                          ? GestureDetector(
+                                                                        onTap: () {
+                                                                          Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
+                                                                        },
+                                                                        child: Container(
                                                                             width: 50,
                                                                             height: 50,
-                                                                            child: ExtendedImage.asset(
-                                                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                                                            child: ExtendedImage.network(
+                                                                              memberUserDocs[0]['profileImageUrl'],
                                                                               enableMemoryCache: true,
                                                                               shape: BoxShape.circle,
                                                                               borderRadius: BorderRadius.circular(8),
                                                                               width: 50,
                                                                               height: 50,
                                                                               fit: BoxFit.cover,
-                                                                            ),
+                                                                            )),
+                                                                      )
+                                                                          : GestureDetector(
+                                                                        onTap: () {
+                                                                          Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
+                                                                        },
+                                                                        child: Container(
+                                                                          width: 50,
+                                                                          height: 50,
+                                                                          child: ExtendedImage.asset(
+                                                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                                                            enableMemoryCache: true,
+                                                                            shape: BoxShape.circle,
+                                                                            borderRadius: BorderRadius.circular(8),
+                                                                            width: 50,
+                                                                            height: 50,
+                                                                            fit: BoxFit.cover,
                                                                           ),
                                                                         ),
-                                                                        Text('${memberUserDocs[0]['displayName']}'),
-                                                                        Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                        Text('점수 : ${memberScoreDocs[index]['totalScore']}'),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                } else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                }return Center(
-                                                                  child: CircularProgressIndicator(),
-                                                                );
-                                                              });
-                                                        }
-                                                    ),
+                                                                      ),
+                                                                      Text('${memberUserDocs[0]['displayName']}'),
+                                                                      Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
+                                                                      Text('점수 : ${memberScoreDocs[index]['totalScore']}'),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            }
+                                                            return Container();
+                                                          }
+                                                      );
+                                                    },
                                                   ),
-                                                ],
-                                              ),
-                                            );
-                                          }
-                                          else if (snapshot.connectionState == ConnectionState.waiting) {}
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        } else {
                                           return Text('랭킹에 참여중인 크루원이 없습니다.');
-                                    });
+                                        }
+                                      },
+                                    );
                                   }
-                                  else if (snapshot.connectionState == ConnectionState.waiting) {}
                                   return Container();
                                 }
                             ),
+
                           ],
                         ),
                       ),
@@ -641,6 +659,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                           });
 
                           return GridView.builder(
+                            physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: galleryUrlList.length > 6 ? 6 : galleryUrlList.length,
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
