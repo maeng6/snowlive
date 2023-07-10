@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:snowlive3/screens/LiveCrew/invitation/v_invitation_Screen_crew.dart';
+import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_gallery.dart';
 import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_home.dart';
 import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_member.dart';
 import 'package:snowlive3/screens/LiveCrew/setting/v_setting_crewDetail.dart';
@@ -26,6 +27,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
   int counter = 0;
   List<bool> isTap = [
     true,
+    false,
     false,
   ];
 
@@ -181,6 +183,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                                   setState(() {
                                     isTap[0] = true;
                                     isTap[1] = false;
+                                    isTap[2] = false;
                                   });
                                   print('crewID: ${_liveCrewModelController.crewID}');
                                 },
@@ -232,6 +235,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                                   setState(() {
                                     isTap[0] = false;
                                     isTap[1] = true;
+                                    isTap[2] = false;
                                   });
                                   print('crewID: ${_liveCrewModelController.crewID}');
                                 },
@@ -255,12 +259,66 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                         ],
                       ),
                     ),
+                    if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid))
+                      Padding(
+                        padding: EdgeInsets.only(right: 12),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: Container(
+                                height: 40,
+                                child: ElevatedButton(
+                                  child: Text(
+                                    '갤러리',
+                                    style: TextStyle(
+                                        color: (isTap[2])
+                                            ? Color(0xFF111111)
+                                            : Color(0xFFc8c8c8),
+                                        fontWeight:
+                                        (isTap[2])
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        fontSize: 16),
+                                  ),
+                                  onPressed: () {
+                                    HapticFeedback.lightImpact();
+                                    print('크루 멤버 목록으로 전환');
+                                    setState(() {
+                                      isTap[0] = false;
+                                      isTap[1] = false;
+                                      isTap[2] = true;
+                                    });
+                                    print('crewID: ${_liveCrewModelController.crewID}');
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.only(top: 0),
+                                    minimumSize: Size(40, 10),
+                                    backgroundColor: Color(0xFFFFFFFF),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    elevation: 0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 90,
+                              height: 3,
+                              color:
+                              (isTap[2]) ? Color(0xFF111111) : Colors.transparent,
+                            )
+                          ],
+                        ),
+                      ),
                   ],
                 ),
                 if(isTap[0]==true)
                   Expanded(child: CrewDetailPage_home()),
                 if(isTap[1]==true)
                   Expanded(child: CrewDetailPage_member()),
+                if(isTap[2]==true)
+                  Expanded(child: CrewDetailPage_Gallery()),
               ],
             ),
           ],
