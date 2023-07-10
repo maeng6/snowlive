@@ -586,13 +586,52 @@ class _MoreTabState extends State<MoreTab> {
                               Get.to(()=>LiveCrewHome_firstUser());
                             }
                             else{
-                            Get.to(()=>LiveCrewHome());
+                              Get.to(()=>LiveCrewHome());
                             }
                           },
                           child: Column(
                             children: [
-                              Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 40),
-                              SizedBox(height: 2,),
+                              Stack(
+                                children: [
+                                  Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 40,),
+                                  Positioned(
+                                    // draw a red marble
+                                      top: 2,
+                                      right: 0.0,
+                                      child:
+                                      StreamBuilder(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('newAlarm')
+                                            .where('uid', isEqualTo: _userModelController.uid!)
+                                            .snapshots(),
+                                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                          if (!snapshot.hasData || snapshot.data == null) {
+                                            return new Icon(Icons.brightness_1,
+                                                size: 7.0,
+                                                color: Colors.white);
+                                          }
+                                          else if (snapshot.data!.docs.isNotEmpty) {
+                                            final alarmDocs = snapshot.data!.docs;
+                                            return new Icon(Icons.brightness_1,
+                                                size: 7.0,
+                                                color: (alarmDocs[0]['newInvited_crew'] == true)
+                                                    ? Color(0xFFD32F2F)
+                                                    : Colors.white);
+                                          }
+                                          else if (snapshot.connectionState == ConnectionState.waiting) {
+                                            return new Icon(Icons.brightness_1,
+                                                size: 7.0,
+                                                color: Colors.white);
+                                          }
+                                          return new Icon(Icons.brightness_1,
+                                              size: 7.0,
+                                              color: Colors.white);
+                                        },
+                                      )
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 2),
                               Text('라이브크루',style: TextStyle(
                                   fontSize: 14,
                                   color: Color(0xFF555555)

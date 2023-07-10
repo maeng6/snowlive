@@ -59,14 +59,13 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                 if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid))
                 StreamBuilder(
                     stream: FirebaseFirestore.instance
-                        .collection('user')
+                        .collection('newAlarm')
                         .where('uid', isEqualTo: _userModelController.uid!)
                         .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
                       if (!snapshot.hasData || snapshot.data == null) {}
                       else if (snapshot.data!.docs.isNotEmpty) {
-                        final myDocs = snapshot.data!.docs;
-                        List whoInviteMe = myDocs[0]['whoInviteMe'];
+                        final alarmDocs = snapshot.data!.docs;
                         return  Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: Stack(
@@ -74,7 +73,8 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                               Padding(
                                 padding: EdgeInsets.only(right: 5),
                                 child: IconButton(
-                                  onPressed: (){
+                                  onPressed: () async{
+                                    await _liveCrewModelController.deleteInvitationAlarm_crew(leaderUid: _userModelController.uid);
                                     Get.to(()=>Setting_crewDetail());
                                   },
                                   icon: Image.asset(
@@ -90,7 +90,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                                 left: 32,
                                 child: new Icon(Icons.brightness_1, size: 6.0,
                                     color:
-                                    (whoInviteMe.length >0)
+                                    (alarmDocs[0]['newInvited_crew']==true)
                                         ?Color(0xFFD32F2F):Colors.white),
                               )
                             ],

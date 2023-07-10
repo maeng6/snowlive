@@ -11,6 +11,8 @@ import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
+import '../comments/v_profileImageScreen.dart';
+
 class CrewDetailPage_Gallery extends StatefulWidget {
   @override
   _CrewDetailPage_GalleryState createState() => _CrewDetailPage_GalleryState();
@@ -54,22 +56,28 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
               crossAxisCount: 3,
             ),
             itemBuilder: (BuildContext context, int index) {
-              return ExtendedImage.network(
-                galleryDoc[index],
-                fit: BoxFit.cover,
-                cache: true,
-                loadStateChanged: (ExtendedImageState state) {
-                  switch (state.extendedImageLoadState) {
-                    case LoadState.loading:
-                      return Center(child: CircularProgressIndicator());
-                    case LoadState.completed:
-                      return null;
-                    case LoadState.failed:
-                      return Icon(Icons.error);
-                    default:
-                      return null;
-                  }
+              return GestureDetector(
+                onTap: (){
+                  Get.to(() => ProfileImagePage(
+                      CommentProfileUrl: galleryDoc[index]));
                 },
+                child: ExtendedImage.network(
+                  galleryDoc[index],
+                  fit: BoxFit.cover,
+                  cache: true,
+                  loadStateChanged: (ExtendedImageState state) {
+                    switch (state.extendedImageLoadState) {
+                      case LoadState.loading:
+                        return Center(child: CircularProgressIndicator());
+                      case LoadState.completed:
+                        return null;
+                      case LoadState.failed:
+                        return Icon(Icons.error);
+                      default:
+                        return null;
+                    }
+                  },
+                ),
               );
             },
           );

@@ -45,3 +45,19 @@ Future<void> updateFieldsForAllDocuments() async {
     CustomFullScreenDialog.cancelDialog();
   });
 }
+
+Future<void> transferUIDs() async {
+  final users = FirebaseFirestore.instance.collection('users');
+  final newCollection = FirebaseFirestore.instance.collection('newAlarm');
+  CustomFullScreenDialog.showDialog();
+
+  final snapshot = await users.get();
+  for (final doc in snapshot.docs) {
+    final uid = doc.id;
+    await newCollection.doc(uid).set({
+      'newInvited_crew': false,
+      'newInvited_friend': false,
+      'uid': uid});
+  }
+  CustomFullScreenDialog.cancelDialog();
+}

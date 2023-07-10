@@ -21,6 +21,7 @@ class LiveCrewModelController extends GetxController {
   RxString? _profileImageUrl=''.obs;
   RxList? _memberUidList=[].obs;
   RxList? _applyUidList=[].obs;
+  RxList? _galleryUrlList=[].obs;
   RxString? _description=''.obs;
   RxString? _notice=''.obs;
   RxString? _sns=''.obs;
@@ -36,6 +37,7 @@ class LiveCrewModelController extends GetxController {
   String? get profileImageUrl => _profileImageUrl!.value;
   List? get memberUidList => _memberUidList!;
   List? get applyUidList => _applyUidList!;
+  List? get galleryUrlList => _galleryUrlList!;
   String? get description => _description!.value;
   String? get notice => _notice!.value;
   String? get sns => _sns!.value;
@@ -54,6 +56,7 @@ class LiveCrewModelController extends GetxController {
       this._profileImageUrl!.value = crewModel.profileImageUrl!;
       this._memberUidList!.value = crewModel.memberUidList!;
       this._applyUidList!.value = crewModel.applyUidList!;
+      this._galleryUrlList!.value = crewModel.galleryUrlList!;
       this._description!.value = crewModel.description!;
       this._notice!.value = crewModel.notice!;
       this._sns!.value = crewModel.sns!;
@@ -93,6 +96,7 @@ class LiveCrewModelController extends GetxController {
       'profileImageUrl' : crewImageUrl,
       'memberUidList' : FieldValue.arrayUnion([uid]),
       'applyUidList' : [],
+      'galleryUrlList' : [],
       'description':'',
       'notice':'',
       'resistDate' : Timestamp.now(),

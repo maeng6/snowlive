@@ -19,6 +19,7 @@ class LiveCrewModel {
     this.profileImageUrl,
     this.memberUidList,
     this.applyUidList,
+    this.galleryUrlList,
     this.description,
     this.notice,
     this.resistDate,
@@ -35,6 +36,7 @@ class LiveCrewModel {
   String? profileImageUrl;
   List? memberUidList;
   List? applyUidList;
+  List? galleryUrlList;
   String? description;
   String? notice;
   String? sns;
@@ -52,6 +54,7 @@ class LiveCrewModel {
     profileImageUrl = json['profileImageUrl'];
     memberUidList = json['memberUidList'];
     applyUidList = json['applyUidList'];
+    galleryUrlList = json['galleryUrlList'];
     description = json['description'];
     notice = json['notice'];
     resistDate = json['resistDate'];

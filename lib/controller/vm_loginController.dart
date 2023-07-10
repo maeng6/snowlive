@@ -156,6 +156,13 @@ class LoginController extends GetxController {
       'applyCrewList':[],
       'totalScores':<String, dynamic>{},
     });
+    await ref.collection('newAlarm')
+        .doc(uid)
+        .set({
+      'uid': uid,
+      'newInvited_friend': false,
+      'newInvited_crew': false,
+    });
 
 
   } //유저 정보와 선택한 리조트 정보 파베에 저장하기
