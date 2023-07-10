@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 class PhotoViewerPage extends StatefulWidget {
   final List<dynamic> photoList;
@@ -49,9 +50,105 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
             padding: EdgeInsets.only(right: 5),
             child: IconButton(
               onPressed: (){
-                _imageController.deleteCrewGalleryImage(
-                    widget.photoList[_currentIndex], _liveCrewModelController.crewID!);
-                Navigator.pop(context);
+                showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return Container(
+                        color: Colors.white,
+                        height: 200,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20.0),
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            mainAxisAlignment:
+                            MainAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Text(
+                                '이미지를 삭제하시겠습니까?',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF111111)),
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        '취소',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                            fontWeight:
+                                            FontWeight.bold),
+                                      ),
+                                      style: TextButton.styleFrom(
+                                          splashFactory: InkRipple
+                                              .splashFactory,
+                                          elevation: 0,
+                                          minimumSize:
+                                          Size(100, 56),
+                                          backgroundColor:
+                                          Color(0xff555555),
+                                          padding:
+                                          EdgeInsets.symmetric(
+                                              horizontal: 0)),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        CustomFullScreenDialog.showDialog();
+                                       await _imageController.deleteCrewGalleryImage(
+                                            widget.photoList[_currentIndex], _liveCrewModelController.crewID!);
+                                       CustomFullScreenDialog.cancelDialog();
+                                       Navigator.pop(context);
+                                       Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        '확인',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                            fontWeight:
+                                            FontWeight.bold),
+                                      ),
+                                      style: TextButton.styleFrom(
+                                          splashFactory: InkRipple
+                                              .splashFactory,
+                                          elevation: 0,
+                                          minimumSize:
+                                          Size(100, 56),
+                                          backgroundColor:
+                                          Color(0xff2C97FB),
+                                          padding:
+                                          EdgeInsets.symmetric(
+                                              horizontal: 0)),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    });
               },
               icon: Icon(Icons.delete),
             ),
