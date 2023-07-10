@@ -9,6 +9,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_gallery_viewer.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 import '../comments/v_profileImageScreen.dart';
@@ -54,15 +55,20 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
             itemCount: galleryDoc.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
+              crossAxisSpacing: 5, // Horizontal gap
+              mainAxisSpacing: 5, // Vertical gap
             ),
             itemBuilder: (BuildContext context, int index) {
+              String imageUrl = galleryDoc.reversed.toList()[index];
               return GestureDetector(
                 onTap: (){
-                  Get.to(() => ProfileImagePage(
-                      CommentProfileUrl: galleryDoc[index]));
+                  Get.to(() => PhotoViewerPage(
+                      photoList: galleryDoc.reversed.toList(),
+                      initialIndex: index
+                  ));
                 },
                 child: ExtendedImage.network(
-                  galleryDoc[index],
+                  imageUrl,
                   fit: BoxFit.cover,
                   cache: true,
                   loadStateChanged: (ExtendedImageState state) {

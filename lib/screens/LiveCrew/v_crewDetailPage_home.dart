@@ -486,44 +486,81 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                 ),
               ),
               SizedBox(height: 15,),
-              Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: Container(
-                  width: _size.width,
-                  decoration: BoxDecoration(
-                      color: Color(0xFFFFFFFF),
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5), // 그림자의 색상
-                          blurRadius: 2, // 그림자의 흐릿한 정도
-                          offset: Offset(1, 0), // 그림자의 위치
+              Container(
+                width: _size.width,
+                decoration: BoxDecoration(
+                  color: Color(0xFFFFFFFF),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '크루 갤러리',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF111111),
+                          fontWeight: FontWeight.bold,
                         ),
-                      ]
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
-                    child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '크루 갤러리',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Color(0xFF111111),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text('크루 갤러리 넣어야함')
-                        ],
                       ),
-                    ),
-                  ),
+                      SizedBox(height: 10),
+                      StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('liveCrew')
+                            .where('crewID', isEqualTo: _liveCrewModelController.crewID)
+                            .snapshots(),
+                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            return Text('이미지 로드 실패');
+                          }
 
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          }
+
+                          List<String> galleryUrlList = [];
+                          snapshot.data!.docs.forEach((doc) {
+                            galleryUrlList.addAll(List<String>.from(doc['galleryUrlList']));
+                          });
+
+                          return GridView.builder(
+                            shrinkWrap: true,
+                            itemCount: galleryUrlList.length > 6 ? 6 : galleryUrlList.length,
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 5, // Horizontal gap
+                              mainAxisSpacing: 5, // Vertical gap
+                            ),
+                            itemBuilder: (BuildContext context, int index) {
+                              String imageUrl = galleryUrlList.reversed.toList()[index];
+                              return ExtendedImage.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                                cache: true,
+                                loadStateChanged: (ExtendedImageState state) {
+                                  switch (state.extendedImageLoadState) {
+                                    case LoadState.loading:
+                                      return Center(child: CircularProgressIndicator());
+                                    case LoadState.completed:
+                                      return null;
+                                    case LoadState.failed:
+                                      return Icon(Icons.error);
+                                    default:
+                                      return null;
+                                  }
+                                },
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
+
+
               SizedBox(height: 20,),
               Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16),
