@@ -229,7 +229,9 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
                             await _userModelController.getCurrentUser(_userModelController.uid);
                             print('크루 생성 완료');
                             CustomFullScreenDialog.cancelDialog();
-                            Get.offAll(()=>LiveCrewHome());
+                            for(int i=0; i<4; i++){
+                              Get.back();
+                            }
                             } else{}
                           }else{
                             null;

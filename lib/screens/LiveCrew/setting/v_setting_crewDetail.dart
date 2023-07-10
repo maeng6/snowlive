@@ -169,7 +169,7 @@ class Setting_crewDetail extends StatelessWidget {
                                                               child: ElevatedButton(
                                                                 onPressed: () async {
                                                                   try{
-                                                                    if(applyDocs[index]['liveCrew'] == null || _userModelController.liveCrew == ''){
+                                                                    if(applyDocs[index]['liveCrew'] == null || applyDocs[index]['liveCrew'] == ''){
                                                                     Navigator.pop(context);
                                                                     CustomFullScreenDialog.showDialog();
                                                                     await _liveCrewModelController.updateCrewMember(applyUid: applyDocs[index]['uid'], crewID: _liveCrewModelController.crewID);
@@ -468,10 +468,14 @@ class Setting_crewDetail extends StatelessWidget {
                                           await _liveCrewModelController
                                               .deleteCrew(crewID: _liveCrewModelController.crewID);
                                           CustomFullScreenDialog.cancelDialog();
-                                          Get.to(() => MainHome(uid: _userModelController.uid));
+                                          for(int i=0; i<2; i++){
+                                            Get.back();
+                                          }
                                         } catch (e) {
                                           print('삭제 오류');
-                                          Navigator.pop(context);
+                                          for(int i=0; i<2; i++){
+                                            Get.back();
+                                          }
                                         }
                                       }else{
                                         Get.dialog(AlertDialog(
@@ -638,7 +642,9 @@ class Setting_crewDetail extends StatelessWidget {
                                         CustomFullScreenDialog.showDialog();
                                         await _liveCrewModelController.deleteCrewMember(crewID: _liveCrewModelController.crewID, memberUid: _userModelController.uid);
                                         CustomFullScreenDialog.cancelDialog();
-                                        Get.to(()=>MainHome(uid: _userModelController.uid));
+                                        for(int i=0; i<2; i++){
+                                          Get.back();
+                                        }
                                       }catch(e){
                                         print('삭제 오류');
                                         Navigator.pop(context);

@@ -2,13 +2,11 @@ import 'dart:io';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
 import 'package:snowlive3/screens/LiveCrew/CreateOnboarding/v_setCrewResort.dart';
-import 'package:snowlive3/screens/onboarding/v_favoriteResort.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../../model/m_liveCrewModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
@@ -45,7 +43,6 @@ class _SetCrewImageState extends State<SetCrewImage> {
 
     //TODO : ****************************************************************
     Get.put(ImageController(), permanent: true);
-    UserModelController _userModelController = Get.find<UserModelController>();
     ImageController _imageController = Get.find<ImageController>();
     //TODO : ****************************************************************
 
@@ -55,16 +52,17 @@ class _SetCrewImageState extends State<SetCrewImage> {
       SystemUiMode.manual,
       overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
     ); // 상단 StatusBar 생성
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.white, // Color for Android
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: (Platform.isAndroid)
-            ? Brightness.light
-            : Brightness.dark //ios:dark, android:light
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.dark.copyWith(
+            statusBarColor: Colors.white, // Color for Android
+            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness:
+            (Platform.isAndroid)
+                ?Brightness.light
+                :Brightness.dark //ios:dark, android:light
+        ));
     return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(58),
@@ -91,7 +89,7 @@ class _SetCrewImageState extends State<SetCrewImage> {
               ),
             ),
           ],
-          backgroundColor: widget.crewColor,
+          backgroundColor: Colors.white,
           elevation: 0.0,
           centerTitle: false,
           titleSpacing: 0,
@@ -108,8 +106,7 @@ class _SetCrewImageState extends State<SetCrewImage> {
         ),
       ),
       body: Padding(
-        padding:
-        EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),
+        padding: EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -447,28 +444,42 @@ class _SetCrewImageState extends State<SetCrewImage> {
                     ),
                   );
                 },
-                child: Container(decoration: BoxDecoration(
-                  color: currentColor_background,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-                  padding: EdgeInsets.all(80),
-                  width: _size.width*2/3,
-                  height: _size.width*2/3,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: ExtendedImage.asset(
-                      'assets/imgs/icons/icon_liveCrew_logoAdd.png',
-                      fit: BoxFit.fitHeight,
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      cacheRawData: true,
-                      enableLoadState: true,
-                    ),
+                child: Stack(children: [
+                  Container(
+                      decoration: BoxDecoration(
+                        color: currentColor_background,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      padding: EdgeInsets.all(80),
+                      width: _size.width*2/3,
+                      height: _size.width*2/3,
+                      child: Container(
+                        width: 147,
+                        height: 147,
+                        child: ExtendedImage.asset(
+                          'assets/imgs/profile/img_profile_default_.png',
+                          fit: BoxFit.fill,
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          cacheRawData: true,
+                          enableLoadState: true,
+                        ),
+                      )
                   ),
-                ), //이 컨테이너가 이미지업로드 전에 보여주는 아이콘임
+                  Positioned(
+                      bottom: 75,
+                      right: 70,
+                      child: GestureDetector(
+                        child: ExtendedImage.asset(
+                            'assets/imgs/icons/icon_profile_add.png',
+                            scale: 4),
+                        onTap: () {
+                          crewImage = false;
+                          _croppedFile = null;
+                          setState(() {});
+                        },
+                      )),
+                ]),//이 컨테이너가 이미지업로드 전에 보여주는 아이콘임
               ),
             ),
             SizedBox(

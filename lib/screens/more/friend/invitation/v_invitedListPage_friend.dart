@@ -123,13 +123,9 @@ class _InvitedListPage_friendState extends State<InvitedListPage_friend> {
                                                               Navigator.pop(context);
                                                               CustomFullScreenDialog.showDialog();
                                                               await _userModelController.updateFriend(friendUid:inviDocs[index]['uid']);
-                                                              print('1');
                                                               await _userModelController.deleteInvitation(friendUid: inviDocs[index]['uid']);
-                                                              print('2');
-                                                              await _userModelController.deleteInvitationAlarm(uid:_userModelController.uid);
-                                                              print('3');
+                                                              await _userModelController.deleteInvitationAlarm_friend(uid:_userModelController.uid);
                                                               await _userModelController.getCurrentUser(_userModelController.uid);
-                                                              print('4');
                                                               CustomFullScreenDialog.cancelDialog();
                                                             }catch(e){
                                                               Navigator.pop(context);
@@ -237,7 +233,7 @@ class _InvitedListPage_friendState extends State<InvitedListPage_friend> {
                                                                 Navigator.pop(context);
                                                                 CustomFullScreenDialog.showDialog();
                                                                 await _userModelController.deleteInvitation(friendUid:inviDocs[index]['uid']);
-                                                                await _userModelController.deleteInvitationAlarm(uid:_userModelController.uid);
+                                                                await _userModelController.deleteInvitationAlarm_friend(uid:_userModelController.uid);
                                                                 await _userModelController.getCurrentUser(_userModelController.uid);
                                                                 CustomFullScreenDialog.cancelDialog();
                                                               }catch(e){

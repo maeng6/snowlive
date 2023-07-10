@@ -121,33 +121,40 @@ class _FleaChatroomState
                       onPressed: () async{
                         CustomFullScreenDialog.showDialog();
                         try{
-                          await _fleaChatModelController.getCurrentFleaChat(myUid: _userModelController.uid, otherUid: (_userModelController.uid ==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
-                              :_fleaChatModelController.otherUid);
-
-                            await _fleaChatModelController
-                                .deleteChatroom(
-                              otherUid: (_userModelController.uid ==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
+                          await _fleaChatModelController.getCurrentFleaChat(
+                              myUid: _userModelController.uid,
+                              otherUid: (_userModelController.uid ==_fleaChatModelController.otherUid)
+                                  ? _fleaChatModelController.myUid
+                                  :_fleaChatModelController.otherUid);
+                            await _fleaChatModelController.deleteChatroom(
+                              otherUid: (_userModelController.uid ==_fleaChatModelController.otherUid)
+                                  ? _fleaChatModelController.myUid
                                   :_fleaChatModelController.otherUid,
-                                chatRoomName: _fleaChatModelController.chatRoomName,
+                              chatRoomName: _fleaChatModelController.chatRoomName,
                                 myUid: _userModelController.uid,
                                 fleaMyUid: _fleaChatModelController.myUid,
-                                myChatCount:(_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.otherChatCount
-                                :_fleaChatModelController.myChatCount,
-                              otherChatCount: (_userModelController.uid==_fleaChatModelController.otherUid)? _fleaChatModelController.myChatCount
+                                myChatCount:(_userModelController.uid==_fleaChatModelController.otherUid)
+                                    ? _fleaChatModelController.otherChatCount
+                                    :_fleaChatModelController.myChatCount,
+                              otherChatCount: (_userModelController.uid==_fleaChatModelController.otherUid)
+                                  ? _fleaChatModelController.myChatCount
                                   :_fleaChatModelController.otherChatCount,
                             );
-                            await _fleaChatModelController
-                                .deleteChatUidList(
-                                myUid: _userModelController.uid, otherUid: (_userModelController.uid ==_fleaChatModelController.otherUid)? _fleaChatModelController.myUid
-                                :_fleaChatModelController.otherUid,
+                            await _fleaChatModelController.deleteChatUidList(
+                              myUid: _userModelController.uid,
+                              otherUid: (_userModelController.uid ==_fleaChatModelController.otherUid)
+                                  ? _fleaChatModelController.myUid
+                                  :_fleaChatModelController.otherUid,
                             );
                             if(_userModelController.uid == _fleaChatModelController.otherUid){
                               await _fleaChatModelController.resetOtherChatCount(chatRoomName: _fleaChatModelController.chatRoomName);
                             }else{
                               await _fleaChatModelController.resetMyChatCount(chatRoomName: _fleaChatModelController.chatRoomName);
                             }
+                            for(int i=0; i<1; i++){
+                            Get.back();
+                            }
                             CustomFullScreenDialog.cancelDialog();
-                            Get.offAll(()=>MainHome(uid: _userModelController.uid,));
                         }catch(e){
                           CustomFullScreenDialog.cancelDialog();
                         }

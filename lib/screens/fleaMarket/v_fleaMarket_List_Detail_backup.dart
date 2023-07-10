@@ -587,75 +587,6 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                     fontWeight:
                                                         FontWeight.w300),
                                               ),
-                                              SizedBox(width: 6,),
-                                              if(_fleaModelController.kakaoUrl != null && _fleaModelController.kakaoUrl != '')
-                                              GestureDetector(
-                                                onTap: (){
-                                                  if(_fleaModelController.kakaoUrl!.isNotEmpty && _fleaModelController.kakaoUrl != '' ) {
-                                                    _fleaModelController.otherShare(contents: '${_fleaModelController.kakaoUrl}');
-                                                  }else{
-                                                    Get.dialog(AlertDialog(
-                                                      contentPadding: EdgeInsets.only(
-                                                          bottom: 0,
-                                                          left: 20,
-                                                          right: 20,
-                                                          top: 30),
-                                                      elevation: 0,
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(
-                                                              10.0)),
-                                                      buttonPadding:
-                                                      EdgeInsets.symmetric(
-                                                          horizontal: 20,
-                                                          vertical: 0),
-                                                      content: Text(
-                                                        '연결된 카카오 오픈채팅이 없습니다.',
-                                                        style: TextStyle(
-                                                            fontWeight: FontWeight.w600,
-                                                            fontSize: 15),
-                                                      ),
-                                                      actions: [
-                                                        Row(
-                                                          children: [
-                                                            TextButton(
-                                                                onPressed: () async {
-                                                                  Navigator.pop(context);
-                                                                },
-                                                                child: Text(
-                                                                  '확인',
-                                                                  style: TextStyle(
-                                                                    fontSize: 15,
-                                                                    color: Color(
-                                                                        0xff377EEA),
-                                                                    fontWeight: FontWeight
-                                                                        .bold,
-                                                                  ),
-                                                                )),
-                                                          ],
-                                                          mainAxisAlignment: MainAxisAlignment
-                                                              .center,
-                                                        )
-                                                      ],
-                                                    ));
-                                                  }
-                                                },
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(3),
-                                                    color: Colors.yellow,
-                                                  ),
-                                                  padding: EdgeInsets.only(
-                                                      right: 6, left: 6, top: 2, bottom: 3),
-                                                  child: Text(
-                                                    '카카오 오픈채팅 바로가기',
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 12,
-                                                        color: Colors.black),
-                                                  ),
-                                                ),
-                                              ),
                                             ],
                                           ),
                                         ],
@@ -854,7 +785,6 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if(_fleaModelController.uid == _userModelController.uid)
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.only(
@@ -865,10 +795,52 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                         child: TextButton(
                             onPressed: () async {
                               CustomFullScreenDialog.showDialog();
+
                               await _userModelController.getCurrentUser(_userModelController.uid);
+
                               if (_userModelController.phoneAuth == true) {
+                                try {
+                                  if (_fleaModelController.uid != _userModelController.uid) {
+                                    await _userModelController.getCurrentUser(_userModelController.uid);
+                                    if (_userModelController.fleaChatUidList!.contains(_fleaModelController.uid)) {
+                                      await _fleaChatModelController.getCurrentFleaChat(
+                                              myUid: _userModelController.uid,
+                                              otherUid: _fleaModelController.uid);
+                                      await _fleaChatModelController.getChatCount(
+                                              myUid: _userModelController.uid,
+                                              otherUid: _fleaModelController.uid,
+                                              chatRoomName: _fleaChatModelController.chatRoomName);
+                                      await _fleaChatModelController.resetMyChatCheckCount(
+                                              chatRoomName: '${_fleaChatModelController.chatRoomName}');
+                                      await _userModelController.addChatUidList(
+                                          otherAddUid: _fleaModelController.uid,
+                                          myAddUid: _userModelController.uid);
+                                      print('기존에 존재하는 채팅방으로 이동');
+                                    } else {
+                                      await _userModelController.addChatUidList(
+                                          otherAddUid: _fleaModelController.uid,
+                                          myAddUid: _userModelController.uid);
+                                      await _fleaChatModelController.createChatroom(
+                                        myUid: _userModelController.uid,
+                                        otherUid: _fleaModelController.uid,
+                                        otherProfileImageUrl: _fleaModelController.profileImageUrl,
+                                        otherResortNickname: _fleaModelController.resortNickname,
+                                        otherDisplayName: _fleaModelController.displayName,
+                                        myDisplayName: _userModelController.displayName,
+                                        myProfileImageUrl: _userModelController.profileImageUrl,
+                                        myResortNickname: _userModelController.resortNickname,
+                                      );
+                                    }
                                     CustomFullScreenDialog.cancelDialog();
-                                    return Get.to(() => FleaMarket_ModifyPage());
+                                    return Get.to(() => FleaChatroom());
+                                  } else {
+                                    CustomFullScreenDialog.cancelDialog();
+                                    return Get.to(
+                                        () => FleaMarket_ModifyPage());
+                                  }
+                                } catch (e) {
+                                  print('에러');
+                                }
                               } else if (_userModelController.phoneAuth == false) {
                                 CustomFullScreenDialog.cancelDialog();
                                 Get.to(() => PhoneAuthScreen());
@@ -881,8 +853,23 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                 elevation: 0,
                                 splashFactory: InkRipple.splashFactory,
                                 minimumSize: Size(1000, 56),
-                                backgroundColor: Color(0xff3D83ED)),
-                            child: Padding(
+                                backgroundColor: (_fleaModelController.uid !=
+                                        _userModelController.uid)
+                                    ? Color(0xff3D83ED)
+                                    : Color(0xFF555555)),
+                            child: (_fleaModelController.uid !=
+                                    _userModelController.uid)
+                                ? Padding(
+                                    padding: const EdgeInsets.only(bottom: 4),
+                                    child: Text(
+                                      '메시지 보내기',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                                  )
+                                : Padding(
                                     padding: const EdgeInsets.only(bottom: 4),
                                     child: Text(
                                       '수정하기',

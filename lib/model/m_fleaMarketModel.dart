@@ -19,6 +19,7 @@ class FleaModel {
       this.description,
       this.fleaCount,
       this.resortNickname,
+      this.kakaoUrl,
       this.timeStamp});
 
   String? displayName;
@@ -34,6 +35,7 @@ class FleaModel {
   String? description;
   int? fleaCount;
   String? resortNickname;
+  String? kakaoUrl;
   Timestamp? timeStamp;
   bool? soldOut;
   DocumentReference? reference;
@@ -53,6 +55,7 @@ class FleaModel {
     timeStamp = json['timeStamp'];
     fleaCount = json['fleaCount'];
     resortNickname = json['resortNickname'];
+    kakaoUrl = json['kakaoUrl'];
     soldOut = json['soldOut'];
   }
 
@@ -80,6 +83,7 @@ class FleaModel {
       required location,
       required method,
       required description,
+      required kakaoUrl,
       timeStamp,
       required fleaCount,
       required resortNickname}) async {
@@ -98,6 +102,7 @@ class FleaModel {
       'timeStamp': Timestamp.now(),
       'fleaCount': fleaCount,
       'resortNickname': resortNickname,
+      'kakaoUrl': kakaoUrl,
       'soldOut': false,
     });
   }
@@ -114,6 +119,7 @@ class FleaModel {
         required location,
         required method,
         required description,
+        required kakaoUrl,
         timeStamp,
         required fleaCount,
         required resortNickname}) async {
@@ -133,6 +139,7 @@ class FleaModel {
       'fleaCount': fleaCount,
       'resortNickname': resortNickname,
       'soldOut': false,
+      'kakaoUrl': kakaoUrl,
     });
   }
 

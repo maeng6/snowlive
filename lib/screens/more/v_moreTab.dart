@@ -550,7 +550,7 @@ class _MoreTabState extends State<MoreTab> {
                                             final alarmDocs = snapshot.data!.docs;
                                             return new Icon(Icons.brightness_1,
                                                 size: 7.0,
-                                                color: (alarmDocs[0]['newInvited'] == true)
+                                                color: (alarmDocs[0]['newInvited_friend'] == true)
                                                     ? Color(0xFFD32F2F)
                                                     : Colors.white);
                                           }

@@ -285,92 +285,92 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(right: 12),
-                        child: Stack(
-                          children: [
-                            Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(bottom: 2),
-                                  child: Container(
-                                      height: 40,
-                                      child:
-                                      FutureBuilder(
-                                          future: _userModelController
-                                              .getCurrentUser(
-                                              _userModelController.uid),
-                                          builder: (BuildContext context,
-                                              AsyncSnapshot<dynamic> snapshot) {
-                                            return ElevatedButton(
-                                              child: Text(
-                                                '채팅목록',
-                                                style: TextStyle(
-                                                    color: (isTap[2])
-                                                        ? Color(0xFF111111)
-                                                        : Color(0xFFC8C8C8),
-                                                    fontWeight: (isTap[2])
-                                                        ? FontWeight.bold
-                                                        : FontWeight.normal,
-                                                    fontSize: 16),
-                                              ),
-                                              onPressed: () {
-                                                HapticFeedback.lightImpact();
-                                                print('채팅목록 페이지로 전환');
-                                                _userModelController
-                                                    .updateNewChatRead();
-                                                setState(() {
-                                                  isTap[0] = false;
-                                                  isTap[1] = false;
-                                                  isTap[2] = true;
-                                                });
-                                                print(isTap);
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                padding: EdgeInsets.only(
-                                                    top: 0),
-                                                minimumSize: Size(50, 10),
-                                                backgroundColor: Color(
-                                                    0xFFFFFFFF),
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                    BorderRadius.circular(8)),
-                                                elevation: 0,
-                                              ),
-                                            );
-                                          })
-                                  ),
-                                ),
-                                Container(
-                                  width: 68,
-                                  height: 3,
-                                  color: (isTap[2])
-                                      ? Color(0xFF111111)
-                                      : Colors.transparent,
-                                )
-                              ],
-                            ),
-                            Positioned(
-                              top: 9,
-                              left: 63,
-                              child: Icon(Icons.brightness_1, size: 5,
-                                  color:
-                                  (_userModelController.newChat ==
-                                      true)
-                                      ? Color(0xFFD32F2F) : Colors
-                                      .white),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: EdgeInsets.only(right: 12),
+                      //   child: Stack(
+                      //     children: [
+                      //       Column(
+                      //         children: [
+                      //           Padding(
+                      //             padding: EdgeInsets.only(bottom: 2),
+                      //             child: Container(
+                      //                 height: 40,
+                      //                 child:
+                      //                 FutureBuilder(
+                      //                     future: _userModelController
+                      //                         .getCurrentUser(
+                      //                         _userModelController.uid),
+                      //                     builder: (BuildContext context,
+                      //                         AsyncSnapshot<dynamic> snapshot) {
+                      //                       return ElevatedButton(
+                      //                         child: Text(
+                      //                           '채팅목록',
+                      //                           style: TextStyle(
+                      //                               color: (isTap[2])
+                      //                                   ? Color(0xFF111111)
+                      //                                   : Color(0xFFC8C8C8),
+                      //                               fontWeight: (isTap[2])
+                      //                                   ? FontWeight.bold
+                      //                                   : FontWeight.normal,
+                      //                               fontSize: 16),
+                      //                         ),
+                      //                         onPressed: () {
+                      //                           HapticFeedback.lightImpact();
+                      //                           print('채팅목록 페이지로 전환');
+                      //                           _userModelController
+                      //                               .updateNewChatRead();
+                      //                           setState(() {
+                      //                             isTap[0] = false;
+                      //                             isTap[1] = false;
+                      //                             isTap[2] = true;
+                      //                           });
+                      //                           print(isTap);
+                      //                         },
+                      //                         style: ElevatedButton.styleFrom(
+                      //                           padding: EdgeInsets.only(
+                      //                               top: 0),
+                      //                           minimumSize: Size(50, 10),
+                      //                           backgroundColor: Color(
+                      //                               0xFFFFFFFF),
+                      //                           shape: RoundedRectangleBorder(
+                      //                               borderRadius:
+                      //                               BorderRadius.circular(8)),
+                      //                           elevation: 0,
+                      //                         ),
+                      //                       );
+                      //                     })
+                      //             ),
+                      //           ),
+                      //           Container(
+                      //             width: 68,
+                      //             height: 3,
+                      //             color: (isTap[2])
+                      //                 ? Color(0xFF111111)
+                      //                 : Colors.transparent,
+                      //           )
+                      //         ],
+                      //       ),
+                      //       Positioned(
+                      //         top: 9,
+                      //         left: 63,
+                      //         child: Icon(Icons.brightness_1, size: 5,
+                      //             color:
+                      //             (_userModelController.newChat ==
+                      //                 true)
+                      //                 ? Color(0xFFD32F2F) : Colors
+                      //                 .white),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                   if (isTap[0] == true)
                     Expanded(child: FleaMarket_List_Screen()),
                   if (isTap[1] == true)
                     Expanded(child: FleaMarket_My_Screen()),
-                  if (isTap[2] == true)
-                    Expanded(child: FleaMarket_Chatroom_List()),
+                  // if (isTap[2] == true)
+                  //   Expanded(child: FleaMarket_Chatroom_List()),
                 ],
               ),
             ),

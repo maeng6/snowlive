@@ -124,6 +124,7 @@ class _InvitedListPage_crewState extends State<InvitedListPage_crew> {
                                                               CustomFullScreenDialog.showDialog();
                                                               await _liveCrewModelController.updateCrewMember(applyUid: inviDocs[index]['uid'], crewID: _liveCrewModelController.crewID);
                                                               await _liveCrewModelController.deleteInvitation_crew(crewID: _liveCrewModelController.crewID, applyUid: inviDocs[index]['uid']);
+                                                              await _liveCrewModelController.deleteInvitationAlarm_crew(leaderUid: _liveCrewModelController.leaderUid);
                                                               await _liveCrewModelController.getCurrnetCrew(_liveCrewModelController.crewID);
                                                               CustomFullScreenDialog.cancelDialog();
                                                             }catch(e){
@@ -232,6 +233,7 @@ class _InvitedListPage_crewState extends State<InvitedListPage_crew> {
                                                                 Navigator.pop(context);
                                                                 CustomFullScreenDialog.showDialog();
                                                                 await _liveCrewModelController.deleteInvitation_crew(crewID: _liveCrewModelController.crewID, applyUid: inviDocs[index]['uid']);
+                                                                await _liveCrewModelController.deleteInvitationAlarm_crew(leaderUid: _liveCrewModelController.leaderUid);
                                                                 await _liveCrewModelController.getCurrnetCrew(_liveCrewModelController.crewID);
                                                                 CustomFullScreenDialog.cancelDialog();
                                                               }catch(e){

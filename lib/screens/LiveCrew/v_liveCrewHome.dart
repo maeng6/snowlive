@@ -116,7 +116,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
             height: 26,
           ),
           onTap: () async{
-            await Get.offAll(()=>MainHome(uid: _userModelController.uid));
+            Navigator.pop(context);
           },
         ),
         elevation: 0.0,

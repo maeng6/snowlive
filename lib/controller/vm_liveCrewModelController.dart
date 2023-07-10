@@ -187,6 +187,23 @@ class LiveCrewModelController extends GetxController {
 
   }
 
+  Future<void> updateInvitationAlarm_crew({required leaderUid}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('newAlarm')
+        .doc(leaderUid)
+        .update({
+      'newInvited_crew': true
+    });
+  }
+  Future<void> deleteInvitationAlarm_crew({required leaderUid}) async {
+    await ref.collection('newAlarm')
+        .doc(leaderUid)
+        .update({
+      'newInvited_friend': false
+    });
+  }
+
   Future<void> deleteInvitation_crew({required crewID,required applyUid}) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;

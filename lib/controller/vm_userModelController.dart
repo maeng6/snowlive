@@ -242,6 +242,13 @@ class UserModelController extends GetxController{
       'applyCrewList':[],
       'totalScores':<String, dynamic>{},
     });
+    await ref.collection('newAlarm')
+        .doc(uid)
+        .set({
+      'uid': uid,
+      'newInvited_friend': false,
+      'newInvited_crew': false,
+    });
     await getCurrentUser(auth.currentUser!.uid);
   }
 
@@ -706,11 +713,11 @@ class UserModelController extends GetxController{
     final uid = user!.uid;
     await ref.collection('newAlarm')
         .doc(friendUid)
-        .set({
-      'uid': friendUid,
-      'newInvited': true
+        .update({
+      'newInvited_friend': true
     });
   }
+
   Future<void> deleteInvitation({required friendUid}) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
@@ -727,11 +734,11 @@ class UserModelController extends GetxController{
       'whoIinvite': FieldValue.arrayRemove([uid])
     });
   }
-  Future<void> deleteInvitationAlarm({required uid}) async {
+  Future<void> deleteInvitationAlarm_friend({required uid}) async {
     await ref.collection('newAlarm')
         .doc(uid)
         .update({
-      'newInvited': false
+      'newInvited_friend': false
     });
   }
   Future<void> updateFriend({required friendUid}) async {
