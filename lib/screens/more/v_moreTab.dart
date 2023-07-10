@@ -13,6 +13,8 @@ import 'package:snowlive3/screens/more/v_resortTab.dart';
 import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
 import 'package:snowlive3/screens/more/v_setting_moreTab.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
+import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import '../../controller/vm_liveCrewModelController.dart';
 import '../../controller/vm_noticeController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../LiveCrew/v_liveCrewHome_firstUser.dart';
@@ -34,7 +36,7 @@ class _MoreTabState extends State<MoreTab> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
-
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -581,11 +583,16 @@ class _MoreTabState extends State<MoreTab> {
                     Column(
                       children: [
                         GestureDetector(
-                          onTap: (){
+                          onTap: () async{
+                            CustomFullScreenDialog.showDialog();
                             if(_userModelController.liveCrew!.isEmpty){
+                              CustomFullScreenDialog.cancelDialog();
                               Get.to(()=>LiveCrewHome_firstUser());
                             }
                             else{
+                              await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                              await _liveCrewModelController.deleteInvitationAlarm_crew(leaderUid: _userModelController.uid);
+                              CustomFullScreenDialog.cancelDialog();
                               Get.to(()=>LiveCrewHome());
                             }
                           },

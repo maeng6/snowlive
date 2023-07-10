@@ -204,7 +204,7 @@ class LiveCrewModelController extends GetxController {
     await ref.collection('newAlarm')
         .doc(leaderUid)
         .update({
-      'newInvited_friend': false
+      'newInvited_crew': false
     });
   }
 

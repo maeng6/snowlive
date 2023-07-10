@@ -74,7 +74,6 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                                 padding: EdgeInsets.only(right: 5),
                                 child: IconButton(
                                   onPressed: () async{
-                                    await _liveCrewModelController.deleteInvitationAlarm_crew(leaderUid: _userModelController.uid);
                                     Get.to(()=>Setting_crewDetail());
                                   },
                                   icon: Image.asset(
@@ -121,7 +120,10 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                   width: 26,
                   height: 26,
                 ),
-                onTap: () {
+                onTap: () async{
+                  CustomFullScreenDialog.showDialog();
+                  await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                  CustomFullScreenDialog.cancelDialog();
                   Get.back();
                 },
               ),
