@@ -278,13 +278,36 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                             fontSize: 13,
                                             color: Color(0xFFD7BCF9)
                                         ),),
-                                      Text(
-                                        '1',
-                                        style: TextStyle(
-                                            fontSize: 28,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFFFFFFFF)
-                                        ),),
+                                      StreamBuilder(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('liveCrew')
+                                            .orderBy('totalScore', descending: true)
+                                            .snapshots(),
+                                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                          if (snapshot.connectionState == ConnectionState.waiting) {
+                                            return Center(
+                                              child: CircularProgressIndicator(),
+                                            );
+                                          } else if (snapshot.hasError) {
+                                            return Text('Error: ${snapshot.error}');
+                                          } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                            final crewDocs = snapshot.data!.docs;
+                                            return  Text('등수계산해야함',
+                                              style: TextStyle(
+                                                  color: Color(0xFFFFFFFF),
+                                                  fontSize: 28
+                                              ),
+                                            );
+                                          } else {
+                                            return Text('-',
+                                              style: TextStyle(
+                                                  color: Color(0xFFFFFFFF),
+                                                  fontSize: 28
+                                              ),
+                                            );
+                                          }
+                                        },
+                                      ),
                                     ],
                                   ),
                                   Column(

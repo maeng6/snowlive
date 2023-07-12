@@ -24,6 +24,8 @@ class LiveCrewModel {
     this.notice,
     this.resistDate,
     this.sns,
+    this.passCountData,
+    this.slopeScores
   });
 
   String? crewID;
@@ -42,6 +44,8 @@ class LiveCrewModel {
   String? sns;
   Timestamp? resistDate;
   DocumentReference? reference;
+  List? passCountData;
+  List? slopeScores;
 
   LiveCrewModel.fromJson(dynamic json, this.reference) {
     crewID = json['crewID'];
@@ -60,6 +64,8 @@ class LiveCrewModel {
     resistDate = json['resistDate'];
     reference = json['reference'];
     sns = json['sns'];
+    passCountData = json['passCountData'];
+    slopeScores = json['slopeScores'];
 
   }
 
