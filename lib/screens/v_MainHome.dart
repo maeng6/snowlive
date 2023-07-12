@@ -45,7 +45,7 @@ class _MainHomeState extends State<MainHome> {
   Widget build(BuildContext context) {
     //TODO: Dependency Injection************************************************
     Get.put(NoticeController(), permanent: true);
-    // Get.put(LiveMapController(), permanent: true);
+    Get.put(LiveMapController(), permanent: true);
     NoticeController _noticeController = Get.find<NoticeController>();
     UserModelController _userModelController = Get.find<UserModelController>();
     //TODO: Dependency Injection************************************************
