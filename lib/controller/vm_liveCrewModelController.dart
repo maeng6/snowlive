@@ -26,8 +26,8 @@ class LiveCrewModelController extends GetxController {
   RxString? _notice=''.obs;
   RxString? _sns=''.obs;
   Timestamp? _resistDate;
-  RxList? _passCountData=[].obs;
-  RxList? _slopeScores=[].obs;
+  RxMap? _passCountData={}.obs;
+  RxMap? _slopeScores={}.obs;
 
   String? get crewID => _crewID!.value;
   String? get crewName => _crewName!.value;
@@ -44,8 +44,8 @@ class LiveCrewModelController extends GetxController {
   String? get notice => _notice!.value;
   String? get sns => _sns!.value;
   Timestamp? get resistDate => _resistDate!;
-  List? get passCountData => _passCountData!;
-  List? get slopeScores => _slopeScores!;
+  Map? get passCountData => _passCountData!;
+  Map? get slopeScores => _slopeScores!;
 
   Future<void> getCurrnetCrew(crewID) async {
     if (crewID != null) {

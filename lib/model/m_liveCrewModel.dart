@@ -44,8 +44,8 @@ class LiveCrewModel {
   String? sns;
   Timestamp? resistDate;
   DocumentReference? reference;
-  List? passCountData;
-  List? slopeScores;
+  Map? passCountData;
+  Map? slopeScores;
 
   LiveCrewModel.fromJson(dynamic json, this.reference) {
     crewID = json['crewID'];
