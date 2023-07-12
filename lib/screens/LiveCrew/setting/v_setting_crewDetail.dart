@@ -1,19 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/screens/LiveCrew/setting/v_setting_SNS.dart';
 import 'package:snowlive3/screens/LiveCrew/setting/v_setting_description.dart';
 import 'package:snowlive3/screens/LiveCrew/setting/v_setting_notice.dart';
-import 'package:snowlive3/screens/LiveCrew/setting/v_setting_setProfileImage.dart';
-import 'package:snowlive3/screens/LiveCrew/v_liveCrewHome.dart';
+import 'package:snowlive3/screens/LiveCrew/setting/v_setting_setLogo&Color.dart';
 import 'package:snowlive3/screens/LiveCrew/setting/v_setting_delegation.dart';
-import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
-import 'package:snowlive3/screens/v_MainHome.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../../widget/w_fullScreenDialog.dart';
-import '../../comments/v_profileImageScreen.dart';
 
 class Setting_crewDetail extends StatelessWidget {
   Setting_crewDetail({Key? key}) : super(key: key);
@@ -465,29 +459,16 @@ class Setting_crewDetail extends StatelessWidget {
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,
                   onTap: () {
-                    Get.to(()=>SetProfileImage_crewDetail());
+                    print(_liveCrewModelController.crewColor);
+                    Get.to(()=>SetCrewLogoColor_setting(
+                      crewColor:
+                      (_liveCrewModelController.crewColor != null && _liveCrewModelController.crewColor != '')
+                      ? _liveCrewModelController.crewColor
+                          : 0xffF1F1F3
+                    ));
                   },
                   title: Text(
-                    '로고이미지 변경',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Color(0xFF111111)),
-                  ),
-                  trailing: Image.asset(
-                    'assets/imgs/icons/icon_arrow_g.png',
-                    height: 24,
-                    width: 24,
-                  ),
-                ),
-                ListTile(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                  minVerticalPadding: 20,
-                  onTap: () {
-
-                  },
-                  title: Text(
-                    '크루 컬러 변경',
+                    '크루 로고∙컬러 변경',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,

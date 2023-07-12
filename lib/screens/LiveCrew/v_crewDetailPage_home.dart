@@ -55,7 +55,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
       else if (snapshot.data!.docs.isNotEmpty) {
         final crewDocs = snapshot.data!.docs;
         final List memberUidList = crewDocs[0]['memberUidList'];
-
         DateTime date = crewDocs[0]['resistDate'].toDate();
         String year = DateFormat('yy').format(date);
         String month = DateFormat('MM').format(date);
@@ -175,18 +174,62 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                   Column(
                                     children: [
                                       Text(
-                                        '크루원(명)',
+                                        '라이브중인\n크루원(명)',
                                         style: TextStyle(
                                             fontSize: 13,
                                             color: Color(0xFFD7BCF9)
                                         ),),
                                       Row(
                                         children: [
-                                          Text('1',
-                                          style: TextStyle(
-                                            color: Color(0xFFFFFFFF),
-                                            fontSize: 28
-                                          ),
+                                          StreamBuilder(
+                                              stream: FirebaseFirestore.instance
+                                                  .collection('liveCrew')
+                                                  .where('crewID', isEqualTo: _liveCrewModelController.crewID)
+                                                  .snapshots(),
+                                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                  return Center(
+                                                    child: CircularProgressIndicator(),
+                                                  );
+                                                } else if (snapshot.hasError) {
+                                                  return Text('Error: ${snapshot.error}');
+                                                } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                                  final crewDocs = snapshot.data!.docs;
+                                                  List memberList = crewDocs[0]['memberUidList'];
+                                                  return StreamBuilder(
+                                                    stream: FirebaseFirestore.instance
+                                                        .collection('user')
+                                                        .where('uid', whereIn: memberList)
+                                                        .where('isOnLive', isEqualTo: true)
+                                                        .snapshots(),
+                                                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                                        return Center(
+                                                          child: CircularProgressIndicator(),
+                                                        );
+                                                      } else if (snapshot.hasError) {
+                                                        return Text('Error: ${snapshot.error}');
+                                                      } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                                        final liveMembersCount = snapshot.data!.docs.length;
+                                                        return  Text('$liveMembersCount',
+                                                          style: TextStyle(
+                                                              color: Color(0xFFFFFFFF),
+                                                              fontSize: 28
+                                                          ),
+                                                        );
+                                                      } else {
+                                                        return Text('0',
+                                                          style: TextStyle(
+                                                              color: Color(0xFFFFFFFF),
+                                                              fontSize: 28
+                                                          ),
+                                                        );
+                                                      }
+                                                    },
+                                                  );
+                                                }
+                                                return Container();
+                                              }
                                           ),
                                           SizedBox(width: 3,),
                                           Text('/',

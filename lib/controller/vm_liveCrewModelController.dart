@@ -251,8 +251,6 @@ class LiveCrewModelController extends GetxController {
   }
 
   Future<void> updateProfileImageUrl({required url, required crewID}) async {
-    final User? user = auth.currentUser;
-    final uid = user!.uid;
     await ref.collection('liveCrew').doc(crewID).update({
       'profileImageUrl': url,
     });
@@ -261,8 +259,6 @@ class LiveCrewModelController extends GetxController {
 
 
   Future<void> deleteProfileImageUrl({required crewID}) async {
-    final User? user = auth.currentUser;
-    final uid = user!.uid;
     await ref.collection('liveCrew').doc(crewID).update({
       'profileImageUrl': '',
     });
@@ -286,6 +282,14 @@ class LiveCrewModelController extends GetxController {
   Future<void> updateSNS({required snsLink, required crewID}) async {
     await ref.collection('liveCrew').doc(crewID).update({
       'sns': snsLink,
+    });
+    await getCurrnetCrew(crewID);
+  }
+
+  Future<void> updateCrewColor({required crewColor, required crewID}) async {
+    int colorValue = crewColor.value;
+    await ref.collection('liveCrew').doc(crewID).update({
+      'crewColor': colorValue,
     });
     await getCurrnetCrew(crewID);
   }
