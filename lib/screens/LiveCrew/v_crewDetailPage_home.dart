@@ -174,7 +174,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                   Column(
                                     children: [
                                       Text(
-                                        '라이브중인\n크루원(명)',
+                                        'LiveOn/전체(명)',
                                         style: TextStyle(
                                             fontSize: 13,
                                             color: Color(0xFFD7BCF9)
@@ -292,11 +292,36 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                             return Text('Error: ${snapshot.error}');
                                           } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                                             final crewDocs = snapshot.data!.docs;
-                                            return  Text('등수계산해야함',
-                                              style: TextStyle(
-                                                  color: Color(0xFFFFFFFF),
-                                                  fontSize: 28
-                                              ),
+                                            int rank = 1;
+                                            for (var doc in crewDocs) {
+                                              if (doc.id == _liveCrewModelController.crewID) {
+                                                break;
+                                              }
+                                              rank++;
+                                            }
+                                            return Row(
+                                              children: [
+                                                Text('${rank}',
+                                                  style: TextStyle(
+                                                      color: Color(0xFFFFFFFF),
+                                                      fontSize: 28
+                                                  ),
+                                                ),
+                                                SizedBox(width: 3,),
+                                                Text('/',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Color(0xFF000000),
+                                                      fontWeight: FontWeight.bold
+                                                  ),
+                                                ),
+                                                Text('${crewDocs.length}',
+                                                  style: TextStyle(
+                                                      color: Color(0xFF111111),
+                                                      fontSize: 28
+                                                  ),
+                                                ),
+                                              ],
                                             );
                                           } else {
                                             return Text('-',
@@ -308,6 +333,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                           }
                                         },
                                       ),
+
                                     ],
                                   ),
                                   Column(
