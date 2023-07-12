@@ -89,7 +89,9 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
           );
         }
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton:
+      (_liveCrewModelController.leaderUid == _userModelController.uid)
+      ?FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
             context: context,
@@ -208,7 +210,8 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
           );
         },
         child: Icon(Icons.camera_alt_rounded),
-      ),
+      )
+      :SizedBox(),
     );
   }
 }

@@ -1,6 +1,8 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
@@ -26,12 +28,22 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
 
   late PageController _pageController;
   late int _currentIndex;
+  String currentUploadTime = '';
+
+  String formatDateTime(DateTime dateTime) {
+    return DateFormat('yy년 M월 d일 HH:mm').format(dateTime);
+  }
+
+
+
+
 
   @override
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: _currentIndex);
+    getUploadTime(_currentIndex); // 초기 사진의 업로드 시간 가져오기
   }
 
   @override
@@ -40,15 +52,39 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
     super.dispose();
   }
 
+  bool _showAppBar = true;
+
+  void _toggleAppBar() {
+    setState(() {
+      _showAppBar = !_showAppBar;
+    });
+  }
+
+  Future<void> getUploadTime(int index) async {
+    // 이미지의 업로드 시간을 스토리지 메타데이터에서 가져옴
+    String imageUrl = widget.photoList[index];
+    Reference ref = FirebaseStorage.instance.refFromURL(imageUrl);
+    FullMetadata metadata = await ref.getMetadata();
+    if (metadata.updated != null) {
+      setState(() {
+        currentUploadTime = formatDateTime(metadata.updated!.toLocal());
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
+      appBar:
+      _showAppBar
+      ? AppBar(
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 5),
-            child: IconButton(
+            child:
+            (_liveCrewModelController.leaderUid == _userModelController.uid)
+            ?IconButton(
               onPressed: (){
                 showModalBottomSheet(
                     context: context,
@@ -151,7 +187,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                     });
               },
               icon: Icon(Icons.delete),
-            ),
+            )
+            :SizedBox(),
           )
         ],
         backgroundColor: Colors.white,
@@ -168,10 +205,18 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
         ),
         elevation: 0.0,
         titleSpacing: 0,
+        centerTitle: true,
+        title: Text(currentUploadTime,
+        style: TextStyle(
+          fontSize: 15,
+          color: Colors.black87
+        ),
+        ),
 
-      ),
+      )
+      :null,
       body: GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
+        onTap: _toggleAppBar,
         child: Container(
           color: Colors.black,
           child: Stack(
@@ -182,9 +227,13 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                 onPageChanged: (index) {
                   setState(() {
                     _currentIndex = index;
+                    getUploadTime(index); // 페이지 변경 시 해당 사진의 업로드 시간 가져오기
                   });
                 },
                 itemBuilder: (context, index) {
+
+
+
                   return ExtendedImage.network(
                     widget.photoList[index],
                     fit: BoxFit.contain,
