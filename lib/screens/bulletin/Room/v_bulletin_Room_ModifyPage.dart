@@ -152,7 +152,9 @@ class _Bulletin_Room_ModifyPageState extends State<Bulletin_Room_ModifyPage> {
                               resortNickname: _userModelController.resortNickname
                           );
                           CustomFullScreenDialog.cancelDialog();
-                          Get.to(()=> MainHome(uid: _userModelController.uid,));
+                          for(int i=0; i<2; i++){
+                            Get.back();
+                          }
                         }
                         _imageController.imagesUrlList.clear();
 

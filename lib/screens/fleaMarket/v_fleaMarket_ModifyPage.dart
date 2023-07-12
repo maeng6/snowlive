@@ -27,10 +27,12 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
   String? _initTitle ;
   String? _initItemName ;
   String? _initdescrip ;
+  String? _initKakaoUrl ;
   TextEditingController _titleTextEditingController = TextEditingController();
   TextEditingController _itemNameTextEditingController = TextEditingController();
   TextEditingController _itemPriceTextEditingController = TextEditingController();
   TextEditingController _itemDescribTextEditingController = TextEditingController();
+  TextEditingController _kakaoUrlTextEditingController = TextEditingController();
   bool? isCategorySelected = false;
   bool? isLocationSelected = false;
   bool? isMethodSelected = false;
@@ -103,6 +105,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
     _initTitle =_fleaModelController.title;
     _initItemName =_fleaModelController.itemName;
     _initdescrip =_fleaModelController.description;
+    _initKakaoUrl =_fleaModelController.kakaoUrl;
   }
 
   @override
@@ -158,7 +161,8 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                             method: SelectedMethod!.value,
                             description: _itemDescribTextEditingController.text,
                             fleaCount: _fleaModelController.fleaCount,
-                            resortNickname: _userModelController.resortNickname
+                            resortNickname: _userModelController.resortNickname,
+                            kakaoUrl: _kakaoUrlTextEditingController.text
                         )
                         : await _fleaModelController.updateFleaItem(
                             displayName: _userModelController.displayName,
@@ -173,10 +177,13 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                             method: SelectedMethod!.value,
                             description: _itemDescribTextEditingController.text,
                             fleaCount: _fleaModelController.fleaCount,
-                            resortNickname: _userModelController.resortNickname
+                            resortNickname: _userModelController.resortNickname,
+                            kakaoUrl: _kakaoUrlTextEditingController.text
                         );
                         CustomFullScreenDialog.cancelDialog();
-                        Get.to(()=> MainHome(uid: _userModelController.uid,));
+                        for(int i=0; i<2; i++){
+                          Get.back();
+                        }
                       }
                       _imageController.imagesUrlList.clear();
 
@@ -830,6 +837,51 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                           thickness: 0.5,
                           color: Color(0xFFDEDEDE),
                         ),
+                      Container(
+                        height: 70,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                maxLines: 10,
+                                textAlignVertical: TextAlignVertical.center,
+                                cursorColor: Color(0xff377EEA),
+                                cursorHeight: 16,
+                                cursorWidth: 2,
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                controller: _kakaoUrlTextEditingController..text = '$_initKakaoUrl',
+                                onChanged: (kakaoUrl){
+                                  _initKakaoUrl = kakaoUrl;
+                                  print(_initKakaoUrl);
+                                },
+                                strutStyle: StrutStyle(leading: 0.3),
+                                decoration: InputDecoration(
+                                  errorStyle: TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                  labelStyle: TextStyle(
+                                      color: Color(0xff949494)
+                                  ),
+                                  hintStyle:
+                                  TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                                  hintText: 'URL을 입력해주세요.',
+                                  labelText: '카카오 오픈채팅 URL',
+                                  border: InputBorder.none,
+                                ),
+                                validator: (val) {
+                                  if (val!.length <= 1000 && val.length >= 1) {
+                                    return null;
+                                  } else {
+                                    return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       Container(
                         height: 120,
                         child: Column(

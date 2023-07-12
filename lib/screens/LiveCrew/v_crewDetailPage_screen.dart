@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:snowlive3/screens/LiveCrew/invitation/v_invitation_Screen_crew.dart';
+import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_gallery.dart';
 import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_home.dart';
 import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_member.dart';
 import 'package:snowlive3/screens/LiveCrew/setting/v_setting_crewDetail.dart';
@@ -26,6 +27,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
   int counter = 0;
   List<bool> isTap = [
     true,
+    false,
     false,
   ];
 
@@ -57,14 +59,13 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                 if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid))
                 StreamBuilder(
                     stream: FirebaseFirestore.instance
-                        .collection('user')
+                        .collection('newAlarm')
                         .where('uid', isEqualTo: _userModelController.uid!)
                         .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
                       if (!snapshot.hasData || snapshot.data == null) {}
                       else if (snapshot.data!.docs.isNotEmpty) {
-                        final myDocs = snapshot.data!.docs;
-                        List whoInviteMe = myDocs[0]['whoInviteMe'];
+                        final alarmDocs = snapshot.data!.docs;
                         return  Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: Stack(
@@ -72,7 +73,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                               Padding(
                                 padding: EdgeInsets.only(right: 5),
                                 child: IconButton(
-                                  onPressed: (){
+                                  onPressed: () async{
                                     Get.to(()=>Setting_crewDetail());
                                   },
                                   icon: Image.asset(
@@ -88,7 +89,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                                 left: 32,
                                 child: new Icon(Icons.brightness_1, size: 6.0,
                                     color:
-                                    (whoInviteMe.length >0)
+                                    (alarmDocs[0]['newInvited_crew']==true)
                                         ?Color(0xFFD32F2F):Colors.white),
                               )
                             ],
@@ -119,7 +120,10 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                   width: 26,
                   height: 26,
                 ),
-                onTap: () {
+                onTap: () async{
+                  CustomFullScreenDialog.showDialog();
+                  await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                  CustomFullScreenDialog.cancelDialog();
                   Get.back();
                 },
               ),
@@ -127,7 +131,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
               centerTitle: true,
               titleSpacing: 0,
               title: Text(
-                '${_liveCrewModelController.crewName}',
+                '라이브크루',
                 style: TextStyle(
                     color: Color(0xFF111111),
                     fontWeight: FontWeight.bold,
@@ -151,62 +155,113 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                 color: Color(0xFFECECEC),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: 16),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 2),
-                              child: Container(
-                                height: 40,
-                                child: ElevatedButton(
-                                  child: Text(
-                                    '홈',
-                                    style: TextStyle(
-                                        color: (isTap[0])
-                                            ? Color(0xFF111111)
-                                            : Color(0xFFc8c8c8),
-                                        fontWeight: (isTap[0])
-                                            ? FontWeight.bold
-                                        : FontWeight.normal,
-                                        fontSize: 16),
-                                  ),
-                                  onPressed: () async{
-                                    HapticFeedback.lightImpact();
-                                    print('크루 홈으로 전환');
-                                    setState(() {
-                                      isTap[0] = true;
-                                      isTap[1] = false;
-                                    });
-                                    print('crewID: ${_liveCrewModelController.crewID}');
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.only(top: 0),
-                                    minimumSize: Size(40, 10),
-                                    backgroundColor: Color(0xFFFFFFFF),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8)),
-                                    elevation: 0,
-                                  ),
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 16),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 2),
+                            child: Container(
+                              height: 40,
+                              child: ElevatedButton(
+                                child: Text(
+                                  '홈',
+                                  style: TextStyle(
+                                      color: (isTap[0])
+                                          ? Color(0xFF111111)
+                                          : Color(0xFFc8c8c8),
+                                      fontWeight: (isTap[0])
+                                          ? FontWeight.bold
+                                      : FontWeight.normal,
+                                      fontSize: 16),
+                                ),
+                                onPressed: () async{
+                                  HapticFeedback.lightImpact();
+                                  print('크루 홈으로 전환');
+                                  setState(() {
+                                    isTap[0] = true;
+                                    isTap[1] = false;
+                                    isTap[2] = false;
+                                  });
+                                  print('crewID: ${_liveCrewModelController.crewID}');
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.only(top: 0),
+                                  minimumSize: Size(40, 10),
+                                  backgroundColor: Color(0xFFFFFFFF),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)),
+                                  elevation: 0,
                                 ),
                               ),
                             ),
-                            Container(
-                              width: 90,
-                              height: 3,
-                              color:
-                              (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
-                            )
-                          ],
-                        ),
+                          ),
+                          Container(
+                            width: 90,
+                            height: 3,
+                            color:
+                            (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
+                          )
+                        ],
                       ),
-                      if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid))
+                    ),
+                    if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid))
+                    Padding(
+                      padding: EdgeInsets.only(right: 12),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 2),
+                            child: Container(
+                              height: 40,
+                              child: ElevatedButton(
+                                child: Text(
+                                  '멤버',
+                                  style: TextStyle(
+                                      color: (isTap[1])
+                                          ? Color(0xFF111111)
+                                          : Color(0xFFc8c8c8),
+                                      fontWeight:
+                                      (isTap[1])
+                                          ? FontWeight.bold
+                                      : FontWeight.normal,
+                                      fontSize: 16),
+                                ),
+                                onPressed: () {
+                                  HapticFeedback.lightImpact();
+                                  print('크루 멤버 목록으로 전환');
+                                  setState(() {
+                                    isTap[0] = false;
+                                    isTap[1] = true;
+                                    isTap[2] = false;
+                                  });
+                                  print('crewID: ${_liveCrewModelController.crewID}');
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.only(top: 0),
+                                  minimumSize: Size(40, 10),
+                                  backgroundColor: Color(0xFFFFFFFF),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)),
+                                  elevation: 0,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 90,
+                            height: 3,
+                            color:
+                            (isTap[1]) ? Color(0xFF111111) : Colors.transparent,
+                          )
+                        ],
+                      ),
+                    ),
+                    if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid))
                       Padding(
                         padding: EdgeInsets.only(right: 12),
                         child: Column(
@@ -217,15 +272,15 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                                 height: 40,
                                 child: ElevatedButton(
                                   child: Text(
-                                    '멤버',
+                                    '갤러리',
                                     style: TextStyle(
-                                        color: (isTap[1])
+                                        color: (isTap[2])
                                             ? Color(0xFF111111)
                                             : Color(0xFFc8c8c8),
                                         fontWeight:
-                                        (isTap[1])
+                                        (isTap[2])
                                             ? FontWeight.bold
-                                        : FontWeight.normal,
+                                            : FontWeight.normal,
                                         fontSize: 16),
                                   ),
                                   onPressed: () {
@@ -233,7 +288,8 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                                     print('크루 멤버 목록으로 전환');
                                     setState(() {
                                       isTap[0] = false;
-                                      isTap[1] = true;
+                                      isTap[1] = false;
+                                      isTap[2] = true;
                                     });
                                     print('crewID: ${_liveCrewModelController.crewID}');
                                   },
@@ -252,19 +308,20 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                               width: 90,
                               height: 3,
                               color:
-                              (isTap[1]) ? Color(0xFF111111) : Colors.transparent,
+                              (isTap[2]) ? Color(0xFF111111) : Colors.transparent,
                             )
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                  if(isTap[0]==true)
-                    Expanded(child: CrewDetailPage_home()),
-                  if(isTap[1]==true)
-                    Expanded(child: CrewDetailPage_member()),
-                ],
-              ),
+                  ],
+                ),
+                if(isTap[0]==true)
+                  Expanded(child: CrewDetailPage_home()),
+                if(isTap[1]==true)
+                  Expanded(child: CrewDetailPage_member()),
+                if(isTap[2]==true)
+                  Expanded(child: CrewDetailPage_Gallery()),
+              ],
             ),
           ],
         ),

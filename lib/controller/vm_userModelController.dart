@@ -166,16 +166,33 @@ class UserModelController extends GetxController{
     }
   }
 
+  Future<void> getCurrentUser_crew(uid) async{
+    if(FirebaseAuth.instance.currentUser != null) {
+      if(uid!=null) {
+        UserModel? userModel = await UserModel().getUserModel_crew(uid);
+        if (userModel != null) {
+          this._applyCrewList!.value = userModel.applyCrewList!;
+          this._liveCrew!.value = userModel.liveCrew!;
+        }else {
+          Get.to(()=>LoginPage());
+          // handle the case where the userModel is null
+        }} else {
+        Get.to(()=>LoginPage());
+        // handle the case where the userModel is null
+      }
+    } else {
+      Get.to(()=>LoginPage());
+    }
+  }
+
   Future<void> getCurrentUserLocationInfo(uid) async{
     if(FirebaseAuth.instance.currentUser != null) {
-      //String uid = FirebaseAuth.instance.currentUser!.uid;
       if(uid!=null) {
         UserModel? userModel = await UserModel().getUserModel(uid);
         if (userModel != null) {
           this._uid!.value = userModel.uid!;
           this._isOnLive!.value = userModel.isOnLive!;
           this._withinBoundary!.value = userModel.withinBoundary!;
-          this._applyCrewList!.value = userModel.applyCrewList!;
           this._favoriteResort!.value = userModel.favoriteResort!;
           this._instantResort!.value = userModel.instantResort!;
         }else {
@@ -241,6 +258,13 @@ class UserModelController extends GetxController{
       'liveCrew':'',
       'applyCrewList':[],
       'totalScores':<String, dynamic>{},
+    });
+    await ref.collection('newAlarm')
+        .doc(uid)
+        .set({
+      'uid': uid,
+      'newInvited_friend': false,
+      'newInvited_crew': false,
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -706,11 +730,11 @@ class UserModelController extends GetxController{
     final uid = user!.uid;
     await ref.collection('newAlarm')
         .doc(friendUid)
-        .set({
-      'uid': friendUid,
-      'newInvited': true
+        .update({
+      'newInvited_friend': true
     });
   }
+
   Future<void> deleteInvitation({required friendUid}) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
@@ -727,11 +751,11 @@ class UserModelController extends GetxController{
       'whoIinvite': FieldValue.arrayRemove([uid])
     });
   }
-  Future<void> deleteInvitationAlarm({required uid}) async {
+  Future<void> deleteInvitationAlarm_friend({required uid}) async {
     await ref.collection('newAlarm')
         .doc(uid)
         .update({
-      'newInvited': false
+      'newInvited_friend': false
     });
   }
   Future<void> updateFriend({required friendUid}) async {

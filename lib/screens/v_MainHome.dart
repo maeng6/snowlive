@@ -2,18 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_liveMapController.dart';
-import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/screens/Ranking/v_RankingScreen.dart';
-import 'package:snowlive3/screens/bulletin/v_bulletin_Screen.dart';
 import 'package:snowlive3/screens/comments/v_liveTalk_Screen.dart';
 import 'package:snowlive3/screens/resort/v_resortHome.dart';
-import 'package:snowlive3/screens/discover/v_discover_Resort_Banner.dart';
-import 'package:snowlive3/screens/discover/v_discover_Screen.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
-import '../controller/vm_loginController.dart';
 import '../controller/vm_noticeController.dart';
 import '../controller/vm_userModelController.dart';
-import 'fleaMarket/v_fleaMarket_List_Screen.dart';
 import 'fleaMarket/v_fleaMarket_Screen.dart';
 import 'more/v_moreTab.dart';
 
@@ -161,7 +154,7 @@ class _MainHomeState extends State<MainHome> {
                           final alarmDocs = snapshot.data!.docs;
                           return new Icon(Icons.brightness_1,
                               size: 7.0,
-                              color: (alarmDocs[0]['newInvited'] == true)
+                              color: (alarmDocs[0]['newInvited_friend'] == true || alarmDocs[0]['newInvited_crew'] == true)
                                   ? Color(0xFFD32F2F)
                                   : Colors.white);
                         }
@@ -201,7 +194,7 @@ class _MainHomeState extends State<MainHome> {
                           final alarmDocs = snapshot.data!.docs;
                           return new Icon(Icons.brightness_1,
                               size: 7.0,
-                              color: (alarmDocs[0]['newInvited'] == true)
+                              color: (alarmDocs[0]['newInvited_friend'] == true || alarmDocs[0]['newInvited_crew'] == true)
                                   ? Color(0xFFD32F2F)
                                   : Colors.white);
                         }

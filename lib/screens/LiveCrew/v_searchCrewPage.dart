@@ -346,6 +346,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                                       } else{
                                                         CustomFullScreenDialog.showDialog();
                                                         await _liveCrewModelController.updateInvitation_crew(crewID: _liveCrewModelController.crewID);
+                                                        await _liveCrewModelController.updateInvitationAlarm_crew(leaderUid: _liveCrewModelController.leaderUid);
                                                         await _userModelController.getCurrentUser(_userModelController.uid);
                                                         CustomFullScreenDialog.cancelDialog();
                                                         Navigator.pop(context);

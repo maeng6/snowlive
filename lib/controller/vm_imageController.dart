@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import '../widget/w_fullScreenDialog.dart';
 
@@ -18,18 +20,17 @@ class ImageController extends GetxController {
 
   //TODO : ****************************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO : ****************************************************************
 
   Future<XFile?> getSingleImage(ImageSource) async {
     final ImagePicker _picker = ImagePicker();
-    final XFile? image =
-        await _picker.pickImage(imageQuality: 100, source: ImageSource);
+    final XFile? image = await _picker.pickImage(imageQuality: 100, source: ImageSource);
     if (image != null) {
       return image;
     }else {
-      CustomFullScreenDialog.cancelDialog();
+      return null;
     }
-    return image;
   }
 
   Future<XFile?> cropImage(XFile? imageFile) async {
@@ -190,6 +191,70 @@ class ImageController extends GetxController {
     }
     return downloadUrl;
   }
+
+  Future<String> setNewImage_Crew_Gallery({required XFile newImage, required String crewID}) async {
+    String? uid = await FlutterSecureStorage().read(key: 'uid');
+    var metaData = SettableMetadata(contentType: 'image/jpeg');
+    String downloadUrl = '';
+
+    if (newImage != null) {
+      String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+      String fileName = '$crewID\_$timestamp.jpg';
+
+      try {
+        // 폴더 존재 여부 확인
+        ListResult listResult = await FirebaseStorage.instance.ref('images/crewGallery/$crewID/').listAll();
+        bool folderExists = listResult.items.isNotEmpty;
+
+        if (!folderExists) {
+          // 폴더가 존재하지 않으면 생성
+          await FirebaseStorage.instance.ref('images/crewGallery/$crewID/').putData(Uint8List.fromList([]));
+        }
+
+        // 이미지 업로드
+        Reference ref = FirebaseStorage.instance.ref('images/crewGallery/$crewID/$fileName');
+        await ref.putFile(File(newImage.path), metaData);
+
+        // 다운로드 URL 가져오기
+        downloadUrl = await ref.getDownloadURL();
+
+        // Firestore에 URL 추가
+        FirebaseFirestore.instance
+            .collection('liveCrew')
+            .doc(_liveCrewModelController.crewID)
+            .set({
+          'galleryUrlList': FieldValue.arrayUnion([downloadUrl]),
+        }, SetOptions(merge: true));
+      } catch (e) {
+        print('Error creating folder or uploading image: $e');
+      }
+    } else {
+      CustomFullScreenDialog.cancelDialog();
+    }
+
+    return downloadUrl;
+  }
+
+
+  Future<void> deleteCrewGalleryImage(String imageUrl, String crewID) async {
+    final docRef = FirebaseFirestore.instance.collection('liveCrew').doc(crewID);
+
+    // Fetch the document from Firestore
+    DocumentSnapshot docSnapshot = await docRef.get();
+
+    // Get the galleryUrlList from the document
+    List<String> galleryUrlList = List<String>.from(docSnapshot['galleryUrlList']);
+
+    // Remove the image URL from the list
+    galleryUrlList.remove(imageUrl);
+
+    // Update the document with the modified list
+    await docRef.update({'galleryUrlList': galleryUrlList});
+
+    // Delete the image from Firebase Storage
+    await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+  }
+
 
 }
 

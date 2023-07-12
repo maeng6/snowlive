@@ -49,7 +49,7 @@ class _FriendListPageState extends State<FriendListPage> {
                         onPressed: () async{
                           CustomFullScreenDialog.showDialog();
                           try {
-                            await _userModelController.deleteInvitationAlarm(uid: _userModelController.uid);
+                            await _userModelController.deleteInvitationAlarm_friend(uid: _userModelController.uid);
                           }catch(e){}
                           CustomFullScreenDialog.cancelDialog();
                           Get.to(()=>InvitationScreen_friend());
@@ -81,7 +81,7 @@ class _FriendListPageState extends State<FriendListPage> {
                         onPressed: () async{
                           CustomFullScreenDialog.showDialog();
                           try {
-                            await _userModelController.deleteInvitationAlarm(uid: _userModelController.uid);
+                            await _userModelController.deleteInvitationAlarm_friend(uid: _userModelController.uid);
                           }catch(e){}
                           CustomFullScreenDialog.cancelDialog();
                           Get.to(()=>InvitationScreen_friend());
@@ -98,7 +98,7 @@ class _FriendListPageState extends State<FriendListPage> {
                         left: 32,
                         child: new Icon(Icons.brightness_1, size: 6.0,
                             color:
-                            (alarmDocs[0]['newInvited'] == true)
+                            (alarmDocs[0]['newInvited_friend'] == true)
                                 ?Color(0xFFD32F2F):Colors.white),
                       )
                     ],
@@ -114,7 +114,7 @@ class _FriendListPageState extends State<FriendListPage> {
                         onPressed: () async{
                           CustomFullScreenDialog.showDialog();
                           try {
-                            await _userModelController.deleteInvitationAlarm(uid: _userModelController.uid);
+                            await _userModelController.deleteInvitationAlarm_friend(uid: _userModelController.uid);
                           }catch(e){}
                           CustomFullScreenDialog.cancelDialog();
                           Get.to(()=>InvitationScreen_friend());
@@ -144,7 +144,7 @@ class _FriendListPageState extends State<FriendListPage> {
                       onPressed: () async{
                         CustomFullScreenDialog.showDialog();
                         try {
-                          await _userModelController.deleteInvitationAlarm(uid: _userModelController.uid);
+                          await _userModelController.deleteInvitationAlarm_friend(uid: _userModelController.uid);
                         }catch(e){}
                         CustomFullScreenDialog.cancelDialog();
                         Get.to(()=>InvitationScreen_friend());

@@ -21,10 +21,13 @@ class LiveCrewModelController extends GetxController {
   RxString? _profileImageUrl=''.obs;
   RxList? _memberUidList=[].obs;
   RxList? _applyUidList=[].obs;
+  RxList? _galleryUrlList=[].obs;
   RxString? _description=''.obs;
   RxString? _notice=''.obs;
   RxString? _sns=''.obs;
   Timestamp? _resistDate;
+  RxMap? _passCountData={}.obs;
+  RxMap? _slopeScores={}.obs;
 
   String? get crewID => _crewID!.value;
   String? get crewName => _crewName!.value;
@@ -36,10 +39,13 @@ class LiveCrewModelController extends GetxController {
   String? get profileImageUrl => _profileImageUrl!.value;
   List? get memberUidList => _memberUidList!;
   List? get applyUidList => _applyUidList!;
+  List? get galleryUrlList => _galleryUrlList!;
   String? get description => _description!.value;
   String? get notice => _notice!.value;
   String? get sns => _sns!.value;
   Timestamp? get resistDate => _resistDate!;
+  Map? get passCountData => _passCountData!;
+  Map? get slopeScores => _slopeScores!;
 
   Future<void> getCurrnetCrew(crewID) async {
     if (crewID != null) {
@@ -54,9 +60,12 @@ class LiveCrewModelController extends GetxController {
       this._profileImageUrl!.value = crewModel.profileImageUrl!;
       this._memberUidList!.value = crewModel.memberUidList!;
       this._applyUidList!.value = crewModel.applyUidList!;
+      this._galleryUrlList!.value = crewModel.galleryUrlList!;
       this._description!.value = crewModel.description!;
       this._notice!.value = crewModel.notice!;
       this._sns!.value = crewModel.sns!;
+      this._passCountData!.value = crewModel.passCountData!;
+      this._slopeScores!.value = crewModel.slopeScores!;
     }
   }
 
@@ -93,11 +102,14 @@ class LiveCrewModelController extends GetxController {
       'profileImageUrl' : crewImageUrl,
       'memberUidList' : FieldValue.arrayUnion([uid]),
       'applyUidList' : [],
+      'galleryUrlList' : [],
       'description':'',
       'notice':'',
       'resistDate' : Timestamp.now(),
       'sns' : '',
-      'totalScore': 0
+      'totalScore': 0,
+      'passCountData': {},
+      'slopeScores': {},
     });
   }
 
@@ -187,6 +199,23 @@ class LiveCrewModelController extends GetxController {
 
   }
 
+  Future<void> updateInvitationAlarm_crew({required leaderUid}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('newAlarm')
+        .doc(leaderUid)
+        .update({
+      'newInvited_crew': true
+    });
+  }
+  Future<void> deleteInvitationAlarm_crew({required leaderUid}) async {
+    await ref.collection('newAlarm')
+        .doc(leaderUid)
+        .update({
+      'newInvited_crew': false
+    });
+  }
+
   Future<void> deleteInvitation_crew({required crewID,required applyUid}) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
@@ -230,8 +259,6 @@ class LiveCrewModelController extends GetxController {
   }
 
   Future<void> updateProfileImageUrl({required url, required crewID}) async {
-    final User? user = auth.currentUser;
-    final uid = user!.uid;
     await ref.collection('liveCrew').doc(crewID).update({
       'profileImageUrl': url,
     });
@@ -240,8 +267,6 @@ class LiveCrewModelController extends GetxController {
 
 
   Future<void> deleteProfileImageUrl({required crewID}) async {
-    final User? user = auth.currentUser;
-    final uid = user!.uid;
     await ref.collection('liveCrew').doc(crewID).update({
       'profileImageUrl': '',
     });
@@ -265,6 +290,14 @@ class LiveCrewModelController extends GetxController {
   Future<void> updateSNS({required snsLink, required crewID}) async {
     await ref.collection('liveCrew').doc(crewID).update({
       'sns': snsLink,
+    });
+    await getCurrnetCrew(crewID);
+  }
+
+  Future<void> updateCrewColor({required crewColor, required crewID}) async {
+    int colorValue = crewColor.value;
+    await ref.collection('liveCrew').doc(crewID).update({
+      'crewColor': colorValue,
     });
     await getCurrnetCrew(crewID);
   }

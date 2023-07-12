@@ -113,7 +113,6 @@ class UserModel {
   UserModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
       :this.fromJson(snapshot.data(), snapshot.reference);
 
-
   Future<UserModel?> getUserModel(String uid) async {
     if (uid != null) {
       DocumentReference<Map<String, dynamic>> documentReference =
@@ -122,6 +121,54 @@ class UserModel {
       await documentReference.get();
       if (documentSnapshot.exists) {
         UserModel userModel = UserModel.fromSnapShot(documentSnapshot);
+        return userModel;
+      }
+    }
+    return null;
+  }
+
+  UserModel.fromJson_crew(dynamic json, this.reference) {
+    liveCrew = json['liveCrew'];
+    applyCrewList = json['applyCrewList'];
+  }
+
+  UserModel.fromSnapShot_crew(DocumentSnapshot<Map<String, dynamic>> snapshot)
+      :this.fromJson_crew(snapshot.data(), snapshot.reference);
+
+  Future<UserModel?> getUserModel_crew(String uid) async {
+    if (uid != null) {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+      if (documentSnapshot.exists) {
+        UserModel userModel = UserModel.fromSnapShot_crew(documentSnapshot);
+        return userModel;
+      }
+    }
+    return null;
+  }
+
+  UserModel.fromJson_locationInfo(dynamic json, this.reference) {
+    uid = json['uid'];
+    isOnLive = json['isOnLive'];
+    withinBoundary = json['withinBoundary'];
+    favoriteResort = json['favoriteResort'];
+    instantResort = json['instantResort'];
+
+  }
+
+  UserModel.fromSnapShot_locationInfo(DocumentSnapshot<Map<String, dynamic>> snapshot)
+      :this.fromJson_locationInfo(snapshot.data(), snapshot.reference);
+
+  Future<UserModel?> getUserModel_locationInfo(String uid) async {
+    if (uid != null) {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+      if (documentSnapshot.exists) {
+        UserModel userModel = UserModel.fromSnapShot_locationInfo(documentSnapshot);
         return userModel;
       }
     }

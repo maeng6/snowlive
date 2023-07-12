@@ -123,7 +123,7 @@ class _InviteListPage_friendState extends State<InviteListPage_friend> {
                                                           Navigator.pop(context);
                                                           CustomFullScreenDialog.showDialog();
                                                           await _userModelController.deleteInvitation(friendUid:inviDocs[index]['uid']);
-                                                          await _userModelController.deleteInvitationAlarm(uid:inviDocs[index]['uid']);
+                                                          await _userModelController.deleteInvitationAlarm_friend(uid:inviDocs[index]['uid']);
                                                           await _userModelController.getCurrentUser(_userModelController.uid);
                                                           CustomFullScreenDialog.cancelDialog();
                                                         }catch(e){

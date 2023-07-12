@@ -13,6 +13,8 @@ import 'package:snowlive3/screens/more/v_resortTab.dart';
 import 'package:snowlive3/screens/more/v_setProfileImage_moreTab.dart';
 import 'package:snowlive3/screens/more/v_setting_moreTab.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
+import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import '../../controller/vm_liveCrewModelController.dart';
 import '../../controller/vm_noticeController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../LiveCrew/v_liveCrewHome_firstUser.dart';
@@ -34,7 +36,7 @@ class _MoreTabState extends State<MoreTab> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
-
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -550,7 +552,7 @@ class _MoreTabState extends State<MoreTab> {
                                             final alarmDocs = snapshot.data!.docs;
                                             return new Icon(Icons.brightness_1,
                                                 size: 7.0,
-                                                color: (alarmDocs[0]['newInvited'] == true)
+                                                color: (alarmDocs[0]['newInvited_friend'] == true)
                                                     ? Color(0xFFD32F2F)
                                                     : Colors.white);
                                           }
@@ -581,18 +583,62 @@ class _MoreTabState extends State<MoreTab> {
                     Column(
                       children: [
                         GestureDetector(
-                          onTap: (){
+                          onTap: () async{
+                            CustomFullScreenDialog.showDialog();
                             if(_userModelController.liveCrew!.isEmpty){
+                              CustomFullScreenDialog.cancelDialog();
                               Get.to(()=>LiveCrewHome_firstUser());
                             }
                             else{
-                            Get.to(()=>LiveCrewHome());
+                              await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                              await _liveCrewModelController.deleteInvitationAlarm_crew(leaderUid: _userModelController.uid);
+                              CustomFullScreenDialog.cancelDialog();
+                              Get.to(()=>LiveCrewHome());
                             }
                           },
                           child: Column(
                             children: [
-                              Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 40),
-                              SizedBox(height: 2,),
+                              Stack(
+                                children: [
+                                  Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 40,),
+                                  Positioned(
+                                    // draw a red marble
+                                      top: 2,
+                                      right: 0.0,
+                                      child:
+                                      StreamBuilder(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('newAlarm')
+                                            .where('uid', isEqualTo: _userModelController.uid!)
+                                            .snapshots(),
+                                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                          if (!snapshot.hasData || snapshot.data == null) {
+                                            return new Icon(Icons.brightness_1,
+                                                size: 7.0,
+                                                color: Colors.white);
+                                          }
+                                          else if (snapshot.data!.docs.isNotEmpty) {
+                                            final alarmDocs = snapshot.data!.docs;
+                                            return new Icon(Icons.brightness_1,
+                                                size: 7.0,
+                                                color: (alarmDocs[0]['newInvited_crew'] == true)
+                                                    ? Color(0xFFD32F2F)
+                                                    : Colors.white);
+                                          }
+                                          else if (snapshot.connectionState == ConnectionState.waiting) {
+                                            return new Icon(Icons.brightness_1,
+                                                size: 7.0,
+                                                color: Colors.white);
+                                          }
+                                          return new Icon(Icons.brightness_1,
+                                              size: 7.0,
+                                              color: Colors.white);
+                                        },
+                                      )
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 2),
                               Text('라이브크루',style: TextStyle(
                                   fontSize: 14,
                                   color: Color(0xFF555555)

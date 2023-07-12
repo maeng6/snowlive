@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/model/m_commentModel.dart';
 import 'package:snowlive3/model/m_fleaMarketModel.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class FleaModelController extends GetxController {
   final ref = FirebaseFirestore.instance;
@@ -20,6 +22,7 @@ class FleaModelController extends GetxController {
   RxString? _location = ''.obs;
   RxString? _method = ''.obs;
   RxString? _description = ''.obs;
+  RxString? _kakaoUrl = ''.obs;
   RxInt? _fleaCount = 0.obs;
   RxString? _resortNickname = ''.obs;
   RxBool? _soldOut = false.obs;
@@ -47,6 +50,8 @@ class FleaModelController extends GetxController {
 
   String? get description => _description!.value;
 
+  String? get kakaoUrl => _kakaoUrl!.value;
+
   int? get fleaCount => _fleaCount!.value;
 
   String? get resortNickname => _resortNickname!.value;
@@ -68,6 +73,7 @@ class FleaModelController extends GetxController {
     this._location!.value = fleaModel.location!;
     this._method!.value = fleaModel.method!;
     this._description!.value = fleaModel.description!;
+    this._kakaoUrl!.value = fleaModel.kakaoUrl!;
     this._fleaCount!.value = fleaModel.fleaCount!;
     this._resortNickname!.value = fleaModel.resortNickname!;
     this._soldOut!.value = fleaModel.soldOut!;
@@ -119,7 +125,9 @@ class FleaModelController extends GetxController {
         required method,
         required description,
         required fleaCount,
-        required resortNickname}) async {
+        required resortNickname,
+        required kakaoUrl
+      }) async {
     await FleaModel().uploadFleaItem(
         displayName: displayName,
         uid: uid,
@@ -133,7 +141,9 @@ class FleaModelController extends GetxController {
         method: method,
         description: description,
         fleaCount: fleaCount,
-        resortNickname: resortNickname);
+        resortNickname: resortNickname,
+        kakaoUrl: kakaoUrl
+    );
   }
 
   Future<void> updateFleaItem(
@@ -149,6 +159,7 @@ class FleaModelController extends GetxController {
         required method,
         required description,
         required fleaCount,
+        required kakaoUrl,
         required resortNickname}) async {
     await FleaModel().updateFleaItem(
         displayName: displayName,
@@ -163,12 +174,62 @@ class FleaModelController extends GetxController {
         method: method,
         description: description,
         fleaCount: fleaCount,
-        resortNickname: resortNickname);
+        resortNickname: resortNickname,
+        kakaoUrl: kakaoUrl);
   }
 
   String getAgoTime(timestamp) {
     String time = CommentModel().getAgo(timestamp);
     return time;
+  }
+
+  void otherShare({required String contents}) async{
+    if(await canLaunchUrlString(contents) )
+      await launchUrlString(contents);
+    else  Get.dialog(AlertDialog(
+      contentPadding: EdgeInsets.only(
+          bottom: 0,
+          left: 20,
+          right: 20,
+          top: 30),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+          borderRadius:
+          BorderRadius.circular(
+              10.0)),
+      buttonPadding:
+      EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 0),
+      content: Text(
+        '오픈채팅 주소가 올바르지않습니다.',
+        style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 15),
+      ),
+      actions: [
+        Row(
+          children: [
+            TextButton(
+                onPressed: () async {
+                  Get.back();
+                },
+                child: Text(
+                  '확인',
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Color(
+                        0xff377EEA),
+                    fontWeight: FontWeight
+                        .bold,
+                  ),
+                )),
+          ],
+          mainAxisAlignment: MainAxisAlignment
+              .center,
+        )
+      ],
+    ));
   }
 
 
