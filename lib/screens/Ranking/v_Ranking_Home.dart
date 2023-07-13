@@ -6,6 +6,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/screens/Ranking/v_MyRanking_Detail_Screen.dart';
+import 'package:snowlive3/screens/Ranking/v_Ranking_Crew_Screen.dart';
 import 'package:snowlive3/screens/Ranking/v_Ranking_Indi_Screen.dart';
 import '../../controller/vm_userModelController.dart';
 
@@ -202,7 +203,7 @@ class _RankingHomeState extends State<RankingHome> {
             ),
             SizedBox(height: 20,),
             if (isTap[0] == true)
-              Expanded(child: Container()),
+              Expanded(child: RankingCrewScreen()),
             if (isTap[1] == true)
               Expanded(child: RankingIndiScreen()),
             // if (isTap[2] == true)

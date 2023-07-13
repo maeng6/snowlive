@@ -553,6 +553,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                           .collection('${_liveCrewModelController.baseResort}')
                                           .where('uid', whereIn: memberList)
                                           .orderBy('totalScore', descending: true)
+                                          .limit(3)
                                           .snapshots(),
                                       builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -569,92 +570,251 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                           } else {
                                             memberlength = 3;
                                           }
-                                          return Padding(
-                                            padding: EdgeInsets.only(left: 16),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(height: 10,),
-                                                Container(
-                                                  height: 120,
-                                                  child: ListView.builder(
-                                                    scrollDirection: Axis.horizontal,
-                                                    physics: NeverScrollableScrollPhysics(),
-                                                    itemCount: memberlength,
-                                                    itemBuilder: (BuildContext context, int index) {
-                                                      return StreamBuilder(
-                                                          stream: FirebaseFirestore.instance
-                                                              .collection('user')
-                                                              .where('uid', isEqualTo: memberScoreDocs[index]['uid'])
-                                                              .snapshots(),
-                                                          builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                                              return Center(
-                                                                child: CircularProgressIndicator(),
-                                                              );
-                                                            } else if (snapshot.hasError) {
-                                                              return Text('Error: ${snapshot.error}');
-                                                            } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                                                              final memberUserDocs = snapshot.data!.docs;
-                                                              return Container(
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets.only(left: 10, right: 10),
-                                                                  child: Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                                    children: [
-                                                                      (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
-                                                                          ? GestureDetector(
-                                                                        onTap: () {
-                                                                          Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
-                                                                        },
-                                                                        child: Container(
+                                          return Row(
+                                            children: [
+                                              if(memberlength>0)
+                                                Padding(
+                                                padding: EdgeInsets.only(left: 16),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(height: 10,),
+                                                    Container(
+                                                        height: 120,
+                                                        child:  StreamBuilder(
+                                                            stream: FirebaseFirestore.instance
+                                                                .collection('user')
+                                                                .where('uid', isEqualTo: memberScoreDocs[0]['uid'])
+                                                                .snapshots(),
+                                                            builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                return Center(
+                                                                  child: CircularProgressIndicator(),
+                                                                );
+                                                              } else if (snapshot.hasError) {
+                                                                return Text('Error: ${snapshot.error}');
+                                                              } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                                                final memberUserDocs = snapshot.data!.docs;
+                                                                return Container(
+                                                                  child: Padding(
+                                                                    padding: const EdgeInsets.only(left: 10, right: 10),
+                                                                    child: Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                                      children: [
+                                                                        (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                            ? GestureDetector(
+                                                                          onTap: () {
+                                                                            Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
+                                                                          },
+                                                                          child: Container(
+                                                                              width: 50,
+                                                                              height: 50,
+                                                                              child: ExtendedImage.network(
+                                                                                memberUserDocs[0]['profileImageUrl'],
+                                                                                enableMemoryCache: true,
+                                                                                shape: BoxShape.circle,
+                                                                                borderRadius: BorderRadius.circular(8),
+                                                                                width: 50,
+                                                                                height: 50,
+                                                                                fit: BoxFit.cover,
+                                                                              )),
+                                                                        )
+                                                                            : GestureDetector(
+                                                                          onTap: () {
+                                                                            Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
+                                                                          },
+                                                                          child: Container(
                                                                             width: 50,
                                                                             height: 50,
-                                                                            child: ExtendedImage.network(
-                                                                              memberUserDocs[0]['profileImageUrl'],
+                                                                            child: ExtendedImage.asset(
+                                                                              'assets/imgs/profile/img_profile_default_circle.png',
                                                                               enableMemoryCache: true,
                                                                               shape: BoxShape.circle,
                                                                               borderRadius: BorderRadius.circular(8),
                                                                               width: 50,
                                                                               height: 50,
                                                                               fit: BoxFit.cover,
-                                                                            )),
-                                                                      )
-                                                                          : GestureDetector(
-                                                                        onTap: () {
-                                                                          Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
-                                                                        },
-                                                                        child: Container(
-                                                                          width: 50,
-                                                                          height: 50,
-                                                                          child: ExtendedImage.asset(
-                                                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                                                            enableMemoryCache: true,
-                                                                            shape: BoxShape.circle,
-                                                                            borderRadius: BorderRadius.circular(8),
-                                                                            width: 50,
-                                                                            height: 50,
-                                                                            fit: BoxFit.cover,
+                                                                            ),
                                                                           ),
                                                                         ),
-                                                                      ),
-                                                                      Text('${memberUserDocs[0]['displayName']}'),
-                                                                      Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                      Text('점수 : ${memberScoreDocs[index]['totalScore']}'),
-                                                                    ],
+                                                                        Text('${memberUserDocs[0]['displayName']}'),
+                                                                        Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
+                                                                        Text('점수 : ${memberScoreDocs[0]['totalScore']}'),
+                                                                      ],
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                              );
+                                                                );
+                                                              }
+                                                              return Container();
                                                             }
-                                                            return Container();
-                                                          }
-                                                      );
-                                                    },
+                                                        )
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              if(memberlength>1)
+                                                Padding(
+                                                  padding: EdgeInsets.only(left: 16),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      SizedBox(height: 10,),
+                                                      Container(
+                                                          height: 120,
+                                                          child:  StreamBuilder(
+                                                              stream: FirebaseFirestore.instance
+                                                                  .collection('user')
+                                                                  .where('uid', isEqualTo: memberScoreDocs[1]['uid'])
+                                                                  .snapshots(),
+                                                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                  return Center(
+                                                                    child: CircularProgressIndicator(),
+                                                                  );
+                                                                } else if (snapshot.hasError) {
+                                                                  return Text('Error: ${snapshot.error}');
+                                                                } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                                                  final memberUserDocs = snapshot.data!.docs;
+                                                                  return Container(
+                                                                    child: Padding(
+                                                                      padding: const EdgeInsets.only(left: 10, right: 10),
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                                        children: [
+                                                                          (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                              ? GestureDetector(
+                                                                            onTap: () {
+                                                                              Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
+                                                                            },
+                                                                            child: Container(
+                                                                                width: 50,
+                                                                                height: 50,
+                                                                                child: ExtendedImage.network(
+                                                                                  memberUserDocs[0]['profileImageUrl'],
+                                                                                  enableMemoryCache: true,
+                                                                                  shape: BoxShape.circle,
+                                                                                  borderRadius: BorderRadius.circular(8),
+                                                                                  width: 50,
+                                                                                  height: 50,
+                                                                                  fit: BoxFit.cover,
+                                                                                )),
+                                                                          )
+                                                                              : GestureDetector(
+                                                                            onTap: () {
+                                                                              Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
+                                                                            },
+                                                                            child: Container(
+                                                                              width: 50,
+                                                                              height: 50,
+                                                                              child: ExtendedImage.asset(
+                                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                enableMemoryCache: true,
+                                                                                shape: BoxShape.circle,
+                                                                                borderRadius: BorderRadius.circular(8),
+                                                                                width: 50,
+                                                                                height: 50,
+                                                                                fit: BoxFit.cover,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          Text('${memberUserDocs[0]['displayName']}'),
+                                                                          Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
+                                                                          Text('점수 : ${memberScoreDocs[1]['totalScore']}'),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                }
+                                                                return Container();
+                                                              }
+                                                          )
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              ],
-                                            ),
+                                              if(memberlength>2)
+                                                Padding(
+                                                  padding: EdgeInsets.only(left: 16),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      SizedBox(height: 10,),
+                                                      Container(
+                                                          height: 120,
+                                                          child:  StreamBuilder(
+                                                              stream: FirebaseFirestore.instance
+                                                                  .collection('user')
+                                                                  .where('uid', isEqualTo: memberScoreDocs[2]['uid'])
+                                                                  .snapshots(),
+                                                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                  return Center(
+                                                                    child: CircularProgressIndicator(),
+                                                                  );
+                                                                } else if (snapshot.hasError) {
+                                                                  return Text('Error: ${snapshot.error}');
+                                                                } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                                                  final memberUserDocs = snapshot.data!.docs;
+                                                                  return Container(
+                                                                    child: Padding(
+                                                                      padding: const EdgeInsets.only(left: 10, right: 10),
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                                        children: [
+                                                                          (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                              ? GestureDetector(
+                                                                            onTap: () {
+                                                                              Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
+                                                                            },
+                                                                            child: Container(
+                                                                                width: 50,
+                                                                                height: 50,
+                                                                                child: ExtendedImage.network(
+                                                                                  memberUserDocs[0]['profileImageUrl'],
+                                                                                  enableMemoryCache: true,
+                                                                                  shape: BoxShape.circle,
+                                                                                  borderRadius: BorderRadius.circular(8),
+                                                                                  width: 50,
+                                                                                  height: 50,
+                                                                                  fit: BoxFit.cover,
+                                                                                )),
+                                                                          )
+                                                                              : GestureDetector(
+                                                                            onTap: () {
+                                                                              Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
+                                                                            },
+                                                                            child: Container(
+                                                                              width: 50,
+                                                                              height: 50,
+                                                                              child: ExtendedImage.asset(
+                                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                enableMemoryCache: true,
+                                                                                shape: BoxShape.circle,
+                                                                                borderRadius: BorderRadius.circular(8),
+                                                                                width: 50,
+                                                                                height: 50,
+                                                                                fit: BoxFit.cover,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          Text('${memberUserDocs[0]['displayName']}'),
+                                                                          Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
+                                                                          Text('점수 : ${memberScoreDocs[2]['totalScore']}'),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                }
+                                                                return Container();
+                                                              }
+                                                          )
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                            ],
                                           );
+
                                         } else {
                                           return Text('랭킹에 참여중인 크루원이 없습니다.');
                                         }
@@ -703,7 +863,51 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          Text('슬로프별 라이딩 통계 넣어야함')
+                          StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection('liveCrew')
+                                  .where('crewID', isEqualTo: _liveCrewModelController.crewID)
+                                  .snapshots(),
+                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                if (!snapshot.hasData || snapshot.data == null) {
+                                  return CircularProgressIndicator();
+                                }
+                                else if (snapshot.data!.docs.isNotEmpty) {
+                                  final crewDocs = snapshot.data!.docs;
+                                  Map<String, dynamic>? passCountData =
+                                  crewDocs[0]['passCountData'] as Map<String, dynamic>?;
+                                  if (passCountData == null || passCountData.isEmpty) {
+                                    return Text('슬로프 이용기록이 없습니다.');
+                                  }
+                                  else {
+                                    var sortedEntries = passCountData.entries.toList()
+                                      ..sort((a, b) => b.value.compareTo(a.value)); // descending order
+                                    sortedEntries = sortedEntries.take(5).toList(); // get top 5 entries
+                                    return Container(
+                                      height: 200,
+                                      child: Row(
+                                        children: sortedEntries.map((entry) {
+                                          String key = entry.key;
+                                          dynamic value = entry.value;
+                                          return Column(
+                                            children: [
+                                              Text('$value'),
+                                              Text('$key'),
+                                            ],
+                                          );
+                                        }).toList(),
+                                      ),
+                                    );
+                                  }
+                                }
+                                else if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return Center(child: CircularProgressIndicator());
+                                }
+                                else {
+                                  return Text('슬로프 이용기록이 없습니다.');
+                                }
+                              }
+                          ),
                         ],
                       ),
                     ),
