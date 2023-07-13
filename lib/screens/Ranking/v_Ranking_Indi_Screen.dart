@@ -99,71 +99,66 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               return Center();
                                             } else if (snapshot.data!.docs.isNotEmpty) {
                                               final userDoc = snapshot.data!.docs;
-                                              return Expanded(
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Color(0xFFCBE0FF),
-                                                    borderRadius: BorderRadius.circular(8),
-                                                  ),
-                                                  height: 154,
-                                                  width: 107,
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      (userDoc[0]['profileImageUrl'].isNotEmpty)
-                                                          ? GestureDetector(
-                                                        onTap: () {
-                                                          Get.to(() => ProfileImagePage(CommentProfileUrl: userDoc[0]['profileImageUrl']));
-                                                        },
-                                                        child: Container(
-                                                          width: 60,
-                                                          height: 60,
-                                                          child: ExtendedImage.network(
-                                                            userDoc[0]['profileImageUrl'],
-                                                            enableMemoryCache: true,
-                                                            shape: BoxShape.rectangle,
-                                                            borderRadius: BorderRadius.circular(10),
-                                                            width: 100,
-                                                            height: 100,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                      )
-                                                          : GestureDetector(
-                                                        onTap: () {
-                                                          Get.to(() => ProfileImagePage(CommentProfileUrl: ''));
-                                                        },
-                                                        child: ExtendedImage.asset(
-                                                          'assets/imgs/profile/img_profile_default_.png',
-                                                          enableMemoryCache: true,
-                                                          shape: BoxShape.rectangle,
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          width: 60,
-                                                          height: 60,
+                                              return GestureDetector(
+                                                onTap: (){
+                                                  Get.to(() => FriendDetailPage(uid: userDoc[0]['uid']));
+                                                },
+                                                child: Expanded(
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Color(0xFFCBE0FF),
+                                                      borderRadius: BorderRadius.circular(8),
+                                                    ),
+                                                    height: 154,
+                                                    width: 107,
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        (userDoc[0]['profileImageUrl'].isNotEmpty)
+                                                            ? Container(
+                                                              width: 60,
+                                                              height: 60,
+                                                              child: ExtendedImage.network(
+                                                                userDoc[0]['profileImageUrl'],
+                                                                enableMemoryCache: true,
+                                                                shape: BoxShape.rectangle,
+                                                                borderRadius: BorderRadius.circular(10),
+                                                                width: 100,
+                                                                height: 100,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            )
+                                                            : ExtendedImage.asset(
+                                                              'assets/imgs/profile/img_profile_default_.png',
+                                                              enableMemoryCache: true,
+                                                              shape: BoxShape.rectangle,
+                                                              borderRadius: BorderRadius.circular(10),
+                                                              width: 60,
+                                                              height: 60,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                        SizedBox(height: 10,),
+                                                        ExtendedImage.asset(
+                                                          'assets/imgs/icons/icon_crown_1.png',
+                                                          width: 28,
+                                                          height: 28,
                                                           fit: BoxFit.cover,
                                                         ),
-                                                      ),
-                                                      SizedBox(height: 10,),
-                                                      ExtendedImage.asset(
-                                                        'assets/imgs/icons/icon_crown_1.png',
-                                                        width: 28,
-                                                        height: 28,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                      Padding(
-                                                        padding: EdgeInsets.symmetric(horizontal: 16),
-                                                        child: Text(
-                                                          userDoc[0]['displayName'],
-                                                          style: TextStyle(
-                                                            color: Color(0xFF111111),
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: 12,
+                                                        Padding(
+                                                          padding: EdgeInsets.symmetric(horizontal: 16),
+                                                          child: Text(
+                                                            userDoc[0]['displayName'],
+                                                            style: TextStyle(
+                                                              color: Color(0xFF111111),
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 12,
+                                                            ),
+                                                            overflow: TextOverflow.ellipsis,
+                                                            maxLines: 1,
                                                           ),
-                                                          overflow: TextOverflow.ellipsis,
-                                                          maxLines: 1,
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               );
@@ -187,71 +182,66 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               return Center();
                                             } else if (snapshot.data!.docs.isNotEmpty) {
                                               final userDoc = snapshot.data!.docs;
-                                              return Expanded(
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Color(0xFFCBE0FF),
-                                                    borderRadius: BorderRadius.circular(8),
-                                                  ),
-                                                  height: 154,
-                                                  width: 107,
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      (userDoc[0]['profileImageUrl'].isNotEmpty)
-                                                          ? GestureDetector(
-                                                        onTap: () {
-                                                          Get.to(() => ProfileImagePage(CommentProfileUrl: userDoc[0]['profileImageUrl']));
-                                                        },
-                                                        child: Container(
-                                                          width: 60,
-                                                          height: 60,
-                                                          child: ExtendedImage.network(
-                                                            userDoc[0]['profileImageUrl'],
-                                                            enableMemoryCache: true,
-                                                            shape: BoxShape.rectangle,
-                                                            borderRadius: BorderRadius.circular(10),
-                                                            width: 100,
-                                                            height: 100,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                      )
-                                                          : GestureDetector(
-                                                        onTap: () {
-                                                          Get.to(() => ProfileImagePage(CommentProfileUrl: ''));
-                                                        },
-                                                        child: ExtendedImage.asset(
-                                                          'assets/imgs/profile/img_profile_default_.png',
-                                                          enableMemoryCache: true,
-                                                          shape: BoxShape.rectangle,
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          width: 60,
-                                                          height: 60,
+                                              return GestureDetector(
+                                                onTap: (){
+                                                  Get.to(() => FriendDetailPage(uid: userDoc[1]['uid']));
+                                                },
+                                                child: Expanded(
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Color(0xFFCBE0FF),
+                                                      borderRadius: BorderRadius.circular(8),
+                                                    ),
+                                                    height: 154,
+                                                    width: 107,
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        (userDoc[0]['profileImageUrl'].isNotEmpty)
+                                                            ? Container(
+                                                              width: 60,
+                                                              height: 60,
+                                                              child: ExtendedImage.network(
+                                                                userDoc[0]['profileImageUrl'],
+                                                                enableMemoryCache: true,
+                                                                shape: BoxShape.rectangle,
+                                                                borderRadius: BorderRadius.circular(10),
+                                                                width: 100,
+                                                                height: 100,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            )
+                                                            : ExtendedImage.asset(
+                                                              'assets/imgs/profile/img_profile_default_.png',
+                                                              enableMemoryCache: true,
+                                                              shape: BoxShape.rectangle,
+                                                              borderRadius: BorderRadius.circular(10),
+                                                              width: 60,
+                                                              height: 60,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                        SizedBox(height: 10,),
+                                                        ExtendedImage.asset(
+                                                          'assets/imgs/icons/icon_crown_2.png',
+                                                          width: 28,
+                                                          height: 28,
                                                           fit: BoxFit.cover,
                                                         ),
-                                                      ),
-                                                      SizedBox(height: 10,),
-                                                      ExtendedImage.asset(
-                                                        'assets/imgs/icons/icon_crown_2.png',
-                                                        width: 28,
-                                                        height: 28,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                      Padding(
-                                                        padding: EdgeInsets.symmetric(horizontal: 16),
-                                                        child: Text(
-                                                          userDoc[0]['displayName'],
-                                                          style: TextStyle(
-                                                            color: Color(0xFF111111),
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: 12,
+                                                        Padding(
+                                                          padding: EdgeInsets.symmetric(horizontal: 16),
+                                                          child: Text(
+                                                            userDoc[0]['displayName'],
+                                                            style: TextStyle(
+                                                              color: Color(0xFF111111),
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 12,
+                                                            ),
+                                                            overflow: TextOverflow.ellipsis,
+                                                            maxLines: 1,
                                                           ),
-                                                          overflow: TextOverflow.ellipsis,
-                                                          maxLines: 1,
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               );
@@ -275,71 +265,66 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               return Center();
                                             } else if (snapshot.data!.docs.isNotEmpty) {
                                               final userDoc = snapshot.data!.docs;
-                                              return Expanded(
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Color(0xFFCBE0FF),
-                                                    borderRadius: BorderRadius.circular(8),
-                                                  ),
-                                                  height: 154,
-                                                  width: 107,
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      (userDoc[0]['profileImageUrl'].isNotEmpty)
-                                                          ? GestureDetector(
-                                                        onTap: () {
-                                                          Get.to(() => ProfileImagePage(CommentProfileUrl: userDoc[0]['profileImageUrl']));
-                                                        },
-                                                        child: Container(
-                                                          width: 60,
-                                                          height: 60,
-                                                          child: ExtendedImage.network(
-                                                            userDoc[0]['profileImageUrl'],
-                                                            enableMemoryCache: true,
-                                                            shape: BoxShape.rectangle,
-                                                            borderRadius: BorderRadius.circular(10),
-                                                            width: 100,
-                                                            height: 100,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                      )
-                                                          : GestureDetector(
-                                                        onTap: () {
-                                                          Get.to(() => ProfileImagePage(CommentProfileUrl: ''));
-                                                        },
-                                                        child: ExtendedImage.asset(
-                                                          'assets/imgs/profile/img_profile_default_.png',
-                                                          enableMemoryCache: true,
-                                                          shape: BoxShape.rectangle,
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          width: 60,
-                                                          height: 60,
+                                              return GestureDetector(
+                                                onTap: (){
+                                                  Get.to(() => FriendDetailPage(uid: userDoc[2]['uid']));
+                                                },
+                                                child: Expanded(
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Color(0xFFCBE0FF),
+                                                      borderRadius: BorderRadius.circular(8),
+                                                    ),
+                                                    height: 154,
+                                                    width: 107,
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        (userDoc[0]['profileImageUrl'].isNotEmpty)
+                                                            ? Container(
+                                                              width: 60,
+                                                              height: 60,
+                                                              child: ExtendedImage.network(
+                                                                userDoc[0]['profileImageUrl'],
+                                                                enableMemoryCache: true,
+                                                                shape: BoxShape.rectangle,
+                                                                borderRadius: BorderRadius.circular(10),
+                                                                width: 100,
+                                                                height: 100,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            )
+                                                            : ExtendedImage.asset(
+                                                              'assets/imgs/profile/img_profile_default_.png',
+                                                              enableMemoryCache: true,
+                                                              shape: BoxShape.rectangle,
+                                                              borderRadius: BorderRadius.circular(10),
+                                                              width: 60,
+                                                              height: 60,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                        SizedBox(height: 10,),
+                                                        ExtendedImage.asset(
+                                                          'assets/imgs/icons/icon_crown_3.png',
+                                                          width: 28,
+                                                          height: 28,
                                                           fit: BoxFit.cover,
                                                         ),
-                                                      ),
-                                                      SizedBox(height: 10,),
-                                                      ExtendedImage.asset(
-                                                        'assets/imgs/icons/icon_crown_3.png',
-                                                        width: 28,
-                                                        height: 28,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                      Padding(
-                                                        padding: EdgeInsets.symmetric(horizontal: 16),
-                                                        child: Text(
-                                                          userDoc[0]['displayName'],
-                                                          style: TextStyle(
-                                                            color: Color(0xFF111111),
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: 12,
+                                                        Padding(
+                                                          padding: EdgeInsets.symmetric(horizontal: 16),
+                                                          child: Text(
+                                                            userDoc[0]['displayName'],
+                                                            style: TextStyle(
+                                                              color: Color(0xFF111111),
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 12,
+                                                            ),
+                                                            overflow: TextOverflow.ellipsis,
+                                                            maxLines: 1,
                                                           ),
-                                                          overflow: TextOverflow.ellipsis,
-                                                          maxLines: 1,
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               );
