@@ -938,209 +938,203 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                       return  Row(
                         children: [
                           if(crewDocs.length > 0)
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Color(crewDocs[0]['crewColor']),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            height: 154,
-                            width: 107,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                (crewDocs[0]['profileImageUrl'].isNotEmpty)
-                                    ? GestureDetector(
-                                  onTap: () {
-                                    Get.to(() => ProfileImagePage(
-                                        CommentProfileUrl: crewDocs[0]['profileImageUrl']));
-                                  },
-                                  child: Container(
-                                      width: 60,
-                                      height: 60,
-                                      child: ExtendedImage.network(
-                                        crewDocs[0]['profileImageUrl'],
-                                        enableMemoryCache: true,
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(10),
-                                        width: 100,
-                                        height: 100,
-                                        fit: BoxFit.cover,
-                                      )),
-                                )
-                                    : GestureDetector(
-                                  onTap: () {
-                                    Get.to(() => ProfileImagePage(
-                                        CommentProfileUrl: ''));
-                                  },
-                                  child: ExtendedImage.asset(
-                                    'assets/imgs/profile/img_profile_default_.png',
-                                    enableMemoryCache: true,
-                                    shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(10),
-                                    width: 60,
-                                    height: 60,
-                                    fit: BoxFit.cover,
-                                  ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap:() async{
+                                CustomFullScreenDialog.showDialog();
+                                await _liveCrewModelController.getCurrnetCrew(crewDocs[0]['crewID']);
+                                CustomFullScreenDialog.cancelDialog();
+                                Get.to(()=>CrewDetailPage_screen());
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color(crewDocs[0]['crewColor']),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                SizedBox(height: 10,),
-                                ExtendedImage.asset(
-                                  'assets/imgs/icons/icon_crown_1.png',
-                                  enableMemoryCache: true,
-                                  width: 28,
-                                  height: 28,
-                                  fit: BoxFit.cover,
+                                height: 154,
+                                width: 107,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    (crewDocs[0]['profileImageUrl'].isNotEmpty)
+                                        ? Container(
+                                            width: 60,
+                                            height: 60,
+                                            child: ExtendedImage.network(
+                                              crewDocs[0]['profileImageUrl'],
+                                              enableMemoryCache: true,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(10),
+                                              width: 100,
+                                              height: 100,
+                                              fit: BoxFit.cover,
+                                            ))
+                                        : ExtendedImage.asset(
+                                          'assets/imgs/profile/img_profile_default_.png',
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: BorderRadius.circular(10),
+                                          width: 60,
+                                          height: 60,
+                                          fit: BoxFit.cover,
+                                        ),
+                                    SizedBox(height: 10,),
+                                    ExtendedImage.asset(
+                                      'assets/imgs/icons/icon_crown_1.png',
+                                      enableMemoryCache: true,
+                                      width: 28,
+                                      height: 28,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 16),
+                                      child: Text(crewDocs[0]['crewName'],
+                                      style: TextStyle(
+                                        color: Color(0xFFFFFFFF),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12
+                                      ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                  child: Text(crewDocs[0]['crewName'],
-                                  style: TextStyle(
-                                    color: Color(0xFFFFFFFF),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12
-                                  ),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                           SizedBox(width: 11,),
                           if(crewDocs.length > 1)
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Color(crewDocs[1]['crewColor']),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            height: 154,
-                            width: 107,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                (crewDocs[1]['profileImageUrl'].isNotEmpty)
-                                    ? GestureDetector(
-                                  onTap: () {
-                                    Get.to(() => ProfileImagePage(
-                                        CommentProfileUrl: crewDocs[1]['profileImageUrl']));
-                                  },
-                                  child: Container(
-                                      width: 60,
-                                      height: 60,
-                                      child: ExtendedImage.network(
-                                        crewDocs[1]['profileImageUrl'],
-                                        enableMemoryCache: true,
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(10),
-                                        width: 100,
-                                        height: 100,
-                                        fit: BoxFit.cover,
-                                      )),
-                                )
-                                    : GestureDetector(
-                                  onTap: () {
-                                    Get.to(() => ProfileImagePage(
-                                        CommentProfileUrl: ''));
-                                  },
-                                  child: ExtendedImage.asset(
-                                    'assets/imgs/profile/img_profile_default_.png',
-                                    enableMemoryCache: true,
-                                    shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(10),
-                                    width: 60,
-                                    height: 60,
-                                    fit: BoxFit.cover,
-                                  ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap:() async{
+                                CustomFullScreenDialog.showDialog();
+                                await _liveCrewModelController.getCurrnetCrew(crewDocs[1]['crewID']);
+                                CustomFullScreenDialog.cancelDialog();
+                                Get.to(()=>CrewDetailPage_screen());
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color(crewDocs[1]['crewColor']),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                SizedBox(height: 10,),
-                                ExtendedImage.asset(
-                                  'assets/imgs/icons/icon_crown_2.png',
-                                  enableMemoryCache: true,
-                                  width: 28,
-                                  height: 28,
-                                  fit: BoxFit.cover,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                  child: Text(crewDocs[1]['crewName'],
-                                    style: TextStyle(
-                                        color: Color(0xFFFFFFFF),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12
+                                height: 154,
+                                width: 107,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    (crewDocs[1]['profileImageUrl'].isNotEmpty)
+                                        ? Container(
+                                            width: 60,
+                                            height: 60,
+                                            child: ExtendedImage.network(
+                                              crewDocs[1]['profileImageUrl'],
+                                              enableMemoryCache: true,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(10),
+                                              width: 100,
+                                              height: 100,
+                                              fit: BoxFit.cover,
+                                            ))
+                                        : ExtendedImage.asset(
+                                          'assets/imgs/profile/img_profile_default_.png',
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: BorderRadius.circular(10),
+                                          width: 60,
+                                          height: 60,
+                                          fit: BoxFit.cover,
+                                        ),
+                                    SizedBox(height: 10,),
+                                    ExtendedImage.asset(
+                                      'assets/imgs/icons/icon_crown_2.png',
+                                      enableMemoryCache: true,
+                                      width: 28,
+                                      height: 28,
+                                      fit: BoxFit.cover,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 16),
+                                      child: Text(crewDocs[1]['crewName'],
+                                        style: TextStyle(
+                                            color: Color(0xFFFFFFFF),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                           SizedBox(width: 11,),
                           if(crewDocs.length > 2)
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Color(crewDocs[2]['crewColor']),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            height: 154,
-                            width: 107,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                (crewDocs[2]['profileImageUrl'].isNotEmpty)
-                                    ? GestureDetector(
-                                  onTap: () {
-                                    Get.to(() => ProfileImagePage(
-                                        CommentProfileUrl: crewDocs[2]['profileImageUrl']));
-                                  },
-                                  child: Container(
-                                      width: 60,
-                                      height: 60,
-                                      child: ExtendedImage.network(
-                                        crewDocs[2]['profileImageUrl'],
-                                        enableMemoryCache: true,
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(10),
-                                        width: 100,
-                                        height: 100,
-                                        fit: BoxFit.cover,
-                                      )),
-                                )
-                                    : GestureDetector(
-                                  onTap: () {
-                                    Get.to(() => ProfileImagePage(
-                                        CommentProfileUrl: ''));
-                                  },
-                                  child: ExtendedImage.asset(
-                                    'assets/imgs/profile/img_profile_default_.png',
-                                    enableMemoryCache: true,
-                                    shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(10),
-                                    width: 60,
-                                    height: 60,
-                                    fit: BoxFit.cover,
-                                  ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap:() async{
+                                CustomFullScreenDialog.showDialog();
+                                await _liveCrewModelController.getCurrnetCrew(crewDocs[2]['crewID']);
+                                CustomFullScreenDialog.cancelDialog();
+                                Get.to(()=>CrewDetailPage_screen());
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color(crewDocs[2]['crewColor']),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                SizedBox(height: 10,),
-                                ExtendedImage.asset(
-                                  'assets/imgs/icons/icon_crown_3.png',
-                                  enableMemoryCache: true,
-                                  width: 28,
-                                  height: 28,
-                                  fit: BoxFit.cover,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                  child: Text(crewDocs[2]['crewName'],
-                                    style: TextStyle(
-                                        color: Color(0xFFFFFFFF),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12
+                                height: 154,
+                                width: 107,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    (crewDocs[2]['profileImageUrl'].isNotEmpty)
+                                        ? Container(
+                                            width: 60,
+                                            height: 60,
+                                            child: ExtendedImage.network(
+                                              crewDocs[2]['profileImageUrl'],
+                                              enableMemoryCache: true,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(10),
+                                              width: 100,
+                                              height: 100,
+                                              fit: BoxFit.cover,
+                                            ))
+                                        : ExtendedImage.asset(
+                                          'assets/imgs/profile/img_profile_default_.png',
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: BorderRadius.circular(10),
+                                          width: 60,
+                                          height: 60,
+                                          fit: BoxFit.cover,
+                                        ),
+                                    SizedBox(height: 10,),
+                                    ExtendedImage.asset(
+                                      'assets/imgs/icons/icon_crown_3.png',
+                                      enableMemoryCache: true,
+                                      width: 28,
+                                      height: 28,
+                                      fit: BoxFit.cover,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 16),
+                                      child: Text(crewDocs[2]['crewName'],
+                                        style: TextStyle(
+                                            color: Color(0xFFFFFFFF),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                         ],
