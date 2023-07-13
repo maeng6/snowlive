@@ -185,7 +185,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               return Expanded(
                                                 child: GestureDetector(
                                                   onTap: (){
-                                                    Get.to(() => FriendDetailPage(uid: userDoc[1]['uid']));
+                                                    Get.to(() => FriendDetailPage(uid: userDoc[0]['uid']));
                                                   },
                                                   child: Container(
                                                     decoration: BoxDecoration(
@@ -268,7 +268,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               return Expanded(
                                                 child: GestureDetector(
                                                   onTap: (){
-                                                    Get.to(() => FriendDetailPage(uid: userDoc[2]['uid']));
+                                                    Get.to(() => FriendDetailPage(uid: userDoc[0]['uid']));
                                                   },
                                                   child: Container(
                                                     decoration: BoxDecoration(
