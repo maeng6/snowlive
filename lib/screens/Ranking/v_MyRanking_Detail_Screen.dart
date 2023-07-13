@@ -278,6 +278,9 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                     // Calculate the height ratio based on the score for each slope
                                     double barHeightRatio = scoreForSlope.toDouble() / maxScore.toDouble();
 
+                                    // Determine the color of the bar based on whether this pass count is the maximum
+                                    Color barColor = scoreForSlope == maxScore ? Color(0xFFC3DBFF) : Color(0xFF093372);  // use your desired colors
+
                                     return Container(
                                       margin: EdgeInsets.symmetric(horizontal: 5),
                                       width: 50,
@@ -301,7 +304,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                               width: 20,
                                               height: 95 * barHeightRatio,
                                               decoration: BoxDecoration(
-                                                  color: Color(0xFF093372),
+                                                  color: barColor,
                                                   borderRadius: BorderRadius.only(
                                                       topRight: Radius.circular(3),
                                                       topLeft: Radius.circular(3)
@@ -323,6 +326,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                               ),
                             ),
                           ),
+
                         ],
                       ),
                     ),
