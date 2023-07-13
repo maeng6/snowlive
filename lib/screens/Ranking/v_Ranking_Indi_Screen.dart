@@ -99,11 +99,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               return Center();
                                             } else if (snapshot.data!.docs.isNotEmpty) {
                                               final userDoc = snapshot.data!.docs;
-                                              return GestureDetector(
-                                                onTap: (){
-                                                  Get.to(() => FriendDetailPage(uid: userDoc[0]['uid']));
-                                                },
-                                                child: Expanded(
+                                              return Expanded(
+                                                child: GestureDetector(
+                                                  onTap: (){
+                                                    Get.to(() => FriendDetailPage(uid: userDoc[0]['uid']));
+                                                  },
                                                   child: Container(
                                                     decoration: BoxDecoration(
                                                       color: Color(0xFFCBE0FF),
@@ -182,11 +182,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               return Center();
                                             } else if (snapshot.data!.docs.isNotEmpty) {
                                               final userDoc = snapshot.data!.docs;
-                                              return GestureDetector(
-                                                onTap: (){
-                                                  Get.to(() => FriendDetailPage(uid: userDoc[1]['uid']));
-                                                },
-                                                child: Expanded(
+                                              return Expanded(
+                                                child: GestureDetector(
+                                                  onTap: (){
+                                                    Get.to(() => FriendDetailPage(uid: userDoc[1]['uid']));
+                                                  },
                                                   child: Container(
                                                     decoration: BoxDecoration(
                                                       color: Color(0xFFCBE0FF),
@@ -265,11 +265,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               return Center();
                                             } else if (snapshot.data!.docs.isNotEmpty) {
                                               final userDoc = snapshot.data!.docs;
-                                              return GestureDetector(
-                                                onTap: (){
-                                                  Get.to(() => FriendDetailPage(uid: userDoc[2]['uid']));
-                                                },
-                                                child: Expanded(
+                                              return Expanded(
+                                                child: GestureDetector(
+                                                  onTap: (){
+                                                    Get.to(() => FriendDetailPage(uid: userDoc[2]['uid']));
+                                                  },
                                                   child: Container(
                                                     decoration: BoxDecoration(
                                                       color: Color(0xFFCBE0FF),
