@@ -121,8 +121,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                               child: ExtendedImage.network(
                                                                 userDoc[0]['profileImageUrl'],
                                                                 enableMemoryCache: true,
-                                                                shape: BoxShape.rectangle,
-                                                                borderRadius: BorderRadius.circular(10),
+                                                                shape: BoxShape.circle,
                                                                 width: 100,
                                                                 height: 100,
                                                                 fit: BoxFit.cover,
@@ -131,8 +130,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                             : ExtendedImage.asset(
                                                               'assets/imgs/profile/img_profile_default_.png',
                                                               enableMemoryCache: true,
-                                                              shape: BoxShape.rectangle,
-                                                              borderRadius: BorderRadius.circular(10),
+                                                              shape: BoxShape.circle,
                                                               width: 60,
                                                               height: 60,
                                                               fit: BoxFit.cover,
@@ -204,8 +202,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                               child: ExtendedImage.network(
                                                                 userDoc[0]['profileImageUrl'],
                                                                 enableMemoryCache: true,
-                                                                shape: BoxShape.rectangle,
-                                                                borderRadius: BorderRadius.circular(10),
+                                                                shape: BoxShape.circle,
                                                                 width: 100,
                                                                 height: 100,
                                                                 fit: BoxFit.cover,
@@ -214,8 +211,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                             : ExtendedImage.asset(
                                                               'assets/imgs/profile/img_profile_default_.png',
                                                               enableMemoryCache: true,
-                                                              shape: BoxShape.rectangle,
-                                                              borderRadius: BorderRadius.circular(10),
+                                                              shape: BoxShape.circle,
                                                               width: 60,
                                                               height: 60,
                                                               fit: BoxFit.cover,
@@ -287,8 +283,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                               child: ExtendedImage.network(
                                                                 userDoc[0]['profileImageUrl'],
                                                                 enableMemoryCache: true,
-                                                                shape: BoxShape.rectangle,
-                                                                borderRadius: BorderRadius.circular(10),
+                                                                shape: BoxShape.circle,
                                                                 width: 100,
                                                                 height: 100,
                                                                 fit: BoxFit.cover,
@@ -297,8 +292,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                             : ExtendedImage.asset(
                                                               'assets/imgs/profile/img_profile_default_.png',
                                                               enableMemoryCache: true,
-                                                              shape: BoxShape.rectangle,
-                                                              borderRadius: BorderRadius.circular(10),
+                                                              shape: BoxShape.circle,
                                                               width: 60,
                                                               height: 60,
                                                               fit: BoxFit.cover,

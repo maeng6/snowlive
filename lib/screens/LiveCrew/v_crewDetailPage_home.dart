@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +10,8 @@ import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
-import 'package:snowlive3/screens/v_webPage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import '../../../controller/vm_userModelController.dart';
-import '../../controller/vm_timeStampController.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
 class CrewDetailPage_home extends StatefulWidget {
@@ -27,7 +26,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
   //TODO: Dependency Injection**************************************************
   SeasonController _seasonController = Get.find<SeasonController>();
   UserModelController _userModelController = Get.find<UserModelController>();
-  TimeStampController _timeStampController = Get.find<TimeStampController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
@@ -36,7 +34,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
   Widget build(BuildContext context) {
 
     final Size _size = MediaQuery.of(context).size;
-    final double _statusBarSize = MediaQuery.of(context).padding.top;
 
     return GestureDetector(
       onTap: (){
@@ -878,24 +875,86 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                   crewDocs[0]['passCountData'] as Map<String, dynamic>?;
                                   if (passCountData == null || passCountData.isEmpty) {
                                     return Text('슬로프 이용기록이 없습니다.');
-                                  }
-                                  else {
-                                    var sortedEntries = passCountData.entries.toList()
-                                      ..sort((a, b) => b.value.compareTo(a.value)); // descending order
-                                    sortedEntries = sortedEntries.take(5).toList(); // get top 5 entries
+                                  } else {
+
+                                    int maxPassCount = 0;
+
+                                    if (passCountData.isNotEmpty) {
+                                      maxPassCount = passCountData.values.reduce((value, element) => value > element ? value : element);
+                                    }
+
                                     return Container(
                                       height: 200,
-                                      child: Row(
-                                        children: sortedEntries.map((entry) {
-                                          String key = entry.key;
-                                          dynamic value = entry.value;
-                                          return Column(
-                                            children: [
-                                              Text('$value'),
-                                              Text('$key'),
-                                            ],
-                                          );
-                                        }).toList(),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              child:
+                                              passCountData.entries.isEmpty
+                                                  ? Center(child: Text('데이터가 없습니다'))
+                                                  : ListView(
+                                                scrollDirection: Axis.horizontal,
+                                                children: (passCountData.entries.toList()
+                                                  ..sort((a, b) {
+                                                    return b.value.compareTo(a.value);
+                                                  })).getRange(0, min(5, passCountData.entries.length)).map((entry) {
+
+                                                  String slopeName = entry.key;
+                                                  int passCount = entry.value ?? 0;
+
+                                                  // Calculate the height ratio based on the pass count for each slope
+                                                  double barHeightRatio = passCount.toDouble() / maxPassCount.toDouble();
+
+                                                  // Determine the color of the bar based on whether this pass count is the maximum
+                                                  Color barColor = passCount == maxPassCount ? Color(0xFF05419A) : Color(0xFF3D83ED);  // use your desired colors
+
+                                                  return Container(
+                                                    margin: EdgeInsets.symmetric(horizontal: 5),
+                                                    width: 50,
+                                                    height: 95,
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+                                                        Text(
+                                                          '$passCount',
+                                                          style: TextStyle(
+                                                              fontSize: 11,
+                                                              color: Color(0xFF111111),
+                                                              fontWeight: FontWeight.bold
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Container(
+                                                          width: 50,
+                                                          height: 95 * barHeightRatio,
+                                                          child: Container(
+                                                            width: 20,
+                                                            height: 95 * barHeightRatio,
+                                                            decoration: BoxDecoration(
+                                                                color: barColor,
+                                                                borderRadius: BorderRadius.only(
+                                                                    topRight: Radius.circular(3),
+                                                                    topLeft: Radius.circular(3)
+                                                                )
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Text(
+                                                          slopeName,
+                                                          style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
+                                                        ),
+                                                        SizedBox(height: 20,)
+                                                      ],
+                                                    ),
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            ),
+                                          ),
+
+                                        ],
                                       ),
                                     );
                                   }
