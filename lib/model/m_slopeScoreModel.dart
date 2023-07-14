@@ -5,9 +5,11 @@ class SlopeScoresModel {
 }
 
 final slopeScoresModel = SlopeScoresModel({
-  '휘닉스평창 1': 10,
-  '휘닉스평창 2': 20,
-  '휘닉스평창 3': 30,
-  '곤지암리조트 1': 10,
+  '휘1': 10,
+  '휘2': 20,
+  '휘3': 30,
+  '휘4': 40,
+  '휘5': 50,
+  '휘6': 20
   // Add more slopes and scores here
 });

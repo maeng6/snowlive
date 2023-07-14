@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_liveMapController.dart';
-import 'package:snowlive3/screens/Ranking/v_RankingScreen.dart';
+import 'package:snowlive3/screens/Ranking/v_Ranking_Home.dart';
+import 'package:snowlive3/screens/Ranking/v_MyRanking_Detail_Screen.dart';
 import 'package:snowlive3/screens/comments/v_liveTalk_Screen.dart';
 import 'package:snowlive3/screens/resort/v_resortHome.dart';
 import '../controller/vm_noticeController.dart';
@@ -226,7 +227,7 @@ class _MainHomeState extends State<MainHome> {
             ResortHome(),
             FleaMarketScreen(),
             if(_userModelController.favoriteResort == 12)
-            RankingScreen(),
+            RankingHome(),
             LiveTalkScreen(),
             MoreTab(),
           ],
