@@ -103,7 +103,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   color: Color(crewDocs[0]['crewColor']),
                                                   borderRadius: BorderRadius.circular(8),
                                                 ),
-                                                height: 154,
+                                                height: 144,
                                                 width: 107,
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -153,11 +153,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                             fit: BoxFit.cover,
                                                           ),
                                                         ),
-                                                    SizedBox(height: 10,),
+                                                    SizedBox(height: 6,),
                                                     ExtendedImage.asset(
                                                       'assets/imgs/icons/icon_crown_1.png',
-                                                      width: 28,
-                                                      height: 28,
+                                                      width: 34,
+                                                      height: 34,
                                                       fit: BoxFit.cover,
                                                     ),
                                                     Padding(
@@ -167,7 +167,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                         style: TextStyle(
                                                           color: Color(0xFFFFFFFF),
                                                           fontWeight: FontWeight.bold,
-                                                          fontSize: 12,
+                                                          fontSize: 14,
                                                         ),
                                                         overflow: TextOverflow.ellipsis,
                                                         maxLines: 1,
@@ -193,7 +193,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   color: Color(crewDocs[1]['crewColor']),
                                                   borderRadius: BorderRadius.circular(8),
                                                 ),
-                                                height: 154,
+                                                height: 144,
                                                 width: 107,
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -243,11 +243,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                             fit: BoxFit.cover,
                                                           ),
                                                         ),
-                                                    SizedBox(height: 10,),
+                                                    SizedBox(height: 6,),
                                                     ExtendedImage.asset(
                                                       'assets/imgs/icons/icon_crown_2.png',
-                                                      width: 28,
-                                                      height: 28,
+                                                      width: 34,
+                                                      height: 34,
                                                       fit: BoxFit.cover,
                                                     ),
                                                     Padding(
@@ -257,7 +257,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                         style: TextStyle(
                                                           color: Color(0xFFFFFFFF),
                                                           fontWeight: FontWeight.bold,
-                                                          fontSize: 12,
+                                                          fontSize: 14,
                                                         ),
                                                         overflow: TextOverflow.ellipsis,
                                                         maxLines: 1,
@@ -283,7 +283,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   color: Color(crewDocs[2]['crewColor']),
                                                   borderRadius: BorderRadius.circular(8),
                                                 ),
-                                                height: 154,
+                                                height: 144,
                                                 width: 107,
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -333,11 +333,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                             fit: BoxFit.cover,
                                                           ),
                                                         ),
-                                                    SizedBox(height: 10,),
+                                                    SizedBox(height: 6,),
                                                     ExtendedImage.asset(
                                                       'assets/imgs/icons/icon_crown_3.png',
-                                                      width: 28,
-                                                      height: 28,
+                                                      width: 34,
+                                                      height: 34,
                                                       fit: BoxFit.cover,
                                                     ),
                                                     Padding(
@@ -347,7 +347,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                         style: TextStyle(
                                                           color: Color(0xFFFFFFFF),
                                                           fontWeight: FontWeight.bold,
-                                                          fontSize: 12,
+                                                          fontSize: 14,
                                                         ),
                                                         overflow: TextOverflow.ellipsis,
                                                         maxLines: 1,
