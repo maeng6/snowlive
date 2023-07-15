@@ -31,8 +31,9 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
-    _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
-
+    if(_userModelController.liveCrew != '' && _userModelController.liveCrew != null) {
+      _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
+    }else{}
     return Container(
       color: Colors.white,
       child: SafeArea(
