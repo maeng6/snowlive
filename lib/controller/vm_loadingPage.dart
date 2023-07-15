@@ -7,6 +7,7 @@ import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/controller/vm_loginController.dart';
 import 'package:snowlive3/controller/vm_mainHomeController.dart';
 import 'package:snowlive3/controller/vm_noticeController.dart';
+import 'package:snowlive3/controller/vm_rankingTierModelController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_timeStampController.dart';
@@ -35,6 +36,7 @@ class _LoadingPageState extends State<LoadingPage> {
     Get.put(MainHomeController(), permanent: true);
     Get.put(LiveCrewModelController(), permanent: true);
     Get.put(SeasonController(), permanent: true);
+    Get.put(RankingTierModelController(), permanent: true);
 
 
     LoginController _logInController = Get.put(LoginController());

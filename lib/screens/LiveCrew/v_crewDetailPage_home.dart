@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
@@ -974,6 +975,148 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
 
                 ),
               ),
+              SizedBox(height: 15,),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: Container(
+                  width: _size.width,
+                  decoration: BoxDecoration(
+                      color: Color(0xFFFFFFFF),
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5), // 그림자의 색상
+                          blurRadius: 2, // 그림자의 흐릿한 정도
+                          offset: Offset(1, 0), // 그림자의 위치
+                        ),
+                      ]
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
+                    child: Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '시간대별 라이딩 횟수',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Color(0xFF111111),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection('liveCrew')
+                                  .where('crewID', isEqualTo: _liveCrewModelController.crewID)
+                                  .snapshots(),
+                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+
+                                if (snapshot.hasError) {
+                                  return Text("오류가 발생했습니다");
+                                }
+
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return Lottie.asset('assets/json/loadings_wht_final.json');
+                                }
+
+                                Map<String, dynamic>? data = snapshot.data?.docs.first.data();
+
+                                Map<String, dynamic>? passCountTimeData =
+                                data?['passCountTimeData'] as Map<String, dynamic>?;
+
+                                int maxPassCount = 0;
+
+                                if (passCountTimeData != null && passCountTimeData.isNotEmpty) {
+                                  maxPassCount = passCountTimeData.values.reduce((value, element) => value > element ? value : element);
+                                }
+
+                                return Container(
+                                  height: 200,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          child:
+                                          passCountTimeData?.entries.isEmpty ?? true ?
+                                          Center(child: Text('데이터가 없습니다'))
+                                              : ListView(
+                                            scrollDirection: Axis.horizontal,
+                                            children: (passCountTimeData!.entries.toList()
+                                              ..sort((a, b) {
+                                                return int.parse(a.key).compareTo(int.parse(b.key));
+                                              }))
+                                                .getRange(0, min(8, passCountTimeData.entries.length)).map((entry) {
+
+                                              String slopeName = entry.key;
+                                              int passCount = entry.value ?? 0;
+
+                                              // Calculate the height ratio based on the pass count for each slope
+                                              double barHeightRatio = passCount.toDouble() / maxPassCount.toDouble();
+
+                                              // Determine the color of the bar based on whether this pass count is the maximum
+                                              Color barColor = passCount == maxPassCount ? Color(0xFF05419A) : Color(0xFF3D83ED);  // use your desired colors
+
+                                              return Container(
+                                                margin: EdgeInsets.symmetric(horizontal: 5),
+                                                width: 29,
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: [
+                                                    Text(
+                                                      '$passCount',
+                                                      style: TextStyle(
+                                                          fontSize: 11,
+                                                          color: Color(0xFF111111),
+                                                          fontWeight: FontWeight.bold
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 10),
+                                                    passCount > 0 ? Expanded(
+                                                      child: Container(
+                                                        width: 30,
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                              color: barColor,
+                                                              borderRadius: BorderRadius.only(
+                                                                  topRight: Radius.circular(3),
+                                                                  topLeft: Radius.circular(3)
+                                                              )
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ) : Container(), // Empty container for zero data
+                                                    SizedBox(height: 10),
+                                                    Text(
+                                                      _resortModelController.getSlotName(slopeName),
+                                                      style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
+                                                    ),
+                                                    SizedBox(height: 20,)
+                                                  ],
+                                                ),
+                                              );
+
+
+                                            }).toList(),
+                                          ),
+                                        ),
+                                      ),
+
+                                    ],
+                                  ),
+                                );
+                              }
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                ),
+              ),
+
               SizedBox(height: 15,),
               Container(
                 width: _size.width,

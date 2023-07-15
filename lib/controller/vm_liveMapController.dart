@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:snowlive3/controller/vm_rankingTierModelController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
@@ -20,6 +21,7 @@ class LiveMapController extends GetxController {
   SeasonController _seasonController = Get.find<SeasonController>();
   UserModelController _userModelController = Get.find<UserModelController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
+  RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
   //TODO: Dependency Injection********************************************
 
   RxList<Marker> _markers = RxList<Marker>();
@@ -27,6 +29,7 @@ class LiveMapController extends GetxController {
   List<Marker> get markers => _markers.toList();
 
   int passCount = 0;
+  int? myRank;
   DateTime? lastPassTime;
   Map<String, bool> _isTapped = {};
 
@@ -34,10 +37,7 @@ class LiveMapController extends GetxController {
     _isTapped = {};
   }
 
-
-
   StreamSubscription<Position>? _positionStreamSubscription;
-
 
   // Future<void> updateFirebaseWithLocation(Position position) async {
   //   double latitude = position.latitude;
@@ -324,6 +324,7 @@ class LiveMapController extends GetxController {
                 },
                 'slopeScores': {},
                 'totalScore': 0,
+                'tier':0
               });
 
               // Re-fetch the document after creating it
@@ -379,6 +380,8 @@ class LiveMapController extends GetxController {
                   // Update crew data with slope name and score
                   await updateCrewData(slopeName, slopeScore, timeSlot);
                 }
+
+                await _rankingTierModelController.updateTier();
 
                 // Reset slopeStatus for all slopes
                 for (String slopeName in slopeStatus.keys) {
@@ -530,18 +533,15 @@ class LiveMapController extends GetxController {
     }
   }
 
-
   Future<void> stopBackgroundLocationService() async {
     await bg.BackgroundGeolocation.stop();
     bg.BackgroundGeolocation.removeListeners();
   }
 
-
   Future<bool> checkLiveStatus() async {
     await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
     return _userModelController.isOnLive!;
   }
-
 
   Future<bool> _updateBoundaryStatus(Position position) async {
     LatLng currentLatLng = LatLng(position.latitude, position.longitude);
@@ -589,9 +589,6 @@ class LiveMapController extends GetxController {
 
     return distanceInMeters <= 5000;
   }
-
-
-
 
 // Future<BitmapDescriptor> createCustomMarkerBitmap(String title, bool _isTapped) async {
 //   const int maxCharacters = 6; // Maximum number of characters allowed
