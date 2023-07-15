@@ -363,6 +363,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                     Padding(
                       padding: const EdgeInsets.only(left: 16, right: 16),
                       child: Container(
+                        height: 72,
                         width: _size.width,
                         decoration: BoxDecoration(
                             color: Color(0xFFFFFFFF),
@@ -376,9 +377,10 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                             ]
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
+                          padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
                           child: Container(
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(

@@ -69,22 +69,25 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                           }
 
                           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                            return Column(
-                              children: [
-                                ExtendedImage.asset(
-                                  'assets/imgs/profile/img_profile_default_.png',
-                                  enableMemoryCache: true,
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(7),
-                                  width: 58,
-                                  height: 58,
-                                  fit: BoxFit.cover,
+                            return Container(
+                              height: _size.height - 200,
+                              child: Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ExtendedImage.asset(
+                                      'assets/imgs/icons/icon_rankin_crew_nodata.png',
+                                      enableMemoryCache: true,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(7),
+                                      width: 80,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    Text("데이터가 없습니다"),
+                                  ],
                                 ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Text("데이터가 없습니다"),
-                              ],
+                              ),
                             );
                           }
 
