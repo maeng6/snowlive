@@ -27,6 +27,7 @@ class LiveCrewModel {
     this.passCountData,
     this.slopeScores,
     this.passCountTimeData,
+    this.totalPassCount,
   });
 
   String? crewID;
@@ -48,6 +49,7 @@ class LiveCrewModel {
   Map? passCountData;
   Map? slopeScores;
   Map? passCountTimeData;
+  int? totalPassCount;
 
   LiveCrewModel.fromJson(dynamic json, this.reference) {
     crewID = json['crewID'];
@@ -69,6 +71,7 @@ class LiveCrewModel {
     passCountData = json['passCountData'];
     slopeScores = json['slopeScores'];
     passCountTimeData = json['passCountTimeData'];
+    totalPassCount = json['totalPassCount'];
 
   }
 
