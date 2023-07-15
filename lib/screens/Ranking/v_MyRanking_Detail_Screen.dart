@@ -111,15 +111,8 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
               Map<String, dynamic>? passCountData =
               data?['passCountData'] as Map<String, dynamic>?;
 
-              int totalScore = 0;
+              int totalScore = snapshot.data!.get('totalScore');
 
-              if (passCountData != null && passCountData.isNotEmpty) {
-                for (var slope in passCountData.keys) {
-                  totalScore +=
-                      (passCountData[slope] as int? ?? 0) *
-                          (slopeScoresModel.slopeScores[slope] ?? 0);
-                }
-              }
 
               String maxPassCountSlope = "";
 
