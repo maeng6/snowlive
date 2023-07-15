@@ -6,12 +6,8 @@ import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/model/m_slopeScoreModel.dart';
-import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
-
 import '../../widget/w_fullScreenDialog.dart';
 import '../LiveCrew/v_crewDetailPage_screen.dart';
-import '../more/friend/v_friendDetailPage.dart';
 
 class RankingCrewScreen extends StatefulWidget {
   const RankingCrewScreen({Key? key}) : super(key: key);
@@ -35,7 +31,9 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
-    _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
+    if(_userModelController.liveCrew != '' && _userModelController.liveCrew != null) {
+      _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
+    }else{}
 
     return Container(
       color: Colors.white,
@@ -524,14 +522,32 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                               break;
                             }
                           }
-                          this.myCrewRank = crewDocs_total.indexOf(myCrew) + 1;
+                          this.myCrewRank = myCrew != null ? crewDocs_total.indexOf(myCrew) + 1 : 0;
                           return  StreamBuilder<QuerySnapshot>(
                             stream:  FirebaseFirestore.instance
                                 .collection('liveCrew')
                                 .where('crewID', isEqualTo: _userModelController.liveCrew)
                                 .snapshots(),
                             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                              if (!snapshot.hasData || snapshot.data == null) {}
+                              if (!snapshot.hasData || snapshot.data == null) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        spreadRadius: 0,
+                                        blurRadius: 6,
+                                        offset: Offset(0, 0), // changes position of shadow
+                                      ),],
+                                    color: Colors.grey,
+                                  ),
+                                  height: 80,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                                    child: Text('가입한 크루가 없습니다. 크루에 가입해서 즐겨라 '),
+                                  ),
+                                );
+                              }
                               else if (snapshot.data!.docs.isNotEmpty) {
                                 final myCrewDocs = snapshot.data!.docs;
                                 return Container(
@@ -646,22 +662,32 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                 );
                               }
                               else if (snapshot.connectionState == ConnectionState.waiting) {}
+                              else if (snapshot.hasError){
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        spreadRadius: 0,
+                                        blurRadius: 6,
+                                        offset: Offset(0, 0), // changes position of shadow
+                                      ),],
+                                    color: Colors.grey,
+                                  ),
+                                  height: 80,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                                    child: Text('가입한 크루가 없습니다.'),
+                                  ),
+                                );
+                              }
                               return Center();
                             },
                           );
                         }
                         else if (snapshot.connectionState == ConnectionState.waiting) {}
                         return Center();
-
-
-
-
-
                       })
-
-
-
-
                 ),
 
             ],
