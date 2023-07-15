@@ -28,6 +28,8 @@ class LiveCrewModelController extends GetxController {
   Timestamp? _resistDate;
   RxMap? _passCountData={}.obs;
   RxMap? _slopeScores={}.obs;
+  RxMap? _passCountTimedata={}.obs;
+
 
   String? get crewID => _crewID!.value;
   String? get crewName => _crewName!.value;
@@ -46,6 +48,8 @@ class LiveCrewModelController extends GetxController {
   Timestamp? get resistDate => _resistDate!;
   Map? get passCountData => _passCountData!;
   Map? get slopeScores => _slopeScores!;
+  Map? get passCountTimeData => _passCountTimedata!;
+
 
   Future<void> getCurrnetCrew(crewID) async {
     if (crewID != null) {
@@ -66,6 +70,7 @@ class LiveCrewModelController extends GetxController {
       this._sns!.value = crewModel.sns!;
       this._passCountData!.value = crewModel.passCountData!;
       this._slopeScores!.value = crewModel.slopeScores!;
+      this._passCountTimedata!.value = crewModel.passCountTimeData!;
     }
   }
 
@@ -110,6 +115,20 @@ class LiveCrewModelController extends GetxController {
       'totalScore': 0,
       'passCountData': {},
       'slopeScores': {},
+      'passCountTimeData': {
+        '1': 0,
+        '2': 0,
+        '3': 0,
+        '4': 0,
+        '5': 0,
+        '6': 0,
+        '7': 0,
+        '8': 0,
+        '9': 0,
+        '10': 0,
+        '11': 0,
+        '12': 0,
+      },
     });
   }
 
