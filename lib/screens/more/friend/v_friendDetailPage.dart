@@ -1260,6 +1260,155 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                           }
                       ),
                     ),
+                    SizedBox(height: 30,),
+                    Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          children: [
+                            Text('시간대별 라이딩 횟수',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Color(0xFF111111)
+                              ),),
+                            Expanded(child: SizedBox()),
+                            GestureDetector(
+                              onTap: (){},
+                              child: Text('자세히 보기',
+                                style: TextStyle(
+                                    fontSize: 13
+                                ),
+                              ),
+                            )
+                          ],
+                        )),
+                    SizedBox(height: 10,),
+                    Container(
+                      child: StreamBuilder<DocumentSnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('Ranking')
+                              .doc('${_seasonController.currentSeason}')
+                              .collection('${_userModelController.favoriteResort}')
+                              .doc("${_userModelController.uid}")
+                              .snapshots(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<DocumentSnapshot> snapshot) {
+
+                            if (snapshot.hasError) {
+                              return Text("오류가 발생했습니다");
+                            }
+
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return Lottie.asset('assets/json/loadings_wht_final.json');
+                            }
+
+                            Map<String, dynamic>? data =
+                            snapshot.data!.data() as Map<String, dynamic>?;
+
+                            Map<String, dynamic>? passCountTimeData =
+                            data?['passCountTimeData'] as Map<String, dynamic>?;
+
+                            int maxPassCount = 0;
+
+                            if (passCountTimeData != null && passCountTimeData.isNotEmpty) {
+                              maxPassCount = passCountTimeData.values.reduce((value, element) => value > element ? value : element);
+                            }
+
+                            return Container(
+                              height: 200,
+                              decoration: BoxDecoration(
+                                  color: Color(0xFFDFECFF),
+                                  borderRadius: BorderRadius.circular(14),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      blurRadius: 2,
+                                      offset: Offset(1, 0),
+                                    ),
+                                  ]
+                              ),
+                              margin: EdgeInsets.symmetric(horizontal: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                      child: Container(
+                                        child:
+                                        passCountTimeData?.entries.isEmpty ?? true ?
+                                        Center(child: Text('데이터가 없습니다'))
+                                            : ListView(
+                                          scrollDirection: Axis.horizontal,
+                                          children: (passCountTimeData!.entries.toList()
+                                            ..sort((a, b) {
+                                              return int.parse(a.key).compareTo(int.parse(b.key));
+                                            }))
+                                              .getRange(0, min(8, passCountTimeData.entries.length)).map((entry) {
+
+                                            String slopeName = entry.key;
+                                            int passCount = entry.value ?? 0;
+
+                                            // Calculate the height ratio based on the pass count for each slope
+                                            double barHeightRatio = passCount.toDouble() / maxPassCount.toDouble();
+
+                                            // Determine the color of the bar based on whether this pass count is the maximum
+                                            Color barColor = passCount == maxPassCount ? Color(0xFF05419A) : Color(0xFF3D83ED);  // use your desired colors
+
+                                            return Container(
+                                              margin: EdgeInsets.symmetric(horizontal: 5),
+                                              width: 29,
+                                              height: 95,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    '$passCount',
+                                                    style: TextStyle(
+                                                        fontSize: 11,
+                                                        color: Color(0xFF111111),
+                                                        fontWeight: FontWeight.bold
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Container(
+                                                    width: 30,
+                                                    height: 95 * barHeightRatio,
+                                                    child: Container(
+                                                      width: 30,
+                                                      height: 95 * barHeightRatio,
+                                                      decoration: BoxDecoration(
+                                                          color: barColor,
+                                                          borderRadius: BorderRadius.only(
+                                                              topRight: Radius.circular(3),
+                                                              topLeft: Radius.circular(3)
+                                                          )
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Text(
+                                                    _resortModelController.getSlotName(slopeName),
+                                                    style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
+                                                  ),
+                                                  SizedBox(height: 20,)
+                                                ],
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                ],
+                              ),
+                            );
+                          }
+                      ),
+                    ), //시간대별 라이딩 횟수
+
+
                     SizedBox(height: 30),
                     Divider(
                       thickness: 8,
