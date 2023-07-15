@@ -306,6 +306,7 @@ class LiveMapController extends GetxController {
               await docRef.set({
                 'uid': _userModelController.uid,
                 'passCountData': {},
+                'passCountTimeData': {}, // New field to store pass counts per time slot
                 'lastPassTime': null,
                 'slopeScores': {},
                 'totalScore': 0,
@@ -318,12 +319,17 @@ class LiveMapController extends GetxController {
             // Now, we are sure the document exists. Let's proceed with the rest of the logic.
             Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
             Map<String, dynamic> passCountData = data['passCountData'] ?? {};
+            Map<String, dynamic> passCountTimeData = data['passCountTimeData'] ?? {}; // Retrieve the pass count per time slot data
             Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
+
+            int timeSlot = getTimeSlot(now); // Get the current time slot
 
             if (location.type == 'slope') {
               // If the user is within the boundary of the slope
               data['slopeStatus'] ??= {}; // Initialize slopeStatus if it doesn't exist
               data['slopeStatus'][location.name] = true; // Set slope status to true
+
+              passCountTimeData["$timeSlot"] ??= 0; // Initialize pass count for the current time slot
 
               // Update document using data
               await docRef.set(data, SetOptions(merge: true));
@@ -341,16 +347,21 @@ class LiveMapController extends GetxController {
                 // Update pass count and score for passed slopes
                 for (String slopeName in passedSlopes) {
                   int storedPassCount = passCountData[slopeName] ?? 0;
+                  int timeSlotPassCount = passCountTimeData["$timeSlot"] ?? 0; // Get the pass count for the current time slot
+
                   int slopeScore = slopeScoresModel.slopeScores[slopeName] ?? 0;
 
                   storedPassCount += 1;
+                  timeSlotPassCount += 1; // Increment the pass count for the current time slot
                   int updatedScore = storedPassCount * slopeScore;
 
                   passCountData[slopeName] = storedPassCount;
+                  passCountTimeData["$timeSlot"] = timeSlotPassCount; // Store the updated pass count for the current time slot
+
                   slopeScores[slopeName] = updatedScore;
 
                   // Update crew data with slope name and score
-                  await updateCrewData(slopeName, slopeScore);
+                  await updateCrewData(slopeName, slopeScore, timeSlot);
                 }
 
                 // Reset slopeStatus for all slopes
@@ -380,8 +391,39 @@ class LiveMapController extends GetxController {
     }
   }
 
+  int getTimeSlot(DateTime now) {
+    int hour = now.hour;
 
-  Future<void> updateCrewData(String locationName, int slopeScore) async {
+    if (hour >= 8 && hour < 10) {
+      return 1;
+    } else if (hour >= 10 && hour < 12) {
+      return 2;
+    } else if (hour >= 12 && hour < 14) {
+      return 3;
+    } else if (hour >= 14 && hour < 16) {
+      return 4;
+    } else if (hour >= 16 && hour < 18) {
+      return 5;
+    } else if (hour >= 18 && hour < 20) {
+      return 6;
+    } else if (hour >= 20 && hour < 22) {
+      return 7;
+    } else if (hour >= 22) {
+      return 8;
+    } else if (hour < 2) {
+      return 9;
+    } else if (hour >= 2 && hour < 4) {
+      return 10;
+    } else if (hour >= 4 && hour < 6) {
+      return 11;
+    } else if (hour >= 6 && hour < 8) {
+      return 12;
+    }
+
+    return -1; // default return value in case of an error
+  }
+
+  Future<void> updateCrewData(String locationName, int slopeScore, int timeSlot) async {
     String liveCrew = _userModelController.liveCrew ?? ''; // 유효하지 않은 경우 빈 문자열로 초기화
 
     if (liveCrew.isNotEmpty) {
@@ -395,11 +437,16 @@ class LiveMapController extends GetxController {
         if (crewDocSnapshot.exists) {
           Map<String, dynamic> crewData = crewDocSnapshot.data() as Map<String, dynamic>;
           Map<String, dynamic> crewPassCountData = crewData['passCountData'] ?? {};
+          Map<String, dynamic> crewPassCountTimeData = crewData['passCountTimeData'] ?? {}; // Get pass count per time slot data
           Map<String, dynamic> crewSlopeScores = crewData['slopeScores'] ?? {};
 
           // Update the pass count
           int crewStoredPassCount = crewPassCountData[locationName] ?? 0;
           crewPassCountData[locationName] = crewStoredPassCount + 1;
+
+          // Update the pass count per time slot
+          int crewTimeSlotPassCount = crewPassCountTimeData["$timeSlot"] ?? 0;
+          crewPassCountTimeData["$timeSlot"] = crewTimeSlotPassCount + 1; // Increment the pass count for the current time slot
 
           // Update the slope scores
           int crewStoredSlopeScore = crewSlopeScores[locationName] ?? 0;
@@ -409,8 +456,9 @@ class LiveMapController extends GetxController {
           int crewTotalScore = crewData['totalScore'] ?? 0;
           crewTotalScore += slopeScore;
 
-          // Assign updated pass count and slope scores back to crew data
+          // Assign updated pass count, pass count per time slot and slope scores back to crew data
           crewData['passCountData'] = crewPassCountData;
+          crewData['passCountTimeData'] = crewPassCountTimeData;
           crewData['slopeScores'] = crewSlopeScores;
           crewData['totalScore'] = crewTotalScore;
 
@@ -427,6 +475,8 @@ class LiveMapController extends GetxController {
       print('liveCrew 값이 유효하지 않습니다.');
     }
   }
+
+
 
   Future<void> stopBackgroundLocationService() async {
     await bg.BackgroundGeolocation.stop();
