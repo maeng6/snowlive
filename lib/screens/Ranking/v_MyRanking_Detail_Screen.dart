@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:snowlive3/model/m_rankingTierModel.dart';
 import 'package:snowlive3/model/m_slopeScoreModel.dart';
 
 class MyRankingDetailPage extends StatefulWidget {
@@ -143,12 +144,10 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                               return Column(
                                 children: [
                                   Container(
-                                    padding: EdgeInsets.only(
-                                        top: 3, bottom: 3, left: 10, right: 10),
+                                    padding: EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
                                     decoration: BoxDecoration(
                                       color: Color(0xFFFFFFFF),
-                                      border: Border.all(
-                                          color: Color(0xFFD9D9D9), width: 0.9),
+                                      border: Border.all(color: Color(0xFFD9D9D9), width: 0.9),
                                       borderRadius: BorderRadius.circular(30.0),
                                     ),
                                     child: Column(
@@ -156,43 +155,21 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                         Text(
                                           '${snapshot.data?['rank']}/${snapshot.data?['totalUsers']}',
                                           style: TextStyle(
-                                              fontSize: 14,
-                                              color: Color(0xFF444444),
-                                              fontWeight: FontWeight.bold),
+                                            fontSize: 14,
+                                            color: Color(0xFF444444),
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  if(rankingDocs[0]['tier'] == 'D')
-                                    ExtendedImage.asset(
-                                      enableMemoryCache:true,
-                                      'assets/imgs/ranking/icon_ranking_tier_D.png',
-                                      scale: 4,
-                                    ),
-                                  if(rankingDocs[0]['tier'] == 'C')
-                                    ExtendedImage.asset(
-                                      enableMemoryCache:true,
-                                      'assets/imgs/ranking/icon_ranking_tier_C.png',
-                                      scale: 4,
-                                    ),
-                                  if(rankingDocs[0]['tier'] == 'B')
-                                    ExtendedImage.asset(
-                                      enableMemoryCache:true,
-                                      'assets/imgs/ranking/icon_ranking_tier_B.png',
-                                      scale: 4,
-                                    ),
-                                  if(rankingDocs[0]['tier'] == 'A')
-                                    ExtendedImage.asset(
-                                      enableMemoryCache:true,
-                                      'assets/imgs/ranking/icon_ranking_tier_A.png',
-                                      scale: 4,
-                                    ),
-                                  if(rankingDocs[0]['tier'] == 'S')
-                                    ExtendedImage.asset(
-                                      enableMemoryCache:true,
-                                      'assets/imgs/ranking/icon_ranking_tier_S.png',
-                                      scale: 4,
-                                    )
+                                  for(var rankingTier in rankingTierList)
+                                    if(rankingDocs[0]['tier'] == rankingTier.tierName)
+                                      ExtendedImage.asset(
+                                        enableMemoryCache:true,
+                                        rankingTier.badgeAsset,
+                                        scale: 4,
+                                      ),
                                 ],
                               );
                             }
