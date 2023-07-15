@@ -2,11 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/model/m_slopeScoreModel.dart';
+
+import '../more/friend/v_friendDetailPage.dart';
 
 class MyRankingDetailPage extends StatefulWidget {
   const MyRankingDetailPage({Key? key}) : super(key: key);
@@ -21,9 +24,6 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
   SeasonController _seasonController = Get.find<SeasonController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   // TODO: Dependency Injection**************************************************
-
-  String maxPassCountSlope = "";
-  bool? isLoading;
 
   Future<Map<String, int>> _calculateRank(int myScore) async {
     int totalUsers = 0;
@@ -60,12 +60,13 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
     return {'totalUsers': totalUsers, 'rank': myRank};
   }
 
+
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
     return Container(
-      color: Colors.white,
+      color: Color(0xFF3D83ED),
       child: SafeArea(
         top: false,
         bottom: true,
@@ -87,184 +88,162 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
             ),
             elevation: 0.0,
           ),
-          body: StreamBuilder<QuerySnapshot>(
+          body: StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('Ranking')
                 .doc('${_seasonController.currentSeason}')
                 .collection('${_userModelController.favoriteResort}')
-                .where('uid', isEqualTo: _userModelController.uid )
+                .doc("${_userModelController.uid}")
                 .snapshots(),
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            builder: (BuildContext context,
+                AsyncSnapshot<DocumentSnapshot> snapshot) {
               if (snapshot.hasError) {
-                isLoading = false;
                 return Text("오류가 발생했습니다");
               }
-              else if (snapshot.connectionState == ConnectionState.waiting) {
-                isLoading = true;
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return Lottie.asset('assets/json/loadings_wht_final.json');
               }
-              isLoading = false;
-              final rankingDocs = snapshot.data!.docs;
-              int totalScore = rankingDocs[0]['totalScore'];
-              Map<String, dynamic>? passCountData = rankingDocs[0]['passCountData'];
-              if(rankingDocs[0]['passCountData'] != null && rankingDocs[0]['passCountData'] != {} ) {
-                this.maxPassCountSlope = passCountData!.entries.reduce((maxEntry, entry) {
+
+
+              Map<String, dynamic>? data =
+              snapshot.data!.data() as Map<String, dynamic>?;
+
+              Map<String, dynamic>? passCountData =
+              data?['passCountData'] as Map<String, dynamic>?;
+
+              int totalScore = snapshot.data!.get('totalScore');
+
+
+              String maxPassCountSlope = "";
+
+              if (passCountData != null && passCountData.isNotEmpty) {
+                maxPassCountSlope = passCountData.entries.reduce((maxEntry, entry) {
                   return maxEntry.value > entry.value ? maxEntry : entry;
-                  }).key;
+                }).key;
               }
 
-              return Column(
-                children: [
-                  Stack(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: ExtendedImage.asset(
-                          'assets/imgs/icons/image_background_myscore.png',
-                          enableMemoryCache: true,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Positioned(
-                        top: 10,
-                        right: 40,
-                        child: FutureBuilder<Map<String, int>>(
-                          future: _calculateRank(totalScore),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<Map<String, int>> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Container(
-                                  height: 50,
-                                  child: Center(child: Text('랭킹: 집계 중...')));
-                            } else if (snapshot.hasError) {
-                              return Text('랭킹: 오류 발생');
-                            } else {
-                              return Column(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.only(
-                                        top: 3, bottom: 3, left: 10, right: 10),
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFFFFFFFF),
-                                      border: Border.all(
-                                          color: Color(0xFFD9D9D9), width: 0.9),
-                                      borderRadius: BorderRadius.circular(30.0),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          '${snapshot.data?['rank']}/${snapshot.data?['totalUsers']}',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Color(0xFF444444),
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  if(rankingDocs[0]['tier'] == 'D')
-                                    ExtendedImage.asset(
-                                      enableMemoryCache:true,
-                                      'assets/imgs/ranking/icon_ranking_tier_D.png',
-                                      scale: 4,
-                                    ),
-                                  if(rankingDocs[0]['tier'] == 'C')
-                                    ExtendedImage.asset(
-                                      enableMemoryCache:true,
-                                        'assets/imgs/ranking/icon_ranking_tier_C.png',
-                                      scale: 4,
-                                    ),
-                                  if(rankingDocs[0]['tier'] == 'B')
-                                    ExtendedImage.asset(
-                                      enableMemoryCache:true,
-                                      'assets/imgs/ranking/icon_ranking_tier_B.png',
-                                      scale: 4,
-                                    ),
-                                  if(rankingDocs[0]['tier'] == 'A')
-                                    ExtendedImage.asset(
-                                      enableMemoryCache:true,
-                                        'assets/imgs/ranking/icon_ranking_tier_A.png',
-                                      scale: 4,
-                                    ),
-                                  if(rankingDocs[0]['tier'] == 'S')
-                                    ExtendedImage.asset(
-                                      enableMemoryCache:true,
-                                        'assets/imgs/ranking/icon_ranking_tier_S.png',
-                                      scale: 4,
-                                    )
-                                ],
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '$totalScore',
-                                style: TextStyle(
-                                    fontSize: 80,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF3D83ED),
-                                    height: 1.2),
-                              ),
-                              Text(
-                                'POINTS',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF000000),
-                                  height: 1,
-                                ),
-                              )
-                            ],
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: ExtendedImage.asset(
+                            'assets/imgs/icons/image_background_myscore.png',
+                            enableMemoryCache: true,
+                            fit: BoxFit.cover,
                           ),
                         ),
-                      ),
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 10,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            '${_seasonController.currentSeason} 시즌 '
-                                '${_resortModelController.getResortName(_userModelController.resortNickname!)} 포인트',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                        Positioned(
+                          top: 16,
+                          right: 28,
+                          child: FutureBuilder<Map<String, int>>(
+                            future: _calculateRank(totalScore),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<Map<String, int>> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Text('랭킹: 집계 중...');
+                              } else if (snapshot.hasError) {
+                                return Text('랭킹: 오류 발생');
+                              } else {
+                                return Column(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.only(
+                                          top: 3, bottom: 3, left: 10, right: 10),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFFFFFFFF),
+                                        border: Border.all(
+                                            color: Color(0xFFD9D9D9), width: 0.9),
+                                        borderRadius: BorderRadius.circular(30.0),
+                                      ),
+                                      child: Text(
+                                        '${snapshot.data?['rank']}등',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xFF444444),
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    SizedBox(height: 6,),
+                                    ExtendedImage.asset(
+                                      'assets/imgs/ranking/icon_ranking_tier_S.png',
+                                      enableMemoryCache: true,
+                                      fit: BoxFit.cover,
+                                      width: 60,
+                                      height: 64,
+                                    ),
+                                  ],
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                        Positioned.fill(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height: 120,
+                                  child: Text(
+                                    '$totalScore',
+                                    style: GoogleFonts.bebasNeue(
+                                        fontSize: 120,
+                                        fontWeight: FontWeight.normal,
+                                        color: Color(0xFF3D83ED),
+                                        ),
+                                  ),
+                                ),
+                                Text(
+                                  'POINTS',
+                                  style: GoogleFonts.bebasNeue(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.normal,
+                                    color: Color(0xFF000000),
+
+                                  ),
+                                )
+                              ],
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10,),
-                  Expanded(
-                    child: Container(
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 16,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              '${_seasonController.currentSeason} 시즌 '
+                                  '${_resortModelController.getResortName(_userModelController.resortNickname!)} 포인트',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12),
+                    Container(
+                      height: 306,
                       decoration: BoxDecoration(
                           color: Color(0xFF1357BC),
-                          borderRadius: BorderRadius.circular(14),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              blurRadius: 2,
-                              offset: Offset(1, 0),
-                            ),
-                          ]
+                          borderRadius: BorderRadius.circular(20),
                       ),
                       margin: EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(16.0),
+                            padding: const EdgeInsets.all(20.0),
                             child: Text(
                               '슬로프별 점수 현황',
                               style: TextStyle(
@@ -280,7 +259,26 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                               child: Container(
                                 child:
                                 passCountData?.entries.isEmpty ?? true ?
-                                Center(child: Text('데이터가 없습니다'))
+                                Center(child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/imgs/icons/icon_ranking_nodata_1.png',
+                                      scale: 4,
+                                      width: 43,
+                                      height: 32,
+                                    ),
+                                    SizedBox(height: 12,),
+                                    Text('데이터가 없습니다', style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.normal
+                                    ),),
+                                    SizedBox(
+                                      height: 36,
+                                    )
+                                  ],
+                                ))
                                     : ListView(
                                   scrollDirection: Axis.horizontal,
                                   children: (passCountData!.entries.toList()
@@ -354,56 +352,58 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                         ],
                       ),
                     ),
-                  ),
-                  SizedBox(height: 10,),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16),
-                    child: Container(
-                      width: _size.width,
-                      decoration: BoxDecoration(
-                          color: Color(0xFFFFFFFF),
-                          borderRadius: BorderRadius.circular(14),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              blurRadius: 2,
-                              offset: Offset(1, 0),
-                            ),
-                          ]
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
-                        child: Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text('자주타는 슬로프',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: Color(0xFF111111),
-                                        fontWeight: FontWeight.bold
-                                    ),
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                  Text('$maxPassCountSlope',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF3D83ED)
-                                    ),
-                                  )
-                                ],
+                    SizedBox(height: 12,),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16, right: 16),
+                      child: Container(
+                        height: 72,
+                        width: _size.width,
+                        decoration: BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                blurRadius: 2,
+                                offset: Offset(1, 0),
                               ),
-                            ],
+                            ]
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+                          child: Container(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text('자주타는 슬로프',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Color(0xFF111111),
+                                          fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                    Expanded(child: SizedBox()),
+                                    Text('$maxPassCountSlope',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF3D83ED)
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 30,),
-                ],
+                    SizedBox(height: 30,),
+                  ],
+                ),
               );
             },
           ),
