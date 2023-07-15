@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
       ],
       theme: ThemeData(
-        fontFamily: 'NotoSansKR',
+        fontFamily: 'Spoqa Han Sans Neo',
         appBarTheme: AppBarTheme(
           iconTheme: IconThemeData(
             size: 30,
@@ -39,8 +39,8 @@ class MyApp extends StatelessWidget {
           ),
           centerTitle: true,
           titleTextStyle: TextStyle(
-            fontFamily: 'NotoSansKR',
-            fontWeight: FontWeight.w600,
+            fontFamily: 'Spoqa Han Sans Neo',
+            fontWeight: FontWeight.w800,
             color: Colors.black,
                 fontSize: 20
           ),
