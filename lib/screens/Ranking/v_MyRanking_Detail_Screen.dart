@@ -8,8 +8,6 @@ import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/model/m_slopeScoreModel.dart';
 
-import '../more/friend/v_friendDetailPage.dart';
-
 class MyRankingDetailPage extends StatefulWidget {
   const MyRankingDetailPage({Key? key}) : super(key: key);
 
@@ -23,6 +21,9 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
   SeasonController _seasonController = Get.find<SeasonController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   // TODO: Dependency Injection**************************************************
+
+  String maxPassCountSlope = "";
+  bool? isLoading;
 
   Future<Map<String, int>> _calculateRank(int myScore) async {
     int totalUsers = 0;
@@ -59,7 +60,6 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
     return {'totalUsers': totalUsers, 'rank': myRank};
   }
 
-
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
@@ -87,39 +87,30 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
             ),
             elevation: 0.0,
           ),
-          body: StreamBuilder<DocumentSnapshot>(
+          body: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('Ranking')
                 .doc('${_seasonController.currentSeason}')
                 .collection('${_userModelController.favoriteResort}')
-                .doc("${_userModelController.uid}")
+                .where('uid', isEqualTo: _userModelController.uid )
                 .snapshots(),
-            builder: (BuildContext context,
-                AsyncSnapshot<DocumentSnapshot> snapshot) {
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
+                isLoading = false;
                 return Text("오류가 발생했습니다");
               }
-
-              if (snapshot.connectionState == ConnectionState.waiting) {
+              else if (snapshot.connectionState == ConnectionState.waiting) {
+                isLoading = true;
                 return Lottie.asset('assets/json/loadings_wht_final.json');
               }
-
-
-              Map<String, dynamic>? data =
-              snapshot.data!.data() as Map<String, dynamic>?;
-
-              Map<String, dynamic>? passCountData =
-              data?['passCountData'] as Map<String, dynamic>?;
-
-              int totalScore = snapshot.data!.get('totalScore');
-
-
-              String maxPassCountSlope = "";
-
-              if (passCountData != null && passCountData.isNotEmpty) {
-                maxPassCountSlope = passCountData.entries.reduce((maxEntry, entry) {
+              isLoading = false;
+              final rankingDocs = snapshot.data!.docs;
+              int totalScore = rankingDocs[0]['totalScore'];
+              Map<String, dynamic>? passCountData = rankingDocs[0]['passCountData'];
+              if(rankingDocs[0]['passCountData'] != null && rankingDocs[0]['passCountData'] != {} ) {
+                this.maxPassCountSlope = passCountData!.entries.reduce((maxEntry, entry) {
                   return maxEntry.value > entry.value ? maxEntry : entry;
-                }).key;
+                  }).key;
               }
 
               return Column(
@@ -143,26 +134,66 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                               AsyncSnapshot<Map<String, int>> snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return Text('랭킹: 집계 중...');
+                              return Container(
+                                  height: 50,
+                                  child: Center(child: Text('랭킹: 집계 중...')));
                             } else if (snapshot.hasError) {
                               return Text('랭킹: 오류 발생');
                             } else {
-                              return Container(
-                                padding: EdgeInsets.only(
-                                    top: 3, bottom: 3, left: 10, right: 10),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFFFFFFF),
-                                  border: Border.all(
-                                      color: Color(0xFFD9D9D9), width: 0.9),
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                child: Text(
-                                  '${snapshot.data?['rank']}/${snapshot.data?['totalUsers']}',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Color(0xFF444444),
-                                      fontWeight: FontWeight.bold),
-                                ),
+                              return Column(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                        top: 3, bottom: 3, left: 10, right: 10),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFFFFFFF),
+                                      border: Border.all(
+                                          color: Color(0xFFD9D9D9), width: 0.9),
+                                      borderRadius: BorderRadius.circular(30.0),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '${snapshot.data?['rank']}/${snapshot.data?['totalUsers']}',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Color(0xFF444444),
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  if(rankingDocs[0]['tier'] == 'D')
+                                    ExtendedImage.asset(
+                                      enableMemoryCache:true,
+                                      'assets/imgs/ranking/icon_ranking_tier_D.png',
+                                      scale: 4,
+                                    ),
+                                  if(rankingDocs[0]['tier'] == 'C')
+                                    ExtendedImage.asset(
+                                      enableMemoryCache:true,
+                                        'assets/imgs/ranking/icon_ranking_tier_C.png',
+                                      scale: 4,
+                                    ),
+                                  if(rankingDocs[0]['tier'] == 'B')
+                                    ExtendedImage.asset(
+                                      enableMemoryCache:true,
+                                      'assets/imgs/ranking/icon_ranking_tier_B.png',
+                                      scale: 4,
+                                    ),
+                                  if(rankingDocs[0]['tier'] == 'A')
+                                    ExtendedImage.asset(
+                                      enableMemoryCache:true,
+                                        'assets/imgs/ranking/icon_ranking_tier_A.png',
+                                      scale: 4,
+                                    ),
+                                  if(rankingDocs[0]['tier'] == 'S')
+                                    ExtendedImage.asset(
+                                      enableMemoryCache:true,
+                                        'assets/imgs/ranking/icon_ranking_tier_S.png',
+                                      scale: 4,
+                                    )
+                                ],
                               );
                             }
                           },
