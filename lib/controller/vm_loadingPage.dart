@@ -36,8 +36,6 @@ class _LoadingPageState extends State<LoadingPage> {
     Get.put(MainHomeController(), permanent: true);
     Get.put(LiveCrewModelController(), permanent: true);
     Get.put(SeasonController(), permanent: true);
-    Get.put(RankingTierModelController(), permanent: true);
-
 
     LoginController _logInController = Get.put(LoginController());
 

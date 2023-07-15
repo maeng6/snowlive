@@ -7,6 +7,7 @@ import 'package:snowlive3/screens/Ranking/v_MyRanking_Detail_Screen.dart';
 import 'package:snowlive3/screens/comments/v_liveTalk_Screen.dart';
 import 'package:snowlive3/screens/resort/v_resortHome.dart';
 import '../controller/vm_noticeController.dart';
+import '../controller/vm_rankingTierModelController.dart';
 import '../controller/vm_userModelController.dart';
 import 'fleaMarket/v_fleaMarket_Screen.dart';
 import 'more/v_moreTab.dart';
@@ -45,6 +46,7 @@ class _MainHomeState extends State<MainHome> {
   @override
   Widget build(BuildContext context) {
     //TODO: Dependency Injection************************************************
+    Get.put(RankingTierModelController(), permanent: true);
     Get.put(NoticeController(), permanent: true);
     Get.put(LiveMapController(), permanent: true);
     NoticeController _noticeController = Get.find<NoticeController>();
