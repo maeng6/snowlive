@@ -9,6 +9,7 @@ import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/model/m_slopeScoreModel.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 
+import '../../model/m_rankingTierModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
 class RankingIndiScreen extends StatefulWidget {
@@ -656,15 +657,34 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                       fontSize: 18,
                                     ),
                                   ),
-                                  Transform.translate(
-                                    offset: Offset(6, 2),
-                                    child: ExtendedImage.asset(
-                                      'assets/imgs/ranking/icon_ranking_tier_S.png',
-                                      enableMemoryCache: true,
-                                      fit: BoxFit.cover,
-                                      width: 52,
-                                    ),
-                                  ),
+                                  StreamBuilder<QuerySnapshot>(
+                                      stream: FirebaseFirestore.instance
+                                          .collection('Ranking')
+                                          .doc('${_seasonController.currentSeason}')
+                                          .collection('${_userModelController.favoriteResort}')
+                                          .where('uid', isEqualTo: _userModelController.uid )
+                                          .snapshots(),
+                                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                        if (!snapshot.hasData || snapshot.data == null) {}
+                                        else if (snapshot.data!.docs.isNotEmpty) {
+                                          final rankingDocs = snapshot.data!.docs;
+                                          for(var rankingTier in rankingTierList)
+                                            if(rankingDocs[0]['tier'] == rankingTier.tierName)
+                                              return Transform.translate(
+                                                offset: Offset(6, 2),
+                                                child: ExtendedImage.asset(
+                                                  rankingTier.badgeAsset,
+                                                  enableMemoryCache: true,
+                                                  fit: BoxFit.cover,
+                                                  width: 52,
+                                                ),
+                                              );
+                                        }
+                                        else if (snapshot.connectionState == ConnectionState.waiting) {}
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      })
                                 ],
                               ),
                             ],
