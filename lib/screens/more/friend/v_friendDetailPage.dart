@@ -752,25 +752,16 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                           : Padding(
                                         padding: const EdgeInsets.only(top: 30),
                                         child:
-                                        (whoInviteMe.contains(
-                                            _userModelController.uid))
+                                        (whoInviteMe.contains(_userModelController.uid))
                                             ? GestureDetector(
                                           onTap: () {
                                             Get.dialog(AlertDialog(
-                                              contentPadding: EdgeInsets.only(
-                                                  bottom: 0,
-                                                  left: 20,
-                                                  right: 20,
-                                                  top: 30),
+                                              contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
                                               elevation: 0,
                                               shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                  BorderRadius.circular(
-                                                      10.0)),
+                                                  borderRadius: BorderRadius.circular(10.0)),
                                               buttonPadding:
-                                              EdgeInsets.symmetric(
-                                                  horizontal: 20,
-                                                  vertical: 0),
+                                              EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                                               content: Text(
                                                 '이미 요청중입니다.',
                                                 style: TextStyle(
