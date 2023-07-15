@@ -69,7 +69,23 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                           }
 
                           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                            return Text("데이터가 없습니다");
+                            return Column(
+                              children: [
+                                ExtendedImage.asset(
+                                  'assets/imgs/profile/img_profile_default_.png',
+                                  enableMemoryCache: true,
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(7),
+                                  width: 58,
+                                  height: 58,
+                                  fit: BoxFit.cover,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text("데이터가 없습니다"),
+                              ],
+                            );
                           }
 
                           final crewDocs = snapshot.data!.docs;
