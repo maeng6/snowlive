@@ -93,14 +93,14 @@ class LiveCrewModel {
 
 }
 List<Color?> crewColorList = [
-  Color(0xFFF9A441),
-  Color(0xFFE05A55),
-  Color(0xFF42BD47),
-  Color(0xFF1A9465),
-  Color(0xFF8DB0FD),
-  Color(0xFF3D6FED),
-  Color(0xFF5383C9),
+  Color(0xFFFFA835),
+  Color(0xFF2EB6FF),
+  Color(0xFFFF54A0),
+  Color(0xFF10BB88),
+  Color(0xFFB173FF),
+  Color(0xFFFF5F18),
+  Color(0xFF326EF6),
+  Color(0xFFEF0069),
+  Color(0xFF019D78),
   Color(0xFF772ED3),
-  Color(0xFF5E6672),
-  Color(0xFF444444),
 ];

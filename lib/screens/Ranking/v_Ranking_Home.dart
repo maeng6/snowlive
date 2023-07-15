@@ -65,7 +65,7 @@ class _RankingHomeState extends State<RankingHome> {
             Row(
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.only(top: 8, left: 16, right: 12),
                   child: Column(
                     children: [
                       Padding(
@@ -81,8 +81,8 @@ class _RankingHomeState extends State<RankingHome> {
                                       : Color(0xFFC8C8C8),
                                   fontWeight: (isTap[0])
                                       ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  fontSize: 18),
+                                      : FontWeight.bold,
+                                  fontSize: 20),
                             ),
                             onPressed: () async{
                               HapticFeedback.lightImpact();
@@ -109,7 +109,7 @@ class _RankingHomeState extends State<RankingHome> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 12),
+                  padding: EdgeInsets.only(top: 8, right: 12),
                   child: Column(
                     children: [
                       Padding(
@@ -125,8 +125,8 @@ class _RankingHomeState extends State<RankingHome> {
                                       : Color(0xFFC8C8C8),
                                   fontWeight: (isTap[1])
                                       ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  fontSize: 18),
+                                      : FontWeight.bold,
+                                  fontSize: 20),
                             ),
                             onPressed: () {
                               HapticFeedback.lightImpact();
@@ -154,7 +154,7 @@ class _RankingHomeState extends State<RankingHome> {
                 ),
                 Expanded(child: SizedBox()),
                 Padding(
-                  padding: EdgeInsets.only(right: 12),
+                  padding: EdgeInsets.only(top: 10, right: 16),
                   child: Column(
                     children: [
                       Padding(

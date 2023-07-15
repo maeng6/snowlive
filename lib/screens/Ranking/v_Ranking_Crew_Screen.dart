@@ -88,7 +88,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                           fontSize: 12
                                       ),
                                     ),
-                                    SizedBox(height: 15,),
+                                    SizedBox(height: 12),
                                     Row(
                                       children: [
                                         if(crewDocs.length > 0)
@@ -145,7 +145,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                       child: Text(
                                                         crewDocs[0]['crewName'],
                                                         style: TextStyle(
-                                                          color: Color(0xFF111111),
+                                                          color: Color(0xFFFFFFFF),
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: 12,
                                                         ),
@@ -158,7 +158,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                               ),
                                             ),
                                           ),
-                                        SizedBox(width: 11,),
+                                        SizedBox(width: 8),
                                         if(crewDocs.length > 1)
                                           Expanded(
                                             child: GestureDetector(
@@ -213,7 +213,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                       child: Text(
                                                         crewDocs[1]['crewName'],
                                                         style: TextStyle(
-                                                          color: Color(0xFF111111),
+                                                          color: Color(0xFFFFFFFF),
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: 12,
                                                         ),
@@ -226,7 +226,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                               ),
                                             ),
                                           ),
-                                        SizedBox(width: 11,),
+                                        SizedBox(width: 8),
                                         if(crewDocs.length > 2)
                                           Expanded(
                                             child: GestureDetector(
@@ -281,7 +281,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                       child: Text(
                                                         crewDocs[2]['crewName'],
                                                         style: TextStyle(
-                                                          color: Color(0xFF111111),
+                                                          color: Color(0xFFFFFFFF),
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: 12,
                                                         ),
