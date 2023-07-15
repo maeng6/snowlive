@@ -21,7 +21,7 @@ Future<void> updateTier()async{
 
   double? percent;
   int? totalScore;
-  int? tier;
+  String? tier;
 
   QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
       .collection('Ranking')
@@ -46,25 +46,34 @@ Future<void> updateTier()async{
 
   percent = myRank/totalRankCount;
   totalScore = rankingDocs[0]['totalScore'];
+  print('등수 : $myRank');
+  print('퍼센트 : $percent');
+  print('스코어 : $totalScore');
+  
 
   if(percent <= rankingTierList[4].scoreRng && totalScore! >= rankingTierList[4].totalScore){
-    tier = 4;
+    tier = 'S';
   }else if(percent <= rankingTierList[3].scoreRng && totalScore! >= rankingTierList[3].totalScore){
-    tier = 3;
+    tier = 'A';
   }else if(percent <= rankingTierList[2].scoreRng && totalScore! >= rankingTierList[2].totalScore){
-    tier = 2;
+    tier = 'B';
   }else if(percent <= rankingTierList[1].scoreRng && totalScore! >= rankingTierList[1].totalScore){
-    tier = 1;
+    tier = 'C';
   }else if(percent <= rankingTierList[0].scoreRng && totalScore! >= rankingTierList[0].totalScore){
-    tier = 0;
+    tier = 'D';
   }
+
+  print(tier);
+print('${_seasonController.currentSeason}');
+print('${_userModelController.favoriteResort}');
+print(_userModelController.uid);
 
   await ref.collection('Ranking')
       .doc('${_seasonController.currentSeason}')
       .collection('${_userModelController.favoriteResort}')
       .doc(_userModelController.uid).update({
     'tier': tier,
-  });
+  },);
 
 }
 
