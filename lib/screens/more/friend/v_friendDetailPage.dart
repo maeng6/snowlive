@@ -1142,8 +1142,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                           stream: FirebaseFirestore.instance
                               .collection('Ranking')
                               .doc('${_seasonController.currentSeason}')
-                              .collection('${_userModelController.favoriteResort}')
-                              .doc("${_userModelController.uid}")
+                              .collection('${friendDocs[0]['favoriteResort']}')
+                              .doc("${friendDocs[0]['uid']}")
                               .snapshots(),
                           builder: (BuildContext context,
                               AsyncSnapshot<DocumentSnapshot> snapshot) {
@@ -1288,8 +1288,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                           stream: FirebaseFirestore.instance
                               .collection('Ranking')
                               .doc('${_seasonController.currentSeason}')
-                              .collection('${_userModelController.favoriteResort}')
-                              .doc("${_userModelController.uid}")
+                              .collection('${friendDocs[0]['favoriteResort']}')
+                              .doc("${friendDocs[0]['uid']}")
                               .snapshots(),
                           builder: (BuildContext context,
                               AsyncSnapshot<DocumentSnapshot> snapshot) {

@@ -25,7 +25,9 @@ class LiveCrewModel {
     this.resistDate,
     this.sns,
     this.passCountData,
-    this.slopeScores
+    this.slopeScores,
+    this.passCountTimeData,
+    this.totalPassCount,
   });
 
   String? crewID;
@@ -46,6 +48,8 @@ class LiveCrewModel {
   DocumentReference? reference;
   Map? passCountData;
   Map? slopeScores;
+  Map? passCountTimeData;
+  int? totalPassCount;
 
   LiveCrewModel.fromJson(dynamic json, this.reference) {
     crewID = json['crewID'];
@@ -66,6 +70,8 @@ class LiveCrewModel {
     sns = json['sns'];
     passCountData = json['passCountData'];
     slopeScores = json['slopeScores'];
+    passCountTimeData = json['passCountTimeData'];
+    totalPassCount = json['totalPassCount'];
 
   }
 
