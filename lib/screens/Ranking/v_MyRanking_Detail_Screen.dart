@@ -243,20 +243,13 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                       decoration: BoxDecoration(
                           color: Color(0xFF1357BC),
                           borderRadius: BorderRadius.circular(14),
-                          // boxShadow: [
-                          //   BoxShadow(
-                          //     color: Colors.grey.withOpacity(0.5),
-                          //     blurRadius: 2,
-                          //     offset: Offset(1, 0),
-                          //   ),
-                          // ]
                       ),
                       margin: EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(16.0),
+                            padding: const EdgeInsets.all(20.0),
                             child: Text(
                               '슬로프별 점수 현황',
                               style: TextStyle(
@@ -272,7 +265,27 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                               child: Container(
                                 child:
                                 passCountData?.entries.isEmpty ?? true ?
-                                Center(child: Text('데이터가 없습니다'))
+                                Center(child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/imgs/icons/icon_ranking_nodata_1.png',
+                                      scale: 4,
+                                      width: 26,
+                                      height: 26,
+                                      color: Color(0xFFFFFFFF),
+                                    ),
+                                    SizedBox(height: 12,),
+                                    Text('데이터가 없습니다', style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.normal
+                                    ),),
+                                    SizedBox(
+                                      height: 30,
+                                    )
+                                  ],
+                                ))
                                     : ListView(
                                   scrollDirection: Axis.horizontal,
                                   children: (passCountData!.entries.toList()
