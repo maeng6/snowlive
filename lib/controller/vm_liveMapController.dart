@@ -10,7 +10,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/model/m_rankingTierModel.dart';
 import 'package:snowlive3/model/m_slopeLocationModel.dart';
 import 'package:snowlive3/model/m_slopeScoreModel.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
@@ -291,7 +290,6 @@ class LiveMapController extends GetxController {
 
       if (withinBoundary) {
         DateTime now = DateTime.now();
-        DocumentSnapshot? userSnapshot;
 
         if (_userModelController.uid != null) {
           DocumentReference docRef = FirebaseFirestore.instance
@@ -301,13 +299,15 @@ class LiveMapController extends GetxController {
               .doc("${_userModelController.uid}");
 
           try {
-            userSnapshot = await docRef.get();
+            DocumentSnapshot userSnapshot = await docRef.get();
 
             if (!userSnapshot.exists) {
               // Document doesn't exist. Let's create it!
               await docRef.set({
                 'uid': _userModelController.uid,
                 'passCountData': {},
+                'totalPassCount': 0,
+                'lastPassTime': null,
                 'passCountTimeData': {
                   '1': 0,
                   '2': 0,
@@ -321,8 +321,7 @@ class LiveMapController extends GetxController {
                   '10': 0,
                   '11': 0,
                   '12': 0,
-                }, // New field to store pass counts per time slot
-                'lastPassTime': null,
+                },
                 'slopeScores': {},
                 'totalScore': 0,
               });
@@ -336,7 +335,7 @@ class LiveMapController extends GetxController {
             Map<String, dynamic> passCountData = data['passCountData'] ?? {};
             Map<String, dynamic> passCountTimeData = data['passCountTimeData'] ?? {}; // Retrieve the pass count per time slot data
             Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
-            int totalScore = data['totalScore'] ?? 0;
+            int totalPassCount = data['totalPassCount'] ?? 0;
 
             int timeSlot = getTimeSlot(now); // Get the current time slot
 
@@ -368,6 +367,7 @@ class LiveMapController extends GetxController {
                   int slopeScore = slopeScoresModel.slopeScores[slopeName] ?? 0;
 
                   storedPassCount += 1;
+                  totalPassCount += 1;
                   timeSlotPassCount += 1; // Increment the pass count for the current time slot
                   int updatedScore = storedPassCount * slopeScore;
 
@@ -380,13 +380,6 @@ class LiveMapController extends GetxController {
                   await updateCrewData(slopeName, slopeScore, timeSlot);
                 }
 
-                userSnapshot = await docRef.get();
-                data = userSnapshot.data() as Map<String, dynamic>;
-                //if(data['totalScore'] > rankingTierList[4].totalScore && )
-
-
-
-
                 // Reset slopeStatus for all slopes
                 for (String slopeName in slopeStatus.keys) {
                   slopeStatus[slopeName] = false;
@@ -395,6 +388,7 @@ class LiveMapController extends GetxController {
                 // Calculate total score
                 int totalScore = slopeScores.values.fold<int>(0, (sum, score) => sum + (score as int? ?? 0));
                 data['totalScore'] = totalScore;
+                data['totalPassCount'] = totalPassCount;
 
                 // Update document using data
                 await docRef.set(data, SetOptions(merge: true));
@@ -457,48 +451,84 @@ class LiveMapController extends GetxController {
       try {
         DocumentSnapshot crewDocSnapshot = await crewDocRef.get();
 
-        if (crewDocSnapshot.exists) {
-          Map<String, dynamic> crewData = crewDocSnapshot.data() as Map<String, dynamic>;
-          Map<String, dynamic> crewPassCountData = crewData['passCountData'] ?? {};
-          Map<String, dynamic> crewPassCountTimeData = crewData['passCountTimeData'] ?? {}; // Get pass count per time slot data
-          Map<String, dynamic> crewSlopeScores = crewData['slopeScores'] ?? {};
+        Map<String, dynamic> crewData;
 
-          // Update the pass count
-          int crewStoredPassCount = crewPassCountData[locationName] ?? 0;
-          crewPassCountData[locationName] = crewStoredPassCount + 1;
-
-          // Update the pass count per time slot
-          int crewTimeSlotPassCount = crewPassCountTimeData["$timeSlot"] ?? 0;
-          crewPassCountTimeData["$timeSlot"] = crewTimeSlotPassCount + 1; // Increment the pass count for the current time slot
-
-          // Update the slope scores
-          int crewStoredSlopeScore = crewSlopeScores[locationName] ?? 0;
-          crewSlopeScores[locationName] = crewStoredSlopeScore + slopeScore;
-
-          // Update the total score
-          int crewTotalScore = crewData['totalScore'] ?? 0;
-          crewTotalScore += slopeScore;
-
-          // Assign updated pass count, pass count per time slot and slope scores back to crew data
-          crewData['passCountData'] = crewPassCountData;
-          crewData['passCountTimeData'] = crewPassCountTimeData;
-          crewData['slopeScores'] = crewSlopeScores;
-          crewData['totalScore'] = crewTotalScore;
-
-          await crewDocRef.set(crewData, SetOptions(merge: true));
+        if (!crewDocSnapshot.exists) {
+          crewData = {
+            'passCountData': {},
+            'passCountTimeData': {
+              '1': 0,
+              '2': 0,
+              '3': 0,
+              '4': 0,
+              '5': 0,
+              '6': 0,
+              '7': 0,
+              '8': 0,
+              '9': 0,
+              '10': 0,
+              '11': 0,
+              '12': 0,
+            },
+            'slopeScores': {},
+            'totalPassCount': 0,
+            'totalScore': 0,
+          };
         } else {
-          print('크루 문서가 존재하지 않습니다.');
+          crewData = crewDocSnapshot.data() as Map<String, dynamic>;
+
+          if (crewData['passCountTimeData'] == null) {
+            crewData['passCountTimeData'] = {
+              '1': 0,
+              '2': 0,
+              '3': 0,
+              '4': 0,
+              '5': 0,
+              '6': 0,
+              '7': 0,
+              '8': 0,
+              '9': 0,
+              '10': 0,
+              '11': 0,
+              '12': 0,
+            };
+          }
         }
+
+        Map<String, dynamic> crewPassCountData = crewData['passCountData'] ?? {};
+        Map<String, dynamic> crewPassCountTimeData = crewData['passCountTimeData'];
+        Map<String, dynamic> crewSlopeScores = crewData['slopeScores'] ?? {};
+        int crewTotalPassCount = crewData['totalPassCount'] ?? 0;
+
+        // Update the pass count
+        int crewStoredPassCount = crewPassCountData[locationName] ?? 0;
+        crewPassCountData[locationName] = crewStoredPassCount + 1;
+
+        // Update the pass count for the current time slot
+        int crewTimeSlotPassCount = crewPassCountTimeData["$timeSlot"] ?? 0;
+        crewPassCountTimeData["$timeSlot"] = crewTimeSlotPassCount + 1;
+
+        // Update the total pass count
+        crewTotalPassCount += 1;
+
+        // Update the score
+        int crewSlopeScore = crewSlopeScores[locationName] ?? 0;
+        crewSlopeScores[locationName] = crewSlopeScore + slopeScore;
+
+        // Update the total score
+        int crewTotalScore = crewSlopeScores.values.fold<int>(0, (sum, score) => sum + (score as int? ?? 0));
+        crewData['totalScore'] = crewTotalScore;
+
+        crewData['totalPassCount'] = crewTotalPassCount;
+
+        // Update the document
+        await crewDocRef.set(crewData, SetOptions(merge: true));
       } catch (error, stackTrace) {
-        print('Firestore crew 업데이트 에러: $error');
-        print('Stack trace: $stackTrace');
-        // 여기서 추가적인 예외 처리나 로깅을 수행할 수 있습니다.
+        print('오류 발생: $error');
+        print('스택 트레이스: $stackTrace');
       }
-    } else {
-      print('liveCrew 값이 유효하지 않습니다.');
     }
   }
-
 
 
   Future<void> stopBackgroundLocationService() async {
