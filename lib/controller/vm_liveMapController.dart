@@ -324,7 +324,7 @@ class LiveMapController extends GetxController {
                 },
                 'slopeScores': {},
                 'totalScore': 0,
-                'tier':0
+                'tier':''
               });
 
               // Re-fetch the document after creating it
@@ -381,7 +381,6 @@ class LiveMapController extends GetxController {
                   await updateCrewData(slopeName, slopeScore, timeSlot);
                 }
 
-                await _rankingTierModelController.updateTier();
 
                 // Reset slopeStatus for all slopes
                 for (String slopeName in slopeStatus.keys) {
@@ -395,6 +394,8 @@ class LiveMapController extends GetxController {
 
                 // Update document using data
                 await docRef.set(data, SetOptions(merge: true));
+
+                await _rankingTierModelController.updateTier();
 
               } catch (error, stackTrace) {
                 print('오류 발생: $error');
