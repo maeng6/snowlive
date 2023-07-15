@@ -63,10 +63,7 @@ Future<void> updateTier()async{
     tier = 'D';
   }
 
-  print(tier);
-print('${_seasonController.currentSeason}');
-print('${_userModelController.favoriteResort}');
-print(_userModelController.uid);
+  print('티어 : $tier');
 
   await ref.collection('Ranking')
       .doc('${_seasonController.currentSeason}')
