@@ -117,6 +117,9 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
             height: 26,
           ),
           onTap: () async{
+            CustomFullScreenDialog.showDialog();
+            await _userModelController.getCurrentUser_crew(_userModelController.uid);
+            CustomFullScreenDialog.cancelDialog();
             Navigator.pop(context);
           },
         ),
