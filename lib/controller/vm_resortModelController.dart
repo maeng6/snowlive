@@ -143,5 +143,28 @@ class ResortModelController extends GetxController{
     }
   }
 
+  String getSlotName(String slotNumber) {
+    switch (slotNumber) {
+      case '1':
+        return '08-10';
+      case '2':
+        return '10-12';
+      case '3':
+        return '12-14';
+      case '4':
+        return '14-16';
+      case '5':
+        return '16-18';
+      case '6':
+        return '18-20';
+      case '7':
+        return '20-22';
+      case '8':
+        return '22-00';
+      default:
+        return slotNumber;
+    }
+  }
+
 }
 

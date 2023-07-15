@@ -10,6 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:snowlive3/model/m_rankingTierModel.dart';
 import 'package:snowlive3/model/m_slopeLocationModel.dart';
 import 'package:snowlive3/model/m_slopeScoreModel.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
@@ -290,6 +291,7 @@ class LiveMapController extends GetxController {
 
       if (withinBoundary) {
         DateTime now = DateTime.now();
+        DocumentSnapshot? userSnapshot;
 
         if (_userModelController.uid != null) {
           DocumentReference docRef = FirebaseFirestore.instance
@@ -299,7 +301,7 @@ class LiveMapController extends GetxController {
               .doc("${_userModelController.uid}");
 
           try {
-            DocumentSnapshot userSnapshot = await docRef.get();
+            userSnapshot = await docRef.get();
 
             if (!userSnapshot.exists) {
               // Document doesn't exist. Let's create it!
@@ -321,6 +323,7 @@ class LiveMapController extends GetxController {
             Map<String, dynamic> passCountData = data['passCountData'] ?? {};
             Map<String, dynamic> passCountTimeData = data['passCountTimeData'] ?? {}; // Retrieve the pass count per time slot data
             Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
+            int totalScore = data['totalScore'] ?? 0;
 
             int timeSlot = getTimeSlot(now); // Get the current time slot
 
@@ -363,6 +366,13 @@ class LiveMapController extends GetxController {
                   // Update crew data with slope name and score
                   await updateCrewData(slopeName, slopeScore, timeSlot);
                 }
+
+                userSnapshot = await docRef.get();
+                data = userSnapshot.data() as Map<String, dynamic>;
+                //if(data['totalScore'] > rankingTierList[4].totalScore && )
+
+
+
 
                 // Reset slopeStatus for all slopes
                 for (String slopeName in slopeStatus.keys) {
