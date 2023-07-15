@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
@@ -142,8 +143,8 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                         ),
                       ),
                       Positioned(
-                        top: 10,
-                        right: 40,
+                        top: 16,
+                        right: 28,
                         child: FutureBuilder<Map<String, int>>(
                           future: _calculateRank(totalScore),
                           builder: (BuildContext context,
@@ -154,22 +155,34 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                             } else if (snapshot.hasError) {
                               return Text('랭킹: 오류 발생');
                             } else {
-                              return Container(
-                                padding: EdgeInsets.only(
-                                    top: 3, bottom: 3, left: 10, right: 10),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFFFFFFF),
-                                  border: Border.all(
-                                      color: Color(0xFFD9D9D9), width: 0.9),
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                child: Text(
-                                  '${snapshot.data?['rank']}/${snapshot.data?['totalUsers']}',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Color(0xFF444444),
-                                      fontWeight: FontWeight.bold),
-                                ),
+                              return Column(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                        top: 3, bottom: 3, left: 10, right: 10),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFFFFFFF),
+                                      border: Border.all(
+                                          color: Color(0xFFD9D9D9), width: 0.9),
+                                      borderRadius: BorderRadius.circular(30.0),
+                                    ),
+                                    child: Text(
+                                      '${snapshot.data?['rank']}등',
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Color(0xFF444444),
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(height: 6,),
+                                  ExtendedImage.asset(
+                                    'assets/imgs/ranking/icon_ranking_tier_S.png',
+                                    enableMemoryCache: true,
+                                    fit: BoxFit.cover,
+                                    width: 60,
+                                    height: 64,
+                                  ),
+                                ],
                               );
                             }
                           },
@@ -181,21 +194,24 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                '$totalScore',
-                                style: TextStyle(
-                                    fontSize: 80,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF3D83ED),
-                                    height: 1.2),
+                              Container(
+                                height: 120,
+                                child: Text(
+                                  '$totalScore',
+                                  style: GoogleFonts.bebasNeue(
+                                      fontSize: 120,
+                                      fontWeight: FontWeight.normal,
+                                      color: Color(0xFF3D83ED),
+                                      ),
+                                ),
                               ),
                               Text(
                                 'POINTS',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
+                                style: GoogleFonts.bebasNeue(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.normal,
                                   color: Color(0xFF000000),
-                                  height: 1,
+
                                 ),
                               )
                             ],
@@ -205,7 +221,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                       Positioned(
                         left: 0,
                         right: 0,
-                        bottom: 10,
+                        bottom: 16,
                         child: Align(
                           alignment: Alignment.center,
                           child: Text(
@@ -221,19 +237,19 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 12),
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
                           color: Color(0xFF1357BC),
                           borderRadius: BorderRadius.circular(14),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              blurRadius: 2,
-                              offset: Offset(1, 0),
-                            ),
-                          ]
+                          // boxShadow: [
+                          //   BoxShadow(
+                          //     color: Colors.grey.withOpacity(0.5),
+                          //     blurRadius: 2,
+                          //     offset: Offset(1, 0),
+                          //   ),
+                          // ]
                       ),
                       margin: EdgeInsets.symmetric(horizontal: 16),
                       child: Column(

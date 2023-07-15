@@ -161,7 +161,7 @@ class _RankingHomeState extends State<RankingHome> {
                       Padding(
                         padding: EdgeInsets.only(bottom: 2),
                         child: Container(
-                          padding: EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10), // 텍스트와 테두리 간의 패딩
+                          padding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 12), // 텍스트와 테두리 간의 패딩
                           decoration: BoxDecoration(
                             color: Color(0xFF3D6FED),
                             borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게

@@ -103,7 +103,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   color: Color(crewDocs[0]['crewColor']),
                                                   borderRadius: BorderRadius.circular(8),
                                                 ),
-                                                height: 144,
+                                                height: 154,
                                                 width: 107,
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -153,11 +153,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                             fit: BoxFit.cover,
                                                           ),
                                                         ),
-                                                    SizedBox(height: 6,),
+                                                    SizedBox(height: 14,),
                                                     ExtendedImage.asset(
                                                       'assets/imgs/icons/icon_crown_1.png',
-                                                      width: 34,
-                                                      height: 34,
+                                                      width: 28,
+                                                      height: 28,
                                                       fit: BoxFit.cover,
                                                     ),
                                                     Padding(
@@ -193,7 +193,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   color: Color(crewDocs[1]['crewColor']),
                                                   borderRadius: BorderRadius.circular(8),
                                                 ),
-                                                height: 144,
+                                                height: 154,
                                                 width: 107,
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -243,11 +243,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                             fit: BoxFit.cover,
                                                           ),
                                                         ),
-                                                    SizedBox(height: 6,),
+                                                    SizedBox(height: 14,),
                                                     ExtendedImage.asset(
                                                       'assets/imgs/icons/icon_crown_2.png',
-                                                      width: 34,
-                                                      height: 34,
+                                                      width: 28,
+                                                      height: 28,
                                                       fit: BoxFit.cover,
                                                     ),
                                                     Padding(
@@ -283,7 +283,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   color: Color(crewDocs[2]['crewColor']),
                                                   borderRadius: BorderRadius.circular(8),
                                                 ),
-                                                height: 144,
+                                                height: 154,
                                                 width: 107,
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -333,11 +333,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                             fit: BoxFit.cover,
                                                           ),
                                                         ),
-                                                    SizedBox(height: 6,),
+                                                    SizedBox(height: 14,),
                                                     ExtendedImage.asset(
                                                       'assets/imgs/icons/icon_crown_3.png',
-                                                      width: 34,
-                                                      height: 34,
+                                                      width: 28,
+                                                      height: 28,
                                                       fit: BoxFit.cover,
                                                     ),
                                                     Padding(
@@ -364,11 +364,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                     Text('전체 크루 랭킹',
                                       style: TextStyle(
                                           color: Color(0xFF111111),
-                                          fontSize: 18,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.bold
                                       ),
                                     ),
-                                    SizedBox(height: 16),
+                                    SizedBox(height: 18),
                                     StreamBuilder<QuerySnapshot>(
                                         stream: FirebaseFirestore.instance
                                             .collection('liveCrew')
@@ -386,18 +386,18 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                 itemCount: crewDocsTotal.length,
                                                 itemBuilder: (context, index) {
                                                   return Padding(
-                                                    padding: const EdgeInsets.only(bottom: 14),
+                                                    padding: const EdgeInsets.only(bottom: 16),
                                                     child: Row(
                                                       children: [
                                                         Text(
                                                           '${index + 1}',
                                                           style: TextStyle(
                                                               fontWeight: FontWeight.bold,
-                                                              fontSize: 18,
+                                                              fontSize: 15,
                                                               color: Color(0xFF111111)
                                                           ),
                                                         ),
-                                                        SizedBox(width: 16),
+                                                        SizedBox(width: 14),
                                                         GestureDetector(
                                                           onTap: () async{
                                                             CustomFullScreenDialog.showDialog();
@@ -406,13 +406,13 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                             Get.to(()=>CrewDetailPage_screen());
                                                           },
                                                           child: Container(
-                                                            width: 50,
-                                                            height: 50,
+                                                            width: 48,
+                                                            height: 48,
                                                             child:
                                                               (crewDocsTotal[index]['profileImageUrl'].isNotEmpty)
                                                                 ? Container(
-                                                                    width: 48,
-                                                                    height: 48,
+                                                                    width: 46,
+                                                                    height: 46,
                                                                     decoration: BoxDecoration(
                                                                         color: Color(crewDocsTotal[index]['crewColor']),
                                                                         borderRadius: BorderRadius.circular(8)
@@ -428,8 +428,8 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                                       ),
                                                                     ))
                                                                 : Container(
-                                                                  width: 48,
-                                                                  height: 48,
+                                                                  width: 46,
+                                                                  height: 46,
                                                                   decoration: BoxDecoration(
                                                                       color: Color(crewDocsTotal[index]['crewColor']),
                                                                       borderRadius: BorderRadius.circular(8)
@@ -447,7 +447,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                                 ),
                                                           ),
                                                         ),
-                                                        SizedBox(width: 12),
+                                                        SizedBox(width: 14),
                                                         Padding(
                                                           padding: const EdgeInsets.only(bottom: 3),
                                                           child: Column(
@@ -475,11 +475,10 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                           crewDocsTotal[index].get('totalScore').toString(),
                                                           style: TextStyle(
                                                             color: Color(0xFF111111),
-                                                            fontWeight: FontWeight.bold,
+                                                            fontWeight: FontWeight.normal,
                                                             fontSize: 18,
                                                           ),
                                                         ),
-
                                                       ],
                                                     ),
                                                   );
@@ -538,7 +537,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                   decoration: BoxDecoration(
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black12,
+                                        color: Colors.black26,
                                         spreadRadius: 0,
                                         blurRadius: 6,
                                         offset: Offset(0, 0), // changes position of shadow
@@ -556,11 +555,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                           '$myCrewRank',
                                           style: TextStyle(
                                             color: Color(0xFFFFFFFF),
-                                            fontSize: 18,
+                                            fontSize: 15,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        SizedBox(width: 16),
+                                        SizedBox(width: 14),
                                         GestureDetector(
                                           onTap: () async{
                                             CustomFullScreenDialog.showDialog();
@@ -605,7 +604,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 16),
+                                        SizedBox(width: 14),
                                         Padding(
                                           padding: const EdgeInsets.only(bottom: 3),
                                           child: Column(
@@ -616,10 +615,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                 '${myCrewDocs[0]['crewName']}',
                                                 style: TextStyle(
                                                   color: Color(0xFFFFFFFF),
-                                                  fontSize: 15,
+                                                  fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
+                                              SizedBox(height: 2,),
                                               Text(
                                                 '${myCrewDocs[0]['crewLeader']}',
                                                 style: TextStyle(
@@ -636,7 +636,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                           '${myCrewDocs[0]['totalScore']}',
                                           style: TextStyle(
                                             color: Color(0xFFFFFFFF),
-                                            fontWeight: FontWeight.bold,
+                                            fontWeight: FontWeight.normal,
                                             fontSize: 18,
                                           ),
                                         ),

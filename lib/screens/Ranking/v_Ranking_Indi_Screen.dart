@@ -494,8 +494,17 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                 left: 0,
                 right: 0,
                 child: Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        spreadRadius: 0,
+                        blurRadius: 6,
+                        offset: Offset(0, 0), // changes position of shadow
+                      ),],
+                    color: Color(0xFFCBE0FF),
+                  ),
                   height: 80,
-                  color: Color(0xFFCBE0FF),
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('Ranking')
