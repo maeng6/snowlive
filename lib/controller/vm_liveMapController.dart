@@ -738,8 +738,19 @@ class LiveMapController extends GetxController {
     return barData;
   }
 
+  bool areAllSlotValuesZero(Map<String, dynamic>? passCountTimeData) {
+    if (passCountTimeData == null) {
+      return true; // 데이터가 없는 경우
+    }
 
+    for (var value in passCountTimeData.values) {
+      if (value != 0) {
+        return false; // 하나 이상의 값이 0이 아님
+      }
+    }
 
+    return true; // 모든 값이 0임
+  }
 }
 
 
