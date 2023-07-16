@@ -41,88 +41,101 @@ class _FirstPageState extends State<FirstPage> {
       onWillPop: () {
         return Future(() => false);
       }, //안드에서 뒤로가기누르면 앱이 꺼지는걸 막는 기능 Willpopscope
-      child: Scaffold(backgroundColor: Colors.white,
-        extendBodyBehindAppBar: true,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(58),
-          child: AppBar(
-            leading: GestureDetector(
-              child: Image.asset(
-                'assets/imgs/icons/icon_snowLive_back.png',
-                scale: 4,
-                width: 26,
-                height: 26,
+      child: Stack(
+        children: [
+          Scaffold(backgroundColor: Colors.white,
+            extendBodyBehindAppBar: true,
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(58),
+              child: AppBar(
+                leading: GestureDetector(
+                  child: Image.asset(
+                    'assets/imgs/icons/icon_snowLive_back.png',
+                    scale: 4,
+                    width: 26,
+                    height: 26,
+                  ),
+                  onTap: () {
+                    if(FirebaseAuth.instance.currentUser!.providerData[0].providerId =='password') {
+                      Get.offAll(() => LoginPage());
+                    }else {
+                      LoginController().signOut_welcome();
+                    }
+                  },
+                ),
+                backgroundColor: Colors.white,
+                elevation: 0.0,
+                centerTitle: false,
+                titleSpacing: 0,
+                title: Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Text(
+                    '',
+                    style: GoogleFonts.notoSans(
+                        color: Color(0xFF111111),
+                        fontWeight: FontWeight.w900,
+                        fontSize: 23),
+                  ),
+                ),
               ),
-              onTap: () {
-                if(FirebaseAuth.instance.currentUser!.providerData[0].providerId =='password') {
-                  Get.offAll(() => LoginPage());
-                }else {
-                  LoginController().signOut_welcome();
-                }
-              },
             ),
-            backgroundColor: Colors.white,
-            elevation: 0.0,
-            centerTitle: false,
-            titleSpacing: 0,
-            title: Padding(
-              padding: const EdgeInsets.only(left: 16),
-              child: Text(
-                '',
-                style: GoogleFonts.notoSans(
-                    color: Color(0xFF111111),
-                    fontWeight: FontWeight.w900,
-                    fontSize: 23),
+            body: Padding(
+              padding:
+                   EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.asset('assets/imgs/icons/icon_onboarding.png',
+                      scale: 4, width: 73, height: 73,),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Text(
+                        '스노우라이브 시작 전\n간단한 정보를 입력해주세요.',
+                        style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            height: 1.3),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    '몇 가지 간단한 정보를 입력해 주시면,\n나에게 더 맞는 스노우라이브를 이용하실 수 있습니다.',
+                    style: TextStyle(
+                        color: Color(0xff949494),
+                        fontSize: 13,
+                        height: 1.5
+                    ),
+                  ),
+
+                ],
               ),
             ),
           ),
-        ),
-        body: Padding(
-          padding:
-               EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.asset('assets/imgs/icons/icon_onboarding.png',
-                  scale: 4, width: 73, height: 73,),
-                  Text(
-                    '스노우라이브 시작 전\n간단한 정보를 입력해주세요.',
-                    style:
-                        TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                '몇 가지 간단한 정보를 입력해 주시면,\n나에게 더 맞는 스노우라이브를 이용하실 수 있습니다.',
-                style: TextStyle(
-                  color: Color(0xff949494),
-                  fontSize: 14,
-                ),
-              ),
-              Expanded(
-                child: Container()
-              ),
-              Center(
+          Positioned(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            right: 0,
+            left: 0,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                 child: ElevatedButton(
                   onPressed: () async {
-                      Get.to(() => WelcomePage());
+                    Get.to(() => WelcomePage());
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Text(
-                      '시작하기',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
-                    ),
+                  child: Text(
+                    '시작하기',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
                   ),
                   style: TextButton.styleFrom(
                       shape: const RoundedRectangleBorder(
@@ -131,12 +144,12 @@ class _FirstPageState extends State<FirstPage> {
                       splashFactory: InkRipple.splashFactory,
                       minimumSize: Size(1000, 56),
                       backgroundColor:
-                          Color(0xff3D83ED)),
+                      Color(0xff3D83ED)),
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
