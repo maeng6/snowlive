@@ -802,53 +802,41 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                     child: Row(
                                       children: [
                                         (doc['profileImageUrl'].isNotEmpty)
-                                            ? GestureDetector(
-                                          onTap: () {
-                                            Get.to(() => ProfileImagePage(
-                                                CommentProfileUrl: doc['profileImageUrl']));
-                                          },
-                                          child: Container(
+                                            ? Container(
+                                                width: 48,
+                                                height: 48,
+                                                decoration: BoxDecoration(
+                                                    color: Color(doc['crewColor']),
+                                                    borderRadius: BorderRadius.circular(8)
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(2.0),
+                                                  child: ExtendedImage.network(
+                                                    doc['profileImageUrl'],
+                                                    enableMemoryCache: true,
+                                                    shape: BoxShape.rectangle,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ))
+                                            : Container(
                                               width: 48,
                                               height: 48,
                                               decoration: BoxDecoration(
-                                                  color: Color(doc['crewColor']),
-                                                  borderRadius: BorderRadius.circular(8)
+                                                color: Color(doc['crewColor']),
+                                                borderRadius: BorderRadius.circular(8)
                                               ),
                                               child: Padding(
                                                 padding: const EdgeInsets.all(2.0),
-                                                child: ExtendedImage.network(
-                                                  doc['profileImageUrl'],
+                                                child: ExtendedImage.asset(
+                                                  'assets/imgs/profile/img_profile_default_.png',
                                                   enableMemoryCache: true,
                                                   shape: BoxShape.rectangle,
                                                   borderRadius: BorderRadius.circular(8),
                                                   fit: BoxFit.cover,
                                                 ),
-                                              )),
-                                        )
-                                            : GestureDetector(
-                                          onTap: () {
-                                            Get.to(() => ProfileImagePage(
-                                                CommentProfileUrl: ''));
-                                          },
-                                          child: Container(
-                                            width: 48,
-                                            height: 48,
-                                            decoration: BoxDecoration(
-                                              color: Color(doc['crewColor']),
-                                              borderRadius: BorderRadius.circular(8)
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(2.0),
-                                              child: ExtendedImage.asset(
-                                                'assets/imgs/profile/img_profile_default_.png',
-                                                enableMemoryCache: true,
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius.circular(8),
-                                                fit: BoxFit.cover,
                                               ),
                                             ),
-                                          ),
-                                        ),
                                         SizedBox(width: 15,),
                                         Column(
                                           mainAxisAlignment: MainAxisAlignment.center,
