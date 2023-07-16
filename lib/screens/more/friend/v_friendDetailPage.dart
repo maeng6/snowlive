@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_DialogController_resortHome.dart';
 import 'package:snowlive3/controller/vm_friendsCommentController.dart';
+import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
@@ -65,6 +66,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   UserModelController _userModelController = Get.find<UserModelController>();
   FriendsCommentModelController _friendsCommentModelController = Get.find<FriendsCommentModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+  LiveMapController _liveMapController = Get.find<LiveMapController>();
+
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -1153,11 +1156,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                             Map<String, dynamic>? passCountData =
                             data?['passCountData'] as Map<String, dynamic>?;
 
-                            int maxPassCount = 0;
+                            List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);
 
-                            if (passCountData != null && passCountData.isNotEmpty) {
-                              maxPassCount = passCountData.values.reduce((value, element) => value > element ? value : element);
-                            }
 
                             return Container(
                               height: 200,
@@ -1184,22 +1184,14 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                         passCountData?.entries.isEmpty ?? true ?
                                         Center(child: Text('데이터가 없습니다'))
                                             : ListView(
-                                          scrollDirection: Axis.horizontal,
-                                          children: (passCountData!.entries.toList()
-                                            ..sort((a, b) {
-                                              return b.value.compareTo(a.value);
-                                            })).getRange(0, min(5, passCountData!.entries.length)).map((entry) {
+                                            scrollDirection: Axis.horizontal,
+                                            children: barData.map((data) {
+                                              String slopeName = data['slopeName'];
+                                              int passCount = data['passCount'];
+                                              double barHeightRatio = data['barHeightRatio'];
+                                              Color barColor = data['barColor'];
 
-                                            String slopeName = entry.key;
-                                            int passCount = entry.value ?? 0;
-
-                                            // Calculate the height ratio based on the pass count for each slope
-                                            double barHeightRatio = passCount.toDouble() / maxPassCount.toDouble();
-
-                                            // Determine the color of the bar based on whether this pass count is the maximum
-                                            Color barColor = passCount == maxPassCount ? Color(0xFF05419A) : Color(0xFF3D83ED);  // use your desired colors
-
-                                            return Container(
+                                              return Container(
                                               margin: EdgeInsets.symmetric(horizontal: 5),
                                               width: 50,
                                               height: 95,
@@ -1299,11 +1291,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                             Map<String, dynamic>? passCountTimeData =
                             data?['passCountTimeData'] as Map<String, dynamic>?;
 
-                            int maxPassCount = 0;
+                            List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataSlot(passCountTimeData);
 
-                            if (passCountTimeData != null && passCountTimeData.isNotEmpty) {
-                              maxPassCount = passCountTimeData.values.reduce((value, element) => value > element ? value : element);
-                            }
 
                             return Container(
                               height: 200,
@@ -1331,20 +1320,12 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                         Center(child: Text('데이터가 없습니다'))
                                             : ListView(
                                           scrollDirection: Axis.horizontal,
-                                          children: (passCountTimeData!.entries.toList()
-                                            ..sort((a, b) {
-                                              return int.parse(a.key).compareTo(int.parse(b.key));
-                                            }))
-                                              .getRange(0, min(8, passCountTimeData.entries.length)).map((entry) {
-
-                                            String slopeName = entry.key;
-                                            int passCount = entry.value ?? 0;
-
-                                            // Calculate the height ratio based on the pass count for each slope
-                                            double barHeightRatio = passCount.toDouble() / maxPassCount.toDouble();
-
-                                            // Determine the color of the bar based on whether this pass count is the maximum
-                                            Color barColor = passCount == maxPassCount ? Color(0xFF05419A) : Color(0xFF3D83ED);  // use your desired colors
+                                          physics: NeverScrollableScrollPhysics(),
+                                          children: barData.map((data) {
+                                            String slotName = data['slotName'];
+                                            int passCount = data['passCount'];
+                                            double barHeightRatio = data['barHeightRatio'];
+                                            Color barColor = data['barColor'];
 
                                             return Container(
                                               margin: EdgeInsets.symmetric(horizontal: 5),
@@ -1379,7 +1360,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                   ),
                                                   SizedBox(height: 10),
                                                   Text(
-                                                    _resortModelController.getSlotName(slopeName),
+                                                    _resortModelController.getSlotName(slotName),
                                                     style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
                                                   ),
                                                   SizedBox(height: 20,)
