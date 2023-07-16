@@ -58,152 +58,146 @@ class _FavoriteResortState extends State<FavoriteResort> {
         ));
     bool? isSelected=_isChecked.contains(true);
 
-    return Scaffold(backgroundColor: Colors.white,
-      extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(58),
-        child: AppBar(
-          leading: GestureDetector(
-            child: Image.asset(
-              'assets/imgs/icons/icon_snowLive_back.png',
-              scale: 4,
-              width: 26,
-              height: 26,
-            ),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          actions: [
-            Padding(
-              padding: EdgeInsets.only(right: 20),
-              child: Image.asset(
-                'assets/imgs/icons/icon_onb_indicator4.png',
-                scale: 4,
-                width: 56,
-                height: 8,
-              ),
-            ),
-          ],
-          backgroundColor: Colors.white,
-          elevation: 0.0,
-          centerTitle: false,
-          titleSpacing: 0,
-          title: Padding(
-            padding: const EdgeInsets.only(left: 16),
-            child: Text(
-              '',
-              style: GoogleFonts.notoSans(
-                  color: Color(0xFF111111),
-                  fontWeight: FontWeight.w900,
-                  fontSize: 23),
-            ),
-          ),
-        ),
-      ),
-      body: Padding(
-        padding:  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),
-        child: Container(
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                children: [
-                  Text(
-                    '자주가는 리조트를 \n선택해 주세요.',
-                    style:
-                    TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                '자주가는 리조트는 1개만 선택할 수 있습니다.',
-                style: TextStyle(
-                  color: Color(0xff949494),
-                  fontSize: 14,
+    return Stack(
+      children: [
+        Scaffold(backgroundColor: Colors.white,
+          extendBodyBehindAppBar: true,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(58),
+            child: AppBar(
+              leading: GestureDetector(
+                child: Image.asset(
+                  'assets/imgs/icons/icon_snowLive_back.png',
+                  scale: 4,
+                  width: 26,
+                  height: 26,
                 ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
               ),
-              SizedBox(
-                height: 40,
-              ),
-              Expanded(
-                child: ListView.builder(
-                  padding: EdgeInsets.only(top: 0),
-                  shrinkWrap: true,
-                    itemCount: 13,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          buildCheckboxListTile(index),
-
-                          Divider(
-                            height: 20,
-                            thickness: 0.5,
-                          )
-                        ],
-                      );
-                    }),
-              ),
-              Stack(
-                alignment: AlignmentDirectional.center,
+              backgroundColor: Colors.white,
+              elevation: 0.0,
+              centerTitle: false,
+              titleSpacing: 0,
+            ),
+          ),
+          body: Padding(
+            padding:  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: 140),
+            child: Container(
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: _size.width,
-                    height: 88,
-                  ),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if(isSelected) {
-                          CustomFullScreenDialog.showDialog();
-                          await _loginController.createUserDoc(0);
-                          await userModelController
-                              .updateNickname(widget.getNickname);
-                          await userModelController
-                              .updateProfileImageUrl(widget.getProfileImageUrl);
-                          await userModelController.updateFavoriteResort(
-                              favoriteResort);
-                          await userModelController.updateInstantResort(
-                              favoriteResort);
-                          await userModelController.updateResortNickname(
-                              favoriteResort);
-                          print('즐겨찾는 리조트 업뎃완료');
-                          await resortModelController.getSelectedResort(
-                              userModelController.favoriteResort!);
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.offAll(() => MainHome(uid: userModelController.uid,));
-                        }else{
-                          null;
-                        }
-                      },
-                      child: Text(
-                        '가입완료',
+                  Column(
+                    children: [
+                      Text(
+                        '자주가는 리조트를 \n선택해 주세요.',
                         style: TextStyle(
-                            color: Colors.white,
+                            fontSize: 26,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16),
-                      ),
-                      style: TextButton.styleFrom(
-                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                          elevation: 0,
-                          splashFactory: InkRipple.splashFactory,
-                          minimumSize: Size(1000, 56),
-                          backgroundColor:
-                          (isSelected)
-                          ? Color(0xff377EEA)
-                        : Color(0xffDEDEDE))
+                            height: 1.3),),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    '자주가는 리조트는 1개만 선택할 수 있습니다.',
+                    style: TextStyle(
+                        color: Color(0xff949494),
+                        fontSize: 13,
+                        height: 1.5
                     ),
                   ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      padding: EdgeInsets.only(top: 0),
+                      shrinkWrap: true,
+                        itemCount: 13,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              buildCheckboxListTile(index),
+                              if (index != 12)
+                              Divider(
+                                height: 20,
+                                thickness: 0.5,
+                              )
+                            ],
+                          );
+                        }),
+                  ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          left: 0,
+          child: Container(
+            color: Colors.white,
+            width: _size.width,
+            height: 40,
+          ),
+        ),
+        Positioned(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          right: 0,
+          left: 0,
+          child: SafeArea(
+            child: Container(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              child: ElevatedButton(
+                  onPressed: () async {
+                    if(isSelected) {
+                      CustomFullScreenDialog.showDialog();
+                      await _loginController.createUserDoc(0);
+                      await userModelController
+                          .updateNickname(widget.getNickname);
+                      await userModelController
+                          .updateProfileImageUrl(widget.getProfileImageUrl);
+                      await userModelController.updateFavoriteResort(
+                          favoriteResort);
+                      await userModelController.updateInstantResort(
+                          favoriteResort);
+                      await userModelController.updateResortNickname(
+                          favoriteResort);
+                      print('즐겨찾는 리조트 업뎃완료');
+                      await resortModelController.getSelectedResort(
+                          userModelController.favoriteResort!);
+                      CustomFullScreenDialog.cancelDialog();
+                      Get.offAll(() => MainHome(uid: userModelController.uid,));
+                    }else{
+                      null;
+                    }
+                  },
+                  child: Text(
+                    '가입완료',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
+                  ),
+                  style: TextButton.styleFrom(
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                      elevation: 0,
+                      splashFactory: InkRipple.splashFactory,
+                      minimumSize: Size(1000, 56),
+                      backgroundColor:
+                      (isSelected)
+                          ? Color(0xff377EEA)
+                          : Color(0xffDEDEDE))
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

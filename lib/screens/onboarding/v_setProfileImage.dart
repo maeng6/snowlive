@@ -58,485 +58,457 @@ class _SetProfileImageState extends State<SetProfileImage> {
                 :Brightness.dark //ios:dark, android:light
         ));
 
-    return Scaffold(backgroundColor: Colors.white,
-      extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(58),
-        child: AppBar(
-          leading: GestureDetector(
-            child: Image.asset(
-              'assets/imgs/icons/icon_snowLive_back.png',
-              scale: 4,
-              width: 26,
-              height: 26,
-            ),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          actions: [
-            Padding(
-              padding: EdgeInsets.only(right: 20),
-              child: Image.asset(
-                'assets/imgs/icons/icon_onb_indicator3.png',
-                scale: 4,
-                width: 56,
-                height: 8,
-              ),
-            ),
-          ],
-          backgroundColor: Colors.white,
-          elevation: 0.0,
-          centerTitle: false,
-          titleSpacing: 0,
-          title: Padding(
-            padding: const EdgeInsets.only(left: 16),
-            child: Text(
-              '',
-              style: GoogleFonts.notoSans(
-                  color: Color(0xFF111111),
-                  fontWeight: FontWeight.w900,
-                  fontSize: 23),
-            ),
-          ),
-        ),
-      ),
-      body: Padding(
-        padding:
-             EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              children: [
-                Text(
-                  '프로필 이미지를\n선택해 주세요.',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+    return Stack(
+      children: [
+        Scaffold(backgroundColor: Colors.white,
+          extendBodyBehindAppBar: true,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(58),
+            child: AppBar(
+              leading: GestureDetector(
+                child: Image.asset(
+                  'assets/imgs/icons/icon_snowLive_back.png',
+                  scale: 4,
+                  width: 26,
+                  height: 26,
                 ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              backgroundColor: Colors.white,
+              elevation: 0.0,
+              centerTitle: false,
+              titleSpacing: 0,
+            ),
+          ),
+          body: Padding(
+            padding:
+                 EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      '프로필 이미지를\n선택해 주세요.',
+                      style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          height: 1.3),
+
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  '스노우라이브에서 사용할 프로필 이미지를 설정해 주세요.\n프로필 이미지는 언제든지 변경할 수 있습니다.',
+                  style: TextStyle(
+                      color: Color(0xff949494),
+                      fontSize: 13,
+                      height: 1.5
+                  ),
+                ),
+                SizedBox(
+                  height: _size.height * 0.16,
+                ),
+                (profileImage) //이 값이 true이면 이미지업로드가 된 상태이므로, 미리보기 띄움
+                    ? Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) => SafeArea(
+                                child: Container(
+                                  height: 187,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 24.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 24,
+                                            ),
+                                            Text(
+                                              '업로드 방법을 선택해주세요.',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFF111111)),
+                                            ),
+                                            SizedBox(
+                                              height: 8,
+                                            ),
+                                            Text(
+                                              '프로필 이미지를 나중에 설정 하시려면,\n기본 이미지로 설정해주세요.',
+                                              style: TextStyle(
+                                                color: Color(0xff666666),
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 24,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () async {
+                                                  CustomFullScreenDialog.showDialog();
+                                                  try {
+                                                    _imageFile =
+                                                    await _imageController
+                                                        .getSingleImage(
+                                                        ImageSource.camera);
+                                                    _croppedFile =
+                                                    await _imageController.cropImage(_imageFile);
+                                                    CustomFullScreenDialog
+                                                        .cancelDialog();
+                                                    profileImage = true;
+                                                    setState(() {});
+                                                    Navigator.pop(context);
+                                                  } catch (e) {
+                                                    CustomFullScreenDialog
+                                                        .cancelDialog();
+                                                  }
+                                                },
+                                                child: Text(
+                                                  '사진 촬영',
+                                                  style: TextStyle(
+                                                      color: Color(0xff377EEA),
+                                                      fontSize: 15,
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                                style: TextButton.styleFrom(
+                                                    splashFactory: InkRipple.splashFactory,
+                                                    elevation: 0,
+                                                    minimumSize: Size(100, 56),
+                                                    backgroundColor: Color(0xFFD8E7FD),
+                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () async {
+                                                  CustomFullScreenDialog.showDialog();
+                                                  try {
+                                                    _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
+                                                    _croppedFile = await _imageController.cropImage(_imageFile);
+                                                    CustomFullScreenDialog.cancelDialog();
+                                                    profileImage = true;
+                                                    setState(() {});
+                                                    Navigator.pop(context);
+                                                  } catch (e) {
+                                                    CustomFullScreenDialog.cancelDialog();
+                                                  }
+                                                },
+                                                child: Text(
+                                                  '앨범에서 선택',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15,
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                                style: TextButton.styleFrom(
+                                                    splashFactory: InkRipple.splashFactory,
+                                                    elevation: 0,
+                                                    minimumSize: Size(100, 56),
+                                                    backgroundColor: Color(0xff377EEA),
+                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Stack(children: [
+                            Container(
+                              width: 160,
+                              height: 160,
+                              child: CircleAvatar(
+                                backgroundColor: Colors.grey[100],
+                                backgroundImage:
+                                    FileImage(File(_croppedFile!.path)),
+                              ),
+                            ),
+                            Positioned(
+                                bottom: 13,
+                                right: 8,
+                                child: GestureDetector(
+                                  child: ExtendedImage.asset(
+                                      'assets/imgs/icons/icon_profile_delete.png',
+                                      scale: 4),
+                                  onTap: () {
+                                    profileImage = false;
+                                    _croppedFile = null;
+                                    setState(() {});
+                                  },
+                                )),
+                          ]),
+                        ),
+                      )
+                    : Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) => SafeArea(
+                                child: Container(
+                                  height: 187,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 24.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 24,
+                                            ),
+                                            Text(
+                                              '업로드 방법을 선택해주세요.',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFF111111)),
+                                            ),
+                                            SizedBox(
+                                              height: 8,
+                                            ),
+                                            Text(
+                                              '프로필 이미지를 나중에 설정 하시려면,\n기본 이미지로 설정해주세요.',
+                                              style: TextStyle(
+                                                color: Color(0xff666666),
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 24,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () async {
+                                                  CustomFullScreenDialog.showDialog();
+                                                  try {
+                                                    _imageFile = await _imageController.getSingleImage(ImageSource.camera);
+                                                    _croppedFile = await _imageController.cropImage(_imageFile);
+                                                    CustomFullScreenDialog.cancelDialog();
+                                                    profileImage = true;
+                                                    setState(() {});
+                                                    Navigator.pop(context);
+                                                  } catch (e) {
+                                                    CustomFullScreenDialog.cancelDialog();
+                                                  }
+                                                },
+                                                child: Text(
+                                                  '사진 촬영',
+                                                  style: TextStyle(
+                                                      color: Color(0xff377EEA),
+                                                      fontSize: 15,
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                                style: TextButton.styleFrom(
+                                                    splashFactory: InkRipple.splashFactory,
+                                                    elevation: 0,
+                                                    minimumSize: Size(100, 56),
+                                                    backgroundColor: Color(0xFFD8E7FD),
+                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () async {
+                                                  CustomFullScreenDialog.showDialog();
+                                                  try {
+                                                    _imageFile =
+                                                    await _imageController
+                                                        .getSingleImage(
+                                                        ImageSource.gallery);
+                                                    _croppedFile =
+                                                    await _imageController.cropImage(_imageFile);
+                                                    CustomFullScreenDialog
+                                                        .cancelDialog();
+                                                    profileImage = true;
+                                                    setState(() {});
+                                                    Navigator.pop(context);
+                                                  } catch (e) {
+                                                    CustomFullScreenDialog
+                                                        .cancelDialog();
+                                                  }
+                                                },
+                                                child: Text(
+                                                  '앨범에서 선택',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15,
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                                style: TextButton.styleFrom(
+                                                    splashFactory:
+                                                    InkRipple.splashFactory,
+                                                    elevation: 0,
+                                                    minimumSize: Size(100, 56),
+                                                    backgroundColor:
+                                                    Color(0xff377EEA),
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 0)),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Stack(
+                            children: [
+                              Container(
+                                width: 160,
+                                height: 160,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Image.asset(
+                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                  width: 147,
+                                  height: 147,
+                                ),
+                              ),
+                              Positioned(
+                                  bottom: 13,
+                                  right: 8,
+                                  child: GestureDetector(
+                                    child: ExtendedImage.asset(
+                                        'assets/imgs/icons/icon_profile_add.png',
+                                        scale: 4),
+                                    onTap: () {},
+                                  )),
+                            ],
+                          ), //이 컨테이너가 이미지업로드 전에 보여주는 아이콘임
+                        ),
+                      ),
               ],
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              '스노우라이브에서 사용할 프로필 이미지를 설정해 주세요.\n프로필 이미지는 언제든지 변경할 수 있습니다.',
-              style: TextStyle(
-                color: Color(0xff949494),
-                fontSize: 14,
-              ),
-            ),
-            SizedBox(
-              height: _size.height * 0.12,
-            ),
-            (profileImage) //이 값이 true이면 이미지업로드가 된 상태이므로, 미리보기 띄움
-                ? Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) => Container(
-                            height: 249,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 24.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        height: 30,
-                                      ),
-                                      Text(
-                                        '업로드 방법을 선택해주세요.',
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFF111111)),
-                                      ),
-                                      SizedBox(
-                                        height: 8,
-                                      ),
-                                      Text(
-                                        '프로필 이미지를 나중에 설정 하시려면,\n기본 이미지로 설정해주세요.',
-                                        style: TextStyle(
-                                          color: Color(0xff666666),
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 30,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            CustomFullScreenDialog.showDialog();
-                                            try {
-                                              _imageFile =
-                                              await _imageController
-                                                  .getSingleImage(
-                                                  ImageSource.camera);
-                                              _croppedFile =
-                                              await _imageController.cropImage(_imageFile);
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                              profileImage = true;
-                                              setState(() {});
-                                              Navigator.pop(context);
-                                            } catch (e) {
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                            }
-                                          },
-                                          child: Text(
-                                            '사진 촬영',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                              splashFactory:
-                                              InkRipple.splashFactory,
-                                              elevation: 0,
-                                              minimumSize: Size(100, 56),
-                                              backgroundColor:
-                                              Color(0xff555555),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 0)),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            CustomFullScreenDialog.showDialog();
-                                            try {
-                                              _imageFile =
-                                              await _imageController
-                                                  .getSingleImage(
-                                                  ImageSource.gallery);
-                                              _croppedFile =
-                                              await _imageController.cropImage(_imageFile);
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                              profileImage = true;
-                                              setState(() {});
-                                              Navigator.pop(context);
-                                            } catch (e) {
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                            }
-                                          },
-                                          child: Text(
-                                            '앨범에서 선택',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                              splashFactory:
-                                              InkRipple.splashFactory,
-                                              elevation: 0,
-                                              minimumSize: Size(100, 56),
-                                              backgroundColor:
-                                              Color(0xff2C97FB),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 0)),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                      child: Stack(children: [
-                        Container(
-                          width: 160,
-                          height: 160,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.grey[100],
-                            backgroundImage:
-                                FileImage(File(_croppedFile!.path)),
-                          ),
-                        ),
-                        Positioned(
-                            bottom: 13,
-                            right: 8,
-                            child: GestureDetector(
-                              child: ExtendedImage.asset(
-                                  'assets/imgs/icons/icon_profile_delete.png',
-                                  scale: 4),
-                              onTap: () {
-                                profileImage = false;
-                                _croppedFile = null;
-                                setState(() {});
-                              },
-                            )),
-                      ]),
-                    ),
-                  )
-                : Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) => Container(
-                            height: 249,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 24.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        height: 30,
-                                      ),
-                                      Text(
-                                        '업로드 방법을 선택해주세요.',
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFF111111)),
-                                      ),
-                                      SizedBox(
-                                        height: 8,
-                                      ),
-                                      Text(
-                                        '프로필 이미지를 나중에 설정 하시려면,\n기본 이미지로 설정해주세요.',
-                                        style: TextStyle(
-                                          color: Color(0xff666666),
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 30,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            CustomFullScreenDialog.showDialog();
-                                            try {
-                                              _imageFile =
-                                              await _imageController
-                                                  .getSingleImage(
-                                                  ImageSource.camera);
-                                              _croppedFile =
-                                              await _imageController.cropImage(_imageFile);
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                              profileImage = true;
-                                              setState(() {});
-                                              Navigator.pop(context);
-                                            } catch (e) {
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                            }
-                                          },
-                                          child: Text(
-                                            '사진 촬영',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                              splashFactory:
-                                              InkRipple.splashFactory,
-                                              elevation: 0,
-                                              minimumSize: Size(100, 56),
-                                              backgroundColor:
-                                              Color(0xff555555),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 0)),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            CustomFullScreenDialog.showDialog();
-                                            try {
-                                              _imageFile =
-                                              await _imageController
-                                                  .getSingleImage(
-                                                  ImageSource.gallery);
-                                              _croppedFile =
-                                              await _imageController.cropImage(_imageFile);
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                              profileImage = true;
-                                              setState(() {});
-                                              Navigator.pop(context);
-                                            } catch (e) {
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                            }
-                                          },
-                                          child: Text(
-                                            '앨범에서 선택',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                              splashFactory:
-                                              InkRipple.splashFactory,
-                                              elevation: 0,
-                                              minimumSize: Size(100, 56),
-                                              backgroundColor:
-                                              Color(0xff2C97FB),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 0)),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                      child: Stack(
-                        children: [
-                          Container(
-                            width: 160,
-                            height: 160,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
-                            child: Image.asset(
-                              'assets/imgs/profile/img_profile_default_circle.png',
-                              width: 147,
-                              height: 147,
-                            ),
-                          ),
-                          Positioned(
-                              bottom: 13,
-                              right: 8,
-                              child: GestureDetector(
-                                child: ExtendedImage.asset(
-                                    'assets/imgs/icons/icon_profile_add.png',
-                                    scale: 4),
-                                onTap: () {},
-                              )),
-                        ],
-                      ), //이 컨테이너가 이미지업로드 전에 보여주는 아이콘임
-                    ),
-                  ),
-            Expanded(child: SizedBox()),
-            Center(
-              child: ElevatedButton(
-                onPressed: () async {
-                  if (_croppedFile != null) {
-                    CustomFullScreenDialog.showDialog();
-                    String _profileImageUrl =
-                        await _imageController.setNewImage(_croppedFile!);
-                    CustomFullScreenDialog.cancelDialog();
-                    Get.to(() => FavoriteResort(getNickname: widget.nickName,getProfileImageUrl: _profileImageUrl,));
-                  } else {
-                    Get.snackbar('이미지를 선택해주세요.', '다음에 설정하시려면 기본 이미지로 설정해주세요.',
-                        snackPosition: SnackPosition.BOTTOM,
-                        margin: EdgeInsets.only(
-                            right: 20, left: 20, bottom: 12),
-                        backgroundColor: Colors.black87,
-                        colorText: Colors.white,
-                        duration: Duration(milliseconds: 3000));
-                  }
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Text(
-                    '다음',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                  ),
-                ),
-                style: TextButton.styleFrom(
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(6))),
-                    elevation: 0,
-                    splashFactory: InkRipple.splashFactory,
-                    minimumSize: Size(1000, 56),
-                    backgroundColor: Color(0xff377EEA)),
-              ),
-            ),
-            SizedBox(
-              height: 12,
-            ),
-            Center(
-              child: ElevatedButton(
-                onPressed: () async {
-                  Get.to(() => FavoriteResort(getNickname: widget.nickName,getProfileImageUrl: '',));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Text(
-                    '기본 이미지로 설정',
-                    style: TextStyle(fontFamily: 'NotoSansKR', color: Color(0xff949494), fontSize: 16, fontWeight: FontWeight.w300),
-
-                  ),
-                ),
-                style: TextButton.styleFrom(
-                    elevation: 0,
-                    splashFactory: InkRipple.splashFactory,
-                    minimumSize: Size(1000, 41),
-                    backgroundColor: Colors.white),
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+        Positioned(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          right: 0,
+          left: 0,
+          child: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Get.to(() => FavoriteResort(getNickname: widget.nickName,getProfileImageUrl: '',));
+                      },
+                      child: Text(
+                        '기본 이미지로 설정',
+                        style: TextStyle(color: Color(0xff377EEA), fontSize: 16, fontWeight: FontWeight.bold),
+
+                      ),
+                      style: TextButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(6))),
+                          elevation: 0,
+                          splashFactory: InkRipple.splashFactory,
+                          minimumSize: Size(100, 56),
+                          backgroundColor: Color(0xFFD8E7FD)),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (_croppedFile != null) {
+                          CustomFullScreenDialog.showDialog();
+                          String _profileImageUrl =
+                          await _imageController.setNewImage(_croppedFile!);
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.to(() => FavoriteResort(getNickname: widget.nickName,getProfileImageUrl: _profileImageUrl,));
+                        } else {
+                          Get.snackbar('이미지를 선택해주세요.', '다음에 설정하시려면 기본 이미지로 설정해주세요.',
+                              snackPosition: SnackPosition.BOTTOM,
+                              margin: EdgeInsets.only(
+                                  right: 20, left: 20, bottom: 12),
+                              backgroundColor: Colors.black87,
+                              colorText: Colors.white,
+                              duration: Duration(milliseconds: 3000));
+                        }
+                      },
+                      child: Text(
+                        '다음',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
+                      ),
+                      style: TextButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(6))),
+                          elevation: 0,
+                          splashFactory: InkRipple.splashFactory,
+                          minimumSize: Size(100, 56),
+                          backgroundColor: Color(0xff377EEA)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
