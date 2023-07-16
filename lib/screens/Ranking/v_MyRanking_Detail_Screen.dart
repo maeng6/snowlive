@@ -25,7 +25,6 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   // TODO: Dependency Injection**************************************************
 
-  bool? isLoading;
 
 
   @override
@@ -64,14 +63,13 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                 .snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
-                isLoading = false;
                 return Text("오류가 발생했습니다");
-              }
-              else if (snapshot.connectionState == ConnectionState.waiting) {
-                isLoading = true;
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return Lottie.asset('assets/json/loadings_wht_final.json');
+              } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                // 데이터가 없을 때 처리
+                return Text("데이터가 없습니다");
               }
-              isLoading = false;
               final rankingDocs = snapshot.data!.docs;
               int totalScore = rankingDocs[0]['totalScore'];
               Map<String, dynamic>? passCountData = rankingDocs[0]['passCountData'];

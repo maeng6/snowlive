@@ -1005,6 +1005,14 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                   return Lottie.asset('assets/json/loadings_wht_final.json');
                                 }
 
+                                if (snapshot.data?.docs.first.data()['passCountTimeData'] != null) {
+                                  Map<String, dynamic> passCountTimeData = snapshot.data?.docs.first.data()['passCountTimeData'];
+                                  bool areAllValuesZero = _liveMapController.areAllSlotValuesZero(passCountTimeData);
+                                  if (areAllValuesZero) {
+                                    return Text('슬로프 이용기록이 없습니다.');
+                                  }
+                                }
+
                                 Map<String, dynamic>? data = snapshot.data?.docs.first.data();
 
                                 Map<String, dynamic>? passCountTimeData =
