@@ -17,6 +17,7 @@ import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../controller/vm_liveCrewModelController.dart';
 import '../../controller/vm_noticeController.dart';
 import '../../controller/vm_userModelController.dart';
+import '../LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
 import '../LiveCrew/v_liveCrewHome_firstUser.dart';
 import '../bulletin/v_bulletin_Screen.dart';
 import '../fleaMarket/v_fleaMarket_Screen.dart';
@@ -587,7 +588,7 @@ class _MoreTabState extends State<MoreTab> {
                             CustomFullScreenDialog.showDialog();
                             if(_userModelController.liveCrew!.isEmpty){
                               CustomFullScreenDialog.cancelDialog();
-                              Get.to(()=>LiveCrewHome_firstUser());
+                              Get.to(()=>FirstPage_createCrew());
                             }
                             else{
                               await _userModelController.getCurrentUser_crew(_userModelController.uid);

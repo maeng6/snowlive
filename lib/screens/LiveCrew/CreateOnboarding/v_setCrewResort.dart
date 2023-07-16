@@ -106,181 +106,189 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
         ));
     bool? isSelected=_isChecked.contains(true);
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(58),
-        child: AppBar(
-          leading: GestureDetector(
-            child: Image.asset(
-              'assets/imgs/icons/icon_snowLive_back.png',
-              scale: 4,
-              width: 26,
-              height: 26,
-            ),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          actions: [
-            Padding(
-              padding: EdgeInsets.only(right: 20),
-              child: Image.asset(
-                'assets/imgs/icons/icon_onb_indicator4.png',
-                scale: 4,
-                width: 56,
-                height: 8,
-              ),
-            ),
-          ],
+    return Stack(
+      children: [
+        Scaffold(
           backgroundColor: Colors.white,
-          elevation: 0.0,
-          centerTitle: false,
-          titleSpacing: 0,
-          title: Padding(
-            padding: const EdgeInsets.only(left: 16),
-            child: Text(
-              '',
-              style: GoogleFonts.notoSans(
-                  color: Color(0xFF111111),
-                  fontWeight: FontWeight.w900,
-                  fontSize: 23),
+          extendBodyBehindAppBar: true,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(58),
+            child: AppBar(
+              leading: GestureDetector(
+                child: Image.asset(
+                  'assets/imgs/icons/icon_snowLive_back.png',
+                  scale: 4,
+                  width: 26,
+                  height: 26,
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+
+              backgroundColor: Colors.white,
+              elevation: 0.0,
+              centerTitle: false,
+              titleSpacing: 0,
             ),
           ),
-        ),
-      ),
-      body: Padding(
-        padding:  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),
-        child: Container(
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
+          body: Padding(
+            padding:  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: 140),
+            child: Container(
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '크루의 베이스 리조트를\n설정해 주세요.',
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          height: 1.3),
+                            ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Text('${resortNameList[baseResort!]}',
+                        style: TextStyle(
+                            color: widget.crewColor,
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            height: 1.3),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
                   Text(
-                    '크루의 베이스 리조트는\n${resortNameList[baseResort!]}(으)로 설정됩니다.',
-                    style:
-                    TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    '베이스 리조트를 변경하면 자주가는 리조트도 함께 바뀝니다.',
+                    style: TextStyle(
+                        color: Color(0xff949494),
+                        fontSize: 13,
+                        height: 1.5
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                        padding: EdgeInsets.only(top: 0),
+                        shrinkWrap: true,
+                        itemCount: 13,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              buildCheckboxListTile(index),
+                              if (index != 12)
+                                Divider(
+                                height: 20,
+                                thickness: 0.5,
+                              )
+                            ],
+                          );
+                        }),
                   ),
                 ],
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                '베이스 리조트를 변경하면 자주가는 리조트도 함께 바뀝니다.',
-                style: TextStyle(
-                  color: Color(0xff949494),
-                  fontSize: 14,
-                ),
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              Expanded(
-                child: ListView.builder(
-                    padding: EdgeInsets.only(top: 0),
-                    shrinkWrap: true,
-                    itemCount: 13,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          buildCheckboxListTile(index),
-                          Divider(
-                            height: 20,
-                            thickness: 0.5,
-                          )
-                        ],
-                      );
-                    }),
-              ),
-              Stack(
-                alignment: AlignmentDirectional.center,
-                children: [
-                  Container(
-                    width: _size.width,
-                    height: 88,
-                  ),
-                  Center(
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          if(isSelected) {
-                            if(_userModelController.liveCrew!.isEmpty || _userModelController.liveCrew == ''){
-                            CustomFullScreenDialog.showDialog();
-                            Timestamp resistDate = Timestamp.now();
-                            DateTime dateTime = resistDate.toDate();
-                            String dateTimeStr = '${dateTime.year}${dateTime.month}${dateTime.day}${dateTime.hour}${dateTime.minute}${dateTime.second}';
-                            crewID = widget.crewName + dateTimeStr.toString();
-                            await _liveCrewModelController.createCrewDoc(
-                                crewLeader: _userModelController.displayName,
-                                crewColor: widget.crewColor,
-                                resortNum: baseResort,
-                                crewImageUrl: widget.CrewImageUrl,
-                                crewName: widget.crewName,
-                                crewID: crewID,
-                                sns: '',
-                                totalScore: 0
-                            );
-                            await _userModelController.updateFavoriteResort(baseResort);
-                            await _userModelController.updateResortNickname(baseResort);
-                            await _userModelController.updateLiveCrew(crewID);
-                            await _userModelController.getCurrentUser(_userModelController.uid);
-                            await _liveCrewModelController.getCurrnetCrew(crewID);
-                            print('크루 생성 완료');
-                            CustomFullScreenDialog.cancelDialog();
-                            for(int i=0; i<5; i++){
-                              Get.back();
-                            }
-                            Get.to(()=>LiveCrewHome());
-                            } else{}
-                          }else{
-                            null;
-                          }
-                        },
-                        child:
-                        (_userModelController.favoriteResort! == baseResort)
-                        ? Text(
-                          '크루 만들기',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        )
-                        : Text(
-                    '베이스 리조트를 변경하여 크루 만들기',
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          left: 0,
+          child: Container(
+            color: Colors.white,
+            width: _size.width,
+            height: 124,
+          ),
+        ),
+        Positioned(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          right: 0,
+          left: 0,
+          child: SafeArea(
+            child: Container(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              child: ElevatedButton(
+                  onPressed: () async {
+                    if(isSelected) {
+                      if(_userModelController.liveCrew!.isEmpty || _userModelController.liveCrew == ''){
+                        CustomFullScreenDialog.showDialog();
+                        Timestamp resistDate = Timestamp.now();
+                        DateTime dateTime = resistDate.toDate();
+                        String dateTimeStr = '${dateTime.year}${dateTime.month}${dateTime.day}${dateTime.hour}${dateTime.minute}${dateTime.second}';
+                        crewID = widget.crewName + dateTimeStr.toString();
+                        await _liveCrewModelController.createCrewDoc(
+                            crewLeader: _userModelController.displayName,
+                            crewColor: widget.crewColor,
+                            resortNum: baseResort,
+                            crewImageUrl: widget.CrewImageUrl,
+                            crewName: widget.crewName,
+                            crewID: crewID,
+                            sns: '',
+                            totalScore: 0
+                        );
+                        await _userModelController.updateFavoriteResort(baseResort);
+                        await _userModelController.updateResortNickname(baseResort);
+                        await _userModelController.updateLiveCrew(crewID);
+                        await _userModelController.getCurrentUser(_userModelController.uid);
+                        await _liveCrewModelController.getCurrnetCrew(crewID);
+                        print('크루 생성 완료');
+                        CustomFullScreenDialog.cancelDialog();
+                        for(int i=0; i<5; i++){
+                          Get.back();
+                        }
+                        Get.to(()=>LiveCrewHome());
+                      } else{}
+                    }else{
+                      null;
+                    }
+                  },
+                  child:
+                  (_userModelController.favoriteResort! == baseResort)
+                      ? Text(
+                    '크루 만들기',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
+                  )
+                      : Text(
+                    '베이스 리조트 변경',
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 16),
                   ),
-                        style: TextButton.styleFrom(
-                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                            elevation: 0,
-                            splashFactory: InkRipple.splashFactory,
-                            minimumSize: Size(1000, 56),
-                            backgroundColor:
-                            (isSelected)
-                                ? widget.crewColor
-                                : Color(0xffDEDEDE))
-                    ),
-                  ),
-                ],
+                  style: TextButton.styleFrom(
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                      elevation: 0,
+                      splashFactory: InkRipple.splashFactory,
+                      minimumSize: Size(1000, 56),
+                      backgroundColor:
+                      (isSelected)
+                          ? widget.crewColor
+                          : Color(0xffDEDEDE))
               ),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 
   CheckboxListTile buildCheckboxListTile(int index) {
     return CheckboxListTile(
       title: Text('${resortNameList[index]}', style: TextStyle(fontSize: 16),),
-      activeColor: Color(0xff377EEA),
+      activeColor: widget.crewColor,
       selected: _isSelected[index]!,
-      selectedTileColor: Color(0xff377EEA),
+      selectedTileColor: widget.crewColor,
       value: _isChecked[index],
       contentPadding: EdgeInsets.symmetric(horizontal: 0),
       onChanged: (bool? value) {
