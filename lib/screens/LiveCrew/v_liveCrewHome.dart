@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/screens/LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
 import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_screen.dart';
+import 'package:snowlive3/screens/LiveCrew/v_liveCrewList_more.dart';
+import 'package:snowlive3/screens/LiveCrew/v_liveCrewRanking_more.dart';
 import 'package:snowlive3/screens/LiveCrew/v_searchCrewPage.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
@@ -806,7 +808,9 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: (){},
+                    onPressed: (){
+                      Get.to(()=> LiveCrewRankingMoreScreen());
+                    },
                     child: Text('전체 랭킹',
                       style: TextStyle(
                           color: Color(0xFF666666),
@@ -1134,7 +1138,9 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: (){},
+                        onPressed: (){
+                          Get.to(()=> LiveCrewListMoreScreen());
+                        },
                         child: Text('전체 리스트',
                           style: TextStyle(
                               color: Color(0xFF666666),
