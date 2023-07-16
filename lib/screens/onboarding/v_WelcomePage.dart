@@ -78,28 +78,11 @@ class _WelcomePageState extends State<WelcomePage> {
                 }
               },
             ),
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(right: 20),
-                child: Image.asset(
-                  'assets/imgs/icons/icon_onb_indicator1.png',
-                  scale: 4,
-                  width: 56,
-                  height: 8,
-                ),
-              ),
-            ],
+
             backgroundColor: Colors.white,
             elevation: 0.0,
             centerTitle: false,
             titleSpacing: 0,
-            title: Text(
-              '',
-              style: GoogleFonts.notoSans(
-                  color: Color(0xFF111111),
-                  fontWeight: FontWeight.w900,
-                  fontSize: 23),
-            ),
           ),
         ),
         body: Padding(
@@ -112,19 +95,22 @@ class _WelcomePageState extends State<WelcomePage> {
                 children: [
                   Text(
                     '스노우라이브\n서비스 이용 동의',
-                    style:
-                        TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              height: 1.3),
                   ),
                 ],
               ),
               SizedBox(
-                height: 10,
+                height: 8,
               ),
               Text(
                 '스노우라이브의 모든 기능을 편리하게 사용하시기 위해\n아래의 약관동의 및 회원가입을 진행해 주세요.',
                 style: TextStyle(
-                  color: Color(0xff949494),
-                  fontSize: 14,
+                    color: Color(0xff949494),
+                    fontSize: 13,
+                    height: 1.5
                 ),
               ),
               Expanded(
@@ -195,15 +181,12 @@ class _WelcomePageState extends State<WelcomePage> {
                       null;
                     }
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Text(
-                      '동의하고 계속하기',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
-                    ),
+                  child: Text(
+                    '동의하고 계속하기',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
                   ),
                   style: TextButton.styleFrom(
                       shape: const RoundedRectangleBorder(
