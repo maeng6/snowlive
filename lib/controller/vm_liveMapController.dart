@@ -591,6 +591,158 @@ class LiveMapController extends GetxController {
     return distanceInMeters <= 5000;
   }
 
+  Future<Map<String, int>> calculateRank(int myScore) async {
+    int totalUsers = 0;
+    int myRank = 0; // 기본값을 0으로 설정
+
+    QuerySnapshot userCollection = await FirebaseFirestore.instance
+        .collection('user')
+        .where('favoriteResort', isEqualTo: _userModelController.favoriteResort)
+        .get();
+
+    totalUsers = userCollection.docs.length;
+
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${_userModelController.favoriteResort}')
+        .orderBy('totalScore', descending: true)
+        .get();
+
+    List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+
+    for (int i = 0; i < documents.length; i++) {
+      if (documents[i].id == _userModelController.uid) {
+        myRank = i + 1; // 등수는 1부터 시작하기 때문에 1을 더해줍니다.
+        break;
+      }
+    }
+
+    if (myRank == 0) {
+      // 등수가 0이면 데이터가 없는 것으로 처리
+      return {'totalUsers': totalUsers, 'rank': 0};
+    }
+
+    return {'totalUsers': totalUsers, 'rank': myRank};
+  }
+
+  String calculateMaxValue(Map<String, dynamic>? value) {
+    if (value == null || value.isEmpty) {
+      return ''; // 데이터가 없을 경우 빈 문자열 반환
+    }
+
+    String calculateMaxValue = value.entries.reduce((maxEntry, entry) {
+      return maxEntry.value > entry.value ? maxEntry : entry;
+    }).key;
+
+    return calculateMaxValue;
+  }
+
+  List<Map<String, dynamic>> calculateBarDataSlopeScore(Map<String, dynamic>? slopeScoresData) {
+    if (slopeScoresData == null || slopeScoresData.isEmpty) {
+      return []; // 데이터가 없을 경우 빈 리스트 반환
+    }
+
+    List<MapEntry<String, dynamic>> sortedEntries = slopeScoresData.entries.toList()
+      ..sort((a, b) {
+        int scoreA = slopeScoresData[a.key] ?? 0;
+        int scoreB = slopeScoresData[b.key] ?? 0;
+        return scoreB.compareTo(scoreA);
+      });
+
+    int maxScore = sortedEntries.take(5).map((entry) {
+      return slopeScoresData[entry.key] ?? 0;
+    }).reduce((value, element) => value > element ? value : element);
+
+    List<Map<String, dynamic>> barData = sortedEntries.take(5).map((entry) {
+      String slopeName = entry.key;
+      int scoreForSlope = slopeScoresData[slopeName] ?? 0;
+      double barHeightRatio = scoreForSlope.toDouble() / maxScore.toDouble();
+      Color barColor = scoreForSlope == maxScore ? Color(0xFFC3DBFF) : Color(0xFF093372);
+
+      return {
+        'slopeName': slopeName,
+        'scoreForSlope': scoreForSlope,
+        'barHeightRatio': barHeightRatio,
+        'barColor': barColor,
+      };
+    }).toList();
+
+    return barData;
+  }
+
+  List<Map<String, dynamic>> calculateBarDataPassCount(Map<String, dynamic>? passCountData) {
+    if (passCountData == null || passCountData.isEmpty) {
+      return []; // 데이터가 없을 경우 빈 리스트 반환
+    }
+
+    List<MapEntry<String, dynamic>> sortedEntries = passCountData.entries.toList()
+      ..sort((a, b) {
+        return b.value.compareTo(a.value);
+      });
+
+    int maxPassCount = sortedEntries.take(5).map((entry) {
+      return entry.value ?? 0;
+    }).reduce((value, element) => value > element ? value : element);
+
+    List<Map<String, dynamic>> barData = sortedEntries.take(5).map((entry) {
+      String slopeName = entry.key;
+      int passCount = entry.value ?? 0;
+      double barHeightRatio = passCount.toDouble() / maxPassCount.toDouble();
+      Color barColor = passCount == maxPassCount ? Color(0xFF05419A) : Color(0xFF3D83ED);
+
+      return {
+        'slopeName': slopeName,
+        'passCount': passCount,
+        'barHeightRatio': barHeightRatio,
+        'barColor': barColor,
+      };
+    }).toList();
+
+    return barData;
+  }
+
+  List<Map<String, dynamic>> calculateBarDataSlot(Map<String, dynamic>? passCountTimeData) {
+    if (passCountTimeData == null || passCountTimeData.isEmpty) {
+      return []; // 데이터가 없을 경우 빈 리스트 반환
+    }
+
+    List<MapEntry<String, dynamic>> sortedEntries = passCountTimeData.entries.toList()
+      ..sort((a, b) {
+        int keyA = int.tryParse(a.key) ?? 0;
+        int keyB = int.tryParse(b.key) ?? 0;
+        return keyA.compareTo(keyB);
+      });
+
+    int maxPassCount = sortedEntries.map((entry) {
+      return entry.value ?? 0;
+    }).reduce((value, element) => value > element ? value : element);
+
+    List<Map<String, dynamic>> barData = sortedEntries.where((entry) {
+      String slotName = entry.key;
+      return ['1', '2', '3', '4', '5', '6', '7', '8'].contains(slotName);
+    }).map((entry) {
+      String slotName = entry.key;
+      int passCount = entry.value ?? 0;
+      double barHeightRatio = passCount.toDouble() / maxPassCount.toDouble();
+      Color barColor = passCount == maxPassCount ? Color(0xFF05419A) : Color(0xFF3D83ED);
+
+      return {
+        'slotName': slotName,
+        'passCount': passCount,
+        'barHeightRatio': barHeightRatio,
+        'barColor': barColor,
+      };
+    }).toList();
+
+    return barData;
+  }
+
+
+
+}
+
+
 // Future<BitmapDescriptor> createCustomMarkerBitmap(String title, bool _isTapped) async {
 //   const int maxCharacters = 6; // Maximum number of characters allowed
 //
@@ -709,5 +861,3 @@ class LiveMapController extends GetxController {
 // }
 
 
-
-}

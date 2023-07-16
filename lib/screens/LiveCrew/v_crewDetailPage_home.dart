@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
+import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
@@ -29,6 +30,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
   UserModelController _userModelController = Get.find<UserModelController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+  LiveMapController _liveMapController = Get.find<LiveMapController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -862,111 +864,93 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                           ),
                           SizedBox(height: 10),
                           StreamBuilder(
-                              stream: FirebaseFirestore.instance
-                                  .collection('liveCrew')
-                                  .where('crewID', isEqualTo: _liveCrewModelController.crewID)
-                                  .snapshots(),
-                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                if (!snapshot.hasData || snapshot.data == null) {
-                                  return CircularProgressIndicator();
-                                }
-                                else if (snapshot.data!.docs.isNotEmpty) {
-                                  final crewDocs = snapshot.data!.docs;
-                                  Map<String, dynamic>? passCountData =
-                                  crewDocs[0]['passCountData'] as Map<String, dynamic>?;
-                                  if (passCountData == null || passCountData.isEmpty) {
-                                    return Text('슬로프 이용기록이 없습니다.');
-                                  } else {
+                            stream: FirebaseFirestore.instance
+                                .collection('liveCrew')
+                                .where('crewID', isEqualTo: _liveCrewModelController.crewID)
+                                .snapshots(),
+                            builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                              if (!snapshot.hasData || snapshot.data == null) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.data!.docs.isNotEmpty) {
+                                final crewDocs = snapshot.data!.docs;
+                                Map<String, dynamic>? passCountData =
+                                crewDocs[0]['passCountData'] as Map<String, dynamic>?;
+                                if (passCountData == null || passCountData.isEmpty) {
+                                  return Text('슬로프 이용기록이 없습니다.');
+                                } else {
+                                  List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);
 
-                                    int maxPassCount = 0;
+                                  return Container(
+                                    height: 200,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            child: barData.isEmpty
+                                                ? Center(child: Text('데이터가 없습니다'))
+                                                : ListView(
+                                              scrollDirection: Axis.horizontal,
+                                              children: barData.map((data) {
+                                                String slopeName = data['slopeName'];
+                                                int passCount = data['passCount'];
+                                                double barHeightRatio = data['barHeightRatio'];
+                                                Color barColor = data['barColor'];
 
-                                    if (passCountData.isNotEmpty) {
-                                      maxPassCount = passCountData.values.reduce((value, element) => value > element ? value : element);
-                                    }
-
-                                    return Container(
-                                      height: 200,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Container(
-                                              child:
-                                              passCountData.entries.isEmpty
-                                                  ? Center(child: Text('데이터가 없습니다'))
-                                                  : ListView(
-                                                scrollDirection: Axis.horizontal,
-                                                children: (passCountData.entries.toList()
-                                                  ..sort((a, b) {
-                                                    return b.value.compareTo(a.value);
-                                                  })).getRange(0, min(5, passCountData.entries.length)).map((entry) {
-
-                                                  String slopeName = entry.key;
-                                                  int passCount = entry.value ?? 0;
-
-                                                  // Calculate the height ratio based on the pass count for each slope
-                                                  double barHeightRatio = passCount.toDouble() / maxPassCount.toDouble();
-
-                                                  // Determine the color of the bar based on whether this pass count is the maximum
-                                                  Color barColor = passCount == maxPassCount ? Color(0xFF05419A) : Color(0xFF3D83ED);  // use your desired colors
-
-                                                  return Container(
-                                                    margin: EdgeInsets.symmetric(horizontal: 5),
-                                                    width: 50,
-                                                    height: 95,
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                      children: [
-                                                        Text(
-                                                          '$passCount',
-                                                          style: TextStyle(
-                                                              fontSize: 11,
-                                                              color: Color(0xFF111111),
-                                                              fontWeight: FontWeight.bold
-                                                          ),
+                                                return Container(
+                                                  margin: EdgeInsets.symmetric(horizontal: 5),
+                                                  width: 50,
+                                                  height: 95,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                    children: [
+                                                      Text(
+                                                        '$passCount',
+                                                        style: TextStyle(
+                                                          fontSize: 11,
+                                                          color: Color(0xFF111111),
+                                                          fontWeight: FontWeight.bold,
                                                         ),
-                                                        SizedBox(height: 10),
-                                                        Container(
-                                                          width: 50,
+                                                      ),
+                                                      SizedBox(height: 10),
+                                                      Container(
+                                                        width: 50,
+                                                        height: 95 * barHeightRatio,
+                                                        child: Container(
+                                                          width: 20,
                                                           height: 95 * barHeightRatio,
-                                                          child: Container(
-                                                            width: 20,
-                                                            height: 95 * barHeightRatio,
-                                                            decoration: BoxDecoration(
-                                                                color: barColor,
-                                                                borderRadius: BorderRadius.only(
-                                                                    topRight: Radius.circular(3),
-                                                                    topLeft: Radius.circular(3)
-                                                                )
+                                                          decoration: BoxDecoration(
+                                                            color: barColor,
+                                                            borderRadius: BorderRadius.only(
+                                                              topRight: Radius.circular(3),
+                                                              topLeft: Radius.circular(3),
                                                             ),
                                                           ),
                                                         ),
-                                                        SizedBox(height: 10),
-                                                        Text(
-                                                          slopeName,
-                                                          style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
-                                                        ),
-                                                        SizedBox(height: 20,)
-                                                      ],
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                              ),
+                                                      ),
+                                                      SizedBox(height: 10),
+                                                      Text(
+                                                        slopeName,
+                                                        style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
+                                                      ),
+                                                      SizedBox(height: 20),
+                                                    ],
+                                                  ),
+                                                );
+                                              }).toList(),
                                             ),
                                           ),
-
-                                        ],
-                                      ),
-                                    );
-                                  }
+                                        ),
+                                      ],
+                                    ),
+                                  );
                                 }
-                                else if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Center(child: CircularProgressIndicator());
-                                }
-                                else {
-                                  return Text('슬로프 이용기록이 없습니다.');
-                                }
+                              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                                return Center(child: CircularProgressIndicator());
+                              } else {
+                                return Text('슬로프 이용기록이 없습니다.');
                               }
+                            },
                           ),
                         ],
                       ),
@@ -1025,12 +1009,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
 
                                 Map<String, dynamic>? passCountTimeData =
                                 data?['passCountTimeData'] as Map<String, dynamic>?;
-
-                                int maxPassCount = 0;
-
-                                if (passCountTimeData != null && passCountTimeData.isNotEmpty) {
-                                  maxPassCount = passCountTimeData.values.reduce((value, element) => value > element ? value : element);
-                                }
+                                List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataSlot(passCountTimeData);
 
                                 return Container(
                                   height: 200,
@@ -1040,60 +1019,54 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                       Expanded(
                                         child: Container(
                                           child:
-                                          passCountTimeData?.entries.isEmpty ?? true ?
+                                          barData.isEmpty ?
                                           Center(child: Text('데이터가 없습니다'))
                                               : ListView(
                                             scrollDirection: Axis.horizontal,
-                                            children: (passCountTimeData!.entries.toList()
-                                              ..sort((a, b) {
-                                                return int.parse(a.key).compareTo(int.parse(b.key));
-                                              }))
-                                                .getRange(0, min(8, passCountTimeData.entries.length)).map((entry) {
+                                            physics: NeverScrollableScrollPhysics(),
+                                            children: barData.map((data) {
+                                              String slotName = data['slotName'];
+                                              int passCount = data['passCount'];
+                                              double barHeightRatio = data['barHeightRatio'];
+                                              Color barColor = data['barColor'];
 
-                                              String slopeName = entry.key;
-                                              int passCount = entry.value ?? 0;
-
-                                              // Calculate the height ratio based on the pass count for each slope
-                                              double barHeightRatio = passCount.toDouble() / maxPassCount.toDouble();
-
-                                              // Determine the color of the bar based on whether this pass count is the maximum
-                                              Color barColor = passCount == maxPassCount ? Color(0xFF05419A) : Color(0xFF3D83ED);  // use your desired colors
-
-                                              return Container(
+                                             return Container(
                                                 margin: EdgeInsets.symmetric(horizontal: 5),
-                                                width: 29,
+                                                width: 25,
+                                                height: 95,
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.end,
                                                   children: [
                                                     Text(
                                                       '$passCount',
                                                       style: TextStyle(
-                                                          fontSize: 11,
-                                                          color: Color(0xFF111111),
-                                                          fontWeight: FontWeight.bold
+                                                        fontSize: 11,
+                                                        color: Color(0xFF111111),
+                                                        fontWeight: FontWeight.bold,
                                                       ),
                                                     ),
                                                     SizedBox(height: 10),
-                                                    passCount > 0 ? Expanded(
+                                                    Container(
+                                                      width: 25,
+                                                      height: 95 * barHeightRatio,
                                                       child: Container(
-                                                        width: 30,
-                                                        child: Container(
-                                                          decoration: BoxDecoration(
-                                                              color: barColor,
-                                                              borderRadius: BorderRadius.only(
-                                                                  topRight: Radius.circular(3),
-                                                                  topLeft: Radius.circular(3)
-                                                              )
+                                                        width: 25,
+                                                        height: 95 * barHeightRatio,
+                                                        decoration: BoxDecoration(
+                                                          color: barColor,
+                                                          borderRadius: BorderRadius.only(
+                                                            topRight: Radius.circular(3),
+                                                            topLeft: Radius.circular(3),
                                                           ),
                                                         ),
                                                       ),
-                                                    ) : Container(), // Empty container for zero data
+                                                    ),
                                                     SizedBox(height: 10),
                                                     Text(
-                                                      _resortModelController.getSlotName(slopeName),
+                                                      _resortModelController.getSlotName(slotName),
                                                       style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
                                                     ),
-                                                    SizedBox(height: 20,)
+                                                    SizedBox(height: 20),
                                                   ],
                                                 ),
                                               );
@@ -1155,6 +1128,10 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                           snapshot.data!.docs.forEach((doc) {
                             galleryUrlList.addAll(List<String>.from(doc['galleryUrlList']));
                           });
+
+                          if (galleryUrlList.isEmpty) {
+                            return Text('이미지가 없습니다');
+                          }
 
                           return GridView.builder(
                             physics: NeverScrollableScrollPhysics(),
