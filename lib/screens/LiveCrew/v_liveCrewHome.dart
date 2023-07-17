@@ -1159,6 +1159,8 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                         stream: FirebaseFirestore.instance
                             .collection('liveCrew')
                             .where('baseResort', isEqualTo: _userModelController.favoriteResort!)
+                            .orderBy('resistDate', descending: true)
+                            .limit(5)
                             .snapshots(),
                         builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                           if (!snapshot.hasData || snapshot.data == null) {
