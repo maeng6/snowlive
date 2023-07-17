@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_rankingTierModelController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
@@ -22,6 +23,7 @@ class LiveMapController extends GetxController {
   UserModelController _userModelController = Get.find<UserModelController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection********************************************
 
   RxList<Marker> _markers = RxList<Marker>();
@@ -378,7 +380,7 @@ class LiveMapController extends GetxController {
                   slopeScores[slopeName] = updatedScore;
 
                   // Update crew data with slope name and score
-                  await updateCrewData(slopeName, slopeScore, timeSlot);
+                  await updateCrewData(slopeName, slopeScore, timeSlot, DateTime.now());
                 }
 
 
@@ -391,6 +393,9 @@ class LiveMapController extends GetxController {
                 int totalScore = slopeScores.values.fold<int>(0, (sum, score) => sum + (score as int? ?? 0));
                 data['totalScore'] = totalScore;
                 data['totalPassCount'] = totalPassCount;
+
+                // Update lastPassTime with current time
+                data['lastPassTime'] = DateTime.now();
 
                 // Update document using data
                 await docRef.set(data, SetOptions(merge: true));
@@ -444,7 +449,7 @@ class LiveMapController extends GetxController {
     return -1; // default return value in case of an error
   }
 
-  Future<void> updateCrewData(String locationName, int slopeScore, int timeSlot) async {
+  Future<void> updateCrewData(String locationName, int slopeScore, int timeSlot, DateTime lastPassTime) async {
     String liveCrew = _userModelController.liveCrew ?? ''; // 유효하지 않은 경우 빈 문자열로 초기화
 
     if (liveCrew.isNotEmpty) {
@@ -477,6 +482,7 @@ class LiveMapController extends GetxController {
             'slopeScores': {},
             'totalPassCount': 0,
             'totalScore': 0,
+            'lastPassTime': null,
           };
         } else {
           crewData = crewDocSnapshot.data() as Map<String, dynamic>;
@@ -524,6 +530,9 @@ class LiveMapController extends GetxController {
         crewData['totalScore'] = crewTotalScore;
 
         crewData['totalPassCount'] = crewTotalPassCount;
+
+        // Update lastPassTime with current time
+        crewData['lastPassTime'] = lastPassTime;
 
         // Update the document
         await crewDocRef.set(crewData, SetOptions(merge: true));
@@ -593,7 +602,9 @@ class LiveMapController extends GetxController {
 
   Future<Map<String, int>> calculateRank(int myScore) async {
     int totalUsers = 0;
-    int myRank = 0; // 기본값을 0으로 설정
+    int myRank = 0;
+    int sameScoreCount = 0;
+    bool foundUser = false;
 
     QuerySnapshot userCollection = await FirebaseFirestore.instance
         .collection('user')
@@ -612,19 +623,35 @@ class LiveMapController extends GetxController {
     List<QueryDocumentSnapshot> documents = querySnapshot.docs;
 
     for (int i = 0; i < documents.length; i++) {
-      if (documents[i].id == _userModelController.uid) {
-        myRank = i + 1; // 등수는 1부터 시작하기 때문에 1을 더해줍니다.
-        break;
+      if (documents[i].data() != null) {
+        Map<String, dynamic> data = documents[i].data() as Map<String, dynamic>;
+        int currentScore = data['totalScore'] as int;
+
+        if (documents[i].id == _userModelController.uid) {
+          foundUser = true;
+        }
+
+        if (currentScore != myScore) {
+          myRank += sameScoreCount + 1;
+          sameScoreCount = 0;
+        } else {
+          if (foundUser) {
+            myRank = myRank + 1;
+            break;
+          }
+          sameScoreCount++;
+        }
       }
     }
 
-    if (myRank == 0) {
-      // 등수가 0이면 데이터가 없는 것으로 처리
+    if (foundUser) {
+      return {'totalUsers': totalUsers, 'rank': myRank};
+    } else {
       return {'totalUsers': totalUsers, 'rank': 0};
     }
-
-    return {'totalUsers': totalUsers, 'rank': myRank};
   }
+
+
 
   String calculateMaxValue(Map<String, dynamic>? value) {
     if (value == null || value.isEmpty) {
