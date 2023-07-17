@@ -5,6 +5,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
@@ -68,7 +69,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
             children: [
               Container(
               color: Color(crewDocs[0]['crewColor']),
-              padding: EdgeInsets.only(top: 30, bottom: 16),
+              padding: EdgeInsets.only(top: 20, bottom: 16),
                 child: Column(
                   children: [
                     Padding(
@@ -86,8 +87,18 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                       CommentProfileUrl: crewDocs[0]['profileImageUrl']));
                                 },
                                 child: Container(
-                                    width: 96,
-                                    height: 96,
+                                    decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black12,
+                                          spreadRadius: 0,
+                                          blurRadius: 16,
+                                          offset: Offset(0, 2), // changes position of shadow
+                                        ),
+                                      ],
+                                    ),
+                                    width: 80,
+                                    height: 80,
                                     child: ExtendedImage.network(
                                       crewDocs[0]['profileImageUrl'],
                                       enableMemoryCache: true,
@@ -104,8 +115,18 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                       CommentProfileUrl: ''));
                                 },
                                 child: Container(
-                                  width: 96,
-                                  height: 96,
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        spreadRadius: 0,
+                                        blurRadius: 16,
+                                        offset: Offset(0, 2), // changes position of shadow
+                                      ),
+                                    ],
+                                  ),
+                                  width: 80,
+                                  height: 80,
                                   child: ExtendedImage.asset(
                                     'assets/imgs/profile/img_profile_default_.png',
                                     enableMemoryCache: true,
@@ -138,7 +159,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                             ],
                           ),
                           SizedBox(
-                            height: 16,
+                            height: 24,
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,6 +177,9 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                   ),
+                                  SizedBox(
+                                    height: 2,
+                                  ),
                                   Text(
                                     '${crewDocs[0]['crewLeader']}',
                                     style: TextStyle(
@@ -167,19 +191,20 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 40,),
+                              SizedBox(height: 30,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
                                     children: [
                                       Text(
-                                        'LiveOn/전체(명)',
+                                        '크루원(명)',
                                         style: TextStyle(
                                             fontSize: 13,
-                                            color: Color(0xFFD7BCF9)
+                                            color: Color(0xFFFFFFFF).withOpacity(0.7)
                                         ),),
                                       Row(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
                                         children: [
                                           StreamBuilder(
                                               stream: FirebaseFirestore.instance
@@ -212,14 +237,14 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                       } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                                                         final liveMembersCount = snapshot.data!.docs.length;
                                                         return  Text('$liveMembersCount',
-                                                          style: TextStyle(
+                                                          style: GoogleFonts.bebasNeue(
                                                               color: Color(0xFFFFFFFF),
                                                               fontSize: 28
                                                           ),
                                                         );
                                                       } else {
                                                         return Text('0',
-                                                          style: TextStyle(
+                                                          style: GoogleFonts.bebasNeue(
                                                               color: Color(0xFFFFFFFF),
                                                               fontSize: 28
                                                           ),
@@ -231,18 +256,21 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                 return Container();
                                               }
                                           ),
-                                          SizedBox(width: 3,),
-                                          Text('/',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Color(0xFF000000),
-                                            fontWeight: FontWeight.bold
+                                          SizedBox(width: 4),
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 4),
+                                            child: Text('/',
+                                            style: GoogleFonts.bebasNeue(
+                                              fontSize: 16,
+                                              color: Color(0xFFFFFFFF),
+                                              fontWeight: FontWeight.bold
+                                            ),
+                                            ),
                                           ),
-                                          ),
-                                          SizedBox(width: 3,),
+                                          SizedBox(width: 2),
                                           Text('${memberUidList.length}',
-                                          style: TextStyle(
-                                            color: Color(0xFF000000),
+                                          style: GoogleFonts.bebasNeue(
+                                            color: Color(0xFFFFFFFF),
                                             fontSize: 28
                                           ),
                                           )
@@ -276,7 +304,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                         '크루랭킹',
                                         style: TextStyle(
                                             fontSize: 13,
-                                            color: Color(0xFFD7BCF9)
+                                            color: Color(0xFFFFFFFF).withOpacity(0.7)
                                         ),),
                                       StreamBuilder(
                                         stream: FirebaseFirestore.instance
@@ -342,7 +370,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                         '창단일',
                                         style: TextStyle(
                                             fontSize: 13,
-                                            color: Color(0xFFD7BCF9)
+                                            color: Color(0xFFFFFFFF).withOpacity(0.7)
                                         ),),
                                       Row(
                                         children: [
