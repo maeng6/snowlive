@@ -1052,7 +1052,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             color: Color(0xFFFFFFFF)
                                           ),
                                           ),
-                                          Text('${_userModelController.displayName}',
+                                          Text('${crewDocs['crewLeader']}',
                                             style: TextStyle(
                                                 fontSize: 14,
                                                 color: Color(0xFFFFFFFF)
