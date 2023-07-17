@@ -97,16 +97,17 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                           documents.sort((a, b) {
                             final aTotalScore = a['totalScore'] as int;
                             final bTotalScore = b['totalScore'] as int;
-                            final aLastPassTime = a['lastPassTime'] as Timestamp;
-                            final bLastPassTime = b['lastPassTime'] as Timestamp;
+                            final aLastPassTime = a['lastPassTime'] as Timestamp?;
+                            final bLastPassTime = b['lastPassTime'] as Timestamp?;
 
                             if (aTotalScore == bTotalScore) {
-                              return bLastPassTime.compareTo(aLastPassTime);
-                            } else {
-                              return bTotalScore.compareTo(aTotalScore);
+                              if (aLastPassTime != null && bLastPassTime != null) {
+                                return bLastPassTime.compareTo(aLastPassTime);
+                              }
                             }
-                          });
 
+                            return bTotalScore.compareTo(aTotalScore);
+                          });
 
                           return Column(
                             children: [
