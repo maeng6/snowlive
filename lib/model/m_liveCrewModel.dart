@@ -23,6 +23,7 @@ class LiveCrewModel {
     this.description,
     this.notice,
     this.resistDate,
+    this.lastPassTime,
     this.sns,
     this.passCountData,
     this.slopeScores,
@@ -45,6 +46,7 @@ class LiveCrewModel {
   String? notice;
   String? sns;
   Timestamp? resistDate;
+  Timestamp? lastPassTime;
   DocumentReference? reference;
   Map? passCountData;
   Map? slopeScores;
@@ -66,6 +68,7 @@ class LiveCrewModel {
     description = json['description'];
     notice = json['notice'];
     resistDate = json['resistDate'];
+    lastPassTime = json['lastPassTime'];
     reference = json['reference'];
     sns = json['sns'];
     passCountData = json['passCountData'];
