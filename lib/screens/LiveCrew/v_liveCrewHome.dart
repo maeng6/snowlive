@@ -16,6 +16,7 @@ import '../../../controller/vm_userModelController.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../../controller/vm_liveCrewModelController.dart';
 import '../more/friend/v_friendDetailPage.dart';
+import 'CreateOnboarding/v_setCrewName.dart';
 import 'invitation/v_invitation_Screen_crew.dart';
 
 class LiveCrewHome extends StatefulWidget {
@@ -33,6 +34,64 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
   //TODO: Dependency Injection**************************************************
 
 
+  SpeedDial buildSpeedDial1() {
+    return SpeedDial(
+      icon: Icons.add,
+      children: [
+        SpeedDialChild(
+          child: Icon(Icons.add),
+          label: '만들기',
+          onTap: () async{
+            CustomFullScreenDialog.showDialog();
+            await _userModelController.getCurrentUser(_userModelController.uid);
+            if(_userModelController.liveCrew!.isEmpty || _userModelController.liveCrew =='') {
+              CustomFullScreenDialog.cancelDialog();
+              Get.to(()=>SetCrewName());
+            } else{
+              CustomFullScreenDialog.cancelDialog();
+              Get.dialog(AlertDialog(
+                contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                elevation: 0,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                content: Text('이미 활동중인 크루가 있습니다.',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15),
+                ),
+                actions: [
+                  Row(
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('확인',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Color(0xFF949494),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )),
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.end,
+                  )
+                ],
+              ));
+            }
+          },
+        ),
+        SpeedDialChild(
+            child: Icon(Icons.add),
+            label: '가입하기',
+            onTap: () {
+              Get.to(()=>SearchCrewPage());
+            }
+        ),
+      ],
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -41,64 +100,16 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
     return Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
-        floatingActionButton: Transform.translate(
-          offset: Offset(12, -4),
+        floatingActionButton:
+        (_userModelController.liveCrew!.isEmpty || _userModelController.liveCrew =='')
+            ?  Transform.translate(offset: Offset(12, -4),
           child: SizedBox(
-            width: 112,
-            height: 52,
-            child: FloatingActionButton.extended(
-              onPressed: () async{
-                CustomFullScreenDialog.showDialog();
-                await _userModelController.getCurrentUser(_userModelController.uid);
-                if(_userModelController.liveCrew!.isEmpty || _userModelController.liveCrew =='') {
-                  CustomFullScreenDialog.cancelDialog();
-                  Get.to(()=>FirstPage_createCrew());
-                } else{
-                  CustomFullScreenDialog.cancelDialog();
-                  Get.dialog(AlertDialog(
-                    contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                    content: Text('이미 활동중인 크루가 있습니다.',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15),
-                    ),
-                    actions: [
-                      Row(
-                        children: [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text('확인',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Color(0xFF949494),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )),
-                        ],
-                        mainAxisAlignment: MainAxisAlignment.end,
-                      )
-                    ],
-                  ));
-                }
-
-              },
-              icon: Icon(Icons.add),
-              label: Text('만들기',
-                style: TextStyle(
-                  letterSpacing: 0.4,
-                    fontSize: 15,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    overflow: TextOverflow.ellipsis),),
-              backgroundColor: Color(0xFF3D6FED),
-            ),
+              width: 112,
+              height: 52,
+              child: buildSpeedDial1()
           ),
-        ),
+        )
+        : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       appBar: AppBar(
         actions: [
@@ -1277,74 +1288,3 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
   }
 }
 
-// SpeedDial buildSpeedDial1() {
-//   return SpeedDial(
-//     animatedIcon: AnimatedIcons.menu_close,
-//     children: [
-//       SpeedDialChild(
-//           child: Icon(Icons.add),
-//           label: '만들기',
-//           onTap: () async{
-//             CustomFullScreenDialog.showDialog();
-//             await _userModelController.getCurrentUser(_userModelController.uid);
-//             if(_userModelController.liveCrew!.isEmpty) {
-//               Get.to(FirstPage_createCrew());
-//             } else{
-//               Get.dialog(AlertDialog(
-//                 contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-//                 elevation: 0,
-//                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-//                 buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-//                 content: Text('이미 활동중인 크루가 있습니다.',
-//                   style: TextStyle(
-//                       fontWeight: FontWeight.w600,
-//                       fontSize: 15),
-//                 ),
-//                 actions: [
-//                   Row(
-//                     children: [
-//                       TextButton(
-//                           onPressed: () {
-//                             Navigator.pop(context);
-//                             Get.back();
-//                           },
-//                           child: Text('확인',
-//                             style: TextStyle(
-//                               fontSize: 15,
-//                               color: Color(0xFF949494),
-//                               fontWeight: FontWeight.bold,
-//                             ),
-//                           )),
-//                     ],
-//                     mainAxisAlignment: MainAxisAlignment.end,
-//                   )
-//                 ],
-//               ));
-//             }
-//           },
-//       ),
-//       SpeedDialChild(
-//           child: Icon(Icons.add),
-//           label: '가입하기',
-//           onTap: () {
-//
-//           }
-//       ),
-//     ],
-//   );
-// }
-//
-// SpeedDial buildSpeedDial2() {
-//   return SpeedDial(
-//     animatedIcon: AnimatedIcons.menu_close,
-//     children: [
-//       SpeedDialChild(
-//           child: Icon(Icons.add),
-//           label: '가입하기',
-//           onTap: () {
-//
-//           }
-//       ),
-//     ],
-//   );
-// }
