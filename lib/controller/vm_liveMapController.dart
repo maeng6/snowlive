@@ -651,6 +651,58 @@ class LiveMapController extends GetxController {
     }
   }
 
+  Future<Map<String, int>> calculateRankIndiAll(int myScore, String uid) async {
+    int totalUsers = 0;
+    int myRank = 0;
+    int sameScoreCount = 0;
+    bool foundUser = false;
+
+    QuerySnapshot userCollection = await FirebaseFirestore.instance
+        .collection('user')
+        .where('favoriteResort', isEqualTo: _userModelController.favoriteResort)
+        .get();
+
+    totalUsers = userCollection.docs.length;
+
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${_userModelController.favoriteResort}')
+        .orderBy('totalScore', descending: true)
+        .get();
+
+    List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+
+    for (int i = 0; i < documents.length; i++) {
+      if (documents[i].data() != null) {
+        Map<String, dynamic> data = documents[i].data() as Map<String, dynamic>;
+        int currentScore = data['totalScore'] as int;
+
+        if (documents[i].id == uid) {
+          foundUser = true;
+        }
+
+        if (currentScore != myScore) {
+          myRank += sameScoreCount + 1;
+          sameScoreCount = 0;
+        } else {
+          if (foundUser) {
+            myRank = myRank + 1;
+            break;
+          }
+          sameScoreCount++;
+        }
+      }
+    }
+
+    if (foundUser) {
+      return {'totalUsers': totalUsers, 'rank': myRank};
+    } else {
+      return {'totalUsers': totalUsers, 'rank': 0};
+    }
+  }
+
+
 
 
   String calculateMaxValue(Map<String, dynamic>? value) {

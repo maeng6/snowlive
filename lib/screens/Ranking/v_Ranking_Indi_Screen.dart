@@ -398,107 +398,121 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 );
                                               }
 
-                                              return Padding(
-                                                padding: const EdgeInsets.only(bottom: 12),
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                      '${index + 1}',
-                                                      style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                          fontSize: 15,
-                                                          color: Color(0xFF111111)
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 14),
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        Get.to(() => FriendDetailPage(uid: userData['uid']));
-                                                      },
-                                                      child: Container(
-                                                        width: 48,
-                                                        height: 48,
-                                                        child: userData['profileImageUrl'].isNotEmpty
-                                                            ? ExtendedImage.network(
-                                                          userData['profileImageUrl'],
-                                                          enableMemoryCache: true,
-                                                          shape: BoxShape.circle,
-                                                          borderRadius: BorderRadius.circular(8),
-                                                          width: 48,
-                                                          height: 48,
-                                                          fit: BoxFit.cover,
-                                                        )
-                                                            : ExtendedImage.asset(
-                                                          'assets/imgs/profile/img_profile_default_circle.png',
-                                                          enableMemoryCache: true,
-                                                          shape: BoxShape.circle,
-                                                          borderRadius: BorderRadius.circular(8),
-                                                          width: 48,
-                                                          height: 48,
-                                                          fit: BoxFit.cover,
+                                              return FutureBuilder<Map<String, int>>(
+                                                  future: _liveMapController.calculateRankIndiAll(
+                                                    documents[index]['totalScore'], userData['uid']),
+                                                  builder: (BuildContext context,
+                                                      AsyncSnapshot<Map<String, int>> snapshot) {
+                                                    if(snapshot.connectionState == ConnectionState.waiting){
+                                                      return Container(
+                                                          height: 50,
+                                                          child: Center(child: Text('랭킹: 집계 중...')));
+                                                    }else if (snapshot.hasError) {
+                                                      return Text('랭킹: 오류 발생');
+                                                    }else{
+                                                  return Padding(
+                                                    padding: const EdgeInsets.only(bottom: 12),
+                                                    child: Row(
+                                                      children: [
+                                                        Text(
+                                                          '${snapshot.data?['rank']}',
+                                                          style: TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 15,
+                                                              color: Color(0xFF111111)
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 14),
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(bottom: 3),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(
-                                                            userData['displayName'],
-                                                            style: TextStyle(
-                                                                fontSize: 15,
-                                                                color: Color(0xFF111111)
+                                                        SizedBox(width: 14),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            Get.to(() => FriendDetailPage(uid: userData['uid']));
+                                                          },
+                                                          child: Container(
+                                                            width: 48,
+                                                            height: 48,
+                                                            child: userData['profileImageUrl'].isNotEmpty
+                                                                ? ExtendedImage.network(
+                                                              userData['profileImageUrl'],
+                                                              enableMemoryCache: true,
+                                                              shape: BoxShape.circle,
+                                                              borderRadius: BorderRadius.circular(8),
+                                                              width: 48,
+                                                              height: 48,
+                                                              fit: BoxFit.cover,
+                                                            )
+                                                                : ExtendedImage.asset(
+                                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                                              enableMemoryCache: true,
+                                                              shape: BoxShape.circle,
+                                                              borderRadius: BorderRadius.circular(8),
+                                                              width: 48,
+                                                              height: 48,
+                                                              fit: BoxFit.cover,
                                                             ),
                                                           ),
-                                                          StreamBuilder<QuerySnapshot>(
-                                                            stream: FirebaseFirestore.instance
-                                                                .collection('liveCrew')
-                                                                .where('crewID', isEqualTo: userData['liveCrew'])
-                                                                .snapshots(),
-                                                            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                                              if (snapshot.hasError) {
-                                                                return Text("오류가 발생했습니다");
-                                                              }
-
-                                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                return CircularProgressIndicator();
-                                                              }
-
-                                                              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                                                                return SizedBox();
-                                                              }
-
-                                                              var crewData = snapshot.data!.docs.first.data() as Map<String, dynamic>?;
-
-                                                              // 크루명 가져오기
-                                                              String crewName = crewData?['crewName'] ?? '';
-
-                                                              return Text(
-                                                                crewName,
+                                                        ),
+                                                        SizedBox(width: 14),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(bottom: 3),
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                userData['displayName'],
                                                                 style: TextStyle(
-                                                                    fontSize: 12,
-                                                                    color: Color(0xFF949494)
+                                                                    fontSize: 15,
+                                                                    color: Color(0xFF111111)
                                                                 ),
-                                                              );
-                                                            },
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Expanded(child: SizedBox()),
-                                                    Text(
-                                                      '${document.get('totalScore').toString()}점',
-                                                      style: TextStyle(
-                                                        color: Color(0xFF111111),
-                                                        fontWeight: FontWeight.normal,
-                                                        fontSize: 18,
-                                                      ),
-                                                    ),
+                                                              ),
+                                                              StreamBuilder<QuerySnapshot>(
+                                                                stream: FirebaseFirestore.instance
+                                                                    .collection('liveCrew')
+                                                                    .where('crewID', isEqualTo: userData['liveCrew'])
+                                                                    .snapshots(),
+                                                                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                                                  if (snapshot.hasError) {
+                                                                    return Text("오류가 발생했습니다");
+                                                                  }
 
-                                                  ],
-                                                ),
+                                                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                    return CircularProgressIndicator();
+                                                                  }
+
+                                                                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                                                    return SizedBox();
+                                                                  }
+
+                                                                  var crewData = snapshot.data!.docs.first.data() as Map<String, dynamic>?;
+
+                                                                  // 크루명 가져오기
+                                                                  String crewName = crewData?['crewName'] ?? '';
+
+                                                                  return Text(
+                                                                    crewName,
+                                                                    style: TextStyle(
+                                                                        fontSize: 12,
+                                                                        color: Color(0xFF949494)
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Expanded(child: SizedBox()),
+                                                        Text(
+                                                          '${document.get('totalScore').toString()}점',
+                                                          style: TextStyle(
+                                                            color: Color(0xFF111111),
+                                                            fontWeight: FontWeight.normal,
+                                                            fontSize: 18,
+                                                          ),
+                                                        ),
+
+                                                      ],
+                                                    ),
+                                                  );}
+                                                }
                                               );
 
                                             },
