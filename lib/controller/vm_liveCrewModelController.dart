@@ -26,6 +26,7 @@ class LiveCrewModelController extends GetxController {
   RxString? _notice=''.obs;
   RxString? _sns=''.obs;
   Timestamp? _resistDate;
+  Timestamp? _lastPassTime;
   RxMap? _passCountData={}.obs;
   RxMap? _slopeScores={}.obs;
   RxMap? _passCountTimedata={}.obs;
@@ -47,6 +48,7 @@ class LiveCrewModelController extends GetxController {
   String? get notice => _notice!.value;
   String? get sns => _sns!.value;
   Timestamp? get resistDate => _resistDate!;
+  Timestamp? get lastPassTime => _lastPassTime!;
   Map? get passCountData => _passCountData!;
   Map? get slopeScores => _slopeScores!;
   Map? get passCountTimeData => _passCountTimedata!;
@@ -74,6 +76,8 @@ class LiveCrewModelController extends GetxController {
       this._slopeScores!.value = crewModel.slopeScores!;
       this._passCountTimedata!.value = crewModel.passCountTimeData!;
       this._totalPassCount!.value = crewModel.totalPassCount!;
+      this._lastPassTime = crewModel.lastPassTime!;
+      this._resistDate = crewModel.resistDate!;
     }
   }
 
@@ -114,6 +118,7 @@ class LiveCrewModelController extends GetxController {
       'description':'',
       'notice':'',
       'resistDate' : Timestamp.now(),
+      'lastPassTime' : Timestamp.now(),
       'sns' : '',
       'totalScore': 0,
       'passCountData': {},

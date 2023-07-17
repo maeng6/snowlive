@@ -34,6 +34,7 @@ class LiveMapController extends GetxController {
   int? myRank;
   DateTime? lastPassTime;
   Map<String, bool> _isTapped = {};
+  RxBool isLoading = false.obs;
 
   void initializeIsTapped() {
     _isTapped = {};
@@ -699,6 +700,53 @@ class LiveMapController extends GetxController {
       return {'totalUsers': totalUsers, 'rank': myRank};
     } else {
       return {'totalUsers': totalUsers, 'rank': 0};
+    }
+  }
+
+  Future<Map<String, int>> calculateRankCrewAll(int crewScore, String crewID) async {
+    isLoading.value = true;
+    int totalCrews = 0;
+    int crewRank = 0;
+    int sameScoreCount = 0;
+    bool foundCrew = false;
+    List<QueryDocumentSnapshot> crewDocs;
+
+    QuerySnapshot crewCollection = await FirebaseFirestore.instance
+        .collection('liveCrew')
+        .where('baseResort', isEqualTo: _userModelController.favoriteResort)
+        .orderBy('totalScore', descending: true)
+        .get();
+
+    totalCrews = crewCollection.docs.length;
+    crewDocs = crewCollection.docs;
+
+    for (int i = 0; i < crewDocs.length; i++) {
+      if (crewDocs[i].data() != null) {
+        Map<String, dynamic> data = crewDocs[i].data() as Map<String, dynamic>;
+        int currentScore = data['totalScore'] as int;
+
+        if (crewDocs[i].id == crewID) {
+          foundCrew = true;
+        }
+
+        if (currentScore != crewScore) {
+          crewRank += sameScoreCount + 1;
+          sameScoreCount = 0;
+        } else {
+          if (foundCrew) {
+            crewRank = crewRank + 1;
+            break;
+          }
+          sameScoreCount++;
+        }
+      }
+    }
+    isLoading.value =false;
+
+    if (foundCrew) {
+      return {'totalCrews': totalCrews, 'rank': crewRank};
+    } else {
+      return {'totalCrews': totalCrews, 'rank': 0};
     }
   }
 

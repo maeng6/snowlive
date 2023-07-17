@@ -404,9 +404,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                   builder: (BuildContext context,
                                                       AsyncSnapshot<Map<String, int>> snapshot) {
                                                     if(snapshot.connectionState == ConnectionState.waiting){
-                                                      return Container(
-                                                          height: 50,
-                                                          child: Center(child: Text('랭킹: 집계 중...')));
+                                                      return Container();
                                                     }else if (snapshot.hasError) {
                                                       return Text('랭킹: 오류 발생');
                                                     }else{
