@@ -158,7 +158,7 @@ class _ResortHomeState extends State<ResortHome>
                                             Container(
                                               height: 72,
                                               child: DrawerHeader(
-                                                child: Text('라이브중인 친한 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
+                                                child: Text('라이브중인 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
                                                 decoration: BoxDecoration(
                                                   color: Colors.white,
                                                 ),
@@ -173,11 +173,8 @@ class _ResortHomeState extends State<ResortHome>
                                                 itemBuilder: (context, index) {
                                                   return ListTile(
                                                     contentPadding: EdgeInsets.only(top: 0, bottom: 0, right: 16, left: 16),
-                                                    title: Row(
-                                                      children: [
-                                                        Text('라이브중인 친한 친구가 없습니다.'),
-                                                      ],
-                                                    ),
+                                                    title: Text('라이브중인 친구가 없습니다.'),
+                                                    subtitle: Text('즐겨찾는 친구를 등록하고\n친구의 라이브 상태를 확인하세요!'),
                                                     onTap: () {
                                                       Navigator.pop(context);
                                                     },
@@ -203,7 +200,7 @@ class _ResortHomeState extends State<ResortHome>
                                           Container(
                                             height: 72,
                                             child: DrawerHeader(
-                                              child: Text('라이브중인 친한 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
+                                              child: Text('라이브중인 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
                                               ),

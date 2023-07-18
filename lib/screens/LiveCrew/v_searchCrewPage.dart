@@ -98,6 +98,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: TextFormField(
+                              autofocus: true,
                               textAlignVertical: TextAlignVertical.center,
                               cursorColor: Color(0xff949494),
                               cursorHeight: 16,

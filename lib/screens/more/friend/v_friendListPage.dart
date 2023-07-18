@@ -284,7 +284,12 @@ class _FriendListPageState extends State<FriendListPage> {
                           if (!snapshot.hasData || snapshot.data == null) {
                             return Container(
                               color: Colors.white,
-                              child: Text('친한 친구를 등록해주세요.'),
+                              child: Column(
+                                children: [
+                                  Text('즐겨찾는 친구를 등록하면'),
+                                  Text('친구의 라이브 상태를 확인할 수 있어요!'),
+                                ],
+                              ),
                             );
                           } else if (snapshot.data!.docs.isNotEmpty) {
                             final myDoc = snapshot.data!.docs;
@@ -514,7 +519,24 @@ class _FriendListPageState extends State<FriendListPage> {
                                       if (!snapshot.hasData || snapshot.data == null) {
                                         return Container(
                                           color: Colors.white,
-                                          child: Text('친한 친구를 등록해주세요.'),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                '즐겨찾는 친구를 등록하면',
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Color(0xFF666666)),
+                                              ),
+                                              Text(
+                                                '친구의 라이브 상태를 확인할 수 있어요!',
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Color(0xFF666666)),
+                                              ),
+
+                                            ],
+                                          ),
                                         );
                                       } else if (snapshot.data!.docs.isNotEmpty) {
                                         final bestfriendDocs = snapshot.data!.docs;
@@ -527,7 +549,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                                 Padding(
                                                   padding: const EdgeInsets.symmetric(horizontal: 16),
                                                   child: Text(
-                                                    '친한 친구 ${bestfriendDocs.length}',
+                                                    '즐겨찾기 ${bestfriendDocs.length}',
                                                     style: TextStyle(
                                                         fontWeight: FontWeight.normal,
                                                         fontSize: 13,
@@ -697,11 +719,22 @@ class _FriendListPageState extends State<FriendListPage> {
                                           child: Padding(
                                             padding:
                                             const EdgeInsets.only(bottom: 28),
-                                            child: Text(
-                                              '친한 친구를 등록해 주세요.',
-                                              style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: Color(0xFF666666)),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  '즐겨찾는 친구를 등록하면',
+                                                  style: TextStyle(
+                                                      fontSize: 13,
+                                                      color: Color(0xFF666666)),
+                                                ),
+                                                Text(
+                                                  '친구의 라이브 상태를 확인할 수 있어요!',
+                                                  style: TextStyle(
+                                                      fontSize: 13,
+                                                      color: Color(0xFF666666)),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),
