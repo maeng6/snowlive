@@ -800,7 +800,7 @@ class LiveMapController extends GetxController {
 
   List<Map<String, dynamic>> calculateBarDataPassCount(Map<String, dynamic>? passCountData) {
     if (passCountData == null || passCountData.isEmpty) {
-      return []; // 데이터가 없을 경우 빈 리스트 반환
+      return []; // return an empty list if there is no data
     }
 
     List<MapEntry<String, dynamic>> sortedEntries = passCountData.entries.toList()
@@ -808,11 +808,11 @@ class LiveMapController extends GetxController {
         return b.value.compareTo(a.value);
       });
 
-    int maxPassCount = sortedEntries.take(5).map((entry) {
+    int maxPassCount = sortedEntries.map((entry) {
       return entry.value ?? 0;
     }).reduce((value, element) => value > element ? value : element);
 
-    List<Map<String, dynamic>> barData = sortedEntries.take(5).map((entry) {
+    List<Map<String, dynamic>> barData = sortedEntries.map((entry) {
       String slopeName = entry.key;
       int passCount = entry.value ?? 0;
       double barHeightRatio = passCount.toDouble() / maxPassCount.toDouble();
