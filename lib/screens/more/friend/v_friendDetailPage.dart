@@ -1111,25 +1111,12 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                     SizedBox(height: 30,),
                     Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          children: [
-                            Text('슬로프 라이딩 횟수',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Color(0xFF111111)
-                              ),),
-                            Expanded(child: SizedBox()),
-                            GestureDetector(
-                              onTap: (){},
-                              child: Text('자세히 보기',
-                              style: TextStyle(
-                                fontSize: 13
-                              ),
-                              ),
-                            )
-                          ],
-                        )),
+                        child: Text('슬로프 라이딩 횟수',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Color(0xFF111111)
+                          ),)),
                     SizedBox(height: 10,),
                     Container(
                       child: StreamBuilder<DocumentSnapshot>(
@@ -1246,25 +1233,12 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                     SizedBox(height: 30,),
                     Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          children: [
-                            Text('시간대별 라이딩 횟수',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Color(0xFF111111)
-                              ),),
-                            Expanded(child: SizedBox()),
-                            GestureDetector(
-                              onTap: (){},
-                              child: Text('자세히 보기',
-                                style: TextStyle(
-                                    fontSize: 13
-                                ),
-                              ),
-                            )
-                          ],
-                        )),
+                        child: Text('시간대별 라이딩 횟수',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Color(0xFF111111)
+                          ),)),
                     SizedBox(height: 10,),
                     Container(
                       child: StreamBuilder<DocumentSnapshot>(
