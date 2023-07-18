@@ -702,6 +702,24 @@ class LiveMapController extends GetxController {
       return {'totalUsers': totalUsers, 'rank': 0};
     }
   }
+  Map<String, int> calculateRankIndiAll2({required userRankingDocs}){
+    isLoading.value = true;
+    Map<String, int> userRankingMap = {};
+
+    for (int i = 0; i < userRankingDocs.length; i++) {
+      if (userRankingDocs[i].data() != null) {
+        if (i == 0) {
+          userRankingMap['${userRankingDocs[i]['uid']}'] = i+1;
+        } else if(userRankingDocs[i]['totalScore'] != userRankingDocs[i-1]['totalScore']){
+          userRankingMap['${userRankingDocs[i]['uid']}'] = i+1;
+        } else if(userRankingDocs[i]['totalScore'] == userRankingDocs[i-1]['totalScore']){
+          userRankingMap['${userRankingDocs[i]['uid']}'] = userRankingMap['${userRankingDocs[i-1]['uid']}']!;
+        }
+      }
+    }
+    isLoading.value =false;
+    return userRankingMap;
+  }
 
   Future<Map<String, int>> calculateRankCrewAll(int crewScore, String crewID) async {
     isLoading.value = true;
@@ -749,9 +767,24 @@ class LiveMapController extends GetxController {
       return {'totalCrews': totalCrews, 'rank': 0};
     }
   }
+  Map<String, int> calculateRankCrewAll2({required crewDocs})  {
+    isLoading.value = true;
+    Map<String, int> crewRankingMap = {};
 
-
-
+    for (int i = 0; i < crewDocs.length; i++) {
+      if (crewDocs[i].data() != null) {
+        if (i == 0) {
+          crewRankingMap['${crewDocs[i]['crewID']}'] = i+1;
+        } else if(crewDocs[i]['totalScore'] != crewDocs[i-1]['totalScore']){
+          crewRankingMap['${crewDocs[i]['crewID']}'] = i+1;
+        } else if(crewDocs[i]['totalScore'] == crewDocs[i-1]['totalScore']){
+          crewRankingMap['${crewDocs[i]['crewID']}'] = crewRankingMap['${crewDocs[i-1]['crewID']}']!;
+        }
+      }
+    }
+    isLoading.value =false;
+    return crewRankingMap;
+  }
 
   String calculateMaxValue(Map<String, dynamic>? value) {
     if (value == null || value.isEmpty) {
