@@ -59,10 +59,14 @@ class LicenseListPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    child: Text(
-                      '${licenseNameList[index]} ${versionList[index]}',
-                      style: TextStyle(
-                          fontSize: 16,
+                    child: Flexible(
+                      child: Text(
+                        '${licenseNameList[index]} ${versionList[index]}',
+                        style: TextStyle(
+                            fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
