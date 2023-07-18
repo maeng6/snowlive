@@ -44,7 +44,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-          backgroundColor: Color(0xFFDEDEDE),
+          backgroundColor: Color(0xFFF1F1F3),
           extendBodyBehindAppBar: true,
           body: StreamBuilder(
     stream: FirebaseFirestore.instance
@@ -139,17 +139,17 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                 ),
                               ),
                               Container(
-                                padding: EdgeInsets.only(top: 1, bottom: 1, left: 8, right: 8), // 텍스트와 테두리 간의 패딩
+                                padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8), // 텍스트와 테두리 간의 패딩
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                      color: Color(0xFFFFFFFF),
+                                      color: Color(0xFFFFFFFF).withOpacity(0.5),
                                       width: 0.9), // 테두리 색상과 두께
                                   borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
                                 ),
                                 child: Text(
                                   '${_resortModelController.getResortName(crewDocs[0]['baseResortNickName'])}',
                                   style: TextStyle(
-                                      fontSize: 12,
+                                      fontSize: 13,
                                       fontWeight: FontWeight.bold,
                                       color: Color(0xFFFFFFFF)
                                   ),
@@ -159,7 +159,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                             ],
                           ),
                           SizedBox(
-                            height: 24,
+                            height: 20,
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,6 +196,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         '크루원(명)',
@@ -203,71 +204,74 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                             fontSize: 13,
                                             color: Color(0xFFFFFFFF).withOpacity(0.7)
                                         ),),
+                                      SizedBox(
+                                        height: 2,
+                                      ),
                                       Row(
                                         crossAxisAlignment: CrossAxisAlignment.end,
                                         children: [
-                                          StreamBuilder(
-                                              stream: FirebaseFirestore.instance
-                                                  .collection('liveCrew')
-                                                  .where('crewID', isEqualTo: _liveCrewModelController.crewID)
-                                                  .snapshots(),
-                                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return Center(
-                                                    child: CircularProgressIndicator(),
-                                                  );
-                                                } else if (snapshot.hasError) {
-                                                  return Text('Error: ${snapshot.error}');
-                                                } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                                                  final crewDocs = snapshot.data!.docs;
-                                                  List memberList = crewDocs[0]['memberUidList'];
-                                                  return StreamBuilder(
-                                                    stream: FirebaseFirestore.instance
-                                                        .collection('user')
-                                                        .where('uid', whereIn: memberList)
-                                                        .where('isOnLive', isEqualTo: true)
-                                                        .snapshots(),
-                                                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                      if (snapshot.connectionState == ConnectionState.waiting) {
-                                                        return Center(
-                                                          child: CircularProgressIndicator(),
-                                                        );
-                                                      } else if (snapshot.hasError) {
-                                                        return Text('Error: ${snapshot.error}');
-                                                      } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                                                        final liveMembersCount = snapshot.data!.docs.length;
-                                                        return  Text('$liveMembersCount',
-                                                          style: GoogleFonts.bebasNeue(
-                                                              color: Color(0xFFFFFFFF),
-                                                              fontSize: 28
-                                                          ),
-                                                        );
-                                                      } else {
-                                                        return Text('0',
-                                                          style: GoogleFonts.bebasNeue(
-                                                              color: Color(0xFFFFFFFF),
-                                                              fontSize: 28
-                                                          ),
-                                                        );
-                                                      }
-                                                    },
-                                                  );
-                                                }
-                                                return Container();
-                                              }
-                                          ),
-                                          SizedBox(width: 4),
-                                          Padding(
-                                            padding: const EdgeInsets.only(bottom: 4),
-                                            child: Text('/',
-                                            style: GoogleFonts.bebasNeue(
-                                              fontSize: 16,
-                                              color: Color(0xFFFFFFFF),
-                                              fontWeight: FontWeight.bold
-                                            ),
-                                            ),
-                                          ),
-                                          SizedBox(width: 2),
+                                          // StreamBuilder(
+                                          //     stream: FirebaseFirestore.instance
+                                          //         .collection('liveCrew')
+                                          //         .where('crewID', isEqualTo: _liveCrewModelController.crewID)
+                                          //         .snapshots(),
+                                          //     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                          //       if (snapshot.connectionState == ConnectionState.waiting) {
+                                          //         return Center(
+                                          //           child: CircularProgressIndicator(),
+                                          //         );
+                                          //       } else if (snapshot.hasError) {
+                                          //         return Text('Error: ${snapshot.error}');
+                                          //       } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                          //         final crewDocs = snapshot.data!.docs;
+                                          //         List memberList = crewDocs[0]['memberUidList'];
+                                          //         return StreamBuilder(
+                                          //           stream: FirebaseFirestore.instance
+                                          //               .collection('user')
+                                          //               .where('uid', whereIn: memberList)
+                                          //               .where('isOnLive', isEqualTo: true)
+                                          //               .snapshots(),
+                                          //           builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                          //             if (snapshot.connectionState == ConnectionState.waiting) {
+                                          //               return Center(
+                                          //                 child: CircularProgressIndicator(),
+                                          //               );
+                                          //             } else if (snapshot.hasError) {
+                                          //               return Text('Error: ${snapshot.error}');
+                                          //             } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                          //               final liveMembersCount = snapshot.data!.docs.length;
+                                          //               return  Text('$liveMembersCount',
+                                          //                 style: GoogleFonts.bebasNeue(
+                                          //                     color: Color(0xFFFFFFFF),
+                                          //                     fontSize: 28
+                                          //                 ),
+                                          //               );
+                                          //             } else {
+                                          //               return Text('0',
+                                          //                 style: GoogleFonts.bebasNeue(
+                                          //                     color: Color(0xFFFFFFFF),
+                                          //                     fontSize: 28
+                                          //                 ),
+                                          //               );
+                                          //             }
+                                          //           },
+                                          //         );
+                                          //       }
+                                          //       return Container();
+                                          //     }
+                                          // ),
+                                          // SizedBox(width: 4),
+                                          // Padding(
+                                          //   padding: const EdgeInsets.only(bottom: 4),
+                                          //   child: Text('/',
+                                          //   style: GoogleFonts.bebasNeue(
+                                          //     fontSize: 16,
+                                          //     color: Color(0xFFFFFFFF),
+                                          //     fontWeight: FontWeight.bold
+                                          //   ),
+                                          //   ),
+                                          // ),
+                                          // SizedBox(width: 2),
                                           Text('${memberUidList.length}',
                                           style: GoogleFonts.bebasNeue(
                                             color: Color(0xFFFFFFFF),
@@ -299,13 +303,17 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                     ],
                                   ),
                                   Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '크루랭킹',
+                                        '크루랭킹(위)',
                                         style: TextStyle(
                                             fontSize: 13,
                                             color: Color(0xFFFFFFFF).withOpacity(0.7)
                                         ),),
+                                      SizedBox(
+                                        height: 2,
+                                      ),
                                       StreamBuilder(
                                         stream: FirebaseFirestore.instance
                                             .collection('liveCrew')
@@ -330,25 +338,25 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                             return Row(
                                               children: [
                                                 Text('${rank}',
-                                                  style: TextStyle(
+                                                  style: GoogleFonts.bebasNeue(
                                                       color: Color(0xFFFFFFFF),
                                                       fontSize: 28
                                                   ),
                                                 ),
-                                                SizedBox(width: 3,),
-                                                Text('/',
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: Color(0xFF000000),
-                                                      fontWeight: FontWeight.bold
-                                                  ),
-                                                ),
-                                                Text('${crewDocs.length}',
-                                                  style: TextStyle(
-                                                      color: Color(0xFF111111),
-                                                      fontSize: 28
-                                                  ),
-                                                ),
+                                                // SizedBox(width: 3,),
+                                                // Text('/',
+                                                //   style: GoogleFonts.bebasNeue(
+                                                //       fontSize: 16,
+                                                //       color: Color(0xFFFFFFFF),
+                                                //       fontWeight: FontWeight.bold
+                                                //   ),
+                                                // ),
+                                                // Text('${crewDocs.length}',
+                                                //   style: GoogleFonts.bebasNeue(
+                                                //       color: Color(0xFFFFFFFF),
+                                                //       fontSize: 28
+                                                //   ),
+                                                // ),
                                               ],
                                             );
                                           } else {
@@ -361,10 +369,10 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                           }
                                         },
                                       ),
-
                                     ],
                                   ),
                                   Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         '창단일',
@@ -373,45 +381,49 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                             color: Color(0xFFFFFFFF).withOpacity(0.7)
                                         ),),
                                       Row(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
                                         children: [
                                           Text(
                                             '$year',
-                                            style: TextStyle(
-                                                fontSize: 28,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFFFFFFFF)
-                                            ),),
-                                          SizedBox(width: 3,),
-                                          Text('/',
-                                            style: TextStyle(
-                                                fontSize: 16,
+                                            style: GoogleFonts.bebasNeue(
                                                 color: Color(0xFFFFFFFF),
-                                                fontWeight: FontWeight.bold
+                                                fontSize: 28
+                                            ),),
+                                          SizedBox(width: 4,),
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 4),
+                                            child: Text('/',
+                                              style: GoogleFonts.bebasNeue(
+                                                  fontSize: 16,
+                                                  color: Color(0xFFFFFFFF),
+                                                  fontWeight: FontWeight.bold
+                                              ),
                                             ),
                                           ),
-                                          SizedBox(width: 3,),
+                                          SizedBox(width: 4,),
                                           Text(
                                             '$month',
-                                            style: TextStyle(
-                                                fontSize: 28,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFFFFFFFF)
-                                            ),),
-                                          SizedBox(width: 3,),
-                                          Text('/',
-                                            style: TextStyle(
-                                                fontSize: 16,
+                                            style: GoogleFonts.bebasNeue(
                                                 color: Color(0xFFFFFFFF),
-                                                fontWeight: FontWeight.bold
+                                                fontSize: 28
+                                            ),),
+                                          SizedBox(width: 4,),
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 4),
+                                            child: Text('/',
+                                              style: GoogleFonts.bebasNeue(
+                                                  fontSize: 16,
+                                                  color: Color(0xFFFFFFFF),
+                                                  fontWeight: FontWeight.bold
+                                              ),
                                             ),
                                           ),
-                                          SizedBox(width: 3,),
+                                          SizedBox(width: 4,),
                                           Text(
                                             '$day',
-                                            style: TextStyle(
-                                                fontSize: 28,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFFFFFFFF)
+                                            style: GoogleFonts.bebasNeue(
+                                                color: Color(0xFFFFFFFF),
+                                                fontSize: 28
                                             ),),
                                         ],
                                       ),
@@ -429,7 +441,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                   ],
                 ),
               ),
-              SizedBox(height: 25,),
+              SizedBox(height: 20),
               if(memberUidList.contains(_userModelController.uid))
                 Padding(
                   padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
@@ -440,14 +452,14 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                       borderRadius: BorderRadius.circular(14),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5), // 그림자의 색상
-                          blurRadius: 2, // 그림자의 흐릿한 정도
-                          offset: Offset(1, 0), // 그림자의 위치
+                          color: Color(0xFF000000).withOpacity(0.1), // 그림자의 색상
+                          blurRadius: 12, // 그림자의 흐릿한 정도
+                          offset: Offset(0, 2), // 그림자의 위치
                         ),
                       ]
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
+                      padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
                       child: Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -459,14 +471,19 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                               fontWeight: FontWeight.bold
                             ),
                             ),
-                            SizedBox(height: 5,),
+                            SizedBox(height: 5),
                             if(crewDocs[0]['notice'] == '')
-                            Text(
-                                '공지사항이 없습니다',
-                                style: TextStyle(
-                                    fontSize: 13,
-                                    color: Color(0xFF111111)
-                                ),),
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Text(
+                                    '공지사항이 없습니다',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFF949494)
+                                    ),),
+                              ),
+                            ),
                             Text(
                               '${crewDocs[0]['notice']}',
                               style: TextStyle(
@@ -489,14 +506,14 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                         borderRadius: BorderRadius.circular(14),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.5), // 그림자의 색상
-                            blurRadius: 2, // 그림자의 흐릿한 정도
-                            offset: Offset(1, 0), // 그림자의 위치
+                            color: Color(0xFF000000).withOpacity(0.1), // 그림자의 색상
+                            blurRadius: 12, // 그림자의 흐릿한 정도
+                            offset: Offset(0, 2), // 그림자의 위치
                           ),
                         ]
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
+                      padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
                       child: Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -510,12 +527,17 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                             ),
                             SizedBox(height: 5,),
                             if(crewDocs[0]['description'] == '')
-                              Text(
-                                '크루소개가 없습니다',
-                                style: TextStyle(
-                                    fontSize: 13,
-                                    color: Color(0xFF111111)
-                                ),),
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Text(
+                                    '크루 소개가 없습니다',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFF949494)
+                                    ),),
+                                ),
+                              ),
                             Text(
                               '${crewDocs[0]['description']}',
                               style: TextStyle(
@@ -538,14 +560,14 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                         borderRadius: BorderRadius.circular(14),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.5), // 그림자의 색상
-                            blurRadius: 2, // 그림자의 흐릿한 정도
-                            offset: Offset(1, 0), // 그림자의 위치
+                            color: Color(0xFF000000).withOpacity(0.1), // 그림자의 색상
+                            blurRadius: 12, // 그림자의 흐릿한 정도
+                            offset: Offset(0, 2), // 그림자의 위치
                           ),
                         ]
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
+                      padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 24),
                       child: Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -599,33 +621,32 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                             memberlength = 3;
                                           }
                                           return Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               if(memberlength>0)
                                                 Padding(
-                                                padding: EdgeInsets.only(left: 16),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    SizedBox(height: 10,),
-                                                    Container(
-                                                        height: 120,
-                                                        child:  StreamBuilder(
-                                                            stream: FirebaseFirestore.instance
-                                                                .collection('user')
-                                                                .where('uid', isEqualTo: memberScoreDocs[0]['uid'])
-                                                                .snapshots(),
-                                                            builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                return Center(
-                                                                  child: CircularProgressIndicator(),
-                                                                );
-                                                              } else if (snapshot.hasError) {
-                                                                return Text('Error: ${snapshot.error}');
-                                                              } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                                                                final memberUserDocs = snapshot.data!.docs;
-                                                                return Container(
-                                                                  child: Padding(
-                                                                    padding: const EdgeInsets.only(left: 10, right: 10),
+                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      SizedBox(height: 10,),
+                                                      Container(
+                                                          height: 132,
+                                                          child:  StreamBuilder(
+                                                              stream: FirebaseFirestore.instance
+                                                                  .collection('user')
+                                                                  .where('uid', isEqualTo: memberScoreDocs[0]['uid'])
+                                                                  .snapshots(),
+                                                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                  return Center(
+                                                                    child: CircularProgressIndicator(),
+                                                                  );
+                                                                } else if (snapshot.hasError) {
+                                                                  return Text('Error: ${snapshot.error}');
+                                                                } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                                                  final memberUserDocs = snapshot.data!.docs;
+                                                                  return Container(
                                                                     child: Column(
                                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                                       children: [
@@ -635,15 +656,15 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                             Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
                                                                           },
                                                                           child: Container(
-                                                                              width: 50,
-                                                                              height: 50,
+                                                                              width: 80,
+                                                                              height: 80,
                                                                               child: ExtendedImage.network(
                                                                                 memberUserDocs[0]['profileImageUrl'],
                                                                                 enableMemoryCache: true,
                                                                                 shape: BoxShape.circle,
                                                                                 borderRadius: BorderRadius.circular(8),
-                                                                                width: 50,
-                                                                                height: 50,
+                                                                                width: 80,
+                                                                                height: 80,
                                                                                 fit: BoxFit.cover,
                                                                               )),
                                                                         )
@@ -652,43 +673,58 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                             Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
                                                                           },
                                                                           child: Container(
-                                                                            width: 50,
-                                                                            height: 50,
+                                                                            width: 80,
+                                                                            height: 80,
                                                                             child: ExtendedImage.asset(
                                                                               'assets/imgs/profile/img_profile_default_circle.png',
                                                                               enableMemoryCache: true,
                                                                               shape: BoxShape.circle,
                                                                               borderRadius: BorderRadius.circular(8),
-                                                                              width: 50,
-                                                                              height: 50,
+                                                                              width: 80,
+                                                                              height: 80,
                                                                               fit: BoxFit.cover,
                                                                             ),
                                                                           ),
                                                                         ),
-                                                                        Text('${memberUserDocs[0]['displayName']}'),
-                                                                        Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                        Text('점수 : ${memberScoreDocs[0]['totalScore']}'),
+
+                                                                        SizedBox(
+                                                                          height: 12,
+                                                                        ),
+                                                                        Text('${memberUserDocs[0]['displayName']}',
+                                                                          style: TextStyle(
+                                                                            fontSize: 15,
+                                                                            color: Color(0xFF111111)
+                                                                        ),),
+                                                                        SizedBox(
+                                                                          height: 2,
+                                                                        ),
+                                                                        // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
+                                                                        Text('${memberScoreDocs[0]['totalScore']}점',
+                                                                          style: TextStyle(
+                                                                              fontSize: 14,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Color(0xFF111111)
+                                                                          ),),
                                                                       ],
                                                                     ),
-                                                                  ),
-                                                                );
+                                                                  );
+                                                                }
+                                                                return Container();
                                                               }
-                                                              return Container();
-                                                            }
-                                                        )
-                                                    ),
-                                                  ],
+                                                          )
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
                                               if(memberlength>1)
                                                 Padding(
-                                                  padding: EdgeInsets.only(left: 16),
+                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       SizedBox(height: 10,),
                                                       Container(
-                                                          height: 120,
+                                                          height: 132,
                                                           child:  StreamBuilder(
                                                               stream: FirebaseFirestore.instance
                                                                   .collection('user')
@@ -715,15 +751,15 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                               Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
                                                                             },
                                                                             child: Container(
-                                                                                width: 50,
-                                                                                height: 50,
+                                                                                width: 80,
+                                                                                height: 80,
                                                                                 child: ExtendedImage.network(
                                                                                   memberUserDocs[0]['profileImageUrl'],
                                                                                   enableMemoryCache: true,
                                                                                   shape: BoxShape.circle,
                                                                                   borderRadius: BorderRadius.circular(8),
-                                                                                  width: 50,
-                                                                                  height: 50,
+                                                                                  width: 80,
+                                                                                  height: 80,
                                                                                   fit: BoxFit.cover,
                                                                                 )),
                                                                           )
@@ -732,22 +768,37 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                               Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
                                                                             },
                                                                             child: Container(
-                                                                              width: 50,
-                                                                              height: 50,
+                                                                              width: 80,
+                                                                              height: 80,
                                                                               child: ExtendedImage.asset(
                                                                                 'assets/imgs/profile/img_profile_default_circle.png',
                                                                                 enableMemoryCache: true,
                                                                                 shape: BoxShape.circle,
                                                                                 borderRadius: BorderRadius.circular(8),
-                                                                                width: 50,
-                                                                                height: 50,
+                                                                                width: 80,
+                                                                                height: 80,
                                                                                 fit: BoxFit.cover,
                                                                               ),
                                                                             ),
                                                                           ),
-                                                                          Text('${memberUserDocs[0]['displayName']}'),
-                                                                          Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                          Text('점수 : ${memberScoreDocs[1]['totalScore']}'),
+                                                                          SizedBox(
+                                                                            height: 12,
+                                                                          ),
+                                                                          Text('${memberUserDocs[0]['displayName']}',
+                                                                            style: TextStyle(
+                                                                                fontSize: 15,
+                                                                                color: Color(0xFF111111)
+                                                                            ),),
+                                                                          SizedBox(
+                                                                            height: 2,
+                                                                          ),
+                                                                          // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
+                                                                          Text('점수 : ${memberScoreDocs[1]['totalScore']}',
+                                                                              style: TextStyle(
+                                                                                  fontSize: 14,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: Color(0xFF111111)
+                                                                              ),),
                                                                         ],
                                                                       ),
                                                                     ),
@@ -762,13 +813,13 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                 ),
                                               if(memberlength>2)
                                                 Padding(
-                                                  padding: EdgeInsets.only(left: 16),
+                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       SizedBox(height: 10,),
                                                       Container(
-                                                          height: 120,
+                                                          height: 132,
                                                           child:  StreamBuilder(
                                                               stream: FirebaseFirestore.instance
                                                                   .collection('user')
@@ -795,15 +846,15 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                               Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
                                                                             },
                                                                             child: Container(
-                                                                                width: 50,
-                                                                                height: 50,
+                                                                                width: 80,
+                                                                                height: 80,
                                                                                 child: ExtendedImage.network(
                                                                                   memberUserDocs[0]['profileImageUrl'],
                                                                                   enableMemoryCache: true,
                                                                                   shape: BoxShape.circle,
                                                                                   borderRadius: BorderRadius.circular(8),
-                                                                                  width: 50,
-                                                                                  height: 50,
+                                                                                  width: 80,
+                                                                                  height: 80,
                                                                                   fit: BoxFit.cover,
                                                                                 )),
                                                                           )
@@ -812,22 +863,34 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                               Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid']));
                                                                             },
                                                                             child: Container(
-                                                                              width: 50,
-                                                                              height: 50,
+                                                                              width: 80,
+                                                                              height: 80,
                                                                               child: ExtendedImage.asset(
                                                                                 'assets/imgs/profile/img_profile_default_circle.png',
                                                                                 enableMemoryCache: true,
                                                                                 shape: BoxShape.circle,
                                                                                 borderRadius: BorderRadius.circular(8),
-                                                                                width: 50,
-                                                                                height: 50,
+                                                                                width: 80,
+                                                                                height: 80,
                                                                                 fit: BoxFit.cover,
                                                                               ),
                                                                             ),
                                                                           ),
-                                                                          Text('${memberUserDocs[0]['displayName']}'),
-                                                                          Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                          Text('점수 : ${memberScoreDocs[2]['totalScore']}'),
+                                                                          Text('${memberUserDocs[0]['displayName']}',
+                                                                            style: TextStyle(
+                                                                                fontSize: 15,
+                                                                                color: Color(0xFF111111)
+                                                                            ),),
+                                                                          SizedBox(
+                                                                            height: 2,
+                                                                          ),
+                                                                          // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
+                                                                          Text('점수 : ${memberScoreDocs[2]['totalScore']}',
+                                                                            style: TextStyle(
+                                                                                fontSize: 14,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: Color(0xFF111111)
+                                                                            ),),
                                                                         ],
                                                                       ),
                                                                     ),
@@ -870,14 +933,14 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                       borderRadius: BorderRadius.circular(14),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5), // 그림자의 색상
-                          blurRadius: 2, // 그림자의 흐릿한 정도
-                          offset: Offset(1, 0), // 그림자의 위치
+                          color: Color(0xFF000000).withOpacity(0.1), // 그림자의 색상
+                          blurRadius: 12, // 그림자의 흐릿한 정도
+                          offset: Offset(0, 2), // 그림자의 위치
                         ),
                       ]
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
+                    padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 24),
                     child: Container(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -890,7 +953,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 10),
                           StreamBuilder(
                             stream: FirebaseFirestore.instance
                                 .collection('liveCrew')
@@ -904,12 +966,23 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                 Map<String, dynamic>? passCountData =
                                 crewDocs[0]['passCountData'] as Map<String, dynamic>?;
                                 if (passCountData == null || passCountData.isEmpty) {
-                                  return Text('슬로프 이용기록이 없습니다.');
+                                  return Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 20, bottom: 10),
+                                      child: Text(
+                                        '슬로프 이용기록이 없습니다',
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            color: Color(0xFF949494)
+                                        ),),
+                                    ),
+                                  );
                                 } else {
                                   List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);
 
                                   return Container(
-                                    height: 200,
+                                    padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 20 : 0),
+                                    height: 208,
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -917,66 +990,75 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                           child: Container(
                                             child: barData.isEmpty
                                                 ? Center(child: Text('데이터가 없습니다'))
-                                                : ListView(
-                                              scrollDirection: Axis.horizontal,
-                                              children: barData.map((data) {
-                                                String slopeName = data['slopeName'];
-                                                int passCount = data['passCount'];
-                                                double barHeightRatio = data['barHeightRatio'];
-                                                Color barColor = data['barColor'];
-
-                                                return Container(
-                                                  margin: EdgeInsets.symmetric(horizontal: 5),
-                                                  width: 50,
-                                                  height: 95,
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.end,
-                                                    children: [
-                                                      Text(
-                                                        '$passCount',
-                                                        style: TextStyle(
-                                                          fontSize: 11,
-                                                          color: Color(0xFF111111),
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 10),
-                                                      Container(
-                                                        width: 50,
-                                                        height: 95 * barHeightRatio,
-                                                        child: Container(
-                                                          width: 20,
-                                                          height: 95 * barHeightRatio,
-                                                          decoration: BoxDecoration(
-                                                            color: barColor,
-                                                            borderRadius: BorderRadius.only(
-                                                              topRight: Radius.circular(3),
-                                                              topLeft: Radius.circular(3),
+                                                : Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: barData.map((data) {
+                                                    String slopeName = data['slopeName'];
+                                                    int passCount = data['passCount'];
+                                                    double barHeightRatio = data['barHeightRatio'];
+                                                    Color barColor = Color(crewDocs[0]['crewColor']);
+                                                    return Container(
+                                                      margin: EdgeInsets.symmetric(horizontal: 5),
+                                                      width: barData.length < 4 ? _size.width / 5 : _size.width / 5 - 25,
+                                                      height: 195,
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                        children: [
+                                                          Text(
+                                                            '$passCount',
+                                                            style: TextStyle(
+                                                              fontSize: 13,
+                                                              color: Color(0xFF111111),
+                                                              fontWeight: FontWeight.bold,
                                                             ),
                                                           ),
-                                                        ),
+                                                          SizedBox(height: 4),
+                                                          Container(
+                                                            width: 58,
+                                                            height: 140 * barHeightRatio,
+                                                            child: Container(
+                                                              width: 58,
+                                                              height: 140 * barHeightRatio,
+                                                              decoration: BoxDecoration(
+                                                                color: Color(crewDocs[0]['crewColor']),
+                                                                borderRadius: BorderRadius.only(
+                                                                  topRight: Radius.circular(4),
+                                                                  topLeft: Radius.circular(4),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(height: 10),
+                                                          Text(
+                                                            slopeName,
+                                                            style: TextStyle(fontSize: 12, color: Color(0xFF111111)),
+                                                          ),
+                                                        ],
                                                       ),
-                                                      SizedBox(height: 10),
-                                                      Text(
-                                                        slopeName,
-                                                        style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
-                                                      ),
-                                                      SizedBox(height: 20),
-                                                    ],
-                                                  ),
-                                                );
-                                              }).toList(),
-                                            ),
+                                                    );
+                                                  }).toList(),
+                                                ),
                                           ),
                                         ),
                                       ],
                                     ),
                                   );
+
                                 }
                               } else if (snapshot.connectionState == ConnectionState.waiting) {
                                 return Center(child: CircularProgressIndicator());
                               } else {
-                                return Text('슬로프 이용기록이 없습니다.');
+                                return Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 20, bottom: 10),
+                                    child: Text(
+                                      '슬로프 이용기록이 없습니다',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: Color(0xFF949494)
+                                      ),),
+                                  ),
+                                );
                               }
                             },
                           ),
@@ -1004,7 +1086,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                       ]
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
+                    padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 24),
                     child: Container(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1037,7 +1119,17 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                   Map<String, dynamic> passCountTimeData = snapshot.data?.docs.first.data()['passCountTimeData'];
                                   bool areAllValuesZero = _liveMapController.areAllSlotValuesZero(passCountTimeData);
                                   if (areAllValuesZero) {
-                                    return Text('슬로프 이용기록이 없습니다.');
+                                    return Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 20, bottom: 10),
+                                        child: Text(
+                                          '슬로프 이용기록이 없습니다',
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              color: Color(0xFF949494)
+                                          ),),
+                                      ),
+                                    );
                                   }
                                 }
 
@@ -1069,7 +1161,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                              return Container(
                                                 margin: EdgeInsets.symmetric(horizontal: 5),
                                                 width: 25,
-                                                height: 95,
+                                                height: 140,
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.end,
                                                   children: [
@@ -1084,15 +1176,15 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                     SizedBox(height: 10),
                                                     Container(
                                                       width: 25,
-                                                      height: 95 * barHeightRatio,
+                                                      height: 140 * barHeightRatio,
                                                       child: Container(
                                                         width: 25,
-                                                        height: 95 * barHeightRatio,
+                                                        height: 140 * barHeightRatio,
                                                         decoration: BoxDecoration(
                                                           color: barColor,
                                                           borderRadius: BorderRadius.only(
-                                                            topRight: Radius.circular(3),
-                                                            topLeft: Radius.circular(3),
+                                                            topRight: Radius.circular(4),
+                                                            topLeft: Radius.circular(4),
                                                           ),
                                                         ),
                                                       ),
@@ -1102,7 +1194,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                       _resortModelController.getSlotName(slotName),
                                                       style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
                                                     ),
-                                                    SizedBox(height: 20),
                                                   ],
                                                 ),
                                               );
@@ -1431,7 +1522,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                             splashFactory: InkRipple.splashFactory,
                             elevation: 0,
                             minimumSize: Size(100, 56),
-                            backgroundColor: Color(0xff772ED3),
+                            backgroundColor: Color(crewDocs[0]['crewColor']),
                             padding: EdgeInsets.symmetric(horizontal: 0)),
                       ),
                     ),
