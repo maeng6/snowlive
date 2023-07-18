@@ -131,9 +131,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                   bottom: true,
                   child: Stack(
                     children: [
-                      Scaffold(
-                        backgroundColor: Colors.white,
-                        body: SingleChildScrollView(
+                      SingleChildScrollView(
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16),
                                 child: Column(
@@ -554,6 +552,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               },
                                             ),
                                           ),
+                                          SizedBox(height: 60,),
                                         ],
                                       ),
                                     ),
@@ -561,7 +560,6 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                 ),
                               ),
                             ),
-                      ),
                       Positioned(
                         bottom: 0,
                         right: 0,
@@ -596,8 +594,6 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                               }
                               final rankingDocs = snapshot.data!.docs;
                               int myScore = rankingDocs[0]['totalScore'];
-                              print(userRankingMap);
-
                               // 내 정보 가져오기
                               return  Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16),
