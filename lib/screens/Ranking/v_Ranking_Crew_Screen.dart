@@ -71,7 +71,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
               bottom: true,
               child: Scaffold(
                   backgroundColor: Colors.white,
-                  body: Text("waiting")),
+                  body: Text("")),
             ),
           );
         }

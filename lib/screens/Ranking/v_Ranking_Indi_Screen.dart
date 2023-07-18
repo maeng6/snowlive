@@ -69,7 +69,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                     bottom: true,
                     child: Scaffold(
                         backgroundColor: Colors.white,
-                        body: Text("waiting")),
+                        body: Text("")),
                   ),
                 );
               }
@@ -159,7 +159,10 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                       .snapshots(),
                                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                     if (!snapshot.hasData || snapshot.data == null) {
-                                                      return Center();
+                                                      return  Container(
+                                                        height: 154,
+                                                        width: _size.width / 3 - 16,
+                                                      );
                                                     } else if (snapshot.data!.docs.isNotEmpty) {
                                                       final userDoc = snapshot.data!.docs;
                                                       return GestureDetector(
@@ -222,9 +225,15 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                         ),
                                                       );
                                                     } else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                      return Center();
+                                                      return Container(
+                                                        height: 154,
+                                                        width: _size.width / 3 - 16,
+                                                      );
                                                     } else {
-                                                      return Center();
+                                                      return Container(
+                                                        height: 154,
+                                                        width: _size.width / 3 - 16,
+                                                      );
                                                     }
                                                   },
                                                 ),
@@ -301,9 +310,15 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                         ),
                                                       );
                                                     } else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                      return Center();
+                                                      return Container(
+                                                        height: 154,
+                                                        width: _size.width / 3 - 16,
+                                                      );
                                                     } else {
-                                                      return Center();
+                                                      return Container(
+                                                        height: 154,
+                                                        width: _size.width / 3 - 16,
+                                                      );
                                                     }
                                                   },
                                                 ),
@@ -380,9 +395,15 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                         ),
                                                       );
                                                     } else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                      return Center();
+                                                      return Container(
+                                                        height: 154,
+                                                        width: _size.width / 3 - 16,
+                                                      );
                                                     } else {
-                                                      return Center();
+                                                      return Container(
+                                                        height: 154,
+                                                        width: _size.width / 3 - 16,
+                                                      );
                                                     }
                                                   },
                                                 ),
@@ -413,7 +434,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                     if (!snapshot.hasData || snapshot.data == null) {
                                                       return ListTile(
-                                                        title: Text('Loading...'),
+                                                        title: Text(''),
                                                       );
                                                     }
                                                     final userDoc = snapshot.data!.docs;
