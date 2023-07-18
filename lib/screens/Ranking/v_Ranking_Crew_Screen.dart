@@ -26,6 +26,13 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   //TODO: Dependency Injection**************************************************
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
+
   int? myCrewRank;
 
   @override
@@ -55,6 +62,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                     StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('liveCrew')
+                          .where('baseResort', isEqualTo: _userModelController.favoriteResort)
                           .orderBy('totalScore', descending: true)
                           .snapshots(),
                       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -117,177 +125,181 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                   Row(
                                     children: [
                                       if(crewDocs.length > 0)
-                                        GestureDetector(
-                                          onTap:() async{
-                                            CustomFullScreenDialog.showDialog();
-                                            await _liveCrewModelController.getCurrnetCrew(crewDocs[0]['crewID']);
-                                            CustomFullScreenDialog.cancelDialog();
-                                            Get.to(()=>CrewDetailPage_screen());
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Color(crewDocs[0]['crewColor']),
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            height: 154,
-                                            width: _size.width / 3 - 12,
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                (crewDocs[0]['profileImageUrl'].isNotEmpty)
-                                                    ? Container(
-                                                  decoration: BoxDecoration(
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.black12,
-                                                        spreadRadius: 0,
-                                                        blurRadius: 8,
-                                                        offset: Offset(0, 4), // changes position of shadow
-                                                      ),
-                                                    ],
-                                                  ),
-                                                      width: 58,
-                                                      height: 58,
-                                                      child: ExtendedImage.network(
-                                                        crewDocs[0]['profileImageUrl'],
-                                                        enableMemoryCache: true,
-                                                        shape: BoxShape.rectangle,
-                                                        borderRadius: BorderRadius.circular(7),
-                                                        width: 100,
-                                                        height: 100,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    )
-                                                    : Container(
-                                                  decoration: BoxDecoration(
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.black12,
-                                                        spreadRadius: 0,
-                                                        blurRadius: 8,
-                                                        offset: Offset(0, 4), // changes position of shadow
-                                                      ),
-                                                    ],
-                                                  ),
-                                                      child: ExtendedImage.asset(
-                                                        'assets/imgs/profile/img_profile_default_.png',
-                                                        enableMemoryCache: true,
-                                                        shape: BoxShape.rectangle,
-                                                        borderRadius: BorderRadius.circular(7),
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap:() async{
+                                              CustomFullScreenDialog.showDialog();
+                                              await _liveCrewModelController.getCurrnetCrew(crewDocs[0]['crewID']);
+                                              CustomFullScreenDialog.cancelDialog();
+                                              Get.to(()=>CrewDetailPage_screen());
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Color(crewDocs[0]['crewColor']),
+                                                borderRadius: BorderRadius.circular(8),
+                                              ),
+                                              height: 154,
+                                              width: _size.width / 3 - 12,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  (crewDocs[0]['profileImageUrl'].isNotEmpty)
+                                                      ? Container(
+                                                    decoration: BoxDecoration(
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.black12,
+                                                          spreadRadius: 0,
+                                                          blurRadius: 8,
+                                                          offset: Offset(0, 4), // changes position of shadow
+                                                        ),
+                                                      ],
+                                                    ),
                                                         width: 58,
                                                         height: 58,
-                                                        fit: BoxFit.cover,
+                                                        child: ExtendedImage.network(
+                                                          crewDocs[0]['profileImageUrl'],
+                                                          enableMemoryCache: true,
+                                                          shape: BoxShape.rectangle,
+                                                          borderRadius: BorderRadius.circular(7),
+                                                          width: 100,
+                                                          height: 100,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      )
+                                                      : Container(
+                                                    decoration: BoxDecoration(
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.black12,
+                                                          spreadRadius: 0,
+                                                          blurRadius: 8,
+                                                          offset: Offset(0, 4), // changes position of shadow
+                                                        ),
+                                                      ],
+                                                    ),
+                                                        child: ExtendedImage.asset(
+                                                          'assets/imgs/profile/img_profile_default_.png',
+                                                          enableMemoryCache: true,
+                                                          shape: BoxShape.rectangle,
+                                                          borderRadius: BorderRadius.circular(7),
+                                                          width: 58,
+                                                          height: 58,
+                                                          fit: BoxFit.cover,
+                                                        ),
                                                       ),
-                                                    ),
-                                                SizedBox(height: 14,),
-                                                ExtendedImage.asset(
-                                                  'assets/imgs/icons/icon_crown_1.png',
-                                                  width: 28,
-                                                  height: 28,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                                  child: Text(
-                                                    crewDocs[0]['crewName'],
-                                                    style: TextStyle(
-                                                      color: Color(0xFFFFFFFF),
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 13,
-                                                    ),
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 1,
+                                                  SizedBox(height: 14,),
+                                                  ExtendedImage.asset(
+                                                    'assets/imgs/icons/icon_crown_1.png',
+                                                    width: 28,
+                                                    height: 28,
+                                                    fit: BoxFit.cover,
                                                   ),
-                                                ),
-                                              ],
+                                                  Padding(
+                                                    padding: EdgeInsets.symmetric(horizontal: 16),
+                                                    child: Text(
+                                                      crewDocs[0]['crewName'],
+                                                      style: TextStyle(
+                                                        color: Color(0xFFFFFFFF),
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 13,
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       SizedBox(width: 8),
                                       if(crewDocs.length > 1)
-                                        GestureDetector(
-                                          onTap:() async{
-                                            CustomFullScreenDialog.showDialog();
-                                            await _liveCrewModelController.getCurrnetCrew(crewDocs[1]['crewID']);
-                                            CustomFullScreenDialog.cancelDialog();
-                                            Get.to(()=>CrewDetailPage_screen());
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Color(crewDocs[1]['crewColor']),
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            height: 154,
-                                            width: _size.width / 3 - 12,
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                (crewDocs[1]['profileImageUrl'].isNotEmpty)
-                                                    ? Container(
-                                                  decoration: BoxDecoration(
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.black12,
-                                                        spreadRadius: 0,
-                                                        blurRadius: 8,
-                                                        offset: Offset(0, 4), // changes position of shadow
-                                                      ),
-                                                    ],
-                                                  ),
-                                                      width: 58,
-                                                      height: 58,
-                                                      child: ExtendedImage.network(
-                                                        crewDocs[1]['profileImageUrl'],
-                                                        enableMemoryCache: true,
-                                                        shape: BoxShape.rectangle,
-                                                        borderRadius: BorderRadius.circular(7),
-                                                        width: 100,
-                                                        height: 100,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    )
-                                                    : Container(
-                                                  decoration: BoxDecoration(
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.black12,
-                                                        spreadRadius: 0,
-                                                        blurRadius: 8,
-                                                        offset: Offset(0, 4), // changes position of shadow
-                                                      ),
-                                                    ],
-                                                  ),
-                                                      child: ExtendedImage.asset(
-                                                        'assets/imgs/profile/img_profile_default_.png',
-                                                        enableMemoryCache: true,
-                                                        shape: BoxShape.rectangle,
-                                                        borderRadius: BorderRadius.circular(7),
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap:() async{
+                                              CustomFullScreenDialog.showDialog();
+                                              await _liveCrewModelController.getCurrnetCrew(crewDocs[1]['crewID']);
+                                              CustomFullScreenDialog.cancelDialog();
+                                              Get.to(()=>CrewDetailPage_screen());
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Color(crewDocs[1]['crewColor']),
+                                                borderRadius: BorderRadius.circular(8),
+                                              ),
+                                              height: 154,
+                                              width: _size.width / 3 - 12,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  (crewDocs[1]['profileImageUrl'].isNotEmpty)
+                                                      ? Container(
+                                                    decoration: BoxDecoration(
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.black12,
+                                                          spreadRadius: 0,
+                                                          blurRadius: 8,
+                                                          offset: Offset(0, 4), // changes position of shadow
+                                                        ),
+                                                      ],
+                                                    ),
                                                         width: 58,
                                                         height: 58,
-                                                        fit: BoxFit.cover,
+                                                        child: ExtendedImage.network(
+                                                          crewDocs[1]['profileImageUrl'],
+                                                          enableMemoryCache: true,
+                                                          shape: BoxShape.rectangle,
+                                                          borderRadius: BorderRadius.circular(7),
+                                                          width: 100,
+                                                          height: 100,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      )
+                                                      : Container(
+                                                    decoration: BoxDecoration(
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.black12,
+                                                          spreadRadius: 0,
+                                                          blurRadius: 8,
+                                                          offset: Offset(0, 4), // changes position of shadow
+                                                        ),
+                                                      ],
+                                                    ),
+                                                        child: ExtendedImage.asset(
+                                                          'assets/imgs/profile/img_profile_default_.png',
+                                                          enableMemoryCache: true,
+                                                          shape: BoxShape.rectangle,
+                                                          borderRadius: BorderRadius.circular(7),
+                                                          width: 58,
+                                                          height: 58,
+                                                          fit: BoxFit.cover,
+                                                        ),
                                                       ),
-                                                    ),
-                                                SizedBox(height: 14,),
-                                                ExtendedImage.asset(
-                                                  'assets/imgs/icons/icon_crown_2.png',
-                                                  width: 28,
-                                                  height: 28,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                                  child: Text(
-                                                    crewDocs[1]['crewName'],
-                                                    style: TextStyle(
-                                                      color: Color(0xFFFFFFFF),
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 13,
-                                                    ),
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 1,
+                                                  SizedBox(height: 14,),
+                                                  ExtendedImage.asset(
+                                                    'assets/imgs/icons/icon_crown_2.png',
+                                                    width: 28,
+                                                    height: 28,
+                                                    fit: BoxFit.cover,
                                                   ),
-                                                ),
-                                              ],
+                                                  Padding(
+                                                    padding: EdgeInsets.symmetric(horizontal: 16),
+                                                    child: Text(
+                                                      crewDocs[1]['crewName'],
+                                                      style: TextStyle(
+                                                        color: Color(0xFFFFFFFF),
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 13,
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -297,7 +309,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                           child: GestureDetector(
                                             onTap:() async{
                                               CustomFullScreenDialog.showDialog();
-                                              await _liveCrewModelController.getCurrnetCrew(crewDocs[2]['crewID']);
+                                              await _liveCrewModelController.getCurrnetCrew(crewDocs[1]['crewID']);
                                               CustomFullScreenDialog.cancelDialog();
                                               Get.to(()=>CrewDetailPage_screen());
                                             },
