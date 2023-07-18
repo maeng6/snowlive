@@ -161,7 +161,8 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                         height: 154,
                                                         width: _size.width / 3 - 16,
                                                       );
-                                                    } else if (snapshot.data!.docs.isNotEmpty) {
+                                                    }
+                                                    else if (snapshot.data!.docs.isNotEmpty) {
                                                       final userDoc = snapshot.data!.docs;
                                                       return GestureDetector(
                                                         onTap: (){
@@ -222,7 +223,8 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                           ),
                                                         ),
                                                       );
-                                                    } else if (snapshot.connectionState == ConnectionState.waiting) {
+                                                    }
+                                                    else if (snapshot.connectionState == ConnectionState.waiting) {
                                                       return Container(
                                                         height: 154,
                                                         width: _size.width / 3 - 16,

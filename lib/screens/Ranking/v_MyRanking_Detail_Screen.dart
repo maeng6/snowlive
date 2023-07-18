@@ -25,7 +25,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   // TODO: Dependency Injection**************************************************
 
-
+  Map? userRankingMap;
 
   @override
   Widget build(BuildContext context) {
@@ -55,295 +55,367 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
             elevation: 0.0,
           ),
           body: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('Ranking')
-                .doc('${_seasonController.currentSeason}')
-                .collection('${_userModelController.favoriteResort}')
-                .where('uid', isEqualTo: _userModelController.uid )
-                .snapshots(),
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError) {
-                return Text("오류가 발생했습니다");
-              } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return Lottie.asset('assets/json/loadings_wht_final.json');
-              } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                // 데이터가 없을 때 처리
-                return Text("데이터가 없습니다");
-              }
-              final rankingDocs = snapshot.data!.docs;
-              int totalScore = rankingDocs[0]['totalScore'];
-              Map<String, dynamic>? passCountData = rankingDocs[0]['passCountData'];
-              Map<String, dynamic>? slopeScoresData = rankingDocs[0]['slopeScores'];
-              String maxPassCountSlope = _liveMapController.calculateMaxValue(passCountData);
-              List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataSlopeScore(slopeScoresData);
-
-
-
-              return Column(
-                children: [
-                  Stack(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: ExtendedImage.asset(
-                          'assets/imgs/icons/image_background_myscore.png',
-                          enableMemoryCache: true,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Positioned(
-                        top: 10,
-                        right: 40,
-                        child: FutureBuilder<Map<String, int>>(
-                          future: _liveMapController.calculateRank(totalScore),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<Map<String, int>> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Container();
-                            } else if (snapshot.hasError) {
-                              return Text('랭킹: 오류 발생');
-                            } else {
-                              return Column(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFFFFFFFF),
-                                      border: Border.all(color: Color(0xFFD9D9D9), width: 0.9),
-                                      borderRadius: BorderRadius.circular(30.0),
+              stream: FirebaseFirestore.instance
+                  .collection('Ranking')
+                  .doc('${_seasonController.currentSeason}')
+                  .collection('${_userModelController.favoriteResort}')
+                  .orderBy('totalScore', descending: true)
+                  .snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData || snapshot.data == null){
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: ExtendedImage.asset(
+                      'assets/imgs/icons/image_background_myscore.png',
+                      enableMemoryCache: true,
+                      fit: BoxFit.cover,
+                    ),
+                  );
+                }
+                else if(snapshot.connectionState == ConnectionState.waiting) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: ExtendedImage.asset(
+                      'assets/imgs/icons/image_background_myscore.png',
+                      enableMemoryCache: true,
+                      fit: BoxFit.cover,
+                    ),
+                  );
+                }
+                else if (!snapshot.hasData || snapshot.data == null) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: ExtendedImage.asset(
+                      'assets/imgs/icons/image_background_myscore.png',
+                      enableMemoryCache: true,
+                      fit: BoxFit.cover,
+                    ),
+                  );
+                }
+                else if (snapshot.data!.docs.isNotEmpty) {
+                  final rankingDocs_total = snapshot.data!.docs;
+                  return StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('Ranking')
+                        .doc('${_seasonController.currentSeason}')
+                        .collection('${_userModelController.favoriteResort}')
+                        .where('uid', isEqualTo: _userModelController.uid )
+                        .snapshots(),
+                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData || snapshot.data == null){
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: ExtendedImage.asset(
+                            'assets/imgs/icons/image_background_myscore.png',
+                            enableMemoryCache: true,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      }
+                      else if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: ExtendedImage.asset(
+                            'assets/imgs/icons/image_background_myscore.png',
+                            enableMemoryCache: true,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      }
+                      else if (snapshot.hasError) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: ExtendedImage.asset(
+                            'assets/imgs/icons/image_background_myscore.png',
+                            enableMemoryCache: true,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      }
+                      else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        // 데이터가 없을 때 처리
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: ExtendedImage.asset(
+                            'assets/imgs/icons/image_background_myscore.png',
+                            enableMemoryCache: true,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      }
+                      final rankingDocs = snapshot.data!.docs;
+                      int totalScore = rankingDocs[0]['totalScore'];
+                      Map<String, dynamic>? passCountData = rankingDocs[0]['passCountData'];
+                      Map<String, dynamic>? slopeScoresData = rankingDocs[0]['slopeScores'];
+                      String maxPassCountSlope = _liveMapController.calculateMaxValue(passCountData);
+                      List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataSlopeScore(slopeScoresData);
+                      userRankingMap =  _liveMapController.calculateRankIndiAll2(userRankingDocs: rankingDocs_total);
+                      return Column(
+                        children: [
+                          Stack(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: ExtendedImage.asset(
+                                  'assets/imgs/icons/image_background_myscore.png',
+                                  enableMemoryCache: true,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Positioned(
+                                  top: 10,
+                                  right: 40,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFFFFFFF),
+                                          border: Border.all(color: Color(0xFFD9D9D9), width: 0.9),
+                                          borderRadius: BorderRadius.circular(30.0),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              '${userRankingMap!['${_userModelController.uid}']}/${userRankingMap!.length}',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Color(0xFF444444),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      for(var rankingTier in rankingTierList)
+                                        if(rankingDocs[0]['tier'] == rankingTier.tierName)
+                                          ExtendedImage.asset(
+                                            enableMemoryCache:true,
+                                            rankingTier.badgeAsset,
+                                            scale: 4,
+                                          ),
+                                    ],
+                                  )
+                              ),
+                              Positioned.fill(
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '$totalScore',
+                                        style: TextStyle(
+                                            fontSize: 80,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF3D83ED),
+                                            height: 1.2),
+                                      ),
+                                      Text(
+                                        'POINTS',
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF000000),
+                                          height: 1,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                left: 0,
+                                right: 0,
+                                bottom: 10,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    '${_seasonController.currentSeason} 시즌 '
+                                        '${_resortModelController.getResortName(_userModelController.resortNickname!)} 포인트',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
                                     ),
-                                    child: Column(
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10,),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Color(0xFF1357BC),
+                                  borderRadius: BorderRadius.circular(14),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      blurRadius: 2,
+                                      offset: Offset(1, 0),
+                                    ),
+                                  ]
+                              ),
+                              margin: EdgeInsets.symmetric(horizontal: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          '${snapshot.data?['rank']}/${snapshot.data?['totalUsers']}',
+                                          '슬로프별 점수 현황',
                                           style: TextStyle(
-                                            fontSize: 14,
-                                            color: Color(0xFF444444),
-                                            fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold
+                                          ),
+                                        ),
+                                        Text(
+                                          ' *상위 5개 슬로프만 노출됩니다',
+                                          style: TextStyle(
+                                              color: Color(0xFFDBE9FF),
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  for(var rankingTier in rankingTierList)
-                                    if(rankingDocs[0]['tier'] == rankingTier.tierName)
-                                      ExtendedImage.asset(
-                                        enableMemoryCache:true,
-                                        rankingTier.badgeAsset,
-                                        scale: 4,
-                                      ),
-                                ],
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '$totalScore',
-                                style: TextStyle(
-                                    fontSize: 80,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF3D83ED),
-                                    height: 1.2),
-                              ),
-                              Text(
-                                'POINTS',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF000000),
-                                  height: 1,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 10,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            '${_seasonController.currentSeason} 시즌 '
-                                '${_resortModelController.getResortName(_userModelController.resortNickname!)} 포인트',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10,),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Color(0xFF1357BC),
-                          borderRadius: BorderRadius.circular(14),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              blurRadius: 2,
-                              offset: Offset(1, 0),
-                            ),
-                          ]
-                      ),
-                      margin: EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '슬로프별 점수 현황',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                                Text(
-                                  ' *상위 5개 슬로프만 노출됩니다',
-                                  style: TextStyle(
-                                      color: Color(0xFFDBE9FF),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              child: Container(
-                                child: barData.isEmpty
-                                    ? Center(child: Text('데이터가 없습니다'))
-                                    : ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: barData.map((data) {
-                                    String slopeName = data['slopeName'];
-                                    int scoreForSlope = data['scoreForSlope'];
-                                    double barHeightRatio = data['barHeightRatio'];
-                                    Color barColor = data['barColor'];
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                      child: Container(
+                                        child: barData.isEmpty
+                                            ? Center(child: Text('데이터가 없습니다'))
+                                            : ListView(
+                                          scrollDirection: Axis.horizontal,
+                                          children: barData.map((data) {
+                                            String slopeName = data['slopeName'];
+                                            int scoreForSlope = data['scoreForSlope'];
+                                            double barHeightRatio = data['barHeightRatio'];
+                                            Color barColor = data['barColor'];
 
-                                    return Container(
-                                      margin: EdgeInsets.symmetric(horizontal: 5),
-                                      width: 50,
-                                      height: 95,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            '$scoreForSlope',
-                                            style: TextStyle(
-                                              fontSize: 11,
-                                              color: Color(0xFFFFFFFF),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 10),
-                                          Container(
-                                            width: 50,
-                                            height: 95 * barHeightRatio,
-                                            child: Container(
-                                              width: 20,
-                                              height: 95 * barHeightRatio,
-                                              decoration: BoxDecoration(
-                                                color: barColor,
-                                                borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(3),
-                                                  topLeft: Radius.circular(3),
-                                                ),
+                                            return Container(
+                                              margin: EdgeInsets.symmetric(horizontal: 5),
+                                              width: 50,
+                                              height: 95,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    '$scoreForSlope',
+                                                    style: TextStyle(
+                                                      fontSize: 11,
+                                                      color: Color(0xFFFFFFFF),
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Container(
+                                                    width: 50,
+                                                    height: 95 * barHeightRatio,
+                                                    child: Container(
+                                                      width: 20,
+                                                      height: 95 * barHeightRatio,
+                                                      decoration: BoxDecoration(
+                                                        color: barColor,
+                                                        borderRadius: BorderRadius.only(
+                                                          topRight: Radius.circular(3),
+                                                          topLeft: Radius.circular(3),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Text(
+                                                    slopeName,
+                                                    style: TextStyle(fontSize: 11, color: Color(0xFFFFFFFF)),
+                                                  ),
+                                                  SizedBox(height: 20),
+                                                ],
                                               ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 10),
-                                          Text(
-                                            slopeName,
-                                            style: TextStyle(fontSize: 11, color: Color(0xFFFFFFFF)),
-                                          ),
-                                          SizedBox(height: 20),
-                                        ],
+                                            );
+                                          }).toList(),
+                                        ),
                                       ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
-                          )
-
-
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10,),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16),
-                    child: Container(
-                      width: _size.width,
-                      decoration: BoxDecoration(
-                          color: Color(0xFFFFFFFF),
-                          borderRadius: BorderRadius.circular(14),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              blurRadius: 2,
-                              offset: Offset(1, 0),
-                            ),
-                          ]
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
-                        child: Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text('자주타는 슬로프',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: Color(0xFF111111),
-                                        fontWeight: FontWeight.bold
-                                    ),
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                  Text('$maxPassCountSlope',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF3D83ED)
                                     ),
                                   )
+
+
                                 ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
+                          SizedBox(height: 10,),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16, right: 16),
+                            child: Container(
+                              width: _size.width,
+                              decoration: BoxDecoration(
+                                  color: Color(0xFFFFFFFF),
+                                  borderRadius: BorderRadius.circular(14),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      blurRadius: 2,
+                                      offset: Offset(1, 0),
+                                    ),
+                                  ]
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
+                                child: Container(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text('자주타는 슬로프',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Color(0xFF111111),
+                                                fontWeight: FontWeight.bold
+                                            ),
+                                          ),
+                                          Expanded(child: SizedBox()),
+                                          Text('$maxPassCountSlope',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF3D83ED)
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 30,),
+                        ],
+                      );
+                    },
+                  );
+                }
+                else if (snapshot.connectionState == ConnectionState.waiting) {}
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: ExtendedImage.asset(
+                    'assets/imgs/icons/image_background_myscore.png',
+                    enableMemoryCache: true,
+                    fit: BoxFit.cover,
                   ),
-                  SizedBox(height: 30,),
-                ],
-              );
-            },
-          ),
+                );
+              }),
+
+
+
         ),
       ),
     );
