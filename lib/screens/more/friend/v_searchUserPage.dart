@@ -99,6 +99,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: TextFormField(
+                                  autofocus: true,
                                   textAlignVertical: TextAlignVertical.center,
                                   cursorColor: Color(0xff949494),
                                   cursorHeight: 16,
