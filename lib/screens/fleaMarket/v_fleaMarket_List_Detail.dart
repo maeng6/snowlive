@@ -528,8 +528,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                if (_fleaModelController
-                                    .profileImageUrl!.isEmpty)
+                                if (_fleaModelController.profileImageUrl!.isEmpty)
                                   GestureDetector(
                                     onTap: (){
                                       Get.to(()=>FriendDetailPage(uid: _fleaModelController.uid));
@@ -543,8 +542,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                       fit: BoxFit.cover,
                                     ),
                                   ),
-                                if (_fleaModelController
-                                    .profileImageUrl!.isNotEmpty)
+                                if (_fleaModelController.profileImageUrl!.isNotEmpty)
                                   GestureDetector(
                                     onTap: (){
                                       Get.to(()=>FriendDetailPage(uid: _fleaModelController.uid));
