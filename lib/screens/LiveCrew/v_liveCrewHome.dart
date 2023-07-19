@@ -4,13 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/screens/LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
 import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:snowlive3/screens/LiveCrew/v_liveCrewList_more.dart';
-import 'package:snowlive3/screens/LiveCrew/v_liveCrewRanking_more.dart';
 import 'package:snowlive3/screens/LiveCrew/v_searchCrewPage.dart';
+import 'package:snowlive3/screens/Ranking/v_Ranking_Crew_All_Screen.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
-import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -820,7 +818,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                   ),
                   ElevatedButton(
                     onPressed: (){
-                      Get.to(()=> LiveCrewRankingMoreScreen());
+                      Get.to(()=> RankingCrewAllScreen());
                     },
                     child: Text('전체 랭킹',
                       style: TextStyle(
