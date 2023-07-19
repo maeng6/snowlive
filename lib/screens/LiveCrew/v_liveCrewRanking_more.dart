@@ -15,10 +15,10 @@ class LiveCrewRankingMoreScreen extends StatefulWidget {
   const LiveCrewRankingMoreScreen({Key? key}) : super(key: key);
 
   @override
-  State<LiveCrewRankingMoreScreen> createState() => _LiveCrewRankingMoreScreen();
+  State<LiveCrewRankingMoreScreen> createState() => _LiveCrewRankingMoreScreenState();
 }
 
-class _LiveCrewRankingMoreScreen extends State<LiveCrewRankingMoreScreen> {
+class _LiveCrewRankingMoreScreenState extends State<LiveCrewRankingMoreScreen> {
 
   //TODO: Dependency Injection**************************************************
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();

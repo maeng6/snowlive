@@ -7,6 +7,7 @@ import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:snowlive3/screens/Ranking/v_Ranking_indi_All_Screen.dart';
 import '../../model/m_rankingTierModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
@@ -410,12 +411,29 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                             ],
                                           ),
                                           SizedBox(height: 40,),
-                                          Text('전체 개인 랭킹',
-                                            style: TextStyle(
-                                                color: Color(0xFF111111),
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold
-                                            ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text('개인 랭킹 TOP 100',
+                                                style: TextStyle(
+                                                    color: Color(0xFF111111),
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: (){
+                                                  Get.to(()=> RankingIndiAllScreen());
+                                                },
+                                                child: Text('전체 보기',
+                                                  style: TextStyle(
+                                                      color: Color(0xFF949494),
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.bold
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                           SizedBox(height: 18,),
                                           Container(
@@ -423,7 +441,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                             child: ListView.builder(
                                               physics: NeverScrollableScrollPhysics(),
                                               shrinkWrap: true,
-                                              itemCount: documents.length,
+                                              itemCount: documents.length < 100 ? documents.length : 100,
                                               itemBuilder: (context, index) {
                                                 final document = documents[index];
                                                 return StreamBuilder(

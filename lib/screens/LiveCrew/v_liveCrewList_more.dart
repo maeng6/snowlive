@@ -12,10 +12,10 @@ class LiveCrewListMoreScreen extends StatefulWidget {
   const LiveCrewListMoreScreen({Key? key}) : super(key: key);
 
   @override
-  State<LiveCrewListMoreScreen> createState() => _LiveCrewListMoreScreen();
+  State<LiveCrewListMoreScreen> createState() => _LiveCrewListMoreScreenState();
 }
 
-class _LiveCrewListMoreScreen extends State<LiveCrewListMoreScreen> {
+class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();

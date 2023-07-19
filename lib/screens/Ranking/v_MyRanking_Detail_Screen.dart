@@ -263,26 +263,13 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(16.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          '슬로프별 점수 현황',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold
-                                          ),
-                                        ),
-                                        Text(
-                                          ' *상위 5개 슬로프만 노출됩니다',
-                                          style: TextStyle(
-                                              color: Color(0xFFDBE9FF),
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold
-                                          ),
-                                        ),
-                                      ],
+                                    child: Text(
+                                      '슬로프별 점수 현황',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold
+                                      ),
                                     ),
                                   ),
                                   Expanded(

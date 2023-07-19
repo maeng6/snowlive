@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:snowlive3/screens/Ranking/v_Ranking_Crew_All_Screen.dart';
 import '../../controller/vm_liveMapController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 import '../LiveCrew/v_crewDetailPage_screen.dart';
@@ -420,12 +421,29 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                 ],
                               ),
                               SizedBox(height: 40,),
-                              Text('전체 크루 랭킹',
-                                style: TextStyle(
-                                    color: Color(0xFF111111),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold
-                                ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('크루 랭킹 TOP 20',
+                                    style: TextStyle(
+                                        color: Color(0xFF111111),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: (){
+                                      Get.to(()=> RankingCrewAllScreen());
+                                    },
+                                    child: Text('전체 보기',
+                                      style: TextStyle(
+                                          color: Color(0xFF949494),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                               SizedBox(height: 18),
                               Container(
@@ -433,7 +451,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                   child: ListView.builder(
                                 physics: NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
-                                itemCount: crewDocs.length,
+                                itemCount: crewDocs.length < 20 ? crewDocs.length : 20,
                                 itemBuilder: (context, index) {
                                   return Padding(
                                     padding: const EdgeInsets.only(bottom: 12),
