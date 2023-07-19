@@ -59,7 +59,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                   height: 26,
                 ),
                 onTap: () {
-                  Navigator.pop(context);
+                  Get.back();
                 },
               ),
               // actions: [
@@ -98,6 +98,70 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: TextFormField(
+                              onFieldSubmitted: (val) async{
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                if (_formKey.currentState!.validate()) {
+                                  _crewName = _textEditingController.text;
+                                  print(_crewName);
+                                  isCheckedCrewName =  await _searchCrewController.checkDuplicateCrewName(_crewName);
+                                  print(isCheckedCrewName);
+                                  if (isCheckedCrewName == false) {
+                                    foundCrewID = await _liveCrewModelController.searchCrewByCrewName(_crewName);
+                                    print(foundCrewID);
+                                    foundCrewModel = await _liveCrewModelController.getFoundCrew(foundCrewID!);
+                                    isFound = true;
+                                  }
+                                  else{
+                                    isFound = false;
+                                    Get.dialog(AlertDialog(
+                                      contentPadding: EdgeInsets.only(
+                                          bottom: 0,
+                                          left: 20,
+                                          right: 20,
+                                          top: 30),
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                              10.0)),
+                                      buttonPadding:
+                                      EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 0),
+                                      content: Text(
+                                        '존재하지 않는 크루입니다.\n크루 이름 전체를 정확히 입력해주세요.',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 15),
+                                      ),
+                                      actions: [
+                                        Row(
+                                          children: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text(
+                                                  '확인',
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Color(0xff377EEA),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                )),
+                                          ],
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                        )
+                                      ],
+                                    ));
+                                  }
+                                }else {}
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              },
                               autofocus: true,
                               textAlignVertical: TextAlignVertical.center,
                               cursorColor: Color(0xff949494),

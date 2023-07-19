@@ -5,45 +5,55 @@ class LocationModel {
   final LatLng coordinates;
   final String type; // 'slope' 또는 'respawn'
 
-  LocationModel({required this.name, required this.coordinates, required this.type});
+  LocationModel(
+      {required this.name, required this.coordinates, required this.type});
 }
 
 List<LocationModel> locations = [
   LocationModel(
     name: '휘1',
-    coordinates: LatLng(37.576830, 128.314764),
+    coordinates: LatLng(37.612739, 126.839053),
     type: 'slope',
   ),
   LocationModel(
     name: '휘2',
-    coordinates: LatLng(37.578337, 128.310873),
+    coordinates: LatLng(37.612768, 126.840389),
     type: 'slope',
   ),
   LocationModel(
     name: '휘3',
-    coordinates: LatLng(37.578210, 128.305451),
+    coordinates: LatLng(37.613761, 126.845927),
     type: 'slope',
   ),
   LocationModel(
     name: '휘4',
-    coordinates: LatLng(37.575273, 128.322150),
+    coordinates: LatLng(37.614939, 126.847186),
     type: 'slope',
   ),
   LocationModel(
     name: '휘5',
-    coordinates: LatLng(37.583162, 128.317644),
+    coordinates: LatLng(37.618661, 126.848042),
     type: 'slope',
   ),
   LocationModel(
     name: '휘6',
-    coordinates: LatLng(37.578341, 128.325714),
+    coordinates: LatLng(37.619344, 126.847930),
     type: 'slope',
   ),
-
-  // 추가적인 위치들을 여기에 추가
+// 추가적인 위치들을 여기에 추가
   LocationModel(
     name: '리스폰 지역 1',
-    coordinates: LatLng(37.583570, 128.324905),
+    coordinates: LatLng(37.613480, 126.838814),
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '리스폰 지역 2',
+    coordinates: LatLng(37.612828, 126.843149),
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '리스폰 지역 3',
+    coordinates: LatLng(37.620535, 126.848240),
     type: 'respawn',
   ),
 ];

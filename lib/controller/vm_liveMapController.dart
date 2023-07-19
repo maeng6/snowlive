@@ -289,7 +289,7 @@ class LiveMapController extends GetxController {
         location.coordinates.longitude,
       );
 
-      bool withinBoundary = distanceInMeters <= 100;
+      bool withinBoundary = distanceInMeters <= 10;
 
       if (withinBoundary) {
         DateTime now = DateTime.now();
@@ -591,7 +591,7 @@ class LiveMapController extends GetxController {
       _resortModelController.longitude,
     );
 
-    return distanceInMeters <= 5000;
+    return distanceInMeters <= 9000;
   }
 
   Future<Map<String, int>> calculateRank(int myScore) async {
