@@ -55,8 +55,8 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
             itemCount: galleryDoc.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
-              crossAxisSpacing: 5, // Horizontal gap
-              mainAxisSpacing: 5, // Vertical gap
+              crossAxisSpacing: 1, // Horizontal gap
+              mainAxisSpacing: 1, // Vertical gap
             ),
             itemBuilder: (BuildContext context, int index) {
               String imageUrl = galleryDoc.reversed.toList()[index];

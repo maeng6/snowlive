@@ -44,7 +44,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-          backgroundColor: Color(0xFFF1F1F3),
+          backgroundColor: Color(0xFFFFFFFF),
           extendBodyBehindAppBar: true,
           body: StreamBuilder(
     stream: FirebaseFirestore.instance
@@ -441,169 +441,156 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
-              if(memberUidList.contains(_userModelController.uid))
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                  child: Container(
-                    width: _size.width,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFFFFFF),
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFF000000).withOpacity(0.1), // 그림자의 색상
-                          blurRadius: 12, // 그림자의 흐릿한 정도
-                          offset: Offset(0, 2), // 그림자의 위치
-                        ),
-                      ]
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
-                      child: Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('공지사항',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Color(0xFF111111),
-                              fontWeight: FontWeight.bold
-                            ),
-                            ),
-                            SizedBox(height: 5),
-                            if(crewDocs[0]['notice'] == '')
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: Text(
-                                    '공지사항이 없습니다',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        color: Color(0xFF949494)
-                                    ),),
-                              ),
-                            ),
-                            Text(
-                              '${crewDocs[0]['notice']}',
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  color: Color(0xFF111111)
-                              ),),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              if(!memberUidList.contains(_userModelController.uid))
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16),
-                  child: Container(
-                    width: _size.width,
-                    decoration: BoxDecoration(
-                        color: Color(0xFFFFFFFF),
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0xFF000000).withOpacity(0.1), // 그림자의 색상
-                            blurRadius: 12, // 그림자의 흐릿한 정도
-                            offset: Offset(0, 2), // 그림자의 위치
-                          ),
-                        ]
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
-                      child: Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('크루소개',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color(0xFF111111),
-                                  fontWeight: FontWeight.bold
-                              ),
-                            ),
-                            SizedBox(height: 5,),
-                            if(crewDocs[0]['description'] == '')
-                              Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: Text(
-                                    '크루 소개가 없습니다',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        color: Color(0xFF949494)
-                                    ),),
+
+
+              Container(
+                color: Color(0xFFF1F3F3),
+                child: Column(
+                  children: [
+                    SizedBox(height: 20),
+                    if(memberUidList.contains(_userModelController.uid))
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                        child: Container(
+                          width: _size.width,
+                          decoration: BoxDecoration(
+                              color: Color(0xFFFFFFFF),
+                              borderRadius: BorderRadius.circular(14),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFF000000).withOpacity(0.1), // 그림자의 색상
+                                  blurRadius: 12, // 그림자의 흐릿한 정도
+                                  offset: Offset(0, 2), // 그림자의 위치
                                 ),
-                              ),
-                            Text(
-                              '${crewDocs[0]['description']}',
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  color: Color(0xFF111111)
-                              ),),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              if(memberUidList.contains(_userModelController.uid))
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16),
-                  child: Container(
-                    width: _size.width,
-                    decoration: BoxDecoration(
-                        color: Color(0xFFFFFFFF),
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0xFF000000).withOpacity(0.1), // 그림자의 색상
-                            blurRadius: 12, // 그림자의 흐릿한 정도
-                            offset: Offset(0, 2), // 그림자의 위치
+                              ]
                           ),
-                        ]
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 24),
-                      child: Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '크루원 랭킹 TOP 3',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Color(0xFF111111),
-                                fontWeight: FontWeight.bold,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+                            child: Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('공지사항',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xFF111111),
+                                        fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  if(crewDocs[0]['notice'] == '')
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Text(
+                                          '공지사항이 없습니다',
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              color: Color(0xFF949494)
+                                          ),),
+                                      ),
+                                    ),
+                                  Text(
+                                    '${crewDocs[0]['notice']}',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFF111111)
+                                    ),),
+                                ],
                               ),
                             ),
-                            SizedBox(height: 10),
-                            StreamBuilder(
-                                stream: FirebaseFirestore.instance
-                                    .collection('liveCrew')
-                                    .where('crewID', isEqualTo: _liveCrewModelController.crewID)
-                                    .snapshots(),
-                                builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  } else if (snapshot.hasError) {
-                                    return Text('Error: ${snapshot.error}');
-                                  } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                                    final crewDocs = snapshot.data!.docs;
-                                    List memberList = crewDocs[0]['memberUidList'];
-                                    return StreamBuilder(
+                          ),
+                        ),
+                      ),
+                    if(!memberUidList.contains(_userModelController.uid))
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 16),
+                        child: Container(
+                          width: _size.width,
+                          decoration: BoxDecoration(
+                              color: Color(0xFFFFFFFF),
+                              borderRadius: BorderRadius.circular(14),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFF000000).withOpacity(0.1), // 그림자의 색상
+                                  blurRadius: 12, // 그림자의 흐릿한 정도
+                                  offset: Offset(0, 2), // 그림자의 위치
+                                ),
+                              ]
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+                            child: Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('크루소개',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xFF111111),
+                                        fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                  SizedBox(height: 5,),
+                                  if(crewDocs[0]['description'] == '')
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Text(
+                                          '크루 소개가 없습니다',
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              color: Color(0xFF949494)
+                                          ),),
+                                      ),
+                                    ),
+                                  Text(
+                                    '${crewDocs[0]['description']}',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFF111111)
+                                    ),),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    if(memberUidList.contains(_userModelController.uid))
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 16),
+                        child: Container(
+                          width: _size.width,
+                          decoration: BoxDecoration(
+                              color: Color(0xFFFFFFFF),
+                              borderRadius: BorderRadius.circular(14),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFF000000).withOpacity(0.1), // 그림자의 색상
+                                  blurRadius: 6, // 그림자의 흐릿한 정도
+                                  offset: Offset(0, 2), // 그림자의 위치
+                                ),
+                              ]
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 24),
+                            child: Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '크루원 랭킹 TOP 3',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color(0xFF111111),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  StreamBuilder(
                                       stream: FirebaseFirestore.instance
-                                          .collection('Ranking')
-                                          .doc('${_seasonController.currentSeason}')
-                                          .collection('${_liveCrewModelController.baseResort}')
-                                          .where('uid', whereIn: memberList)
-                                          .orderBy('totalScore', descending: true)
-                                          .limit(3)
+                                          .collection('liveCrew')
+                                          .where('crewID', isEqualTo: _liveCrewModelController.crewID)
                                           .snapshots(),
                                       builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -613,399 +600,579 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                         } else if (snapshot.hasError) {
                                           return Text('Error: ${snapshot.error}');
                                         } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                                          final memberScoreDocs = snapshot.data!.docs;
-                                          int? memberlength;
-                                          if(memberScoreDocs.length<3){
-                                            memberlength = memberScoreDocs.length;
-                                          } else {
-                                            memberlength = 3;
-                                          }
-                                          return Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              if(memberlength>0)
-                                                Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      SizedBox(height: 10,),
-                                                      Container(
-                                                          height: 132,
-                                                          child:  StreamBuilder(
-                                                              stream: FirebaseFirestore.instance
-                                                                  .collection('user')
-                                                                  .where('uid', isEqualTo: memberScoreDocs[0]['uid'])
-                                                                  .snapshots(),
-                                                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                  return Center(
-                                                                    child: CircularProgressIndicator(),
-                                                                  );
-                                                                } else if (snapshot.hasError) {
-                                                                  return Text('Error: ${snapshot.error}');
-                                                                } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                                                                  final memberUserDocs = snapshot.data!.docs;
-                                                                  return Container(
-                                                                    child: Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                                      children: [
-                                                                        (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
-                                                                            ? GestureDetector(
-                                                                          onTap: () {
-                                                                            Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
-                                                                          },
-                                                                          child: Container(
-                                                                              width: 80,
-                                                                              height: 80,
-                                                                              child: ExtendedImage.network(
-                                                                                memberUserDocs[0]['profileImageUrl'],
-                                                                                enableMemoryCache: true,
-                                                                                shape: BoxShape.circle,
-                                                                                borderRadius: BorderRadius.circular(8),
-                                                                                width: 80,
-                                                                                height: 80,
-                                                                                fit: BoxFit.cover,
-                                                                              )),
-                                                                        )
-                                                                            : GestureDetector(
-                                                                          onTap: () {
-                                                                            Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
-                                                                          },
-                                                                          child: Container(
-                                                                            width: 80,
-                                                                            height: 80,
-                                                                            child: ExtendedImage.asset(
-                                                                              'assets/imgs/profile/img_profile_default_circle.png',
-                                                                              enableMemoryCache: true,
-                                                                              shape: BoxShape.circle,
-                                                                              borderRadius: BorderRadius.circular(8),
-                                                                              width: 80,
-                                                                              height: 80,
-                                                                              fit: BoxFit.cover,
-                                                                            ),
-                                                                          ),
-                                                                        ),
+                                          final crewDocs = snapshot.data!.docs;
+                                          List memberList = crewDocs[0]['memberUidList'];
+                                          return StreamBuilder(
+                                            stream: FirebaseFirestore.instance
+                                                .collection('Ranking')
+                                                .doc('${_seasonController.currentSeason}')
+                                                .collection('${_liveCrewModelController.baseResort}')
+                                                .where('uid', whereIn: memberList)
+                                                .orderBy('totalScore', descending: true)
+                                                .limit(3)
+                                                .snapshots(),
+                                            builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return Center(
+                                                  child: CircularProgressIndicator(),
+                                                );
+                                              } else if (snapshot.hasError) {
+                                                return Text('Error: ${snapshot.error}');
+                                              } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                                final memberScoreDocs = snapshot.data!.docs;
+                                                int? memberlength;
+                                                if(memberScoreDocs.length<3){
+                                                  memberlength = memberScoreDocs.length;
+                                                } else {
+                                                  memberlength = 3;
+                                                }
+                                                return Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    if(memberlength>0)
+                                                      Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            SizedBox(height: 10,),
+                                                            Container(
+                                                                height: 132,
+                                                                child:  StreamBuilder(
+                                                                    stream: FirebaseFirestore.instance
+                                                                        .collection('user')
+                                                                        .where('uid', isEqualTo: memberScoreDocs[0]['uid'])
+                                                                        .snapshots(),
+                                                                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                        return Center(
+                                                                          child: CircularProgressIndicator(),
+                                                                        );
+                                                                      } else if (snapshot.hasError) {
+                                                                        return Text('Error: ${snapshot.error}');
+                                                                      } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                                                        final memberUserDocs = snapshot.data!.docs;
+                                                                        return Container(
+                                                                          child: Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                                            children: [
+                                                                              (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                                  ? GestureDetector(
+                                                                                onTap: () {
+                                                                                  Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
+                                                                                },
+                                                                                child: Container(
+                                                                                    width: 80,
+                                                                                    height: 80,
+                                                                                    child: ExtendedImage.network(
+                                                                                      memberUserDocs[0]['profileImageUrl'],
+                                                                                      enableMemoryCache: true,
+                                                                                      shape: BoxShape.circle,
+                                                                                      borderRadius: BorderRadius.circular(8),
+                                                                                      width: 80,
+                                                                                      height: 80,
+                                                                                      fit: BoxFit.cover,
+                                                                                    )),
+                                                                              )
+                                                                                  : GestureDetector(
+                                                                                onTap: () {
+                                                                                  Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
+                                                                                },
+                                                                                child: Container(
+                                                                                  width: 80,
+                                                                                  height: 80,
+                                                                                  child: ExtendedImage.asset(
+                                                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                    enableMemoryCache: true,
+                                                                                    shape: BoxShape.circle,
+                                                                                    borderRadius: BorderRadius.circular(8),
+                                                                                    width: 80,
+                                                                                    height: 80,
+                                                                                    fit: BoxFit.cover,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
 
-                                                                        SizedBox(
-                                                                          height: 12,
-                                                                        ),
-                                                                        Text('${memberUserDocs[0]['displayName']}',
-                                                                          style: TextStyle(
-                                                                            fontSize: 15,
-                                                                            color: Color(0xFF111111)
-                                                                        ),),
-                                                                        SizedBox(
-                                                                          height: 2,
-                                                                        ),
-                                                                        // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                        Text('${memberScoreDocs[0]['totalScore']}점',
-                                                                          style: TextStyle(
-                                                                              fontSize: 14,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Color(0xFF111111)
-                                                                          ),),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                }
-                                                                return Container();
-                                                              }
-                                                          )
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              if(memberlength>1)
-                                                Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      SizedBox(height: 10,),
-                                                      Container(
-                                                          height: 132,
-                                                          child:  StreamBuilder(
-                                                              stream: FirebaseFirestore.instance
-                                                                  .collection('user')
-                                                                  .where('uid', isEqualTo: memberScoreDocs[1]['uid'])
-                                                                  .snapshots(),
-                                                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                  return Center(
-                                                                    child: CircularProgressIndicator(),
-                                                                  );
-                                                                } else if (snapshot.hasError) {
-                                                                  return Text('Error: ${snapshot.error}');
-                                                                } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                                                                  final memberUserDocs = snapshot.data!.docs;
-                                                                  return Container(
-                                                                    child: Padding(
-                                                                      padding: const EdgeInsets.only(left: 10, right: 10),
-                                                                      child: Column(
-                                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                                        children: [
-                                                                          (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
-                                                                              ? GestureDetector(
-                                                                            onTap: () {
-                                                                              Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
-                                                                            },
-                                                                            child: Container(
-                                                                                width: 80,
-                                                                                height: 80,
-                                                                                child: ExtendedImage.network(
-                                                                                  memberUserDocs[0]['profileImageUrl'],
-                                                                                  enableMemoryCache: true,
-                                                                                  shape: BoxShape.circle,
-                                                                                  borderRadius: BorderRadius.circular(8),
-                                                                                  width: 80,
-                                                                                  height: 80,
-                                                                                  fit: BoxFit.cover,
-                                                                                )),
-                                                                          )
-                                                                              : GestureDetector(
-                                                                            onTap: () {
-                                                                              Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
-                                                                            },
-                                                                            child: Container(
-                                                                              width: 80,
-                                                                              height: 80,
-                                                                              child: ExtendedImage.asset(
-                                                                                'assets/imgs/profile/img_profile_default_circle.png',
-                                                                                enableMemoryCache: true,
-                                                                                shape: BoxShape.circle,
-                                                                                borderRadius: BorderRadius.circular(8),
-                                                                                width: 80,
-                                                                                height: 80,
-                                                                                fit: BoxFit.cover,
+                                                                              SizedBox(
+                                                                                height: 12,
                                                                               ),
+                                                                              Text('${memberUserDocs[0]['displayName']}',
+                                                                                style: TextStyle(
+                                                                                    fontSize: 15,
+                                                                                    color: Color(0xFF111111)
+                                                                                ),),
+                                                                              SizedBox(
+                                                                                height: 2,
+                                                                              ),
+                                                                              // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
+                                                                              Text('${memberScoreDocs[0]['totalScore']}점',
+                                                                                style: TextStyle(
+                                                                                    fontSize: 14,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    color: Color(0xFF111111)
+                                                                                ),),
+                                                                            ],
+                                                                          ),
+                                                                        );
+                                                                      }
+                                                                      return Container();
+                                                                    }
+                                                                )
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    if(memberlength>1)
+                                                      Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            SizedBox(height: 10,),
+                                                            Container(
+                                                                height: 132,
+                                                                child:  StreamBuilder(
+                                                                    stream: FirebaseFirestore.instance
+                                                                        .collection('user')
+                                                                        .where('uid', isEqualTo: memberScoreDocs[1]['uid'])
+                                                                        .snapshots(),
+                                                                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                        return Center(
+                                                                          child: CircularProgressIndicator(),
+                                                                        );
+                                                                      } else if (snapshot.hasError) {
+                                                                        return Text('Error: ${snapshot.error}');
+                                                                      } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                                                        final memberUserDocs = snapshot.data!.docs;
+                                                                        return Container(
+                                                                          child: Padding(
+                                                                            padding: const EdgeInsets.only(left: 10, right: 10),
+                                                                            child: Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                                              children: [
+                                                                                (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                                    ? GestureDetector(
+                                                                                  onTap: () {
+                                                                                    Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
+                                                                                  },
+                                                                                  child: Container(
+                                                                                      width: 80,
+                                                                                      height: 80,
+                                                                                      child: ExtendedImage.network(
+                                                                                        memberUserDocs[0]['profileImageUrl'],
+                                                                                        enableMemoryCache: true,
+                                                                                        shape: BoxShape.circle,
+                                                                                        borderRadius: BorderRadius.circular(8),
+                                                                                        width: 80,
+                                                                                        height: 80,
+                                                                                        fit: BoxFit.cover,
+                                                                                      )),
+                                                                                )
+                                                                                    : GestureDetector(
+                                                                                  onTap: () {
+                                                                                    Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
+                                                                                  },
+                                                                                  child: Container(
+                                                                                    width: 80,
+                                                                                    height: 80,
+                                                                                    child: ExtendedImage.asset(
+                                                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                      enableMemoryCache: true,
+                                                                                      shape: BoxShape.circle,
+                                                                                      borderRadius: BorderRadius.circular(8),
+                                                                                      width: 80,
+                                                                                      height: 80,
+                                                                                      fit: BoxFit.cover,
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  height: 12,
+                                                                                ),
+                                                                                Text('${memberUserDocs[0]['displayName']}',
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 15,
+                                                                                      color: Color(0xFF111111)
+                                                                                  ),),
+                                                                                SizedBox(
+                                                                                  height: 2,
+                                                                                ),
+                                                                                // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
+                                                                                Text('점수 : ${memberScoreDocs[1]['totalScore']}',
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 14,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      color: Color(0xFF111111)
+                                                                                  ),),
+                                                                              ],
                                                                             ),
                                                                           ),
-                                                                          SizedBox(
-                                                                            height: 12,
-                                                                          ),
-                                                                          Text('${memberUserDocs[0]['displayName']}',
-                                                                            style: TextStyle(
-                                                                                fontSize: 15,
-                                                                                color: Color(0xFF111111)
-                                                                            ),),
-                                                                          SizedBox(
-                                                                            height: 2,
-                                                                          ),
-                                                                          // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                          Text('점수 : ${memberScoreDocs[1]['totalScore']}',
-                                                                              style: TextStyle(
-                                                                                  fontSize: 14,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  color: Color(0xFF111111)
-                                                                              ),),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                }
-                                                                return Container();
-                                                              }
-                                                          )
+                                                                        );
+                                                                      }
+                                                                      return Container();
+                                                                    }
+                                                                )
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              if(memberlength>2)
-                                                Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      SizedBox(height: 10,),
-                                                      Container(
-                                                          height: 132,
-                                                          child:  StreamBuilder(
-                                                              stream: FirebaseFirestore.instance
-                                                                  .collection('user')
-                                                                  .where('uid', isEqualTo: memberScoreDocs[2]['uid'])
-                                                                  .snapshots(),
-                                                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                  return Center(
-                                                                    child: CircularProgressIndicator(),
-                                                                  );
-                                                                } else if (snapshot.hasError) {
-                                                                  return Text('Error: ${snapshot.error}');
-                                                                } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                                                                  final memberUserDocs = snapshot.data!.docs;
-                                                                  return Container(
-                                                                    child: Padding(
-                                                                      padding: const EdgeInsets.only(left: 10, right: 10),
-                                                                      child: Column(
-                                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                                        children: [
-                                                                          (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
-                                                                              ? GestureDetector(
-                                                                            onTap: () {
-                                                                              Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
-                                                                            },
-                                                                            child: Container(
-                                                                                width: 80,
-                                                                                height: 80,
-                                                                                child: ExtendedImage.network(
-                                                                                  memberUserDocs[0]['profileImageUrl'],
-                                                                                  enableMemoryCache: true,
-                                                                                  shape: BoxShape.circle,
-                                                                                  borderRadius: BorderRadius.circular(8),
-                                                                                  width: 80,
-                                                                                  height: 80,
-                                                                                  fit: BoxFit.cover,
-                                                                                )),
-                                                                          )
-                                                                              : GestureDetector(
-                                                                            onTap: () {
-                                                                              Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
-                                                                            },
-                                                                            child: Container(
-                                                                              width: 80,
-                                                                              height: 80,
-                                                                              child: ExtendedImage.asset(
-                                                                                'assets/imgs/profile/img_profile_default_circle.png',
-                                                                                enableMemoryCache: true,
-                                                                                shape: BoxShape.circle,
-                                                                                borderRadius: BorderRadius.circular(8),
-                                                                                width: 80,
-                                                                                height: 80,
-                                                                                fit: BoxFit.cover,
-                                                                              ),
+                                                    if(memberlength>2)
+                                                      Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            SizedBox(height: 10,),
+                                                            Container(
+                                                                height: 132,
+                                                                child:  StreamBuilder(
+                                                                    stream: FirebaseFirestore.instance
+                                                                        .collection('user')
+                                                                        .where('uid', isEqualTo: memberScoreDocs[2]['uid'])
+                                                                        .snapshots(),
+                                                                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                        return Center(
+                                                                          child: CircularProgressIndicator(),
+                                                                        );
+                                                                      } else if (snapshot.hasError) {
+                                                                        return Text('Error: ${snapshot.error}');
+                                                                      } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                                                        final memberUserDocs = snapshot.data!.docs;
+                                                                        return Container(
+                                                                          child: Padding(
+                                                                            padding: const EdgeInsets.only(left: 10, right: 10),
+                                                                            child: Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                                              children: [
+                                                                                (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                                    ? GestureDetector(
+                                                                                  onTap: () {
+                                                                                    Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
+                                                                                  },
+                                                                                  child: Container(
+                                                                                      width: 80,
+                                                                                      height: 80,
+                                                                                      child: ExtendedImage.network(
+                                                                                        memberUserDocs[0]['profileImageUrl'],
+                                                                                        enableMemoryCache: true,
+                                                                                        shape: BoxShape.circle,
+                                                                                        borderRadius: BorderRadius.circular(8),
+                                                                                        width: 80,
+                                                                                        height: 80,
+                                                                                        fit: BoxFit.cover,
+                                                                                      )),
+                                                                                )
+                                                                                    : GestureDetector(
+                                                                                  onTap: () {
+                                                                                    Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
+                                                                                  },
+                                                                                  child: Container(
+                                                                                    width: 80,
+                                                                                    height: 80,
+                                                                                    child: ExtendedImage.asset(
+                                                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                      enableMemoryCache: true,
+                                                                                      shape: BoxShape.circle,
+                                                                                      borderRadius: BorderRadius.circular(8),
+                                                                                      width: 80,
+                                                                                      height: 80,
+                                                                                      fit: BoxFit.cover,
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                Text('${memberUserDocs[0]['displayName']}',
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 15,
+                                                                                      color: Color(0xFF111111)
+                                                                                  ),),
+                                                                                SizedBox(
+                                                                                  height: 2,
+                                                                                ),
+                                                                                // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
+                                                                                Text('점수 : ${memberScoreDocs[2]['totalScore']}',
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 14,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      color: Color(0xFF111111)
+                                                                                  ),),
+                                                                              ],
                                                                             ),
                                                                           ),
-                                                                          Text('${memberUserDocs[0]['displayName']}',
-                                                                            style: TextStyle(
-                                                                                fontSize: 15,
-                                                                                color: Color(0xFF111111)
-                                                                            ),),
-                                                                          SizedBox(
-                                                                            height: 2,
-                                                                          ),
-                                                                          // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                          Text('점수 : ${memberScoreDocs[2]['totalScore']}',
-                                                                            style: TextStyle(
-                                                                                fontSize: 14,
-                                                                                fontWeight: FontWeight.bold,
-                                                                                color: Color(0xFF111111)
-                                                                            ),),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                }
-                                                                return Container();
-                                                              }
-                                                          )
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                            ],
+                                                                        );
+                                                                      }
+                                                                      return Container();
+                                                                    }
+                                                                )
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                  ],
+                                                );
+
+                                              } else {
+                                                return Text('랭킹에 참여중인 크루원이 없습니다.');
+                                              }
+                                            },
                                           );
-
-                                        } else {
-                                          return Text('랭킹에 참여중인 크루원이 없습니다.');
                                         }
-                                      },
-                                    );
-                                  }
-                                  return Container();
-                                }
-                            ),
+                                        return Container();
+                                      }
+                                  ),
 
-                          ],
-                        ),
-                      ),
-                    ),
-
-                  ),
-                ),
-              SizedBox(height: 15,),
-              Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: Container(
-                  width: _size.width,
-                  decoration: BoxDecoration(
-                      color: Color(0xFFFFFFFF),
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFF000000).withOpacity(0.1), // 그림자의 색상
-                          blurRadius: 12, // 그림자의 흐릿한 정도
-                          offset: Offset(0, 2), // 그림자의 위치
-                        ),
-                      ]
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 24),
-                    child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '슬로프별 라이딩 통계',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Color(0xFF111111),
-                              fontWeight: FontWeight.bold,
+                                ],
+                              ),
                             ),
                           ),
-                          StreamBuilder(
-                            stream: FirebaseFirestore.instance
-                                .collection('liveCrew')
-                                .where('crewID', isEqualTo: _liveCrewModelController.crewID)
-                                .snapshots(),
-                            builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                              if (!snapshot.hasData || snapshot.data == null) {
-                                return CircularProgressIndicator();
-                              } else if (snapshot.data!.docs.isNotEmpty) {
-                                final crewDocs = snapshot.data!.docs;
-                                Map<String, dynamic>? passCountData =
-                                crewDocs[0]['passCountData'] as Map<String, dynamic>?;
-                                if (passCountData == null || passCountData.isEmpty) {
-                                  return Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 20, bottom: 10),
-                                      child: Text(
-                                        '슬로프 이용기록이 없습니다',
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: Color(0xFF949494)
-                                        ),),
-                                    ),
-                                  );
-                                } else {
-                                  List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);
 
-                                  return Container(
-                                    padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 20 : 0),
-                                    height: 208,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                            child: barData.isEmpty
-                                                ? Center(child: Text('데이터가 없습니다'))
-                                                : Row(
+                        ),
+                      ),
+                    SizedBox(height: 12,),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16, right: 16),
+                      child: Container(
+                        width: _size.width,
+                        decoration: BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            borderRadius: BorderRadius.circular(14),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF000000).withOpacity(0.1), // 그림자의 색상
+                                blurRadius: 6, // 그림자의 흐릿한 정도
+                                offset: Offset(0, 2), // 그림자의 위치
+                              ),
+                            ]
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 24),
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '슬로프별 라이딩 통계',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xFF111111),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('liveCrew')
+                                      .where('crewID', isEqualTo: _liveCrewModelController.crewID)
+                                      .snapshots(),
+                                  builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                    if (!snapshot.hasData || snapshot.data == null) {
+                                      return CircularProgressIndicator();
+                                    } else if (snapshot.data!.docs.isNotEmpty) {
+                                      final crewDocs = snapshot.data!.docs;
+                                      Map<String, dynamic>? passCountData =
+                                      crewDocs[0]['passCountData'] as Map<String, dynamic>?;
+                                      if (passCountData == null || passCountData.isEmpty) {
+                                        return Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(top: 20, bottom: 10),
+                                            child: Text(
+                                              '슬로프 이용기록이 없습니다',
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Color(0xFF949494)
+                                              ),),
+                                          ),
+                                        );
+                                      } else {
+                                        List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);
+
+                                        return Container(
+                                          padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 20 : 0),
+                                          height: 208,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  child: barData.isEmpty
+                                                      ? Center(child: Text('데이터가 없습니다'))
+                                                      : SingleChildScrollView(
+                                                    scrollDirection: Axis.horizontal,
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: barData.map((data) {
+                                                            String slopeName = data['slopeName'];
+                                                            int passCount = data['passCount'];
+                                                            double barHeightRatio = data['barHeightRatio'];
+                                                            Color barColor = Color(crewDocs[0]['crewColor']);
+                                                            return Container(
+                                                              margin: EdgeInsets.symmetric(horizontal: 5),
+                                                              width: barData.length < 5 ? _size.width / 5 - 25 : _size.width / 5 - 28,
+                                                              height: 195,
+                                                              child: Column(
+                                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                                children: [
+                                                                  Text(
+                                                                    passCount != 0 ? '$passCount' : '',
+                                                                    style: TextStyle(
+                                                                      fontSize: 13,
+                                                                      color: Color(0xFF111111),
+                                                                      fontWeight: FontWeight.bold,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(height: 4),
+                                                                  Container(
+                                                                    width: 58,
+                                                                    height: 140 * barHeightRatio,
+                                                                    child: Container(
+                                                                      width: 58,
+                                                                      height: 140 * barHeightRatio,
+                                                                      decoration: BoxDecoration(
+                                                                        color: Color(crewDocs[0]['crewColor']),
+                                                                        borderRadius: BorderRadius.only(
+                                                                          topRight: Radius.circular(4),
+                                                                          topLeft: Radius.circular(4),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(height: 10),
+                                                                  Text(
+                                                                    slopeName,
+                                                                    style: TextStyle(fontSize: 12, color: Color(0xFF111111)),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            );
+                                                          }).toList(),
+                                                        ),
+                                                      ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+
+                                      }
+                                    } else if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return Center(child: CircularProgressIndicator());
+                                    } else {
+                                      return Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(top: 20, bottom: 10),
+                                          child: Text(
+                                            '슬로프 이용기록이 없습니다',
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                color: Color(0xFF949494)
+                                            ),),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ),
+                    ),
+                    SizedBox(height: 12,),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16, right: 16),
+                      child: Container(
+                        width: _size.width,
+                        decoration: BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            borderRadius: BorderRadius.circular(14),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF000000).withOpacity(0.1), // 그림자의 색상
+                                blurRadius: 6, // 그림자의 흐릿한 정도
+                                offset: Offset(0, 2), // 그림자의 위치
+                              ),
+                            ]
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 24),
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '시간대별 라이딩 횟수',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xFF111111),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                StreamBuilder(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('liveCrew')
+                                        .where('crewID', isEqualTo: _liveCrewModelController.crewID)
+                                        .snapshots(),
+                                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+
+                                      if (snapshot.hasError) {
+                                        return Text("오류가 발생했습니다");
+                                      }
+
+                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return Lottie.asset('assets/json/loadings_wht_final.json');
+                                      }
+
+                                      if (snapshot.data?.docs.first.data()['passCountTimeData'] != null) {
+                                        Map<String, dynamic> passCountTimeData = snapshot.data?.docs.first.data()['passCountTimeData'];
+                                        bool areAllValuesZero = _liveMapController.areAllSlotValuesZero(passCountTimeData);
+                                        if (areAllValuesZero) {
+                                          return Center(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(top: 20, bottom: 10),
+                                              child: Text(
+                                                '슬로프 이용기록이 없습니다',
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Color(0xFF949494)
+                                                ),),
+                                            ),
+                                          );
+                                        }
+                                      }
+
+                                      Map<String, dynamic>? data = snapshot.data?.docs.first.data();
+
+                                      Map<String, dynamic>? passCountTimeData =
+                                      data?['passCountTimeData'] as Map<String, dynamic>?;
+                                      List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataSlot(passCountTimeData);
+
+                                      return Container(
+                                        height: 210,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Container(
+                                                child:
+                                                barData.isEmpty ?
+                                                Center(child: Text('데이터가 없습니다'))
+                                                    : Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: barData.map((data) {
-                                                    String slopeName = data['slopeName'];
+                                                    String slotName = data['slotName'];
                                                     int passCount = data['passCount'];
                                                     double barHeightRatio = data['barHeightRatio'];
-                                                    Color barColor = Color(crewDocs[0]['crewColor']);
+                                                    Color barColor = Color(crewDocs[0]['crewColor']).withOpacity(0.6);
                                                     return Container(
                                                       margin: EdgeInsets.symmetric(horizontal: 5),
-                                                      width: barData.length < 4 ? _size.width / 5 : _size.width / 5 - 25,
-                                                      height: 195,
+                                                      width: 25,
                                                       child: Column(
                                                         mainAxisAlignment: MainAxisAlignment.end,
                                                         children: [
                                                           Text(
-                                                            '$passCount',
+                                                            passCount != 0 ? '$passCount' : '',
                                                             style: TextStyle(
                                                               fontSize: 13,
                                                               color: Color(0xFF111111),
@@ -1014,13 +1181,13 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                           ),
                                                           SizedBox(height: 4),
                                                           Container(
-                                                            width: 58,
+                                                            width: 25,
                                                             height: 140 * barHeightRatio,
                                                             child: Container(
-                                                              width: 58,
+                                                              width: 25,
                                                               height: 140 * barHeightRatio,
                                                               decoration: BoxDecoration(
-                                                                color: Color(crewDocs[0]['crewColor']),
+                                                                color: barColor,
                                                                 borderRadius: BorderRadius.only(
                                                                   topRight: Radius.circular(4),
                                                                   topLeft: Radius.circular(4),
@@ -1029,202 +1196,47 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                             ),
                                                           ),
                                                           SizedBox(height: 10),
-                                                          Text(
-                                                            slopeName,
-                                                            style: TextStyle(fontSize: 12, color: Color(0xFF111111)),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(left: 3),
+                                                            child: Container(
+                                                              child: Text(
+                                                                _resortModelController.getSlotName(slotName),
+                                                                style: TextStyle(fontSize: 12, color: Color(0xFF111111)),
+                                                              ),
+                                                            ),
                                                           ),
                                                         ],
                                                       ),
                                                     );
+
+
                                                   }).toList(),
                                                 ),
-                                          ),
+                                              ),
+                                            ),
+
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  );
-
-                                }
-                              } else if (snapshot.connectionState == ConnectionState.waiting) {
-                                return Center(child: CircularProgressIndicator());
-                              } else {
-                                return Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 20, bottom: 10),
-                                    child: Text(
-                                      '슬로프 이용기록이 없습니다',
-                                      style: TextStyle(
-                                          fontSize: 13,
-                                          color: Color(0xFF949494)
-                                      ),),
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                ),
-              ),
-              SizedBox(height: 15,),
-              Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: Container(
-                  width: _size.width,
-                  decoration: BoxDecoration(
-                      color: Color(0xFFFFFFFF),
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5), // 그림자의 색상
-                          blurRadius: 2, // 그림자의 흐릿한 정도
-                          offset: Offset(1, 0), // 그림자의 위치
-                        ),
-                      ]
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 24),
-                    child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '시간대별 라이딩 횟수',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Color(0xFF111111),
-                              fontWeight: FontWeight.bold,
+                                      );
+                                    }
+                                ),
+                              ],
                             ),
                           ),
-                          SizedBox(height: 10),
-                          StreamBuilder(
-                              stream: FirebaseFirestore.instance
-                                  .collection('liveCrew')
-                                  .where('crewID', isEqualTo: _liveCrewModelController.crewID)
-                                  .snapshots(),
-                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-
-                                if (snapshot.hasError) {
-                                  return Text("오류가 발생했습니다");
-                                }
-
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Lottie.asset('assets/json/loadings_wht_final.json');
-                                }
-
-                                if (snapshot.data?.docs.first.data()['passCountTimeData'] != null) {
-                                  Map<String, dynamic> passCountTimeData = snapshot.data?.docs.first.data()['passCountTimeData'];
-                                  bool areAllValuesZero = _liveMapController.areAllSlotValuesZero(passCountTimeData);
-                                  if (areAllValuesZero) {
-                                    return Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 20, bottom: 10),
-                                        child: Text(
-                                          '슬로프 이용기록이 없습니다',
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              color: Color(0xFF949494)
-                                          ),),
-                                      ),
-                                    );
-                                  }
-                                }
-
-                                Map<String, dynamic>? data = snapshot.data?.docs.first.data();
-
-                                Map<String, dynamic>? passCountTimeData =
-                                data?['passCountTimeData'] as Map<String, dynamic>?;
-                                List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataSlot(passCountTimeData);
-
-                                return Container(
-                                  height: 200,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          child:
-                                          barData.isEmpty ?
-                                          Center(child: Text('데이터가 없습니다'))
-                                              : ListView(
-                                            scrollDirection: Axis.horizontal,
-                                            physics: NeverScrollableScrollPhysics(),
-                                            children: barData.map((data) {
-                                              String slotName = data['slotName'];
-                                              int passCount = data['passCount'];
-                                              double barHeightRatio = data['barHeightRatio'];
-                                              Color barColor = data['barColor'];
-
-                                             return Container(
-                                                margin: EdgeInsets.symmetric(horizontal: 5),
-                                                width: 25,
-                                                height: 140,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                  children: [
-                                                    Text(
-                                                      '$passCount',
-                                                      style: TextStyle(
-                                                        fontSize: 11,
-                                                        color: Color(0xFF111111),
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 10),
-                                                    Container(
-                                                      width: 25,
-                                                      height: 140 * barHeightRatio,
-                                                      child: Container(
-                                                        width: 25,
-                                                        height: 140 * barHeightRatio,
-                                                        decoration: BoxDecoration(
-                                                          color: barColor,
-                                                          borderRadius: BorderRadius.only(
-                                                            topRight: Radius.circular(4),
-                                                            topLeft: Radius.circular(4),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 10),
-                                                    Text(
-                                                      _resortModelController.getSlotName(slotName),
-                                                      style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-
-
-                                            }).toList(),
-                                          ),
-                                        ),
-                                      ),
-
-                                    ],
-                                  ),
-                                );
-                              }
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-
+                    SizedBox(height: 20,),
+                  ],
                 ),
               ),
-
-              SizedBox(height: 15,),
               Container(
                 width: _size.width,
                 decoration: BoxDecoration(
                   color: Color(0xFFFFFFFF),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 40),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -1236,7 +1248,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 16),
                       StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance
                             .collection('liveCrew')
@@ -1257,7 +1269,17 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                           });
 
                           if (galleryUrlList.isEmpty) {
-                            return Text('이미지가 없습니다');
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 40, bottom: 10),
+                                child: Text(
+                                  '이미지가 없습니다',
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      color: Color(0xFF949494)
+                                  ),),
+                              ),
+                            );
                           }
 
                           return GridView.builder(
@@ -1266,8 +1288,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                             itemCount: galleryUrlList.length > 6 ? 6 : galleryUrlList.length,
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3,
-                              crossAxisSpacing: 5, // Horizontal gap
-                              mainAxisSpacing: 5, // Vertical gap
+                              crossAxisSpacing: 1, // Horizontal gap
+                              mainAxisSpacing: 1, // Vertical gap
                             ),
                             itemBuilder: (BuildContext context, int index) {
                               String imageUrl = galleryUrlList.reversed.toList()[index];
@@ -1296,124 +1318,179 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                   ),
                 ),
               ),
+              Container(
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
+                  child: Row(
+                    children: [
+                      if(memberUidList.contains(_userModelController.uid) == false)
+                      Expanded(
+                        child:
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10.0),
+                          child: ElevatedButton(
+                            onPressed:
+                                () {
+                              if(_userModelController.liveCrew!.isEmpty || _userModelController.liveCrew == ''){
+                                Get.dialog(AlertDialog(
+                                  contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                  content: Text(
+                                    '가입신청을 하시겠습니까?',
+                                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                                  ),
+                                  actions: [
+                                    Row(
+                                      children: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              '취소',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Color(0xFF949494),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            )),
+                                        TextButton(
+                                            onPressed: () async {
+                                              if(_userModelController.applyCrewList!.contains(_liveCrewModelController.crewID)){
+                                                    Get.dialog(AlertDialog(
+                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                      elevation: 0,
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(10.0)),
+                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                      content: Text(
+                                                        '이미 요청중입니다.',
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: 15),
+                                                      ),
+                                                      actions: [
+                                                        Row(
+                                                          children: [
+                                                            TextButton(
+                                                                onPressed: () async {
+                                                                  Navigator.pop(context);
+                                                                  Navigator.pop(context);
+                                                                },
+                                                                child: Text(
+                                                                  '확인',
+                                                                  style: TextStyle(
+                                                                    fontSize: 15,
+                                                                    color: Color(0xff377EEA),
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
+                                                                )),
+                                                          ],
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                        )
+                                                      ],
+                                                    ));
+                                                  } else{
+                                                  CustomFullScreenDialog.showDialog();
+                                                  await _liveCrewModelController.updateInvitation_crew(crewID: _liveCrewModelController.crewID);
+                                                  await _liveCrewModelController.updateInvitationAlarm_crew(leaderUid: _liveCrewModelController.leaderUid);
+                                                  await _userModelController.getCurrentUser(_userModelController.uid);
+                                                  CustomFullScreenDialog.cancelDialog();
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                  }
+                                                },
+                                            child: Text(
+                                              '확인',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Color(0xFF3D83ED),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ))
+                                      ],
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                    )
+                                  ],
+                                ));
+                              }else{
+                                Get.dialog(AlertDialog(
+                                  contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                  content: Text('라이브 크루는 1개만 가입할 수 있습니다.',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 15),
+                                  ),
+                                  actions: [
+                                    Row(
+                                      children: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              Get.back();
+                                            },
+                                            child: Text('확인',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Color(0xFF949494),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            )),
+                                      ],
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                    )
+                                  ],
+                                ));
 
-
-              SizedBox(height: 20,),
-              Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: Row(
-                  children: [
-                    if(memberUidList.contains(_userModelController.uid) == false)
-                    Expanded(
-                      child:
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10.0),
-                        child: ElevatedButton(
+                              }
+                                },
+                            child: Text(
+                              '가입하기',
+                              style: TextStyle(
+                                  color: Color(crewDocs[0]['crewColor']),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            style: TextButton.styleFrom(
+                                splashFactory: InkRipple.splashFactory,
+                                elevation: 0,
+                                minimumSize: Size(100, 56),
+                                backgroundColor: Color(crewDocs[0]['crewColor']).withOpacity(0.2),
+                                padding: EdgeInsets.symmetric(horizontal: 0)),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child:
+                        ElevatedButton(
                           onPressed:
                               () {
-                            if(_userModelController.liveCrew!.isEmpty || _userModelController.liveCrew == ''){
-                              Get.dialog(AlertDialog(
-                                contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                content: Text(
-                                  '가입신청을 하시겠습니까?',
-                                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                                ),
-                                actions: [
-                                  Row(
-                                    children: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            '취소',
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Color(0xFF949494),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          )),
-                                      TextButton(
-                                          onPressed: () async {
-                                            if(_userModelController.applyCrewList!.contains(_liveCrewModelController.crewID)){
-                                                  Get.dialog(AlertDialog(
-                                                    contentPadding: EdgeInsets.only(
-                                                        bottom: 0,
-                                                        left: 20,
-                                                        right: 20,
-                                                        top: 30),
-                                                    elevation: 0,
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.0)),
-                                                    buttonPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 20,
-                                                        vertical: 0),
-                                                    content: Text(
-                                                      '이미 요청중입니다.',
-                                                      style: TextStyle(
-                                                          fontWeight: FontWeight.w600,
-                                                          fontSize: 15),
-                                                    ),
-                                                    actions: [
-                                                      Row(
-                                                        children: [
-                                                          TextButton(
-                                                              onPressed: () async {
-                                                                Navigator.pop(context);
-                                                                Navigator.pop(context);
-                                                              },
-                                                              child: Text(
-                                                                '확인',
-                                                                style: TextStyle(
-                                                                  fontSize: 15,
-                                                                  color: Color(
-                                                                      0xff377EEA),
-                                                                  fontWeight: FontWeight
-                                                                      .bold,
-                                                                ),
-                                                              )),
-                                                        ],
-                                                        mainAxisAlignment: MainAxisAlignment
-                                                            .center,
-                                                      )
-                                                    ],
-                                                  ));
-                                                } else{
-                                                CustomFullScreenDialog.showDialog();
-                                                await _liveCrewModelController.updateInvitation_crew(crewID: _liveCrewModelController.crewID);
-                                                await _liveCrewModelController.updateInvitationAlarm_crew(leaderUid: _liveCrewModelController.leaderUid);
-                                                await _userModelController.getCurrentUser(_userModelController.uid);
-                                                CustomFullScreenDialog.cancelDialog();
-                                                Navigator.pop(context);
-                                                Navigator.pop(context);
-                                                }
-                                              },
-                                          child: Text(
-                                            '확인',
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Color(0xFF3D83ED),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ))
-                                    ],
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                  )
-                                ],
-                              ));
+                            if(_liveCrewModelController.sns!.isNotEmpty && _liveCrewModelController.sns != '' ) {
+                            _liveCrewModelController.otherShare(contents: '${_liveCrewModelController.sns}');
                             }else{
                               Get.dialog(AlertDialog(
-                                contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                contentPadding: EdgeInsets.only(
+                                    bottom: 0,
+                                    left: 20,
+                                    right: 20,
+                                    top: 30),
                                 elevation: 0,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                content: Text('라이브 크루는 1개만 가입할 수 있습니다.',
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(
+                                        10.0)),
+                                buttonPadding:
+                                EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 0),
+                                content: Text(
+                                  '연결된 카카오 오픈채팅이 없습니다.',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 15),
@@ -1422,29 +1499,31 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                   Row(
                                     children: [
                                       TextButton(
-                                          onPressed: () {
+                                          onPressed: () async {
                                             Navigator.pop(context);
-                                            Get.back();
                                           },
-                                          child: Text('확인',
+                                          child: Text(
+                                            '확인',
                                             style: TextStyle(
                                               fontSize: 15,
-                                              color: Color(0xFF949494),
-                                              fontWeight: FontWeight.bold,
+                                              color: Color(
+                                                  0xff377EEA),
+                                              fontWeight: FontWeight
+                                                  .bold,
                                             ),
                                           )),
                                     ],
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .center,
                                   )
                                 ],
                               ));
-
                             }
                               },
                           child: Text(
-                            '가입하기',
+                            '카카오 오픈채팅',
                             style: TextStyle(
-                                color: Color(0xff772ED3),
+                                color: Colors.white,
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -1452,84 +1531,14 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                               splashFactory: InkRipple.splashFactory,
                               elevation: 0,
                               minimumSize: Size(100, 56),
-                              backgroundColor: Color(0xffE8D7FF),
+                              backgroundColor: Color(crewDocs[0]['crewColor']),
                               padding: EdgeInsets.symmetric(horizontal: 0)),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child:
-                      ElevatedButton(
-                        onPressed:
-                            () {
-                          if(_liveCrewModelController.sns!.isNotEmpty && _liveCrewModelController.sns != '' ) {
-                          _liveCrewModelController.otherShare(contents: '${_liveCrewModelController.sns}');
-                          }else{
-                            Get.dialog(AlertDialog(
-                              contentPadding: EdgeInsets.only(
-                                  bottom: 0,
-                                  left: 20,
-                                  right: 20,
-                                  top: 30),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(
-                                      10.0)),
-                              buttonPadding:
-                              EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 0),
-                              content: Text(
-                                '연결된 카카오 오픈채팅이 없습니다.',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 15),
-                              ),
-                              actions: [
-                                Row(
-                                  children: [
-                                    TextButton(
-                                        onPressed: () async {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text(
-                                          '확인',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            color: Color(
-                                                0xff377EEA),
-                                            fontWeight: FontWeight
-                                                .bold,
-                                          ),
-                                        )),
-                                  ],
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .center,
-                                )
-                              ],
-                            ));
-                          }
-                            },
-                        child: Text(
-                          '카카오 오픈채팅',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        style: TextButton.styleFrom(
-                            splashFactory: InkRipple.splashFactory,
-                            elevation: 0,
-                            minimumSize: Size(100, 56),
-                            backgroundColor: Color(crewDocs[0]['crewColor']),
-                            padding: EdgeInsets.symmetric(horizontal: 0)),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-              SizedBox(height: 20,),
             ],
           ),
         ),

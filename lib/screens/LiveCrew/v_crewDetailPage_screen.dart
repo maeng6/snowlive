@@ -157,6 +157,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
             ),
             Column(
               children: [
+                if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid))
                 Row(
                   children: [
                     Column(
