@@ -320,6 +320,7 @@ class _ResortHomeState extends State<ResortHome>
                                     HapticFeedback.lightImpact();
                                     _dialogController.isChecked.value = false;
                                     CustomFullScreenDialog.showDialog();
+                                    await _liveMapController.checkAndUpdatePassCountOff();
                                     await _userModelController.updateIsOnLiveOff();
                                     await _liveMapController.stopForegroundLocationService();
                                     await _liveMapController.stopBackgroundLocationService();
@@ -436,6 +437,7 @@ class _ResortHomeState extends State<ResortHome>
                                                             ? () async {
                                                           Get.back();
                                                           await _userModelController.updateIsOnLiveOn();
+                                                          await _liveMapController.startForegroundLocationService();
                                                           await _userModelController.getCurrentUser(_userModelController.uid);
                                                           CustomFullScreenDialog.cancelDialog();
                                                           print('라이브 ON');
@@ -1694,6 +1696,7 @@ class _ResortHomeState extends State<ResortHome>
                               HapticFeedback.lightImpact();
                               _dialogController.isChecked.value = false;
                               CustomFullScreenDialog.showDialog();
+                              await _liveMapController.checkAndUpdatePassCountOff();
                               await _userModelController.updateIsOnLiveOff();
                               await _liveMapController.stopForegroundLocationService();
                               await _liveMapController.stopBackgroundLocationService();
@@ -1809,6 +1812,7 @@ class _ResortHomeState extends State<ResortHome>
                                                         ? () async {
                                                       Get.back();
                                                       await _userModelController.updateIsOnLiveOn();
+                                                      await _liveMapController.startForegroundLocationService();
                                                       await _userModelController.getCurrentUser(_userModelController.uid);
                                                       CustomFullScreenDialog.cancelDialog();
                                                       print('라이브 ON');
