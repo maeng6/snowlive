@@ -19,9 +19,44 @@ class FriendListPage extends StatefulWidget {
 
 class _FriendListPageState extends State<FriendListPage> {
 
+  var _alarmStream;
+  var _userStream;
+  var _friendStream;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _alarmStream = alarmStream();
+    _userStream = userStream();
+    _friendStream = friendStream();
+
+  }
+
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   //TODO: Dependency Injection**************************************************
+
+  Stream<QuerySnapshot> alarmStream() {
+    return FirebaseFirestore.instance
+        .collection('newAlarm')
+        .where('uid', isEqualTo: _userModelController.uid!)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> userStream() {
+    return FirebaseFirestore.instance
+        .collection('user')
+        .where('uid', isEqualTo: _userModelController.uid!)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> friendStream() {
+    return FirebaseFirestore.instance
+        .collection('user')
+        .where('whoResistMe', arrayContains: _userModelController.uid!)
+        .orderBy('displayName', descending: false)
+        .snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +70,7 @@ class _FriendListPageState extends State<FriendListPage> {
         actions: [
 
           StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection('newAlarm')
-                .where('uid', isEqualTo: _userModelController.uid!)
-                .snapshots(),
+            stream: _alarmStream,
             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
               if (!snapshot.hasData || snapshot.data == null) {
                 return  Padding(
@@ -249,11 +281,7 @@ class _FriendListPageState extends State<FriendListPage> {
             ),
             SizedBox(height: 20),
             StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('user')
-                  .where('whoResistMe', arrayContains: _userModelController.uid!)
-                  .orderBy('isOnLive', descending: true)
-                  .snapshots(),
+              stream: _friendStream,
               builder: (context,
                   AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                 if (!snapshot.hasData) {
@@ -273,10 +301,7 @@ class _FriendListPageState extends State<FriendListPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('user')
-                          .where('uid', isEqualTo: _userModelController.uid!)
-                          .snapshots(),
+                      stream: _userStream,
                       builder: (context,
                           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
                               snapshot) {
@@ -575,7 +600,18 @@ class _FriendListPageState extends State<FriendListPage> {
                                                                   children: [
                                                                     Container(
                                                                       alignment: Alignment.center,
-                                                                      child: ExtendedImage.network(BFdoc.get('profileImageUrl'),
+                                                                      child:
+                                                                      BFdoc.get('profileImageUrl').isNotEmpty?
+                                                                      ExtendedImage.network(BFdoc.get('profileImageUrl'),
+                                                                        enableMemoryCache: true,
+                                                                        shape: BoxShape.circle,
+                                                                        borderRadius: BorderRadius.circular(8),
+                                                                        width: 48,
+                                                                        height: 48,
+                                                                        fit: BoxFit.cover,
+                                                                      )
+                                                                      :ExtendedImage.asset(
+                                                                        'assets/imgs/profile/img_profile_default_circle.png',
                                                                         enableMemoryCache: true,
                                                                         shape: BoxShape.circle,
                                                                         borderRadius: BorderRadius.circular(8),
@@ -624,43 +660,28 @@ class _FriendListPageState extends State<FriendListPage> {
                                                         : GestureDetector(
                                                       onTap: () {
                                                         Get.to(() =>
-                                                            FriendDetailPage(
-                                                                uid: BFdoc.get('uid'), favoriteResort: BFdoc.get('favoriteResort'),));
+                                                            FriendDetailPage(uid: BFdoc.get('uid'), favoriteResort: BFdoc.get('favoriteResort'),));
                                                       },
                                                       child: Container(
                                                         width: 72,
                                                         child: Padding(
-                                                          padding:
-                                                          const EdgeInsets.only(
-                                                              left: 8),
+                                                          padding: const EdgeInsets.only(left: 8),
                                                           child: Column(
-                                                            crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
+                                                            crossAxisAlignment: CrossAxisAlignment.center,
                                                             children: [
                                                               Stack(
                                                                 fit: StackFit.loose,
                                                                 children: [
                                                                   Container(
-                                                                    alignment:
-                                                                    Alignment
-                                                                        .center,
-                                                                    child:
-                                                                    ExtendedImage
-                                                                        .asset(
+                                                                    alignment: Alignment.center,
+                                                                    child: ExtendedImage.asset(
                                                                       'assets/imgs/profile/img_profile_default_circle.png',
-                                                                      enableMemoryCache:
-                                                                      true,
-                                                                      shape: BoxShape
-                                                                          .circle,
-                                                                      borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                          8),
+                                                                      enableMemoryCache: true,
+                                                                      shape: BoxShape.circle,
+                                                                      borderRadius: BorderRadius.circular(8),
                                                                       width: 48,
                                                                       height: 48,
-                                                                      fit: BoxFit
-                                                                          .cover,
+                                                                      fit: BoxFit.cover,
                                                                     ),
                                                                   ),
                                                                   (BFdoc.get('isOnLive') == true)
@@ -680,23 +701,13 @@ class _FriendListPageState extends State<FriendListPage> {
                                                               ),
                                                               Container(
                                                                   width: 72,
-                                                                  child: Text(
-                                                                    BFdoc.get(
-                                                                        'displayName'),
-                                                                    textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                    overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
+                                                                  child: Text(BFdoc.get('displayName'),
+                                                                    textAlign: TextAlign.center,
+                                                                    overflow: TextOverflow.ellipsis,
                                                                     style: TextStyle(
-                                                                        fontSize:
-                                                                        14,
-                                                                        fontWeight:
-                                                                        FontWeight
-                                                                            .normal,
-                                                                        color: Color(
-                                                                            0xFF111111)),
+                                                                        fontSize: 14,
+                                                                        fontWeight: FontWeight.normal,
+                                                                        color: Color(0xFF111111)),
                                                                   ))
                                                             ],
                                                           ),

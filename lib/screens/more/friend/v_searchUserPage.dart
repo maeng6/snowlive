@@ -60,7 +60,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                   height: 26,
                 ),
                 onTap: () {
-                  Navigator.pop(context);
+                  Get.back();
                 },
               ),
               // actions: [
