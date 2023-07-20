@@ -169,6 +169,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
               width: 112,
               height: 52,
               child: FloatingActionButton.extended(
+                heroTag: 'fleaListScreen',
                 onPressed: () async {
                   await _userModelController
                       .getCurrentUser(_userModelController.uid);

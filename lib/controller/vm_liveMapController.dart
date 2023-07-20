@@ -289,7 +289,7 @@ class LiveMapController extends GetxController {
         location.coordinates.longitude,
       );
 
-      bool withinBoundary = distanceInMeters <= 100;
+      bool withinBoundary = distanceInMeters <= 10;
 
       if (withinBoundary) {
         DateTime now = DateTime.now();
@@ -327,7 +327,7 @@ class LiveMapController extends GetxController {
                 },
                 'slopeScores': {},
                 'totalScore': 0,
-                'tier':''
+                'tier': ''
               });
 
               // Re-fetch the document after creating it
@@ -337,72 +337,65 @@ class LiveMapController extends GetxController {
             // Now, we are sure the document exists. Let's proceed with the rest of the logic.
             Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
             Map<String, dynamic> passCountData = data['passCountData'] ?? {};
-            Map<String, dynamic> passCountTimeData = data['passCountTimeData'] ?? {}; // Retrieve the pass count per time slot data
+            Map<String, dynamic> passCountTimeData = data['passCountTimeData'] ?? {};
             Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
             int totalPassCount = data['totalPassCount'] ?? 0;
 
-            int timeSlot = getTimeSlot(now); // Get the current time slot
+            int timeSlot = getTimeSlot(now);
 
             if (location.type == 'slope') {
-              // If the user is within the boundary of the slope
-              data['slopeStatus'] ??= {}; // Initialize slopeStatus if it doesn't exist
-              data['slopeStatus'][location.name] = true; // Set slope status to true
+              data['slopeStatus'] ??= {};
+              data['slopeStatus'][location.name] = true;
 
-              passCountTimeData["$timeSlot"] ??= 0; // Initialize pass count for the current time slot
+              passCountTimeData["$timeSlot"] ??= 0;
 
-              // Update document using data
               await docRef.set(data, SetOptions(merge: true));
             } else if (location.type == 'respawn') {
               try {
-                // If the user is within the boundary of the respawn area
                 Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
 
-                // Retrieve slopes with status true
                 List<String> passedSlopes = slopeStatus.entries
                     .where((entry) => entry.value == true)
                     .map((entry) => entry.key)
                     .toList();
 
-                // Update pass count and score for passed slopes
                 for (String slopeName in passedSlopes) {
                   int storedPassCount = passCountData[slopeName] ?? 0;
-                  int timeSlotPassCount = passCountTimeData["$timeSlot"] ?? 0; // Get the pass count for the current time slot
+                  int timeSlotPassCount = passCountTimeData["$timeSlot"] ?? 0;
 
                   int slopeScore = slopeScoresModel.slopeScores[slopeName] ?? 0;
 
                   storedPassCount += 1;
                   totalPassCount += 1;
-                  timeSlotPassCount += 1; // Increment the pass count for the current time slot
+                  timeSlotPassCount += 1;
                   int updatedScore = storedPassCount * slopeScore;
 
                   passCountData[slopeName] = storedPassCount;
-                  passCountTimeData["$timeSlot"] = timeSlotPassCount; // Store the updated pass count for the current time slot
+                  passCountTimeData["$timeSlot"] = timeSlotPassCount;
 
                   slopeScores[slopeName] = updatedScore;
 
-                  // Update crew data with slope name and score
                   await updateCrewData(slopeName, slopeScore, timeSlot, DateTime.now());
                 }
 
-
-                // Reset slopeStatus for all slopes
                 for (String slopeName in slopeStatus.keys) {
                   slopeStatus[slopeName] = false;
                 }
 
-                // Calculate total score
                 int totalScore = slopeScores.values.fold<int>(0, (sum, score) => sum + (score as int? ?? 0));
                 data['totalScore'] = totalScore;
                 data['totalPassCount'] = totalPassCount;
 
-                // Update lastPassTime with current time
-                data['lastPassTime'] = DateTime.now();
+                DateTime lastPassTime = data['lastPassTime']?.toDate();
+                DateTime now = DateTime.now();
 
-                // Update document using data
+                if (now.difference(lastPassTime).inMinutes >= 5) {
+                  data['lastPassTime'] = Timestamp.fromDate(now);
+                }
+
                 await docRef.set(data, SetOptions(merge: true));
 
                 await _rankingTierModelController.updateTier();
-
               } catch (error, stackTrace) {
                 print('오류 발생: $error');
                 print('스택 트레이스: $stackTrace');
@@ -598,7 +591,7 @@ class LiveMapController extends GetxController {
       _resortModelController.longitude,
     );
 
-    return distanceInMeters <= 5000;
+    return distanceInMeters <= 9000;
   }
 
   Future<Map<String, int>> calculateRank(int myScore) async {
@@ -810,11 +803,9 @@ class LiveMapController extends GetxController {
         return scoreB.compareTo(scoreA);
       });
 
-    int maxScore = sortedEntries.take(5).map((entry) {
-      return slopeScoresData[entry.key] ?? 0;
-    }).reduce((value, element) => value > element ? value : element);
+    int maxScore = sortedEntries.first.value; // 상위 슬로프의 점수 가져오기
 
-    List<Map<String, dynamic>> barData = sortedEntries.take(5).map((entry) {
+    List<Map<String, dynamic>> barData = sortedEntries.map((entry) {
       String slopeName = entry.key;
       int scoreForSlope = slopeScoresData[slopeName] ?? 0;
       double barHeightRatio = scoreForSlope.toDouble() / maxScore.toDouble();

@@ -39,7 +39,6 @@ class _FleaMarket_My_ScreenState
     // TODO: implement initState
     super.initState();
     _stream = newStream();
-    print(_stream);
   }
 
 
@@ -69,6 +68,7 @@ class _FleaMarket_My_ScreenState
               width: 112,
               height: 52,
               child: FloatingActionButton.extended(
+                heroTag: 'fleaMyScreen',
                 onPressed: () async{
                   await _userModelController.getCurrentUser(_userModelController.uid);
                   if(_userModelController.phoneAuth == true){

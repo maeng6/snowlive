@@ -6,6 +6,7 @@ import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
 import '../../../controller/vm_searchUserController.dart';
 import '../../../controller/vm_userModelController.dart';
+import '../../../model/m_rankingTierModel.dart';
 import '../../../model/m_userModel.dart';
 
 class SearchUserPage extends StatefulWidget {
@@ -23,7 +24,9 @@ class _SearchUserPageState extends State<SearchUserPage> {
   bool isLoading = false;
   var _nickName;
   bool? isCheckedDispName;
-  var foundUserUid;
+  String? foundUserUid;
+  String? foundUserTier;
+  String? foundUserCrewName;
   bool isFound=false;
   UserModel? foundUserModel;
 
@@ -99,6 +102,59 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: TextFormField(
+                                  onFieldSubmitted: (val) async{
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    if (_formKey.currentState!.validate()) {
+                                      _nickName = _textEditingController.text;
+                                      isCheckedDispName =  await _userModelController.checkDuplicateDisplayName(_nickName);
+                                      if (isCheckedDispName == false) {
+                                        foundUserUid =  await _searchUserController.searchUsersByDisplayName(_nickName);
+                                        foundUserModel = await _userModelController.getFoundUser(foundUserUid!);
+                                        foundUserTier = await _searchUserController.searchUsersTier(uid: foundUserUid);
+                                        foundUserCrewName = await _searchUserController.searchUsersCrewName(uid: foundUserUid);
+                                        isFound = true;
+                                      }
+                                      else{
+                                        isFound = false;
+                                        Get.dialog(AlertDialog(
+                                          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                          buttonPadding:
+                                          EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                          content: Text('존재하지 않는 활동명입니다.\n활동명 전체를 정확히 입력해주세요.',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 15),
+                                          ),
+                                          actions: [
+                                            Row(
+                                              children: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text(
+                                                      '확인',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(0xff377EEA),
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    )),
+                                              ],
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                            )
+                                          ],
+                                        ));
+                                      }
+                                    } else {}
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                  },
                                   autofocus: true,
                                   textAlignVertical: TextAlignVertical.center,
                                   cursorColor: Color(0xff949494),
@@ -162,8 +218,9 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                   isCheckedDispName =  await _userModelController.checkDuplicateDisplayName(_nickName);
                                   if (isCheckedDispName == false) {
                                     foundUserUid =  await _searchUserController.searchUsersByDisplayName(_nickName);
-                                    print(foundUserUid);
                                     foundUserModel = await _userModelController.getFoundUser(foundUserUid!);
+                                    foundUserTier = await _searchUserController.searchUsersTier(uid: foundUserUid);
+                                    foundUserCrewName = await _searchUserController.searchUsersCrewName(uid: foundUserUid);
                                     isFound = true;
                                   }
                                   else{
@@ -257,11 +314,26 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                           children: [
                                             Padding(
                                               padding: const EdgeInsets.only(top: 6),
-                                              child: Text('${foundUserModel!.displayName}', style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white
-                                              ),),
+                                              child:
+                                              Row(
+                                                children: [
+                                                  Text('${foundUserModel!.displayName}', style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white
+                                                  ),),
+                                                  for(var rankingTier in rankingTierList)
+                                                    if(foundUserTier == rankingTier.tierName)
+                                                      ExtendedImage.asset(
+                                                        enableMemoryCache:true,
+                                                        rankingTier.badgeAsset,
+                                                        scale: 8,
+                                                      ),
+                                                  if(foundUserTier == '')
+                                                    Container()
+                                                ],
+                                              )
+
                                             ),
                                             SizedBox(height: 2,),
                                             Text('${foundUserModel!.resortNickname}', style: TextStyle(
@@ -279,25 +351,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                             Row(
                                               children: [
                                                 Container(
-                                                  width: 129,
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text('개인 랭킹', style: TextStyle(
-                                                          fontSize: 13,
-                                                          fontWeight: FontWeight.normal,
-                                                          color: Colors.white60,
-                                                      ),),
-                                                      Text('147등(LV4)', style: TextStyle(
-                                                          fontSize: 13,
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Colors.white
-                                                      ),),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Container(
-                                                  width: 129,
+                                                  width: 200,
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
@@ -306,11 +360,17 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                         fontWeight: FontWeight.normal,
                                                         color: Colors.white60,
                                                       ),),
-                                                      Text('${foundUserModel!.liveCrew}', style: TextStyle(
+                                                      (foundUserCrewName != '' && foundUserCrewName != null)
+                                                      ? Text('$foundUserCrewName', style: TextStyle(
                                                           fontSize: 13,
                                                           fontWeight: FontWeight.bold,
                                                           color: Colors.white
-                                                      ),),
+                                                      ),)
+                                                          :Text('활동중인 크루가 없습니다.', style: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Colors.white
+                                                      ),)
                                                     ],
                                                   ),
                                                 ),

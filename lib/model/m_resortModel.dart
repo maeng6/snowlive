@@ -230,21 +230,22 @@ List<ResortModel> resortList = [
 
   ),//하이원
   ResortModel(
-    index:12,
-    resortName: '휘닉스평창',
-    resortAddress: '평창군 봉평면',
-    resortUrl: 'https://phoenixhnr.co.kr/',
-    webcamUrl: 'https://phoenixhnr.co.kr/page/pyeongchang/guide/operation/sketchMovie',
-    slopeUrl: 'https://phoenixhnr.co.kr/static/pyeongchang/snowpark/slope-lift',
-    naverUrl: 'https://weather.naver.com/today/01760340?cpName=KMA',
-    latitude: 37.5817875,
-    longitude: 128.3208284,
-    nX: 84,
-    nY: 128,
-    resortNickname: '휘닉스',
+      index:12,
+      resortName: '휘닉스평창',
+      resortAddress: '평창군 봉평면',
+      resortUrl: 'https://phoenixhnr.co.kr/',
+      webcamUrl: 'https://phoenixhnr.co.kr/page/pyeongchang/guide/operation/sketchMovie',
+      slopeUrl: 'https://phoenixhnr.co.kr/static/pyeongchang/snowpark/slope-lift',
+      naverUrl: 'https://weather.naver.com/today/01760340?cpName=KMA',
+      latitude: 37.613497,
+      longitude: 126.838806,
+      nX: 84,
+      nY: 128,
+      resortNickname: '휘닉스',
       resortLogo: 'assets/imgs/resort/img_resort_logo_13.png'
 
   ),//휘닉스
+
 ];
 
 List<String?> resortNameList = [
