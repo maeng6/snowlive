@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:snowlive3/controller/vm_DialogController_resortHome.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_rankingTierModelController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
@@ -24,6 +25,7 @@ class LiveMapController extends GetxController {
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+  DialogController _dialogController = Get.put(DialogController(), permanent: true);
   //TODO: Dependency Injection********************************************
 
   RxList<Marker> _markers = RxList<Marker>();
@@ -96,16 +98,12 @@ class LiveMapController extends GetxController {
         }
 
         if(!withinBoundary && _userModelController.uid != null){
-          await FirebaseFirestore.instance
-              .collection('user')
-              .doc(_userModelController.uid)
-              .set({
-            'isOnLive': false,
-          }, SetOptions(merge: true)).catchError((error) {
-            print('Firestore 업데이트 에러: $error');
-          });
+          _dialogController.isChecked.value = false;
+          await checkAndUpdatePassCountOff();
+          await _userModelController.updateIsOnLiveOff();
           await stopForegroundLocationService();
           await stopBackgroundLocationService();
+          await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
         }
 
       } catch (e, stackTrace) {
@@ -171,22 +169,20 @@ class LiveMapController extends GetxController {
         }
 
         if(!withinBoundary && _userModelController.uid != null){
-          await FirebaseFirestore.instance
-              .collection('user')
-              .doc(_userModelController.uid)
-              .set({
-            'isOnLive': false,
-          }, SetOptions(merge: true)).catchError((error) {
-            print('Firestore 업데이트 에러: $error');
-          });
+          _dialogController.isChecked.value = false;
+          await checkAndUpdatePassCountOff();
+          await _userModelController.updateIsOnLiveOff();
           await stopForegroundLocationService();
           await stopBackgroundLocationService();
+          await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
         }
 
       } catch (e, stackTrace) {
         print('백그라운드 위치 업데이트 오류: $e');
         print('Stack trace: $stackTrace');
       }
+    }, (bg.LocationError error) {
+      print('[onLocation] ERROR: $error 리조트 구역 벗어남');
     });
   }
 
@@ -289,7 +285,7 @@ class LiveMapController extends GetxController {
         location.coordinates.longitude,
       );
 
-      bool withinBoundary = distanceInMeters <= 10;
+      bool withinBoundary = distanceInMeters <= 100;
 
       if (withinBoundary) {
         DateTime now = DateTime.now();
@@ -410,6 +406,122 @@ class LiveMapController extends GetxController {
       }
     }
   }
+
+  Future<void> checkAndUpdatePassCountOff() async {
+    await _seasonController.getCurrentSeason();
+
+        DateTime now = DateTime.now();
+
+        if (_userModelController.uid != null) {
+          DocumentReference docRef = FirebaseFirestore.instance
+              .collection('Ranking')
+              .doc('${_seasonController.currentSeason}')
+              .collection('${_userModelController.favoriteResort}')
+              .doc("${_userModelController.uid}");
+
+          try {
+            DocumentSnapshot userSnapshot = await docRef.get();
+
+            if (!userSnapshot.exists) {
+              // Document doesn't exist. Let's create it!
+              await docRef.set({
+                'uid': _userModelController.uid,
+                'passCountData': {},
+                'totalPassCount': 0,
+                'lastPassTime': null,
+                'passCountTimeData': {
+                  '1': 0,
+                  '2': 0,
+                  '3': 0,
+                  '4': 0,
+                  '5': 0,
+                  '6': 0,
+                  '7': 0,
+                  '8': 0,
+                  '9': 0,
+                  '10': 0,
+                  '11': 0,
+                  '12': 0,
+                },
+                'slopeScores': {},
+                'totalScore': 0,
+                'tier': ''
+              });
+
+              // Re-fetch the document after creating it
+              userSnapshot = await docRef.get();
+            }
+
+            // Now, we are sure the document exists. Let's proceed with the rest of the logic.
+            Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
+            Map<String, dynamic> passCountData = data['passCountData'] ?? {};
+            Map<String, dynamic> passCountTimeData = data['passCountTimeData'] ?? {};
+            Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
+            int totalPassCount = data['totalPassCount'] ?? 0;
+
+            int timeSlot = getTimeSlot(now);
+
+              try {
+                Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
+
+                List<String> passedSlopes = slopeStatus.entries
+                    .where((entry) => entry.value == true)
+                    .map((entry) => entry.key)
+                    .toList();
+
+                for (String slopeName in passedSlopes) {
+                  int storedPassCount = passCountData[slopeName] ?? 0;
+                  int timeSlotPassCount = passCountTimeData["$timeSlot"] ?? 0;
+
+                  int slopeScore = slopeScoresModel.slopeScores[slopeName] ?? 0;
+
+                  storedPassCount += 1;
+                  totalPassCount += 1;
+                  timeSlotPassCount += 1;
+                  int updatedScore = storedPassCount * slopeScore;
+
+                  passCountData[slopeName] = storedPassCount;
+                  passCountTimeData["$timeSlot"] = timeSlotPassCount;
+
+                  slopeScores[slopeName] = updatedScore;
+
+                  await updateCrewData(slopeName, slopeScore, timeSlot, DateTime.now());
+                }
+
+                for (String slopeName in slopeStatus.keys) {
+                  slopeStatus[slopeName] = false;
+                }
+
+                int totalScore = slopeScores.values.fold<int>(0, (sum, score) => sum + (score as int? ?? 0));
+                data['totalScore'] = totalScore;
+                data['totalPassCount'] = totalPassCount;
+
+                DateTime lastPassTime = data['lastPassTime']?.toDate();
+                DateTime now = DateTime.now();
+
+                if (now.difference(lastPassTime).inMinutes >= 5) {
+                  data['lastPassTime'] = Timestamp.fromDate(now);
+                }
+
+                await docRef.set(data, SetOptions(merge: true));
+
+                await _rankingTierModelController.updateTier();
+              } catch (error, stackTrace) {
+                print('오류 발생: $error');
+                print('스택 트레이스: $stackTrace');
+                // 오류 처리 로직 추가
+              }
+
+          } catch (error, stackTrace) {
+            print('Firestore 업데이트 에러: $error');
+            print('StackTrace: $stackTrace');
+          }
+        }
+
+
+  }
+
+
 
   int getTimeSlot(DateTime now) {
     int hour = now.hour;
@@ -591,7 +703,7 @@ class LiveMapController extends GetxController {
       _resortModelController.longitude,
     );
 
-    return distanceInMeters <= 9000;
+    return distanceInMeters <= 5000;
   }
 
   Future<Map<String, int>> calculateRank(int myScore) async {
