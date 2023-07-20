@@ -226,7 +226,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                               GestureDetector(
                                 onTap: () {
                                   Get.to(() =>
-                                      FriendDetailPage(uid: userData['uid']));
+                                      FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
                                 },
                                 child: Container(
                                   width: 48,

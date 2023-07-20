@@ -167,7 +167,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                       final userDoc = snapshot.data!.docs;
                                                       return GestureDetector(
                                                         onTap: (){
-                                                          Get.to(() => FriendDetailPage(uid: userDoc[0]['uid']));
+                                                          Get.to(() => FriendDetailPage(uid: userDoc[0]['uid'], favoriteResort: userDoc[0]['favoriteResort'],));
                                                         },
                                                         child: Container(
                                                           decoration: BoxDecoration(
@@ -253,7 +253,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                       final userDoc = snapshot.data!.docs;
                                                       return GestureDetector(
                                                         onTap: (){
-                                                          Get.to(() => FriendDetailPage(uid: userDoc[0]['uid']));
+                                                          Get.to(() => FriendDetailPage(uid: userDoc[0]['uid'], favoriteResort: userDoc[0]['favoriteResort'],));
                                                         },
                                                         child: Container(
                                                           decoration: BoxDecoration(
@@ -338,7 +338,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                       final userDoc = snapshot.data!.docs;
                                                       return GestureDetector(
                                                         onTap: (){
-                                                          Get.to(() => FriendDetailPage(uid: userDoc[0]['uid']));
+                                                          Get.to(() => FriendDetailPage(uid: userDoc[0]['uid'], favoriteResort: userDoc[0]['favoriteResort'],));
                                                         },
                                                         child: Container(
                                                           decoration: BoxDecoration(
@@ -479,7 +479,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                           SizedBox(width: 14),
                                                           GestureDetector(
                                                             onTap: () {
-                                                              Get.to(() => FriendDetailPage(uid: userData['uid']));
+                                                              Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
                                                             },
                                                             child: Container(
                                                               width: 48,
@@ -632,7 +632,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                     SizedBox(width: 14),
                                     GestureDetector(
                                       onTap: () {
-                                        Get.to(() => FriendDetailPage(uid: _userModelController.uid));
+                                        Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
                                       },
                                       child: Container(
                                         width: 48,

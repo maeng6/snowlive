@@ -227,7 +227,7 @@ class _FleaChatroomState
                                               ? GestureDetector(
                                             onTap: () {
                                               Get.to(() =>
-                                                  FriendDetailPage(uid: chatDocs[index]['senderUid']));
+                                                  FriendDetailPage(uid: chatDocs[index]['senderUid'], favoriteResort: chatDocs[index]['favoriteResort'],));
                                             },
                                             child: ExtendedImage.network(
                                               chatDocs[index]['myProfileImageUrl'],
@@ -255,7 +255,7 @@ class _FleaChatroomState
                                               ? GestureDetector(
                                             onTap: () {
                                               Get.to(() =>
-                                                  FriendDetailPage(uid: chatDocs[index]['senderUid']));
+                                                  FriendDetailPage(uid: chatDocs[index]['senderUid'], favoriteResort: chatDocs[index]['favoriteResort'],));
                                             },
                                             child: ExtendedImage
                                                 .asset(

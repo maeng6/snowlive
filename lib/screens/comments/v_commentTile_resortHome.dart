@@ -110,7 +110,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                         offset: Offset(0, 6),
                                         child: GestureDetector(
                                           onTap: (){
-                                            Get.to(()=>FriendDetailPage(uid: chatDocs[index]['uid']));
+
                                           },
                                           child: ExtendedImage.network(
                                             chatDocs[index]['profileImageUrl'],
@@ -130,7 +130,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                         offset: Offset(0, 6),
                                         child: GestureDetector(
                                           onTap: (){
-                                            Get.to(()=>FriendDetailPage(uid: chatDocs[index]['uid']));
+
                                           },
                                           child: ExtendedImage.asset(
                                             'assets/imgs/profile/img_profile_default_circle.png',

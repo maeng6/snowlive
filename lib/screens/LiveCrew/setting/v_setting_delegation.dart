@@ -147,7 +147,7 @@ class _Setting_delegationState extends State<Setting_delegation> {
                                     (crewMemberDocs[index]['profileImageUrl'].isNotEmpty)
                                         ? GestureDetector(
                                       onTap: () async{
-                                        Get.to(() => FriendDetailPage(uid:crewMemberDocs[index]['uid']));
+                                        Get.to(() => FriendDetailPage(uid:crewMemberDocs[index]['uid'], favoriteResort: crewMemberDocs[index]['favoriteResort'],));
                                       },
                                       child: Container(
                                           width: 50,
@@ -164,7 +164,7 @@ class _Setting_delegationState extends State<Setting_delegation> {
                                     )
                                         : GestureDetector(
                                       onTap: () async{
-                                        Get.to(() => FriendDetailPage(uid:crewMemberDocs[index]['uid']));
+                                        Get.to(() => FriendDetailPage(uid:crewMemberDocs[index]['uid'], favoriteResort: crewMemberDocs[index]['favoriteResort'],));
                                       },
                                       child: Container(
                                         width: 50,

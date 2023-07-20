@@ -138,8 +138,8 @@ class _LiveTalkScreenState
                               return Container(
                                 color: Colors.white,
                               );
-                            } else if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
+                            }
+                            else if (snapshot.connectionState == ConnectionState.waiting) {
                               return Center(
                                 child: CircularProgressIndicator(),
                               );
@@ -221,7 +221,7 @@ class _LiveTalkScreenState
                                                                     if (chatDocs[index]['profileImageUrl'] != "")
                                                                       GestureDetector(
                                                                         onTap: () {Get.to(() =>
-                                                                              FriendDetailPage(uid: chatDocs[index]['uid']));
+                                                                              FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: chatDocs[index]['favoriteResort'],));
                                                                         },
                                                                         child: ExtendedImage.network(
                                                                           chatDocs[index]['profileImageUrl'],
@@ -236,7 +236,7 @@ class _LiveTalkScreenState
                                                                     if (chatDocs[index]['profileImageUrl'] == "")
                                                                       GestureDetector(
                                                                         onTap: () {Get.to(() =>
-                                                                            FriendDetailPage(uid: chatDocs[index]['uid']));
+                                                                            FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: chatDocs[index]['favoriteResort'],));
                                                                         },
                                                                         child: ExtendedImage
                                                                             .asset(
@@ -744,6 +744,7 @@ class _LiveTalkScreenState
                                                                                       replyResortNickname: chatDocs[index]['resortNickname'],
                                                                                       comment: chatDocs[index]['comment'],
                                                                                       commentTime: chatDocs[index]['timeStamp'],
+                                                                                      replyFavoriteResort:  chatDocs[index]['favoriteResort'],
                                                                                     ));
                                                                               },
                                                                               icon: Icon(

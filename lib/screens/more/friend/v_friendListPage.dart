@@ -305,7 +305,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                             onTap: () {
                                               Get.to(() => FriendDetailPage(
                                                   uid: _userModelController
-                                                      .uid));
+                                                      .uid, favoriteResort: _userModelController.favoriteResort,));
                                             },
                                             child: Container(
                                               width: 72,
@@ -351,7 +351,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                             onTap: () {
                                               Get.to(() => FriendDetailPage(
                                                   uid: _userModelController
-                                                      .uid));
+                                                      .uid, favoriteResort: _userModelController.favoriteResort,));
                                             },
                                             child: Container(
                                               width: 72,
@@ -562,7 +562,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                                     return (BFdoc.get('profileImageUrl').isNotEmpty)
                                                         ? GestureDetector(
                                                       onTap: () {
-                                                        Get.to(() => FriendDetailPage(uid: BFdoc.get('uid')));
+                                                        Get.to(() => FriendDetailPage(uid: BFdoc.get('uid'), favoriteResort: BFdoc.get('favoriteResort'),));
                                                       },
                                                       child: Container(
                                                         width: 72,
@@ -625,8 +625,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                                       onTap: () {
                                                         Get.to(() =>
                                                             FriendDetailPage(
-                                                                uid: BFdoc.get(
-                                                                    'uid')));
+                                                                uid: BFdoc.get('uid'), favoriteResort: BFdoc.get('favoriteResort'),));
                                                       },
                                                       child: Container(
                                                         width: 72,
@@ -784,7 +783,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                   onTap: () {
                                     Get.to(() =>
                                         FriendDetailPage(
-                                            uid: doc.get('uid')));
+                                            uid: doc.get('uid'), favoriteResort: doc.get('favoriteResort'),));
                                   },
                                   child: Container(
                                     width: 72,
@@ -819,7 +818,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                     Get.to(() =>
                                         FriendDetailPage(
                                             uid: doc.get(
-                                                'uid')));
+                                                'uid'), favoriteResort: doc.get('favoriteResort'),));
                                   },
                                   child: Container(
                                     width: 72,

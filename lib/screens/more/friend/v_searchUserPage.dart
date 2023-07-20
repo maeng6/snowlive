@@ -424,7 +424,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                       right: 5),
                                   child: TextButton(
                                       onPressed: () {
-                                        Get.to(()=> FriendDetailPage(uid: foundUserModel!.uid));
+                                        Get.to(()=> FriendDetailPage(uid: foundUserModel!.uid, favoriteResort: foundUserModel!.favoriteResort,));
                                       },
                                       style: TextButton.styleFrom(
                                         shape: const RoundedRectangleBorder(

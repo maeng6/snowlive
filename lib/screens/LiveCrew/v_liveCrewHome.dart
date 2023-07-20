@@ -236,7 +236,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                     (applyDocs[index]['profileImageUrl'].isNotEmpty)
                                         ? GestureDetector(
                                       onTap: () {
-                                        Get.to(() => FriendDetailPage(uid: applyDocs[index]['uid']));
+                                        Get.to(() => FriendDetailPage(uid: applyDocs[index]['uid'], favoriteResort: applyDocs[index]['favoriteResort'],));
                                       },
                                       child: Container(
                                           width: 50,
@@ -253,7 +253,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                     )
                                         : GestureDetector(
                                       onTap: () {
-                                        Get.to(() => FriendDetailPage(uid: applyDocs[index]['uid']));
+                                        Get.to(() => FriendDetailPage(uid: applyDocs[index]['uid'], favoriteResort: applyDocs[index]['favoriteResort'],));
                                       },
                                       child: Container(
                                         width: 50,

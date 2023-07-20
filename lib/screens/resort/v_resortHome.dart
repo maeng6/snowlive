@@ -225,7 +225,7 @@ class _ResortHomeState extends State<ResortHome>
                                                               (liveFriendDocs[index]['profileImageUrl'] != "")
                                                                   ? GestureDetector(
                                                                 onTap: (){
-                                                                  Get.to(()=>FriendDetailPage(uid: liveFriendDocs[index]['uid']));
+                                                                  Get.to(()=>FriendDetailPage(uid: liveFriendDocs[index]['uid'], favoriteResort: liveFriendDocs[index]['favoriteResort'],));
                                                                 },
                                                                     child: ExtendedImage.network(
                                                                 liveFriendDocs[index]
@@ -241,7 +241,7 @@ class _ResortHomeState extends State<ResortHome>
                                                                   )
                                                                   : GestureDetector(
                                                                 onTap: (){
-                                                                  Get.to(()=>FriendDetailPage(uid: liveFriendDocs[index]['uid']));
+                                                                  Get.to(()=>FriendDetailPage(uid: liveFriendDocs[index]['uid'], favoriteResort: liveFriendDocs[index]['favoriteResort'],));
                                                                 },
                                                                     child: ExtendedImage.asset(
                                                                 'assets/imgs/profile/img_profile_default_circle.png',

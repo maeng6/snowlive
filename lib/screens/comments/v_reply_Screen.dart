@@ -18,6 +18,7 @@ class ReplyScreen extends StatefulWidget {
     required this.replyImage,
     required this.replyDisplayName,
     required this.replyResortNickname,
+    required this.replyFavoriteResort,
     required this.comment,
     required this.commentTime}) : super(key: key);
 
@@ -26,6 +27,7 @@ class ReplyScreen extends StatefulWidget {
   var replyImage;
   var replyDisplayName;
   var replyResortNickname;
+  var replyFavoriteResort;
   var comment;
   var commentTime;
 
@@ -185,7 +187,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                             child: GestureDetector(
                                               onTap: () {
                                                 Get.to(() =>
-                                                    FriendDetailPage(uid: widget.replyUid));
+                                                    FriendDetailPage(uid: widget.replyUid, favoriteResort: widget.replyFavoriteResort,));
                                               },
                                               child:
                                               ExtendedImage.network(widget.replyImage,
@@ -205,7 +207,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                             child: GestureDetector(
                                               onTap: () {
                                                 Get.to(() =>
-                                                    FriendDetailPage(uid: widget.replyUid));
+                                                    FriendDetailPage(uid: widget.replyUid, favoriteResort: widget.replyFavoriteResort,));
                                               },
                                               child: ExtendedImage.asset(
                                                 'assets/imgs/profile/img_profile_default_circle.png',
@@ -350,7 +352,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                             child: GestureDetector(
                                                               onTap: () {
                                                                 Get.to(() =>
-                                                                    FriendDetailPage(uid: replyDocs[index]['uid']));
+                                                                    FriendDetailPage(uid: replyDocs[index]['uid'], favoriteResort: replyDocs[index]['favoriteResort'],));
                                                               },
                                                               child: ExtendedImage.network(
                                                                 replyDocs[index]['profileImageUrl'],
@@ -369,7 +371,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                             child: GestureDetector(
                                                               onTap: () {
                                                                 Get.to(() =>
-                                                                    FriendDetailPage(uid: replyDocs[index]['uid']));
+                                                                    FriendDetailPage(uid: replyDocs[index]['uid'], favoriteResort: replyDocs[index]['favoriteResort'],));
                                                               },
                                                               child: ExtendedImage.asset(
                                                                 'assets/imgs/profile/img_profile_default_circle.png',

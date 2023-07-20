@@ -58,6 +58,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
               String leaderName = leaderDoc.data()!['displayName'];
               String leaderUid = leaderDoc.data()!['uid'];
               String leaderMsg = leaderDoc.data()!['stateMsg'];
+              int leaderFavoriteResort = leaderDoc.data()!['favoriteResort'];
 
               return SingleChildScrollView(
                 child: Padding(
@@ -79,7 +80,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                             (leaderProfileImage.isNotEmpty)
                                 ? GestureDetector(
                               onTap: () {
-                                Get.to(() => FriendDetailPage(uid: leaderUid));
+                                Get.to(() => FriendDetailPage(uid: leaderUid, favoriteResort: leaderFavoriteResort,));
                               },
                               child: Container(
                                   width: 50,
@@ -96,7 +97,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                             )
                                 : GestureDetector(
                               onTap: () {
-                                Get.to(() => FriendDetailPage(uid: leaderUid));
+                                Get.to(() => FriendDetailPage(uid: leaderUid, favoriteResort: leaderFavoriteResort,));
                               },
                               child: Container(
                                 width: 50,
@@ -164,7 +165,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                         (crewMemberDocs[index]['profileImageUrl'].isNotEmpty)
                                             ? GestureDetector(
                                           onTap: () {
-                                            Get.to(() => FriendDetailPage(uid: crewMemberDocs[index]['uid']));
+                                            Get.to(() => FriendDetailPage(uid: crewMemberDocs[index]['uid'], favoriteResort: crewMemberDocs[index]['favoriteResort'],));
                                           },
                                           child: Container(
                                               width: 50,
@@ -181,7 +182,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                         )
                                             : GestureDetector(
                                           onTap: () {
-                                            Get.to(() => FriendDetailPage(uid: crewMemberDocs[index]['uid']));
+                                            Get.to(() => FriendDetailPage(uid: crewMemberDocs[index]['uid'], favoriteResort: crewMemberDocs[index]['favoriteResort'],));
                                           },
                                           child: Container(
                                             width: 50,
