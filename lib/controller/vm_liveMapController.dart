@@ -306,7 +306,7 @@ class LiveMapController extends GetxController {
                 'uid': _userModelController.uid,
                 'passCountData': {},
                 'totalPassCount': 0,
-                'lastPassTime': null,
+                'lastPassTime': DateTime.now(),
                 'passCountTimeData': {
                   '1': 0,
                   '2': 0,
@@ -428,7 +428,7 @@ class LiveMapController extends GetxController {
                 'uid': _userModelController.uid,
                 'passCountData': {},
                 'totalPassCount': 0,
-                'lastPassTime': null,
+                'lastPassTime': DateTime.now(),
                 'passCountTimeData': {
                   '1': 0,
                   '2': 0,
@@ -588,7 +588,7 @@ class LiveMapController extends GetxController {
             'slopeScores': {},
             'totalPassCount': 0,
             'totalScore': 0,
-            'lastPassTime': null,
+            'lastPassTime': DateTime.now(),
           };
         } else {
           crewData = crewDocSnapshot.data() as Map<String, dynamic>;

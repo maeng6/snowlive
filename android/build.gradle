@@ -5,6 +5,8 @@ buildscript {
         targetSdkVersion    = 33
         appCompatVersion    = "1.4.2"
         layServicesLocationVersion = "20.0.0"
+        playServicesLocationVersion = "21.0.1"  // Replace with the desired version
+
     }
     repositories {
         google()
@@ -25,7 +27,6 @@ allprojects {
         google()
         mavenCentral()
         maven { url "${project(':flutter_background_geolocation').projectDir}/libs" }
-        maven { url 'https://developer.huawei.com/repo/' }
         maven { url "${project(':background_fetch').projectDir}/libs" }
     }
 }
