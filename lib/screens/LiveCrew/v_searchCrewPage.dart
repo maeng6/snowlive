@@ -362,7 +362,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                                     )),
                                                 TextButton(
                                                     onPressed: () async {
-                                                      if(_userModelController.applyCrewList!.contains(_liveCrewModelController.crewID)){
+                                                      if(_userModelController.applyCrewList!.contains(foundCrewModel!.crewID)){
                                                         Get.dialog(AlertDialog(
                                                           contentPadding: EdgeInsets.only(
                                                               bottom: 0,
@@ -410,8 +410,9 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                                         ));
                                                       } else{
                                                         CustomFullScreenDialog.showDialog();
-                                                        await _liveCrewModelController.updateInvitation_crew(crewID: _liveCrewModelController.crewID);
-                                                        await _liveCrewModelController.updateInvitationAlarm_crew(leaderUid: _liveCrewModelController.leaderUid);
+                                                        print(_liveCrewModelController.leaderUid);
+                                                        await _liveCrewModelController.updateInvitation_crew(crewID: foundCrewID);
+                                                        await _liveCrewModelController.updateInvitationAlarm_crew(leaderUid: foundCrewModel!.leaderUid);
                                                         await _userModelController.getCurrentUser(_userModelController.uid);
                                                         CustomFullScreenDialog.cancelDialog();
                                                         Navigator.pop(context);

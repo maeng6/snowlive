@@ -220,8 +220,21 @@ class _LiveTalkScreenState
                                                                   children: [
                                                                     if (chatDocs[index]['profileImageUrl'] != "")
                                                                       GestureDetector(
-                                                                        onTap: () {Get.to(() =>
-                                                                              FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: chatDocs[index]['favoriteResort'],));
+                                                                        onTap: () async {
+                                                                          QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
+                                                                              .collection('user')
+                                                                              .where('uid', isEqualTo: chatDocs[index]['uid'])
+                                                                              .get();
+
+                                                                          if (userQuerySnapshot.docs.isNotEmpty) {
+                                                                            DocumentSnapshot userDoc = userQuerySnapshot.docs.first;
+                                                                            int favoriteResort = userDoc['favoriteResort'];
+                                                                            print(favoriteResort);
+                                                                            print(chatDocs[index]['uid']);
+
+                                                                            Get.to(() => FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: favoriteResort,));
+                                                                          } else {
+                                                                          }
                                                                         },
                                                                         child: ExtendedImage.network(
                                                                           chatDocs[index]['profileImageUrl'],
@@ -235,8 +248,20 @@ class _LiveTalkScreenState
                                                                       ),
                                                                     if (chatDocs[index]['profileImageUrl'] == "")
                                                                       GestureDetector(
-                                                                        onTap: () {Get.to(() =>
-                                                                            FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: chatDocs[index]['favoriteResort'],));
+                                                                        onTap: () async {
+                                                                          QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
+                                                                              .collection('user')
+                                                                              .where('uid', isEqualTo: chatDocs[index]['uid'])
+                                                                              .get();
+
+                                                                          if (userQuerySnapshot.docs.isNotEmpty) {
+                                                                            DocumentSnapshot userDoc = userQuerySnapshot.docs.first;
+                                                                            int favoriteResort = userDoc['favoriteResort'];
+
+                                                                            Get.to(() => FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: favoriteResort,));
+                                                                          } else {
+                                                                            // user 문서를 찾을 수 없는 경우에 대한 처리를 여기에 추가하세요.
+                                                                          }
                                                                         },
                                                                         child: ExtendedImage
                                                                             .asset(
