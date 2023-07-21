@@ -44,7 +44,11 @@ class _SetModifyDescription_crewDetailState extends State<SetModifyDescription_c
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(58),
             child: AppBar(
-              title: Text('크루 소개글 변경'),
+              title: Text('소개글 변경',
+                style: TextStyle(
+                    color: Color(0xFF111111),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),),
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
@@ -69,7 +73,7 @@ class _SetModifyDescription_crewDetailState extends State<SetModifyDescription_c
                       }
                     },
                     child: Padding(
-                      padding: EdgeInsets.only(right: 10),
+                      padding: EdgeInsets.only(right: 12),
                       child: Text('변경완료', style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -91,9 +95,6 @@ class _SetModifyDescription_crewDetailState extends State<SetModifyDescription_c
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: 16,
-                    ),
                     Form(
                       key: _formKey,
                         child:
@@ -101,47 +102,58 @@ class _SetModifyDescription_crewDetailState extends State<SetModifyDescription_c
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                       Container(
-                        height: 120,
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFF1F3F3),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: TextFormField(
-                                maxLines: 10,
-                                textAlignVertical: TextAlignVertical.center,
-                                cursorColor: Color(0xff377EEA),
-                                cursorHeight: 16,
-                                cursorWidth: 2,
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                controller: _crewDescribTextEditingController..text = '$_initdescrip',
-                                onChanged: (descrip){
-                                  _initdescrip = descrip;
-                                },
-                                strutStyle: StrutStyle(leading: 0.3),
-                                decoration: InputDecoration(
+                            TextFormField(
+                              maxLines: 22,
+                              textAlignVertical: TextAlignVertical.top,
+                              cursorColor: Color(0xff377EEA),
+                              cursorHeight: 16,
+                              cursorWidth: 2,
+                              textAlign: TextAlign.start,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              controller: _crewDescribTextEditingController..text = '$_initdescrip',
+                              onChanged: (descrip){
+                                _initdescrip = descrip;
+                              },
+                              strutStyle: StrutStyle(leading: 0.3),
+                              decoration: InputDecoration(
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
                                   errorStyle: TextStyle(
                                     fontSize: 12,
                                   ),
-                                  labelStyle: TextStyle(
-                                      color: Color(0xff949494)
-                                  ),
-                                  hintStyle:
-                                  TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                                  labelStyle: TextStyle(color: Color(0xff949494), fontSize: 15),
+                                  hoverColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
                                   hintText: '내용을 작성해 주세요. (최대 1,000자)',
-                                  labelText: '크루 소개글 입력',
                                   border: InputBorder.none,
-                                ),
-                                validator: (val) {
-                                  if (val!.length <= 1000 && val.length >= 1) {
-                                    return null;
-                                  } else if (val.length == 0 || val == "") {
-                                    return '크루 소개글을 입력해주세요.';
-                                  } else {
-                                    return '최대 입력 가능한 글자 수를 초과했습니다.';
-                                  }
-                                },
+                                  errorBorder:  OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.transparent),
+                                  ),
+                                  focusedBorder:  OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.transparent),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.transparent),
+                                  )
                               ),
+                              validator: (val) {
+                                if (val!.length <= 1000 && val.length >= 1) {
+                                  return null;
+                                } else if (val.length == 0 || val == "") {
+                                  return '크루 소개글을 입력해주세요.';
+                                } else {
+                                  return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                }
+                              },
                             ),
                           ],
                         ),
@@ -149,9 +161,6 @@ class _SetModifyDescription_crewDetailState extends State<SetModifyDescription_c
                     ],
                     )
                     ),
-                    SizedBox(
-                      height: 20,
-                    )
                   ],
                 ),
               ),

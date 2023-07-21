@@ -36,6 +36,7 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
     ImageController _imageController =  Get.put(ImageController(), permanent: true);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('liveCrew')
@@ -91,125 +92,132 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
       ),
       floatingActionButton:
       (_liveCrewModelController.leaderUid == _userModelController.uid)
-      ?FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) =>
-                Container(
-                  height: 162,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24.0),
-                        child: Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: 30,
-                            ),
-                            Text(
-                              '업로드 방법을 선택해주세요.',
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF111111)),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20),
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  Navigator.pop(context);
-                                  CustomFullScreenDialog.showDialog();
-                                  try {
-                                    _imageFile = await _imageController.getSingleImage(ImageSource.camera);
-                                    await _imageController.setNewImage_Crew_Gallery(newImage: _imageFile!, crewID: _liveCrewModelController.crewID!);
-                                    CustomFullScreenDialog.cancelDialog();
-                                    setState(() {});
-                                  } catch (e) {
-                                    CustomFullScreenDialog.cancelDialog();
-                                  }
-                                },
-                                child: Text(
-                                  '사진 촬영',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
+      ?SizedBox(
+        width: 64,
+        height: 64,
+        child: FloatingActionButton(
+          backgroundColor: Color(0xFF3D83ED),
+          foregroundColor: Color(0xFFffffff),
+          elevation: 3,
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              builder: (context) =>
+                  SafeArea(
+                    child: Container(
+                      height: 159,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24.0),
+                            child: Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 30,
                                 ),
-                                style: TextButton.styleFrom(
-                                    splashFactory:
-                                    InkRipple.splashFactory,
-                                    elevation: 0,
-                                    minimumSize: Size(100, 56),
-                                    backgroundColor:
-                                    Color(0xff555555),
-                                    padding: EdgeInsets.symmetric(horizontal: 0)),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  Navigator.pop(context);
-                                  CustomFullScreenDialog.showDialog();
-                                  try {
-                                    _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
-                                    await _imageController.setNewImage_Crew_Gallery(newImage: _imageFile!, crewID: _liveCrewModelController.crewID!);
-                                    CustomFullScreenDialog.cancelDialog();
-                                    setState(() {});
-                                  } catch (e) {
-                                    CustomFullScreenDialog.cancelDialog();
-                                  }
-                                },
-                                child: Text(
-                                  '앨범에서 선택',
+                                Text(
+                                  '업로드 방법을 선택해주세요.',
                                   style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF111111)),
                                 ),
-                                style: TextButton.styleFrom(
-                                    splashFactory:
-                                    InkRipple.splashFactory,
-                                    elevation: 0,
-                                    minimumSize: Size(100, 56),
-                                    backgroundColor:
-                                    Color(0xff2C97FB),
-                                    padding: EdgeInsets.symmetric(horizontal: 0)),
-                              ),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                      CustomFullScreenDialog.showDialog();
+                                      try {
+                                        _imageFile = await _imageController.getSingleImage(ImageSource.camera);
+                                        await _imageController.setNewImage_Crew_Gallery(newImage: _imageFile!, crewID: _liveCrewModelController.crewID!);
+                                        CustomFullScreenDialog.cancelDialog();
+                                        setState(() {});
+                                      } catch (e) {
+                                        CustomFullScreenDialog.cancelDialog();
+                                      }
+                                    },
+                                    child: Text(
+                                      '사진 촬영',
+                                      style: TextStyle(
+                                          color: Color(0xFF3D83ED),
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                        splashFactory:
+                                        InkRipple.splashFactory,
+                                        elevation: 0,
+                                        minimumSize: Size(100, 56),
+                                        backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                        padding: EdgeInsets.symmetric(horizontal: 0)),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                      CustomFullScreenDialog.showDialog();
+                                      try {
+                                        _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
+                                        await _imageController.setNewImage_Crew_Gallery(newImage: _imageFile!, crewID: _liveCrewModelController.crewID!);
+                                        CustomFullScreenDialog.cancelDialog();
+                                        setState(() {});
+                                      } catch (e) {
+                                        CustomFullScreenDialog.cancelDialog();
+                                      }
+                                    },
+                                    child: Text(
+                                      '앨범에서 선택',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                        splashFactory:
+                                        InkRipple.splashFactory,
+                                        elevation: 0,
+                                        minimumSize: Size(100, 56),
+                                        backgroundColor: Color(0xFF3D83ED),
+                                        padding: EdgeInsets.symmetric(horizontal: 0)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          )
+                        ],
                       ),
-                      SizedBox(
-                        height: 20,
-                      )
-                    ],
+                    ),
                   ),
-                ),
-          );
-        },
-        child: Icon(Icons.camera_alt_rounded),
+            );
+          },
+          child: Icon(Icons.camera_alt_rounded, size: 26,),
+        ),
       )
       :SizedBox(),
     );

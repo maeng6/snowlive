@@ -81,7 +81,7 @@ class Setting_crewDetail extends StatelessWidget {
                                     child: Text(
                                       '취소',
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: Color(0xFF3D83ED),
                                           fontSize: 15,
                                           fontWeight:
                                           FontWeight.bold),
@@ -93,7 +93,7 @@ class Setting_crewDetail extends StatelessWidget {
                                         minimumSize:
                                         Size(100, 56),
                                         backgroundColor:
-                                        Color(0xff555555),
+                                        Color(0xff3D83ED).withOpacity(0.2),
                                         padding:
                                         EdgeInsets.symmetric(
                                             horizontal: 0)),
@@ -187,7 +187,7 @@ class Setting_crewDetail extends StatelessWidget {
                                         minimumSize:
                                         Size(100, 56),
                                         backgroundColor:
-                                        Color(0xff2C97FB),
+                                        Color(0xff3D83ED),
                                         padding:
                                         EdgeInsets.symmetric(
                                             horizontal: 0)),
@@ -258,7 +258,7 @@ class Setting_crewDetail extends StatelessWidget {
                                     child: Text(
                                       '취소',
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: Color(0xFF3D83ED),
                                           fontSize: 15,
                                           fontWeight:
                                           FontWeight.bold),
@@ -270,7 +270,7 @@ class Setting_crewDetail extends StatelessWidget {
                                         minimumSize:
                                         Size(100, 56),
                                         backgroundColor:
-                                        Color(0xff555555),
+                                        Color(0xff3D83ED).withOpacity(0.2),
                                         padding:
                                         EdgeInsets.symmetric(
                                             horizontal: 0)),
@@ -312,7 +312,7 @@ class Setting_crewDetail extends StatelessWidget {
                                         minimumSize:
                                         Size(100, 56),
                                         backgroundColor:
-                                        Color(0xff2C97FB),
+                                        Color(0xff3D83ED),
                                         padding:
                                         EdgeInsets.symmetric(
                                             horizontal: 0)),
@@ -351,7 +351,7 @@ class Setting_crewDetail extends StatelessWidget {
                         builder: (context) {
                           return Container(
                             color: Colors.white,
-                            height: 200,
+                            height: 220,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 20.0),
@@ -365,14 +365,23 @@ class Setting_crewDetail extends StatelessWidget {
                                     height: 30,
                                   ),
                                   Text(
-                                    '리더 권한을 위임하면 되돌릴 수 없으며,\n위임하는 즉시 적용됩니다.\n계속하시겠습니까?',
+                                    '리더 권한을 위임하시겠습니까?',
                                     style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF111111)),
+                                  ),SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    '리더 권한을 위임하면 되돌릴 수 없으며, 위임하는 즉시 적용됩니다. 계속하시겠습니까?',
+                                    style: TextStyle(
+                                      color: Color(0xff666666),
+                                      fontSize: 14,
+                                    ),
                                   ),
                                   SizedBox(
-                                    height: 30,
+                                    height: 24,
                                   ),
                                   Row(
                                     mainAxisAlignment:
@@ -386,7 +395,7 @@ class Setting_crewDetail extends StatelessWidget {
                                           child: Text(
                                             '취소',
                                             style: TextStyle(
-                                                color: Colors.white,
+                                                color: Color(0xFF3D83ED),
                                                 fontSize: 15,
                                                 fontWeight:
                                                 FontWeight.bold),
@@ -398,7 +407,7 @@ class Setting_crewDetail extends StatelessWidget {
                                               minimumSize:
                                               Size(100, 56),
                                               backgroundColor:
-                                              Color(0xff555555),
+                                              Color(0xff3D83ED).withOpacity(0.2),
                                               padding:
                                               EdgeInsets.symmetric(
                                                   horizontal: 0)),

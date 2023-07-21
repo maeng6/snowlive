@@ -261,7 +261,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                                   child: Text(
                                                                     '취소',
                                                                     style: TextStyle(
-                                                                        color: Colors.white,
+                                                                        color: Color(0xFF3D83ED),
                                                                         fontSize: 15,
                                                                         fontWeight: FontWeight.bold),
                                                                   ),
@@ -269,7 +269,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                                       splashFactory: InkRipple.splashFactory,
                                                                       elevation: 0,
                                                                       minimumSize: Size(100, 56),
-                                                                      backgroundColor: Color(0xff555555),
+                                                                      backgroundColor: Color(0xff3D83ED).withOpacity(0.2),
                                                                       padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                 ),
                                                               ),
@@ -303,7 +303,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                                       splashFactory: InkRipple.splashFactory,
                                                                       elevation: 0,
                                                                       minimumSize: Size(100, 56),
-                                                                      backgroundColor: Color(0xff2C97FB),
+                                                                      backgroundColor: Color(0xff3D83ED),
                                                                       padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                 ),
                                                               ),
@@ -459,7 +459,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                   side: BorderSide(
                                                       color: Color(0xFFDEDEDE))
                                               ),), //친추
-                                            SizedBox(width: 5,),
+                                            SizedBox(width: 8,),
                                             ElevatedButton(
                                               onPressed: (){
                                                 showModalBottomSheet(
@@ -498,7 +498,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                                       child: Text(
                                                                         '취소',
                                                                         style: TextStyle(
-                                                                            color: Colors.white,
+                                                                            color: Color(0xFF3D83ED),
                                                                             fontSize: 15,
                                                                             fontWeight: FontWeight.bold),
                                                                       ),
@@ -506,7 +506,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                                           splashFactory: InkRipple.splashFactory,
                                                                           elevation: 0,
                                                                           minimumSize: Size(100, 56),
-                                                                          backgroundColor: Color(0xff555555),
+                                                                          backgroundColor: Color(0xff3D83ED).withOpacity(0.2),
                                                                           padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                     ),
                                                                   ),

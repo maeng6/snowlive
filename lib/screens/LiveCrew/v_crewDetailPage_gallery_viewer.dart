@@ -76,6 +76,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar:
       _showAppBar
       ? AppBar(
@@ -186,15 +187,15 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                       );
                     });
               },
-              icon: Icon(Icons.delete),
+              icon: Icon(Icons.delete_forever_sharp, size: 26, color: Colors.white,),
             )
             :SizedBox(),
           )
         ],
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black12,
         leading: GestureDetector(
           child: Image.asset(
-            'assets/imgs/icons/icon_snowLive_back.png',
+            'assets/imgs/icons/icon_snowLive_back_white.png',
             scale: 4,
             width: 26,
             height: 26,
@@ -209,7 +210,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
         title: Text(currentUploadTime,
         style: TextStyle(
           fontSize: 15,
-          color: Colors.black87
+          color: Color(0xFFffffff),
+          fontWeight: FontWeight.normal
         ),
         ),
 
@@ -231,9 +233,6 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                   });
                 },
                 itemBuilder: (context, index) {
-
-
-
                   return ExtendedImage.network(
                     widget.photoList[index],
                     fit: BoxFit.contain,

@@ -46,7 +46,11 @@ class _SetSNSlink_crewDetailState extends State<SetSNSlink_crewDetail> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(58),
             child: AppBar(
-              title: Text('SNS 링크 연결하기'),
+              title: Text('SNS 연결하기',
+                style: TextStyle(
+                    color: Color(0xFF111111),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),),
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
@@ -71,7 +75,7 @@ class _SetSNSlink_crewDetailState extends State<SetSNSlink_crewDetail> {
                       }
                     },
                     child: Padding(
-                      padding: EdgeInsets.only(right: 10),
+                      padding: EdgeInsets.only(right: 12),
                       child: Text('연결완료', style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -93,9 +97,6 @@ class _SetSNSlink_crewDetailState extends State<SetSNSlink_crewDetail> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: 16,
-                    ),
                     Form(
                       key: _formKey,
                         child:
@@ -103,40 +104,50 @@ class _SetSNSlink_crewDetailState extends State<SetSNSlink_crewDetail> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                       Container(
-                        height: 120,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFF1F3F3),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: TextFormField(
-                                maxLines: 10,
-                                textAlignVertical: TextAlignVertical.center,
-                                cursorColor: Color(0xff377EEA),
-                                cursorHeight: 16,
-                                cursorWidth: 2,
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                controller: _crewDescribTextEditingController..text = '$_initSNS',
-                                onChanged: (snsLink){
-                                  _initSNS = snsLink;
-                                },
-                                strutStyle: StrutStyle(leading: 0.3),
-                                decoration: InputDecoration(
+                            TextFormField(
+                              textAlignVertical: TextAlignVertical.top,
+                              cursorColor: Color(0xff377EEA),
+                              cursorHeight: 16,
+                              cursorWidth: 2,
+                              textAlign: TextAlign.start,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              controller: _crewDescribTextEditingController..text = '$_initSNS',
+                              onChanged: (snsLink){
+                                _initSNS = snsLink;
+                              },
+                              strutStyle: StrutStyle(leading: 0.3),
+                              decoration: InputDecoration(
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
                                   errorStyle: TextStyle(
                                     fontSize: 12,
                                   ),
-                                  labelStyle: TextStyle(
-                                      color: Color(0xff949494)
-                                  ),
-                                  hintStyle:
-                                  TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                  hintText: '링크앞에 https:// 를 꼭 붙여주세요.',
-                                  labelText: '크루 sns링크 입력',
+                                  labelStyle: TextStyle(color: Color(0xff949494), fontSize: 15),
+                                  hoverColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
+                                  hintText: '연결할 SNS 링크 입력',
                                   border: InputBorder.none,
+                                  errorBorder:  OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.transparent),
+                                  ),
+                                  focusedBorder:  OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.transparent),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.transparent),
+                                  )
                                 ),
-                                validator: (val) {
-                                },
-                              ),
+                              validator: (val) {
+                              },
                             ),
                           ],
                         ),
@@ -145,7 +156,12 @@ class _SetSNSlink_crewDetailState extends State<SetSNSlink_crewDetail> {
                     )
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 12,
+                    ),
+                    Center(
+                      child: Text('링크앞에 https:// 를 꼭 붙여주세요.', style: TextStyle(
+                        fontSize: 12, color: Color(0xFF949494)
+                      ),),
                     )
                   ],
                 ),

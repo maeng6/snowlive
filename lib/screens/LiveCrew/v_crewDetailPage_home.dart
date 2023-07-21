@@ -481,7 +481,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                   if(crewDocs[0]['notice'] == '')
                                     Center(
                                       child: Padding(
-                                        padding: const EdgeInsets.only(top: 10),
+                                        padding: const EdgeInsets.only(top: 20, bottom: 10),
                                         child: Text(
                                           '공지사항이 없습니다',
                                           style: TextStyle(
@@ -799,7 +799,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                   height: 2,
                                                                                 ),
                                                                                 // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                                Text('점수 : ${memberScoreDocs[1]['totalScore']}',
+                                                                                Text('${memberScoreDocs[1]['totalScore']}점',
                                                                                   style: TextStyle(
                                                                                       fontSize: 14,
                                                                                       fontWeight: FontWeight.bold,
@@ -891,7 +891,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                   height: 2,
                                                                                 ),
                                                                                 // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                                Text('점수 : ${memberScoreDocs[2]['totalScore']}',
+                                                                                Text('${memberScoreDocs[2]['totalScore']}점',
                                                                                   style: TextStyle(
                                                                                       fontSize: 14,
                                                                                       fontWeight: FontWeight.bold,
@@ -913,7 +913,17 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                 );
 
                                               } else {
-                                                return Text('랭킹에 참여중인 크루원이 없습니다.');
+                                                return Center(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(top: 30, bottom: 20),
+                                                    child: Text(
+                                                      '랭킹에 참여중인 크루원이 없습니다',
+                                                      style: TextStyle(
+                                                          fontSize: 13,
+                                                          color: Color(0xFF949494)
+                                                      ),),
+                                                  ),
+                                                );
                                               }
                                             },
                                           );
@@ -974,7 +984,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                       if (passCountData == null || passCountData.isEmpty) {
                                         return Center(
                                           child: Padding(
-                                            padding: const EdgeInsets.only(top: 20, bottom: 10),
+                                            padding: const EdgeInsets.only(top: 30, bottom: 20),
                                             child: Text(
                                               '슬로프 이용기록이 없습니다',
                                               style: TextStyle(
@@ -1059,7 +1069,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                     } else {
                                       return Center(
                                         child: Padding(
-                                          padding: const EdgeInsets.only(top: 20, bottom: 10),
+                                          padding: const EdgeInsets.only(top: 30, bottom: 20),
                                           child: Text(
                                             '슬로프 이용기록이 없습니다',
                                             style: TextStyle(
@@ -1130,7 +1140,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                         if (areAllValuesZero) {
                                           return Center(
                                             child: Padding(
-                                              padding: const EdgeInsets.only(top: 20, bottom: 10),
+                                              padding: const EdgeInsets.only(top: 30, bottom: 20),
                                               child: Text(
                                                 '슬로프 이용기록이 없습니다',
                                                 style: TextStyle(
@@ -1164,7 +1174,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                     String slotName = data['slotName'];
                                                     int passCount = data['passCount'];
                                                     double barHeightRatio = data['barHeightRatio'];
-                                                    Color barColor = Color(crewDocs[0]['crewColor']).withOpacity(0.6);
+                                                    Color barColor = Color(crewDocs[0]['crewColor']).withOpacity(0.4);
                                                     return Container(
                                                       margin: EdgeInsets.symmetric(horizontal: 5),
                                                       width: 25,
@@ -1506,15 +1516,12 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                             '확인',
                                             style: TextStyle(
                                               fontSize: 15,
-                                              color: Color(
-                                                  0xff377EEA),
-                                              fontWeight: FontWeight
-                                                  .bold,
+                                              color: Color(0xff377EEA),
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           )),
                                     ],
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .center,
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                   )
                                 ],
                               ));
