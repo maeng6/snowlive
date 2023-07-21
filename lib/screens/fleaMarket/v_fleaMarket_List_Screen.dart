@@ -33,11 +33,23 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
 
   var f = NumberFormat('###,###,###,###');
 
+  ScrollController _scrollController = ScrollController();
+  bool _showAddButton = true;
+
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _stream = newStream();
+
+    // Add a listener to the ScrollController
+    _scrollController.addListener(() {
+      setState(() {
+        // Check if the user has scrolled down by a certain offset (e.g., 100 pixels)
+        _showAddButton = _scrollController.offset <= 0;
+      });
+    });
   }
 
   Stream<QuerySnapshot> newStream() {
@@ -168,7 +180,8 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
             child: SizedBox(
               width: 112,
               height: 52,
-              child: FloatingActionButton.extended(
+              child: _showAddButton
+              ?FloatingActionButton.extended(
                 heroTag: 'fleaListScreen',
                 onPressed: () async {
                   await _userModelController
@@ -182,7 +195,21 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                 icon: Icon(Icons.add),
                 label: Text('글쓰기', style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold,overflow: TextOverflow.ellipsis),),
                 backgroundColor: Color(0xFF3D6FED),
-              ),
+              )
+              :FloatingActionButton(
+                heroTag: 'fleaListScreen',
+                onPressed: () async {
+                  await _userModelController
+                      .getCurrentUser(_userModelController.uid);
+                  if (_userModelController.phoneAuth == true) {
+                    Get.to(() => FleaMarket_Upload());
+                  } else if (_userModelController.phoneAuth == false) {
+                    Get.to(() => PhoneAuthScreen());
+                  } else {}
+                },
+                child: Icon(Icons.add),
+                backgroundColor: Color(0xFF3D6FED),
+              )
             ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -290,6 +317,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           ),
                         )
                             : ListView.builder(
+                          controller: _scrollController, // ScrollController 연결
                           itemCount: chatDocs.length,
                           itemBuilder: (context, index) {
                             String _time = _fleaModelController
