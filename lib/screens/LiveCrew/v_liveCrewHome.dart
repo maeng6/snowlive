@@ -268,17 +268,20 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                       onTap: () {
                                         Get.to(() => FriendDetailPage(uid: applyDocs[index]['uid'], favoriteResort: applyDocs[index]['favoriteResort'],));
                                       },
-                                      child: Container(
-                                        width: 58,
-                                        height: 58,
-                                        child: ExtendedImage.asset(
-                                          'assets/imgs/profile/img_profile_default_circle.png',
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 16, bottom: 10),
+                                        child: Container(
                                           width: 58,
                                           height: 58,
-                                          fit: BoxFit.cover,
+                                          child: ExtendedImage.asset(
+                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                            enableMemoryCache: true,
+                                            shape: BoxShape.circle,
+                                            borderRadius: BorderRadius.circular(8),
+                                            width: 58,
+                                            height: 58,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     ),
