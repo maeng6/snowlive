@@ -320,10 +320,10 @@ class _ResortHomeState extends State<ResortHome>
                                     HapticFeedback.lightImpact();
                                     _dialogController.isChecked.value = false;
                                     CustomFullScreenDialog.showDialog();
-                                    await _liveMapController.checkAndUpdatePassCountOff();
                                     await _userModelController.updateIsOnLiveOff();
                                     await _liveMapController.stopForegroundLocationService();
                                     await _liveMapController.stopBackgroundLocationService();
+                                    await _liveMapController.checkAndUpdatePassCountOff();
                                     await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
                                     setState(() {});
                                     CustomFullScreenDialog.cancelDialog();
@@ -1696,10 +1696,10 @@ class _ResortHomeState extends State<ResortHome>
                               HapticFeedback.lightImpact();
                               _dialogController.isChecked.value = false;
                               CustomFullScreenDialog.showDialog();
-                              await _liveMapController.checkAndUpdatePassCountOff();
                               await _userModelController.updateIsOnLiveOff();
                               await _liveMapController.stopForegroundLocationService();
                               await _liveMapController.stopBackgroundLocationService();
+                              await _liveMapController.checkAndUpdatePassCountOff();
                               await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
                               setState(() {});
                               CustomFullScreenDialog.cancelDialog();

@@ -103,6 +103,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                 ),
                                 child: TextFormField(
                                   onFieldSubmitted: (val) async{
+                                    CustomFullScreenDialog.showDialog();
                                     setState(() {
                                       isLoading = true;
                                     });
@@ -154,6 +155,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                     setState(() {
                                       isLoading = false;
                                     });
+                                    CustomFullScreenDialog.cancelDialog();
                                   },
                                   autofocus: true,
                                   textAlignVertical: TextAlignVertical.center,
@@ -210,6 +212,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                             top: 15,
                             child: GestureDetector(
                               onTap: () async{
+                                CustomFullScreenDialog.showDialog();
                                 setState(() {
                                   isLoading = true;
                                 });
@@ -257,10 +260,13 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                       ],
                                     ));
                                   }
-                                } else {}
+                                }
+                                else {}
                                 setState(() {
                                   isLoading = false;
                                 });
+                                CustomFullScreenDialog.cancelDialog();
+
                               },
                               child: Padding(
                                   padding: const EdgeInsets.only(right: 20),
@@ -541,6 +547,15 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                       await _userModelController.getCurrentUser(_userModelController.uid);
                                                       Navigator.pop(context);
                                                       CustomFullScreenDialog.cancelDialog();
+                                                      Get.snackbar(
+                                                        '친구요청 완료',
+                                                        '요청중인 목록은 친구목록 페이지에서 확인하실 수 있습니다.',
+                                                        margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                                        snackPosition: SnackPosition.BOTTOM,
+                                                        backgroundColor: Colors.black87,
+                                                        colorText: Colors.white,
+                                                        duration: Duration(milliseconds: 3000),
+                                                      );
                                                     }
 
                                                   },

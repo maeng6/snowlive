@@ -47,6 +47,7 @@
        <!-- 4번-->
        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
        <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
+       <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="50381855bd42ab868e695ed0505c45399dccb50b20bd97a791994898b1fcf8eb"/>
 
        <!-- 5번-->
        <activity

@@ -71,7 +71,7 @@ class _Setting_delegationState extends State<Setting_delegation> {
           StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection('user')
-                .where('liveCrew', arrayContains: _liveCrewModelController.crewID)
+                .where('liveCrew', isEqualTo: _liveCrewModelController.crewID)
                 .snapshots(),
             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
               if (!snapshot.hasData || snapshot.data == null) {
@@ -82,8 +82,8 @@ class _Setting_delegationState extends State<Setting_delegation> {
                   child: ListView.builder(
                     itemCount: crewMemberDocs.length,
                     itemBuilder: (BuildContext context, int index) {
-                      if(crewMemberDocs[index]['uid'] != _userModelController.uid)
-                        return Column(
+                        return (crewMemberDocs[index]['uid'] != _liveCrewModelController.leaderUid)
+                          ?Column(
                           children: [
                             Container(
                               height: 64,
@@ -139,8 +139,6 @@ class _Setting_delegationState extends State<Setting_delegation> {
                                         )
                                       ],
                                     ));
-
-
                                 },
                                 title: Row(
                                   children: [
@@ -202,7 +200,8 @@ class _Setting_delegationState extends State<Setting_delegation> {
                               thickness: 1,
                             )
                           ],
-                        );
+                        )
+                        :SizedBox();
                     },
                   ),
                 );
