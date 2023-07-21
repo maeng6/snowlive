@@ -45,7 +45,7 @@ Future<void> updateTier()async{
   int totalRankCount = rankingDocs.length;
 
   percent = myRank/totalRankCount;
-  totalScore = rankingDocs[0]['totalScore'];
+  totalScore = myData['totalScore'];
   print('등수 : $myRank');
   print('퍼센트 : $percent');
   print('스코어 : $totalScore');
