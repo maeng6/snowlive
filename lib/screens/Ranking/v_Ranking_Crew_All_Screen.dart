@@ -172,7 +172,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
               style: TextStyle(
                   color: Color(0xFF111111),
                   fontWeight: FontWeight.bold,
-                  fontSize: 20),
+                  fontSize: 18),
             ),
           ),
           body: SingleChildScrollView(
