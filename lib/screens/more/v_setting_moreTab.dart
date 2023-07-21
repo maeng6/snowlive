@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_imageController.dart';
@@ -102,14 +103,18 @@ class setting_moreTab extends StatelessWidget {
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: () async {
-                                      try{
-                                        await _imageController.deleteProfileImage();
-                                      }catch(e){print('프사 없음');}
-                                      await _loginController
-                                          .deleteUser(
-                                          uid: _userModelController.uid,
-                                          fleaCount: _userModelController.fleaCount
-                                      );
+
+                                        try {
+                                          await _imageController.deleteProfileImage();
+                                        } catch (e) {
+                                          print('프사 없음');
+                                        }
+                                        await _loginController.deleteUser(
+                                            uid: _userModelController.uid,
+                                            fleaCount: _userModelController.fleaCount,
+                                            crewID: _userModelController.liveCrew
+                                        );
+
                                     },
                                     child: Text(
                                       '확인',

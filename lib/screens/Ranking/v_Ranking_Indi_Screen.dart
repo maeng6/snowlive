@@ -459,9 +459,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                     final userData = userDoc.isNotEmpty ? userDoc[0] : null;
 
                                                     if (userData == null) {
-                                                      return ListTile(
-                                                        title: Text('User not found'),
-                                                      );
+                                                      return SizedBox();
                                                     }
 
                                                     return Padding(

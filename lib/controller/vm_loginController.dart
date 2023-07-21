@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:snowlive3/controller/vm_loadingPage.dart';
+import 'package:snowlive3/controller/vm_seasonController.dart';
+import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/login/v_loginpage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
@@ -18,6 +21,12 @@ class LoginController extends GetxController {
   late FacebookAuth facebookAuth = FacebookAuth.instance;
   late GoogleSignIn googleSignIn = GoogleSignIn();
   String? loginUid;
+
+//TODO: Dependency Injection**************************************************
+  SeasonController _seasonController = Get.find<SeasonController>();
+  UserModelController _userModelController = Get.find<UserModelController>();
+  //TODO: Dependency Injection**************************************************
+
 
   Future<void> signInWithGoogle() async {
     GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
@@ -94,21 +103,101 @@ class LoginController extends GetxController {
      }
   }
 
-  Future<void> deleteUser({required uid, required fleaCount}) async {
+  Future<dynamic> deleteUser({required uid, required fleaCount,required crewID}) async {
     CustomFullScreenDialog.showDialog();
-    try {
-      await deleteFleaItemAll(myUid: uid , fleaCount: fleaCount);
-      await FlutterSecureStorage().delete(key: 'uid');
-      CollectionReference users = FirebaseFirestore.instance.collection('user');
-      await users.doc(uid).delete();
-      User user = FirebaseAuth.instance.currentUser!;
-      await user.delete();
-      FirebaseStorage.instance.refFromURL('$uid.jpg').delete();
-      Get.offAll(() => LoginPage());
+
+    String leaderUid='';
+    DocumentReference? liveCrewRef;
+    DocumentSnapshot? crewSnapshot;
+    await _userModelController.getCurrentUser_crew(uid);
+    if(_userModelController.liveCrew!.isNotEmpty
+        && _userModelController.liveCrew != '') {
+      liveCrewRef = await FirebaseFirestore.instance
+          .collection('liveCrew')
+          .doc('${_userModelController.liveCrew}');
+      crewSnapshot = await liveCrewRef.get();
+      if (crewSnapshot.exists) {
+        leaderUid = crewSnapshot.get('leaderUid');
+      } else {
+        print('Document does not exist on the database');
+      }
+    }else{}
+
+    if(leaderUid == _userModelController.uid){
       CustomFullScreenDialog.cancelDialog();
-    }catch(e){
-      CustomFullScreenDialog.cancelDialog();
-      Get.offAll(()=>LoginPage());
+      return Get.dialog(AlertDialog(
+        contentPadding: EdgeInsets.only(
+            bottom: 0,
+            left: 20,
+            right: 20,
+            top: 30),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.circular(
+                10.0)),
+        buttonPadding:
+        EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 0),
+        content: Text(
+          '운영중인 크루가 있습니다.\n크루장을 위임한 후 다시 시도해주세요.',
+          style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 15),
+        ),
+        actions: [
+          Row(
+            children: [
+              TextButton(
+                  onPressed: () async {
+                    Get.back();
+                    Get.back();
+                  },
+                  child: Text(
+                    '확인',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Color(
+                          0xff377EEA),
+                      fontWeight: FontWeight
+                          .bold,
+                    ),
+                  )),
+            ],
+            mainAxisAlignment: MainAxisAlignment
+                .center,
+          )
+        ],
+      ));
+    } else {
+      try {
+        await deleteFleaItemAll(myUid: uid, fleaCount: fleaCount);
+        await FlutterSecureStorage().delete(key: 'uid');
+        CollectionReference users = FirebaseFirestore.instance.collection(
+            'user');
+        await users.doc(uid).delete();
+
+        DocumentReference rankingDocRef = FirebaseFirestore.instance
+            .collection('Ranking')
+            .doc('${_seasonController.currentSeason}')
+            .collection('${_userModelController.favoriteResort}')
+            .doc("${_userModelController.uid}");
+        await rankingDocRef.delete();
+
+        await ref.collection('liveCrew').doc(crewID).update({
+          'memberUidList': FieldValue.arrayRemove([uid])
+        });
+
+        User user = FirebaseAuth.instance.currentUser!;
+        await user.delete();
+        FirebaseStorage.instance.refFromURL('$uid.jpg').delete();
+        Get.offAll(() => LoginPage());
+        CustomFullScreenDialog.cancelDialog();
+      } catch (e) {
+        CustomFullScreenDialog.cancelDialog();
+        Get.offAll(() => LoginPage());
+      }
     }
     CustomFullScreenDialog.cancelDialog();
   }

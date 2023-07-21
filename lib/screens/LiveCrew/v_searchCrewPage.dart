@@ -99,6 +99,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                             ),
                             child: TextFormField(
                               onFieldSubmitted: (val) async{
+                                CustomFullScreenDialog.showDialog();
                                 setState(() {
                                   isLoading = true;
                                 });
@@ -161,6 +162,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                 setState(() {
                                   isLoading = false;
                                 });
+                                CustomFullScreenDialog.cancelDialog();
                               },
                               autofocus: true,
                               textAlignVertical: TextAlignVertical.center,
@@ -217,6 +219,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                         top: 15,
                         child: GestureDetector(
                           onTap: () async{
+                            CustomFullScreenDialog.showDialog();
                             setState(() {
                               isLoading = true;
                             });
@@ -279,6 +282,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                               setState(() {
                                 isLoading = false;
                               });
+                            CustomFullScreenDialog.cancelDialog();
                               },
                           child: Padding(
                               padding: const EdgeInsets.only(right: 20),
@@ -391,6 +395,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                                                     onPressed: () async {
                                                                       Navigator.pop(context);
                                                                       Navigator.pop(context);
+                                                                      Navigator.pop(context);
                                                                     },
                                                                     child: Text(
                                                                       '확인',
@@ -408,6 +413,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                                             )
                                                           ],
                                                         ));
+
                                                       } else{
                                                         CustomFullScreenDialog.showDialog();
                                                         print(_liveCrewModelController.leaderUid);
@@ -417,6 +423,15 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                                         CustomFullScreenDialog.cancelDialog();
                                                         Navigator.pop(context);
                                                         Navigator.pop(context);
+                                                      Get.snackbar(
+                                                      '가입신청 완료',
+                                                      '신청 목록은 라이브크루 페이지에서 확인하실 수 있습니다.',
+                                                      margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                                      snackPosition: SnackPosition.BOTTOM,
+                                                      backgroundColor: Colors.black87,
+                                                      colorText: Colors.white,
+                                                      duration: Duration(milliseconds: 3000),
+                                                      );
                                                       }
                                                     },
                                                     child: Text(
