@@ -51,7 +51,7 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
           style: TextStyle(
             color: Color(0xFF111111),
             fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontSize: 18,
           ),
         ),
       ),
@@ -85,84 +85,87 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
                     padding: EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 5),
                     child: Container(
                       width: _size.width,
-                      child: Row(
-                        children: [
-                          (doc['profileImageUrl'].isNotEmpty)
-                              ? Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: Color(doc['crewColor']),
-                              borderRadius:
-                              BorderRadius.circular(8),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: ExtendedImage.network(
-                                doc['profileImageUrl'],
-                                enableMemoryCache: true,
-                                shape: BoxShape.rectangle,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Row(
+                          children: [
+                            (doc['profileImageUrl'].isNotEmpty)
+                                ? Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: Color(doc['crewColor']),
                                 borderRadius:
-                                BorderRadius.circular(6),
-                                fit: BoxFit.cover,
+                                BorderRadius.circular(8),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: ExtendedImage.network(
+                                  doc['profileImageUrl'],
+                                  enableMemoryCache: true,
+                                  shape: BoxShape.rectangle,
+                                  borderRadius:
+                                  BorderRadius.circular(6),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            )
+                                : Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: Color(doc['crewColor']),
+                                borderRadius:
+                                BorderRadius.circular(8),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: ExtendedImage.asset(
+                                  'assets/imgs/profile/img_profile_default_.png',
+                                  enableMemoryCache: true,
+                                  shape: BoxShape.rectangle,
+                                  borderRadius:
+                                  BorderRadius.circular(6),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          )
-                              : Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: Color(doc['crewColor']),
-                              borderRadius:
-                              BorderRadius.circular(8),
+                            SizedBox(
+                              width: 15,
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: ExtendedImage.asset(
-                                'assets/imgs/profile/img_profile_default_.png',
-                                enableMemoryCache: true,
-                                shape: BoxShape.rectangle,
-                                borderRadius:
-                                BorderRadius.circular(6),
-                                fit: BoxFit.cover,
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 2),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    doc['crewName'],
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Color(0xFF111111),
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                  SizedBox(
+                                    height: 2,
+                                  ),
+                                  Text(
+                                    '${doc['crewLeader']} / ${(doc['memberUidList'] as List).length}명',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Color(0xFF949494),
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  )
+                                ],
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 2),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  doc['crewName'],
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Color(0xFF111111),
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                                SizedBox(
-                                  height: 2,
-                                ),
-                                Text(
-                                  '${doc['crewLeader']} / ${(doc['memberUidList'] as List).length}명',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Color(0xFF949494),
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

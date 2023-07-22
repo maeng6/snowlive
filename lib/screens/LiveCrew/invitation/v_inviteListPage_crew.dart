@@ -42,7 +42,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                   return Column(
                     children: [
                       Container(
-                        height: 64,
+                        height: 72,
                         child: Center(
                           child: ListTile(
                             contentPadding: EdgeInsets.symmetric(horizontal: 0),
@@ -58,16 +58,22 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                     Get.to(()=>CrewDetailPage_screen());
                                   },
                                   child: Container(
-                                      width: 50,
-                                      height: 50,
-                                      child: ExtendedImage.network(
-                                        inviDocs[index]['profileImageUrl'],
-                                        enableMemoryCache: true,
-                                        shape: BoxShape.circle,
-                                        borderRadius: BorderRadius.circular(8),
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.cover,
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        color: Color(inviDocs[index]['crewColor']),
+                                        borderRadius: BorderRadius.circular(8)
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(2),
+                                        child: ExtendedImage.network(
+                                          inviDocs[index]['profileImageUrl'],
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                          BorderRadius.circular(6),
+                                          fit: BoxFit.cover,
+                                        ),
                                       )),
                                 )
                                     : GestureDetector(
@@ -78,32 +84,36 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                     Get.to(()=>CrewDetailPage_screen());
                                   },
                                   child: Container(
-                                    width: 50,
-                                    height: 50,
-                                    child: ExtendedImage.asset(
-                                      'assets/imgs/profile/img_profile_default_circle.png',
-                                      enableMemoryCache: true,
-                                      shape: BoxShape.circle,
-                                      borderRadius: BorderRadius.circular(8),
-                                      width: 50,
-                                      height: 50,
-                                      fit: BoxFit.cover,
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                        color: Color(inviDocs[index]['crewColor']),
+                                        borderRadius: BorderRadius.circular(8)
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(2),
+                                      child: ExtendedImage.asset(
+                                        'assets/imgs/profile/img_profile_default_.png',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius:
+                                        BorderRadius.circular(6),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
+                                ),
+                                SizedBox(
+                                  width: 10,
                                 ),
                                 Text(
                                   inviDocs[index]['crewName'],
                                   style: TextStyle(
                                     fontWeight: FontWeight.normal,
-                                    fontSize: 16,
+                                    fontSize: 15,
                                     color: Color(0xFF111111),
                                   ),
                                 ),
-                                Container(
-                                  width: 20,
-                                  height: 20,
-                                  color: Color(inviDocs[index]['crewColor']),
-                                )
                               ],
                             ),
                             trailing: ElevatedButton(
@@ -116,7 +126,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                         height: 180,
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 20.0),
+                                              horizontal: 16),
                                           child: Column(
                                             crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -158,7 +168,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                                               .splashFactory,
                                                           elevation: 0,
                                                           minimumSize:
-                                                          Size(100, 56),
+                                                          Size(60, 56),
                                                           backgroundColor:
                                                           Color(0xff555555),
                                                           padding:
@@ -197,7 +207,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                                               .splashFactory,
                                                           elevation: 0,
                                                           minimumSize:
-                                                          Size(100, 56),
+                                                          Size(60, 56),
                                                           backgroundColor:
                                                           Color(0xff2C97FB),
                                                           padding:

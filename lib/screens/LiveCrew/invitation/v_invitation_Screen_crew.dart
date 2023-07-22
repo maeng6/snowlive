@@ -65,7 +65,7 @@ class _InvitationScreen_crewState extends State<InvitationScreen_crew> {
                 style: TextStyle(
                     color: Color(0xFF111111),
                     fontWeight: FontWeight.bold,
-                    fontSize: 20),
+                    fontSize: 18),
               ),
               backgroundColor: Colors.white,
               elevation: 0.0,
