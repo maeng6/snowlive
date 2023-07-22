@@ -638,7 +638,12 @@ class LiveMapController extends GetxController {
         crewData['totalPassCount'] = crewTotalPassCount;
 
         // Update lastPassTime with current time
-        crewData['lastPassTime'] = lastPassTime;
+        DateTime lastPassTime = crewData['lastPassTime']?.toDate();
+        DateTime now = DateTime.now();
+
+        if (now.difference(lastPassTime).inMinutes >= 5) {
+          crewData['lastPassTime'] = Timestamp.fromDate(now);
+        }
 
         // Update the document
         await crewDocRef.set(crewData, SetOptions(merge: true));
