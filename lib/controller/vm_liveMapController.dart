@@ -277,7 +277,7 @@ class LiveMapController extends GetxController {
   Future<void> checkAndUpdatePassCount(Position position) async {
     await _seasonController.getCurrentSeason();
 
-    for (LocationModel location in locations) {
+    for (LocationModel location in slopeLocationMap['${_userModelController.favoriteResort}']!) {
       for (LatLng coordinate in location.coordinates) {
       double distanceInMeters = Geolocator.distanceBetween(
         position.latitude,

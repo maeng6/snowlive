@@ -8,7 +8,12 @@ class LocationModel {
   LocationModel({required this.name, required this.coordinates, required this.type});
 }
 
-List<LocationModel> locations = [
+Map<String, List<LocationModel>> slopeLocationMap = {
+  '12': phoenix,
+  // ... 필요한 만큼 이름과 위치 리스트를 추가로 매핑합니다.
+};
+
+List<LocationModel> phoenix = [
   LocationModel(
     name: '스패로',
     coordinates: [
