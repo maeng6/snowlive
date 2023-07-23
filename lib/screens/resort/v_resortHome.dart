@@ -458,7 +458,7 @@ class _ResortHomeState extends State<ResortHome>
                                                   ),
                                                   TextButton(
                                                       onPressed: (){
-                                                        Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88'));
+                                                        Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88ㅎ'));
                                                       },
                                                       child: Text('약관보기>',
                                                         style: TextStyle(
