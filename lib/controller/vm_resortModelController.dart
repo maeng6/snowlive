@@ -170,36 +170,10 @@ class ResortModelController extends GetxController{
     switch (slopeNickname) {
       case '스패로':
         return '스패로우';
-      case '챔피온':
-        return '챔피온';
       case '파노':
         return '파노라마';
-      case '환타지':
-        return '환타지';
-      case '디지':
-        return '디지';
-      case '호크1':
-        return '호크1';
-      case '호크2':
-        return '호크2';
-      case '펭귄':
-        return '펭귄';
-      case '밸리':
-        return '밸리';
-      case '마스터':
-        return '';
-      case '모글':
-        return '모글';
-      case '키위':
-        return '키위';
-      case '도도':
-        return '도도';
       case '슬스':
         return '슬로프스타일';
-      case '도브':
-        return '도브';
-      case '듀크':
-        return '듀크';
       case '파라':
         return '파라다이스';
       case '파크':

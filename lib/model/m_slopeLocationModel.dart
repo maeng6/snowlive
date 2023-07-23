@@ -10,6 +10,7 @@ class LocationModel {
 
 Map<String, List<LocationModel>> slopeLocationMap = {
   '12': phoenix,
+  '2': vivaldi
   // ... 필요한 만큼 이름과 위치 리스트를 추가로 매핑합니다.
 };
 
@@ -249,6 +250,255 @@ List<LocationModel> phoenix = [
     name: '슬스리프트',
     coordinates: [
       LatLng(37.580415, 128.325175)
+    ],
+    type: 'respawn',
+  ),
+];
+
+
+List<LocationModel> vivaldi = [
+  LocationModel(
+    name: '발라드',
+    coordinates: [
+      LatLng(37.643660, 127.686459),
+      LatLng(37.643503, 127.686410),
+      LatLng(37.643343, 127.686348),
+      LatLng(37.643514, 127.686241),
+    ],
+    type: 'slope',
+  ),
+  LocationModel(
+    name: '재즈',
+    coordinates: [
+      LatLng(37.644055, 127.689633),
+      LatLng(37.643787, 127.689526)
+    ],
+    type: 'slope',
+  ),
+  LocationModel(
+    name: '레게',
+    coordinates: [
+      LatLng(37.641933, 127.691963),
+      LatLng(37.641750, 127.691897)
+    ],
+    type: 'slope',
+  ),
+  LocationModel(
+    name: '클래식',
+    coordinates: [
+      LatLng(37.639034, 127.691514),
+    ],
+    type: 'slope',
+  ),
+  LocationModel(
+    name: '테크노2',
+    coordinates: [
+      LatLng(37.637722, 127.689178),
+    ],
+    type: 'slope',
+  ),
+  LocationModel(
+    name: '락',
+    coordinates: [
+      LatLng(37.640056, 127.689334),
+    ],
+    type: 'slope',
+  ),
+  LocationModel(
+    name: '펑키',
+    coordinates: [
+      LatLng(37.639721, 127.685478),
+      LatLng(37.639727, 127.685653),
+    ],
+    type: 'slope',
+  ),
+  LocationModel(
+    name: '힙합',
+    coordinates: [
+      LatLng(37.639449, 127.683054),
+      LatLng(37.639593, 127.683311),
+      LatLng(37.639702, 127.683534),
+    ],
+    type: 'slope',
+  ),
+  LocationModel(
+    name: '테크노1',
+    coordinates: [
+      LatLng(37.641254, 127.683886),
+      LatLng(37.641303, 127.684110),
+    ],
+    type: 'slope',
+  ),
+  LocationModel(
+    name: '블루스',
+    coordinates: [
+      LatLng(37.642749, 127.680236),
+      LatLng(37.642822, 127.680065)
+    ],
+    type: 'slope',
+  ),
+  //여기까지가 슬로프
+
+  LocationModel(
+    name: '발라드하차장',
+    coordinates: [
+      LatLng(37.643245, 127.688299),
+    ],
+    type: 'slopeReset',
+  ),
+  LocationModel(
+    name: '힙합하차장',
+    coordinates: [
+      LatLng(37.639453, 127.684357),
+    ],
+    type: 'slopeReset',
+  ),
+  //여기까지가 슬로프 리셋
+
+  LocationModel(
+    name: '테크노하차장',
+    coordinates: [
+      LatLng(37.637571, 127.689622)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '락하차장',
+    coordinates: [
+      LatLng(37.637812, 127.690087)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '곤돌라하차장',
+    coordinates: [
+      LatLng(37.637545, 127.690317)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '락승차장',
+    coordinates: [
+      LatLng(37.642686, 127.687468)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '재즈승차장',
+    coordinates: [
+      LatLng(37.645183, 127.683544)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '발라드승차장',
+    coordinates: [
+      LatLng(37.645007, 127.683434)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '테크노승차장',
+    coordinates: [
+      LatLng(37.644238, 127.683008)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '힙합승차장1',
+    coordinates: [
+      LatLng(37.644052, 127.682163)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '힙합승차장2',
+    coordinates: [
+      LatLng(37.643951, 127.682036)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '블루스승차장',
+    coordinates: [
+      LatLng(37.644010, 127.680712)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '곤돌라승차장',
+    coordinates: [
+      LatLng(37.645373, 127.682579)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '하단1',
+    coordinates: [
+      LatLng(37.645715, 127.683755)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '하단2',
+    coordinates: [
+      LatLng(37.645550, 127.683679)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '하단3',
+    coordinates: [
+      LatLng(37.645412, 127.683620)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '하단4',
+    coordinates: [
+      LatLng(37.644748, 127.683207)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '하단5',
+    coordinates: [
+      LatLng(37.644522, 127.683131)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '하단6',
+    coordinates: [
+      LatLng(37.644378, 127.683085)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '하단7',
+    coordinates: [
+      LatLng(37.644082, 127.682624)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '하단8',
+    coordinates: [
+      LatLng(37.643922, 127.681186)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '하단9',
+    coordinates: [
+      LatLng(37.643915, 127.681496)
+    ],
+    type: 'respawn',
+  ),
+  LocationModel(
+    name: '하단10',
+    coordinates: [
+      LatLng(37.643933, 127.681751)
     ],
     type: 'respawn',
   ),

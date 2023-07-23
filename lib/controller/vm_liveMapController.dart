@@ -387,8 +387,10 @@ class LiveMapController extends GetxController {
                 for (String slopeName in passedSlopes) {
                   int storedPassCount = passCountData[slopeName] ?? 0;
                   int timeSlotPassCount = passCountTimeData["$timeSlot"] ?? 0;
+                  Map<String, int> selectedSlopeScores = slopeScoresMap['${_userModelController.favoriteResort}']!;
 
-                  int slopeScore = slopeScoresModel.slopeScores[slopeName] ?? 0;
+
+                  int slopeScore = selectedSlopeScores[slopeName] ?? 0;
 
                   storedPassCount += 1;
                   totalPassCount += 1;
@@ -501,8 +503,10 @@ class LiveMapController extends GetxController {
                 for (String slopeName in passedSlopes) {
                   int storedPassCount = passCountData[slopeName] ?? 0;
                   int timeSlotPassCount = passCountTimeData["$timeSlot"] ?? 0;
+                  Map<String, int> selectedSlopeScores = slopeScoresMap['${_userModelController.favoriteResort}']!;
 
-                  int slopeScore = slopeScoresModel.slopeScores[slopeName] ?? 0;
+
+                  int slopeScore = selectedSlopeScores[slopeName] ?? 0;
 
                   storedPassCount += 1;
                   totalPassCount += 1;

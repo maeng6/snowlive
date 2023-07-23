@@ -4,7 +4,13 @@ class SlopeScoresModel {
   SlopeScoresModel(this.slopeScores);
 }
 
-final slopeScoresModel = SlopeScoresModel({
+Map<String, Map<String, int>> slopeScoresMap = {
+  '12': phoenix,
+  '2': vivaldi,
+  // ... 필요한 만큼 이름과 슬로프 점수를 추가로 매핑합니다.
+};
+
+Map<String, int> phoenix = {
   '스패로': 10,
   '챔피온': 20,
   '파노': 30,
@@ -24,6 +30,19 @@ final slopeScoresModel = SlopeScoresModel({
   '파라': 20,
   '파크': 20,
   '파이프': 20,
+};
 
-  // Add more slopes and scores here
-});
+Map<String, int> vivaldi = {
+  '발라드': 10,
+  '재즈': 20,
+  '레게': 30,
+  '클래식': 40,
+  '테크노2': 50,
+  '락': 20,
+  '펑키': 20,
+  '힙합': 20,
+  '테크노1': 20,
+  '블루스': 20,
+
+};
+
