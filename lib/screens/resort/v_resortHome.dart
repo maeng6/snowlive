@@ -173,7 +173,7 @@ class _ResortHomeState extends State<ResortHome>
                                                       height: 24,
                                                     ),
                                                     SizedBox(
-                                                      width: 6,
+                                                      width: 5,
                                                     ),// 여기서 아이콘
                                                     Text('라이브중인 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
                                                   ],
@@ -195,7 +195,7 @@ class _ResortHomeState extends State<ResortHome>
                                                     title: Padding(
                                                       padding: const EdgeInsets.only(bottom: 4),
                                                       child: Text('라이브중인 친구가 없습니다.', style: TextStyle(
-                                                        fontSize: 14,
+                                                        fontSize: 15,
                                                         fontWeight: FontWeight.bold,
                                                         color: Color(0xFF111111)
                                                       ),),
@@ -356,7 +356,7 @@ class _ResortHomeState extends State<ResortHome>
                             borderRadius: BorderRadius.circular(40),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.2),
+                                color: Color(0xFF3D6FED).withOpacity(0.2),
                                 spreadRadius: 4,
                                 blurRadius: 12,
                                 offset: Offset(0, 4), // changes position of shadow
@@ -458,7 +458,7 @@ class _ResortHomeState extends State<ResortHome>
                                                   ),
                                                   TextButton(
                                                       onPressed: (){
-                                                        Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88'));
+                                                        Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88ㅎ'));
                                                       },
                                                       child: Text('약관보기>',
                                                         style: TextStyle(
@@ -541,24 +541,26 @@ class _ResortHomeState extends State<ResortHome>
                                   child: Image.asset('assets/imgs/icons/icon_live_off.png', width: 50)),
                               label: (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true)
                                   ? Transform.translate(
-                                offset: Offset(0,-5),
+                                offset: Offset(0,-0.5),
                                 child: Text(
                                   'ON',
                                   style: TextStyle(
-                                      fontSize: 12,
+                                      fontSize: 14,
+                                      letterSpacing: -0.1,
                                       color: Color(0xFFFFFFFF),
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w900,
                                       overflow: TextOverflow.ellipsis),
                                 ),
                               )
                                   : Transform.translate(
-                                offset: Offset(0,-5),
+                                offset: Offset(0,-0.5),
                                 child: Text(
                                   'OFF',
                                   style: TextStyle(
-                                      fontSize: 12,
+                                      fontSize: 14,
+                                      letterSpacing: -0.1,
                                       color: Color(0xFFC8C8C8),
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w900,
                                       overflow: TextOverflow.ellipsis),
                                 ),
                               ),
@@ -579,27 +581,34 @@ class _ResortHomeState extends State<ResortHome>
                             AppBar(
                               actions: [
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 12),
+                                  padding: const EdgeInsets.only(right: 14),
                                   child: Builder(
                                     builder: (BuildContext context) {
-                                      return IconButton(
-                                        icon: (lengthOfLivefriends >= 1)
-                                            ? Image.asset(
-                                          'assets/imgs/logos/icon_liveFriend_dot.png',
-                                          width: 50,
-                                          height: 50,
-                                        )
-                                            : Image.asset(
-                                          'assets/imgs/logos/icon_liveFriend.png',
-                                          width: 50,
-                                          height: 50,
-                                        ), // 여기서 아이콘 변경
-                                        onPressed: () {
-                                          Scaffold.of(context).openEndDrawer();
-                                        },
-                                        tooltip:
-                                        MaterialLocalizations.of(context)
-                                            .openAppDrawerTooltip,
+                                      return Padding(
+                                        padding: const EdgeInsets.all(0),
+                                        child: IconButton(
+                                          icon: (lengthOfLivefriends >= 1)
+                                              ? OverflowBox(
+                                            maxHeight: 40,
+                                            maxWidth: 38,
+                                                child: Image.asset(
+                                            'assets/imgs/logos/icon_liveFriend_dot.png',
+                                          ),
+                                              )
+                                              : OverflowBox(
+                                            maxHeight: 40,
+                                            maxWidth: 38,
+                                                child: Image.asset(
+                                                'assets/imgs/logos/icon_liveFriend.png',
+                                          ),
+                                              ), // 여기서 아이콘 변경
+                                          onPressed: () {
+                                            Scaffold.of(context).openEndDrawer();
+                                          },
+                                          tooltip:
+                                          MaterialLocalizations.of(context)
+                                              .openAppDrawerTooltip,
+                                        ),
                                       );
                                     },
                                   ),
@@ -654,9 +663,7 @@ class _ResortHomeState extends State<ResortHome>
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                 BorderRadius.circular(14),
-                                                color: (_resortModelController
-                                                    .isLoading ==
-                                                    true)
+                                                color: (_resortModelController.isLoading == true)
                                                     ? Color(0xffc8c8c8)
                                                     : _resortModelController
                                                     .weatherColors),
@@ -670,26 +677,16 @@ class _ResortHomeState extends State<ResortHome>
                                                 GestureDetector(
                                                   child: Obx(
                                                         () => Row(
-                                                      crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .center,
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
                                                         Padding(
-                                                          padding:
-                                                          const EdgeInsets
-                                                              .only(
-                                                              left: 10),
+                                                          padding: const EdgeInsets.only(left: 10),
                                                           child: Text(
                                                             '${_resortModelController.resortName}',
                                                             style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .bold,
+                                                                color: Colors.white,
+                                                                fontWeight: FontWeight.bold,
                                                                 fontSize: 23),
                                                           ),
                                                         ),
@@ -711,15 +708,9 @@ class _ResortHomeState extends State<ResortHome>
                                                         builder: (context) {
                                                           return Container(
                                                             color: Colors.white,
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                20,
-                                                                vertical:
-                                                                30),
+                                                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                                                             height:
-                                                            _size.height *
-                                                                0.8,
+                                                            _size.height * 0.8,
                                                             child: Column(
                                                               mainAxisAlignment:
                                                               MainAxisAlignment
@@ -822,25 +813,17 @@ class _ResortHomeState extends State<ResortHome>
                                                   height: 30,
                                                 ),
                                                 Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Obx(
                                                           () => Padding(
-                                                        padding:
-                                                        EdgeInsets.only(
-                                                            right: 4,
-                                                            left: 12),
+                                                        padding: EdgeInsets.only(right: 4, left: 12),
                                                         child: (_resortModelController
                                                             .isLoading ==
                                                             true)
                                                             ? Padding(
-                                                          padding: const EdgeInsets
-                                                              .symmetric(
-                                                              vertical:
-                                                              51),
+                                                          padding: const EdgeInsets.symmetric(vertical: 51),
                                                           child: Container(
                                                               height: 30,
                                                               width: 50,
@@ -848,43 +831,28 @@ class _ResortHomeState extends State<ResortHome>
                                                                   .asset(
                                                                   'assets/json/loadings_wht_final.json')),
                                                         )
-                                                            : Text(
-                                                          '${_resortModelController.resortTemp!}',
+                                                            : Text('${_resortModelController.resortTemp!}',
                                                           //u00B0
-                                                          style: GoogleFonts
-                                                              .bebasNeue(
-                                                              fontSize:
-                                                              110,
-                                                              color: Colors
-                                                                  .white),
+                                                          style: GoogleFonts.bebasNeue(
+                                                              fontSize: 110,
+                                                              color: Colors.white),
                                                         ),
                                                       ),
                                                     ),
                                                     Obx(
                                                           () => Padding(
                                                         padding:
-                                                        const EdgeInsets
-                                                            .only(top: 12),
-                                                        child: (_resortModelController
-                                                            .isLoading ==
-                                                            true)
-                                                            ? Text(
-                                                          ' ',
-                                                          style: GoogleFonts
-                                                              .bebasNeue(
-                                                              fontSize:
-                                                              60,
-                                                              color: Colors
-                                                                  .white),
+                                                        const EdgeInsets.only(top: 12),
+                                                        child: (_resortModelController.isLoading == true)
+                                                            ? Text(' ',
+                                                          style: GoogleFonts.bebasNeue(
+                                                              fontSize: 60,
+                                                              color: Colors.white),
                                                         )
-                                                            : Text(
-                                                          '\u00B0',
-                                                          style: GoogleFonts
-                                                              .bebasNeue(
-                                                              fontSize:
-                                                              60,
-                                                              color: Colors
-                                                                  .white),
+                                                            : Text('\u00B0',
+                                                          style: GoogleFonts.bebasNeue(
+                                                              fontSize: 60,
+                                                              color: Colors.white),
                                                         ),
                                                       ),
                                                     )
@@ -895,41 +863,31 @@ class _ResortHomeState extends State<ResortHome>
                                                 ),
                                                 //실시간 날씨
                                                 Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceEvenly,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                   children: [
                                                     Column(
                                                       children: [
-                                                        Text(
-                                                          '바람',
+                                                        Text('바람',
                                                           style: TextStyle(
-                                                              color: Colors
-                                                                  .white60,
+                                                              color: Colors.white60,
                                                               fontSize: 13),
                                                         ),
                                                         SizedBox(
                                                           height: 6,
                                                         ),
                                                         Row(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .end,
+                                                          crossAxisAlignment: CrossAxisAlignment.end,
                                                           children: [
                                                             Obx(
                                                                   () => Padding(
                                                                 padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    right:
-                                                                    3),
+                                                                const EdgeInsets.only(
+                                                                    right: 3),
                                                                 child: Text(
                                                                   '${_resortModelController.resortWind}',
                                                                   style: GoogleFonts.bebasNeue(
-                                                                      fontSize:
-                                                                      28,
-                                                                      color: Colors
-                                                                          .white),
+                                                                      fontSize: 28,
+                                                                      color: Colors.white),
                                                                 ),
                                                               ),
                                                             ),
@@ -941,12 +899,9 @@ class _ResortHomeState extends State<ResortHome>
                                                                   5),
                                                               child: Text(
                                                                 'M/S',
-                                                                style: GoogleFonts
-                                                                    .bebasNeue(
-                                                                    fontSize:
-                                                                    16,
-                                                                    color: Colors
-                                                                        .white),
+                                                                style: GoogleFonts.bebasNeue(
+                                                                    fontSize: 16,
+                                                                    color: Colors.white),
                                                               ),
                                                             ),
                                                           ],
@@ -958,41 +913,31 @@ class _ResortHomeState extends State<ResortHome>
                                                         Text(
                                                           '습도',
                                                           style: TextStyle(
-                                                              color: Colors
-                                                                  .white60,
+                                                              color: Colors.white60,
                                                               fontSize: 13),
                                                         ),
                                                         SizedBox(
                                                           height: 6,
                                                         ),
                                                         Row(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .end,
+                                                          crossAxisAlignment: CrossAxisAlignment.end,
                                                           children: [
                                                             Obx(
                                                                   () => Padding(
                                                                 padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    right:
-                                                                    3),
+                                                                const EdgeInsets.only(right: 3),
                                                                 child: Text(
                                                                   '${_resortModelController.resortWet}',
                                                                   style: GoogleFonts.bebasNeue(
-                                                                      fontSize:
-                                                                      28,
-                                                                      color: Colors
-                                                                          .white),
+                                                                      fontSize: 28,
+                                                                      color: Colors.white),
                                                                 ),
                                                               ),
                                                             ),
                                                             Padding(
                                                               padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  bottom:
-                                                                  5),
+                                                              const EdgeInsets.only(bottom:
+                                                              5),
                                                               child: Text(
                                                                 '%',
                                                                 style: GoogleFonts
@@ -1012,49 +957,32 @@ class _ResortHomeState extends State<ResortHome>
                                                         Text(
                                                           '강수',
                                                           style: TextStyle(
-                                                              color: Colors
-                                                                  .white60,
+                                                              color: Colors.white60,
                                                               fontSize: 13),
                                                         ),
                                                         SizedBox(
                                                           height: 6,
                                                         ),
                                                         Row(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .end,
+                                                          crossAxisAlignment: CrossAxisAlignment.end,
                                                           children: [
                                                             Obx(
                                                                   () => Padding(
-                                                                padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    right:
-                                                                    3),
-                                                                child: Text(
-                                                                  '${_resortModelController.resortRain}',
+                                                                padding: const EdgeInsets.only(right: 3),
+                                                                child: Text('${_resortModelController.resortRain}',
                                                                   style: GoogleFonts.bebasNeue(
-                                                                      fontSize:
-                                                                      28,
-                                                                      color: Colors
-                                                                          .white),
+                                                                      fontSize: 28,
+                                                                      color: Colors.white),
                                                                 ),
                                                               ),
                                                             ),
                                                             Padding(
                                                               padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  bottom:
-                                                                  5),
-                                                              child: Text(
-                                                                'MM',
-                                                                style: GoogleFonts
-                                                                    .bebasNeue(
-                                                                    fontSize:
-                                                                    16,
-                                                                    color: Colors
-                                                                        .white),
+                                                              const EdgeInsets.only(bottom: 5),
+                                                              child: Text('MM',
+                                                                style: GoogleFonts.bebasNeue(
+                                                                    fontSize: 16,
+                                                                    color: Colors.white),
                                                               ),
                                                             ),
                                                           ],
@@ -1137,27 +1065,17 @@ class _ResortHomeState extends State<ResortHome>
                                             Container(
                                               decoration: BoxDecoration(
                                                   color: Colors.white,
-                                                  borderRadius:
-                                                  BorderRadius.circular(
-                                                      14)),
+                                                  borderRadius: BorderRadius.circular(14)),
                                               height: 107,
                                               child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 32,
-                                                    left: 32,
-                                                    top: 22,
-                                                    bottom: 22),
+                                                padding: const EdgeInsets.only(right: 32, left: 32, top: 22, bottom: 22),
                                                 child: Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     GestureDetector(
                                                       onTap: () {
-                                                        Get.to(Obx(
-                                                              () => WebPage(
-                                                            url:
-                                                            '${_resortModelController.naverUrl}',
+                                                        Get.to(
+                                                            Obx(() => WebPage(url: '${_resortModelController.naverUrl}',
                                                           ),
                                                         ));
                                                       },
@@ -1267,17 +1185,11 @@ class _ResortHomeState extends State<ResortHome>
                                                           Text(
                                                             '슬로프 현황',
                                                             style: TextStyle(
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .w400,
+                                                                fontWeight: FontWeight.w400,
                                                                 fontSize: 12,
-                                                                color: (_resortModelController
-                                                                    .slopeUrl !=
-                                                                    '')
-                                                                    ? Color(
-                                                                    0xFF111111)
-                                                                    : Color(
-                                                                    0xFFC8C8C8)),
+                                                                color: (_resortModelController.slopeUrl != '')
+                                                                    ? Color(0xFF111111)
+                                                                    : Color(0xFFC8C8C8)),
                                                           ),
                                                         ],
                                                       ),
@@ -1289,7 +1201,10 @@ class _ResortHomeState extends State<ResortHome>
                                             SizedBox(
                                               height: 12,
                                             ),
-                                            DiscoverScreen_ResortBanner(),
+                                            Padding(
+                                              padding: EdgeInsets.zero,
+                                              child: DiscoverScreen_ResortBanner(),
+                                            ),
                                             SizedBox(
                                               height: 12,
                                             ),
@@ -1857,7 +1772,7 @@ class _ResortHomeState extends State<ResortHome>
                                 overflow: TextOverflow.ellipsis),
                           ),
                           backgroundColor: (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true)
-                              ? Color(0xFF3D6FED)
+                              ? Color(0xFF3D83ED)
                               : Colors.grey),
 
                   ),

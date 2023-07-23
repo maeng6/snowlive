@@ -608,7 +608,71 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                 return Lottie.asset('assets/json/loadings_wht_final.json');
                               } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                                 // 데이터가 없을 때 처리
-                                return Text("데이터가 없습니다");
+                                return Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
+                                          },
+                                          child: Container(
+                                            width: 48,
+                                            height: 48,
+                                            child: _userModelController.profileImageUrl!.isNotEmpty
+                                                ? ExtendedImage.network(
+                                              _userModelController.profileImageUrl!,
+                                              enableMemoryCache: true,
+                                              shape: BoxShape.circle,
+                                              borderRadius: BorderRadius.circular(8),
+                                              width: 48,
+                                              height: 48,
+                                              fit: BoxFit.cover,
+                                            )
+                                                : ExtendedImage.asset(
+                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                              enableMemoryCache: true,
+                                              shape: BoxShape.circle,
+                                              borderRadius: BorderRadius.circular(8),
+                                              width: 48,
+                                              height: 48,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 14),
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${_userModelController.displayName}',
+                                              style: TextStyle(
+                                                color: Color(0xFF111111),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Expanded(child: SizedBox()),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '점수가 없습니다',
+                                              style: TextStyle(
+                                                color: Color(0xFF111111),
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                );
                               }
                               final rankingDocs = snapshot.data!.docs;
                               int myScore = rankingDocs[0]['totalScore'];

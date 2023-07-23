@@ -10,6 +10,9 @@ import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/model/m_rankingTierModel.dart';
 import 'package:snowlive3/model/m_slopeScoreModel.dart';
+import 'package:snowlive3/screens/v_MainHome.dart';
+
+import '../resort/v_resortHome.dart';
 
 class MyRankingDetailPage extends StatefulWidget {
   const MyRankingDetailPage({Key? key}) : super(key: key);
@@ -67,30 +70,48 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                   if (!snapshot.hasData || snapshot.data == null){
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: ExtendedImage.asset(
-                        'assets/imgs/icons/image_background_myscore.png',
-                        enableMemoryCache: true,
-                        fit: BoxFit.cover,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: Color(0xFFFFFFFF),
+                        ),
+                        child: ExtendedImage.asset(
+                          'assets/imgs/icons/image_background_myscore.png',
+                          enableMemoryCache: true,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     );
                   }
                   else if(snapshot.connectionState == ConnectionState.waiting) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: ExtendedImage.asset(
-                        'assets/imgs/icons/image_background_myscore.png',
-                        enableMemoryCache: true,
-                        fit: BoxFit.cover,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: Color(0xFFFFFFFF),
+                        ),
+                        child: ExtendedImage.asset(
+                          'assets/imgs/icons/image_background_myscore.png',
+                          enableMemoryCache: true,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     );
                   }
                   else if (!snapshot.hasData || snapshot.data == null) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: ExtendedImage.asset(
-                        'assets/imgs/icons/image_background_myscore.png',
-                        enableMemoryCache: true,
-                        fit: BoxFit.cover,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: Color(0xFFFFFFFF),
+                        ),
+                        child: ExtendedImage.asset(
+                          'assets/imgs/icons/image_background_myscore.png',
+                          enableMemoryCache: true,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     );
                   }
@@ -107,41 +128,126 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                         if (!snapshot.hasData || snapshot.data == null){
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: ExtendedImage.asset(
-                              'assets/imgs/icons/image_background_myscore.png',
-                              enableMemoryCache: true,
-                              fit: BoxFit.cover,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: Color(0xFFFFFFFF),
+                              ),
+                              child: ExtendedImage.asset(
+                                'assets/imgs/icons/image_background_myscore.png',
+                                enableMemoryCache: true,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           );
                         }
                         else if (snapshot.connectionState == ConnectionState.waiting) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: ExtendedImage.asset(
-                              'assets/imgs/icons/image_background_myscore.png',
-                              enableMemoryCache: true,
-                              fit: BoxFit.cover,
+                            child: Container(
+                              decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              color: Color(0xFFFFFFFF),
+                            ),
+                              child: ExtendedImage.asset(
+                                'assets/imgs/icons/image_background_myscore.png',
+                                enableMemoryCache: true,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           );
                         }
                         else if (snapshot.hasError) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: ExtendedImage.asset(
-                              'assets/imgs/icons/image_background_myscore.png',
-                              enableMemoryCache: true,
-                              fit: BoxFit.cover,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: Color(0xFFFFFFFF),
+                              ),
+                              child: ExtendedImage.asset(
+                                'assets/imgs/icons/image_background_myscore.png',
+                                enableMemoryCache: true,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           );
                         }
                         else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                           // 데이터가 없을 때 처리
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: ExtendedImage.asset(
-                              'assets/imgs/icons/image_background_myscore.png',
-                              enableMemoryCache: true,
-                              fit: BoxFit.cover,
+                          return Center(
+                            child: Container(
+                              width: _size.width,
+                              height: _size.height-200,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: 80,
+                                    height: 94,
+                                    child: ExtendedImage.asset(
+                                      'assets/imgs/ranking/icon_ranking_nodata.png',
+                                      enableMemoryCache: true,
+                                      scale: 4,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 16,
+                                  ),
+                                  Center(
+                                    child: Text('랭킹 정보가 없어요!',
+                                      style: TextStyle(
+                                      color: Color(0xFFFFFFFF),
+                                      fontSize: 15
+                                    ),),
+                                  ),
+                                  SizedBox(
+                                    height: 2,
+                                  ),
+                                  Center(
+                                    child: Text('라이브온을 시작해 랭킹 게임에 참여해 보세요.',
+                                      style: TextStyle(
+                                          color: Color(0xFFFFFFFF),
+                                          fontSize: 15
+                                      ),),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 16, right: 12, bottom: 20),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      height: 40,
+                                      child: ElevatedButton(
+                                        child: Text(
+                                          '라이브온 하러 가기',
+                                          style: TextStyle(
+                                              color: Color(0xFFffffff),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14),
+                                        ),
+                                        onPressed: () async{
+                                          Get.offAll(()=>MainHome(uid: _userModelController.uid));
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                                          minimumSize: Size(40, 10),
+                                          backgroundColor: Color(0xFF073985),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8)),
+                                          elevation: 0,
+                                        ),
+                                      ),
+                                    ),
+                                  ]
+                                )
+                              )
+
+                                ],
+                              ),
                             ),
                           );
                         }

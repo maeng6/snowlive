@@ -48,6 +48,8 @@ class _DiscoverScreen_ResortBannerState
 
   @override
   Widget build(BuildContext context) {
+    Size _size = MediaQuery.of(context).size;
+
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('discover_banner_url')
@@ -89,30 +91,33 @@ class _DiscoverScreen_ResortBannerState
                 Get.to(() => WebPage(url: landingUrl));
               }
             },
-            child: CarouselSlider(
-              carouselController: _carouselController,
-              options: CarouselOptions(
-                height: 86,
-                viewportFraction: 1.0,
-                aspectRatio: 2.0,
-                enlargeCenterPage: true,
-                initialPage: 0,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-              ),
-              items: _imageUrls.map((url) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return ExtendedImage.network(
-                      url['url'],
-                      cache: true,
-                    );
+            child: Container(
+              width: _size.width,
+              child: CarouselSlider(
+                carouselController: _carouselController,
+                options: CarouselOptions(
+                  viewportFraction: 1.0,
+                  aspectRatio: 16 / 4,
+                  enlargeCenterPage: true,
+                  initialPage: 0,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _currentIndex = index;
+                    });
                   },
-                );
-              }).toList(),
+                ),
+                items: _imageUrls.map((url) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return ExtendedImage.network(
+                        url['url'],
+                        cache: true,
+                        fit: BoxFit.scaleDown,
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
             ),
           ),
           // Row(
