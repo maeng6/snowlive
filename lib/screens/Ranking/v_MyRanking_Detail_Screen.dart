@@ -67,30 +67,48 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                   if (!snapshot.hasData || snapshot.data == null){
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: ExtendedImage.asset(
-                        'assets/imgs/icons/image_background_myscore.png',
-                        enableMemoryCache: true,
-                        fit: BoxFit.cover,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: Color(0xFFFFFFFF),
+                        ),
+                        child: ExtendedImage.asset(
+                          'assets/imgs/icons/image_background_myscore.png',
+                          enableMemoryCache: true,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     );
                   }
                   else if(snapshot.connectionState == ConnectionState.waiting) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: ExtendedImage.asset(
-                        'assets/imgs/icons/image_background_myscore.png',
-                        enableMemoryCache: true,
-                        fit: BoxFit.cover,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: Color(0xFFFFFFFF),
+                        ),
+                        child: ExtendedImage.asset(
+                          'assets/imgs/icons/image_background_myscore.png',
+                          enableMemoryCache: true,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     );
                   }
                   else if (!snapshot.hasData || snapshot.data == null) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: ExtendedImage.asset(
-                        'assets/imgs/icons/image_background_myscore.png',
-                        enableMemoryCache: true,
-                        fit: BoxFit.cover,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: Color(0xFFFFFFFF),
+                        ),
+                        child: ExtendedImage.asset(
+                          'assets/imgs/icons/image_background_myscore.png',
+                          enableMemoryCache: true,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     );
                   }
@@ -107,30 +125,48 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                         if (!snapshot.hasData || snapshot.data == null){
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: ExtendedImage.asset(
-                              'assets/imgs/icons/image_background_myscore.png',
-                              enableMemoryCache: true,
-                              fit: BoxFit.cover,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: Color(0xFFFFFFFF),
+                              ),
+                              child: ExtendedImage.asset(
+                                'assets/imgs/icons/image_background_myscore.png',
+                                enableMemoryCache: true,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           );
                         }
                         else if (snapshot.connectionState == ConnectionState.waiting) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: ExtendedImage.asset(
-                              'assets/imgs/icons/image_background_myscore.png',
-                              enableMemoryCache: true,
-                              fit: BoxFit.cover,
+                            child: Container(
+                              decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              color: Color(0xFFFFFFFF),
+                            ),
+                              child: ExtendedImage.asset(
+                                'assets/imgs/icons/image_background_myscore.png',
+                                enableMemoryCache: true,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           );
                         }
                         else if (snapshot.hasError) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: ExtendedImage.asset(
-                              'assets/imgs/icons/image_background_myscore.png',
-                              enableMemoryCache: true,
-                              fit: BoxFit.cover,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: Color(0xFFFFFFFF),
+                              ),
+                              child: ExtendedImage.asset(
+                                'assets/imgs/icons/image_background_myscore.png',
+                                enableMemoryCache: true,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           );
                         }
@@ -138,10 +174,12 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                           // 데이터가 없을 때 처리
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: ExtendedImage.asset(
-                              'assets/imgs/icons/image_background_myscore.png',
-                              enableMemoryCache: true,
-                              fit: BoxFit.cover,
+                            child: Container(
+                              child: ExtendedImage.asset(
+                                'assets/imgs/logos/ranking/icon_ranking_nodata.png',
+                                enableMemoryCache: true,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           );
                         }
