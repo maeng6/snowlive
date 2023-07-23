@@ -149,7 +149,7 @@ class _MoreTabState extends State<MoreTab> {
                               ],
                             ),
                             SizedBox(
-                              width: 20,
+                              width: 16,
                             ),
                             Container(
                               width: _size.width - 144,
@@ -497,7 +497,7 @@ class _MoreTabState extends State<MoreTab> {
                   ),
                 ),
               ),
-              SizedBox(height: 25),
+              SizedBox(height: 30),
               Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -669,9 +669,9 @@ class _MoreTabState extends State<MoreTab> {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               Container(height: 1,color: Color(0xFFECECEC),),
-              SizedBox(height: 30),
+              SizedBox(height: 40),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(

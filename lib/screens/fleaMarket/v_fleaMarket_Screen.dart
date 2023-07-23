@@ -88,14 +88,17 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                   child: Row(
                     children: [
                       ElevatedButton(
-                        child: Text(
-                          '중고거래',
-                          style: TextStyle(
-                              color: (isFlea)
-                                  ? Color(0xFFFFFFFF)
-                                  : Color(0xFF111111),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 3, bottom: 1),
+                          child: Text(
+                            '중고거래',
+                            style: TextStyle(
+                                color: (isFlea)
+                                    ? Color(0xFFFFFFFF)
+                                    : Color(0xFF111111),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14),
+                          ),
                         ),
                         onPressed: () {
                           HapticFeedback.lightImpact();
@@ -114,12 +117,15 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                         ),
                       ),
                       ElevatedButton(
-                        child: Text(
-                          '쇼핑',
-                          style: TextStyle(
-                              color: (isFlea)
-                                  ? Color(0xFF111111)
-                                  : Color(0xFFFFFFFF)),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 3, bottom: 1),
+                          child: Text(
+                            '쇼핑',
+                            style: TextStyle(
+                                color: (isFlea)
+                                    ? Color(0xFF111111)
+                                    : Color(0xFFFFFFFF)),
+                          ),
                         ),
                         onPressed: () {
                           HapticFeedback.lightImpact();

@@ -60,8 +60,8 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
-                      topLeft: Radius.zero,
-                      topRight: Radius.zero,
+                      topLeft: Radius.circular(14),
+                      topRight: Radius.circular(14),
                       bottomLeft: Radius.circular(14),
                       bottomRight: Radius.circular(14),
                     ),
@@ -132,7 +132,7 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.normal,
-                                color: Color(0xFF111111),
+                                color: Color(0xFF949494),
                               ),
                             ),
                           ),
@@ -144,8 +144,13 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                   decoration: BoxDecoration(
-                    color: Color(0xFFFAFAFB),
-                    borderRadius: BorderRadius.circular(8),
+                    color: Color(0xFF3D83ED).withOpacity(0.16),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(14),
+                      topRight: Radius.circular(14),
+                      bottomLeft: Radius.zero,
+                      bottomRight: Radius.zero,
+                    ),
                   ),
                   child: Row(
                     children: weekDates.map((day) {
@@ -204,16 +209,19 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
           borderRadius: BorderRadius.circular(8),
           color: isToday ? Color(0xFF3D83ED) : Colors.transparent,
         ),
-        height: 68,
+        height: 58,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              weekday,
-              style: TextStyle(
-                fontSize: 11,
-                color: isToday ? Colors.white : Color(0xFF111111),
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Text(
+                weekday,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: isToday ? Colors.white : Color(0xFF111111),
+                ),
               ),
             ),
             SizedBox(height: 2),
@@ -225,7 +233,7 @@ class _DiscoverScreen_CalendarState extends State<DiscoverScreen_Calendar> {
                 color: isToday ? Colors.white : Color(0xFF111111),
               ),
             ),
-            SizedBox(height: 6),
+            SizedBox(height: 2),
             Container(
               height: 4,
               width: 4,

@@ -115,23 +115,23 @@ class _DiscoverScreen_ResortBannerState
               }).toList(),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: _imageUrls.map((url) {
-              int index = _imageUrls.indexOf(url);
-              return Container(
-                width: 6,
-                height: 6,
-                margin: EdgeInsets.only(top: 12, right: 6),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _currentIndex == index
-                      ? Color(0xFF949494)
-                      : Color(0xFFDEDEDE),
-                ),
-              );
-            }).toList(),
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: _imageUrls.map((url) {
+          //     int index = _imageUrls.indexOf(url);
+          //     return Container(
+          //       width: 6,
+          //       height: 6,
+          //       margin: EdgeInsets.only(top: 12, right: 6),
+          //       decoration: BoxDecoration(
+          //         shape: BoxShape.circle,
+          //         color: _currentIndex == index
+          //             ? Color(0xFF949494)
+          //             : Color(0xFFDEDEDE),
+          //       ),
+          //     );
+          //   }).toList(),
+          // ),
         ],
       )
           : Container();

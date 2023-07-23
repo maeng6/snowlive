@@ -25,6 +25,7 @@ import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../controller/vm_commentController.dart';
+import '../comments/v_liveTalk_Screen.dart';
 import '../fleaMarket/v_fleaMarket_List_Screen_home.dart';
 import 'package:lottie/lottie.dart';
 
@@ -158,7 +159,25 @@ class _ResortHomeState extends State<ResortHome>
                                             Container(
                                               height: 72,
                                               child: DrawerHeader(
-                                                child: Text('라이브중인 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
+                                                child: Row(
+                                                  children: [
+                                                    (lengthOfLivefriends >= 1)
+                                                        ? Image.asset(
+                                                      'assets/imgs/logos/icon_liveFriend_dot.png',
+                                                      width: 24,
+                                                      height: 24,
+                                                    )
+                                                        : Image.asset(
+                                                      'assets/imgs/logos/icon_liveFriend.png',
+                                                      width: 24,
+                                                      height: 24,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 6,
+                                                    ),// 여기서 아이콘
+                                                    Text('라이브중인 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
+                                                  ],
+                                                ),
                                                 decoration: BoxDecoration(
                                                   color: Colors.white,
                                                 ),
@@ -172,9 +191,22 @@ class _ResortHomeState extends State<ResortHome>
                                                 itemCount: 1,
                                                 itemBuilder: (context, index) {
                                                   return ListTile(
-                                                    contentPadding: EdgeInsets.only(top: 0, bottom: 0, right: 16, left: 16),
-                                                    title: Text('라이브중인 친구가 없습니다.'),
-                                                    subtitle: Text('즐겨찾는 친구를 등록하고\n친구의 라이브 상태를 확인하세요!'),
+                                                    contentPadding: EdgeInsets.only(top: 16, bottom: 0, right: 16, left: 16),
+                                                    title: Padding(
+                                                      padding: const EdgeInsets.only(bottom: 4),
+                                                      child: Text('라이브중인 친구가 없습니다.', style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Color(0xFF111111)
+                                                      ),),
+                                                    ),
+                                                    subtitle: Text('즐겨찾는 친구를 등록하고\n친구의 라이브 상태를 확인하세요!',
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.normal,
+                                                          color: Color(0xFF949494)
+                                                      ),
+                                                    ),
                                                     onTap: () {
                                                       Navigator.pop(context);
                                                     },
@@ -200,7 +232,25 @@ class _ResortHomeState extends State<ResortHome>
                                           Container(
                                             height: 72,
                                             child: DrawerHeader(
-                                              child: Text('라이브중인 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
+                                              child: Row(
+                                                children: [
+                                                  (lengthOfLivefriends >= 1)
+                                                      ? Image.asset(
+                                                    'assets/imgs/logos/icon_liveFriend_dot.png',
+                                                    width: 24,
+                                                    height: 24,
+                                                  )
+                                                      : Image.asset(
+                                                    'assets/imgs/logos/icon_liveFriend.png',
+                                                    width: 24,
+                                                    height: 24,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 6,
+                                                  ),// 여기서 아이콘
+                                                  Text('라이브중인 친구', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF111111)),),
+                                                ],
+                                              ),
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
                                               ),
@@ -529,7 +579,7 @@ class _ResortHomeState extends State<ResortHome>
                             AppBar(
                               actions: [
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 20),
+                                  padding: const EdgeInsets.only(right: 12),
                                   child: Builder(
                                     builder: (BuildContext context) {
                                       return IconButton(
@@ -1243,126 +1293,65 @@ class _ResortHomeState extends State<ResortHome>
                                             SizedBox(
                                               height: 12,
                                             ),
-                                            Container(
-                                                padding: EdgeInsets.only(
-                                                    left: 20,
-                                                    right: 20,
-                                                    top: 20,
-                                                    bottom: 5),
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                    BorderRadius.only(
-                                                      topLeft: Radius.circular(14),
-                                                      topRight: Radius.circular(14),
-                                                      bottomLeft: Radius.zero,
-                                                      bottomRight: Radius.zero,
-                                                    ),),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      '캘린더',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                          FontWeight.bold,
-                                                          color:
-                                                          Color(0xFFC8C8C8)),
-                                                    ),
-                                                    GestureDetector(
-                                                      onTap: (){
-                                                        Get.to(()=>Discover_Calendar_Detail_Screen());
-                                                      },
-                                                      child: Container(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(right: 10),
-                                                          child: Text(
-                                                            '더보기',
-                                                            style: TextStyle(
-                                                                color: Color(0xFF949494),
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.bold
-                                                            ),
-                                                          ),
-                                                        ),
+                                            GestureDetector(
+                                              onTap: (){
+                                                Get.to(()=>Discover_Calendar_Detail_Screen());
+                                              },
+                                                child: DiscoverScreen_Calendar()),
+                                            SizedBox(
+                                              height: 12,
+                                            ),
+                                            GestureDetector(
+                                              onTap: (){
+                                              },
+                                              child: Container(
+                                                  padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 22),
+                                                  width: double.infinity,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius.circular(14)),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        '라이브톡',
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Color(0xFFC8C8C8)),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),),
-                                            DiscoverScreen_Calendar(),
+                                                      SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      CommentTile_resortHome(),
+                                                    ],
+                                                  )),
+                                            ),
                                             SizedBox(
                                               height: 12,
                                             ),
                                             Container(
-                                                padding: EdgeInsets.only(
-                                                    left: 20,
-                                                    right: 20,
-                                                    top: 20,
-                                                    bottom: 22),
+                                                padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 10),
                                                 width: double.infinity,
                                                 decoration: BoxDecoration(
                                                     color: Colors.white,
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        14)),
+                                                    borderRadius: BorderRadius.circular(14)),
                                                 child: Column(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      '라이브톡',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                          FontWeight.bold,
-                                                          color: Color(
-                                                              0xFFC8C8C8)),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    CommentTile_resortHome(),
-                                                  ],
-                                                )),
-                                            SizedBox(
-                                              height: 12,
-                                            ),
-                                            Container(
-                                                padding: EdgeInsets.only(
-                                                    left: 20,
-                                                    right: 20,
-                                                    top: 20,
-                                                    bottom: 10),
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        14)),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
                                                         Text(
                                                           '스노우마켓',
                                                           style: TextStyle(
                                                               fontSize: 16,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .bold,
-                                                              color: Color(
-                                                                  0xFFC8C8C8)),
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Color(0xFFC8C8C8)),
                                                         ),
                                                         // ElevatedButton(onPressed: (){
                                                         //   Get.to(() => FleaMarketScreen());
@@ -1394,17 +1383,11 @@ class _ResortHomeState extends State<ResortHome>
                                               height: 12,
                                             ),
                                             Container(
-                                                padding: EdgeInsets.only(
-                                                    left: 20,
-                                                    right: 20,
-                                                    top: 26,
-                                                    bottom: 24),
+                                                padding: EdgeInsets.only(left: 20, right: 20, top: 26, bottom: 24),
                                                 width: double.infinity,
                                                 decoration: BoxDecoration(
                                                     color: Colors.white,
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        14)),
+                                                    borderRadius: BorderRadius.circular(14)),
                                                 child: GestureDetector(
                                                   onTap: () {
                                                     Get.to(() => NoticeList());
