@@ -278,11 +278,12 @@ class LiveMapController extends GetxController {
     await _seasonController.getCurrentSeason();
 
     for (LocationModel location in locations) {
+      for (LatLng coordinate in location.coordinates) {
       double distanceInMeters = Geolocator.distanceBetween(
         position.latitude,
         position.longitude,
-        location.coordinates.latitude,
-        location.coordinates.longitude,
+        coordinate.latitude,
+        coordinate.longitude,
       );
 
       bool withinBoundary = distanceInMeters <= 100;
@@ -340,13 +341,41 @@ class LiveMapController extends GetxController {
             int timeSlot = getTimeSlot(now);
 
             if (location.type == 'slope') {
-              data['slopeStatus'] ??= {};
-              data['slopeStatus'][location.name] = true;
 
-              passCountTimeData["$timeSlot"] ??= 0;
+              try{
+                data['slopeStatus'] ??= {};
+                data['slopeStatus'][location.name] = true;
 
-              await docRef.set(data, SetOptions(merge: true));
-            } else if (location.type == 'respawn') {
+                passCountTimeData["$timeSlot"] ??= 0;
+
+                await docRef.set(data, SetOptions(merge: true));
+              }catch (error, stackTrace) {
+                print('오류 발생: $error');
+                print('스택 트레이스: $stackTrace');
+                // 오류 처리 로직 추가
+              }
+
+            } else if(location.type == 'slopeReset'){
+
+              try{
+                Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
+
+                for (String slopeName in slopeStatus.keys) {
+                  slopeStatus[slopeName] = false;
+                }
+
+                passCountTimeData["$timeSlot"] ??= 0;
+
+                await docRef.set(data, SetOptions(merge: true));
+
+              }catch (error, stackTrace) {
+                print('오류 발생: $error');
+                print('스택 트레이스: $stackTrace');
+                // 오류 처리 로직 추가
+              }
+
+            }
+            else if (location.type == 'respawn') {
               try {
                 Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
 
@@ -404,7 +433,7 @@ class LiveMapController extends GetxController {
           }
         }
       }
-    }
+    }}
   }
 
   Future<void> checkAndUpdatePassCountOff() async {
