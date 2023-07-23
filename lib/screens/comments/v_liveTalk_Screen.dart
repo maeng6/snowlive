@@ -38,9 +38,7 @@ class _LiveTalkScreenState
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
-  CommentModelController _commentModelController = Get.find<
-      CommentModelController>();
-
+  CommentModelController _commentModelController = Get.find<CommentModelController>();
   //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -539,8 +537,10 @@ class _LiveTalkScreenState
                                                                                                                   CustomFullScreenDialog.showDialog();
                                                                                                                   try {
                                                                                                                     await FirebaseFirestore.instance.collection('liveTalk').doc('${_userModelController.uid}${chatDocs[index]['commentCount']}').delete();
+                                                                                                                    await _imageController.deleteLiveTalkImage(uid: _userModelController.uid!, count: chatDocs[index]['commentCount']);
+
                                                                                                                   } catch (e) {}
-                                                                                                                  print('댓글 삭제 완료');
+                                                                                                                  print('라이브톡 삭제 완료');
                                                                                                                   Navigator.pop(context);
                                                                                                                   CustomFullScreenDialog.cancelDialog();
                                                                                                                 },
@@ -769,7 +769,6 @@ class _LiveTalkScreenState
                                                                                       replyResortNickname: chatDocs[index]['resortNickname'],
                                                                                       comment: chatDocs[index]['comment'],
                                                                                       commentTime: chatDocs[index]['timeStamp'],
-                                                                                      replyFavoriteResort:  chatDocs[index]['favoriteResort'],
                                                                                     ));
                                                                               },
                                                                               icon: Icon(
@@ -1102,15 +1101,18 @@ class _LiveTalkScreenState
                                   suffixIcon: IconButton(
                                     splashColor: Colors.transparent,
                                     onPressed: () async {
+                                      try{
+                                        CustomFullScreenDialog.showDialog();
+                                        await _userModelController.getCurrentUser(_userModelController.uid);
+                                        await _userModelController.updateCommentCount(_userModelController.commentCount);
+                                        await _userModelController.getCurrentUser(_userModelController.uid);
                                       if (_controller.text.trim().isEmpty) {
                                         return;
                                       }
                                       String? livetalkImageUrl = "";
                                       if (_imageFile != null) {
-                                        CustomFullScreenDialog.showDialog();
-                                        livetalkImageUrl = await _imageController.setNewImage_livetalk(_imageFile!, _commentModelController.commentCount);
+                                        livetalkImageUrl = await _imageController.setNewImage_livetalk(_imageFile!, _userModelController.commentCount);
                                         await _commentModelController.updateLivetalkImageUrl(livetalkImageUrl);
-                                        print('이미지 확인 2 / $livetalkImageUrl');
 
                                         setState(() {
                                           _imageFile = null;
@@ -1120,7 +1122,6 @@ class _LiveTalkScreenState
                                       _controller.clear();
                                       _scrollController.jumpTo(0);
                                       try {
-                                        await _userModelController.updateCommentCount(_userModelController.commentCount);
                                         await _commentModelController.sendMessage(
                                             displayName: _userModelController.displayName,
                                             uid: _userModelController.uid,
@@ -1131,7 +1132,6 @@ class _LiveTalkScreenState
                                             likeCount: _commentModelController.likeCount,
                                             replyCount: _commentModelController.replyCount,
                                             livetalkImageUrl: livetalkImageUrl);
-                                        print('이미지 확인 3 / $livetalkImageUrl');
                                         FocusScope.of(context).unfocus();
                                         _controller.clear();
                                         setState(() {});
@@ -1139,6 +1139,9 @@ class _LiveTalkScreenState
                                         CustomFullScreenDialog.cancelDialog();
                                       }
                                       CustomFullScreenDialog.cancelDialog();
+                                      } catch(e){
+                                      CustomFullScreenDialog.cancelDialog();
+                                      }
                                     },
                                     icon: (_controller.text.trim().isEmpty)
                                         ? Image.asset(

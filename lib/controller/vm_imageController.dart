@@ -177,6 +177,11 @@ class ImageController extends GetxController {
     await FirebaseStorage.instance.ref().child('images/profile/$uid.jpg').delete();
 }
 
+  Future<void> deleteLiveTalkImage({required String uid,required int count}) async {
+
+    await FirebaseStorage.instance.ref().child('images/livetalk/$uid#$count.jpg').delete();
+  }
+
   Future<String> setNewImage_livetalk(XFile newImage, commentCount) async {
     String? uid = await FlutterSecureStorage().read(key: 'uid');
     var metaData = SettableMetadata(contentType: 'image/jpeg');
@@ -254,6 +259,7 @@ class ImageController extends GetxController {
     // Delete the image from Firebase Storage
     await FirebaseStorage.instance.refFromURL(imageUrl).delete();
   }
+
 
 
 }

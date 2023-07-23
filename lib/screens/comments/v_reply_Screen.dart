@@ -18,7 +18,6 @@ class ReplyScreen extends StatefulWidget {
     required this.replyImage,
     required this.replyDisplayName,
     required this.replyResortNickname,
-    required this.replyFavoriteResort,
     required this.comment,
     required this.commentTime}) : super(key: key);
 
