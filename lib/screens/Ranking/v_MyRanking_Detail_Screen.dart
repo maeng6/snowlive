@@ -507,7 +507,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                                   fontWeight: FontWeight.bold
                                               ),
                                             ),
-                                            Text('$maxPassCountSlope',
+                                            Text('${_resortModelController.getSlopeName(maxPassCountSlope)}',
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,

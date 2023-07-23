@@ -286,7 +286,7 @@ class LiveMapController extends GetxController {
         coordinate.longitude,
       );
 
-      bool withinBoundary = distanceInMeters <= 100;
+      bool withinBoundary = distanceInMeters <= 20;
 
       if (withinBoundary) {
         DateTime now = DateTime.now();
