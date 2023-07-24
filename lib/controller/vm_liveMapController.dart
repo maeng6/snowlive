@@ -384,6 +384,14 @@ class LiveMapController extends GetxController {
                     .map((entry) => entry.key)
                     .toList();
 
+                String liveCrew = _userModelController.liveCrew ?? ''; // 유효하지 않은 경우 빈 문자열로 초기화
+
+                DocumentReference crewDocRef = FirebaseFirestore.instance
+                    .collection('liveCrew')
+                    .doc(liveCrew);
+
+                DocumentSnapshot crewDocSnapshot = await crewDocRef.get();
+
                 for (String slopeName in passedSlopes) {
                   int storedPassCount = passCountData[slopeName] ?? 0;
                   int timeSlotPassCount = passCountTimeData["$timeSlot"] ?? 0;
@@ -402,7 +410,9 @@ class LiveMapController extends GetxController {
 
                   slopeScores[slopeName] = updatedScore;
 
-                  await updateCrewData(slopeName, slopeScore, timeSlot, DateTime.now());
+                  if(_userModelController.favoriteResort == crewDocSnapshot['baseResort']){
+                    await updateCrewData(slopeName, slopeScore, timeSlot, DateTime.now());
+                  }
                 }
 
                 for (String slopeName in slopeStatus.keys) {
@@ -500,6 +510,14 @@ class LiveMapController extends GetxController {
                     .map((entry) => entry.key)
                     .toList();
 
+                String liveCrew = _userModelController.liveCrew ?? ''; // 유효하지 않은 경우 빈 문자열로 초기화
+
+                DocumentReference crewDocRef = FirebaseFirestore.instance
+                    .collection('liveCrew')
+                    .doc(liveCrew);
+
+                DocumentSnapshot crewDocSnapshot = await crewDocRef.get();
+
                 for (String slopeName in passedSlopes) {
                   int storedPassCount = passCountData[slopeName] ?? 0;
                   int timeSlotPassCount = passCountTimeData["$timeSlot"] ?? 0;
@@ -518,7 +536,9 @@ class LiveMapController extends GetxController {
 
                   slopeScores[slopeName] = updatedScore;
 
-                  await updateCrewData(slopeName, slopeScore, timeSlot, DateTime.now());
+                  if(_userModelController.favoriteResort == crewDocSnapshot['baseResort']){
+                    await updateCrewData(slopeName, slopeScore, timeSlot, DateTime.now());
+                  }
                 }
 
                 for (String slopeName in slopeStatus.keys) {
