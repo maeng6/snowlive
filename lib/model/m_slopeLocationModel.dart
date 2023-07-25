@@ -4,8 +4,15 @@ class LocationModel {
   final String name;
   final List<LatLng> coordinates;
   final String type;
+  final int resort;
 
-  LocationModel({required this.name, required this.coordinates, required this.type});
+  LocationModel({
+    required this.name,
+    required this.coordinates,
+    required this.type,
+    required this.resort,
+
+  });
 }
 
 Map<String, List<LocationModel>> slopeLocationMap = {
@@ -22,6 +29,7 @@ List<LocationModel> phoenix = [
       LatLng(37.582767, 128.316971)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '챔피온',
@@ -30,6 +38,7 @@ List<LocationModel> phoenix = [
       LatLng(37.577547, 128.312465)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '파노',
@@ -37,6 +46,7 @@ List<LocationModel> phoenix = [
       LatLng(37.576205, 128.307921)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '환타지',
@@ -45,6 +55,7 @@ List<LocationModel> phoenix = [
       LatLng(37.578326, 128.315585)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '디지',
@@ -53,6 +64,7 @@ List<LocationModel> phoenix = [
       LatLng(37.576967, 128.315704)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '호크1',
@@ -61,6 +73,7 @@ List<LocationModel> phoenix = [
       LatLng(37.582693, 128.322023)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '호크2',
@@ -69,6 +82,7 @@ List<LocationModel> phoenix = [
       LatLng(37.581309, 128.318394)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '펭귄',
@@ -78,6 +92,7 @@ List<LocationModel> phoenix = [
       LatLng(37.580431, 128.322327)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '밸리',
@@ -86,6 +101,7 @@ List<LocationModel> phoenix = [
       LatLng(37.575775, 128.316679)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '마스터',
@@ -94,6 +110,7 @@ List<LocationModel> phoenix = [
       LatLng(37.578595, 128.321876)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '모글',
@@ -102,6 +119,7 @@ List<LocationModel> phoenix = [
       LatLng(37.577822, 128.322836)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '키위',
@@ -110,6 +128,7 @@ List<LocationModel> phoenix = [
       LatLng(37.575255, 128.321956)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '도도',
@@ -118,6 +137,8 @@ List<LocationModel> phoenix = [
       LatLng(37.579035, 128.325828)
     ],
     type: 'slope',
+    resort: 12,
+
   ),
   LocationModel(
     name: '슬스',
@@ -125,6 +146,7 @@ List<LocationModel> phoenix = [
       LatLng(37.577446, 128.324452),
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '도브',
@@ -133,6 +155,7 @@ List<LocationModel> phoenix = [
       LatLng(37.577636, 128.325822)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '듀크',
@@ -143,6 +166,7 @@ List<LocationModel> phoenix = [
       LatLng(37.574843, 128.325315)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '파라',
@@ -151,6 +175,7 @@ List<LocationModel> phoenix = [
       LatLng(37.578425, 128.310755)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '파크',
@@ -158,6 +183,7 @@ List<LocationModel> phoenix = [
       LatLng(37.583163, 128.320304)
     ],
     type: 'slope',
+    resort: 12,
   ),
   LocationModel(
     name: '파이프',
@@ -165,6 +191,7 @@ List<LocationModel> phoenix = [
       LatLng(37.582486, 128.320835)
     ],
     type: 'slope',
+    resort: 12,
   ),
 
 
@@ -179,6 +206,7 @@ List<LocationModel> phoenix = [
       LatLng(37.573979, 128.310786)
     ],
     type: 'slopeReset',
+    resort: 12,
   ),
   LocationModel(
     name: '불새',
@@ -186,6 +214,7 @@ List<LocationModel> phoenix = [
       LatLng(37.573933, 128.322244),
     ],
     type: 'slopeReset',
+    resort: 12,
   ),
 
   //여기까지가 슬로프 리셋
@@ -196,6 +225,7 @@ List<LocationModel> phoenix = [
       LatLng(37.584573, 128.322432)
     ],
     type: 'respawn',
+    resort: 12,
   ),
   LocationModel(
     name: '호크리프트',
@@ -203,6 +233,7 @@ List<LocationModel> phoenix = [
       LatLng(37.583700, 128.323646)
     ],
     type: 'respawn',
+    resort: 12,
   ),
   LocationModel(
     name: '곤돌라',
@@ -210,6 +241,7 @@ List<LocationModel> phoenix = [
       LatLng(37.582573, 128.323371)
     ],
     type: 'respawn',
+    resort: 12,
   ),
   LocationModel(
     name: '펭귄리프트',
@@ -217,6 +249,7 @@ List<LocationModel> phoenix = [
       LatLng(37.581936, 128.325669)
     ],
     type: 'respawn',
+    resort: 12,
   ),
   LocationModel(
     name: '팔콘리프트',
@@ -224,6 +257,7 @@ List<LocationModel> phoenix = [
       LatLng(37.581653, 128.325976)
     ],
     type: 'respawn',
+    resort: 12,
   ),
   LocationModel(
     name: '도도리프트',
@@ -231,6 +265,7 @@ List<LocationModel> phoenix = [
       LatLng(37.581688, 128.326575)
     ],
     type: 'respawn',
+    resort: 12,
   ),
   LocationModel(
     name: '콘돌리프트',
@@ -238,6 +273,7 @@ List<LocationModel> phoenix = [
       LatLng(37.581361, 128.313497)
     ],
     type: 'respawn',
+    resort: 12,
   ),
   LocationModel(
     name: '이글리프트',
@@ -245,6 +281,7 @@ List<LocationModel> phoenix = [
       LatLng(37.578830, 128.319583)
     ],
     type: 'respawn',
+    resort: 12,
   ),
   LocationModel(
     name: '슬스리프트',
@@ -252,6 +289,7 @@ List<LocationModel> phoenix = [
       LatLng(37.580415, 128.325175)
     ],
     type: 'respawn',
+    resort: 12,
   ),
 ];
 
@@ -266,6 +304,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.643514, 127.686241),
     ],
     type: 'slope',
+    resort: 2,
   ),
   LocationModel(
     name: '재즈',
@@ -274,6 +313,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.643787, 127.689526)
     ],
     type: 'slope',
+    resort: 2,
   ),
   LocationModel(
     name: '레게',
@@ -282,6 +322,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.641750, 127.691897)
     ],
     type: 'slope',
+    resort: 2,
   ),
   LocationModel(
     name: '클래식',
@@ -289,6 +330,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.639034, 127.691514),
     ],
     type: 'slope',
+    resort: 2,
   ),
   LocationModel(
     name: '테크노2',
@@ -296,6 +338,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.637722, 127.689178),
     ],
     type: 'slope',
+    resort: 2,
   ),
   LocationModel(
     name: '락',
@@ -303,6 +346,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.640056, 127.689334),
     ],
     type: 'slope',
+    resort: 2,
   ),
   LocationModel(
     name: '펑키',
@@ -311,6 +355,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.639727, 127.685653),
     ],
     type: 'slope',
+    resort: 2,
   ),
   LocationModel(
     name: '힙합',
@@ -320,6 +365,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.639702, 127.683534),
     ],
     type: 'slope',
+    resort: 2,
   ),
   LocationModel(
     name: '테크노1',
@@ -328,6 +374,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.641303, 127.684110),
     ],
     type: 'slope',
+    resort: 2,
   ),
   LocationModel(
     name: '블루스',
@@ -336,6 +383,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.642822, 127.680065)
     ],
     type: 'slope',
+    resort: 2,
   ),
   //여기까지가 슬로프
 
@@ -345,6 +393,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.643245, 127.688299),
     ],
     type: 'slopeReset',
+    resort: 2,
   ),
   LocationModel(
     name: '힙합하차장',
@@ -352,6 +401,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.639453, 127.684357),
     ],
     type: 'slopeReset',
+    resort: 2,
   ),
   //여기까지가 슬로프 리셋
 
@@ -361,6 +411,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.637571, 127.689622)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '락하차장',
@@ -368,6 +419,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.637812, 127.690087)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '곤돌라하차장',
@@ -375,6 +427,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.637545, 127.690317)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '락승차장',
@@ -382,6 +435,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.642686, 127.687468)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '재즈승차장',
@@ -389,6 +443,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.645183, 127.683544)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '발라드승차장',
@@ -396,6 +451,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.645007, 127.683434)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '테크노승차장',
@@ -403,6 +459,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.644238, 127.683008)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '힙합승차장1',
@@ -410,6 +467,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.644052, 127.682163)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '힙합승차장2',
@@ -417,6 +475,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.643951, 127.682036)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '블루스승차장',
@@ -424,6 +483,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.644010, 127.680712)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '곤돌라승차장',
@@ -431,6 +491,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.645373, 127.682579)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '하단1',
@@ -438,6 +499,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.645715, 127.683755)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '하단2',
@@ -445,6 +507,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.645550, 127.683679)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '하단3',
@@ -452,6 +515,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.645412, 127.683620)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '하단4',
@@ -459,6 +523,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.644748, 127.683207)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '하단5',
@@ -466,6 +531,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.644522, 127.683131)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '하단6',
@@ -473,6 +539,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.644378, 127.683085)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '하단7',
@@ -480,6 +547,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.644082, 127.682624)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '하단8',
@@ -487,6 +555,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.643922, 127.681186)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '하단9',
@@ -494,6 +563,7 @@ List<LocationModel> vivaldi = [
       LatLng(37.643915, 127.681496)
     ],
     type: 'respawn',
+    resort: 2,
   ),
   LocationModel(
     name: '하단10',
@@ -501,5 +571,6 @@ List<LocationModel> vivaldi = [
       LatLng(37.643933, 127.681751)
     ],
     type: 'respawn',
+    resort: 2,
   ),
 ];
