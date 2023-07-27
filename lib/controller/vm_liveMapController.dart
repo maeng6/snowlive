@@ -284,14 +284,17 @@ class LiveMapController extends GetxController {
         double radius;
 
         switch (location.resort) {
-          case 12:
-            radius = 20;
+          case 0:
+            radius = 30;
             break;
           case 2:
             radius = 20;
             break;
+          case 12:
+            radius = 20;
+            break;
           default:
-            radius = 20; // 기본 반경 설정
+            radius = 5; // 기본 반경 설정
             break;
         }
 

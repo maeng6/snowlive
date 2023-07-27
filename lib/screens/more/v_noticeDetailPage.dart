@@ -4,9 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 
 class NoticeDetail extends StatefulWidget {
-  NoticeDetail({Key? key, this.noticeTile}) : super(key: key);
+  NoticeDetail({Key? key,required this.noticeTile,required this.noticeDetail,required this.noticeDetail2}) : super(key: key);
 
   var noticeTile;
+  var noticeDetail;
+  var noticeDetail2;
 
   @override
   State<NoticeDetail> createState() => _NoticeDetailState();
@@ -44,72 +46,48 @@ class _NoticeDetailState extends State<NoticeDetail> {
         titleSpacing: 0,
         centerTitle: true,
       ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('notice')
-            .orderBy('timeStamp', descending: true)
-            .snapshots(),
-        builder: (context,
-            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-          if (!snapshot.hasData) {
-            return Container(
-              color: Colors.white,
-            );
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          final noticeDocs = snapshot.data!.docs;
-          Size _size = MediaQuery.of(context).size;
-
-          return ListView.builder(
-            itemCount: 1,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('${widget.noticeTile}',
-                      style: GoogleFonts.notoSans(
-                          color: Color(0xFF111111),
-                          fontWeight: FontWeight.w900,
-                          fontSize: 20),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      noticeDocs[index].get('noticeDetail'),
-                      maxLines:
-                      1000,
-                      overflow:
-                      TextOverflow.ellipsis,
-                      style: TextStyle(
-                          color: Color(0xFF111111),
-                          fontWeight: FontWeight.normal,
-                          fontSize: 16),
-                    ),
-                    Text(
-                      noticeDocs[index].get('noticeDetail2'),
-                      maxLines:
-                      1000,
-                      overflow:
-                      TextOverflow.ellipsis,
-                      style: TextStyle(
-                          color: Color(0xFF111111),
-                          fontWeight: FontWeight.normal,
-                          fontSize: 16),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        },
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${widget.noticeTile}',
+                style: GoogleFonts.notoSans(
+                    color: Color(0xFF111111),
+                    fontWeight: FontWeight.w900,
+                    fontSize: 20),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                '${widget.noticeDetail}',
+                maxLines:
+                1000,
+                overflow:
+                TextOverflow.ellipsis,
+                style: TextStyle(
+                    color: Color(0xFF111111),
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16),
+              ),
+              Text(
+                '${widget.noticeDetail2}',
+                maxLines:
+                1000,
+                overflow:
+                TextOverflow.ellipsis,
+                style: TextStyle(
+                    color: Color(0xFF111111),
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

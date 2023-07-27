@@ -75,7 +75,14 @@ class _NoticeListState extends State<NoticeList> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: (){
-                  Get.to(()=>NoticeDetail(noticeTile: noticeDocs[index].get('noticeTitle'),));
+                  print(noticeDocs[index].get('noticeTitle'));
+                  print(noticeDocs[index].get('noticeDetail'));
+                  print(noticeDocs[index].get('noticeDetail2'));
+                  Get.to(()=>NoticeDetail(
+                    noticeTile: noticeDocs[index].get('noticeTitle'),
+                    noticeDetail: noticeDocs[index].get('noticeDetail'),
+                    noticeDetail2: noticeDocs[index].get('noticeDetail2'),
+                  ));
                 },
                 child: Container(
                   padding: EdgeInsets.only(left: 16, right: 16, top: 18, bottom: 18),
