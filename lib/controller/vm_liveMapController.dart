@@ -404,13 +404,17 @@ class LiveMapController extends GetxController {
                     .map((entry) => entry.key)
                     .toList();
 
-                String liveCrew = _userModelController.liveCrew ?? ''; // 유효하지 않은 경우 빈 문자열로 초기화
+                DocumentReference? crewDocRef;
+                DocumentSnapshot? crewDocSnapshot;
 
-                DocumentReference crewDocRef = FirebaseFirestore.instance
-                    .collection('liveCrew')
-                    .doc(liveCrew);
+                if (_userModelController.liveCrew != null && _userModelController.liveCrew!.isNotEmpty) {
+                  crewDocRef = FirebaseFirestore.instance
+                      .collection('liveCrew')
+                      .doc(_userModelController.liveCrew);
 
-                DocumentSnapshot crewDocSnapshot = await crewDocRef.get();
+                  crewDocSnapshot = await crewDocRef.get();
+                }
+
 
                 for (String slopeName in passedSlopes) {
                   int storedPassCount = passCountData[slopeName] ?? 0;
@@ -430,7 +434,7 @@ class LiveMapController extends GetxController {
 
                   slopeScores[slopeName] = updatedScore;
 
-                  if(_userModelController.favoriteResort == crewDocSnapshot['baseResort']){
+                  if(crewDocSnapshot != null && _userModelController.favoriteResort == crewDocSnapshot['baseResort']){
                     await updateCrewData(slopeName, slopeScore, timeSlot, DateTime.now());
                   }
                 }
@@ -530,13 +534,16 @@ class LiveMapController extends GetxController {
                     .map((entry) => entry.key)
                     .toList();
 
-                String liveCrew = _userModelController.liveCrew ?? ''; // 유효하지 않은 경우 빈 문자열로 초기화
+                DocumentReference? crewDocRef;
+                DocumentSnapshot? crewDocSnapshot;
 
-                DocumentReference crewDocRef = FirebaseFirestore.instance
-                    .collection('liveCrew')
-                    .doc(liveCrew);
+                if (_userModelController.liveCrew != null && _userModelController.liveCrew!.isNotEmpty) {
+                  crewDocRef = FirebaseFirestore.instance
+                      .collection('liveCrew')
+                      .doc(_userModelController.liveCrew);
 
-                DocumentSnapshot crewDocSnapshot = await crewDocRef.get();
+                  crewDocSnapshot = await crewDocRef.get();
+                }
 
                 for (String slopeName in passedSlopes) {
                   int storedPassCount = passCountData[slopeName] ?? 0;
@@ -556,7 +563,7 @@ class LiveMapController extends GetxController {
 
                   slopeScores[slopeName] = updatedScore;
 
-                  if(_userModelController.favoriteResort == crewDocSnapshot['baseResort']){
+                  if(crewDocSnapshot != null && _userModelController.favoriteResort == crewDocSnapshot['baseResort']){
                     await updateCrewData(slopeName, slopeScore, timeSlot, DateTime.now());
                   }
                 }
