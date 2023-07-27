@@ -366,7 +366,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                   children: [
                                     Container(
                                       child: Padding(
-                                        padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 24),
+                                        padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 14),
                                         child: Text(
                                           '슬로프별 점수 현황',
                                           style: TextStyle(
@@ -382,7 +382,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                       height: 240,
                                       width: _size.width,
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Expanded(
                                             child: Container(
@@ -413,7 +413,10 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                                 scrollDirection: Axis.horizontal,
                                                     child: Container(
                                                       child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                mainAxisAlignment:
+                                                barData.length < 2
+                                                    ? MainAxisAlignment.center
+                                                    : MainAxisAlignment.spaceBetween,
                                                 children: barData.map((data) {
                                                       String slopeName = data['slopeName'];
                                                       int scoreForSlope = data['scoreForSlope'];
@@ -421,7 +424,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                                       Color barColor = data['barColor'];
                                                       return Container(
                                                         margin: EdgeInsets.symmetric(horizontal: 5),
-                                                        width: barData.length < 5 ? _size.width / 5 - 25 : _size.width / 5 - 28,
+                                                        width: barData.length < 5 ? _size.width / 5 - 10 : _size.width / 5 - 28,
                                                         height: 185,
                                                         child: Column(
                                                           mainAxisAlignment: MainAxisAlignment.end,
