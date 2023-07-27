@@ -423,11 +423,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                           children: [
                             Expanded(
                               child: Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 16,
-                                      bottom:
-                                      MediaQuery.of(context).viewInsets.bottom + 16,
-                                      right: 5),
+                                  padding: EdgeInsets.only(top: 16, bottom: MediaQuery.of(context).viewInsets.bottom + 16, right: 5),
                                   child: TextButton(
                                       onPressed: () {
                                         Get.to(()=> FriendDetailPage(uid: foundUserModel!.uid, favoriteResort: foundUserModel!.favoriteResort,));
@@ -439,16 +435,13 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                         splashFactory: InkRipple.splashFactory,
                                         minimumSize: Size(1000, 56),
                                         backgroundColor:
-                                        (isFound) ? Color(0xff666666) : Color(0xffDEDEDE),
+                                        (isFound) ? Color(0xff3D83ED).withOpacity(0.2) : Color(0xffDEDEDE),
                                       ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(bottom: 4),
-                                        child: Text('프로필 보기',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16),
-                                        ),
+                                      child: Text('프로필 보기',
+                                        style: TextStyle(
+                                            color: Color(0xFF3D83ED),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),
                                       )
                                   )),
                             ),
@@ -612,17 +605,13 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                         elevation: 0,
                                         splashFactory: InkRipple.splashFactory,
                                         minimumSize: Size(1000, 56),
-                                        backgroundColor: (isFound) ? Color(0xff377EEA) : Color(0xffDEDEDE)),
-                                    child: Padding(
-                                      padding:
-                                      const EdgeInsets.only(bottom: 4),
-                                      child: Text(
-                                        '친구 추가하기',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16),
-                                      ),
+                                        backgroundColor: (isFound) ? Color(0xff3D83ED) : Color(0xffDEDEDE)),
+                                    child: Text(
+                                      '친구 추가하기',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
                                     )
                                 ),
                               ),

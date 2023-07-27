@@ -260,724 +260,592 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                   return  Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Stack(
+                                      Column(
                                         children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(12),
-                                                color: Color(0xFFEEEEF5)
-                                            ),
-                                            margin: EdgeInsets.symmetric(horizontal: 16),
-                                            padding: EdgeInsets.only(top: 30, bottom: 16),
+                                          Center(
                                             child: Column(
                                               children: [
-                                                Center(
-                                                  child: Column(
-                                                    children: [
-                                                      (friendDocs[0]['profileImageUrl'].isNotEmpty)
-                                                          ? GestureDetector(
-                                                        onTap: () {
-                                                          Get.to(() => ProfileImagePage(
-                                                              CommentProfileUrl: friendDocs[0]['profileImageUrl']));
-                                                        },
-                                                        child: Container(
-                                                            width: 100,
-                                                            height: 100,
-                                                            child: ExtendedImage.network(
-                                                              friendDocs[0]['profileImageUrl'],
-                                                              enableMemoryCache: true,
-                                                              shape: BoxShape.circle,
-                                                              borderRadius: BorderRadius.circular(8),
-                                                              width: 100,
-                                                              height: 100,
-                                                              fit: BoxFit.cover,
-                                                            )),
-                                                      )
-                                                          : GestureDetector(
-                                                        onTap: () {
-                                                          Get.to(() => ProfileImagePage(
-                                                              CommentProfileUrl: ''));
-                                                        },
-                                                        child: Container(
-                                                          width: 100,
-                                                          height: 100,
-                                                          child: ExtendedImage.asset(
-                                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                                            enableMemoryCache: true,
-                                                            shape: BoxShape.circle,
-                                                            borderRadius: BorderRadius.circular(8),
-                                                            width: 100,
-                                                            height: 100,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 16,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          (edit == true)
-                                                              ? Text(
-                                                            _initialDisplayName, style: TextStyle(
-                                                              fontSize: 20,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Color(0xFF111111)
-                                                          ),)
-                                                              : Text(
-                                                            '${friendDocs[0]['displayName']}',
-                                                            style: TextStyle(
-                                                                fontSize: 20,
-                                                                fontWeight: FontWeight.bold,
-                                                                color: Color(0xFF111111)
-                                                            ),),
-                                                          if(edit == true)
-                                                            GestureDetector(
-                                                                onTap: () {
-                                                                  _displayNameController.clear();
-                                                                  showModalBottomSheet(
-                                                                    context: context,
-                                                                    isScrollControlled: true,
-                                                                    builder: (BuildContext context) {
-                                                                      return SafeArea(
-                                                                        child: Container(
-                                                                          height: 240,
-                                                                          child: Padding(
-                                                                            padding: EdgeInsets.only(
-                                                                                left: 20, right: 20),
+                                                (friendDocs[0]['profileImageUrl'].isNotEmpty)
+                                                    ? GestureDetector(
+                                                  onTap: () {
+                                                    Get.to(() => ProfileImagePage(
+                                                        CommentProfileUrl: friendDocs[0]['profileImageUrl']));
+                                                  },
+                                                  child: Container(
+                                                      width: 100,
+                                                      height: 100,
+                                                      child: ExtendedImage.network(
+                                                        friendDocs[0]['profileImageUrl'],
+                                                        enableMemoryCache: true,
+                                                        shape: BoxShape.circle,
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        width: 100,
+                                                        height: 100,
+                                                        fit: BoxFit.cover,
+                                                      )),
+                                                )
+                                                    : GestureDetector(
+                                                  onTap: () {
+                                                    Get.to(() => ProfileImagePage(
+                                                        CommentProfileUrl: ''));
+                                                  },
+                                                  child: Container(
+                                                    width: 100,
+                                                    height: 100,
+                                                    child: ExtendedImage.asset(
+                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                      enableMemoryCache: true,
+                                                      shape: BoxShape.circle,
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      width: 100,
+                                                      height: 100,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 12,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    (edit == true)
+                                                        ? Text(
+                                                      _initialDisplayName, style: TextStyle(
+                                                        fontSize: 22,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Color(0xFF111111)
+                                                    ),)
+                                                        : Text(
+                                                      '${friendDocs[0]['displayName']}',
+                                                      style: TextStyle(
+                                                          fontSize: 22,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Color(0xFF111111)
+                                                      ),),
+                                                    if(edit == true)
+                                                      GestureDetector(
+                                                          onTap: () {
+                                                            _displayNameController.clear();
+                                                            showModalBottomSheet(
+                                                              context: context,
+                                                              isScrollControlled: true,
+                                                              builder: (BuildContext context) {
+                                                                return SafeArea(
+                                                                  child: Container(
+                                                                    height: 240,
+                                                                    child: Padding(
+                                                                      padding: EdgeInsets.only(
+                                                                          left: 20, right: 20),
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                        children: [
+                                                                          SizedBox(
+                                                                            height: 30,
+                                                                          ),
+                                                                          Text(
+                                                                            '변경할 활동명을 입력해주세요.',
+                                                                            style: TextStyle(
+                                                                                fontSize: 18,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: Color(
+                                                                                    0xFF111111)),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            height: 20,
+                                                                          ),
+                                                                          Container(
+                                                                            height: 100,
                                                                             child: Column(
                                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                                               mainAxisAlignment: MainAxisAlignment.start,
                                                                               children: [
-                                                                                SizedBox(
-                                                                                  height: 30,
-                                                                                ),
-                                                                                Text(
-                                                                                  '변경할 활동명을 입력해주세요.',
-                                                                                  style: TextStyle(
-                                                                                      fontSize: 18,
-                                                                                      fontWeight: FontWeight.bold,
-                                                                                      color: Color(
-                                                                                          0xFF111111)),
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  height: 20,
-                                                                                ),
-                                                                                Container(
-                                                                                  height: 100,
-                                                                                  child: Column(
-                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                                                    children: [
-                                                                                      Form(
-                                                                                        key: _formKeyProfile,
-                                                                                        child:
-                                                                                        Container(
-                                                                                          height: 56,
-                                                                                          child: TextFormField(
-                                                                                            cursorColor: Color(
-                                                                                                0xff377EEA),
-                                                                                            cursorHeight: 16,
-                                                                                            cursorWidth: 2,
-                                                                                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                                                            controller: _displayNameController..text = _initialDisplayName,
-                                                                                            strutStyle:
-                                                                                            StrutStyle(leading: 0.3),
-                                                                                            decoration: InputDecoration(
-                                                                                                errorStyle: TextStyle(fontSize: 12,),
-                                                                                                hintStyle: TextStyle(
-                                                                                                    color: Color(0xff949494),
-                                                                                                    fontSize: 16),
-                                                                                                hintText: '활동명 입력',
-                                                                                                labelText: '활동명',
-                                                                                                contentPadding: EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
-                                                                                                border: OutlineInputBorder(
-                                                                                                  borderSide: BorderSide(
-                                                                                                      color: Color(0xFFDEDEDE)),
-                                                                                                  borderRadius: BorderRadius.circular(6),
-                                                                                                ),
-                                                                                                enabledBorder: OutlineInputBorder(
-                                                                                                  borderSide: BorderSide(
-                                                                                                      color: Color(0xFFDEDEDE)),
-                                                                                                  borderRadius: BorderRadius.circular(6),
-                                                                                                ),
-                                                                                                errorBorder: OutlineInputBorder(
-                                                                                                  borderSide: BorderSide(
-                                                                                                      color: Color(0xFFFF3726)),
-                                                                                                  borderRadius: BorderRadius.circular(6),
-                                                                                                )),
-                                                                                            validator: (val) {
-                                                                                              if (val!.length <= 20 && val.length >= 1) {
-                                                                                                return null;
-                                                                                              } else if (val.length == 0) {
-                                                                                                return '닉네임을 입력해주세요.';
-                                                                                              } else {
-                                                                                                return '최대 글자 수를 초과했습니다.';
-                                                                                              }
-                                                                                            },
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                      SizedBox(
-                                                                                        height: 6,
-                                                                                      ),
-                                                                                      Padding(
-                                                                                        padding: const EdgeInsets.only(left: 19),
-                                                                                        child: Text(
-                                                                                          '최대 20글자까지 입력 가능합니다.',
-                                                                                          style: TextStyle(
+                                                                                Form(
+                                                                                  key: _formKeyProfile,
+                                                                                  child:
+                                                                                  Container(
+                                                                                    height: 56,
+                                                                                    child: TextFormField(
+                                                                                      cursorColor: Color(0xff377EEA),
+                                                                                      cursorHeight: 16,
+                                                                                      cursorWidth: 2,
+                                                                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                                                      controller: _displayNameController..text = _initialDisplayName,
+                                                                                      strutStyle:
+                                                                                      StrutStyle(leading: 0.3),
+                                                                                      decoration: InputDecoration(
+                                                                                          errorStyle: TextStyle(fontSize: 12,),
+                                                                                          hintStyle: TextStyle(
                                                                                               color: Color(0xff949494),
-                                                                                              fontSize: 12),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
+                                                                                              fontSize: 16),
+                                                                                          hintText: '활동명 입력',
+                                                                                          labelText: '활동명',
+                                                                                          contentPadding: EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
+                                                                                          border: OutlineInputBorder(
+                                                                                            borderSide: BorderSide(
+                                                                                                color: Color(0xFFDEDEDE)),
+                                                                                            borderRadius: BorderRadius.circular(6),
+                                                                                          ),
+                                                                                          enabledBorder: OutlineInputBorder(
+                                                                                            borderSide: BorderSide(
+                                                                                                color: Color(0xFFDEDEDE)),
+                                                                                            borderRadius: BorderRadius.circular(6),
+                                                                                          ),
+                                                                                          errorBorder: OutlineInputBorder(
+                                                                                            borderSide: BorderSide(
+                                                                                                color: Color(0xFFFF3726)),
+                                                                                            borderRadius: BorderRadius.circular(6),
+                                                                                          )),
+                                                                                      validator: (val) {
+                                                                                        if (val!.length <= 20 && val.length >= 1) {
+                                                                                          return null;
+                                                                                        } else if (val.length == 0) {
+                                                                                          return '닉네임을 입력해주세요.';
+                                                                                        } else {
+                                                                                          return '최대 글자 수를 초과했습니다.';
+                                                                                        }
+                                                                                      },
+                                                                                    ),
                                                                                   ),
                                                                                 ),
-                                                                                Row(
-                                                                                  children: [
-                                                                                    Expanded(
-                                                                                      child: InkWell(
-                                                                                        child: ElevatedButton(
-                                                                                          onPressed: () {
-                                                                                            _displayNameController.text =
-                                                                                            _userModelController.displayName!;
-                                                                                            Navigator.pop(context);
-                                                                                          },
-                                                                                          child: Text(
-                                                                                            '취소',
-                                                                                            style: TextStyle(
-                                                                                                color: Colors.white,
-                                                                                                fontSize: 15,
-                                                                                                fontWeight: FontWeight.bold),
-                                                                                          ),
-                                                                                          style: TextButton.styleFrom(
-                                                                                              splashFactory: InkRipple.splashFactory,
-                                                                                              elevation: 0,
-                                                                                              minimumSize: Size(100, 56),
-                                                                                              backgroundColor: Color(0xff555555),
-                                                                                              padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                    SizedBox(
-                                                                                      width: 10,
-                                                                                    ),
-                                                                                    Expanded(
-                                                                                      child: InkWell(
-                                                                                        child:
-                                                                                        ElevatedButton(
-                                                                                          onPressed: () {
-                                                                                            if (_formKeyProfile.currentState!.validate()) {
-                                                                                              setState(() {
-                                                                                                _initialDisplayName = _displayNameController.text;
-                                                                                              });
-                                                                                              FocusScope.of(context).unfocus();
-                                                                                              Navigator.pop(context);
-                                                                                            } else {
-                                                                                              Get.snackbar(
-                                                                                                  '입력 실패',
-                                                                                                  '올바른 활동명을 입력해주세요.',
-                                                                                                  snackPosition: SnackPosition.BOTTOM,
-                                                                                                  margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                                                                                  backgroundColor: Colors.black87,
-                                                                                                  colorText: Colors.white,
-                                                                                                  duration: Duration(milliseconds: 3000));
-                                                                                            }
-                                                                                          },
-                                                                                          child: Text(
-                                                                                            '변경',
-                                                                                            style: TextStyle(
-                                                                                                color: Colors.white,
-                                                                                                fontSize: 15,
-                                                                                                fontWeight: FontWeight
-                                                                                                    .bold),
-                                                                                          ),
-                                                                                          style: TextButton
-                                                                                              .styleFrom(
-                                                                                              splashFactory:
-                                                                                              InkRipple
-                                                                                                  .splashFactory,
-                                                                                              elevation: 0,
-                                                                                              minimumSize: Size(
-                                                                                                  100,
-                                                                                                  56),
-                                                                                              backgroundColor: Color(
-                                                                                                  0xff2C97FB),
-                                                                                              padding: EdgeInsets
-                                                                                                  .symmetric(
-                                                                                                  horizontal: 0)),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                )
+                                                                                SizedBox(
+                                                                                  height: 6,
+                                                                                ),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.only(left: 19),
+                                                                                  child: Text(
+                                                                                    '최대 20글자까지 입력 가능합니다.',
+                                                                                    style: TextStyle(
+                                                                                        color: Color(0xff949494),
+                                                                                        fontSize: 12),
+                                                                                  ),
+                                                                                ),
                                                                               ],
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                  );
-                                                                },
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets.only(
-                                                                      left: 4),
-                                                                  child: Image.asset(
-                                                                    'assets/imgs/icons/icon_edit_pencil.png',
-                                                                    height: 20,
-                                                                    width: 20,
-                                                                  ),
-                                                                )),
-                                                        ],
-                                                      ), //활동명//상태메시지
-                                                      SizedBox(
-                                                        height: 4,
-                                                      ),
-                                                      (edit == true)
-                                                          ? Padding(
-                                                        padding: const EdgeInsets.only(
-                                                            top: 8, bottom: 2),
-                                                        child: Container(
-                                                          width: _size.width - 64,
-                                                          height: 36,
-                                                          child: TextFormField(
-                                                            key: _formKeyProfile2,
-                                                            cursorColor: Color(0xff949494),
-                                                            controller: _stateMsgController,
-                                                            strutStyle: StrutStyle(leading: 0.3),
-                                                            autovalidateMode: AutovalidateMode
-                                                                .onUserInteraction,
-                                                            maxLines: 1,
-                                                            enableSuggestions: false,
-                                                            autocorrect: false,
-                                                            textInputAction: TextInputAction.newline,
-                                                            onTap: () {
-                                                              // 텍스트 필드 선택 시 커서를 맨 오른쪽으로 이동
-                                                              _stateMsgController.selection =
-                                                                  TextSelection.fromPosition(
-                                                                      TextPosition(
-                                                                          offset: _stateMsgController
-                                                                              .text.length));
-                                                            },
-                                                            decoration: InputDecoration(
-                                                              suffixIcon: TextButton(
-                                                                onPressed: () {
-                                                                  FocusScope.of(context).unfocus();
-                                                                },
-                                                                child: Text('', style: TextStyle(
-                                                                    fontSize: 14,
-                                                                    fontWeight: FontWeight.bold,
-                                                                    color: Color(0xFF377EEA))),
-                                                              ),
-                                                              floatingLabelBehavior: FloatingLabelBehavior
-                                                                  .never,
-                                                              labelText: '상태메시지',
-                                                              labelStyle: TextStyle(
-                                                                fontSize: 14, fontWeight: FontWeight
-                                                                  .normal, color: Color(0xFF666666),
-                                                              ),
-                                                              hoverColor: Colors.transparent,
-                                                              filled: true,
-                                                              focusColor: Colors.transparent,
-                                                              errorStyle: TextStyle(
-                                                                fontSize: 12,
-                                                              ),
-                                                              hintStyle: TextStyle(color: Color(
-                                                                  0xffb7b7b7), fontSize: 14),
-                                                              hintText: '상태메시지를 입력해주세요.',
-                                                              contentPadding: EdgeInsets.only(
-                                                                  left: 12, right: 12),
-                                                              border: OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    color: Colors.transparent),
-                                                                borderRadius: BorderRadius.circular(
-                                                                    6),
-                                                              ),
-                                                              enabledBorder: OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    color: Colors.transparent),
-                                                                borderRadius: BorderRadius.circular(
-                                                                    6),
-                                                              ),
-                                                              focusedBorder: OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    color: Colors.transparent),
-                                                                borderRadius: BorderRadius.circular(
-                                                                    6),
-                                                              ),
-                                                              errorBorder: OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    color: Color(0xFFFF3726)),
-                                                                borderRadius: BorderRadius.circular(
-                                                                    6),
-                                                              ),
-                                                            ),
-                                                            validator: (val) {
-                                                              if (val!.length <= 20) {
-                                                                return null;
-                                                              } else {
-                                                                return '20자 미만으로 적어주세요.';
-                                                              }
-                                                            },
-                                                          ),
-
-                                                        ),
-                                                      )
-                                                          : Padding(
-                                                        padding: const EdgeInsets.only(bottom: 26),
-                                                        child: Text('${friendDocs[0]['stateMsg']}',
-                                                          style: TextStyle(fontSize: 14,
-                                                              color: Color(0xFF949494)),),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                (widget.uid == _userModelController.uid)
-                                                    ? Padding(
-                                                  padding: const EdgeInsets.only(top: 10),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      ElevatedButton(onPressed: () {
-                                                        setState(() {
-                                                          _initStateMsg =
-                                                          _userModelController.stateMsg!;
-                                                          _initialDisplayName =
-                                                          _userModelController.displayName!;
-                                                          edit = true;
-                                                        });
-                                                      }, child: Text('프로필 수정', style: TextStyle(
-                                                          fontSize: 13,
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Color(0xFF666666)
-                                                      ),
-                                                      ),
-                                                        style: TextButton.styleFrom(
-                                                            shape: const RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.all(
-                                                                    Radius.circular(6))),
-                                                            elevation: 0,
-                                                            splashFactory: InkRipple.splashFactory,
-                                                            minimumSize: Size(
-                                                                _size.width / 2 - 36, 38),
-                                                            backgroundColor:
-                                                            Color(0xffffffff)),
-
-                                                      ),
-                                                      SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      ElevatedButton(onPressed: () {
-                                                        Get.to(() => SetProfileImage_moreTab());
-                                                      }, child: Text('이미지 수정', style: TextStyle(
-                                                          fontSize: 13,
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Color(0xFF666666)
-                                                      ),
-                                                      ),
-                                                        style: TextButton.styleFrom(
-                                                            shape: const RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.all(
-                                                                    Radius.circular(6))),
-                                                            elevation: 0,
-                                                            splashFactory: InkRipple.splashFactory,
-                                                            minimumSize: Size(
-                                                                _size.width / 2 - 36, 38),
-                                                            backgroundColor:
-                                                            Color(0xffffffff)),
-
-                                                      ),
-                                                      // SizedBox(
-                                                      //   width: 40,
-                                                      // ),
-                                                      // Column(
-                                                      //   children: [
-                                                      //     IconButton(
-                                                      //         onPressed: (){},
-                                                      //         iconSize: 32,
-                                                      //         icon: Image.asset('assets/imgs/icons/icon_edit_livecrew.png')
-                                                      //     ),
-                                                      //     Text('라이브 크루', style: TextStyle(fontSize: 13, color: Color(0xFF111111)),)
-                                                      //   ],
-                                                      // ),
-                                                    ],
-                                                  ),
-                                                ) //프로필수정 + 라이브크루
-                                                    : StreamBuilder(
-                                                  stream: FirebaseFirestore.instance
-                                                      .collection('user')
-                                                      .where(
-                                                      'uid', isEqualTo: _userModelController.uid)
-                                                      .snapshots(),
-                                                  builder: (context, AsyncSnapshot<
-                                                      QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                    if (!snapshot.hasData || snapshot.data == null) {}
-                                                    else if (snapshot.data!.docs.isNotEmpty) {
-                                                      final userDocs = snapshot.data!.docs;
-                                                      return
-                                                        (userDocs[0]['friendUidList'].contains(
-                                                            widget.uid))
-                                                            ? Container() //빈칸
-                                                            : Padding(
-                                                          padding: const EdgeInsets.only(top: 30),
-                                                          child:
-                                                          (whoInviteMe.contains(_userModelController.uid))
-                                                              ? GestureDetector(
-                                                            onTap: () {
-                                                              Get.dialog(AlertDialog(
-                                                                contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                elevation: 0,
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(10.0)),
-                                                                buttonPadding:
-                                                                EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                content: Text(
-                                                                  '이미 요청중입니다.',
-                                                                  style: TextStyle(
-                                                                      fontWeight: FontWeight.w600,
-                                                                      fontSize: 15),
-                                                                ),
-                                                                actions: [
-                                                                  Row(
-                                                                    children: [
-                                                                      TextButton(
-                                                                          onPressed: () async {
-                                                                            Navigator.pop(context);
-                                                                          },
-                                                                          child: Text(
-                                                                            '확인',
-                                                                            style: TextStyle(
-                                                                              fontSize: 15,
-                                                                              color: Color(
-                                                                                  0xff377EEA),
-                                                                              fontWeight: FontWeight
-                                                                                  .bold,
-                                                                            ),
-                                                                          )),
-                                                                    ],
-                                                                    mainAxisAlignment: MainAxisAlignment
-                                                                        .center,
-                                                                  )
-                                                                ],
-                                                              ));
-                                                            },
-                                                            child: Container(
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment
-                                                                    .center,
-                                                                children: [
-                                                                  Column(
-                                                                    children: [
-                                                                      Image.asset(
-                                                                        'assets/imgs/icons/icon_profile_friend_add.png',
-                                                                        height: _size.width / 10,
-                                                                        width: _size.width / 10,
-                                                                      ),
-                                                                      SizedBox(height: 5,),
-                                                                      Text('친구등록 요청중')
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          )
-                                                              : GestureDetector(
-                                                            onTap: () {
-                                                              Get.dialog(AlertDialog(
-                                                                contentPadding: EdgeInsets.only(
-                                                                    bottom: 0,
-                                                                    left: 20,
-                                                                    right: 20,
-                                                                    top: 30),
-                                                                elevation: 0,
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                    BorderRadius.circular(
-                                                                        10.0)),
-                                                                buttonPadding:
-                                                                EdgeInsets.symmetric(
-                                                                    horizontal: 20,
-                                                                    vertical: 0),
-                                                                content: Text(
-                                                                  '친구등록 요청을 보내시겠습니까?',
-                                                                  style: TextStyle(
-                                                                      fontWeight: FontWeight.w600,
-                                                                      fontSize: 15),
-                                                                ),
-                                                                actions: [
-                                                                  Row(
-                                                                    children: [
-                                                                      TextButton(
-                                                                          onPressed: () async {
-                                                                            await _userModelController
-                                                                                .getCurrentUser(
-                                                                                _userModelController
-                                                                                    .uid);
-                                                                            if (_userModelController
-                                                                                .whoInviteMe!
-                                                                                .contains(
-                                                                                widget.uid)) {
-                                                                              Get.dialog(AlertDialog(
-                                                                                contentPadding: EdgeInsets
-                                                                                    .only(
-                                                                                    bottom: 0,
-                                                                                    left: 20,
-                                                                                    right: 20,
-                                                                                    top: 30),
-                                                                                elevation: 0,
-                                                                                shape: RoundedRectangleBorder(
-                                                                                    borderRadius:
-                                                                                    BorderRadius
-                                                                                        .circular(
-                                                                                        10.0)),
-                                                                                buttonPadding:
-                                                                                EdgeInsets.symmetric(
-                                                                                    horizontal: 20,
-                                                                                    vertical: 0),
-                                                                                content: Text(
-                                                                                  '이미 요청받은 회원입니다.',
-                                                                                  style: TextStyle(
-                                                                                      fontWeight: FontWeight
-                                                                                          .w600,
-                                                                                      fontSize: 15),
+                                                                          Row(
+                                                                            children: [
+                                                                              Expanded(
+                                                                                child: InkWell(
+                                                                                  child: ElevatedButton(
+                                                                                    onPressed: () {
+                                                                                      _displayNameController.text =
+                                                                                      _userModelController.displayName!;
+                                                                                      Navigator.pop(context);
+                                                                                    },
+                                                                                    child: Text(
+                                                                                      '취소',
+                                                                                      style: TextStyle(
+                                                                                          color: Colors.white,
+                                                                                          fontSize: 15,
+                                                                                          fontWeight: FontWeight.bold),
+                                                                                    ),
+                                                                                    style: TextButton.styleFrom(
+                                                                                        splashFactory: InkRipple.splashFactory,
+                                                                                        elevation: 0,
+                                                                                        minimumSize: Size(100, 56),
+                                                                                        backgroundColor: Color(0xff555555),
+                                                                                        padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                  ),
                                                                                 ),
-                                                                                actions: [
-                                                                                  Row(
-                                                                                    children: [
-                                                                                      TextButton(
-                                                                                          onPressed: () {
-                                                                                            Navigator
-                                                                                                .pop(
-                                                                                                context);
-                                                                                            Get
-                                                                                                .back();
-                                                                                          },
-                                                                                          child: Text(
-                                                                                            '확인',
-                                                                                            style: TextStyle(
-                                                                                              fontSize: 15,
-                                                                                              color: Color(
-                                                                                                  0xFF949494),
-                                                                                              fontWeight:
-                                                                                              FontWeight
-                                                                                                  .bold,
-                                                                                            ),
-                                                                                          )),
-                                                                                    ],
-                                                                                    mainAxisAlignment:
-                                                                                    MainAxisAlignment
-                                                                                        .end,
-                                                                                  )
-                                                                                ],
-                                                                              ));
-                                                                            } else {
-                                                                              CustomFullScreenDialog.showDialog();
-                                                                              await _userModelController.updateInvitation(friendUid: widget.uid);
-                                                                              await _userModelController.updateInvitationAlarm(friendUid: widget.uid);
-                                                                              await _userModelController.getCurrentUser(_userModelController.uid);
-                                                                              //await _userModelController.updateFriendUid(widget.uid);
-                                                                              //await _userModelController.updateWhoResistMe(friendUid: widget.uid!);
-                                                                              Navigator.pop(context);
-                                                                              CustomFullScreenDialog.cancelDialog();
-                                                                            }
-                                                                          },
-                                                                          child: Text(
-                                                                            '보내기',
-                                                                            style: TextStyle(
-                                                                              fontSize: 15,
-                                                                              color: Color(
-                                                                                  0xff377EEA),
-                                                                              fontWeight: FontWeight
-                                                                                  .bold,
-                                                                            ),
-                                                                          )),
-                                                                      TextButton(
-                                                                          onPressed: () async {
-                                                                            Navigator.pop(context);
-                                                                          },
-                                                                          child: Text(
-                                                                            '취소',
-                                                                            style: TextStyle(
-                                                                              fontSize: 15,
-                                                                              color: Color(
-                                                                                  0xff377EEA),
-                                                                              fontWeight: FontWeight
-                                                                                  .bold,
-                                                                            ),
-                                                                          )),
-                                                                    ],
-                                                                    mainAxisAlignment: MainAxisAlignment
-                                                                        .center,
-                                                                  )
-                                                                ],
-                                                              ));
-                                                            },
-                                                            child: Container(
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment
-                                                                    .center,
-                                                                children: [
-                                                                  Column(
-                                                                    children: [
-                                                                      Image.asset(
-                                                                        'assets/imgs/icons/icon_profile_friend_add.png',
-                                                                        height: _size.width / 10,
-                                                                        width: _size.width / 10,
+                                                                              ),
+                                                                              SizedBox(
+                                                                                width: 10,
+                                                                              ),
+                                                                              Expanded(
+                                                                                child: InkWell(
+                                                                                  child:
+                                                                                  ElevatedButton(
+                                                                                    onPressed: () {
+                                                                                      if (_formKeyProfile.currentState!.validate()) {
+                                                                                        setState(() {
+                                                                                          _initialDisplayName = _displayNameController.text;
+                                                                                        });
+                                                                                        FocusScope.of(context).unfocus();
+                                                                                        Navigator.pop(context);
+                                                                                      } else {
+                                                                                        Get.snackbar(
+                                                                                            '입력 실패',
+                                                                                            '올바른 활동명을 입력해주세요.',
+                                                                                            snackPosition: SnackPosition.BOTTOM,
+                                                                                            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                                                                            backgroundColor: Colors.black87,
+                                                                                            colorText: Colors.white,
+                                                                                            duration: Duration(milliseconds: 3000));
+                                                                                      }
+                                                                                    },
+                                                                                    child: Text('변경',
+                                                                                      style: TextStyle(
+                                                                                          color: Colors.white,
+                                                                                          fontSize: 15,
+                                                                                          fontWeight: FontWeight.bold),
+                                                                                    ),
+                                                                                    style: TextButton
+                                                                                        .styleFrom(
+                                                                                        splashFactory:
+                                                                                        InkRipple.splashFactory,
+                                                                                        elevation: 0,
+                                                                                        minimumSize: Size(100, 56),
+                                                                                        backgroundColor: Color(0xff2C97FB),
+                                                                                        padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          )
+                                                                        ],
                                                                       ),
-                                                                      SizedBox(height: 5,),
-                                                                      Text('친구로 등록하기')
-                                                                    ],
+                                                                    ),
                                                                   ),
-                                                                ],
-                                                              ),
+                                                                );
+                                                              },
+                                                            );
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(
+                                                                left: 4),
+                                                            child: Image.asset(
+                                                              'assets/imgs/icons/icon_edit_pencil.png',
+                                                              height: 20,
+                                                              width: 20,
                                                             ),
-                                                          ),
-                                                        ); //친구로등록하기
-                                                    }
-                                                    else if (snapshot.connectionState ==
-                                                        ConnectionState.waiting) {}
-                                                    return Center(
-                                                      child: CircularProgressIndicator(),
-                                                    );
-                                                  },),
+                                                          )),
+                                                  ],
+                                                ), //활동명//상태메시지
+                                                SizedBox(
+                                                  height: 2,
+                                                ),
+                                                (edit == true)
+                                                    ? Padding(
+                                                  padding: const EdgeInsets.only(top: 6),
+                                                  child: Container(
+                                                    width: _size.width - 120,
+                                                    child: TextFormField(
+                                                      key: _formKeyProfile2,
+                                                      cursorColor: Color(0xff949494),
+                                                      controller: _stateMsgController,
+                                                      strutStyle: StrutStyle(leading: 0.3),
+                                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                      maxLines: 1,
+                                                      enableSuggestions: false,
+                                                      autocorrect: false,
+                                                      textInputAction: TextInputAction.newline,
+                                                      onTap: () {
+                                                        // 텍스트 필드 선택 시 커서를 맨 오른쪽으로 이동
+                                                        _stateMsgController.selection =
+                                                            TextSelection.fromPosition(
+                                                                TextPosition(offset: _stateMsgController.text.length));
+                                                      },
+                                                      decoration: InputDecoration(
+                                                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                                                        labelText: '상태메시지',
+                                                        labelStyle: TextStyle(
+                                                          fontSize: 14, fontWeight: FontWeight.normal,
+                                                          color: Color(0xFF666666),
+                                                        ),
+                                                        hoverColor: Colors.transparent,
+                                                        filled: true,
+                                                        focusColor: Colors.transparent,
+                                                        errorStyle: TextStyle(
+                                                          fontSize: 12,
+                                                        ),
+                                                        hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 14),
+                                                        hintText: '상태메시지를 입력해주세요.',
+                                                        contentPadding: EdgeInsets.only(left: 12, right: 12),
+                                                        border: OutlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.transparent),
+                                                          borderRadius: BorderRadius.circular(6),
+                                                        ),
+                                                        enabledBorder: OutlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.transparent),
+                                                          borderRadius: BorderRadius.circular(6),
+                                                        ),
+                                                        focusedBorder: OutlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.transparent),
+                                                          borderRadius: BorderRadius.circular(6),
+                                                        ),
+                                                        errorBorder: OutlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.transparent),
+                                                          borderRadius: BorderRadius.circular(6),
+                                                        ),
+                                                      ),
+                                                      validator: (val) {
+                                                        if (val!.length <= 20) {
+                                                          return null;
+                                                        } else {
+                                                          return '20자 미만으로 적어주세요.';
+                                                        }
+                                                      },
+                                                    ),
+
+                                                  ),
+                                                )
+                                                    : Padding(
+                                                  padding: const EdgeInsets.only(bottom: 6),
+                                                  child: Text('${friendDocs[0]['stateMsg']}',
+                                                    style: TextStyle(fontSize: 14,
+                                                        color: Color(0xFF949494)),),
+                                                ),
                                               ],
                                             ),
                                           ),
-                                          Positioned(
-                                              top: 15,
-                                              right: 35,
-                                              child: Container(
-                                                padding: EdgeInsets.only(
-                                                    top: 3, bottom: 3, left: 10, right: 10),
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xFFDEDEEF),
-                                                  borderRadius: BorderRadius.circular(30.0),
+                                          (widget.uid == _userModelController.uid)
+                                              ? Padding(
+                                            padding: const EdgeInsets.only(top: 10),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                ElevatedButton(onPressed: () {
+                                                  setState(() {
+                                                    _initStateMsg = _userModelController.stateMsg!;
+                                                    _initialDisplayName = _userModelController.displayName!;
+                                                    edit = true;
+                                                  });
+                                                }, child: Text('프로필 수정', style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.normal,
+                                                    color: Color(0xFF666666)
                                                 ),
-                                                child: Text(
-                                                  '${_resortModelController.getResortName(_userModelController.resortNickname!)}',
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Color(0xFF626274),
-                                                      fontWeight: FontWeight.bold),
                                                 ),
-                                              )
-                                          ),
+                                                  style: TextButton.styleFrom(
+                                                      shape: const RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                        side: BorderSide(color: Color(0xFFDEDEDE))
+                                                      ),
+                                                      elevation: 0,
+                                                      splashFactory: InkRipple.splashFactory,
+                                                      minimumSize: Size(82, 36),
+                                                      backgroundColor:
+                                                      Color(0xffffffff)),
+                                                ),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                ElevatedButton(onPressed: () {
+                                                  Get.to(() => SetProfileImage_moreTab());
+                                                }, child: Text('이미지 수정', style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.normal,
+                                                    color: Color(0xFF666666)
+                                                ),
+                                                ),
+                                                  style: TextButton.styleFrom(
+                                                      shape: const RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                          side: BorderSide(color: Color(0xFFDEDEDE))
+                                                      ),
+                                                      elevation: 0,
+                                                      splashFactory: InkRipple.splashFactory,
+                                                      minimumSize: Size(82, 36),
+                                                      backgroundColor:
+                                                      Color(0xffffffff)),
+                                                ),
+                                                // SizedBox(
+                                                //   width: 40,
+                                                // ),
+                                                // Column(
+                                                //   children: [
+                                                //     IconButton(
+                                                //         onPressed: (){},
+                                                //         iconSize: 32,
+                                                //         icon: Image.asset('assets/imgs/icons/icon_edit_livecrew.png')
+                                                //     ),
+                                                //     Text('라이브 크루', style: TextStyle(fontSize: 13, color: Color(0xFF111111)),)
+                                                //   ],
+                                                // ),
+                                              ],
+                                            ),
+                                          ) //프로필수정 + 라이브크루
+                                              : StreamBuilder(
+                                            stream: FirebaseFirestore.instance
+                                                .collection('user')
+                                                .where(
+                                                'uid', isEqualTo: _userModelController.uid)
+                                                .snapshots(),
+                                            builder: (context, AsyncSnapshot<
+                                                QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                              if (!snapshot.hasData || snapshot.data == null) {}
+                                              else if (snapshot.data!.docs.isNotEmpty) {
+                                                final userDocs = snapshot.data!.docs;
+                                                return
+                                                  (userDocs[0]['friendUidList'].contains(widget.uid))
+                                                      ? Container() //빈칸
+                                                      : (whoInviteMe.contains(_userModelController.uid))
+                                                          ? GestureDetector(
+                                                        onTap: () {
+                                                          Get.dialog(AlertDialog(
+                                                            contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                            elevation: 0,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(10.0)),
+                                                            buttonPadding:
+                                                            EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                            content: Text(
+                                                              '이미 요청중입니다.',
+                                                              style: TextStyle(
+                                                                  fontWeight: FontWeight.w600,
+                                                                  fontSize: 15),
+                                                            ),
+                                                            actions: [
+                                                              Row(
+                                                                children: [
+                                                                  TextButton(
+                                                                      onPressed: () async {
+                                                                        Navigator.pop(context);
+                                                                      },
+                                                                      child: Text(
+                                                                        '확인',
+                                                                        style: TextStyle(
+                                                                          fontSize: 15,
+                                                                          color: Color(0xff377EEA),
+                                                                          fontWeight: FontWeight.bold,
+                                                                        ),
+                                                                      )),
+                                                                ],
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                              )
+                                                            ],
+                                                          ));
+                                                        },
+                                                        child: Container(
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              Column(
+                                                                children: [
+                                                                  Text('친구등록 요청중')
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
+                                                          : ElevatedButton(
+                                                        onPressed: () {
+                                                          Get.dialog(AlertDialog(
+                                                            contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                            elevation: 0,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(10.0)),
+                                                            buttonPadding:
+                                                            EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                            content: Text(
+                                                              '친구등록 요청을 보내시겠습니까?',
+                                                              style: TextStyle(
+                                                                  fontWeight: FontWeight.w600,
+                                                                  fontSize: 15),
+                                                            ),
+                                                            actions: [
+                                                              Row(
+                                                                children: [
+                                                                  TextButton(
+                                                                      onPressed: () async {
+                                                                        await _userModelController.getCurrentUser(_userModelController.uid);
+                                                                        if (_userModelController.whoInviteMe!.contains(widget.uid)) {
+                                                                          Get.dialog(AlertDialog(
+                                                                            contentPadding: EdgeInsets.only(bottom: 0, right: 20, top: 30),
+                                                                            elevation: 0,
+                                                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                                                            buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                            content: Text(
+                                                                              '이미 요청받은 회원입니다.',
+                                                                              style: TextStyle(
+                                                                                  fontWeight: FontWeight.w600,
+                                                                                  fontSize: 15),
+                                                                            ),
+                                                                            actions: [
+                                                                              Row(
+                                                                                children: [
+                                                                                  TextButton(
+                                                                                      onPressed: () {
+                                                                                        Navigator.pop(context);
+                                                                                        Get.back();
+                                                                                      },
+                                                                                      child: Text(
+                                                                                        '확인',
+                                                                                        style: TextStyle(
+                                                                                          fontSize: 15,
+                                                                                          color: Color(0xFF949494),
+                                                                                          fontWeight: FontWeight.bold,
+                                                                                        ),
+                                                                                      )),
+                                                                                ],
+                                                                                mainAxisAlignment:
+                                                                                MainAxisAlignment
+                                                                                    .end,
+                                                                              )
+                                                                            ],
+                                                                          ));
+                                                                        } else {
+                                                                          CustomFullScreenDialog.showDialog();
+                                                                          await _userModelController.updateInvitation(friendUid: widget.uid);
+                                                                          await _userModelController.updateInvitationAlarm(friendUid: widget.uid);
+                                                                          await _userModelController.getCurrentUser(_userModelController.uid);
+                                                                          //await _userModelController.updateFriendUid(widget.uid);
+                                                                          //await _userModelController.updateWhoResistMe(friendUid: widget.uid!);
+                                                                          Navigator.pop(context);
+                                                                          CustomFullScreenDialog.cancelDialog();
+                                                                        }
+                                                                      },
+                                                                      child: Text('보내기',
+                                                                        style: TextStyle(
+                                                                          fontSize: 15,
+                                                                          color: Color(0xff377EEA),
+                                                                          fontWeight: FontWeight.bold,
+                                                                        ),
+                                                                      )),
+                                                                  TextButton(
+                                                                      onPressed: () async {
+                                                                        Navigator.pop(context);
+                                                                      },
+                                                                      child: Text('취소',
+                                                                        style: TextStyle(
+                                                                          fontSize: 15,
+                                                                          color: Color(0xff377EEA),
+                                                                          fontWeight: FontWeight.bold,
+                                                                        ),
+                                                                      )),
+                                                                ],
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                              )
+                                                            ],
+                                                          ));
+                                                      }, child: Text('친구로 등록하기', style: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight: FontWeight.normal,
+                                                          color: Color(0xFF666666)
+                                                      ),
+                                                      ),
+                                                        style: TextButton.styleFrom(
+                                                            shape: const RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                                side: BorderSide(color: Color(0xFFDEDEDE))
+                                                            ),
+                                                            elevation: 0,
+                                                            splashFactory: InkRipple.splashFactory,
+                                                            minimumSize: Size(82, 36),
+                                                            backgroundColor:
+                                                            Color(0xffffffff)),
+                                                      ); //친구로등록하기
+                                              }
+                                              else if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {}
+                                              return Center(
+                                                child: CircularProgressIndicator(),
+                                              );
+                                            },),
                                         ],
                                       ), //프사 + 닉네임 + 상메
-                                      SizedBox(height: 30,),
-                                        Column(
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Padding(
-                                                padding: EdgeInsets.symmetric(horizontal: 16),
-                                                child: Text('가입한 라이브 크루',
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 16,
-                                                      color: Color(0xFF111111)
-                                                  ),)),
-                                            SizedBox(height: 10),
                                             StreamBuilder(
                                                 stream: _crewStream,
                                                 builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -992,66 +860,79 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                           Get.to(()=>CrewDetailPage_screen());
                                                         },
                                                         child: Container(
-                                                          margin: EdgeInsets.only(left: 16, right: 16,),
+                                                          width: _size.width / 2 - 25,
                                                           padding: EdgeInsets.all(16),
                                                           decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(12),
+                                                              borderRadius: BorderRadius.circular(10),
                                                               color: Color(crewDocs[0]['crewColor'])
                                                           ),
                                                           child: Row(
                                                             children: [
                                                               Column(
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                                                mainAxisAlignment: MainAxisAlignment.start,
                                                                 children: [
+                                                                  Text('가입한 크루',
+                                                                    style: TextStyle(
+                                                                        fontWeight: FontWeight.normal,
+                                                                        fontSize: 13,
+                                                                        color: Color(0xFFFFFFFF).withOpacity(0.6)
+                                                                    ),),
+                                                                  SizedBox(height: 12),
+                                                                  (crewDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                      ? GestureDetector(
+                                                                    onTap: () {
+                                                                      Get.to(() => ProfileImagePage(
+                                                                          CommentProfileUrl: crewDocs['profileImageUrl']));
+                                                                    },
+                                                                    child: Container(
+                                                                        width: 50,
+                                                                        height: 50,
+                                                                        child: ExtendedImage.network(
+                                                                          crewDocs[0]['profileImageUrl'],
+                                                                          enableMemoryCache: true,
+                                                                          shape: BoxShape.rectangle,
+                                                                          borderRadius: BorderRadius.circular(6),
+                                                                          fit: BoxFit.cover,
+                                                                        )),
+                                                                  )
+                                                                      : GestureDetector(
+                                                                    onTap: () {
+                                                                      Get.to(() => ProfileImagePage(
+                                                                          CommentProfileUrl: ''));
+                                                                    },
+                                                                    child: Container(
+                                                                      width: 50,
+                                                                      height: 50,
+                                                                      child: ExtendedImage.asset(
+                                                                        'assets/imgs/profile/img_profile_default_.png',
+                                                                        enableMemoryCache: true,
+                                                                        shape: BoxShape.rectangle,
+                                                                        borderRadius: BorderRadius.circular(6),
+                                                                        fit: BoxFit.cover,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 34,
+                                                                  ),
                                                                   Text('${crewDocs[0]['crewName']}',
                                                                     style: TextStyle(
                                                                         fontWeight: FontWeight.bold,
-                                                                        fontSize: 20,
+                                                                        fontSize: 16,
                                                                         color: Color(0xFFFFFFFF)
                                                                     ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 3,
                                                                   ),
                                                                   Text('${crewDocs[0]['crewLeader']}',
                                                                     style: TextStyle(
-                                                                        fontSize: 14,
+                                                                        fontSize: 13,
                                                                         color: Color(0xFFFFFFFF)
                                                                     ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              Expanded(child: SizedBox()),
-                                                              (crewDocs[0]['profileImageUrl'].isNotEmpty)
-                                                                  ? GestureDetector(
-                                                                onTap: () {
-                                                                  Get.to(() => ProfileImagePage(
-                                                                      CommentProfileUrl: crewDocs['profileImageUrl']));
-                                                                },
-                                                                child: Container(
-                                                                    width: 90,
-                                                                    height: 90,
-                                                                    child: ExtendedImage.network(
-                                                                      crewDocs[0]['profileImageUrl'],
-                                                                      enableMemoryCache: true,
-                                                                      shape: BoxShape.rectangle,
-                                                                      borderRadius: BorderRadius.circular(16),
-                                                                      fit: BoxFit.cover,
-                                                                    )),
-                                                              )
-                                                                  : GestureDetector(
-                                                                onTap: () {
-                                                                  Get.to(() => ProfileImagePage(
-                                                                      CommentProfileUrl: ''));
-                                                                },
-                                                                child: Container(
-                                                                  width: 90,
-                                                                  height: 90,
-                                                                  child: ExtendedImage.asset(
-                                                                    'assets/imgs/profile/img_profile_default_.png',
-                                                                    enableMemoryCache: true,
-                                                                    shape: BoxShape.rectangle,
-                                                                    borderRadius: BorderRadius.circular(16),
-                                                                    fit: BoxFit.cover,
                                                                   ),
-                                                                ),
+                                                                ],
                                                               ),
                                                             ],
                                                           ),
@@ -1060,256 +941,496 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                   }else if (snapshot.connectionState == ConnectionState.waiting) {}
                                                   return
                                                     (friendDocs[0]['uid'] == _userModelController.uid)
-                                                    ?GestureDetector(
+                                                        ? GestureDetector(
                                                       onTap: (){
                                                         Get.to(()=>FirstPage_createCrew());
                                                       },
                                                       child: Container(
-                                                      width: _size.width,
-                                                      margin: EdgeInsets.only(left: 16, right: 16,),
-                                                      padding: EdgeInsets.all(16),
-                                                      decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(12),
-                                                          color: Color(0xFFEEEEF5)
+                                                        height: 160,
+                                                        width: _size.width / 2 - 25,
+                                                        padding: EdgeInsets.all(16),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            color: Color(0xFFF1F3F3)
+                                                        ),
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text('가입한 크루가 없습니다. \n크루를 가입해서 함께 즐겨보세요.',
+                                                              style: TextStyle(
+                                                                  fontSize: 13,
+                                                                  color: Color(0xFF949494)
+                                                              ),),
+                                                            Text('크루 가입하기 >',
+                                                              style: TextStyle(
+                                                                  fontSize: 13,
+                                                                  fontWeight: FontWeight.bold,
+                                                                  color: Color(0xFF666666)
+                                                              ),),
+                                                          ],
+                                                        ),
                                                       ),
-                                                      child: Text('크루를 가입해서 함께 즐겨보세요. 눌러서 가입하러가기'),
-                                                  ),
                                                     )
-                                                  :Container(
-                                                      width: _size.width,
-                                                      margin: EdgeInsets.only(left: 16, right: 16,),
+                                                        :Container(
+                                                      width: _size.width / 2 - 25,
                                                       padding: EdgeInsets.all(16),
                                                       decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(12),
-                                                          color: Color(0xFFEEEEF5)
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          color: Color(0xFFf1f3f3)
                                                       ),
-                                                      child: Text('가입한 크루가 없습니다.'),
+                                                      child: Row(
+                                                        children: [
+                                                          Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            children: [
+                                                              Text('크루',
+                                                                style: TextStyle(
+                                                                    fontWeight: FontWeight.normal,
+                                                                    fontSize: 13,
+                                                                    color: Color(0xFF444444).withOpacity(0.8)
+                                                                ),),
+                                                              SizedBox(height: 12),
+                                                              SizedBox(
+                                                                height: 84,
+                                                              ),
+                                                              Text('가입된 크루가 \n없습니다.',
+                                                                style: TextStyle(
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize: 16,
+                                                                    color: Color(0xFF444444)
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
                                                     );
                                                 }),
-                                          ],
-                                        ), //소속된크루
-                                        StreamBuilder<DocumentSnapshot>(
-                                            stream: _rankStream,
-                                            builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                                              if (snapshot.hasError) {
-                                                return Text("오류가 발생했습니다");
-                                              }
-                                              else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return Lottie.asset('assets/json/loadings_wht_final.json');
-                                              }
-
-                                                Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
-                                                Map<String, dynamic>? passCountData = data?['passCountData'] as Map<String, dynamic>?;
-                                                Map<String, dynamic>? passCountTimeData = data?['passCountTimeData'] as Map<String, dynamic>?;
-
-                                                List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);
-                                                List<Map<String, dynamic>> barData2 = _liveMapController.calculateBarDataSlot(passCountTimeData);
-                                                isPassDataZero = _liveMapController.areAllSlotValuesZero(passCountTimeData);
-
-                                              return
-                                                  (passCountData != null && passCountTimeData != null && isPassDataZero == false )
-                                                  ?Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    SizedBox(height: 30,),
-                                                    Padding(
-                                                        padding: EdgeInsets.symmetric(horizontal: 16),
-                                                        child: Text('슬로프 라이딩 횟수',
-                                                          style: TextStyle(
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: 16,
-                                                              color: Color(0xFF111111)
-                                                          ),)),
-                                                    SizedBox(height: 10,),
-                                                    Container(
+                                            StreamBuilder(
+                                                stream: _crewStream,
+                                                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                                                  if (!snapshot.hasData || snapshot.data == null) {}
+                                                  else if (snapshot.data!.docs.isNotEmpty) {
+                                                    final crewDocs = snapshot.data!.docs;
+                                                    return GestureDetector(
+                                                        onTap: () async {
+                                                          CustomFullScreenDialog.showDialog();
+                                                          await _liveCrewModelController.getCurrnetCrew(friendDocs[0]['liveCrew']);
+                                                          CustomFullScreenDialog.cancelDialog();
+                                                          Get.to(()=>CrewDetailPage_screen());
+                                                        },
                                                         child: Container(
-                                                          height: 200,
+                                                          width: _size.width / 2 - 25,
+                                                          padding: EdgeInsets.all(16),
                                                           decoration: BoxDecoration(
-                                                              color: Color(0xFFDFECFF),
-                                                              borderRadius: BorderRadius.circular(14),
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color: Colors.grey.withOpacity(0.5),
-                                                                  blurRadius: 2,
-                                                                  offset: Offset(1, 0),
-                                                                ),
-                                                              ]
+                                                              borderRadius: BorderRadius.circular(10),
+                                                              color: Color(0xFF1D59B4)
                                                           ),
-                                                          margin: EdgeInsets.symmetric(horizontal: 16),
+                                                          child: Row(
+                                                            children: [
+                                                              Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                children: [
+                                                                  Text('랭킹',
+                                                                    style: TextStyle(
+                                                                        fontWeight: FontWeight.normal,
+                                                                        fontSize: 13,
+                                                                        color: Color(0xFFFFFFFF).withOpacity(0.6)
+                                                                    ),),
+                                                                  SizedBox(height: 12),
+                                                                  (crewDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                      ? GestureDetector(
+                                                                    onTap: () {
+                                                                    },
+                                                                    child: Transform.translate(
+                                                                      offset: Offset(-8,-6),
+                                                                      child: Container(
+                                                                          width: 60,
+                                                                          height: 64,
+                                                                          child: ExtendedImage.network(
+                                                                            'assets/imgs/ranking/icon_ranking_tier_A.png',
+                                                                            enableMemoryCache: true,
+                                                                            shape: BoxShape.rectangle,
+                                                                            borderRadius: BorderRadius.circular(6),
+                                                                            fit: BoxFit.cover,
+                                                                          )),
+                                                                    ),
+                                                                  )
+                                                                      : GestureDetector(
+                                                                    onTap: () {
+                                                                      Get.to(() => ProfileImagePage(
+                                                                          CommentProfileUrl: ''));
+                                                                    },
+                                                                    child: Transform.translate(
+                                                                      offset: Offset(-8,-6),
+                                                                      child: Container(
+                                                                        width: 60,
+                                                                        height: 64,
+                                                                        child: ExtendedImage.asset(
+                                                                          'assets/imgs/ranking/icon_ranking_tier_A.png',
+                                                                          enableMemoryCache: true,
+                                                                          shape: BoxShape.rectangle,
+                                                                          borderRadius: BorderRadius.circular(6),
+                                                                          fit: BoxFit.cover,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 20,
+                                                                  ),
+                                                                  Text('3840P',
+                                                                    style: TextStyle(
+                                                                        fontWeight: FontWeight.bold,
+                                                                        fontSize: 16,
+                                                                        color: Color(0xFFFFFFFF)
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 3,
+                                                                  ),
+                                                                  Text('214등',
+                                                                    style: TextStyle(
+                                                                        fontSize: 13,
+                                                                        color: Color(0xFFFFFFFF)
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                    );
+                                                  } else if (snapshot.connectionState == ConnectionState.waiting) {}
+                                                  return
+                                                    (friendDocs[0]['uid'] == _userModelController.uid)
+                                                        ?GestureDetector(
+                                                      onTap: (){
+                                                        Get.to(()=>FirstPage_createCrew());
+                                                      },
+                                                      child: Container(
+                                                        height: 160,
+                                                        width: _size.width / 2 - 25,
+                                                        padding: EdgeInsets.all(16),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            color: Color(0xFFF1F3F3)
+                                                        ),
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text('랭킹 점수가 없습니다.\n라이브온을 통해 랭킹에 참여해 보세요.',
+                                                            style: TextStyle(
+                                                              fontSize: 13,
+                                                              color: Color(0xFF949494)
+                                                            ),),
+                                                            Text('랭킹 참여하러 가기 >',
+                                                              style: TextStyle(
+                                                                  fontSize: 13,
+                                                                  fontWeight: FontWeight.bold,
+                                                                  color: Color(0xFF666666)
+                                                              ),),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    )
+                                                        : Container(
+                                                          width: _size.width / 2 - 25,
+                                                          padding: EdgeInsets.all(16),
+                                                          decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(10),
+                                                              color: Color(0xFFf1f3f3)
+                                                          ),
+                                                          child: Row(
+                                                            children: [
+                                                              Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                children: [
+                                                                  Text('랭킹',
+                                                                    style: TextStyle(
+                                                                        fontWeight: FontWeight.normal,
+                                                                        fontSize: 13,
+                                                                        color: Color(0xFF444444).withOpacity(0.8)
+                                                                    ),),
+                                                                  SizedBox(height: 12),
+                                                                  SizedBox(
+                                                                    height: 84,
+                                                                  ),
+                                                                  Text('점수가 없습니다.',
+                                                                    style: TextStyle(
+                                                                        fontWeight: FontWeight.bold,
+                                                                        fontSize: 16,
+                                                                        color: Color(0xFF444444)
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 3,
+                                                                  ),
+                                                                  Text('',
+                                                                    style: TextStyle(
+                                                                        fontSize: 13,
+                                                                        color: Color(0xFF444444)
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                }),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 12,),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                                        child: Container(
+                                          width: _size.width,
+                                          height: 64,
+                                          padding: EdgeInsets.only(left: 16, right: 20),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFf1f3f3),
+                                            borderRadius: BorderRadius.circular(10),
+                                            // border: Border.all(color: Color(0xFFDEDEDE), width: 1),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                '자주가는 리조트',
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Color(0xFF111111),
+                                                    fontWeight: FontWeight.normal),
+                                              ),
+                                              Text(
+                                                '${_resortModelController.getResortName(_userModelController.resortNickname!)}',
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Color(0xFF111111),
+                                                    fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),//소속된크루
+                                      StreamBuilder<DocumentSnapshot>(
+                                          stream: _rankStream,
+                                          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                                            if (snapshot.hasError) {
+                                              return Text("오류가 발생했습니다");
+                                            }
+                                            else if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return Lottie.asset('assets/json/loadings_wht_final.json');
+                                            }
+
+                                            Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
+                                            Map<String, dynamic>? passCountData = data?['passCountData'] as Map<String, dynamic>?;
+                                            Map<String, dynamic>? passCountTimeData = data?['passCountTimeData'] as Map<String, dynamic>?;
+
+                                            List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);
+                                            List<Map<String, dynamic>> barData2 = _liveMapController.calculateBarDataSlot(passCountTimeData);
+                                            isPassDataZero = _liveMapController.areAllSlotValuesZero(passCountTimeData);
+
+                                            return
+                                              (passCountData != null && passCountTimeData != null && isPassDataZero == false )
+                                                  ?Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(height: 40,),
+                                                  Padding(
+                                                      padding: EdgeInsets.symmetric(horizontal: 20),
+                                                      child: Text('슬로프 라이딩 횟수',
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 16,
+                                                            color: Color(0xFF111111)
+                                                        ),)),
+                                                  SizedBox(height: 10,),
+                                                  Container(
+                                                      child: Container(
+                                                        padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 60 : 20),
+                                                        width: _size.width,
+                                                        height: 214,
+                                                        decoration: BoxDecoration(
+                                                            color: Color(0xFFDFECFF),
+                                                            borderRadius: BorderRadius.circular(14),
+                                                        ),
+                                                        margin: EdgeInsets.symmetric(horizontal: 20),
+                                                        child: Center(
                                                           child: Column(
                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
-                                                              Expanded(
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                                                  child: Container(
-                                                                    child:
-                                                                    passCountData?.entries.isEmpty ?? true ?
-                                                                    Center(child: Text('데이터가 없습니다'))
-                                                                        : ListView(
-                                                                      scrollDirection: Axis.horizontal,
-                                                                      children: barData.map((data) {
-                                                                        String slopeName = data['slopeName'];
-                                                                        int passCount = data['passCount'];
-                                                                        double barHeightRatio = data['barHeightRatio'];
-                                                                        Color barColor = data['barColor'];
-                                                                        return Container(
-                                                                          margin: EdgeInsets.symmetric(horizontal: 5),
-                                                                          width: 50,
-                                                                          height: 95,
-                                                                          child: Column(
-                                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                                            children: [
-                                                                              Text(
-                                                                                '$passCount',
-                                                                                style: TextStyle(
-                                                                                    fontSize: 11,
-                                                                                    color: Color(0xFF111111),
-                                                                                    fontWeight: FontWeight.bold
+                                                              Container(
+                                                                margin: EdgeInsets.only(top: 6),
+                                                                child: passCountData?.entries.isEmpty ?? true
+                                                                    ? Center(child: Text('데이터가 없습니다'))
+                                                                    : SingleChildScrollView(
+                                                                  scrollDirection: Axis.horizontal,
+                                                                      child: Row(
+                                                                        mainAxisAlignment:
+                                                                        barData.length < 2
+                                                                        ? MainAxisAlignment.center
+                                                                        : MainAxisAlignment.spaceBetween,
+                                                                  children: barData.map((data) {
+                                                                      String slopeName = data['slopeName'];
+                                                                      int passCount = data['passCount'];
+                                                                      double barHeightRatio = data['barHeightRatio'];
+                                                                      Color barColor = data['barColor'];
+                                                                      return Container(
+                                                                        margin: EdgeInsets.symmetric(horizontal: 5),
+                                                                        width: barData.length < 5 ? _size.width / 5 - 25 : _size.width / 5 - 28,
+                                                                        height: 195,
+                                                                        child: Column(
+                                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                                          children: [
+                                                                            Text(
+                                                                              passCount != 0 ? '$passCount' : '',
+                                                                              style: TextStyle(
+                                                                                  fontSize: 13,
+                                                                                  color: Color(0xFF111111),
+                                                                                  fontWeight: FontWeight.bold
+                                                                              ),
+                                                                            ),
+                                                                            SizedBox(height: 4),
+                                                                            Container(
+                                                                              width: 58,
+                                                                              height: 140 * barHeightRatio,
+                                                                              child: Container(
+                                                                                width: 58,
+                                                                                height: 140 * barHeightRatio,
+                                                                                decoration: BoxDecoration(
+                                                                                    color: barColor,
+                                                                                    borderRadius: BorderRadius.only(
+                                                                                        topRight: Radius.circular(4),
+                                                                                        topLeft: Radius.circular(4)
+                                                                                    )
                                                                                 ),
                                                                               ),
-                                                                              SizedBox(height: 10),
-                                                                              Container(
-                                                                                width: 50,
-                                                                                height: 95 * barHeightRatio,
-                                                                                child: Container(
-                                                                                  width: 20,
-                                                                                  height: 95 * barHeightRatio,
-                                                                                  decoration: BoxDecoration(
-                                                                                      color: barColor,
-                                                                                      borderRadius: BorderRadius.only(
-                                                                                          topRight: Radius.circular(3),
-                                                                                          topLeft: Radius.circular(3)
-                                                                                      )
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                              SizedBox(height: 10),
-                                                                              Text(
-                                                                                slopeName,
-                                                                                style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
-                                                                              ),
-                                                                              SizedBox(height: 20,)
-                                                                            ],
-                                                                          ),
-                                                                        );
-                                                                      }).toList(),
-                                                                    ),
-                                                                  ),
+                                                                            ),
+                                                                            SizedBox(height: 10),
+                                                                            Text(
+                                                                              slopeName,
+                                                                              style: TextStyle(fontSize: 12, color: Color(0xFF111111)),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      );
+                                                                  }).toList(),
                                                                 ),
+                                                                    ),
                                                               ),
 
                                                             ],
                                                           ),
-                                                        )
-                                                    ),
-                                                    SizedBox(height: 30,),
-                                                    Padding(
-                                                        padding: EdgeInsets.symmetric(horizontal: 16),
-                                                        child: Text('시간대별 라이딩 횟수',
-                                                          style: TextStyle(
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: 16,
-                                                              color: Color(0xFF111111)
-                                                          ),)),
-                                                    SizedBox(height: 10,),
-                                                    Container(
-                                                        child: Container(
-                                                          height: 200,
-                                                          decoration: BoxDecoration(
-                                                              color: Color(0xFFDFECFF),
-                                                              borderRadius: BorderRadius.circular(14),
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color: Colors.grey.withOpacity(0.5),
-                                                                  blurRadius: 2,
-                                                                  offset: Offset(1, 0),
-                                                                ),
-                                                              ]
-                                                          ),
-                                                          margin: EdgeInsets.symmetric(horizontal: 16),
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Expanded(
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                                                  child: Container(
-                                                                    child:
-                                                                    passCountTimeData?.entries.isEmpty ?? true ?
-                                                                    Center(child: Text('데이터가 없습니다'))
-                                                                        : ListView(
-                                                                      scrollDirection: Axis.horizontal,
-                                                                      physics: NeverScrollableScrollPhysics(),
-                                                                      children: barData2.map((data) {
-                                                                        String slotName = data['slotName'];
-                                                                        int passCount = data['passCount'];
-                                                                        double barHeightRatio = data['barHeightRatio'];
-                                                                        Color barColor = data['barColor'];
+                                                        ),
+                                                      )
+                                                  ),
+                                                  SizedBox(height: 32),
+                                                  Padding(
+                                                      padding: EdgeInsets.symmetric(horizontal: 20),
+                                                      child: Text('시간대별 라이딩 횟수',
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 16,
+                                                            color: Color(0xFF111111)
+                                                        ),)),
+                                                  SizedBox(height: 10),
+                                                  Container(
+                                                        height: 234,
+                                                        decoration: BoxDecoration(
+                                                            color: Color(0xFFDFECFF),
+                                                            borderRadius: BorderRadius.circular(14),
+                                                        ),
+                                                        padding: EdgeInsets.only(bottom: 16),
+                                                        margin: EdgeInsets.symmetric(horizontal: 20),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Expanded(
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                                                child: Container(
+                                                                  child:
+                                                                  passCountTimeData?.entries.isEmpty ?? true ?
+                                                                  Center(child: Text('데이터가 없습니다'))
+                                                                      : Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    children: barData2.map((data) {
+                                                                      String slotName = data['slotName'];
+                                                                      int passCount = data['passCount'];
+                                                                      double barHeightRatio = data['barHeightRatio'];
+                                                                      Color barColor = data['barColor'];
 
-                                                                        return Container(
-                                                                          margin: EdgeInsets.symmetric(horizontal: 5),
-                                                                          width: 29,
-                                                                          height: 95,
-                                                                          child: Column(
-                                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                                            children: [
-                                                                              Text(
-                                                                                '$passCount',
-                                                                                style: TextStyle(
-                                                                                    fontSize: 11,
-                                                                                    color: Color(0xFF111111),
-                                                                                    fontWeight: FontWeight.bold
+                                                                      return Container(
+                                                                        margin: EdgeInsets.symmetric(horizontal: 5),
+                                                                        width: 25,
+                                                                        child: Column(
+                                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                                          children: [
+                                                                            Text(
+                                                                              passCount != 0 ? '$passCount' : '',
+                                                                              style: TextStyle(
+                                                                                  fontSize: 13,
+                                                                                  color: Color(0xFF111111),
+                                                                                  fontWeight: FontWeight.bold
+                                                                              ),
+                                                                            ),
+                                                                            SizedBox(height: 4),
+                                                                            Container(
+                                                                              width: 25,
+                                                                              height: 140 * barHeightRatio,
+                                                                              child: Container(
+                                                                                width: 25,
+                                                                                height: 140 * barHeightRatio,
+                                                                                decoration: BoxDecoration(
+                                                                                    color: barColor,
+                                                                                    borderRadius: BorderRadius.only(
+                                                                                        topRight: Radius.circular(4),
+                                                                                        topLeft: Radius.circular(4)
+                                                                                    )
                                                                                 ),
                                                                               ),
-                                                                              SizedBox(height: 10),
-                                                                              Container(
-                                                                                width: 30,
-                                                                                height: 95 * barHeightRatio,
-                                                                                child: Container(
-                                                                                  width: 30,
-                                                                                  height: 95 * barHeightRatio,
-                                                                                  decoration: BoxDecoration(
-                                                                                      color: barColor,
-                                                                                      borderRadius: BorderRadius.only(
-                                                                                          topRight: Radius.circular(3),
-                                                                                          topLeft: Radius.circular(3)
-                                                                                      )
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                              SizedBox(height: 10),
-                                                                              Text(
+                                                                            ),
+                                                                            SizedBox(height: 10),
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.only(left: 3),
+                                                                              child: Text(
                                                                                 _resortModelController.getSlotName(slotName),
                                                                                 style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
                                                                               ),
-                                                                              SizedBox(height: 20,)
-                                                                            ],
-                                                                          ),
-                                                                        );
-                                                                      }).toList(),
-                                                                    ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      );
+                                                                    }).toList(),
                                                                   ),
                                                                 ),
                                                               ),
+                                                            ),
 
-                                                            ],
-                                                          ),
-                                                        )
-                                                    ), //시간대별 라이딩 횟수
-                                                    SizedBox(height: 30),
-                                                  ],
-                                                )
-                                                :SizedBox(height: 1,);
-                                                ;
-                                            }), //라이딩횟수 그래프
-                                      Divider(
-                                        thickness: 8,
-                                        height: 20,
-                                        color: Color(0xFFEEEEEE),),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                  //시간대별 라이딩 횟수
+                                                  SizedBox(height: 30),
+                                                ],
+                                              )
+                                                  :SizedBox(height: 28);
+                                            ;
+                                          }), //라이딩횟수 그래프
+                                      // Divider(
+                                      //   thickness: 1,
+                                      //   height: 20,
+                                      //   color: Color(0xFFEEEEEE),),
                                       SizedBox(height: 20,),
                                       Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 16),
+                                          padding: EdgeInsets.symmetric(horizontal: 20),
                                           child: Text('친구톡',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
@@ -1317,7 +1438,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                 color: Color(0xFF111111)
                                             ),)), //친구톡
                                       Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 16),
+                                          padding: EdgeInsets.symmetric(horizontal: 20),
                                           child: Column(
                                             children: [
                                               StreamBuilder(
@@ -1328,10 +1449,22 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       snapshot.data == null) {
                                                     return Center(child: Padding(
                                                       padding: const EdgeInsets.symmetric(
-                                                          vertical: 24),
-                                                      child: Text('친구톡이 없습니다', style: TextStyle(
-                                                          fontSize: 13, color: Color(
-                                                          0xFF666666)),),
+                                                          vertical: 36),
+                                                      child: Column(
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/imgs/icons/icon_nodata.png',
+                                                            scale: 4,
+                                                            width: 64,
+                                                          ),
+                                                          SizedBox(
+                                                            height: 6,
+                                                          ),
+                                                          Text('친구톡이 없습니다', style: TextStyle(
+                                                              fontSize: 13, color: Color(
+                                                              0xFF666666)),),
+                                                        ],
+                                                      ),
                                                     ));
                                                   } else if (snapshot.connectionState ==
                                                       ConnectionState.waiting) {
@@ -1345,32 +1478,23 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       physics: NeverScrollableScrollPhysics(),
                                                       itemCount: commentDocs.length,
                                                       itemBuilder: (context, index) {
-                                                        Timestamp timestamp = commentDocs[index]
-                                                            .get('timeStamp');
-                                                        String formattedDate = DateFormat(
-                                                            'yyyy.MM.dd').format(
-                                                            timestamp.toDate()); // 원하는 형식으로 날짜 변환
+                                                        Timestamp timestamp = commentDocs[index].get('timeStamp');
+                                                        String formattedDate = DateFormat('yyyy.MM.dd').format(timestamp.toDate()); // 원하는 형식으로 날짜 변환
                                                         return
-                                                          (_userModelController.repoUidList!
-                                                              .contains(commentDocs[index].get(
-                                                              'myUid')))
+                                                          (_userModelController.repoUidList!.contains(commentDocs[index].get('myUid')))
                                                               ? Container(
-                                                            padding: EdgeInsets.symmetric(
-                                                                horizontal: 16, vertical: 14),
+                                                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                                                             decoration: BoxDecoration(
                                                                 color: Colors.white,
-                                                                borderRadius: BorderRadius
-                                                                    .circular(8)
+                                                                borderRadius: BorderRadius.circular(8)
                                                             ),
                                                             child: Center(
                                                               child: Padding(
-                                                                padding: const EdgeInsets
-                                                                    .symmetric(vertical: 12),
+                                                                padding: const EdgeInsets.symmetric(vertical: 12),
                                                                 child: Text(
                                                                   '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
                                                                   style: TextStyle(
-                                                                      fontWeight: FontWeight
-                                                                          .normal,
+                                                                      fontWeight: FontWeight.normal,
                                                                       fontSize: 12,
                                                                       color: Color(0xffc8c8c8)),
                                                                 ),
@@ -1380,60 +1504,46 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                               : Column(
                                                             children: [
                                                               Padding(
-                                                                padding: const EdgeInsets.only(
-                                                                    top: 8),
+                                                                padding: const EdgeInsets.only(top: 10),
                                                                 child: Row(
                                                                   children: [
                                                                     Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment
-                                                                          .start,
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
                                                                       children: [
                                                                         Row(
-                                                                          mainAxisAlignment: MainAxisAlignment
-                                                                              .start,
+                                                                          mainAxisAlignment: MainAxisAlignment.start,
                                                                           children: [
                                                                             Container(
-                                                                              child: Text(
-                                                                                commentDocs[index]['comment'],
+                                                                              child: Text(commentDocs[index]['comment'],
                                                                                 style: TextStyle(
                                                                                     fontSize: 14,
-                                                                                    color: Color(
-                                                                                        0xFF111111)
+                                                                                    color: Color(0xFF111111)
                                                                                 ),),
-                                                                              width: _size.width -
-                                                                                  52,
+                                                                              width: _size.width - 60,
                                                                             ),
-                                                                            (commentDocs[index]['myUid'] !=
-                                                                                _userModelController
-                                                                                    .uid)
+                                                                            (commentDocs[index]['myUid'] != _userModelController.uid)
                                                                                 ? GestureDetector(
                                                                               onTap: () =>
                                                                                   showModalBottomSheet(
                                                                                       enableDrag: false,
                                                                                       context: context,
-                                                                                      builder: (
-                                                                                          context) {
+                                                                                      builder: (context) {
                                                                                         return SafeArea(
                                                                                           child: Container(
                                                                                             height: 200,
                                                                                             child: Padding(
-                                                                                              padding: const EdgeInsets
-                                                                                                  .symmetric(
-                                                                                                  horizontal: 20.0,
-                                                                                                  vertical: 14),
+                                                                                              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
                                                                                               child: Column(
                                                                                                 children: [
                                                                                                   GestureDetector(
                                                                                                     child: ListTile(
-                                                                                                      contentPadding: EdgeInsets
-                                                                                                          .zero,
+                                                                                                      contentPadding: EdgeInsets.zero,
                                                                                                       title: Center(
                                                                                                         child: Text(
                                                                                                           '삭제',
                                                                                                           style: TextStyle(
                                                                                                               fontSize: 15,
-                                                                                                              fontWeight: FontWeight
-                                                                                                                  .bold,
+                                                                                                              fontWeight: FontWeight.bold,
                                                                                                               color: Color(
                                                                                                                   0xFFD63636)
                                                                                                           ),
@@ -1441,26 +1551,19 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                       ),
                                                                                                       //selected: _isSelected[index]!,
                                                                                                       onTap: () async {
-                                                                                                        Navigator
-                                                                                                            .pop(
+                                                                                                        Navigator.pop(
                                                                                                             context);
                                                                                                         showModalBottomSheet(
                                                                                                             context: context,
-                                                                                                            builder: (
-                                                                                                                context) {
+                                                                                                            builder: (context) {
                                                                                                               return Container(
-                                                                                                                color: Colors
-                                                                                                                    .white,
+                                                                                                                color: Colors.white,
                                                                                                                 height: 180,
                                                                                                                 child: Padding(
-                                                                                                                  padding: const EdgeInsets
-                                                                                                                      .symmetric(
-                                                                                                                      horizontal: 20.0),
+                                                                                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
                                                                                                                   child: Column(
-                                                                                                                    crossAxisAlignment: CrossAxisAlignment
-                                                                                                                        .start,
-                                                                                                                    mainAxisAlignment: MainAxisAlignment
-                                                                                                                        .start,
+                                                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                    mainAxisAlignment: MainAxisAlignment.start,
                                                                                                                     children: [
                                                                                                                       SizedBox(
                                                                                                                         height: 30,
@@ -1469,47 +1572,32 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                                         '삭제하시겠습니까?',
                                                                                                                         style: TextStyle(
                                                                                                                             fontSize: 20,
-                                                                                                                            fontWeight: FontWeight
-                                                                                                                                .bold,
-                                                                                                                            color: Color(
-                                                                                                                                0xFF111111)),
+                                                                                                                            fontWeight: FontWeight.bold,
+                                                                                                                            color: Color(0xFF111111)),
                                                                                                                       ),
                                                                                                                       SizedBox(
                                                                                                                         height: 30,
                                                                                                                       ),
                                                                                                                       Row(
-                                                                                                                        mainAxisAlignment: MainAxisAlignment
-                                                                                                                            .spaceEvenly,
+                                                                                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                                                                                         children: [
                                                                                                                           Expanded(
                                                                                                                             child: ElevatedButton(
                                                                                                                               onPressed: () {
-                                                                                                                                Navigator
-                                                                                                                                    .pop(
-                                                                                                                                    context);
+                                                                                                                                Navigator.pop(context);
                                                                                                                               },
-                                                                                                                              child: Text(
-                                                                                                                                '취소',
+                                                                                                                              child: Text('취소',
                                                                                                                                 style: TextStyle(
-                                                                                                                                    color: Colors
-                                                                                                                                        .white,
+                                                                                                                                    color: Colors.white,
                                                                                                                                     fontSize: 15,
-                                                                                                                                    fontWeight: FontWeight
-                                                                                                                                        .bold),
+                                                                                                                                    fontWeight: FontWeight.bold),
                                                                                                                               ),
-                                                                                                                              style: TextButton
-                                                                                                                                  .styleFrom(
-                                                                                                                                  splashFactory: InkRipple
-                                                                                                                                      .splashFactory,
+                                                                                                                              style: TextButton.styleFrom(
+                                                                                                                                  splashFactory: InkRipple.splashFactory,
                                                                                                                                   elevation: 0,
-                                                                                                                                  minimumSize: Size(
-                                                                                                                                      100,
-                                                                                                                                      56),
-                                                                                                                                  backgroundColor: Color(
-                                                                                                                                      0xff555555),
-                                                                                                                                  padding: EdgeInsets
-                                                                                                                                      .symmetric(
-                                                                                                                                      horizontal: 0)),
+                                                                                                                                  minimumSize: Size(100, 56),
+                                                                                                                                  backgroundColor: Color(0xff555555),
+                                                                                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                                                                             ),
                                                                                                                           ),
                                                                                                                           SizedBox(
@@ -1518,52 +1606,30 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                                           Expanded(
                                                                                                                             child: ElevatedButton(
                                                                                                                               onPressed: () async {
-                                                                                                                                CustomFullScreenDialog
-                                                                                                                                    .showDialog();
+                                                                                                                                CustomFullScreenDialog.showDialog();
                                                                                                                                 try {
-                                                                                                                                  await FirebaseFirestore
-                                                                                                                                      .instance
-                                                                                                                                      .collection(
-                                                                                                                                      'user')
-                                                                                                                                      .doc(
-                                                                                                                                      '${widget
-                                                                                                                                          .uid}')
-                                                                                                                                      .collection(
-                                                                                                                                      'friendsComment')
-                                                                                                                                      .doc(
-                                                                                                                                      commentDocs[index]['myUid'])
+                                                                                                                                  await FirebaseFirestore.instance.collection('user')
+                                                                                                                                      .doc('${widget.uid}')
+                                                                                                                                      .collection('friendsComment')
+                                                                                                                                      .doc(commentDocs[index]['myUid'])
                                                                                                                                       .delete();
                                                                                                                                 } catch (e) {}
-                                                                                                                                print(
-                                                                                                                                    ' 삭제 완료');
-                                                                                                                                Navigator
-                                                                                                                                    .pop(
-                                                                                                                                    context);
-                                                                                                                                CustomFullScreenDialog
-                                                                                                                                    .cancelDialog();
+                                                                                                                                print('삭제 완료');
+                                                                                                                                Navigator.pop(context);
+                                                                                                                                CustomFullScreenDialog.cancelDialog();
                                                                                                                               },
-                                                                                                                              child: Text(
-                                                                                                                                '확인',
+                                                                                                                              child: Text('확인',
                                                                                                                                 style: TextStyle(
-                                                                                                                                    color: Colors
-                                                                                                                                        .white,
+                                                                                                                                    color: Colors.white,
                                                                                                                                     fontSize: 15,
-                                                                                                                                    fontWeight: FontWeight
-                                                                                                                                        .bold),
+                                                                                                                                    fontWeight: FontWeight.bold),
                                                                                                                               ),
-                                                                                                                              style: TextButton
-                                                                                                                                  .styleFrom(
-                                                                                                                                  splashFactory: InkRipple
-                                                                                                                                      .splashFactory,
+                                                                                                                              style: TextButton.styleFrom(
+                                                                                                                                  splashFactory: InkRipple.splashFactory,
                                                                                                                                   elevation: 0,
-                                                                                                                                  minimumSize: Size(
-                                                                                                                                      100,
-                                                                                                                                      56),
-                                                                                                                                  backgroundColor: Color(
-                                                                                                                                      0xff2C97FB),
-                                                                                                                                  padding: EdgeInsets
-                                                                                                                                      .symmetric(
-                                                                                                                                      horizontal: 0)),
+                                                                                                                                  minimumSize: Size(100, 56),
+                                                                                                                                  backgroundColor: Color(0xff2C97FB),
+                                                                                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                                                                             ),
                                                                                                                           ),
                                                                                                                         ],
@@ -1575,50 +1641,33 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                             });
                                                                                                       },
                                                                                                       shape: RoundedRectangleBorder(
-                                                                                                          borderRadius: BorderRadius
-                                                                                                              .circular(
-                                                                                                              10)),
+                                                                                                          borderRadius: BorderRadius.circular(10)),
                                                                                                     ),
                                                                                                   ),
                                                                                                   GestureDetector(
                                                                                                     child: ListTile(
-                                                                                                      contentPadding: EdgeInsets
-                                                                                                          .zero,
+                                                                                                      contentPadding: EdgeInsets.zero,
                                                                                                       title: Center(
-                                                                                                        child: Text(
-                                                                                                          '신고하기',
+                                                                                                        child: Text('신고하기',
                                                                                                           style: TextStyle(
                                                                                                             fontSize: 15,
-                                                                                                            fontWeight: FontWeight
-                                                                                                                .bold,
+                                                                                                            fontWeight: FontWeight.bold,
                                                                                                           ),
                                                                                                         ),
                                                                                                       ),
                                                                                                       //selected: _isSelected[index]!,
                                                                                                       onTap: () async {
-                                                                                                        Get
-                                                                                                            .dialog(
+                                                                                                        Get.dialog(
                                                                                                             AlertDialog(
-                                                                                                              contentPadding: EdgeInsets
-                                                                                                                  .only(
-                                                                                                                  bottom: 0,
-                                                                                                                  left: 20,
-                                                                                                                  right: 20,
-                                                                                                                  top: 30),
+                                                                                                              contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
                                                                                                               elevation: 0,
                                                                                                               shape: RoundedRectangleBorder(
-                                                                                                                  borderRadius: BorderRadius
-                                                                                                                      .circular(
-                                                                                                                      10.0)),
-                                                                                                              buttonPadding: EdgeInsets
-                                                                                                                  .symmetric(
-                                                                                                                  horizontal: 20,
-                                                                                                                  vertical: 0),
+                                                                                                                  borderRadius: BorderRadius.circular(10.0)),
+                                                                                                              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                                                                                                               content: Text(
                                                                                                                 '이 회원을 신고하시겠습니까?',
                                                                                                                 style: TextStyle(
-                                                                                                                    fontWeight: FontWeight
-                                                                                                                        .w600,
+                                                                                                                    fontWeight: FontWeight.w600,
                                                                                                                     fontSize: 15),
                                                                                                               ),
                                                                                                               actions: [
@@ -1626,154 +1675,101 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                                   children: [
                                                                                                                     TextButton(
                                                                                                                         onPressed: () {
-                                                                                                                          Navigator
-                                                                                                                              .pop(
-                                                                                                                              context);
+                                                                                                                          Navigator.pop(context);
                                                                                                                         },
-                                                                                                                        child: Text(
-                                                                                                                          '취소',
+                                                                                                                        child: Text('취소',
                                                                                                                           style: TextStyle(
                                                                                                                             fontSize: 15,
-                                                                                                                            color: Color(
-                                                                                                                                0xFF949494),
-                                                                                                                            fontWeight: FontWeight
-                                                                                                                                .bold,
+                                                                                                                            color: Color(0xFF949494),
+                                                                                                                            fontWeight: FontWeight.bold,
                                                                                                                           ),
                                                                                                                         )),
                                                                                                                     TextButton(
                                                                                                                         onPressed: () async {
-                                                                                                                          var repoUid = commentDocs[index]
-                                                                                                                              .get(
-                                                                                                                              'myUid');
-                                                                                                                          await _userModelController
-                                                                                                                              .repoUpdate(
-                                                                                                                              repoUid);
-                                                                                                                          Navigator
-                                                                                                                              .pop(
-                                                                                                                              context);
-                                                                                                                          Navigator
-                                                                                                                              .pop(
-                                                                                                                              context);
+                                                                                                                          var repoUid = commentDocs[index].get('myUid');
+                                                                                                                          await _userModelController.repoUpdate(repoUid);
+                                                                                                                          Navigator.pop(context);
+                                                                                                                          Navigator.pop(context);
                                                                                                                         },
                                                                                                                         child: Text(
                                                                                                                           '신고',
                                                                                                                           style: TextStyle(
                                                                                                                             fontSize: 15,
-                                                                                                                            color: Color(
-                                                                                                                                0xFF3D83ED),
-                                                                                                                            fontWeight: FontWeight
-                                                                                                                                .bold,
+                                                                                                                            color: Color(0xFF3D83ED),
+                                                                                                                            fontWeight: FontWeight.bold,
                                                                                                                           ),
                                                                                                                         ))
                                                                                                                   ],
-                                                                                                                  mainAxisAlignment: MainAxisAlignment
-                                                                                                                      .end,
+                                                                                                                  mainAxisAlignment: MainAxisAlignment.end,
                                                                                                                 )
                                                                                                               ],
                                                                                                             ));
                                                                                                       },
                                                                                                       shape: RoundedRectangleBorder(
-                                                                                                          borderRadius: BorderRadius
-                                                                                                              .circular(
-                                                                                                              10)),
+                                                                                                          borderRadius: BorderRadius.circular(10)),
                                                                                                     ),
                                                                                                   ),
                                                                                                   GestureDetector(
                                                                                                     child: ListTile(
-                                                                                                      contentPadding: EdgeInsets
-                                                                                                          .zero,
+                                                                                                      contentPadding: EdgeInsets.zero,
                                                                                                       title: Center(
                                                                                                         child: Text(
                                                                                                           '이 회원의 글 모두 숨기기',
                                                                                                           style: TextStyle(
                                                                                                             fontSize: 15,
-                                                                                                            fontWeight: FontWeight
-                                                                                                                .bold,
+                                                                                                            fontWeight: FontWeight.bold,
                                                                                                           ),
                                                                                                         ),
                                                                                                       ),
                                                                                                       //selected: _isSelected[index]!,
                                                                                                       onTap: () async {
-                                                                                                        Get
-                                                                                                            .dialog(
+                                                                                                        Get.dialog(
                                                                                                             AlertDialog(
-                                                                                                              contentPadding: EdgeInsets
-                                                                                                                  .only(
-                                                                                                                  bottom: 0,
-                                                                                                                  left: 20,
-                                                                                                                  right: 20,
-                                                                                                                  top: 30),
+                                                                                                              contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
                                                                                                               elevation: 0,
                                                                                                               shape: RoundedRectangleBorder(
-                                                                                                                  borderRadius: BorderRadius
-                                                                                                                      .circular(
-                                                                                                                      10.0)),
-                                                                                                              buttonPadding: EdgeInsets
-                                                                                                                  .symmetric(
-                                                                                                                  horizontal: 20,
-                                                                                                                  vertical: 0),
+                                                                                                                  borderRadius: BorderRadius.circular(10.0)),
+                                                                                                              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                                                                                                               content: Text(
                                                                                                                 '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.',
                                                                                                                 style: TextStyle(
-                                                                                                                    fontWeight: FontWeight
-                                                                                                                        .w600,
+                                                                                                                    fontWeight: FontWeight.w600,
                                                                                                                     fontSize: 15),
                                                                                                               ),
                                                                                                               actions: [
                                                                                                                 Row(
                                                                                                                   children: [
                                                                                                                     TextButton(
-                                                                                                                        onPressed: () {
-                                                                                                                          Navigator
-                                                                                                                              .pop(
-                                                                                                                              context);
-                                                                                                                        },
-                                                                                                                        child: Text(
-                                                                                                                          '취소',
+                                                                                                                        onPressed: () {Navigator.pop(context);},
+                                                                                                                        child: Text('취소',
                                                                                                                           style: TextStyle(
                                                                                                                             fontSize: 15,
-                                                                                                                            color: Color(
-                                                                                                                                0xFF949494),
-                                                                                                                            fontWeight: FontWeight
-                                                                                                                                .bold,
+                                                                                                                            color: Color(0xFF949494),
+                                                                                                                            fontWeight: FontWeight.bold,
                                                                                                                           ),
                                                                                                                         )),
                                                                                                                     TextButton(
                                                                                                                         onPressed: () {
-                                                                                                                          var repoUid = commentDocs[index]
-                                                                                                                              .get(
-                                                                                                                              'myUid');
-                                                                                                                          _userModelController
-                                                                                                                              .updateRepoUid(
-                                                                                                                              repoUid);
-                                                                                                                          Navigator
-                                                                                                                              .pop(
-                                                                                                                              context);
-                                                                                                                          Navigator
-                                                                                                                              .pop(
-                                                                                                                              context);
+                                                                                                                          var repoUid = commentDocs[index].get('myUid');
+                                                                                                                          _userModelController.updateRepoUid(repoUid);
+                                                                                                                          Navigator.pop(context);
+                                                                                                                          Navigator.pop(context);
                                                                                                                         },
-                                                                                                                        child: Text(
-                                                                                                                          '확인',
+                                                                                                                        child: Text('확인',
                                                                                                                           style: TextStyle(
                                                                                                                             fontSize: 15,
-                                                                                                                            color: Color(
-                                                                                                                                0xFF3D83ED),
-                                                                                                                            fontWeight: FontWeight
-                                                                                                                                .bold,
+                                                                                                                            color: Color(0xFF3D83ED),
+                                                                                                                            fontWeight: FontWeight.bold,
                                                                                                                           ),
                                                                                                                         ))
                                                                                                                   ],
-                                                                                                                  mainAxisAlignment: MainAxisAlignment
-                                                                                                                      .end,
+                                                                                                                  mainAxisAlignment: MainAxisAlignment.end,
                                                                                                                 )
                                                                                                               ],
                                                                                                             ));
                                                                                                       },
                                                                                                       shape: RoundedRectangleBorder(
-                                                                                                          borderRadius: BorderRadius
-                                                                                                              .circular(
-                                                                                                              10)),
+                                                                                                          borderRadius: BorderRadius.circular(10)),
                                                                                                     ),
                                                                                                   )
                                                                                                 ],
@@ -1784,8 +1780,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                       }),
                                                                               child: Icon(
                                                                                 Icons.more_horiz,
-                                                                                color: Color(
-                                                                                    0xFFdedede),
+                                                                                color: Color(0xFFdedede),
                                                                                 size: 20,
                                                                               ),
                                                                             )
@@ -1800,25 +1795,18 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                           height: 100,
                                                                                           child:
                                                                                           Padding(
-                                                                                            padding: const EdgeInsets
-                                                                                                .symmetric(
-                                                                                                horizontal: 20.0,
-                                                                                                vertical: 14),
+                                                                                            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
                                                                                             child: Column(
                                                                                               children: [
                                                                                                 GestureDetector(
                                                                                                   child: ListTile(
-                                                                                                    contentPadding: EdgeInsets
-                                                                                                        .zero,
+                                                                                                    contentPadding: EdgeInsets.zero,
                                                                                                     title: Center(
-                                                                                                      child: Text(
-                                                                                                        '삭제',
+                                                                                                      child: Text('삭제',
                                                                                                         style: TextStyle(
                                                                                                             fontSize: 15,
-                                                                                                            fontWeight: FontWeight
-                                                                                                                .bold,
-                                                                                                            color: Color(
-                                                                                                                0xFFD63636)
+                                                                                                            fontWeight: FontWeight.bold,
+                                                                                                            color: Color(0xFFD63636)
                                                                                                         ),
                                                                                                       ),
                                                                                                     ),
@@ -1934,7 +1922,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                           ],
                                                                         ),
                                                                         SizedBox(
-                                                                          height: 6,
+                                                                          height: 4,
                                                                         ),
                                                                         Row(
                                                                           children: [
@@ -1942,15 +1930,13 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                               commentDocs[index]['displayName'],
                                                                               style: TextStyle(
                                                                                   fontSize: 13,
-                                                                                  color: Color(
-                                                                                      0xFF949494)
+                                                                                  color: Color(0xFF949494)
                                                                               ),),
                                                                             SizedBox(width: 6,),
                                                                             Text(formattedDate,
                                                                               style: TextStyle(
                                                                                   fontSize: 13,
-                                                                                  color: Color(
-                                                                                      0xFF949494)
+                                                                                  color: Color(0xFF949494)
                                                                               ),
                                                                             ),
                                                                           ],
@@ -1961,7 +1947,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                   ],
                                                                 ),
                                                               ),
-                                                              SizedBox(height: 8),
+                                                              SizedBox(height: 12),
                                                               if (index != commentDocs.length - 1)
                                                                 Container(
                                                                   color: Color(0xFFF5F5F5),
@@ -1973,12 +1959,26 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       },
                                                     );
                                                   }
-                                                  return Center(child: Padding(
-                                                    padding: const EdgeInsets.symmetric(
-                                                        vertical: 24),
-                                                    child: Text('친구톡이 없습니다.', style: TextStyle(
-                                                        fontSize: 13, color: Color(0xFF666666)),),
-                                                  ));
+                                                  return Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(20),
+                                                      child: Column(
+                                                        children: [
+                                                          Image.asset(
+                                                          'assets/imgs/icons/icon_nodata.png',
+                                                          scale: 4,
+                                                          width: 64,
+                                                        ),
+                                                          SizedBox(
+                                                            height: 6,
+                                                          ),
+                                                          Text('친구톡이 없습니다', style: TextStyle(
+                                                              fontSize: 13, color: Color(
+                                                              0xFF666666)),),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  );
                                                 },
                                               )
                                             ],
@@ -2002,6 +2002,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                     autocorrect: false,
                                     textInputAction: TextInputAction.newline,
                                     decoration: InputDecoration(
+                                        floatingLabelBehavior: FloatingLabelBehavior.never,
                                         suffixIcon: IconButton(
                                           splashColor: Colors.transparent,
                                           onPressed: () async {
@@ -2154,17 +2155,12 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 
                                               } else {
                                                 CustomFullScreenDialog.showDialog();
-                                                await _friendsCommentModelController
-                                                    .sendMessage(
-                                                  displayName: _userModelController
-                                                      .displayName,
-                                                  profileImageUrl: _userModelController
-                                                      .profileImageUrl,
+                                                await _friendsCommentModelController.sendMessage(
+                                                  displayName: _userModelController.displayName,
+                                                  profileImageUrl: _userModelController.profileImageUrl,
                                                   comment: _newComment,
-                                                  commentCount: _userModelController
-                                                      .commentCount,
-                                                  resortNickname: _userModelController
-                                                      .resortNickname,
+                                                  commentCount: _userModelController.commentCount,
+                                                  resortNickname: _userModelController.resortNickname,
                                                   myUid: _userModelController.uid,
                                                   friendsUid: widget.uid,
                                                 );
@@ -2191,27 +2187,30 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             height: 27,
                                           ),
                                         ),
+                                        labelStyle: TextStyle(color: Color(0xff949494), fontSize: 15),
+                                        hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
                                         errorStyle: TextStyle(
                                           fontSize: 12,
                                         ),
-                                        hintStyle: TextStyle(
-                                            color: Color(0xff949494), fontSize: 14),
                                         hintText: '친구톡 남기기',
                                         contentPadding: EdgeInsets.only(
                                             top: 2, bottom: 2, left: 16, right: 16),
+                                        fillColor: Color(0xFFEFEFEF),
+                                        hoverColor: Colors.transparent,
+                                        filled: true,
+                                        focusColor: Colors.transparent,
                                         border: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0xFFDEDEDE)),
+                                          borderSide: BorderSide(color: Color(0xFFEFEFEF)),
                                           borderRadius: BorderRadius.circular(6),
+                                        ),
+                                        errorBorder:  OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.transparent),
+                                        ),
+                                        focusedBorder:  OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.transparent),
                                         ),
                                         enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0xFFDEDEDE)),
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
-                                        errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0xFFFF3726)),
+                                          borderSide: BorderSide(color: Colors.transparent),
                                           borderRadius: BorderRadius.circular(6),
                                         )),
                                     onChanged: (value) {

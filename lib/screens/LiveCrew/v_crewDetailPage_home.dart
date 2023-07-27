@@ -956,7 +956,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                             ]
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 24),
+                          padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 10),
                           child: Container(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -995,71 +995,80 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                         );
                                       } else {
                                         List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);
-
                                         return Container(
-                                          padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 20 : 0),
-                                          height: 208,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Expanded(
-                                                child: Container(
-                                                  child: barData.isEmpty
-                                                      ? Center(child: Text('데이터가 없습니다'))
-                                                      : SingleChildScrollView(
-                                                    scrollDirection: Axis.horizontal,
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: barData.map((data) {
-                                                            String slopeName = data['slopeName'];
-                                                            int passCount = data['passCount'];
-                                                            double barHeightRatio = data['barHeightRatio'];
-                                                            Color barColor = Color(crewDocs[0]['crewColor']);
-                                                            return Container(
-                                                              margin: EdgeInsets.symmetric(horizontal: 5),
-                                                              width: barData.length < 5 ? _size.width / 5 - 25 : _size.width / 5 - 28,
-                                                              height: 195,
-                                                              child: Column(
-                                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                                children: [
-                                                                  Text(
-                                                                    passCount != 0 ? '$passCount' : '',
-                                                                    style: TextStyle(
-                                                                      fontSize: 13,
-                                                                      color: Color(0xFF111111),
-                                                                      fontWeight: FontWeight.bold,
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(height: 4),
-                                                                  Container(
-                                                                    width: 58,
-                                                                    height: 140 * barHeightRatio,
-                                                                    child: Container(
-                                                                      width: 58,
-                                                                      height: 140 * barHeightRatio,
-                                                                      decoration: BoxDecoration(
-                                                                        color: Color(crewDocs[0]['crewColor']),
-                                                                        borderRadius: BorderRadius.only(
-                                                                          topRight: Radius.circular(4),
-                                                                          topLeft: Radius.circular(4),
+                                          margin: EdgeInsets.only(top: 6),
+                                          child: Center(
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 40 : 0),
+                                              width: _size.width,
+                                              height: 214,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Container(
+                                                    margin: EdgeInsets.only(top: 6),
+                                                    child: barData.isEmpty
+                                                        ? Center(child: Text('데이터가 없습니다'))
+                                                        : SingleChildScrollView(
+                                                      scrollDirection: Axis.horizontal,
+                                                          child: Container(
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                              barData.length < 2
+                                                                  ? MainAxisAlignment.center
+                                                                  : MainAxisAlignment.spaceBetween,
+                                                              children: barData.map((data) {
+                                                                String slopeName = data['slopeName'];
+                                                                int passCount = data['passCount'];
+                                                                double barHeightRatio = data['barHeightRatio'];
+                                                                Color barColor = Color(crewDocs[0]['crewColor']);
+                                                                return Container(
+                                                                  margin: EdgeInsets.symmetric(horizontal: 5),
+                                                                  width: barData.length < 5 ? _size.width / 5 - 10 : _size.width / 5 - 28,
+                                                                  height: 195,
+                                                                  child: Column(
+                                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                                    children: [
+                                                                      Text(
+                                                                        passCount != 0 ? '$passCount' : '',
+                                                                        style: TextStyle(
+                                                                          fontSize: 13,
+                                                                          color: Color(0xFF111111),
+                                                                          fontWeight: FontWeight.bold,
                                                                         ),
                                                                       ),
-                                                                    ),
+                                                                      SizedBox(height: 4),
+                                                                      Container(
+                                                                        width: 58,
+                                                                        height: 140 * barHeightRatio,
+                                                                        child: Container(
+                                                                          width: 58,
+                                                                          height: 140 * barHeightRatio,
+                                                                          decoration: BoxDecoration(
+                                                                            color: Color(crewDocs[0]['crewColor']),
+                                                                            borderRadius: BorderRadius.only(
+                                                                              topRight: Radius.circular(4),
+                                                                              topLeft: Radius.circular(4),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(height: 10),
+                                                                      Text(
+                                                                        slopeName,
+                                                                        style: TextStyle(fontSize: 12, color: Color(0xFF111111)),
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                  SizedBox(height: 10),
-                                                                  Text(
-                                                                    slopeName,
-                                                                    style: TextStyle(fontSize: 12, color: Color(0xFF111111)),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            );
-                                                          }).toList(),
+                                                                );
+                                                              }).toList(),
+                                                            ),
+                                                          ),
                                                         ),
-                                                      ),
-                                                ),
+                                                  ),
+                                                ],
                                               ),
-                                            ],
+                                            ),
                                           ),
                                         );
 
