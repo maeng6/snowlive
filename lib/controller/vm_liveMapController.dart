@@ -279,6 +279,25 @@ class LiveMapController extends GetxController {
 
     for (LocationModel location in slopeLocationMap['${_userModelController.favoriteResort}']!) {
       for (LatLng coordinate in location.coordinates) {
+
+        // location.resort 값에 따라 반경을 다르게 설정하기 위한 변수 선언
+        double radius;
+
+        switch (location.resort) {
+          case 0:
+            radius = 30;
+            break;
+          case 2:
+            radius = 20;
+            break;
+          case 12:
+            radius = 20;
+            break;
+          default:
+            radius = 5; // 기본 반경 설정
+            break;
+        }
+
       double distanceInMeters = Geolocator.distanceBetween(
         position.latitude,
         position.longitude,
@@ -286,7 +305,7 @@ class LiveMapController extends GetxController {
         coordinate.longitude,
       );
 
-      bool withinBoundary = distanceInMeters <= 20;
+      bool withinBoundary = distanceInMeters <= radius;
 
       if (withinBoundary) {
         DateTime now = DateTime.now();
@@ -355,7 +374,8 @@ class LiveMapController extends GetxController {
                 // 오류 처리 로직 추가
               }
 
-            } else if(location.type == 'slopeReset'){
+            }
+            else if(location.type == 'slopeReset'){
 
               try{
                 Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
@@ -865,6 +885,7 @@ class LiveMapController extends GetxController {
       return {'totalUsers': totalUsers, 'rank': 0};
     }
   }
+
   Map<String, int> calculateRankIndiAll2({required userRankingDocs}){
     isLoading.value = true;
     Map<String, int> userRankingMap = {};
@@ -930,6 +951,7 @@ class LiveMapController extends GetxController {
       return {'totalCrews': totalCrews, 'rank': 0};
     }
   }
+
   Map<String, int> calculateRankCrewAll2({required crewDocs})  {
     isLoading.value = true;
     Map<String, int> crewRankingMap = {};
