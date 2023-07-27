@@ -17,9 +17,16 @@ class LocationModel {
 
 Map<String, List<LocationModel>> slopeLocationMap = {
   '0': konjiam,
+  '1': muju,
   '2': vivaldi,
+  '3': alpensia,
+  '4': eden,
+  '5': gangchon,
+  '6': oak,
+  '7': o2,
   '8': yongpyong,
   '9': welli,
+  '10': jisan,
   '11': high1,
   '12': phoenix,
   // ... 필요한 만큼 이름과 위치 리스트를 추가로 매핑합니다.
