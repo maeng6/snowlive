@@ -553,7 +553,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                 },
                             ),
                           ),
-                              SizedBox(height: 40,),
+                              SizedBox(height: 64,),
                             ],
                           ),
                         ),
