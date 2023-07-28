@@ -570,7 +570,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               },
                                             ),
                                           ),
-                                          SizedBox(height: 60,),
+                                          SizedBox(height: 64,),
                                         ],
                                       ),
                                     ),
