@@ -1480,11 +1480,9 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                 stream: _stream,
                                                 builder: (BuildContext context,
                                                     AsyncSnapshot<dynamic> snapshot) {
-                                                  if (!snapshot.hasData ||
-                                                      snapshot.data == null) {
+                                                  if (!snapshot.hasData || snapshot.data == null) {
                                                     return Center(child: Padding(
-                                                      padding: const EdgeInsets.symmetric(
-                                                          vertical: 36),
+                                                      padding: const EdgeInsets.symmetric(vertical: 36),
                                                       child: Column(
                                                         children: [
                                                           SizedBox(
@@ -1543,8 +1541,39 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                             ),
                                                           )
                                                               : Row(
+                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                                mainAxisAlignment: MainAxisAlignment.start,
                                                                 children: [
-
+                                                                  if (commentDocs[index]['profileImageUrl'] != "")
+                                                                    GestureDetector(
+                                                                      onTap: (){
+                                                                      },
+                                                                      child: ExtendedImage.network(
+                                                                        commentDocs[index]['profileImageUrl'],
+                                                                        cache: true,
+                                                                        shape: BoxShape.circle,
+                                                                        borderRadius:
+                                                                        BorderRadius.circular(20),
+                                                                        width: 40,
+                                                                        height: 40,
+                                                                        fit: BoxFit.cover,
+                                                                      ),
+                                                                    ),
+                                                                  if (commentDocs[index]['profileImageUrl'] == "")
+                                                                    GestureDetector(
+                                                                      onTap: (){
+                                                                      },
+                                                                      child: ExtendedImage.asset(
+                                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                                        shape: BoxShape.circle,
+                                                                        borderRadius:
+                                                                        BorderRadius.circular(20),
+                                                                        width: 40,
+                                                                        height: 40,
+                                                                        fit: BoxFit.cover,
+                                                                      ),
+                                                                    ),
+                                                                  SizedBox(width: 12),
                                                                   Column(
                                                             children: [
                                                                   Padding(
@@ -1555,15 +1584,15 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                                           children: [
                                                                             Row(
-                                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                               children: [
                                                                                 Container(
+                                                                                  width: _size.width - 122,
                                                                                   child: Text(commentDocs[index]['comment'],
                                                                                     style: TextStyle(
                                                                                         fontSize: 14,
                                                                                         color: Color(0xFF111111)
                                                                                     ),),
-                                                                                  width: _size.width - 60,
                                                                                 ),
                                                                                 (commentDocs[index]['myUid'] != _userModelController.uid)
                                                                                     ? GestureDetector(
@@ -1595,8 +1624,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                           ),
                                                                                                           //selected: _isSelected[index]!,
                                                                                                           onTap: () async {
-                                                                                                            Navigator.pop(
-                                                                                                                context);
+                                                                                                            Navigator.pop(context);
                                                                                                             showModalBottomSheet(
                                                                                                                 context: context,
                                                                                                                 builder: (context) {
@@ -1835,124 +1863,126 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                           context: context,
                                                                                           builder: (
                                                                                               context) {
-                                                                                            return Container(
-                                                                                              height: 100,
-                                                                                              child:
-                                                                                              Padding(
-                                                                                                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
-                                                                                                child: Column(
-                                                                                                  children: [
-                                                                                                    GestureDetector(
-                                                                                                      child: ListTile(
-                                                                                                        contentPadding: EdgeInsets.zero,
-                                                                                                        title: Center(
-                                                                                                          child: Text('삭제',
-                                                                                                            style: TextStyle(
-                                                                                                                fontSize: 15,
-                                                                                                                fontWeight: FontWeight.bold,
-                                                                                                                color: Color(0xFFD63636)
+                                                                                            return SafeArea(
+                                                                                              child: Container(
+                                                                                                height: 100,
+                                                                                                child:
+                                                                                                Padding(
+                                                                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
+                                                                                                  child: Column(
+                                                                                                    children: [
+                                                                                                      GestureDetector(
+                                                                                                        child: ListTile(
+                                                                                                          contentPadding: EdgeInsets.zero,
+                                                                                                          title: Center(
+                                                                                                            child: Text('삭제',
+                                                                                                              style: TextStyle(
+                                                                                                                  fontSize: 15,
+                                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                                  color: Color(0xFFD63636)
+                                                                                                              ),
                                                                                                             ),
                                                                                                           ),
-                                                                                                        ),
-                                                                                                        //selected: _isSelected[index]!,
-                                                                                                        onTap: () async {
-                                                                                                          Navigator.pop(context);
-                                                                                                          showModalBottomSheet(
-                                                                                                              context: context,
-                                                                                                              builder: (context) {
-                                                                                                                return Container(
-                                                                                                                  color: Colors.white,
-                                                                                                                  height: 180,
-                                                                                                                  child: Padding(
-                                                                                                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                                                                                                    child: Column(
-                                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                                                                                      children: [
-                                                                                                                        SizedBox(
-                                                                                                                          height: 30,
-                                                                                                                        ),
-                                                                                                                        Text(
-                                                                                                                          '삭제하시겠습니까?',
-                                                                                                                          style: TextStyle(
-                                                                                                                              fontSize: 20,
-                                                                                                                              fontWeight: FontWeight.bold,
-                                                                                                                              color: Color(0xFF111111)),
-                                                                                                                        ),
-                                                                                                                        SizedBox(
-                                                                                                                          height: 30,
-                                                                                                                        ),
-                                                                                                                        Row(
-                                                                                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                                                                          children: [
-                                                                                                                            Expanded(
-                                                                                                                              child: ElevatedButton(
-                                                                                                                                onPressed: () {
-                                                                                                                                  Navigator.pop(context);
-                                                                                                                                },
-                                                                                                                                child: Text(
-                                                                                                                                  '취소',
-                                                                                                                                  style: TextStyle(
-                                                                                                                                      color: Colors.white,
-                                                                                                                                      fontSize: 15,
-                                                                                                                                      fontWeight: FontWeight.bold),
+                                                                                                          //selected: _isSelected[index]!,
+                                                                                                          onTap: () async {
+                                                                                                            Navigator.pop(context);
+                                                                                                            showModalBottomSheet(
+                                                                                                                context: context,
+                                                                                                                builder: (context) {
+                                                                                                                  return Container(
+                                                                                                                    color: Colors.white,
+                                                                                                                    height: 180,
+                                                                                                                    child: Padding(
+                                                                                                                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                                                                                                      child: Column(
+                                                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                                                                        children: [
+                                                                                                                          SizedBox(
+                                                                                                                            height: 30,
+                                                                                                                          ),
+                                                                                                                          Text(
+                                                                                                                            '삭제하시겠습니까?',
+                                                                                                                            style: TextStyle(
+                                                                                                                                fontSize: 20,
+                                                                                                                                fontWeight: FontWeight.bold,
+                                                                                                                                color: Color(0xFF111111)),
+                                                                                                                          ),
+                                                                                                                          SizedBox(
+                                                                                                                            height: 30,
+                                                                                                                          ),
+                                                                                                                          Row(
+                                                                                                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                                                            children: [
+                                                                                                                              Expanded(
+                                                                                                                                child: ElevatedButton(
+                                                                                                                                  onPressed: () {
+                                                                                                                                    Navigator.pop(context);
+                                                                                                                                  },
+                                                                                                                                  child: Text(
+                                                                                                                                    '취소',
+                                                                                                                                    style: TextStyle(
+                                                                                                                                        color: Colors.white,
+                                                                                                                                        fontSize: 15,
+                                                                                                                                        fontWeight: FontWeight.bold),
+                                                                                                                                  ),
+                                                                                                                                  style: TextButton.styleFrom(
+                                                                                                                                      splashFactory: InkRipple.splashFactory,
+                                                                                                                                      elevation: 0,
+                                                                                                                                      minimumSize: Size(100, 56),
+                                                                                                                                      backgroundColor: Color(0xff555555),
+                                                                                                                                      padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                                                                                 ),
-                                                                                                                                style: TextButton.styleFrom(
-                                                                                                                                    splashFactory: InkRipple.splashFactory,
-                                                                                                                                    elevation: 0,
-                                                                                                                                    minimumSize: Size(100, 56),
-                                                                                                                                    backgroundColor: Color(0xff555555),
-                                                                                                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                                                                               ),
-                                                                                                                            ),
-                                                                                                                            SizedBox(
-                                                                                                                              width: 10,
-                                                                                                                            ),
-                                                                                                                            Expanded(
-                                                                                                                              child: ElevatedButton(
-                                                                                                                                onPressed: () async {
-                                                                                                                                  CustomFullScreenDialog
-                                                                                                                                      .showDialog();
-                                                                                                                                  try {
-                                                                                                                                    await FirebaseFirestore.instance
-                                                                                                                                        .collection('user')
-                                                                                                                                        .doc('${widget.uid}')
-                                                                                                                                        .collection('friendsComment')
-                                                                                                                                        .doc('${_userModelController.uid}')
-                                                                                                                                        .delete();
-                                                                                                                                  } catch (e) {}
-                                                                                                                                  print('친구톡 삭제 완료');
-                                                                                                                                  Navigator.pop(context);
-                                                                                                                                  CustomFullScreenDialog.cancelDialog();
-                                                                                                                                },
-                                                                                                                                child: Text(
-                                                                                                                                  '확인',
-                                                                                                                                  style: TextStyle(
-                                                                                                                                      color: Colors.white,
-                                                                                                                                      fontSize: 15,
-                                                                                                                                      fontWeight: FontWeight.bold),
+                                                                                                                              SizedBox(
+                                                                                                                                width: 10,
+                                                                                                                              ),
+                                                                                                                              Expanded(
+                                                                                                                                child: ElevatedButton(
+                                                                                                                                  onPressed: () async {
+                                                                                                                                    CustomFullScreenDialog
+                                                                                                                                        .showDialog();
+                                                                                                                                    try {
+                                                                                                                                      await FirebaseFirestore.instance
+                                                                                                                                          .collection('user')
+                                                                                                                                          .doc('${widget.uid}')
+                                                                                                                                          .collection('friendsComment')
+                                                                                                                                          .doc('${_userModelController.uid}')
+                                                                                                                                          .delete();
+                                                                                                                                    } catch (e) {}
+                                                                                                                                    print('친구톡 삭제 완료');
+                                                                                                                                    Navigator.pop(context);
+                                                                                                                                    CustomFullScreenDialog.cancelDialog();
+                                                                                                                                  },
+                                                                                                                                  child: Text(
+                                                                                                                                    '확인',
+                                                                                                                                    style: TextStyle(
+                                                                                                                                        color: Colors.white,
+                                                                                                                                        fontSize: 15,
+                                                                                                                                        fontWeight: FontWeight.bold),
+                                                                                                                                  ),
+                                                                                                                                  style: TextButton.styleFrom(
+                                                                                                                                      splashFactory: InkRipple.splashFactory,
+                                                                                                                                      elevation: 0,
+                                                                                                                                      minimumSize: Size(100, 56),
+                                                                                                                                      backgroundColor: Color(0xff2C97FB),
+                                                                                                                                      padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                                                                                 ),
-                                                                                                                                style: TextButton.styleFrom(
-                                                                                                                                    splashFactory: InkRipple.splashFactory,
-                                                                                                                                    elevation: 0,
-                                                                                                                                    minimumSize: Size(100, 56),
-                                                                                                                                    backgroundColor: Color(0xff2C97FB),
-                                                                                                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                                                                               ),
-                                                                                                                            ),
-                                                                                                                          ],
-                                                                                                                        )
-                                                                                                                      ],
+                                                                                                                            ],
+                                                                                                                          )
+                                                                                                                        ],
+                                                                                                                      ),
                                                                                                                     ),
-                                                                                                                  ),
-                                                                                                                );
-                                                                                                              });
-                                                                                                        },
-                                                                                                        shape: RoundedRectangleBorder(
-                                                                                                            borderRadius: BorderRadius.circular(10)),
+                                                                                                                  );
+                                                                                                                });
+                                                                                                          },
+                                                                                                          shape: RoundedRectangleBorder(
+                                                                                                              borderRadius: BorderRadius.circular(10)),
+                                                                                                        ),
                                                                                                       ),
-                                                                                                    ),
-                                                                                                  ],
+                                                                                                    ],
+                                                                                                  ),
                                                                                                 ),
                                                                                               ),
                                                                                             );
