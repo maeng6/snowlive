@@ -185,7 +185,7 @@ class _RankingHomeState extends State<RankingHome> {
                                 Text(
                                   '내 점수',
                                   style: TextStyle(
-                                      fontSize: 13,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.bold,
                                       color: Color(0xFFFFFFFF)
                                   ),
@@ -193,7 +193,6 @@ class _RankingHomeState extends State<RankingHome> {
                               ],
                             ),
                           ),
-
                         ),
                       )
                     ]

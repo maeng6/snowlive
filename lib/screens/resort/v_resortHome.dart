@@ -395,108 +395,179 @@ class _ResortHomeState extends State<ResortHome>
                                           onTap: () async {
                                             _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
                                             await _liveMapController.stopForegroundLocationService();
-                                            await _liveMapController.stopBackgroundLocationService();                                            Get.back();
+                                            await _liveMapController.stopBackgroundLocationService();
+                                            Get.back();
                                             CustomFullScreenDialog.cancelDialog();
                                             print('라이브 OFF');
                                           },
                                           child: GestureDetector(
                                             onTap: () {},
                                             child: AlertDialog(
-                                              title: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Text("내 위치 공유 하기"),
-                                                  IconButton(
-                                                    icon: Icon(Icons.cancel_outlined),
-                                                    onPressed: () async{
-                                                      _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                                      await _liveMapController.stopForegroundLocationService();
-                                                      await _liveMapController.stopBackgroundLocationService();                                                      Get.back();
-                                                      CustomFullScreenDialog.cancelDialog();
-                                                      print('라이브 OFF');
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
+                                              contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                              // title: Row(
+                                              //   mainAxisAlignment: MainAxisAlignment.start,
+                                              //   children: [
+                                              //     Text("내 위치 공유 하기", style: TextStyle(
+                                              //       fontSize: 18,
+                                              //       fontWeight: FontWeight.bold,
+                                              //
+                                              //     ),),
+                                              //     IconButton(
+                                              //       icon: Icon(Icons.cancel_outlined),
+                                              //       onPressed: () async{
+                                              //         _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                              //         await _liveMapController.stopForegroundLocationService();
+                                              //         await _liveMapController.stopBackgroundLocationService();
+                                              //         Get.back();
+                                              //         CustomFullScreenDialog.cancelDialog();
+                                              //         print('라이브 OFF');
+                                              //       },
+                                              //     ),
+                                              //   ],
+                                              // ),
                                               content: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  Text("내 위치를 공유하고 친구 위치도 확인하세요",
+                                                  Text("내 위치를 공유하고 여러 사람들과 경쟁하는 시즌 랭킹에 참여해 보세요!",
                                                     style: TextStyle(
-                                                        fontSize: 13
-                                                    ),
-                                                  ),
-                                                  Text("위치는 리조트 범위 내에서만 확인 가능합니다",
-                                                    style: TextStyle(
-                                                        fontSize: 13
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Color(0xFF111111)
                                                     ),
                                                   ),
                                                   SizedBox(height: 10,),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 12, bottom: 20),
-                                                    child: Divider(
-                                                      height: 1,
-                                                      color: Color(0xFFFDEDEDE),
+                                                  Obx(() => Transform.translate(
+                                                    offset: Offset(-14, 0),
+                                                    child: Row(
+                                                      children: [
+                                                        Checkbox(
+                                                          value: _dialogController.isChecked.value,
+                                                          onChanged: (newValue) {
+                                                            _dialogController.isChecked.value = newValue!;
+                                                          },
+                                                        ),
+                                                        Text('위치 정보 제3자 제공에 동의합니다.',
+                                                          style: TextStyle(
+                                                            fontSize: 13,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                  SizedBox(height: 10,),
-                                                  Obx(() => Row(
-                                                    children: [
-                                                      Checkbox(
-                                                        value: _dialogController.isChecked.value,
-                                                        onChanged: (newValue) {
-                                                          _dialogController.isChecked.value = newValue!;
+                                                  ),
+                                                  Center(
+                                                    child: TextButton(
+                                                        onPressed: (){
+                                                          Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88ㅎ'));
                                                         },
-                                                      ),
-                                                      Text('위치 정보 제3자 제공에 동의합니다.',
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                        ),
-                                                      ),
-                                                    ],
+                                                        child: Text('약관보기>',
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Color(0xFF949494)
+                                                          ),
+                                                        )),
                                                   ),
+                                                  SizedBox(
+                                                    height: 6,
                                                   ),
-                                                  TextButton(
-                                                      onPressed: (){
-                                                        Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88ㅎ'));
-                                                      },
-                                                      child: Text('약관보기>',
-                                                        style: TextStyle(
-                                                            fontSize: 11,
-                                                            color: Colors.grey
-                                                        ),
-                                                      )),
                                                 ],
                                               ),
                                               actions: [
-                                                ButtonBar(
-                                                  alignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Obx(
-                                                          () => TextButton(
+                                                Padding(
+                                                  padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
+                                                  child: Row(
+                                                    children: [
+                                                      ElevatedButton(onPressed: () async {
+                                                        _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                                        await _liveMapController.stopForegroundLocationService();
+                                                        await _liveMapController.stopBackgroundLocationService();
+                                                        Get.back();
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                        print('라이브 OFF');
+                                                      },
+                                                          child: Text(
+                                                            '취소',
+                                                            style: TextStyle(
+                                                                color: Color(0xff3D83ED),
+                                                                fontSize: 15,
+                                                                fontWeight: FontWeight.bold),
+                                                          ),
                                                         style: TextButton.styleFrom(
-                                                          backgroundColor: _dialogController.isChecked.value ? Colors.blue : Colors.grey,
-                                                          foregroundColor: Colors.white,
-                                                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(10),
+                                                            splashFactory: InkRipple.splashFactory,
+                                                            elevation: 0,
+                                                            minimumSize: Size(100, 48),
+                                                            backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                            ),
+                                                      ),
+                                                      SizedBox(width: 8,),
+                                                      Obx(() => Expanded(
+                                                        child: ElevatedButton(
+                                                          onPressed: _dialogController.isChecked.value
+                                                              ? () async {
+                                                            Get.back();
+                                                            await _userModelController.updateIsOnLiveOn();
+                                                            await _liveMapController.startForegroundLocationService();
+                                                            await _userModelController.getCurrentUser(_userModelController.uid);
+                                                            CustomFullScreenDialog.cancelDialog();
+                                                            print('라이브 ON');
+                                                          }
+                                                              : null,
+                                                          child: Text(
+                                                            '위치 공유 시작하기',
+                                                            style: TextStyle(
+                                                                color: Color(0xffffffff),
+                                                                fontSize: 15,
+                                                                fontWeight: FontWeight.bold),
+                                                          ),
+                                                          style: TextButton.styleFrom(
+                                                            splashFactory: InkRipple.splashFactory,
+                                                            elevation: 0,
+                                                            minimumSize: Size(100, 48),
+                                                            backgroundColor: Color(0xFF3D83ED),
                                                           ),
                                                         ),
-                                                        child: Text("위치 공유 시작하기"),
-                                                        onPressed: _dialogController.isChecked.value
-                                                            ? () async {
-                                                          Get.back();
-                                                          await _userModelController.updateIsOnLiveOn();
-                                                          await _liveMapController.startForegroundLocationService();
-                                                          await _userModelController.getCurrentUser(_userModelController.uid);
-                                                          CustomFullScreenDialog.cancelDialog();
-                                                          print('라이브 ON');
-                                                        }
-                                                            : null,
-                                                      ),
-                                                    ),
-                                                  ],
+                                                      ),),
+
+
+
+                                                      // ButtonBar(
+                                                      //   buttonHeight: 48,
+                                                      //   alignment: MainAxisAlignment.center,
+                                                      //   children: [
+                                                      //     Obx(
+                                                      //           () => TextButton(
+                                                      //         style: TextButton.styleFrom(
+                                                      //           backgroundColor: _dialogController.isChecked.value ? Colors.blue : Colors.grey,
+                                                      //           foregroundColor: Colors.white,
+                                                      //           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                                      //           shape: RoundedRectangleBorder(
+                                                      //             borderRadius: BorderRadius.circular(10),
+                                                      //           ),
+                                                      //         ),
+                                                      //         child: Text("위치 공유 시작하기"),
+                                                      //         onPressed: _dialogController.isChecked.value
+                                                      //             ? () async {
+                                                      //           Get.back();
+                                                      //           await _userModelController.updateIsOnLiveOn();
+                                                      //           await _liveMapController.startForegroundLocationService();
+                                                      //           await _userModelController.getCurrentUser(_userModelController.uid);
+                                                      //           CustomFullScreenDialog.cancelDialog();
+                                                      //           print('라이브 ON');
+                                                      //         }
+                                                      //             : null,
+                                                      //       ),
+                                                      //     ),
+                                                      //   ],
+                                                      // ),
+                                                    ],
+                                                  ),
                                                 ),
+
                                               ],
                                             ),
                                           ),
@@ -1625,101 +1696,171 @@ class _ResortHomeState extends State<ResortHome>
                                       child: GestureDetector(
                                         onTap: () {},
                                         child: AlertDialog(
-                                          title: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text("내 위치 공유 하기"),
-                                              IconButton(
-                                                icon: Icon(Icons.cancel_outlined),
-                                                onPressed: () async{
-                                                  _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                                  await _liveMapController.stopForegroundLocationService();
-                                                  await _liveMapController.stopBackgroundLocationService();                                                  Get.back();
-                                                  CustomFullScreenDialog.cancelDialog();
-                                                  print('라이브 OFF');
-                                                },
-                                              ),
-                                            ],
-                                          ),
+                                          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                          // title: Row(
+                                          //   mainAxisAlignment: MainAxisAlignment.start,
+                                          //   children: [
+                                          //     Text("내 위치 공유 하기", style: TextStyle(
+                                          //       fontSize: 18,
+                                          //       fontWeight: FontWeight.bold,
+                                          //
+                                          //     ),),
+                                          //     IconButton(
+                                          //       icon: Icon(Icons.cancel_outlined),
+                                          //       onPressed: () async{
+                                          //         _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                          //         await _liveMapController.stopForegroundLocationService();
+                                          //         await _liveMapController.stopBackgroundLocationService();
+                                          //         Get.back();
+                                          //         CustomFullScreenDialog.cancelDialog();
+                                          //         print('라이브 OFF');
+                                          //       },
+                                          //     ),
+                                          //   ],
+                                          // ),
                                           content: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Text("내 위치를 공유하고 친구 위치도 확인하세요",
+                                              Text("내 위치를 공유하고 여러 사람들과 경쟁하는 시즌 랭킹에 참여해 보세요!",
                                                 style: TextStyle(
-                                                    fontSize: 13
-                                                ),
-                                              ),
-                                              Text("위치는 리조트 범위 내에서만 확인 가능합니다",
-                                                style: TextStyle(
-                                                    fontSize: 13
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color(0xFF111111)
                                                 ),
                                               ),
                                               SizedBox(height: 10,),
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 12, bottom: 20),
-                                                child: Divider(
-                                                  height: 1,
-                                                  color: Color(0xFFFDEDEDE),
+                                              Obx(() => Transform.translate(
+                                                offset: Offset(-14, 0),
+                                                child: Row(
+                                                  children: [
+                                                    Checkbox(
+                                                      value: _dialogController.isChecked.value,
+                                                      onChanged: (newValue) {
+                                                        _dialogController.isChecked.value = newValue!;
+                                                      },
+                                                    ),
+                                                    Text('위치 정보 제3자 제공에 동의합니다.',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              SizedBox(height: 10,),
-                                              Obx(() => Row(
-                                                children: [
-                                                  Checkbox(
-                                                    value: _dialogController.isChecked.value,
-                                                    onChanged: (newValue) {
-                                                      _dialogController.isChecked.value = newValue!;
+                                              ),
+                                              Center(
+                                                child: TextButton(
+                                                    onPressed: (){
+                                                      Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88ㅎ'));
                                                     },
-                                                  ),
-                                                  Text('위치 정보 제3자 제공에 동의합니다.',
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                    ),
-                                                  ),
-                                                ],
+                                                    child: Text('약관보기>',
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Color(0xFF949494)
+                                                      ),
+                                                    )),
                                               ),
+                                              SizedBox(
+                                                height: 6,
                                               ),
-                                              TextButton(
-                                                  onPressed: (){
-                                                    Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88'));
-                                                  },
-                                                  child: Text('약관보기>',
-                                                    style: TextStyle(
-                                                        fontSize: 11,
-                                                        color: Colors.grey
-                                                    ),
-                                                  )),
                                             ],
                                           ),
                                           actions: [
-                                            ButtonBar(
-                                              alignment: MainAxisAlignment.center,
-                                              children: [
-                                                Obx(
-                                                      () => TextButton(
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
+                                              child: Row(
+                                                children: [
+                                                  ElevatedButton(onPressed: () async {
+                                                    _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                                    await _liveMapController.stopForegroundLocationService();
+                                                    await _liveMapController.stopBackgroundLocationService();
+                                                    Get.back();
+                                                    CustomFullScreenDialog.cancelDialog();
+                                                    print('라이브 OFF');
+                                                  },
+                                                    child: Text(
+                                                      '취소',
+                                                      style: TextStyle(
+                                                          color: Color(0xff3D83ED),
+                                                          fontSize: 15,
+                                                          fontWeight: FontWeight.bold),
+                                                    ),
                                                     style: TextButton.styleFrom(
-                                                      backgroundColor: _dialogController.isChecked.value ? Colors.blue : Colors.grey,
-                                                      foregroundColor: Colors.white,
-                                                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(10),
+                                                      splashFactory: InkRipple.splashFactory,
+                                                      elevation: 0,
+                                                      minimumSize: Size(100, 48),
+                                                      backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 8,),
+                                                  Obx(() => Expanded(
+                                                    child: ElevatedButton(
+                                                      onPressed: _dialogController.isChecked.value
+                                                          ? () async {
+                                                        Get.back();
+                                                        await _userModelController.updateIsOnLiveOn();
+                                                        await _liveMapController.startForegroundLocationService();
+                                                        await _userModelController.getCurrentUser(_userModelController.uid);
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                        print('라이브 ON');
+                                                      }
+                                                          : null,
+                                                      child: Text(
+                                                        '위치 공유 시작하기',
+                                                        style: TextStyle(
+                                                            color: Color(0xffffffff),
+                                                            fontSize: 15,
+                                                            fontWeight: FontWeight.bold),
+                                                      ),
+                                                      style: TextButton.styleFrom(
+                                                        splashFactory: InkRipple.splashFactory,
+                                                        elevation: 0,
+                                                        minimumSize: Size(100, 48),
+                                                        backgroundColor: Color(0xFF3D83ED),
                                                       ),
                                                     ),
-                                                    child: Text("위치 공유 시작하기"),
-                                                    onPressed: _dialogController.isChecked.value
-                                                        ? () async {
-                                                      Get.back();
-                                                      await _userModelController.updateIsOnLiveOn();
-                                                      await _liveMapController.startForegroundLocationService();
-                                                      await _userModelController.getCurrentUser(_userModelController.uid);
-                                                      CustomFullScreenDialog.cancelDialog();
-                                                      print('라이브 ON');
-                                                    }
-                                                        : null,
-                                                  ),
-                                                ),
-                                              ],
+                                                  ),),
+
+
+
+                                                  // ButtonBar(
+                                                  //   buttonHeight: 48,
+                                                  //   alignment: MainAxisAlignment.center,
+                                                  //   children: [
+                                                  //     Obx(
+                                                  //           () => TextButton(
+                                                  //         style: TextButton.styleFrom(
+                                                  //           backgroundColor: _dialogController.isChecked.value ? Colors.blue : Colors.grey,
+                                                  //           foregroundColor: Colors.white,
+                                                  //           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                                  //           shape: RoundedRectangleBorder(
+                                                  //             borderRadius: BorderRadius.circular(10),
+                                                  //           ),
+                                                  //         ),
+                                                  //         child: Text("위치 공유 시작하기"),
+                                                  //         onPressed: _dialogController.isChecked.value
+                                                  //             ? () async {
+                                                  //           Get.back();
+                                                  //           await _userModelController.updateIsOnLiveOn();
+                                                  //           await _liveMapController.startForegroundLocationService();
+                                                  //           await _userModelController.getCurrentUser(_userModelController.uid);
+                                                  //           CustomFullScreenDialog.cancelDialog();
+                                                  //           print('라이브 ON');
+                                                  //         }
+                                                  //             : null,
+                                                  //       ),
+                                                  //     ),
+                                                  //   ],
+                                                  // ),
+                                                ],
+                                              ),
                                             ),
+
                                           ],
                                         ),
                                       ),

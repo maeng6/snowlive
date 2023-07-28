@@ -124,7 +124,9 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                             style: TextStyle(
                                 color: (isFlea)
                                     ? Color(0xFF111111)
-                                    : Color(0xFFFFFFFF)),
+                                    : Color(0xFFFFFFFF),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14),
                           ),
                         ),
                         onPressed: () {
@@ -155,14 +157,15 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
               centerTitle: false,
               titleSpacing: 0,
               title: Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    '스노우마켓',
-                    style: TextStyle(
-                        color: Color(0xFF111111),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
-                  )),
+                padding: const EdgeInsets.only(left: 16),
+                child: Text(
+                  '스노우마켓',
+                  style: TextStyle(
+                      color: Color(0xFF111111),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                ),
+              ),
               backgroundColor: Colors.white,
               elevation: 0.0,
             )

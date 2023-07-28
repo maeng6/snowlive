@@ -58,15 +58,13 @@ class _BulletinScreenState extends State<BulletinScreen> {
               iconTheme: IconThemeData(size: 26, color: Colors.black87),
               centerTitle: false,
               titleSpacing: 0,
-              title: Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    '커뮤니티',
-                    style: TextStyle(
-                        color: Color(0xFF111111),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
-                  )),
+              title: Text(
+                '커뮤니티',
+                style: TextStyle(
+                    color: Color(0xFF111111),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
+              ),
               backgroundColor: Colors.white,
               elevation: 0.0,
             )
