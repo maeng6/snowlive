@@ -432,11 +432,18 @@ class _ResortHomeState extends State<ResortHome>
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  Text("내 위치를 공유하고 여러 사람들과 경쟁하는 시즌 랭킹에 참여해 보세요!",
+                                                  Text("스노우라이브 랭킹전에 참여해 보세요!",
                                                     style: TextStyle(
                                                         fontSize: 16,
                                                         fontWeight: FontWeight.bold,
                                                         color: Color(0xFF111111)
+                                                    ),
+                                                  ),
+                                                  Text("위치정보는 랭킹전 점수 산정시에만 이용됩니다.",
+                                                    style: TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Color(0xFF949494)
                                                     ),
                                                   ),
                                                   SizedBox(height: 10,),
@@ -450,7 +457,7 @@ class _ResortHomeState extends State<ResortHome>
                                                             _dialogController.isChecked.value = newValue!;
                                                           },
                                                         ),
-                                                        Text('위치 정보 제3자 제공에 동의합니다.',
+                                                        Text('개인위치정보 사용 및 이용약관에 동의합니다.',
                                                           style: TextStyle(
                                                             fontSize: 13,
                                                           ),
@@ -462,7 +469,7 @@ class _ResortHomeState extends State<ResortHome>
                                                   Center(
                                                     child: TextButton(
                                                         onPressed: (){
-                                                          Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88ㅎ'));
+                                                          Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
                                                         },
                                                         child: Text('약관보기>',
                                                           style: TextStyle(
@@ -518,7 +525,7 @@ class _ResortHomeState extends State<ResortHome>
                                                           }
                                                               : null,
                                                           child: Text(
-                                                            '위치 공유 시작하기',
+                                                            '동의합니다',
                                                             style: TextStyle(
                                                                 color: Color(0xffffffff),
                                                                 fontSize: 15,
@@ -1725,11 +1732,18 @@ class _ResortHomeState extends State<ResortHome>
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Text("내 위치를 공유하고 여러 사람들과 경쟁하는 시즌 랭킹에 참여해 보세요!",
+                                              Text("스노우라이브 랭킹전에 참여해 보세요!",
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.bold,
                                                     color: Color(0xFF111111)
+                                                ),
+                                              ),
+                                              Text("위치정보는 랭킹전 점수 산정시에만 이용됩니다.",
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color(0xFF949494)
                                                 ),
                                               ),
                                               SizedBox(height: 10,),
@@ -1743,7 +1757,7 @@ class _ResortHomeState extends State<ResortHome>
                                                         _dialogController.isChecked.value = newValue!;
                                                       },
                                                     ),
-                                                    Text('위치 정보 제3자 제공에 동의합니다.',
+                                                    Text('개인위치정보 사용 및 이용약관에 동의합니다.',
                                                       style: TextStyle(
                                                         fontSize: 14,
                                                       ),
@@ -1755,7 +1769,7 @@ class _ResortHomeState extends State<ResortHome>
                                               Center(
                                                 child: TextButton(
                                                     onPressed: (){
-                                                      Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88ㅎ'));
+                                                      Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
                                                     },
                                                     child: Text('약관보기>',
                                                       style: TextStyle(
@@ -1811,7 +1825,7 @@ class _ResortHomeState extends State<ResortHome>
                                                       }
                                                           : null,
                                                       child: Text(
-                                                        '위치 공유 시작하기',
+                                                        '동의합니다',
                                                         style: TextStyle(
                                                             color: Color(0xffffffff),
                                                             fontSize: 15,
