@@ -608,7 +608,9 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                       builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
                         if (!snapshot.hasData || snapshot.data == null || snapshot.data!.docs.isEmpty) {
                           return Center(
-                            child: Text('가입한 크루가 없습니다'),
+                            child: Text('가입한 크루가 없습니다', style: TextStyle(
+                              color: Color(0xFF949494)
+                            ),),
                           );
                         } else {
                           final crewDoc = snapshot.data!.docs.first;
@@ -878,7 +880,9 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
                     if (!snapshot.hasData || snapshot.data == null) {
                       return Center(
-                        child: Text('가입한 크루가 없습니다'),
+                        child: Text('가입한 크루가 없습니다', style: TextStyle(
+                            color: Color(0xFF949494)
+                        ),),
                       );
                     } else if (snapshot.data!.docs.isNotEmpty) {
                       final crewDocs = snapshot.data!.docs;
@@ -1157,7 +1161,9 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                       );
                     }
                     return Center(
-                      child: Text('가입한 크루가 없습니다'),
+                      child: Text('가입한 크루가 없습니다', style: TextStyle(
+                          color: Color(0xFF949494)
+                      ),),
                     );
                   }
               ),
@@ -1205,7 +1211,9 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                         builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                           if (!snapshot.hasData || snapshot.data == null) {
                             return Center(
-                              child: Text('가입한 크루가 없습니다'),
+                              child: Text('가입한 크루가 없습니다', style: TextStyle(
+                                  color: Color(0xFF949494)
+                              ),),
                             );
                           } else if (snapshot.data!.docs.isNotEmpty) {
                             final crewDocs = snapshot.data!.docs;
@@ -1302,7 +1310,9 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                             );
                           }
                           return Center(
-                            child: Text('가입한 크루가 없습니다'),
+                            child: Text('가입한 크루가 없습니다', style: TextStyle(
+                                color: Color(0xFF949494)
+                            ),),
                           );
                         }
                     ),

@@ -439,7 +439,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                       ),
                                       child: Text('프로필 보기',
                                         style: TextStyle(
-                                            color: Color(0xFF3D83ED),
+                                            color: (isFound) ? Color(0xff3D83ED) : Color(0xffFFFFFF),
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16),
                                       )
