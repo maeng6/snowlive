@@ -11,6 +11,7 @@ import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
+import 'package:snowlive3/screens/v_MainHome.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../../model/m_rankingTierModel.dart';
@@ -36,6 +37,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   var _crewStream;
   var _rankStream;
   final _formKeyProfile = GlobalKey<FormState>();
+  final _formKeyProfile3 = GlobalKey<FormState>();
   final _formKeyProfile2 = GlobalKey<FormState>();
   final _formKeyProfile4 = GlobalKey<FormState>();
   final _stateMsgController = TextEditingController();
@@ -263,44 +265,85 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                           Center(
                                             child: Column(
                                               children: [
-                                                (friendDocs[0]['profileImageUrl'].isNotEmpty)
-                                                    ? GestureDetector(
-                                                  onTap: () {
-                                                    Get.to(() => ProfileImagePage(
-                                                        CommentProfileUrl: friendDocs[0]['profileImageUrl']));
-                                                  },
-                                                  child: Container(
-                                                      width: 100,
-                                                      height: 100,
-                                                      child: ExtendedImage.network(
-                                                        friendDocs[0]['profileImageUrl'],
-                                                        enableMemoryCache: true,
-                                                        shape: BoxShape.circle,
-                                                        borderRadius: BorderRadius.circular(8),
-                                                        width: 100,
-                                                        height: 100,
-                                                        fit: BoxFit.cover,
-                                                      )),
-                                                )
-                                                    : GestureDetector(
-                                                  onTap: () {
-                                                    Get.to(() => ProfileImagePage(
-                                                        CommentProfileUrl: ''));
-                                                  },
-                                                  child: Container(
-                                                    width: 100,
-                                                    height: 100,
-                                                    child: ExtendedImage.asset(
-                                                      'assets/imgs/profile/img_profile_default_circle.png',
-                                                      enableMemoryCache: true,
-                                                      shape: BoxShape.circle,
-                                                      borderRadius: BorderRadius.circular(8),
-                                                      width: 100,
-                                                      height: 100,
-                                                      fit: BoxFit.cover,
+                                                Stack(
+                                                      children: [
+                                                        (friendDocs[0]['profileImageUrl'].isNotEmpty)
+                                                        ? GestureDetector(
+                                                          onTap: () {
+                                                            if(edit == true){
+                                                              Get.to(() => SetProfileImage_moreTab());
+                                                            }
+                                                            else {
+                                                              Get.to(() =>
+                                                                  ProfileImagePage(
+                                                                      CommentProfileUrl: friendDocs[0]['profileImageUrl']));
+                                                            }
+                                                          },
+                                                          child: Container(
+                                                              width: 100,
+                                                              height: 100,
+                                                              child: ExtendedImage.network(
+                                                                friendDocs[0]['profileImageUrl'],
+                                                                enableMemoryCache: true,
+                                                                shape: BoxShape.circle,
+                                                                borderRadius: BorderRadius.circular(8),
+                                                                width: 100,
+                                                                height: 100,
+                                                                fit: BoxFit.cover,
+                                                              )),
+                                                        )
+                                                            :  GestureDetector(
+                                                          onTap: () {
+                                                            if(edit == true){
+                                                              Get.to(() => SetProfileImage_moreTab());
+                                                            }
+                                                            else {
+                                                              Get.to(() =>
+                                                                  ProfileImagePage(
+                                                                      CommentProfileUrl: ''));
+                                                            }
+                                                          },
+                                                          child: Container(
+                                                            width: 100,
+                                                            height: 100,
+                                                            child: ExtendedImage.asset(
+                                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                                              enableMemoryCache: true,
+                                                              shape: BoxShape.circle,
+                                                              borderRadius: BorderRadius.circular(8),
+                                                              width: 100,
+                                                              height: 100,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        if(edit == true)
+                                                        Positioned(
+                                                          top: 60,
+                                                          left: 60,
+                                                          child: IconButton(
+                                                            onPressed: () {
+                                                              Get.to(() => SetProfileImage_moreTab());
+                                                            },
+                                                            icon: Image.asset(
+                                                              'assets/imgs/icons/icon_profile_add.png',
+                                                              height: 20,
+                                                              width: 20,
+                                                            ),
+                                                            style: TextButton.styleFrom(
+                                                                shape: const RoundedRectangleBorder(
+                                                                    borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                                    side: BorderSide(color: Color(0xFFDEDEDE))
+                                                                ),
+                                                                elevation: 0,
+                                                                splashFactory: InkRipple.splashFactory,
+                                                                minimumSize: Size(82, 36),
+                                                                backgroundColor:
+                                                                Color(0xffffffff)),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                ),
                                                 SizedBox(
                                                   height: 12,
                                                 ),
@@ -514,77 +557,282 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                 SizedBox(
                                                   height: 2,
                                                 ),
-                                                (edit == true)
-                                                    ? Padding(
-                                                  padding: const EdgeInsets.only(top: 6),
-                                                  child: Container(
-                                                    width: _size.width - 120,
-                                                    child: TextFormField(
-                                                      key: _formKeyProfile2,
-                                                      cursorColor: Color(0xff949494),
-                                                      controller: _stateMsgController,
-                                                      strutStyle: StrutStyle(leading: 0.3),
-                                                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                      maxLines: 1,
-                                                      enableSuggestions: false,
-                                                      autocorrect: false,
-                                                      textInputAction: TextInputAction.newline,
-                                                      onTap: () {
-                                                        // 텍스트 필드 선택 시 커서를 맨 오른쪽으로 이동
-                                                        _stateMsgController.selection =
-                                                            TextSelection.fromPosition(
-                                                                TextPosition(offset: _stateMsgController.text.length));
-                                                      },
-                                                      decoration: InputDecoration(
-                                                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                                                        labelText: '상태메시지',
-                                                        labelStyle: TextStyle(
-                                                          fontSize: 14, fontWeight: FontWeight.normal,
-                                                          color: Color(0xFF666666),
-                                                        ),
-                                                        hoverColor: Colors.transparent,
-                                                        filled: true,
-                                                        focusColor: Colors.transparent,
-                                                        errorStyle: TextStyle(
-                                                          fontSize: 12,
-                                                        ),
-                                                        hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 14),
-                                                        hintText: '상태메시지를 입력해주세요.',
-                                                        contentPadding: EdgeInsets.only(left: 12, right: 12),
-                                                        border: OutlineInputBorder(
-                                                          borderSide: BorderSide(color: Colors.transparent),
-                                                          borderRadius: BorderRadius.circular(6),
-                                                        ),
-                                                        enabledBorder: OutlineInputBorder(
-                                                          borderSide: BorderSide(color: Colors.transparent),
-                                                          borderRadius: BorderRadius.circular(6),
-                                                        ),
-                                                        focusedBorder: OutlineInputBorder(
-                                                          borderSide: BorderSide(color: Colors.transparent),
-                                                          borderRadius: BorderRadius.circular(6),
-                                                        ),
-                                                        errorBorder: OutlineInputBorder(
-                                                          borderSide: BorderSide(color: Colors.transparent),
-                                                          borderRadius: BorderRadius.circular(6),
-                                                        ),
-                                                      ),
-                                                      validator: (val) {
-                                                        if (val!.length <= 20) {
-                                                          return null;
-                                                        } else {
-                                                          return '20자 미만으로 적어주세요.';
-                                                        }
-                                                      },
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(bottom: 6),
+                                                      child:
+                                                      (edit ==true)
+                                                          ? Text(_initStateMsg, style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Color(0xFF949494)),)
+                                                          : Text('${friendDocs[0]['stateMsg']}', style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Color(0xFF949494)),
+                                                      )
                                                     ),
-
-                                                  ),
-                                                )
-                                                    : Padding(
-                                                  padding: const EdgeInsets.only(bottom: 6),
-                                                  child: Text('${friendDocs[0]['stateMsg']}',
-                                                    style: TextStyle(fontSize: 14,
-                                                        color: Color(0xFF949494)),),
+                                                    if(edit == true)
+                                                      GestureDetector(
+                                                          onTap: () {
+                                                            _stateMsgController.clear();
+                                                            showModalBottomSheet(
+                                                              context: context,
+                                                              isScrollControlled: true,
+                                                              builder: (BuildContext context) {
+                                                                return SafeArea(
+                                                                  child: Container(
+                                                                    height: 240,
+                                                                    child: Padding(
+                                                                      padding: EdgeInsets.only(
+                                                                          left: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom,),
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                        children: [
+                                                                          SizedBox(
+                                                                            height: 30,
+                                                                          ),
+                                                                          Text(
+                                                                            '상태메세지를 입력해주세요.',
+                                                                            style: TextStyle(
+                                                                                fontSize: 18,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: Color(
+                                                                                    0xFF111111)),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            height: 20,
+                                                                          ),
+                                                                          Container(
+                                                                            height: 100,
+                                                                            child: Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                                              children: [
+                                                                                Form(
+                                                                                  key: _formKeyProfile2,
+                                                                                  child:
+                                                                                  Container(
+                                                                                    height: 56,
+                                                                                    child: TextFormField(
+                                                                                      cursorColor: Color(0xff377EEA),
+                                                                                      cursorHeight: 16,
+                                                                                      cursorWidth: 2,
+                                                                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                                                      controller: _stateMsgController..text = _initStateMsg,
+                                                                                      strutStyle:
+                                                                                      StrutStyle(leading: 0.3),
+                                                                                      decoration: InputDecoration(
+                                                                                          errorStyle: TextStyle(fontSize: 12,),
+                                                                                          hintStyle: TextStyle(
+                                                                                              color: Color(0xff949494),
+                                                                                              fontSize: 16),
+                                                                                          hintText: '상태메세지 입력',
+                                                                                          labelText: '상태메세지',
+                                                                                          contentPadding: EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
+                                                                                          border: OutlineInputBorder(
+                                                                                            borderSide: BorderSide(
+                                                                                                color: Color(0xFFDEDEDE)),
+                                                                                            borderRadius: BorderRadius.circular(6),
+                                                                                          ),
+                                                                                          enabledBorder: OutlineInputBorder(
+                                                                                            borderSide: BorderSide(
+                                                                                                color: Color(0xFFDEDEDE)),
+                                                                                            borderRadius: BorderRadius.circular(6),
+                                                                                          ),
+                                                                                          errorBorder: OutlineInputBorder(
+                                                                                            borderSide: BorderSide(
+                                                                                                color: Color(0xFFFF3726)),
+                                                                                            borderRadius: BorderRadius.circular(6),
+                                                                                          )),
+                                                                                      validator: (val) {
+                                                                                        if (val!.length <= 20 && val.length >= 1) {
+                                                                                          return null;
+                                                                                        } else if (val.length == 0) {
+                                                                                          return '상태메세지를 입력해주세요.';
+                                                                                        } else {
+                                                                                          return '최대 글자 수를 초과했습니다.';
+                                                                                        }
+                                                                                      },
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  height: 6,
+                                                                                ),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.only(left: 19),
+                                                                                  child: Text(
+                                                                                    '최대 20글자까지 입력 가능합니다.',
+                                                                                    style: TextStyle(
+                                                                                        color: Color(0xff949494),
+                                                                                        fontSize: 12),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                          Row(
+                                                                            children: [
+                                                                              Expanded(
+                                                                                child: InkWell(
+                                                                                  child: ElevatedButton(
+                                                                                    onPressed: () {
+                                                                                      _stateMsgController.text =
+                                                                                      _userModelController.stateMsg!;
+                                                                                      Navigator.pop(context);
+                                                                                    },
+                                                                                    child: Text(
+                                                                                      '취소',
+                                                                                      style: TextStyle(
+                                                                                          color: Colors.white,
+                                                                                          fontSize: 15,
+                                                                                          fontWeight: FontWeight.bold),
+                                                                                    ),
+                                                                                    style: TextButton.styleFrom(
+                                                                                        splashFactory: InkRipple.splashFactory,
+                                                                                        elevation: 0,
+                                                                                        minimumSize: Size(100, 56),
+                                                                                        backgroundColor: Color(0xff555555),
+                                                                                        padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              SizedBox(
+                                                                                width: 10,
+                                                                              ),
+                                                                              Expanded(
+                                                                                child: InkWell(
+                                                                                  child:
+                                                                                  ElevatedButton(
+                                                                                    onPressed: () {
+                                                                                      if (_formKeyProfile2.currentState!.validate()) {
+                                                                                        setState(() {
+                                                                                          _initStateMsg = _stateMsgController.text;
+                                                                                        });
+                                                                                        FocusScope.of(context).unfocus();
+                                                                                        Navigator.pop(context);
+                                                                                      } else {
+                                                                                        Get.snackbar(
+                                                                                            '입력 실패',
+                                                                                            '올바른 상태메세지를 입력해주세요.',
+                                                                                            snackPosition: SnackPosition.BOTTOM,
+                                                                                            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                                                                            backgroundColor: Colors.black87,
+                                                                                            colorText: Colors.white,
+                                                                                            duration: Duration(milliseconds: 3000));
+                                                                                      }
+                                                                                    },
+                                                                                    child: Text('변경',
+                                                                                      style: TextStyle(
+                                                                                          color: Colors.white,
+                                                                                          fontSize: 15,
+                                                                                          fontWeight: FontWeight.bold),
+                                                                                    ),
+                                                                                    style: TextButton
+                                                                                        .styleFrom(
+                                                                                        splashFactory:
+                                                                                        InkRipple.splashFactory,
+                                                                                        elevation: 0,
+                                                                                        minimumSize: Size(100, 56),
+                                                                                        backgroundColor: Color(0xff2C97FB),
+                                                                                        padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              },
+                                                            );
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(
+                                                                left: 4),
+                                                            child: Image.asset(
+                                                              'assets/imgs/icons/icon_edit_pencil.png',
+                                                              height: 20,
+                                                              width: 20,
+                                                            ),
+                                                          )),
+                                                  ],
                                                 ),
+                                                // (edit == true)
+                                                //     ? Padding(
+                                                //   padding: const EdgeInsets.only(top: 6),
+                                                //   child: Container(
+                                                //     width: _size.width - 120,
+                                                //     child: TextFormField(
+                                                //       key: _formKeyProfile2,
+                                                //       cursorColor: Color(0xff949494),
+                                                //       controller: _stateMsgController,
+                                                //       strutStyle: StrutStyle(leading: 0.3),
+                                                //       autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                //       maxLines: 1,
+                                                //       enableSuggestions: false,
+                                                //       autocorrect: false,
+                                                //       textInputAction: TextInputAction.newline,
+                                                //       onTap: () {
+                                                //         // 텍스트 필드 선택 시 커서를 맨 오른쪽으로 이동
+                                                //         _stateMsgController.selection =
+                                                //             TextSelection.fromPosition(
+                                                //                 TextPosition(offset: _stateMsgController.text.length));
+                                                //       },
+                                                //       decoration: InputDecoration(
+                                                //         floatingLabelBehavior: FloatingLabelBehavior.never,
+                                                //         labelText: '상태메시지',
+                                                //         labelStyle: TextStyle(
+                                                //           fontSize: 14, fontWeight: FontWeight.normal,
+                                                //           color: Color(0xFF666666),
+                                                //         ),
+                                                //         hoverColor: Colors.transparent,
+                                                //         filled: true,
+                                                //         focusColor: Colors.transparent,
+                                                //         errorStyle: TextStyle(
+                                                //           fontSize: 12,
+                                                //         ),
+                                                //         hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 14),
+                                                //         hintText: '상태메시지를 입력해주세요.',
+                                                //         contentPadding: EdgeInsets.only(left: 12, right: 12),
+                                                //         border: OutlineInputBorder(
+                                                //           borderSide: BorderSide(color: Colors.transparent),
+                                                //           borderRadius: BorderRadius.circular(6),
+                                                //         ),
+                                                //         enabledBorder: OutlineInputBorder(
+                                                //           borderSide: BorderSide(color: Colors.transparent),
+                                                //           borderRadius: BorderRadius.circular(6),
+                                                //         ),
+                                                //         focusedBorder: OutlineInputBorder(
+                                                //           borderSide: BorderSide(color: Colors.transparent),
+                                                //           borderRadius: BorderRadius.circular(6),
+                                                //         ),
+                                                //         errorBorder: OutlineInputBorder(
+                                                //           borderSide: BorderSide(color: Colors.transparent),
+                                                //           borderRadius: BorderRadius.circular(6),
+                                                //         ),
+                                                //       ),
+                                                //       validator: (val) {
+                                                //         if (val!.length <= 20) {
+                                                //           return null;
+                                                //         } else {
+                                                //           return '20자 미만으로 적어주세요.';
+                                                //         }
+                                                //       },
+                                                //     ),
+                                                //
+                                                //   ),
+                                                // )
+                                                //     : Padding(
+                                                //   padding: const EdgeInsets.only(bottom: 6),
+                                                //   child: Text('${friendDocs[0]['stateMsg']}',
+                                                //     style: TextStyle(fontSize: 14,
+                                                //         color: Color(0xFF949494)),),
+                                                // ),
                                               ],
                                             ),
                                           ),
@@ -594,6 +842,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
+                                                if(edit == false)
                                                 ElevatedButton(onPressed: () {
                                                   setState(() {
                                                     _initStateMsg = _userModelController.stateMsg!;
@@ -617,41 +866,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       backgroundColor:
                                                       Color(0xffffffff)),
                                                 ),
-                                                SizedBox(
-                                                  width: 8,
-                                                ),
-                                                ElevatedButton(onPressed: () {
-                                                  Get.to(() => SetProfileImage_moreTab());
-                                                }, child: Text('이미지 수정', style: TextStyle(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.normal,
-                                                    color: Color(0xFF666666)
-                                                ),
-                                                ),
-                                                  style: TextButton.styleFrom(
-                                                      shape: const RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.all(Radius.circular(6)),
-                                                          side: BorderSide(color: Color(0xFFDEDEDE))
-                                                      ),
-                                                      elevation: 0,
-                                                      splashFactory: InkRipple.splashFactory,
-                                                      minimumSize: Size(82, 36),
-                                                      backgroundColor:
-                                                      Color(0xffffffff)),
-                                                ),
-                                                // SizedBox(
-                                                //   width: 40,
-                                                // ),
-                                                // Column(
-                                                //   children: [
-                                                //     IconButton(
-                                                //         onPressed: (){},
-                                                //         iconSize: 32,
-                                                //         icon: Image.asset('assets/imgs/icons/icon_edit_livecrew.png')
-                                                //     ),
-                                                //     Text('라이브 크루', style: TextStyle(fontSize: 13, color: Color(0xFF111111)),)
-                                                //   ],
-                                                // ),
                                               ],
                                             ),
                                           ) //프로필수정 + 라이브크루
@@ -858,6 +1072,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                           Get.to(()=>CrewDetailPage_screen());
                                                         },
                                                         child: Container(
+                                                          height: 200,
                                                           width: _size.width / 2 - 25,
                                                           padding: EdgeInsets.all(16),
                                                           decoration: BoxDecoration(
@@ -878,39 +1093,27 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                     ),),
                                                                   SizedBox(height: 12),
                                                                   (crewDocs[0]['profileImageUrl'].isNotEmpty)
-                                                                      ? GestureDetector(
-                                                                    onTap: () {
-                                                                      Get.to(() => ProfileImagePage(
-                                                                          CommentProfileUrl: crewDocs['profileImageUrl']));
-                                                                    },
-                                                                    child: Container(
+                                                                      ? Container(
+                                                                          width: 50,
+                                                                          height: 50,
+                                                                          child: ExtendedImage.network(
+                                                                            crewDocs[0]['profileImageUrl'],
+                                                                            enableMemoryCache: true,
+                                                                            shape: BoxShape.rectangle,
+                                                                            borderRadius: BorderRadius.circular(6),
+                                                                            fit: BoxFit.cover,
+                                                                          ))
+                                                                      : Container(
                                                                         width: 50,
                                                                         height: 50,
-                                                                        child: ExtendedImage.network(
-                                                                          crewDocs[0]['profileImageUrl'],
+                                                                        child: ExtendedImage.asset(
+                                                                          'assets/imgs/profile/img_profile_default_.png',
                                                                           enableMemoryCache: true,
                                                                           shape: BoxShape.rectangle,
                                                                           borderRadius: BorderRadius.circular(6),
                                                                           fit: BoxFit.cover,
-                                                                        )),
-                                                                  )
-                                                                      : GestureDetector(
-                                                                    onTap: () {
-                                                                      Get.to(() => ProfileImagePage(
-                                                                          CommentProfileUrl: ''));
-                                                                    },
-                                                                    child: Container(
-                                                                      width: 50,
-                                                                      height: 50,
-                                                                      child: ExtendedImage.asset(
-                                                                        'assets/imgs/profile/img_profile_default_.png',
-                                                                        enableMemoryCache: true,
-                                                                        shape: BoxShape.rectangle,
-                                                                        borderRadius: BorderRadius.circular(6),
-                                                                        fit: BoxFit.cover,
+                                                                        ),
                                                                       ),
-                                                                    ),
-                                                                  ),
                                                                   SizedBox(
                                                                     height: 34,
                                                                   ),
@@ -936,15 +1139,15 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                           ),
                                                         )
                                                     );
-                                                  }else if (snapshot.connectionState == ConnectionState.waiting) {}
-                                                  return
-                                                    (friendDocs[0]['uid'] == _userModelController.uid)
+                                                  }
+                                                  else if (snapshot.connectionState == ConnectionState.waiting) {}
+                                                  return (friendDocs[0]['uid'] == _userModelController.uid)
                                                         ? GestureDetector(
                                                       onTap: (){
                                                         Get.to(()=>FirstPage_createCrew());
                                                       },
                                                       child: Container(
-                                                        height: 160,
+                                                        height: 200,
                                                         width: _size.width / 2 - 25,
                                                         padding: EdgeInsets.all(16),
                                                         decoration: BoxDecoration(
@@ -971,6 +1174,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       ),
                                                     )
                                                         :Container(
+                                                      height: 200,
                                                       width: _size.width / 2 - 25,
                                                       padding: EdgeInsets.all(16),
                                                       decoration: BoxDecoration(
@@ -1026,246 +1230,197 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       ),
                                                     );
                                                 }),
-                                            StreamBuilder(
-                                                stream: _crewStream,
-                                                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                                            StreamBuilder<QuerySnapshot>(
+                                                stream: FirebaseFirestore.instance
+                                                    .collection('Ranking')
+                                                    .doc('${_seasonController.currentSeason}')
+                                                    .collection('${friendDocs[0]['favoriteResort']}')
+                                                    .where('uid', isEqualTo: friendDocs[0]['uid'] )
+                                                    .snapshots(),
+                                                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                                                   if (!snapshot.hasData || snapshot.data == null) {}
                                                   else if (snapshot.data!.docs.isNotEmpty) {
-                                                    final crewDocs = snapshot.data!.docs;
-                                                    return GestureDetector(
-                                                        onTap: () async {
-                                                          CustomFullScreenDialog.showDialog();
-                                                          await _liveCrewModelController.getCurrnetCrew(friendDocs[0]['liveCrew']);
-                                                          CustomFullScreenDialog.cancelDialog();
-                                                          Get.to(()=>CrewDetailPage_screen());
-                                                        },
-                                                        child: Container(
-                                                          width: _size.width / 2 - 25,
-                                                          padding: EdgeInsets.all(16),
-                                                          decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              color: Color(0xFF1D59B4)
-                                                          ),
-                                                          child: Row(
-                                                            children: [
-                                                              Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                                children: [
-                                                                  Text('랭킹',
-                                                                    style: TextStyle(
-                                                                        fontWeight: FontWeight.normal,
-                                                                        fontSize: 13,
-                                                                        color: Color(0xFFFFFFFF).withOpacity(0.6)
-                                                                    ),),
-                                                                  SizedBox(height: 12),
-                                                                  StreamBuilder<QuerySnapshot>(
-                                                                      stream: FirebaseFirestore.instance
-                                                                          .collection('Ranking')
-                                                                          .doc('${_seasonController.currentSeason}')
-                                                                          .collection('${friendDocs[0]['favoriteResort']}')
-                                                                          .where('uid', isEqualTo: friendDocs[0]['uid'] )
-                                                                          .snapshots(),
-                                                                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                                                        if (!snapshot.hasData || snapshot.data == null) {}
-                                                                        else if (snapshot.data!.docs.isNotEmpty) {
-                                                                          final rankingDocs = snapshot.data!.docs;
-                                                                          // 동점자인 경우 lastPassTime을 기준으로 최신 순으로 정렬
-                                                                          rankingDocs.sort((a, b) {
-                                                                            final aTotalScore = a['totalScore'] as int;
-                                                                            final bTotalScore = b['totalScore'] as int;
-                                                                            final aLastPassTime = a['lastPassTime'] as Timestamp?;
-                                                                            final bLastPassTime = b['lastPassTime'] as Timestamp?;
+                                                    final rankingDocs = snapshot.data!.docs;
+                                                    // 동점자인 경우 lastPassTime을 기준으로 최신 순으로 정렬
+                                                    rankingDocs.sort((a, b) {
+                                                      final aTotalScore = a['totalScore'] as int;
+                                                      final bTotalScore = b['totalScore'] as int;
+                                                      final aLastPassTime = a['lastPassTime'] as Timestamp?;
+                                                      final bLastPassTime = b['lastPassTime'] as Timestamp?;
 
-                                                                            if (aTotalScore == bTotalScore) {
-                                                                              if (aLastPassTime != null && bLastPassTime != null) {
-                                                                                return bLastPassTime.compareTo(aLastPassTime);
-                                                                              }
-                                                                            }
+                                                      if (aTotalScore == bTotalScore) {
+                                                        if (aLastPassTime != null && bLastPassTime != null) {
+                                                          return bLastPassTime.compareTo(aLastPassTime);
+                                                        }
+                                                      }
 
-                                                                            return bTotalScore.compareTo(aTotalScore);
-                                                                          });
+                                                      return bTotalScore.compareTo(aTotalScore);
+                                                    });
 
-                                                                          userRankingMap =  _liveMapController.calculateRankIndiAll2(userRankingDocs: rankingDocs);
+                                                    userRankingMap =  _liveMapController.calculateRankIndiAll2(userRankingDocs: rankingDocs);
 
-                                                                          for(var rankingTier in rankingTierList)
-                                                                            if(rankingDocs[0]['tier'] == rankingTier.tierName)
-                                                                              return Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  Transform.translate(
-                                                                                    offset: Offset(-10,-10),
-                                                                                    child: ExtendedImage.asset(
-                                                                                      rankingTier.badgeAsset,
-                                                                                      enableMemoryCache: true,
-                                                                                      fit: BoxFit.cover,
-                                                                                      width: 52,
-                                                                                    ),
-                                                                                  ),
-                                                                                  SizedBox(
-                                                                                    height: 20,
-                                                                                  ),
-                                                                                  Text('${rankingDocs[0]['totalScore']}점',
-                                                                                    style: TextStyle(
-                                                                                        fontWeight: FontWeight.bold,
-                                                                                        fontSize: 16,
-                                                                                        color: Color(0xFFFFFFFF)
-                                                                                    ),
-                                                                                  ),
-                                                                                  SizedBox(
-                                                                                    height: 3,
-                                                                                  ),
-                                                                                  Text(
-                                                                                    '${userRankingMap!['${rankingDocs[0]['uid']}']}등',
-                                                                                    style: TextStyle(
-                                                                                        fontSize: 13,
-                                                                                        color: Color(0xFFFFFFFF)
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              );
-                                                                        }
-                                                                        else if (snapshot.connectionState == ConnectionState.waiting) {}
-                                                                        return Center(
-                                                                          child: CircularProgressIndicator(),
-                                                                        );
-                                                                      }),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                    );
-                                                  } else if (snapshot.connectionState == ConnectionState.waiting) {}
-                                                  return
-                                                    (friendDocs[0]['uid'] == _userModelController.uid)
-                                                        ?GestureDetector(
-                                                      onTap: (){
-                                                        Get.to(()=>FirstPage_createCrew());
-                                                      },
-                                                      child: Container(
-                                                        height: 160,
-                                                        width: _size.width / 2 - 25,
-                                                        padding: EdgeInsets.all(16),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(10),
-                                                            color: Color(0xFFF1F3F3)
-                                                        ),
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text('랭킹 점수가 없습니다.\n라이브온을 통해 랭킹에 참여해 보세요.',
+                                                    for(var rankingTier in rankingTierList)
+                                                      if(rankingDocs[0]['tier'] == rankingTier.tierName)
+                                                        return Container(
+                                                          height: 200,
+                                                            width: _size.width / 2 - 25,
+                                                            padding: EdgeInsets.all(16),
+                                                            decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(10),
+                                                                color: Color(0xFF1D59B4)
+                                                            ),
+                                                            child: Row(
+                                                              children: [
+                                                                Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                  children: [
+                                                                    Text('개인랭킹',
+                                                                      style: TextStyle(
+                                                                          fontWeight: FontWeight.normal,
+                                                                          fontSize: 13,
+                                                                          color: Color(0xFFFFFFFF).withOpacity(0.6)
+                                                                      ),),
+                                                                    SizedBox(height: 12),
+                                                                    Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        Transform.translate(
+                                                                          offset: Offset(-10,-10),
+                                                                          child: ExtendedImage.asset(
+                                                                            rankingTier.badgeAsset,
+                                                                            enableMemoryCache: true,
+                                                                            fit: BoxFit.cover,
+                                                                            width: 52,
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height: 20,
+                                                                        ),
+                                                                        Text('${rankingDocs[0]['totalScore']}점',
+                                                                          style: TextStyle(
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 16,
+                                                                              color: Color(0xFFFFFFFF)
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height: 3,
+                                                                        ),
+                                                                        Text(
+                                                                          '${userRankingMap!['${rankingDocs[0]['uid']}']}등',
+                                                                          style: TextStyle(
+                                                                              fontSize: 13,
+                                                                              color: Color(0xFFFFFFFF)
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                  }
+                                                  else if (snapshot.connectionState == ConnectionState.waiting) {}
+                                                  return (friendDocs[0]['uid'] == _userModelController.uid)
+                                                      ?GestureDetector(
+                                                    onTap: (){
+                                                      Get.offAll(()=>MainHome(uid: _userModelController.uid));
+                                                    },
+                                                    child: Container(
+                                                      height: 200,
+                                                      width: _size.width / 2 - 25,
+                                                      padding: EdgeInsets.all(16),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          color: Color(0xFFF1F3F3)
+                                                      ),
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text('랭킹 점수가 없습니다.\n라이브온을 통해 랭킹에 참여해 보세요.',
                                                             style: TextStyle(
-                                                              fontSize: 13,
-                                                              color: Color(0xFF949494)
+                                                                fontSize: 13,
+                                                                color: Color(0xFF949494)
                                                             ),),
-                                                            Text('랭킹 참여하러 가기 >',
+                                                          Text('랭킹 참여하러 가기 >',
+                                                            style: TextStyle(
+                                                                fontSize: 13,
+                                                                fontWeight: FontWeight.bold,
+                                                                color: Color(0xFF666666)
+                                                            ),),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )
+                                                      : Container(
+                                                    height: 200,
+                                                    width: _size.width / 2 - 25,
+                                                    padding: EdgeInsets.all(16),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        color: Color(0xFFf1f3f3)
+                                                    ),
+                                                    child: Row(
+                                                      children: [
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Text('개인랭킹',
+                                                              style: TextStyle(
+                                                                  fontWeight: FontWeight.normal,
+                                                                  fontSize: 13,
+                                                                  color: Color(0xFF444444).withOpacity(0.8)
+                                                              ),),
+                                                            SizedBox(height: 12),
+                                                            // Transform.translate(
+                                                            //   offset: Offset(-8,-6),
+                                                            //   child: Container(
+                                                            //     width: 60,
+                                                            //     height: 64,
+                                                            //     child: ExtendedImage.asset(
+                                                            //       'assets/imgs/ranking/icon_ranking_nodata_2.png',
+                                                            //       enableMemoryCache: true,
+                                                            //       shape: BoxShape.rectangle,
+                                                            //       borderRadius: BorderRadius.circular(6),
+                                                            //       fit: BoxFit.cover,
+                                                            //     ),
+                                                            //   ),
+                                                            // ),
+
+                                                            SizedBox(
+                                                              height: 84,
+                                                            ),
+                                                            Text('점수가 없습니다.',
+                                                              style: TextStyle(
+                                                                  fontWeight: FontWeight.bold,
+                                                                  fontSize: 16,
+                                                                  color: Color(0xFF444444)
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 3,
+                                                            ),
+                                                            Text('',
                                                               style: TextStyle(
                                                                   fontSize: 13,
-                                                                  fontWeight: FontWeight.bold,
-                                                                  color: Color(0xFF666666)
-                                                              ),),
+                                                                  color: Color(0xFF444444)
+                                                              ),
+                                                            ),
                                                           ],
                                                         ),
-                                                      ),
-                                                    )
-                                                        : Container(
-                                                          width: _size.width / 2 - 25,
-                                                          padding: EdgeInsets.all(16),
-                                                          decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              color: Color(0xFFf1f3f3)
-                                                          ),
-                                                          child: Row(
-                                                            children: [
-                                                              Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                                children: [
-                                                                  Text('랭킹',
-                                                                    style: TextStyle(
-                                                                        fontWeight: FontWeight.normal,
-                                                                        fontSize: 13,
-                                                                        color: Color(0xFF444444).withOpacity(0.8)
-                                                                    ),),
-                                                                  SizedBox(height: 12),
-                                                                  // Transform.translate(
-                                                                  //   offset: Offset(-8,-6),
-                                                                  //   child: Container(
-                                                                  //     width: 60,
-                                                                  //     height: 64,
-                                                                  //     child: ExtendedImage.asset(
-                                                                  //       'assets/imgs/ranking/icon_ranking_nodata_2.png',
-                                                                  //       enableMemoryCache: true,
-                                                                  //       shape: BoxShape.rectangle,
-                                                                  //       borderRadius: BorderRadius.circular(6),
-                                                                  //       fit: BoxFit.cover,
-                                                                  //     ),
-                                                                  //   ),
-                                                                  // ),
-
-                                                                  SizedBox(
-                                                                    height: 84,
-                                                                  ),
-                                                                  Text('점수가 없습니다.',
-                                                                    style: TextStyle(
-                                                                        fontWeight: FontWeight.bold,
-                                                                        fontSize: 16,
-                                                                        color: Color(0xFF444444)
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 3,
-                                                                  ),
-                                                                  Text('',
-                                                                    style: TextStyle(
-                                                                        fontSize: 13,
-                                                                        color: Color(0xFF444444)
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        );
+                                                      ],
+                                                    ),
+                                                  );
                                                 }),
                                           ],
                                         ),
                                       ),
                                       SizedBox(height: 12,),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                        child: Container(
-                                          width: _size.width,
-                                          height: 64,
-                                          padding: EdgeInsets.only(left: 16, right: 20),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFf1f3f3),
-                                            borderRadius: BorderRadius.circular(10),
-                                            // border: Border.all(color: Color(0xFFDEDEDE), width: 1),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '자주가는 리조트',
-                                                style: TextStyle(
-                                                    fontSize: 13,
-                                                    color: Color(0xFF111111),
-                                                    fontWeight: FontWeight.normal),
-                                              ),
-                                              Text(
-                                                '${_resortModelController.getResortName(_userModelController.resortNickname!)}',
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Color(0xFF111111),
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),//소속된크루
+
                                       StreamBuilder<DocumentSnapshot>(
                                           stream: _rankStream,
                                           builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
@@ -1634,7 +1789,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                               builder: (context) {
                                                                                                 return SafeArea(
                                                                                                   child: Container(
-                                                                                                    height: 200,
+                                                                                                    height: (friendDocs[0]['uid'] == _userModelController.uid) ? 200 : 150,
                                                                                                     child: Padding(
                                                                                                       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
                                                                                                       child: Column(
