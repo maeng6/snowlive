@@ -426,7 +426,11 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                   padding: EdgeInsets.only(top: 16, bottom: MediaQuery.of(context).viewInsets.bottom + 16, right: 5),
                                   child: TextButton(
                                       onPressed: () {
-                                        Get.to(()=> FriendDetailPage(uid: foundUserModel!.uid, favoriteResort: foundUserModel!.favoriteResort,));
+                                        if(isFound) {
+                                          Get.to(() => FriendDetailPage(
+                                                uid: foundUserModel!.uid,
+                                                favoriteResort: foundUserModel!.favoriteResort,));
+                                        }
                                       },
                                       style: TextButton.styleFrom(
                                         shape: const RoundedRectangleBorder(
