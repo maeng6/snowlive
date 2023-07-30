@@ -14,6 +14,7 @@ import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
 import '../../../controller/vm_userModelController.dart';
+import '../../../model/m_crewLogoModel.dart';
 import '../../../model/m_rankingTierModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 import '../../LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
@@ -49,6 +50,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   String _initialDisplayName='';
   bool isPassDataZero=false;
   Map? userRankingMap;
+  var myCrewAsset;
 
   Future<void> _onRefresh() async {
     CustomFullScreenDialog.showDialog();
@@ -1064,6 +1066,12 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                   if (!snapshot.hasData || snapshot.data == null) {}
                                                   else if (snapshot.data!.docs.isNotEmpty) {
                                                     final crewDocs = snapshot.data!.docs;
+                                                    for (var crewLogo in crewLogoList) {
+                                                      if (crewLogo.crewColor == crewDocs[0]['crewColor']) {
+                                                        myCrewAsset = crewLogo.crewLogoAsset;
+                                                        break;
+                                                      }
+                                                    }
                                                     return GestureDetector(
                                                         onTap: () async {
                                                           CustomFullScreenDialog.showDialog();
@@ -1107,7 +1115,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                         width: 50,
                                                                         height: 50,
                                                                         child: ExtendedImage.asset(
-                                                                          'assets/imgs/profile/img_profile_default_.png',
+                                                                          myCrewAsset,
                                                                           enableMemoryCache: true,
                                                                           shape: BoxShape.rectangle,
                                                                           borderRadius: BorderRadius.circular(6),

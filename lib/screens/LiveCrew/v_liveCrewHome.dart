@@ -13,6 +13,7 @@ import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../../controller/vm_liveCrewModelController.dart';
+import '../../model/m_crewLogoModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 import 'CreateOnboarding/v_setCrewName.dart';
 import 'invitation/v_invitation_Screen_crew.dart';
@@ -30,6 +31,12 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
+
+  var assetMyCrew;
+  var assetTop1;
+  var assetTop2;
+  var assetTop3;
+  var assetBases;
 
 
   SpeedDial buildSpeedDial1() {
@@ -223,6 +230,8 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
               if (!snapshot.hasData || snapshot.data == null) {}
               else if (snapshot.data!.docs.isNotEmpty) {
                 final applyDocs = snapshot.data!.docs;
+
+
                 return Padding(
                   padding: EdgeInsets.only(left: 16),
                   child: Column(
@@ -636,6 +645,14 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                   liveUserCount += 1;
                                 }
                               });
+
+                              for (var crewLogo in crewLogoList) {
+                                if (crewLogo.crewColor == crewDoc['crewColor']) {
+                                  assetMyCrew = crewLogo.crewLogoAsset;
+                                  break;
+                                }
+                              }
+
                               return GestureDetector(
                                 onTap: () async {
                                   CustomFullScreenDialog.showDialog();
@@ -644,7 +661,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                   Get.to(()=>CrewDetailPage_screen());
                                 },
                                 child: Container(
-                                  height: crewDoc['notice'] == '' ? 160 : 204,
+                                  height: crewDoc['notice'] == '' ? 140 : 204,
                                   width: _size.width,
                                   decoration: BoxDecoration(
                                     color: Color(crewDoc['crewColor']),
@@ -784,7 +801,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                 width: 90,
                                                 height: 90,
                                                 child: ExtendedImage.asset(
-                                                  'assets/imgs/profile/img_profile_default_.png',
+                                                  assetMyCrew,
                                                   enableMemoryCache: true,
                                                   shape: BoxShape.rectangle,
                                                   borderRadius: BorderRadius.circular(12),
@@ -893,6 +910,27 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                       );
                     } else if (snapshot.data!.docs.isNotEmpty) {
                       final crewDocs = snapshot.data!.docs;
+
+                      for (var crewLogo in crewLogoList) {
+                        if (crewLogo.crewColor == crewDocs[0]['crewColor']) {
+                          assetTop1 = crewLogo.crewLogoAsset;
+                          break;
+                        }
+                      }
+                      for (var crewLogo in crewLogoList) {
+                        if (crewLogo.crewColor == crewDocs[1]['crewColor']) {
+                          assetTop2 = crewLogo.crewLogoAsset;
+                          break;
+                        }
+                      }
+                      for (var crewLogo in crewLogoList) {
+                        if (crewLogo.crewColor == crewDocs[2]['crewColor']) {
+                          assetTop3 = crewLogo.crewLogoAsset;
+                          break;
+                        }
+                      }
+
+
                       return  Row(
                         children: [
                           if(crewDocs.length > 0)
@@ -948,7 +986,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                         ],
                                       ),
                                       child: ExtendedImage.asset(
-                                        'assets/imgs/profile/img_profile_default_.png',
+                                        assetTop1,
                                         enableMemoryCache: true,
                                         shape: BoxShape.rectangle,
                                         borderRadius: BorderRadius.circular(7),
@@ -1036,7 +1074,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                           ],
                                         ),
                                         child: ExtendedImage.asset(
-                                          'assets/imgs/profile/img_profile_default_.png',
+                                          assetTop2,
                                           enableMemoryCache: true,
                                           shape: BoxShape.rectangle,
                                           borderRadius: BorderRadius.circular(7),
@@ -1125,7 +1163,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                           ],
                                         ),
                                         child: ExtendedImage.asset(
-                                          'assets/imgs/profile/img_profile_default_.png',
+                                          assetTop3,
                                           enableMemoryCache: true,
                                           shape: BoxShape.rectangle,
                                           borderRadius: BorderRadius.circular(7),
@@ -1224,92 +1262,105 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                             );
                           } else if (snapshot.data!.docs.isNotEmpty) {
                             final crewDocs = snapshot.data!.docs;
-                            return Column(
-                              children: crewDocs.map((doc) => GestureDetector(
-                                onTap: () async {
-                                  CustomFullScreenDialog.showDialog();
-                                  await _liveCrewModelController.getCurrnetCrew(doc['crewID']);
-                                  CustomFullScreenDialog.cancelDialog();
-                                  Get.to(()=>CrewDetailPage_screen());
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.only(right: 10),
-                                  child: Container(
-                                    height: 64,
-                                    width: _size.width,
-                                    child: Row(
-                                      children: [
-                                        (doc['profileImageUrl'].isNotEmpty)
-                                            ? Container(
-                                            width: 48,
-                                            height: 48,
-                                            decoration: BoxDecoration(
+
+                            return Container(
+                              height: crewDocs.length * 64.0,
+                              child: Column(
+                                children: crewDocs.map((doc) {
+
+                                  for (var crewLogo in crewLogoList) {
+                                    if (crewLogo.crewColor == doc['crewColor']) {
+                                      assetBases = crewLogo.crewLogoAsset;
+                                      break;
+                                    }
+                                  }
+
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      CustomFullScreenDialog.showDialog();
+                                      await _liveCrewModelController.getCurrnetCrew(doc['crewID']);
+                                      CustomFullScreenDialog.cancelDialog();
+                                      Get.to(() => CrewDetailPage_screen());
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.only(right: 10),
+                                      child: Container(
+                                        height: 64,
+                                        width: MediaQuery.of(context).size.width,
+                                        child: Row(
+                                          children: [
+                                            (doc['profileImageUrl'].isNotEmpty)
+                                                ? Container(
+                                              width: 48,
+                                              height: 48,
+                                              decoration: BoxDecoration(
                                                 color: Color(doc['crewColor']),
-                                                borderRadius: BorderRadius.circular(8)
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(2.0),
-                                              child: ExtendedImage.network(
-                                                doc['profileImageUrl'],
-                                                enableMemoryCache: true,
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius.circular(6),
-                                                fit: BoxFit.cover,
+                                                borderRadius: BorderRadius.circular(8),
                                               ),
-                                            ))
-                                            : Container(
-                                          width: 48,
-                                          height: 48,
-                                          decoration: BoxDecoration(
-                                              color: Color(doc['crewColor']),
-                                              borderRadius: BorderRadius.circular(8)
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: ExtendedImage.asset(
-                                              'assets/imgs/profile/img_profile_default_.png',
-                                              enableMemoryCache: true,
-                                              shape: BoxShape.rectangle,
-                                              borderRadius: BorderRadius.circular(6),
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 15,),
-                                        Padding(
-                                          padding: const EdgeInsets.only(bottom: 2),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(doc['crewName'],
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Color(0xFF111111)
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(2.0),
+                                                child: ExtendedImage.network(
+                                                  doc['profileImageUrl'],
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape.rectangle,
+                                                  borderRadius: BorderRadius.circular(6),
+                                                  fit: BoxFit.cover,
                                                 ),
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
                                               ),
-                                              SizedBox(
-                                                height: 2,
+                                            )
+                                                : Container(
+                                              width: 48,
+                                              height: 48,
+                                              decoration: BoxDecoration(
+                                                color: Color(doc['crewColor']),
+                                                borderRadius: BorderRadius.circular(8),
                                               ),
-                                              Text('${doc['crewLeader']} / ${(doc['memberUidList'] as List).length}명',
-                                                style: TextStyle(
-                                                    fontSize: 13,
-                                                    color: Color(0xFF949494)
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(2.0),
+                                                child: ExtendedImage.asset(
+                                                  assetBases,
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape.rectangle,
+                                                  borderRadius: BorderRadius.circular(6),
+                                                  fit: BoxFit.cover,
                                                 ),
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                              )
-                                            ],
-                                          ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 15),
+                                            Padding(
+                                              padding: const EdgeInsets.only(bottom: 2),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    doc['crewName'],
+                                                    style: TextStyle(fontSize: 15, color: Color(0xFF111111)),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 2,
+                                                  ),
+                                                  Text(
+                                                    '${doc['crewLeader']} / ${(doc['memberUidList'] as List).length}명',
+                                                    style: TextStyle(fontSize: 13, color: Color(0xFF949494)),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              )).toList(),
+                                  );
+                                }).toList(),
+                              ),
                             );
+
+
                           }
                           else if (snapshot.connectionState == ConnectionState.waiting) {
                             return Center(

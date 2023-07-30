@@ -8,6 +8,8 @@ import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 
+import '../../model/m_crewLogoModel.dart';
+
 class LiveCrewListMoreScreen extends StatefulWidget {
   const LiveCrewListMoreScreen({Key? key}) : super(key: key);
 
@@ -22,6 +24,8 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
   LiveCrewModelController _liveCrewModelController =
   Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
+
+  var assetBases;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +78,12 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
               itemCount: crewDocs.length,
               itemBuilder: (context, index) {
                 final doc = crewDocs[index];
+                for (var crewLogo in crewLogoList) {
+                  if (crewLogo.crewColor == doc['crewColor']) {
+                    assetBases = crewLogo.crewLogoAsset;
+                    break;
+                  }
+                }
                 return GestureDetector(
                   onTap: () async {
                     CustomFullScreenDialog.showDialog();
@@ -121,7 +131,7 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.all(2.0),
                                 child: ExtendedImage.asset(
-                                  'assets/imgs/profile/img_profile_default_.png',
+                                  assetBases,
                                   enableMemoryCache: true,
                                   shape: BoxShape.rectangle,
                                   borderRadius:
