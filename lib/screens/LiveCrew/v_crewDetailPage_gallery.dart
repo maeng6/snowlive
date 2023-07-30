@@ -52,6 +52,21 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
             }
 
             final galleryDoc = snapshot.data!.docs[0]['galleryUrlList'];
+
+            if(galleryDoc.length == 0){
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('이미지가 없습니다',
+                    style: TextStyle(
+                      color: Color(0xFF949494)
+                    ),
+                    ),
+                  ],
+                ),
+              );
+            }
           return GridView.builder(
             itemCount: galleryDoc.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

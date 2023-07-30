@@ -811,6 +811,28 @@ class _MoreTabState extends State<MoreTab> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
                 onTap: () {
+                  Get.to(() => WebPage(
+                    url:
+                    'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88',
+                  ));
+                },
+                title: Text(
+                  '위치정보이용약관',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: Color(0xFF111111)),
+                ),
+                trailing: Image.asset(
+                  'assets/imgs/icons/icon_arrow_g.png',
+                  height: 24,
+                  width: 24,
+                ),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                minVerticalPadding: 20,
+                onTap: () {
                   Get.to(() => LicenseListPage());
                 },
                 title: Text(

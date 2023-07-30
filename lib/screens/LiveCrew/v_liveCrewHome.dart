@@ -605,202 +605,201 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                 padding: EdgeInsets.only(left: 16, right: 16),
               child: Column(
                 children: [
-                  Container(
-                    height: 204,
-                    width: _size.width,
-                    child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('liveCrew')
-                          .where('memberUidList', arrayContains: _userModelController.uid!)
-                          .snapshots(),
-                      builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
-                        if (!snapshot.hasData || snapshot.data == null || snapshot.data!.docs.isEmpty) {
-                          return Center(
-                            child: Text('가입한 크루가 없습니다', style: TextStyle(
-                              color: Color(0xFF949494)
-                            ),),
-                          );
-                        } else {
-                          final crewDoc = snapshot.data!.docs.first;
-                          return StreamBuilder(
-                            stream: FirebaseFirestore.instance
-                                .collection('user')
-                                .where('isOnLive', isEqualTo: true)
-                                .snapshots(),
-                            builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> userSnapshot){
-                              if (!userSnapshot.hasData || userSnapshot.data == null) {
-                                return Center(
-                                  child: Text('유저 정보를 불러오는데 실패했습니다'),
-                                );
-                              } else {
-                                int liveUserCount = 0;
-                                userSnapshot.data!.docs.forEach((userDoc) {
-                                  if ((crewDoc['memberUidList'] as List).contains(userDoc['uid'])) {
-                                    liveUserCount += 1;
-                                  }
-                                });
-                                return GestureDetector(
-                                  onTap: () async {
-                                    CustomFullScreenDialog.showDialog();
-                                    await _liveCrewModelController.getCurrnetCrew(crewDoc['crewID']);
-                                    CustomFullScreenDialog.cancelDialog();
-                                    Get.to(()=>CrewDetailPage_screen());
-                                  },
-                                  child: Container(
-                                    height: 204,
-                                    width: _size.width,
-                                    decoration: BoxDecoration(
-                                      color: Color(crewDoc['crewColor']),
-                                      borderRadius: BorderRadius.circular(12)
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 22, right: 22),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                height: 93,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding: EdgeInsets.only(top: 4),
-                                                      child: Text(crewDoc['crewName'],
-                                                      overflow: TextOverflow.ellipsis,
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                        color: Color(0xFFFFFFFF),
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 20
-                                                      ),
-                                                      ),
+                  StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection('liveCrew')
+                        .where('memberUidList', arrayContains: _userModelController.uid!)
+                        .snapshots(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
+                      if (!snapshot.hasData || snapshot.data == null || snapshot.data!.docs.isEmpty) {
+                        return Center(
+                          child: Text('가입한 크루가 없습니다', style: TextStyle(
+                            color: Color(0xFF949494)
+                          ),),
+                        );
+                      } else {
+                        final crewDoc = snapshot.data!.docs.first;
+                        return StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('user')
+                              .where('isOnLive', isEqualTo: true)
+                              .snapshots(),
+                          builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> userSnapshot){
+                            if (!userSnapshot.hasData || userSnapshot.data == null) {
+                              return Center(
+                                child: Text('유저 정보를 불러오는데 실패했습니다'),
+                              );
+                            } else {
+                              int liveUserCount = 0;
+                              userSnapshot.data!.docs.forEach((userDoc) {
+                                if ((crewDoc['memberUidList'] as List).contains(userDoc['uid'])) {
+                                  liveUserCount += 1;
+                                }
+                              });
+                              return GestureDetector(
+                                onTap: () async {
+                                  CustomFullScreenDialog.showDialog();
+                                  await _liveCrewModelController.getCurrnetCrew(crewDoc['crewID']);
+                                  CustomFullScreenDialog.cancelDialog();
+                                  Get.to(()=>CrewDetailPage_screen());
+                                },
+                                child: Container(
+                                  height: crewDoc['notice'] == '' ? 160 : 204,
+                                  width: _size.width,
+                                  decoration: BoxDecoration(
+                                    color: Color(crewDoc['crewColor']),
+                                    borderRadius: BorderRadius.circular(12)
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 22, right: 22),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              height: 93,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.only(top: 4),
+                                                    child: Text(crewDoc['crewName'],
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    style: TextStyle(
+                                                      color: Color(0xFFFFFFFF),
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 20
                                                     ),
-                                                    SizedBox(height: 12),
-                                                    Row(
-                                                      children: [
-                                                        Column(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text('크루원(명)',
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 12),
+                                                  Row(
+                                                    children: [
+                                                      Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text('크루원(명)',
+                                                          style: TextStyle(
+                                                            fontSize: 13,
+                                                            color: Color(0xFFFFFFFF).withOpacity(0.7)
+                                                          ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 2,
+                                                          ),
+                                                          RichText(
+                                                            text: TextSpan(
+                                                              children: <TextSpan>[
+                                                                TextSpan(
+                                                                  text: '${(crewDoc['memberUidList'] as List).length}',
+                                                                  style: GoogleFonts.bebasNeue(color: Color(0xFFFFFFFF), fontSize: 28),
+                                                                ),],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        width: 28,
+                                                      ),
+                                                      Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text('라이브ON(명)',
                                                             style: TextStyle(
-                                                              fontSize: 13,
-                                                              color: Color(0xFFFFFFFF).withOpacity(0.7)
+                                                                fontSize: 13,
+                                                                color: Color(0xFFFFFFFF).withOpacity(0.7)
                                                             ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 2,
+                                                          ),
+                                                          RichText(
+                                                            text: TextSpan(
+                                                              children: <TextSpan>[
+                                                                TextSpan(
+                                                                  text: '$liveUserCount',
+                                                                  style: GoogleFonts.bebasNeue(color: Color(0xFFFFFFFF), fontSize: 28),
+                                                                ),],
                                                             ),
-                                                            SizedBox(
-                                                              height: 2,
-                                                            ),
-                                                            RichText(
-                                                              text: TextSpan(
-                                                                children: <TextSpan>[
-                                                                  TextSpan(
-                                                                    text: '${(crewDoc['memberUidList'] as List).length}',
-                                                                    style: GoogleFonts.bebasNeue(color: Color(0xFFFFFFFF), fontSize: 28),
-                                                                  ),],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        SizedBox(
-                                                          width: 28,
-                                                        ),
-                                                        Column(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text('라이브ON(명)',
-                                                              style: TextStyle(
-                                                                  fontSize: 13,
-                                                                  color: Color(0xFFFFFFFF).withOpacity(0.7)
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 2,
-                                                            ),
-                                                            RichText(
-                                                              text: TextSpan(
-                                                                children: <TextSpan>[
-                                                                  TextSpan(
-                                                                    text: '$liveUserCount',
-                                                                    style: GoogleFonts.bebasNeue(color: Color(0xFFFFFFFF), fontSize: 28),
-                                                                  ),],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
 
+                                                ],
+                                              ),
+                                            ),
+                                            (crewDoc['profileImageUrl'].isNotEmpty)
+                                                ? GestureDetector(
+                                              onTap: () {
+                                                Get.to(() => ProfileImagePage(
+                                                    CommentProfileUrl: crewDoc['profileImageUrl']));
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black12,
+                                                      spreadRadius: 0,
+                                                      blurRadius: 12,
+                                                      offset: Offset(0, 2), // changes position of shadow
+                                                    ),
                                                   ],
                                                 ),
-                                              ),
-                                              (crewDoc['profileImageUrl'].isNotEmpty)
-                                                  ? GestureDetector(
-                                                onTap: () {
-                                                  Get.to(() => ProfileImagePage(
-                                                      CommentProfileUrl: crewDoc['profileImageUrl']));
-                                                },
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.black12,
-                                                        spreadRadius: 0,
-                                                        blurRadius: 12,
-                                                        offset: Offset(0, 2), // changes position of shadow
-                                                      ),
-                                                    ],
-                                                  ),
-                                                    width: 90,
-                                                    height: 90,
-                                                    child: ExtendedImage.network(
-                                                      crewDoc['profileImageUrl'],
-                                                      enableMemoryCache: true,
-                                                      shape: BoxShape.rectangle,
-                                                      borderRadius: BorderRadius.circular(12),
-                                                      width: 100,
-                                                      height: 100,
-                                                      fit: BoxFit.cover,
-                                                    )),
-                                              )
-                                                  : GestureDetector(
-                                                onTap: () {
-                                                  Get.to(() => ProfileImagePage(
-                                                      CommentProfileUrl: ''));
-                                                },
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.black12,
-                                                        spreadRadius: 0,
-                                                        blurRadius: 12,
-                                                        offset: Offset(0, 2), // changes position of shadow
-                                                      ),
-                                                    ],
-                                                  ),
                                                   width: 90,
                                                   height: 90,
-                                                  child: ExtendedImage.asset(
-                                                    'assets/imgs/profile/img_profile_default_.png',
+                                                  child: ExtendedImage.network(
+                                                    crewDoc['profileImageUrl'],
                                                     enableMemoryCache: true,
                                                     shape: BoxShape.rectangle,
                                                     borderRadius: BorderRadius.circular(12),
                                                     width: 100,
                                                     height: 100,
                                                     fit: BoxFit.cover,
-                                                  ),
+                                                  )),
+                                            )
+                                                : GestureDetector(
+                                              onTap: () {
+                                                Get.to(() => ProfileImagePage(
+                                                    CommentProfileUrl: ''));
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black12,
+                                                      spreadRadius: 0,
+                                                      blurRadius: 12,
+                                                      offset: Offset(0, 2), // changes position of shadow
+                                                    ),
+                                                  ],
+                                                ),
+                                                width: 90,
+                                                height: 90,
+                                                child: ExtendedImage.asset(
+                                                  'assets/imgs/profile/img_profile_default_.png',
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape.rectangle,
+                                                  borderRadius: BorderRadius.circular(12),
+                                                  width: 100,
+                                                  height: 100,
+                                                  fit: BoxFit.cover,
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 24),
-                                          Container(
+                                            ),
+                                          ],
+                                        ),
+                                        if(crewDoc['notice'] != '')
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 24),
+                                          child: Container(
                                             width: _size.width,
                                             decoration: BoxDecoration(
                                               color: Color(0xFF000000).withOpacity(0.15),
@@ -828,18 +827,18 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                     ),
                                                   ],
                                                 ),
-                                              ))
-                                        ],
-                                      ),
+                                              )),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                );
-                              }
-                            },
-                          );
-                        }
-                      },
-                    ),
+                                ),
+                              );
+                            }
+                          },
+                        );
+                      }
+                    },
                   )
 
                 ],

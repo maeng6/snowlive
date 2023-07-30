@@ -146,7 +146,7 @@ class _SetModifyDescription_crewDetailState extends State<SetModifyDescription_c
                                   )
                               ),
                               validator: (val) {
-                                if (val!.length <= 1000 && val.length >= 1) {
+                                if (val!.length <= 1000 && val.length >= 0) {
                                   return null;
                                 } else if (val.length == 0 || val == "") {
                                   return '크루 소개글을 입력해주세요.';
