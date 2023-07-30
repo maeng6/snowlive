@@ -798,7 +798,7 @@ class _FriendListPageState extends State<FriendListPage> {
                               List whoResistMe = doc.get('whoResistMe');
                               List whoResistMeBF = doc.get('whoResistMeBF');
                               return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                                padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 8),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
