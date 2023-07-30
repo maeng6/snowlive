@@ -204,7 +204,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   ],
                                                 ),
                                                     child: ExtendedImage.asset(
-                                                      'assets/imgs/profile/img_profile_default_.png',
+                                                      'assets/imgs/profile/img_crew_profile_default.png',
                                                       enableMemoryCache: true,
                                                       shape: BoxShape.rectangle,
                                                       borderRadius: BorderRadius.circular(7),
@@ -294,7 +294,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   ],
                                                 ),
                                                     child: ExtendedImage.asset(
-                                                      'assets/imgs/profile/img_profile_default_.png',
+                                                      'assets/imgs/profile/img_crew_profile_default.png',
                                                       enableMemoryCache: true,
                                                       shape: BoxShape.rectangle,
                                                       borderRadius: BorderRadius.circular(7),
@@ -384,7 +384,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   ],
                                                 ),
                                                     child: ExtendedImage.asset(
-                                                      'assets/imgs/profile/img_profile_default_.png',
+                                                      'assets/imgs/profile/img_crew_profile_default.png',
                                                       enableMemoryCache: true,
                                                       shape: BoxShape.rectangle,
                                                       borderRadius: BorderRadius.circular(7),
@@ -505,7 +505,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                               child: Padding(
                                                 padding: const EdgeInsets.all(2.0),
                                                 child: ExtendedImage.asset(
-                                                  'assets/imgs/profile/img_profile_default_.png',
+                                                  'assets/imgs/profile/img_crew_profile_default.png',
                                                   enableMemoryCache: true,
                                                   shape: BoxShape.rectangle,
                                                   borderRadius: BorderRadius.circular(6),
@@ -654,7 +654,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(2.0),
                                       child: ExtendedImage.asset(
-                                        'assets/imgs/profile/img_profile_default_.png',
+                                        'assets/imgs/profile/img_crew_profile_default.png',
                                         enableMemoryCache: true,
                                         shape: BoxShape.rectangle,
                                         borderRadius: BorderRadius.circular(6),
