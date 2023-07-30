@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:snowlive3/screens/LiveCrew/CreateOnboarding/v_setCrewName.dart';
 
 import '../v_liveCrewHome.dart';
@@ -95,10 +96,11 @@ class _FirstPage_createCrewState extends State<FirstPage_createCrew> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 24),
-                      child: Image.asset('assets/imgs/liveCrew/img_liveCrew_logo_onboarding.png',
-                        scale: 1, width: _size.width),
+                    Container(
+                      width: _size.width,
+                      child: Lottie.asset('assets/json/SL_LT_crew_1.json',
+                      width: _size.width,
+                          fit: BoxFit.fill),
                     ),
                     Center(
                       child: Column(
@@ -107,7 +109,6 @@ class _FirstPage_createCrewState extends State<FirstPage_createCrew> {
                             scale: 1, width: 100),
                           SizedBox(
                             height: 14
-                            ,
                           ),
                           Text(
                             '친구들과 함께 즐길 수 있는',
