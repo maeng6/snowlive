@@ -448,7 +448,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                 child: Column(
                   children: [
                     SizedBox(height: 20),
-                    if(memberUidList.contains(_userModelController.uid))
+                    if(memberUidList.contains(_userModelController.uid) && crewDocs[0]['notice'] != '')
                       Padding(
                         padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                         child: Container(
@@ -478,18 +478,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                     ),
                                   ),
                                   SizedBox(height: 5),
-                                  if(crewDocs[0]['notice'] == '')
-                                    Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 20, bottom: 10),
-                                        child: Text(
-                                          '공지사항이 없습니다',
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              color: Color(0xFF949494)
-                                          ),),
-                                      ),
-                                    ),
                                   Text(
                                     '${crewDocs[0]['notice']}',
                                     style: TextStyle(
@@ -502,7 +490,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                           ),
                         ),
                       ),
-                    if(!memberUidList.contains(_userModelController.uid))
                       Padding(
                         padding: const EdgeInsets.only(left: 16, right: 16),
                         child: Container(
@@ -556,6 +543,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                           ),
                         ),
                       ),
+                    SizedBox(height: 12,),
                     if(memberUidList.contains(_userModelController.uid))
                       Padding(
                         padding: const EdgeInsets.only(left: 16, right: 16),
@@ -1509,7 +1497,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                     horizontal: 20,
                                     vertical: 0),
                                 content: Text(
-                                  '연결된 카카오 오픈채팅이 없습니다.',
+                                  '연결된 SNS 계정이 없습니다.',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 15),
@@ -1537,7 +1525,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                             }
                               },
                           child: Text(
-                            '카카오 오픈채팅',
+                            'SNS 바로가기',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 15,

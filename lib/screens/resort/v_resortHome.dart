@@ -449,41 +449,52 @@ class _ResortHomeState extends State<ResortHome>
                                                         color: Color(0xFF949494)
                                                     ),
                                                   ),
-                                                  SizedBox(height: 10,),
-                                                  Obx(() => Transform.translate(
-                                                    offset: Offset(-14, 0),
-                                                    child: Row(
-                                                      children: [
-                                                        Checkbox(
-                                                          value: _dialogController.isChecked.value,
-                                                          onChanged: (newValue) {
-                                                            _dialogController.isChecked.value = newValue!;
-                                                          },
-                                                        ),
-                                                        Text('개인위치정보 및 이용약관 동의',
-                                                          style: TextStyle(
-                                                            fontSize: 13,
+                                                  SizedBox(height: 30,),
+                                                  Obx(() => GestureDetector(
+                                                    onTap: () {
+                                                      _dialogController.isChecked.value = !_dialogController.isChecked.value;
+                                                    },
+                                                    child: Transform.translate(
+                                                      offset: Offset(-16, 0),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Image.asset(
+                                                              _dialogController.isChecked.value
+                                                                  ? 'assets/imgs/icons/icon_check_filled.png'
+                                                                  : 'assets/imgs/icons/icon_check_unfilled.png',
+                                                              width: 20,
+                                                              height: 20,
+                                                            ),
+                                                          SizedBox(width: 10,),
+                                                          Text(
+                                                            '개인위치정보 사용 및 이용약관 동의',
+                                                            style: TextStyle(
+                                                              fontSize: 13,
+                                                            ),
                                                           ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )),
+
+                                                  SizedBox(height: 10,),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
+                                                    },
+                                                    child: Center(
+                                                      child: Text('약관보기',
+                                                        style: TextStyle(
+                                                            decoration: TextDecoration.underline,
+                                                            fontSize: 12,
+                                                            color: Color(0xFF949494)
                                                         ),
-                                                      ],
+                                                      ),
                                                     ),
                                                   ),
-                                                  ),
-                                                  Center(
-                                                    child: TextButton(
-                                                        onPressed: (){
-                                                          Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
-                                                        },
-                                                        child: Text('약관보기>',
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Color(0xFF949494)
-                                                          ),
-                                                        )),
-                                                  ),
                                                   SizedBox(
-                                                    height: 6,
+                                                    height: 30,
                                                   ),
                                                 ],
                                               ),
@@ -540,7 +551,9 @@ class _ResortHomeState extends State<ResortHome>
                                                             splashFactory: InkRipple.splashFactory,
                                                             elevation: 0,
                                                             minimumSize: Size(100, 48),
-                                                            backgroundColor: Color(0xFF3D83ED),
+                                                            backgroundColor: _dialogController.isChecked.value
+                                                              ? Color(0xFF3D83ED)
+                                                              : Color(0xFFDEDEDE)
                                                           ),
                                                         ),
                                                       ),),
@@ -1765,7 +1778,7 @@ class _ResortHomeState extends State<ResortHome>
                                                         _dialogController.isChecked.value = newValue!;
                                                       },
                                                     ),
-                                                    Text('개인위치정보 및 이용약관 동의',
+                                                    Text('개인위치정보 사용 및 이용약관 동의',
                                                       style: TextStyle(
                                                         fontSize: 14,
                                                       ),

@@ -147,7 +147,7 @@ class _SetModifyNotice_crewDetailState extends State<SetModifyNotice_crewDetail>
                                   )
                               ),
                               validator: (val) {
-                                if (val!.length <= 1000 && val.length >= 1) {
+                                if (val!.length <= 1000 && val.length >= 0) {
                                   return null;
                                 } else if (val.length == 0) {
                                   return '크루 공지글을 입력해주세요.';

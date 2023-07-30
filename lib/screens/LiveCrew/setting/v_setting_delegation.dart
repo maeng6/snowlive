@@ -52,7 +52,7 @@ class _Setting_delegationState extends State<Setting_delegation> {
         titleSpacing: 0,
         centerTitle: true,
         title: Text(
-          '리더 위임',
+          '크루장 위임',
           style: TextStyle(
               color: Color(0xFF111111),
               fontWeight: FontWeight.bold,
@@ -88,7 +88,7 @@ class _Setting_delegationState extends State<Setting_delegation> {
                                 Center(
                                   child: Padding(
                                     padding: const EdgeInsets.only(bottom: 20),
-                                    child: Text('리더를 위임할 멤버를 선택해주세요.',
+                                    child: Text('크루장을 위임할 멤버를 선택해주세요.',
                                       style: TextStyle(
                                           color: Color(0xFF949494),
                                           fontSize: 13
@@ -107,7 +107,7 @@ class _Setting_delegationState extends State<Setting_delegation> {
                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                                           buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                                           content: Text(
-                                            '${crewMemberDocs[index]['displayName']}에게\n크루리더 권한을 위임하시겠습니까?',
+                                            '${crewMemberDocs[index]['displayName']}에게\n크루장을 위임하시겠습니까?',
                                             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
                                           ),
                                           actions: [

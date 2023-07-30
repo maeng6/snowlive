@@ -365,7 +365,7 @@ class Setting_crewDetail extends StatelessWidget {
                                     height: 30,
                                   ),
                                   Text(
-                                    '리더 권한을 위임하시겠습니까?',
+                                    '크루장을 위임하시겠습니까?',
                                     style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -374,7 +374,7 @@ class Setting_crewDetail extends StatelessWidget {
                                     height: 8,
                                   ),
                                   Text(
-                                    '리더 권한을 위임하면 되돌릴 수 없으며, 위임하는 즉시 적용됩니다. 계속하시겠습니까?',
+                                    '크루장을 위임하면 되돌릴 수 없으며, 위임하는 즉시 적용됩니다. 계속하시겠습니까?',
                                     style: TextStyle(
                                       color: Color(0xff666666),
                                       fontSize: 14,
@@ -452,7 +452,7 @@ class Setting_crewDetail extends StatelessWidget {
                         });
                   },
                   title: Text(
-                    '리더 위임',
+                    '크루장 위임',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,

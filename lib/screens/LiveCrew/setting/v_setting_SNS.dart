@@ -158,11 +158,9 @@ class _SetSNSlink_crewDetailState extends State<SetSNSlink_crewDetail> {
                     SizedBox(
                       height: 12,
                     ),
-                    Center(
-                      child: Text('링크앞에 https:// 를 꼭 붙여주세요.', style: TextStyle(
-                        fontSize: 12, color: Color(0xFF949494)
-                      ),),
-                    )
+                    Text('  링크앞에 https:// 를 꼭 붙여주세요.', style: TextStyle(
+                      fontSize: 12, color: Color(0xFF949494)
+                    ),)
                   ],
                 ),
               ),
