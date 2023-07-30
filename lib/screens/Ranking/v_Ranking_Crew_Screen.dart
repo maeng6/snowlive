@@ -39,7 +39,6 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
   var assetTop1;
   var assetTop2;
   var assetTop3;
-  var assetTop20;
 
 
   @override

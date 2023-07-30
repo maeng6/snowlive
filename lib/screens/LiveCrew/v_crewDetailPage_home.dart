@@ -15,6 +15,7 @@ import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
+import '../../model/m_crewLogoModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
 class CrewDetailPage_home extends StatefulWidget {
@@ -33,6 +34,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   //TODO: Dependency Injection**************************************************
+
+  var assetCrew;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +63,14 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
         String year = DateFormat('yy').format(date);
         String month = DateFormat('MM').format(date);
         String day = DateFormat('dd').format(date);
+
+        for (var crewLogo in crewLogoList) {
+          if (crewLogo.crewColor == crewDocs[0]['crewColor']) {
+            assetCrew = crewLogo.crewLogoAsset;
+            break;
+          }
+        }
+
 
         return Container(
         width: _size.width,
@@ -128,7 +139,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                   width: 80,
                                   height: 80,
                                   child: ExtendedImage.asset(
-                                    'assets/imgs/profile/img_profile_default_.png',
+                                    assetCrew,
                                     enableMemoryCache: true,
                                     shape: BoxShape.rectangle,
                                     borderRadius: BorderRadius.circular(16),
