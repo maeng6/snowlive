@@ -22,39 +22,36 @@ class FavoriteResort_moreTab extends StatefulWidget {
 
 class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
 
-  //TODO: Dependency Injection********************************************
+  //TODO: Dependency Injection**************************************************
   UserModelController userModelController = Get.find<UserModelController>();
   ResortModelController resortModelController = Get.find<ResortModelController>();
-  //TODO: Dependency Injection********************************************
+  //TODO: Dependency Injection**************************************************
+
 
   final FirebaseAuth auth = FirebaseAuth.instance;
-  List<bool?> _isChecked = List<bool?>.filled(14, false);
   List<bool?> _isSelected = List<bool?>.filled(14, false);
   int? favoriteResort;
   final FirebaseFirestore ref = FirebaseFirestore.instance;
 
-
   @override
   Widget build(BuildContext context) {
-
     final Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
       overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
-    ); // 상단 StatusBar 생성
+    );
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(
-            statusBarColor: Colors.white, // Color for Android
+            statusBarColor: Colors.white,
             statusBarIconBrightness: Brightness.dark,
             statusBarBrightness:
-            (Platform.isAndroid)
-                ?Brightness.light
-                :Brightness.dark //ios:dark, android:light
-        ));
-    bool? isSelected=_isChecked.contains(true);
+            (Platform.isAndroid) ? Brightness.light : Brightness.dark));
 
-    return Scaffold(backgroundColor: Colors.white,
+    bool isSelected = _isSelected.contains(true); // 체크된 항목이 있는지 확인
+
+    return Scaffold(
+      backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(58),
@@ -84,7 +81,8 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
         ),
       ),
       body: Padding(
-        padding:  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),
+        padding: EdgeInsets.only(
+            top: _statusBarSize + 58, left: 16, right: 16, bottom: _statusBarSize),
         child: Container(
           color: Colors.white,
           child: Column(
@@ -120,7 +118,7 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
                     itemBuilder: (context, index) {
                       return Column(
                         children: [
-                          buildCheckboxListTile(index),
+                          buildListTile(index),
                           Divider(
                             height: 20,
                             thickness: 0.5,
@@ -138,22 +136,26 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
                   ),
                   Center(
                     child: ElevatedButton(
-                      onPressed: () async {
-                        if(isSelected) {
-                          CustomFullScreenDialog.showDialog();
-                          await userModelController.updateFavoriteResort(favoriteResort);
-                          await userModelController.updateResortNickname(favoriteResort);
-                          await userModelController.updateInstantResort(favoriteResort);
-                          print('즐겨찾는 리조트 업뎃완료');
-                          await FlutterSecureStorage().write(key: 'login', value: auth.currentUser!.displayName);
-                          await userModelController.updateWithinBoundaryOff();
-                          await userModelController.updateIsOnLiveOff();
-                          CustomFullScreenDialog.cancelDialog();
-                          await Get.offAll(()=>MainHome(uid: userModelController.uid));
-                        }else{
-                          null;
-                        }
-                      },
+                      onPressed: isSelected // isSelected 값에 따라 버튼 활성화 결정
+                          ? () async {
+                        CustomFullScreenDialog.showDialog();
+                        await userModelController
+                            .updateFavoriteResort(favoriteResort);
+                        await userModelController
+                            .updateResortNickname(favoriteResort);
+                        await userModelController
+                            .updateInstantResort(favoriteResort);
+                        print('즐겨찾는 리조트 업뎃완료');
+                        await FlutterSecureStorage().write(
+                            key: 'login',
+                            value: auth.currentUser!.displayName);
+                        await userModelController.updateWithinBoundaryOff();
+                        await userModelController.updateIsOnLiveOff();
+                        CustomFullScreenDialog.cancelDialog();
+                        await Get.offAll(
+                                () => MainHome(uid: userModelController.uid));
+                      }
+                          : null, // isSelected가 false일 경우 버튼 클릭 이벤트 비활성화
                       child: Text(
                         '선택완료',
                         style: TextStyle(
@@ -162,14 +164,14 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
                             fontSize: 16),
                       ),
                       style: TextButton.styleFrom(
-                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(6))),
                           elevation: 0,
                           splashFactory: InkRipple.splashFactory,
                           minimumSize: Size(1000, 56),
-                          backgroundColor:
-                          (isSelected)
-                          ? Color(0xff377EEA)
-                        : Color(0xffDEDEDE))
+                          backgroundColor: isSelected // isSelected 값에 따라 버튼 색상 결정
+                              ? Color(0xff377EEA)
+                              : Color(0xffDEDEDE)),
                     ),
                   ),
                 ],
@@ -181,38 +183,31 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
     );
   }
 
-  CheckboxListTile buildCheckboxListTile(int index) {
-    return CheckboxListTile(
-      title: Text('${resortNameList[index]}', style: TextStyle(fontSize: 16),),
-      activeColor: Color(0xff377EEA),
+  ListTile buildListTile(int index) {
+    return ListTile(
+      trailing: _isSelected[index]!
+          ? Image.asset(
+        'assets/imgs/icons/icon_check_filled.png', // 체크된 상태의 이미지 어셋 경로
+        width: 24,
+        height: 24,
+      )
+          : Image.asset(
+        'assets/imgs/icons/icon_check_unfilled.png', // 언체크된 상태의 이미지 어셋 경로
+        width: 24,
+        height: 24,
+      ),
+      title: Text(
+        '${resortNameList[index]}',
+        style: TextStyle(fontSize: 16),
+      ),
       selected: _isSelected[index]!,
-      selectedTileColor: Color(0xff377EEA),
-      value: _isChecked[index],
-      contentPadding: EdgeInsets.symmetric(horizontal: 0),
-      onChanged: (bool? value) {
+      onTap: () {
         setState(() {
-          _isChecked = List<bool?>.filled(14, false);
           _isSelected = List<bool?>.filled(14, false);
-          _isChecked[index] = value;
-          _isSelected[index] = value;
-          if (value == false) {
-            favoriteResort = null;
-          } else {
-            favoriteResort = index;
-          }
+          _isSelected[index] = true;
+          favoriteResort = index;
         });
       },
     );
   }
-
-
-  ListTile buildListTile(int index) {
-    return ListTile(
-      title: Text('${resortNameList[index]}', style: TextStyle(fontSize: 16),),
-      selected: _isSelected[index]!,
-
-    );
-  }
 }
-
-
