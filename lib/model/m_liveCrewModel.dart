@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snowlive3/model/m_timeStampModel.dart';
@@ -113,3 +114,5 @@ List<Color?> crewColorList = [
   Color(0xFF019D78),
   Color(0xFF772ED3),
 ];
+
+

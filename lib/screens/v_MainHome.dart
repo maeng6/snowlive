@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_liveMapController.dart';
@@ -57,6 +58,8 @@ class _MainHomeState extends State<MainHome> {
 
     return Obx(()=>Scaffold(
         bottomNavigationBar: BottomNavigationBar(
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
           backgroundColor: Colors.white,
           elevation: 10,
           type: BottomNavigationBarType.fixed,
@@ -64,15 +67,17 @@ class _MainHomeState extends State<MainHome> {
           onTap: _onItemTapped,
           items: [
             BottomNavigationBarItem(
-              icon: Image.asset(
+              icon: ExtendedImage.asset(
                 'assets/imgs/icons/icon_home_off.png',
                 scale: 4,
+                enableMemoryCache: true,
               ),
-              activeIcon: Image.asset(
+              activeIcon: ExtendedImage.asset(
                 'assets/imgs/icons/icon_home_on.png',
                 scale: 4,
+                enableMemoryCache: true,
               ),
-              label: 'Home',
+              label: '홈',
             ),
             BottomNavigationBarItem(
               icon: Stack(
@@ -95,12 +100,11 @@ class _MainHomeState extends State<MainHome> {
                 'assets/imgs/icons/icon_market_on.png',
                 scale: 4,
               ),
-              label: 'Flea',
+              label: '스노우마켓',
             ), //브랜드
             BottomNavigationBarItem(
               icon: Stack(
                 children: [
-
                   Positioned(
                     top: 3,
                     right: 3,
@@ -118,7 +122,7 @@ class _MainHomeState extends State<MainHome> {
                 'assets/imgs/icons/icon_discover_on.png',
                 scale: 4,
               ),
-              label: 'Ranking',
+              label: '랭킹',
             ),
             BottomNavigationBarItem(
               icon: Image.asset(
@@ -127,7 +131,7 @@ class _MainHomeState extends State<MainHome> {
               ),
               activeIcon: Image.asset('assets/imgs/icons/icon_livetalk_on.png',
                   scale: 4),
-              label: 'LiveTalk',
+              label: '라이브톡',
             ), //라톡
             BottomNavigationBarItem(
               icon: Stack(
@@ -214,11 +218,21 @@ class _MainHomeState extends State<MainHome> {
                   )
                 ],
               ),
-              label: 'More',
+              label: '더보기',
             ), //모어
           ],
-          showUnselectedLabels: false,
-          showSelectedLabels: false,
+          selectedItemColor: Color(0xFF949494),
+          unselectedItemColor: Color(0xFF949494),
+          unselectedLabelStyle: TextStyle(
+            color: Color(0xFF949494),
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+          selectedLabelStyle: TextStyle(
+            color: Color(0xFF949494),
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         body: PageView(
           controller: _pageController,

@@ -702,7 +702,7 @@ class _SetCrewImageState extends State<SetCrewImage> {
                         Get.to(() => CrewFavoriteResort(crewName: widget.crewName, CrewImageUrl: '', crewColor: currentColor,));
                       },
                       child: Text(
-                        '기본 이미지',
+                        '다음에 설정',
                         style: TextStyle(color: currentColor, fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       style: TextButton.styleFrom(

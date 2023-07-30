@@ -106,16 +106,16 @@ class _FirstPage_createCrewState extends State<FirstPage_createCrew> {
                       child: Column(
                         children: [
                           Text(
-                            '함께라서 더 즐거운 라이딩',
-                            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                            '함께해서 더 즐거운 라이딩',
+                            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(
-                            height: 6,
+                            height: 4,
                           ),
                           Image.asset('assets/imgs/liveCrew/img_liveCrew_title_onboarding.png',
                               scale: 1, width: 150),
                           SizedBox(
-                            height: 16,
+                            height: 12,
                           ),
                           Text(
                             '라이브크루를 통해 다양한 사람들과 교류하며',
@@ -123,6 +123,9 @@ class _FirstPage_createCrewState extends State<FirstPage_createCrew> {
                               color: Color(0xff949494),
                               fontSize: 14,
                             ),
+                          ),
+                          SizedBox(
+                            height: 2,
                           ),
                           Text(
                             '더욱 특별한 경험을 만들어보세요.',
