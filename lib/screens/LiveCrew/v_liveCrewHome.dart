@@ -34,11 +34,21 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
 
   SpeedDial buildSpeedDial1() {
     return SpeedDial(
+      backgroundColor: Color(0xFF3D83ED),
+      overlayColor: Color(0xFF000000),
+      overlayOpacity: 0.5,
+      curve: Curves.bounceIn,
+      elevation: 4,
       icon: Icons.add,
       children: [
         SpeedDialChild(
           child: Icon(Icons.add),
           label: '만들기',
+          backgroundColor: Colors.white,  // 배경 색상 변경
+          foregroundColor: Color(0xFF222222),
+          // 아이콘 색상 변경
+          labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF222222), fontSize: 14), // 라벨 스타일 변경
+          labelBackgroundColor: Colors.white,
           onTap: () async{
             CustomFullScreenDialog.showDialog();
             await _userModelController.getCurrentUser(_userModelController.uid);
@@ -67,10 +77,11 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                           child: Text('확인',
                             style: TextStyle(
                               fontSize: 15,
-                              color: Color(0xFF949494),
+                              color: Color(0xFF222222),
                               fontWeight: FontWeight.bold,
                             ),
-                          )),
+                          ),
+                      ),
                     ],
                     mainAxisAlignment: MainAxisAlignment.end,
                   )
@@ -81,7 +92,10 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
         ),
         SpeedDialChild(
             child: Icon(Icons.add),
+            backgroundColor: Colors.white,  // 배경 색상 변경
+            foregroundColor: Color(0xFF222222),
             label: '가입하기',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF222222), fontSize: 14),
             onTap: () {
               Get.to(()=>SearchCrewPage());
             }
@@ -100,13 +114,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
       extendBodyBehindAppBar: true,
         floatingActionButton:
         (_userModelController.liveCrew!.isEmpty || _userModelController.liveCrew =='')
-            ?  Transform.translate(offset: Offset(12, -4),
-          child: SizedBox(
-              width: 112,
-              height: 52,
-              child: buildSpeedDial1()
-          ),
-        )
+            ?  buildSpeedDial1()
         : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       appBar: AppBar(

@@ -331,30 +331,39 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
         color: Colors.white,
         child: Scaffold(
           floatingActionButton: Transform.translate(
-            offset: Offset(12, -4),
-            child: SizedBox(
-              width: 112,
-              height: 52,
-              child: _showAddButton
-              ?FloatingActionButton.extended(
-                onPressed: () async {
-                  await _userModelController
-                      .getCurrentUser(_userModelController.uid);
-                  Get.to(() => Bulletin_Crew_Upload());
-                },
-                icon: Icon(Icons.add),
-                label: Text('글쓰기', style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold,overflow: TextOverflow.ellipsis),),
-                backgroundColor: Color(0xFF3D6FED),
-              )
-              :FloatingActionButton(
-                onPressed: () async {
-                  await _userModelController
-                      .getCurrentUser(_userModelController.uid);
-                  Get.to(() => Bulletin_Crew_Upload());
-                },
-                child: Icon(Icons.add),
-                backgroundColor: Color(0xFF3D6FED),
-              )
+            offset: Offset(18, 0),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: AnimatedContainer(
+                width: _showAddButton ? 104 : 52,
+                height: 52,
+                duration: Duration(milliseconds: 200),
+                child: FloatingActionButton.extended(
+                  elevation: 4,
+                  onPressed: () async {
+                    await _userModelController
+                        .getCurrentUser(_userModelController.uid);
+                    Get.to(() => Bulletin_Crew_Upload());
+                  },
+                  icon: Transform.translate(
+                      offset: Offset(6,0),
+                      child: Center(child: Icon(Icons.add))),
+                  label: _showAddButton
+                      ? Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: Text('글쓰기',
+                      style: TextStyle(
+                          letterSpacing: 0.5,
+                          fontSize: 15,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                  )
+                      : SizedBox.shrink(), // Hide the text when _showAddButton is false
+                  backgroundColor: Color(0xFF3D6FED),
+                ),
+              ),
             ),
           ),
           backgroundColor: Colors.white,

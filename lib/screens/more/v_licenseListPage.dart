@@ -33,7 +33,7 @@ class LicenseListPage extends StatelessWidget {
           style: TextStyle(
               color: Color(0xFF111111),
               fontWeight: FontWeight.bold,
-              fontSize: 20),
+              fontSize: 18),
         ),
       ),
       body: licenseListView(_size),
@@ -53,7 +53,7 @@ class LicenseListPage extends StatelessWidget {
               ));
             },
             child: Container(
-              padding: EdgeInsets.only(left: 16, right: 16, top: 18, bottom: 18),
+              padding: EdgeInsets.only(left: 16, right: 16, top: 14, bottom: 14),
               color: Colors.transparent,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

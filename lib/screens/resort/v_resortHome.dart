@@ -439,10 +439,13 @@ class _ResortHomeState extends State<ResortHome>
                                                         color: Color(0xFF111111)
                                                     ),
                                                   ),
+                                                  SizedBox(
+                                                    height: 4,
+                                                  ),
                                                   Text("위치정보는 랭킹전 점수 산정시에만 이용됩니다.",
                                                     style: TextStyle(
                                                         fontSize: 13,
-                                                        fontWeight: FontWeight.bold,
+                                                        fontWeight: FontWeight.normal,
                                                         color: Color(0xFF949494)
                                                     ),
                                                   ),
@@ -457,7 +460,7 @@ class _ResortHomeState extends State<ResortHome>
                                                             _dialogController.isChecked.value = newValue!;
                                                           },
                                                         ),
-                                                        Text('개인위치정보 사용 및 이용약관에 동의합니다.',
+                                                        Text('개인위치정보 및 이용약관 동의',
                                                           style: TextStyle(
                                                             fontSize: 13,
                                                           ),
@@ -489,27 +492,29 @@ class _ResortHomeState extends State<ResortHome>
                                                   padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
                                                   child: Row(
                                                     children: [
-                                                      ElevatedButton(onPressed: () async {
-                                                        _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                                        await _liveMapController.stopForegroundLocationService();
-                                                        await _liveMapController.stopBackgroundLocationService();
-                                                        Get.back();
-                                                        CustomFullScreenDialog.cancelDialog();
-                                                        print('라이브 OFF');
-                                                      },
-                                                          child: Text(
-                                                            '취소',
-                                                            style: TextStyle(
-                                                                color: Color(0xff3D83ED),
-                                                                fontSize: 15,
-                                                                fontWeight: FontWeight.bold),
-                                                          ),
-                                                        style: TextButton.styleFrom(
-                                                            splashFactory: InkRipple.splashFactory,
-                                                            elevation: 0,
-                                                            minimumSize: Size(100, 48),
-                                                            backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                      Expanded(
+                                                        child: ElevatedButton(onPressed: () async {
+                                                          _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                                          await _liveMapController.stopForegroundLocationService();
+                                                          await _liveMapController.stopBackgroundLocationService();
+                                                          Get.back();
+                                                          CustomFullScreenDialog.cancelDialog();
+                                                          print('라이브 OFF');
+                                                        },
+                                                            child: Text(
+                                                              '취소',
+                                                              style: TextStyle(
+                                                                  color: Color(0xff3D83ED),
+                                                                  fontSize: 15,
+                                                                  fontWeight: FontWeight.bold),
                                                             ),
+                                                          style: TextButton.styleFrom(
+                                                              splashFactory: InkRipple.splashFactory,
+                                                              elevation: 0,
+                                                              minimumSize: Size(100, 48),
+                                                              backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                              ),
+                                                        ),
                                                       ),
                                                       SizedBox(width: 8,),
                                                       Obx(() => Expanded(
@@ -525,7 +530,7 @@ class _ResortHomeState extends State<ResortHome>
                                                           }
                                                               : null,
                                                           child: Text(
-                                                            '동의합니다',
+                                                            '동의',
                                                             style: TextStyle(
                                                                 color: Color(0xffffffff),
                                                                 fontSize: 15,
@@ -1739,10 +1744,13 @@ class _ResortHomeState extends State<ResortHome>
                                                     color: Color(0xFF111111)
                                                 ),
                                               ),
+                                              SizedBox(
+                                                height: 4,
+                                              ),
                                               Text("위치정보는 랭킹전 점수 산정시에만 이용됩니다.",
                                                 style: TextStyle(
                                                     fontSize: 13,
-                                                    fontWeight: FontWeight.bold,
+                                                    fontWeight: FontWeight.normal,
                                                     color: Color(0xFF949494)
                                                 ),
                                               ),
@@ -1757,7 +1765,7 @@ class _ResortHomeState extends State<ResortHome>
                                                         _dialogController.isChecked.value = newValue!;
                                                       },
                                                     ),
-                                                    Text('개인위치정보 사용 및 이용약관에 동의합니다.',
+                                                    Text('개인위치정보 및 이용약관 동의',
                                                       style: TextStyle(
                                                         fontSize: 14,
                                                       ),
@@ -1825,7 +1833,7 @@ class _ResortHomeState extends State<ResortHome>
                                                       }
                                                           : null,
                                                       child: Text(
-                                                        '동의합니다',
+                                                        '동의',
                                                         style: TextStyle(
                                                             color: Color(0xffffffff),
                                                             fontSize: 15,

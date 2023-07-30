@@ -79,7 +79,7 @@ class setting_moreTab extends StatelessWidget {
                                     child: Text(
                                       '취소',
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: Color(0xFF3D83ED),
                                           fontSize: 15,
                                           fontWeight:
                                           FontWeight.bold),
@@ -91,7 +91,7 @@ class setting_moreTab extends StatelessWidget {
                                         minimumSize:
                                         Size(100, 56),
                                         backgroundColor:
-                                        Color(0xff555555),
+                                        Color(0xFF3D83ED).withOpacity(0.2),
                                         padding:
                                         EdgeInsets.symmetric(
                                             horizontal: 0)),
@@ -131,7 +131,7 @@ class setting_moreTab extends StatelessWidget {
                                         minimumSize:
                                         Size(100, 56),
                                         backgroundColor:
-                                        Color(0xff2C97FB),
+                                        Color(0xFF3D83ED),
                                         padding:
                                         EdgeInsets.symmetric(
                                             horizontal: 0)),
