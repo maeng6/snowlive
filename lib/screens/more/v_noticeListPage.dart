@@ -47,7 +47,7 @@ class _NoticeListState extends State<NoticeList> {
           style: TextStyle(
               color: Color(0xFF111111),
               fontWeight: FontWeight.bold,
-              fontSize: 20),
+              fontSize: 18),
         ),
       ),
       body: StreamBuilder(
@@ -85,7 +85,7 @@ class _NoticeListState extends State<NoticeList> {
                   ));
                 },
                 child: Container(
-                  padding: EdgeInsets.only(left: 16, right: 16, top: 18, bottom: 18),
+                  padding: EdgeInsets.only(left: 16, right: 16, top: 14, bottom: 14),
                   color: Colors.transparent,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,14 +99,14 @@ class _NoticeListState extends State<NoticeList> {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 16,
-                            fontWeight: FontWeight.normal,
+                            fontWeight: FontWeight.bold,
                             color: Color(0xFF111111)
                           ),
                         ),
                       ),
                       Expanded(child: SizedBox()),
                       Text(_timeStampController.yyyymmddFormat(noticeDocs[index].get('timeStamp')),style: TextStyle(
-                        fontWeight: FontWeight.normal, color: Color(0xFF111111), fontSize: 14
+                        fontWeight: FontWeight.normal, color: Color(0xFF949494), fontSize: 14
                       ),),
                       SizedBox(
                         width: 12,

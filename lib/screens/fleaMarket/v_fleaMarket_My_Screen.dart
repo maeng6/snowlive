@@ -74,47 +74,48 @@ class _FleaMarket_My_ScreenState
         color: Colors.white,
         child: Scaffold(
           floatingActionButton: Transform.translate(
-            offset: Offset(12, -4),
-            child: SizedBox(
-              width: 112,
-              height: 52,
-              child: _showAddButton
-              ?FloatingActionButton.extended(
-                heroTag: 'fleaMyScreen',
-                onPressed: () async{
-                  await _userModelController.getCurrentUser(_userModelController.uid);
-                  if(_userModelController.phoneAuth == true){
-                    Get.to(() => FleaMarket_Upload());
-                  }else if(_userModelController.phoneAuth == false){
-                    Get.to(()=>PhoneAuthScreen());
-                  }else{
+            offset: Offset(18, 0),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: AnimatedContainer(
+                width: _showAddButton ? 104 : 52,
+                height: 52,
+                duration: Duration(milliseconds: 200),
+                child: FloatingActionButton.extended(
+                  elevation: 4,
+                  heroTag: 'fleaMyScreen',
+                  onPressed: () async {
+                            await _userModelController.getCurrentUser(_userModelController.uid);
+                            if(_userModelController.phoneAuth == true){
+                              Get.to(() => FleaMarket_Upload());
+                            }else if(_userModelController.phoneAuth == false){
+                              Get.to(()=>PhoneAuthScreen());
+                            }else{
 
-                  }
-                },
-                icon: Icon(Icons.add),
-                label: Text('글쓰기', style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold,overflow: TextOverflow.ellipsis),),
-                backgroundColor: Color(0xFF3D6FED),
-              )
-              :FloatingActionButton(
-                heroTag: 'fleaMyScreen',
-                onPressed: () async{
-                  await _userModelController.getCurrentUser(_userModelController.uid);
-                  if(_userModelController.phoneAuth == true){
-                    Get.to(() => FleaMarket_Upload());
-                  }else if(_userModelController.phoneAuth == false){
-                    Get.to(()=>PhoneAuthScreen());
-                  }else{
-
-                  }
-                },
-                child: Icon(Icons.add),
-                backgroundColor: Color(0xFF3D6FED),
-              )
+                            }
+                  },
+                  icon: Transform.translate(
+                      offset: Offset(6,0),
+                      child: Center(child: Icon(Icons.add))),
+                  label: _showAddButton
+                      ? Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: Text('글쓰기',
+                      style: TextStyle(
+                          letterSpacing: 0.5,
+                          fontSize: 15,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                  )
+                      : SizedBox.shrink(), // Hide the text when _showAddButton is false
+                  backgroundColor: Color(0xFF3D6FED),
+                ),
+              ),
             ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-
-
           backgroundColor: Colors.white,
           body: Padding(
             padding: const EdgeInsets.only(top: 12),

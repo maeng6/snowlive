@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +13,10 @@ import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
 import '../../../controller/vm_userModelController.dart';
+import '../../../model/m_rankingTierModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 import '../../LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
 import '../../LiveCrew/v_crewDetailPage_screen.dart';
-import '../../LiveCrew/v_liveCrewHome_firstUser.dart';
 import '../v_setProfileImage_moreTab.dart';
 
 class FriendDetailPage extends StatefulWidget {
@@ -48,7 +46,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   String _initStateMsg='';
   String _initialDisplayName='';
   bool isPassDataZero=false;
-
+  Map? userRankingMap;
 
   Future<void> _onRefresh() async {
     CustomFullScreenDialog.showDialog();
@@ -1061,63 +1059,77 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                         color: Color(0xFFFFFFFF).withOpacity(0.6)
                                                                     ),),
                                                                   SizedBox(height: 12),
-                                                                  (crewDocs[0]['profileImageUrl'].isNotEmpty)
-                                                                      ? GestureDetector(
-                                                                    onTap: () {
-                                                                    },
-                                                                    child: Transform.translate(
-                                                                      offset: Offset(-8,-6),
-                                                                      child: Container(
-                                                                          width: 60,
-                                                                          height: 64,
-                                                                          child: ExtendedImage.network(
-                                                                            'assets/imgs/ranking/icon_ranking_tier_A.png',
-                                                                            enableMemoryCache: true,
-                                                                            shape: BoxShape.rectangle,
-                                                                            borderRadius: BorderRadius.circular(6),
-                                                                            fit: BoxFit.cover,
-                                                                          )),
-                                                                    ),
-                                                                  )
-                                                                      : GestureDetector(
-                                                                    onTap: () {
-                                                                      Get.to(() => ProfileImagePage(
-                                                                          CommentProfileUrl: ''));
-                                                                    },
-                                                                    child: Transform.translate(
-                                                                      offset: Offset(-8,-6),
-                                                                      child: Container(
-                                                                        width: 60,
-                                                                        height: 64,
-                                                                        child: ExtendedImage.asset(
-                                                                          'assets/imgs/ranking/icon_ranking_tier_A.png',
-                                                                          enableMemoryCache: true,
-                                                                          shape: BoxShape.rectangle,
-                                                                          borderRadius: BorderRadius.circular(6),
-                                                                          fit: BoxFit.cover,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 20,
-                                                                  ),
-                                                                  Text('3840P',
-                                                                    style: TextStyle(
-                                                                        fontWeight: FontWeight.bold,
-                                                                        fontSize: 16,
-                                                                        color: Color(0xFFFFFFFF)
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 3,
-                                                                  ),
-                                                                  Text('214등',
-                                                                    style: TextStyle(
-                                                                        fontSize: 13,
-                                                                        color: Color(0xFFFFFFFF)
-                                                                    ),
-                                                                  ),
+                                                                  StreamBuilder<QuerySnapshot>(
+                                                                      stream: FirebaseFirestore.instance
+                                                                          .collection('Ranking')
+                                                                          .doc('${_seasonController.currentSeason}')
+                                                                          .collection('${friendDocs[0]['favoriteResort']}')
+                                                                          .where('uid', isEqualTo: friendDocs[0]['uid'] )
+                                                                          .snapshots(),
+                                                                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                                                        if (!snapshot.hasData || snapshot.data == null) {}
+                                                                        else if (snapshot.data!.docs.isNotEmpty) {
+                                                                          final rankingDocs = snapshot.data!.docs;
+                                                                          // 동점자인 경우 lastPassTime을 기준으로 최신 순으로 정렬
+                                                                          rankingDocs.sort((a, b) {
+                                                                            final aTotalScore = a['totalScore'] as int;
+                                                                            final bTotalScore = b['totalScore'] as int;
+                                                                            final aLastPassTime = a['lastPassTime'] as Timestamp?;
+                                                                            final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+                                                                            if (aTotalScore == bTotalScore) {
+                                                                              if (aLastPassTime != null && bLastPassTime != null) {
+                                                                                return bLastPassTime.compareTo(aLastPassTime);
+                                                                              }
+                                                                            }
+
+                                                                            return bTotalScore.compareTo(aTotalScore);
+                                                                          });
+
+                                                                          userRankingMap =  _liveMapController.calculateRankIndiAll2(userRankingDocs: rankingDocs);
+
+                                                                          for(var rankingTier in rankingTierList)
+                                                                            if(rankingDocs[0]['tier'] == rankingTier.tierName)
+                                                                              return Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  Transform.translate(
+                                                                                    offset: Offset(-10,-10),
+                                                                                    child: ExtendedImage.asset(
+                                                                                      rankingTier.badgeAsset,
+                                                                                      enableMemoryCache: true,
+                                                                                      fit: BoxFit.cover,
+                                                                                      width: 52,
+                                                                                    ),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 20,
+                                                                                  ),
+                                                                                  Text('${rankingDocs[0]['totalScore']}점',
+                                                                                    style: TextStyle(
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        fontSize: 16,
+                                                                                        color: Color(0xFFFFFFFF)
+                                                                                    ),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 3,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    '${userRankingMap!['${rankingDocs[0]['uid']}']}등',
+                                                                                    style: TextStyle(
+                                                                                        fontSize: 13,
+                                                                                        color: Color(0xFFFFFFFF)
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              );
+                                                                        }
+                                                                        else if (snapshot.connectionState == ConnectionState.waiting) {}
+                                                                        return Center(
+                                                                          child: CircularProgressIndicator(),
+                                                                        );
+                                                                      }),
                                                                 ],
                                                               ),
                                                             ],
@@ -1478,8 +1490,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             children: [
                                               StreamBuilder(
                                                 stream: _stream,
-                                                builder: (BuildContext context,
-                                                    AsyncSnapshot<dynamic> snapshot) {
+                                                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                                                   if (!snapshot.hasData || snapshot.data == null) {
                                                     return Center(child: Padding(
                                                       padding: const EdgeInsets.symmetric(vertical: 36),
@@ -1517,39 +1528,57 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       physics: NeverScrollableScrollPhysics(),
                                                       itemCount: commentDocs.length,
                                                       itemBuilder: (context, index) {
+                                                        final document = commentDocs[index];
                                                         Timestamp timestamp = commentDocs[index].get('timeStamp');
                                                         String formattedDate = DateFormat('yyyy.MM.dd').format(timestamp.toDate()); // 원하는 형식으로 날짜 변환
-                                                        return
-                                                          (_userModelController.repoUidList!.contains(commentDocs[index].get('myUid')))
-                                                              ? Container(
-                                                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                                                            decoration: BoxDecoration(
-                                                                color: Colors.white,
-                                                                borderRadius: BorderRadius.circular(8)
-                                                            ),
-                                                            child: Center(
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.symmetric(vertical: 12),
-                                                                child: Text(
-                                                                  '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
-                                                                  style: TextStyle(
-                                                                      fontWeight: FontWeight.normal,
-                                                                      fontSize: 12,
-                                                                      color: Color(0xffc8c8c8)),
+                                                        return StreamBuilder(
+                                                            stream:  FirebaseFirestore.instance
+                                                                .collection('user')
+                                                                .where('uid', isEqualTo: document['myUid'])
+                                                                .snapshots(),
+                                                            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                                                              if (!snapshot.hasData || snapshot.data == null) {
+                                                                return ListTile(
+                                                                  title: Text(''),
+                                                                );
+                                                              }
+                                                              final userDoc = snapshot.data!.docs;
+                                                              final userData = userDoc.isNotEmpty ? userDoc[0] : null;
+                                                              if (userData == null) {
+                                                                return SizedBox();
+                                                              }
+                                                              return (_userModelController.repoUidList!.contains(commentDocs[index].get('myUid')))
+                                                                  ? Container(
+                                                                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                                                decoration: BoxDecoration(
+                                                                    color: Colors.white,
+                                                                    borderRadius: BorderRadius.circular(8)
                                                                 ),
-                                                              ),
-                                                            ),
-                                                          )
-                                                              : Row(
-                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                                child: Center(
+                                                                  child: Padding(
+                                                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                                                    child: Text(
+                                                                      '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
+                                                                      style: TextStyle(
+                                                                          fontWeight: FontWeight.normal,
+                                                                          fontSize: 12,
+                                                                          color: Color(0xffc8c8c8)),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              )
+                                                                  : Row(
+                                                                crossAxisAlignment: CrossAxisAlignment.center,
                                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                                 children: [
-                                                                  if (commentDocs[index]['profileImageUrl'] != "")
+                                                                  if (userData['profileImageUrl'] != "")
                                                                     GestureDetector(
                                                                       onTap: (){
+                                                                        Get.back();
+                                                                        Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
                                                                       },
                                                                       child: ExtendedImage.network(
-                                                                        commentDocs[index]['profileImageUrl'],
+                                                                        userData['profileImageUrl'],
                                                                         cache: true,
                                                                         shape: BoxShape.circle,
                                                                         borderRadius:
@@ -1559,9 +1588,11 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                         fit: BoxFit.cover,
                                                                       ),
                                                                     ),
-                                                                  if (commentDocs[index]['profileImageUrl'] == "")
+                                                                  if (userData['profileImageUrl'] == "")
                                                                     GestureDetector(
                                                                       onTap: (){
+                                                                        Get.back();
+                                                                        Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
                                                                       },
                                                                       child: ExtendedImage.asset(
                                                                         'assets/imgs/profile/img_profile_default_circle.png',
@@ -1575,463 +1606,465 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                     ),
                                                                   SizedBox(width: 12),
                                                                   Column(
-                                                            children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.only(top: 10),
-                                                                    child: Row(
-                                                                      children: [
-                                                                        Column(
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(top: 10),
+                                                                        child: Row(
                                                                           children: [
-                                                                            Row(
-                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                            Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
                                                                               children: [
-                                                                                Container(
-                                                                                  width: _size.width - 122,
-                                                                                  child: Text(commentDocs[index]['comment'],
-                                                                                    style: TextStyle(
-                                                                                        fontSize: 14,
-                                                                                        color: Color(0xFF111111)
-                                                                                    ),),
+                                                                                Row(
+                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                  children: [
+                                                                                    Container(
+                                                                                      width: _size.width - 122,
+                                                                                      child: Text(commentDocs[index]['comment'],
+                                                                                        style: TextStyle(
+                                                                                            fontSize: 14,
+                                                                                            color: Color(0xFF111111)
+                                                                                        ),),
+                                                                                    ),
+                                                                                    (commentDocs[index]['myUid'] != _userModelController.uid)
+                                                                                        ? GestureDetector(
+                                                                                      onTap: () =>
+                                                                                          showModalBottomSheet(
+                                                                                              enableDrag: false,
+                                                                                              context: context,
+                                                                                              builder: (context) {
+                                                                                                return SafeArea(
+                                                                                                  child: Container(
+                                                                                                    height: 200,
+                                                                                                    child: Padding(
+                                                                                                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
+                                                                                                      child: Column(
+                                                                                                        children: [
+                                                                                                          if(friendDocs[0]['uid'] == _userModelController.uid)
+                                                                                                            GestureDetector(
+                                                                                                              child: ListTile(
+                                                                                                                contentPadding: EdgeInsets.zero,
+                                                                                                                title: Center(
+                                                                                                                  child: Text(
+                                                                                                                    '삭제',
+                                                                                                                    style: TextStyle(
+                                                                                                                        fontSize: 15,
+                                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                                        color: Color(
+                                                                                                                            0xFFD63636)
+                                                                                                                    ),
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                                //selected: _isSelected[index]!,
+                                                                                                                onTap: () async {
+                                                                                                                  Navigator.pop(context);
+                                                                                                                  showModalBottomSheet(
+                                                                                                                      context: context,
+                                                                                                                      builder: (context) {
+                                                                                                                        return Container(
+                                                                                                                          color: Colors.white,
+                                                                                                                          height: 180,
+                                                                                                                          child: Padding(
+                                                                                                                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                                                                                                            child: Column(
+                                                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                                                                                              children: [
+                                                                                                                                SizedBox(
+                                                                                                                                  height: 30,
+                                                                                                                                ),
+                                                                                                                                Text(
+                                                                                                                                  '삭제하시겠습니까?',
+                                                                                                                                  style: TextStyle(
+                                                                                                                                      fontSize: 20,
+                                                                                                                                      fontWeight: FontWeight.bold,
+                                                                                                                                      color: Color(0xFF111111)),
+                                                                                                                                ),
+                                                                                                                                SizedBox(
+                                                                                                                                  height: 30,
+                                                                                                                                ),
+                                                                                                                                Row(
+                                                                                                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                                                                  children: [
+                                                                                                                                    Expanded(
+                                                                                                                                      child: ElevatedButton(
+                                                                                                                                        onPressed: () {
+                                                                                                                                          Navigator.pop(context);
+                                                                                                                                        },
+                                                                                                                                        child: Text('취소',
+                                                                                                                                          style: TextStyle(
+                                                                                                                                              color: Colors.white,
+                                                                                                                                              fontSize: 15,
+                                                                                                                                              fontWeight: FontWeight.bold),
+                                                                                                                                        ),
+                                                                                                                                        style: TextButton.styleFrom(
+                                                                                                                                            splashFactory: InkRipple.splashFactory,
+                                                                                                                                            elevation: 0,
+                                                                                                                                            minimumSize: Size(100, 56),
+                                                                                                                                            backgroundColor: Color(0xff555555),
+                                                                                                                                            padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                                                      ),
+                                                                                                                                    ),
+                                                                                                                                    SizedBox(
+                                                                                                                                      width: 10,
+                                                                                                                                    ),
+                                                                                                                                    Expanded(
+                                                                                                                                      child: ElevatedButton(
+                                                                                                                                        onPressed: () async {
+                                                                                                                                          CustomFullScreenDialog.showDialog();
+                                                                                                                                          try {
+                                                                                                                                            await FirebaseFirestore.instance.collection('user')
+                                                                                                                                                .doc('${widget.uid}')
+                                                                                                                                                .collection('friendsComment')
+                                                                                                                                                .doc(commentDocs[index]['myUid'])
+                                                                                                                                                .delete();
+                                                                                                                                          } catch (e) {}
+                                                                                                                                          print('삭제 완료');
+                                                                                                                                          Navigator.pop(context);
+                                                                                                                                          CustomFullScreenDialog.cancelDialog();
+                                                                                                                                        },
+                                                                                                                                        child: Text('확인',
+                                                                                                                                          style: TextStyle(
+                                                                                                                                              color: Colors.white,
+                                                                                                                                              fontSize: 15,
+                                                                                                                                              fontWeight: FontWeight.bold),
+                                                                                                                                        ),
+                                                                                                                                        style: TextButton.styleFrom(
+                                                                                                                                            splashFactory: InkRipple.splashFactory,
+                                                                                                                                            elevation: 0,
+                                                                                                                                            minimumSize: Size(100, 56),
+                                                                                                                                            backgroundColor: Color(0xff2C97FB),
+                                                                                                                                            padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                                                      ),
+                                                                                                                                    ),
+                                                                                                                                  ],
+                                                                                                                                )
+                                                                                                                              ],
+                                                                                                                            ),
+                                                                                                                          ),
+                                                                                                                        );
+                                                                                                                      });
+                                                                                                                },
+                                                                                                                shape: RoundedRectangleBorder(
+                                                                                                                    borderRadius: BorderRadius.circular(10)),
+                                                                                                              ),
+                                                                                                            ),
+                                                                                                          GestureDetector(
+                                                                                                            child: ListTile(
+                                                                                                              contentPadding: EdgeInsets.zero,
+                                                                                                              title: Center(
+                                                                                                                child: Text('신고하기',
+                                                                                                                  style: TextStyle(
+                                                                                                                    fontSize: 15,
+                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                              //selected: _isSelected[index]!,
+                                                                                                              onTap: () async {
+                                                                                                                Get.dialog(
+                                                                                                                    AlertDialog(
+                                                                                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                                      elevation: 0,
+                                                                                                                      shape: RoundedRectangleBorder(
+                                                                                                                          borderRadius: BorderRadius.circular(10.0)),
+                                                                                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                                      content: Text(
+                                                                                                                        '이 회원을 신고하시겠습니까?',
+                                                                                                                        style: TextStyle(
+                                                                                                                            fontWeight: FontWeight.w600,
+                                                                                                                            fontSize: 15),
+                                                                                                                      ),
+                                                                                                                      actions: [
+                                                                                                                        Row(
+                                                                                                                          children: [
+                                                                                                                            TextButton(
+                                                                                                                                onPressed: () {
+                                                                                                                                  Navigator.pop(context);
+                                                                                                                                },
+                                                                                                                                child: Text('취소',
+                                                                                                                                  style: TextStyle(
+                                                                                                                                    fontSize: 15,
+                                                                                                                                    color: Color(0xFF949494),
+                                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                                  ),
+                                                                                                                                )),
+                                                                                                                            TextButton(
+                                                                                                                                onPressed: () async {
+                                                                                                                                  var repoUid = commentDocs[index].get('myUid');
+                                                                                                                                  await _userModelController.repoUpdate(repoUid);
+                                                                                                                                  Navigator.pop(context);
+                                                                                                                                  Navigator.pop(context);
+                                                                                                                                },
+                                                                                                                                child: Text(
+                                                                                                                                  '신고',
+                                                                                                                                  style: TextStyle(
+                                                                                                                                    fontSize: 15,
+                                                                                                                                    color: Color(0xFF3D83ED),
+                                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                                  ),
+                                                                                                                                ))
+                                                                                                                          ],
+                                                                                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                                        )
+                                                                                                                      ],
+                                                                                                                    ));
+                                                                                                              },
+                                                                                                              shape: RoundedRectangleBorder(
+                                                                                                                  borderRadius: BorderRadius.circular(10)),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                          GestureDetector(
+                                                                                                            child: ListTile(
+                                                                                                              contentPadding: EdgeInsets.zero,
+                                                                                                              title: Center(
+                                                                                                                child: Text(
+                                                                                                                  '이 회원의 글 모두 숨기기',
+                                                                                                                  style: TextStyle(
+                                                                                                                    fontSize: 15,
+                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                              //selected: _isSelected[index]!,
+                                                                                                              onTap: () async {
+                                                                                                                Get.dialog(
+                                                                                                                    AlertDialog(
+                                                                                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                                      elevation: 0,
+                                                                                                                      shape: RoundedRectangleBorder(
+                                                                                                                          borderRadius: BorderRadius.circular(10.0)),
+                                                                                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                                      content: Text(
+                                                                                                                        '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.',
+                                                                                                                        style: TextStyle(
+                                                                                                                            fontWeight: FontWeight.w600,
+                                                                                                                            fontSize: 15),
+                                                                                                                      ),
+                                                                                                                      actions: [
+                                                                                                                        Row(
+                                                                                                                          children: [
+                                                                                                                            TextButton(
+                                                                                                                                onPressed: () {Navigator.pop(context);},
+                                                                                                                                child: Text('취소',
+                                                                                                                                  style: TextStyle(
+                                                                                                                                    fontSize: 15,
+                                                                                                                                    color: Color(0xFF949494),
+                                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                                  ),
+                                                                                                                                )),
+                                                                                                                            TextButton(
+                                                                                                                                onPressed: () {
+                                                                                                                                  var repoUid = commentDocs[index].get('myUid');
+                                                                                                                                  _userModelController.updateRepoUid(repoUid);
+                                                                                                                                  Navigator.pop(context);
+                                                                                                                                  Navigator.pop(context);
+                                                                                                                                },
+                                                                                                                                child: Text('확인',
+                                                                                                                                  style: TextStyle(
+                                                                                                                                    fontSize: 15,
+                                                                                                                                    color: Color(0xFF3D83ED),
+                                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                                  ),
+                                                                                                                                ))
+                                                                                                                          ],
+                                                                                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                                        )
+                                                                                                                      ],
+                                                                                                                    ));
+                                                                                                              },
+                                                                                                              shape: RoundedRectangleBorder(
+                                                                                                                  borderRadius: BorderRadius.circular(10)),
+                                                                                                            ),
+                                                                                                          )
+                                                                                                        ],
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                );
+                                                                                              }),
+                                                                                      child: Icon(
+                                                                                        Icons.more_horiz,
+                                                                                        color: Color(0xFFdedede),
+                                                                                        size: 20,
+                                                                                      ),
+                                                                                    )
+                                                                                        : GestureDetector(
+                                                                                      onTap: () =>
+                                                                                          showModalBottomSheet(
+                                                                                              enableDrag: false,
+                                                                                              context: context,
+                                                                                              builder: (
+                                                                                                  context) {
+                                                                                                return SafeArea(
+                                                                                                  child: Container(
+                                                                                                    height: 100,
+                                                                                                    child:
+                                                                                                    Padding(
+                                                                                                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
+                                                                                                      child: Column(
+                                                                                                        children: [
+                                                                                                          GestureDetector(
+                                                                                                            child: ListTile(
+                                                                                                              contentPadding: EdgeInsets.zero,
+                                                                                                              title: Center(
+                                                                                                                child: Text('삭제',
+                                                                                                                  style: TextStyle(
+                                                                                                                      fontSize: 15,
+                                                                                                                      fontWeight: FontWeight.bold,
+                                                                                                                      color: Color(0xFFD63636)
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                              //selected: _isSelected[index]!,
+                                                                                                              onTap: () async {
+                                                                                                                Navigator.pop(context);
+                                                                                                                showModalBottomSheet(
+                                                                                                                    context: context,
+                                                                                                                    builder: (context) {
+                                                                                                                      return Container(
+                                                                                                                        color: Colors.white,
+                                                                                                                        height: 180,
+                                                                                                                        child: Padding(
+                                                                                                                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                                                                                                          child: Column(
+                                                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                                                                            children: [
+                                                                                                                              SizedBox(
+                                                                                                                                height: 30,
+                                                                                                                              ),
+                                                                                                                              Text(
+                                                                                                                                '삭제하시겠습니까?',
+                                                                                                                                style: TextStyle(
+                                                                                                                                    fontSize: 20,
+                                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                                    color: Color(0xFF111111)),
+                                                                                                                              ),
+                                                                                                                              SizedBox(
+                                                                                                                                height: 30,
+                                                                                                                              ),
+                                                                                                                              Row(
+                                                                                                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                                                                children: [
+                                                                                                                                  Expanded(
+                                                                                                                                    child: ElevatedButton(
+                                                                                                                                      onPressed: () {
+                                                                                                                                        Navigator.pop(context);
+                                                                                                                                      },
+                                                                                                                                      child: Text(
+                                                                                                                                        '취소',
+                                                                                                                                        style: TextStyle(
+                                                                                                                                            color: Colors.white,
+                                                                                                                                            fontSize: 15,
+                                                                                                                                            fontWeight: FontWeight.bold),
+                                                                                                                                      ),
+                                                                                                                                      style: TextButton.styleFrom(
+                                                                                                                                          splashFactory: InkRipple.splashFactory,
+                                                                                                                                          elevation: 0,
+                                                                                                                                          minimumSize: Size(100, 56),
+                                                                                                                                          backgroundColor: Color(0xff555555),
+                                                                                                                                          padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                                                    ),
+                                                                                                                                  ),
+                                                                                                                                  SizedBox(
+                                                                                                                                    width: 10,
+                                                                                                                                  ),
+                                                                                                                                  Expanded(
+                                                                                                                                    child: ElevatedButton(
+                                                                                                                                      onPressed: () async {
+                                                                                                                                        CustomFullScreenDialog
+                                                                                                                                            .showDialog();
+                                                                                                                                        try {
+                                                                                                                                          await FirebaseFirestore.instance
+                                                                                                                                              .collection('user')
+                                                                                                                                              .doc('${widget.uid}')
+                                                                                                                                              .collection('friendsComment')
+                                                                                                                                              .doc('${_userModelController.uid}')
+                                                                                                                                              .delete();
+                                                                                                                                        } catch (e) {}
+                                                                                                                                        print('친구톡 삭제 완료');
+                                                                                                                                        Navigator.pop(context);
+                                                                                                                                        CustomFullScreenDialog.cancelDialog();
+                                                                                                                                      },
+                                                                                                                                      child: Text(
+                                                                                                                                        '확인',
+                                                                                                                                        style: TextStyle(
+                                                                                                                                            color: Colors.white,
+                                                                                                                                            fontSize: 15,
+                                                                                                                                            fontWeight: FontWeight.bold),
+                                                                                                                                      ),
+                                                                                                                                      style: TextButton.styleFrom(
+                                                                                                                                          splashFactory: InkRipple.splashFactory,
+                                                                                                                                          elevation: 0,
+                                                                                                                                          minimumSize: Size(100, 56),
+                                                                                                                                          backgroundColor: Color(0xff2C97FB),
+                                                                                                                                          padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                                                    ),
+                                                                                                                                  ),
+                                                                                                                                ],
+                                                                                                                              )
+                                                                                                                            ],
+                                                                                                                          ),
+                                                                                                                        ),
+                                                                                                                      );
+                                                                                                                    });
+                                                                                                              },
+                                                                                                              shape: RoundedRectangleBorder(
+                                                                                                                  borderRadius: BorderRadius.circular(10)),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        ],
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                );
+                                                                                              }),
+                                                                                      child: Icon(
+                                                                                        Icons.more_horiz,
+                                                                                        color: Color(0xFFdedede),
+                                                                                        size: 20,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
                                                                                 ),
-                                                                                (commentDocs[index]['myUid'] != _userModelController.uid)
-                                                                                    ? GestureDetector(
-                                                                                  onTap: () =>
-                                                                                      showModalBottomSheet(
-                                                                                          enableDrag: false,
-                                                                                          context: context,
-                                                                                          builder: (context) {
-                                                                                            return SafeArea(
-                                                                                              child: Container(
-                                                                                                height: 200,
-                                                                                                child: Padding(
-                                                                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
-                                                                                                  child: Column(
-                                                                                                    children: [
-                                                                                                      GestureDetector(
-                                                                                                        child: ListTile(
-                                                                                                          contentPadding: EdgeInsets.zero,
-                                                                                                          title: Center(
-                                                                                                            child: Text(
-                                                                                                              '삭제',
-                                                                                                              style: TextStyle(
-                                                                                                                  fontSize: 15,
-                                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                                  color: Color(
-                                                                                                                      0xFFD63636)
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                          //selected: _isSelected[index]!,
-                                                                                                          onTap: () async {
-                                                                                                            Navigator.pop(context);
-                                                                                                            showModalBottomSheet(
-                                                                                                                context: context,
-                                                                                                                builder: (context) {
-                                                                                                                  return Container(
-                                                                                                                    color: Colors.white,
-                                                                                                                    height: 180,
-                                                                                                                    child: Padding(
-                                                                                                                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                                                                                                      child: Column(
-                                                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                                                                                        children: [
-                                                                                                                          SizedBox(
-                                                                                                                            height: 30,
-                                                                                                                          ),
-                                                                                                                          Text(
-                                                                                                                            '삭제하시겠습니까?',
-                                                                                                                            style: TextStyle(
-                                                                                                                                fontSize: 20,
-                                                                                                                                fontWeight: FontWeight.bold,
-                                                                                                                                color: Color(0xFF111111)),
-                                                                                                                          ),
-                                                                                                                          SizedBox(
-                                                                                                                            height: 30,
-                                                                                                                          ),
-                                                                                                                          Row(
-                                                                                                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                                                                            children: [
-                                                                                                                              Expanded(
-                                                                                                                                child: ElevatedButton(
-                                                                                                                                  onPressed: () {
-                                                                                                                                    Navigator.pop(context);
-                                                                                                                                  },
-                                                                                                                                  child: Text('취소',
-                                                                                                                                    style: TextStyle(
-                                                                                                                                        color: Colors.white,
-                                                                                                                                        fontSize: 15,
-                                                                                                                                        fontWeight: FontWeight.bold),
-                                                                                                                                  ),
-                                                                                                                                  style: TextButton.styleFrom(
-                                                                                                                                      splashFactory: InkRipple.splashFactory,
-                                                                                                                                      elevation: 0,
-                                                                                                                                      minimumSize: Size(100, 56),
-                                                                                                                                      backgroundColor: Color(0xff555555),
-                                                                                                                                      padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                                                                ),
-                                                                                                                              ),
-                                                                                                                              SizedBox(
-                                                                                                                                width: 10,
-                                                                                                                              ),
-                                                                                                                              Expanded(
-                                                                                                                                child: ElevatedButton(
-                                                                                                                                  onPressed: () async {
-                                                                                                                                    CustomFullScreenDialog.showDialog();
-                                                                                                                                    try {
-                                                                                                                                      await FirebaseFirestore.instance.collection('user')
-                                                                                                                                          .doc('${widget.uid}')
-                                                                                                                                          .collection('friendsComment')
-                                                                                                                                          .doc(commentDocs[index]['myUid'])
-                                                                                                                                          .delete();
-                                                                                                                                    } catch (e) {}
-                                                                                                                                    print('삭제 완료');
-                                                                                                                                    Navigator.pop(context);
-                                                                                                                                    CustomFullScreenDialog.cancelDialog();
-                                                                                                                                  },
-                                                                                                                                  child: Text('확인',
-                                                                                                                                    style: TextStyle(
-                                                                                                                                        color: Colors.white,
-                                                                                                                                        fontSize: 15,
-                                                                                                                                        fontWeight: FontWeight.bold),
-                                                                                                                                  ),
-                                                                                                                                  style: TextButton.styleFrom(
-                                                                                                                                      splashFactory: InkRipple.splashFactory,
-                                                                                                                                      elevation: 0,
-                                                                                                                                      minimumSize: Size(100, 56),
-                                                                                                                                      backgroundColor: Color(0xff2C97FB),
-                                                                                                                                      padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                                                                ),
-                                                                                                                              ),
-                                                                                                                            ],
-                                                                                                                          )
-                                                                                                                        ],
-                                                                                                                      ),
-                                                                                                                    ),
-                                                                                                                  );
-                                                                                                                });
-                                                                                                          },
-                                                                                                          shape: RoundedRectangleBorder(
-                                                                                                              borderRadius: BorderRadius.circular(10)),
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                      GestureDetector(
-                                                                                                        child: ListTile(
-                                                                                                          contentPadding: EdgeInsets.zero,
-                                                                                                          title: Center(
-                                                                                                            child: Text('신고하기',
-                                                                                                              style: TextStyle(
-                                                                                                                fontSize: 15,
-                                                                                                                fontWeight: FontWeight.bold,
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                          //selected: _isSelected[index]!,
-                                                                                                          onTap: () async {
-                                                                                                            Get.dialog(
-                                                                                                                AlertDialog(
-                                                                                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                                                  elevation: 0,
-                                                                                                                  shape: RoundedRectangleBorder(
-                                                                                                                      borderRadius: BorderRadius.circular(10.0)),
-                                                                                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                                  content: Text(
-                                                                                                                    '이 회원을 신고하시겠습니까?',
-                                                                                                                    style: TextStyle(
-                                                                                                                        fontWeight: FontWeight.w600,
-                                                                                                                        fontSize: 15),
-                                                                                                                  ),
-                                                                                                                  actions: [
-                                                                                                                    Row(
-                                                                                                                      children: [
-                                                                                                                        TextButton(
-                                                                                                                            onPressed: () {
-                                                                                                                              Navigator.pop(context);
-                                                                                                                            },
-                                                                                                                            child: Text('취소',
-                                                                                                                              style: TextStyle(
-                                                                                                                                fontSize: 15,
-                                                                                                                                color: Color(0xFF949494),
-                                                                                                                                fontWeight: FontWeight.bold,
-                                                                                                                              ),
-                                                                                                                            )),
-                                                                                                                        TextButton(
-                                                                                                                            onPressed: () async {
-                                                                                                                              var repoUid = commentDocs[index].get('myUid');
-                                                                                                                              await _userModelController.repoUpdate(repoUid);
-                                                                                                                              Navigator.pop(context);
-                                                                                                                              Navigator.pop(context);
-                                                                                                                            },
-                                                                                                                            child: Text(
-                                                                                                                              '신고',
-                                                                                                                              style: TextStyle(
-                                                                                                                                fontSize: 15,
-                                                                                                                                color: Color(0xFF3D83ED),
-                                                                                                                                fontWeight: FontWeight.bold,
-                                                                                                                              ),
-                                                                                                                            ))
-                                                                                                                      ],
-                                                                                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                                    )
-                                                                                                                  ],
-                                                                                                                ));
-                                                                                                          },
-                                                                                                          shape: RoundedRectangleBorder(
-                                                                                                              borderRadius: BorderRadius.circular(10)),
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                      GestureDetector(
-                                                                                                        child: ListTile(
-                                                                                                          contentPadding: EdgeInsets.zero,
-                                                                                                          title: Center(
-                                                                                                            child: Text(
-                                                                                                              '이 회원의 글 모두 숨기기',
-                                                                                                              style: TextStyle(
-                                                                                                                fontSize: 15,
-                                                                                                                fontWeight: FontWeight.bold,
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                          //selected: _isSelected[index]!,
-                                                                                                          onTap: () async {
-                                                                                                            Get.dialog(
-                                                                                                                AlertDialog(
-                                                                                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                                                  elevation: 0,
-                                                                                                                  shape: RoundedRectangleBorder(
-                                                                                                                      borderRadius: BorderRadius.circular(10.0)),
-                                                                                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                                  content: Text(
-                                                                                                                    '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.',
-                                                                                                                    style: TextStyle(
-                                                                                                                        fontWeight: FontWeight.w600,
-                                                                                                                        fontSize: 15),
-                                                                                                                  ),
-                                                                                                                  actions: [
-                                                                                                                    Row(
-                                                                                                                      children: [
-                                                                                                                        TextButton(
-                                                                                                                            onPressed: () {Navigator.pop(context);},
-                                                                                                                            child: Text('취소',
-                                                                                                                              style: TextStyle(
-                                                                                                                                fontSize: 15,
-                                                                                                                                color: Color(0xFF949494),
-                                                                                                                                fontWeight: FontWeight.bold,
-                                                                                                                              ),
-                                                                                                                            )),
-                                                                                                                        TextButton(
-                                                                                                                            onPressed: () {
-                                                                                                                              var repoUid = commentDocs[index].get('myUid');
-                                                                                                                              _userModelController.updateRepoUid(repoUid);
-                                                                                                                              Navigator.pop(context);
-                                                                                                                              Navigator.pop(context);
-                                                                                                                            },
-                                                                                                                            child: Text('확인',
-                                                                                                                              style: TextStyle(
-                                                                                                                                fontSize: 15,
-                                                                                                                                color: Color(0xFF3D83ED),
-                                                                                                                                fontWeight: FontWeight.bold,
-                                                                                                                              ),
-                                                                                                                            ))
-                                                                                                                      ],
-                                                                                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                                    )
-                                                                                                                  ],
-                                                                                                                ));
-                                                                                                          },
-                                                                                                          shape: RoundedRectangleBorder(
-                                                                                                              borderRadius: BorderRadius.circular(10)),
-                                                                                                        ),
-                                                                                                      )
-                                                                                                    ],
-                                                                                                  ),
-                                                                                                ),
-                                                                                              ),
-                                                                                            );
-                                                                                          }),
-                                                                                  child: Icon(
-                                                                                    Icons.more_horiz,
-                                                                                    color: Color(0xFFdedede),
-                                                                                    size: 20,
-                                                                                  ),
-                                                                                )
-                                                                                    : GestureDetector(
-                                                                                  onTap: () =>
-                                                                                      showModalBottomSheet(
-                                                                                          enableDrag: false,
-                                                                                          context: context,
-                                                                                          builder: (
-                                                                                              context) {
-                                                                                            return SafeArea(
-                                                                                              child: Container(
-                                                                                                height: 100,
-                                                                                                child:
-                                                                                                Padding(
-                                                                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
-                                                                                                  child: Column(
-                                                                                                    children: [
-                                                                                                      GestureDetector(
-                                                                                                        child: ListTile(
-                                                                                                          contentPadding: EdgeInsets.zero,
-                                                                                                          title: Center(
-                                                                                                            child: Text('삭제',
-                                                                                                              style: TextStyle(
-                                                                                                                  fontSize: 15,
-                                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                                  color: Color(0xFFD63636)
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                          //selected: _isSelected[index]!,
-                                                                                                          onTap: () async {
-                                                                                                            Navigator.pop(context);
-                                                                                                            showModalBottomSheet(
-                                                                                                                context: context,
-                                                                                                                builder: (context) {
-                                                                                                                  return Container(
-                                                                                                                    color: Colors.white,
-                                                                                                                    height: 180,
-                                                                                                                    child: Padding(
-                                                                                                                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                                                                                                      child: Column(
-                                                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                                                                                        children: [
-                                                                                                                          SizedBox(
-                                                                                                                            height: 30,
-                                                                                                                          ),
-                                                                                                                          Text(
-                                                                                                                            '삭제하시겠습니까?',
-                                                                                                                            style: TextStyle(
-                                                                                                                                fontSize: 20,
-                                                                                                                                fontWeight: FontWeight.bold,
-                                                                                                                                color: Color(0xFF111111)),
-                                                                                                                          ),
-                                                                                                                          SizedBox(
-                                                                                                                            height: 30,
-                                                                                                                          ),
-                                                                                                                          Row(
-                                                                                                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                                                                            children: [
-                                                                                                                              Expanded(
-                                                                                                                                child: ElevatedButton(
-                                                                                                                                  onPressed: () {
-                                                                                                                                    Navigator.pop(context);
-                                                                                                                                  },
-                                                                                                                                  child: Text(
-                                                                                                                                    '취소',
-                                                                                                                                    style: TextStyle(
-                                                                                                                                        color: Colors.white,
-                                                                                                                                        fontSize: 15,
-                                                                                                                                        fontWeight: FontWeight.bold),
-                                                                                                                                  ),
-                                                                                                                                  style: TextButton.styleFrom(
-                                                                                                                                      splashFactory: InkRipple.splashFactory,
-                                                                                                                                      elevation: 0,
-                                                                                                                                      minimumSize: Size(100, 56),
-                                                                                                                                      backgroundColor: Color(0xff555555),
-                                                                                                                                      padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                                                                ),
-                                                                                                                              ),
-                                                                                                                              SizedBox(
-                                                                                                                                width: 10,
-                                                                                                                              ),
-                                                                                                                              Expanded(
-                                                                                                                                child: ElevatedButton(
-                                                                                                                                  onPressed: () async {
-                                                                                                                                    CustomFullScreenDialog
-                                                                                                                                        .showDialog();
-                                                                                                                                    try {
-                                                                                                                                      await FirebaseFirestore.instance
-                                                                                                                                          .collection('user')
-                                                                                                                                          .doc('${widget.uid}')
-                                                                                                                                          .collection('friendsComment')
-                                                                                                                                          .doc('${_userModelController.uid}')
-                                                                                                                                          .delete();
-                                                                                                                                    } catch (e) {}
-                                                                                                                                    print('친구톡 삭제 완료');
-                                                                                                                                    Navigator.pop(context);
-                                                                                                                                    CustomFullScreenDialog.cancelDialog();
-                                                                                                                                  },
-                                                                                                                                  child: Text(
-                                                                                                                                    '확인',
-                                                                                                                                    style: TextStyle(
-                                                                                                                                        color: Colors.white,
-                                                                                                                                        fontSize: 15,
-                                                                                                                                        fontWeight: FontWeight.bold),
-                                                                                                                                  ),
-                                                                                                                                  style: TextButton.styleFrom(
-                                                                                                                                      splashFactory: InkRipple.splashFactory,
-                                                                                                                                      elevation: 0,
-                                                                                                                                      minimumSize: Size(100, 56),
-                                                                                                                                      backgroundColor: Color(0xff2C97FB),
-                                                                                                                                      padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                                                                ),
-                                                                                                                              ),
-                                                                                                                            ],
-                                                                                                                          )
-                                                                                                                        ],
-                                                                                                                      ),
-                                                                                                                    ),
-                                                                                                                  );
-                                                                                                                });
-                                                                                                          },
-                                                                                                          shape: RoundedRectangleBorder(
-                                                                                                              borderRadius: BorderRadius.circular(10)),
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                    ],
-                                                                                                  ),
-                                                                                                ),
-                                                                                              ),
-                                                                                            );
-                                                                                          }),
-                                                                                  child: Icon(
-                                                                                    Icons.more_horiz,
-                                                                                    color: Color(0xFFdedede),
-                                                                                    size: 20,
-                                                                                  ),
+                                                                                SizedBox(
+                                                                                  height: 4,
+                                                                                ),
+                                                                                Row(
+                                                                                  children: [
+                                                                                    Text(
+                                                                                      commentDocs[index]['displayName'],
+                                                                                      style: TextStyle(
+                                                                                          fontSize: 13,
+                                                                                          color: Color(0xFF949494)
+                                                                                      ),),
+                                                                                    SizedBox(width: 6,),
+                                                                                    Text(formattedDate,
+                                                                                      style: TextStyle(
+                                                                                          fontSize: 13,
+                                                                                          color: Color(0xFF949494)
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
                                                                                 ),
                                                                               ],
                                                                             ),
-                                                                            SizedBox(
-                                                                              height: 4,
-                                                                            ),
-                                                                            Row(
-                                                                              children: [
-                                                                                Text(
-                                                                                  commentDocs[index]['displayName'],
-                                                                                  style: TextStyle(
-                                                                                      fontSize: 13,
-                                                                                      color: Color(0xFF949494)
-                                                                                  ),),
-                                                                                SizedBox(width: 6,),
-                                                                                Text(formattedDate,
-                                                                                  style: TextStyle(
-                                                                                      fontSize: 13,
-                                                                                      color: Color(0xFF949494)
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
+
                                                                           ],
                                                                         ),
-
-                                                                      ],
-                                                                    ),
+                                                                      ),
+                                                                      SizedBox(height: 12),
+                                                                      if (index != commentDocs.length - 1)
+                                                                        Container(
+                                                                          color: Color(0xFFF5F5F5),
+                                                                          height: 1,
+                                                                          width: _size.width - 102,
+                                                                        )
+                                                                    ],
                                                                   ),
-                                                                  SizedBox(height: 12),
-                                                                  if (index != commentDocs.length - 1)
-                                                                    Container(
-                                                                      color: Color(0xFFF5F5F5),
-                                                                      height: 1,
-                                                                      width: _size.width - 32,
-                                                                    )
-                                                            ],
-                                                          ),
                                                                 ],
                                                               );
+                                                            });
                                                       },
                                                     );
                                                   }
