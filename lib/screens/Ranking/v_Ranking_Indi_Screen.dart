@@ -509,8 +509,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                             child: Column(
                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
-                                                                Text(
-                                                                  userData['displayName'],
+                                                                Text(userData['displayName'],
                                                                   style: TextStyle(
                                                                       fontSize: 15,
                                                                       color: Color(0xFF111111)
@@ -539,8 +538,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                     // 크루명 가져오기
                                                                     String crewName = crewData?['crewName'] ?? '';
 
-                                                                    return Text(
-                                                                      crewName,
+                                                                    return Text(crewName,
                                                                       style: TextStyle(
                                                                           fontSize: 12,
                                                                           color: Color(0xFF949494)
@@ -655,6 +653,16 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
+                                            SizedBox(height: 2,),
+                                            _liveCrewModelController.crewName != ''
+                                            ? Text('${_liveCrewModelController.crewName}',
+                                              style: TextStyle(
+                                                  color: Color(0xFF666666),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.normal
+                                              ),
+                                            )
+                                                : Container()
                                           ],
                                         ),
                                         Expanded(child: SizedBox()),
@@ -734,13 +742,15 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           ),
                                         ),
                                         SizedBox(height: 2,),
-                                        Text('${_liveCrewModelController.crewName}',
+                                        _liveCrewModelController.crewName != ''
+                                            ? Text('${_liveCrewModelController.crewName}',
                                           style: TextStyle(
                                               color: Color(0xFF666666),
                                               fontSize: 12,
                                               fontWeight: FontWeight.normal
                                           ),
                                         )
+                                            : Container()
                                       ],
                                     ),
                                     Expanded(child: SizedBox()),
