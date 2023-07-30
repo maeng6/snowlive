@@ -100,7 +100,7 @@ class _SetNicknameState extends State<SetNickname> {
                     height: 8,
                   ),
                   Text(
-                    '스노우라이브에서 사용할 활동명을 설정해 주세요.\n최대 20자까지 입력할 수 있습니다.',
+                    '스노우라이브에서 사용할 활동명을 설정해 주세요.\n최대 8자까지 입력할 수 있습니다.',
                     style: TextStyle(
                         color: Color(0xff949494),
                         fontSize: 13,
@@ -152,7 +152,7 @@ class _SetNicknameState extends State<SetNickname> {
                                 borderRadius: BorderRadius.circular(6),
                               )),
                           validator: (val) {
-                            if (val!.length <= 20 && val.length >= 1) {
+                            if (val!.length <= 8 && val.length >= 1) {
                               return null;
                             } else if (val.length == 0) {
                               return '활동명을 입력해주세요.';

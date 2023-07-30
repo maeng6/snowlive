@@ -95,7 +95,7 @@ class _FirstPageState extends State<FirstPage> {
                         height: 16,
                       ),
                       Text(
-                        '스노우라이브 시작 전\n간단한 정보를 입력해주세요.',
+                        '스키장의 모든 것\n스노우라이브로 한번에',
                         style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
@@ -107,7 +107,7 @@ class _FirstPageState extends State<FirstPage> {
                     height: 8,
                   ),
                   Text(
-                    '몇 가지 간단한 정보를 입력해 주시면,\n나에게 더 맞는 스노우라이브를 이용하실 수 있습니다.',
+                    '여러분에 대해 알려주세요!\n스노우라이브를 더 재밌게 즐길 수 있습니다.',
                     style: TextStyle(
                         color: Color(0xff949494),
                         fontSize: 13,

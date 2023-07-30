@@ -19,7 +19,6 @@ import '../../controller/vm_liveCrewModelController.dart';
 import '../../controller/vm_noticeController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
-import '../LiveCrew/v_liveCrewHome_firstUser.dart';
 import '../bulletin/v_bulletin_Screen.dart';
 import '../fleaMarket/v_fleaMarket_Screen.dart';
 

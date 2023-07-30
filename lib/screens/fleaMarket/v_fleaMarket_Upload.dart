@@ -397,7 +397,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                           hintStyle:
                           TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
                           hintText: '글 제목을 입력해 주세요. (최대 50자)',
-                          labelText: '글 제목',
+                          labelText: '글 제목(필수)',
                           contentPadding: EdgeInsets.symmetric(vertical: 2),
                           border: InputBorder.none,
                         ),
@@ -435,7 +435,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                             hintStyle:
                             TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
                             hintText: '물품명을 입력해 주세요. (최대 20자)',
-                            labelText: '물품명',
+                            labelText: '물품명(필수)',
                             contentPadding: EdgeInsets.symmetric(vertical: 2),
                             border: InputBorder.none,
                           ),
@@ -471,7 +471,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.only(bottom: 14),
                                   border: InputBorder.none,
-                                  hintText: ' 판매가격',
+                                  hintText: ' 판매가격(필수)',
                                   hintStyle: TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
                                   prefixIcon: Image.asset('assets/imgs/icons/icon_won.png',
                                     color: Color(0xFF949494),
@@ -498,7 +498,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                 children: [
                                   if (isMethodSelected==true)
                                     Text(
-                                      '거래방식',
+                                      '거래방식(필수)',
                                       style:
                                       TextStyle(color: Color(0xff949494), fontSize: 12),
                                     ),
@@ -560,7 +560,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                           ? Text('$SelectedMethod', style: TextStyle(
                                       fontSize: 16, color: Color(0xFF111111)
                                   ),)
-                                          : Text('거래방식', style: TextStyle(
+                                          : Text('거래방식(필수)', style: TextStyle(
                                         fontSize: 16, color: Color(0xFF949494)
                                       ),)),
                                 ],
@@ -578,7 +578,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                           children: [
                             if (isCategorySelected==true)
                               Text(
-                                '카테고리',
+                                '카테고리(필수)',
                                 style:
                                 TextStyle(color: Color(0xff949494), fontSize: 12),
                               ),
@@ -656,7 +656,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                     )
                                     : Padding(
                                       padding: EdgeInsets.only(bottom: 6),
-                                      child: Text('카테고리', style: TextStyle(
+                                      child: Text('카테고리(필수)', style: TextStyle(
                                       fontSize: 16, color: Color(0xFF949494)
                                 ),),
                                     )),
@@ -672,7 +672,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                         children: [
                           if (isLocationSelected==true)
                             Text(
-                              '거래장소',
+                              '거래장소(필수)',
                               style:
                               TextStyle(color: Color(0xff949494), fontSize: 12),
                             ),
@@ -746,7 +746,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                               )
                                   : Padding(
                                 padding: EdgeInsets.only(bottom: 6),
-                                child: Text('거래장소', style: TextStyle(
+                                child: Text('거래장소(필수)', style: TextStyle(
                                     fontSize: 16, color: Color(0xFF949494)
                               ),),
                                   ),),
@@ -788,7 +788,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                   border: InputBorder.none,
                                 ),
                                 validator: (val) {
-                                  if (val!.length <= 1000 && val.length >= 1) {
+                                  if (val!.length <= 1000 && val.length >= 0) {
                                     return null;
                                   } else {
                                     return '최대 입력 가능한 글자 수를 초과했습니다.';
@@ -826,7 +826,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                   hintStyle:
                                   TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
                                   hintText: '게시글 내용을 작성해 주세요. (최대 1,000자)',
-                                  labelText: '상세설명',
+                                  labelText: '상세설명(필수)',
                                   border: InputBorder.none,
                                 ),
                                 validator: (val) {

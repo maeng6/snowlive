@@ -91,7 +91,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                 Column(
                   children: [
                     Text(
-                      '프로필 이미지를\n선택해 주세요.',
+                      '프로필 이미지를\n설정해 주세요.',
                       style: TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
@@ -452,7 +452,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
                         Get.to(() => FavoriteResort(getNickname: widget.nickName,getProfileImageUrl: '',));
                       },
                       child: Text(
-                        '기본 이미지로 설정',
+                        '다음에 설정',
                         style: TextStyle(color: Color(0xff377EEA), fontSize: 16, fontWeight: FontWeight.bold),
 
                       ),

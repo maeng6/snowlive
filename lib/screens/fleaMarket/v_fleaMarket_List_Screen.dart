@@ -28,7 +28,8 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
 //TODO: Dependency Injection**************************************************
 
   var _stream;
-  var _selectedValue = '전체';
+  var _selectedValue = '카테고리';
+  var _selectedValue2 = '거래장소';
   var _allCategories;
 
   var f = NumberFormat('###,###,###,###');
@@ -57,7 +58,8 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
         .collection('fleaMarket')
         .where('category',
             isEqualTo:
-                (_selectedValue == '전체') ? _allCategories : '$_selectedValue')
+                (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
+        .where('location', isEqualTo: (_selectedValue2 == '거래장소') ? _allCategories : '$_selectedValue2')
         .orderBy('timeStamp', descending: true)
         .limit(500)
         .snapshots();
@@ -79,7 +81,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue = '전체';
+                            _selectedValue = '카테고리';
                           });
                           Navigator.pop(context);
                         },
@@ -164,6 +166,188 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
     });
   }
 
+  _showCupertinoPicker2() async {
+    await showCupertinoModalPopup(
+        context: context,
+        builder: (_) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Container(
+                height: 520,
+                padding: EdgeInsets.only(left: 16, right: 16),
+                child: CupertinoActionSheet(
+                  actions: [
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '거래장소';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          '전체',
+                        )),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '곤지암리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('곤지암리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '무주덕유산리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('무주덕유산리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '비발디파크';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('비발디파크')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '알펜시아';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('알펜시아')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '에덴밸리리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('에덴밸리리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '엘리시안강촌';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('엘리시안강촌')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '오크밸리리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('오크밸리리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '오투리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('오투리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '용평리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('용평리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '웰리힐리파크';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('웰리힐리파크')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '지산리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('지산리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '하이원리조트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('하이원리조트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '휘닉스평창';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('휘닉스평창')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue2 = '기타지역';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('기타지역')),
+                  ],
+                  cancelButton: CupertinoActionSheetAction(
+                    child: Text('닫기'),
+                    onPressed: () {
+                      HapticFeedback.mediumImpact();
+                      Navigator.pop(context);
+                    },
+                  ),
+                )
+
+              // CupertinoPicker(
+              //   magnification: 1.1,
+              //   backgroundColor: Colors.white,
+              //   itemExtent: 40,
+              //   children: [
+              //     ..._categories.map((e) => Text(e))
+              //   ],
+              //   onSelectedItemChanged: (i) {
+              //     setState(() {
+              //       _selectedValue = _categories[i];
+              //     });
+              //   },
+              //   scrollController: _scrollWheelController,
+              // ),
+
+            ),
+          );
+        });
+    setState(() {
+      _stream = newStream();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
@@ -221,59 +405,117 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
             padding: const EdgeInsets.only(top: 4, bottom: 6),
             child: Column(
               children: [
-                Padding(
-                  padding: EdgeInsets.only(right: 8),
-                  child: Container(
-                    height: 56,
-                    child: Row(
-                      children: [
-                        Stack(
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: Container(
+                        height: 56,
+                        child: Row(
                           children: [
-                            ElevatedButton(
-                                onPressed: () async {
-                                  await _showCupertinoPicker();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.only(
-                                        right: 30, left: 14, top: 8, bottom: 8),
-                                    side: const BorderSide(
-                                      width: 1,
-                                      color: Color(0xFFF5F5F5),
+                            Stack(
+                              children: [
+                                ElevatedButton(
+                                    onPressed: () async {
+                                      await _showCupertinoPicker();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.only(
+                                            right: 30, left: 14, top: 8, bottom: 8),
+                                        side: const BorderSide(
+                                          width: 1,
+                                          color: Color(0xFFF5F5F5),
+                                        ),
+                                        primary: Color(0xFFF5F5F5),
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8))),
+                                    child: (_selectedValue == null)
+                                        ? Text('카테고리',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF555555)))
+                                        : Text('$_selectedValue',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF555555)))),
+                                Positioned(
+                                  top: 12,
+                                  right: 6,
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      await _showCupertinoPicker();
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_drop_down_sharp,
+                                      size: 24,
+                                      color: Color(0xFF666666),
                                     ),
-                                    primary: Color(0xFFF5F5F5),
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8))),
-                                child: (_selectedValue == null)
-                                    ? Text('전체',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: Container(
+                        height: 56,
+                        child: Row(
+                          children: [
+                            Stack(
+                              children: [
+                                ElevatedButton(
+                                    onPressed: () async {
+                                      await _showCupertinoPicker2();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.only(
+                                            right: 30, left: 14, top: 8, bottom: 8),
+                                        side: const BorderSide(
+                                          width: 1,
+                                          color: Color(0xFFF5F5F5),
+                                        ),
+                                        primary: Color(0xFFF5F5F5),
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8))),
+                                    child: (_selectedValue2 == null)
+                                        ? Text('거래장소',
                                         style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xFF555555)))
-                                    : Text('$_selectedValue',
+                                        : Text('$_selectedValue2',
                                         style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xFF555555)))),
-                            Positioned(
-                              top: 12,
-                              right: 6,
-                              child: GestureDetector(
-                                onTap: () async {
-                                  await _showCupertinoPicker();
-                                },
-                                child: Icon(
-                                  Icons.arrow_drop_down_sharp,
-                                  size: 24,
-                                  color: Color(0xFF666666),
+                                Positioned(
+                                  top: 12,
+                                  right: 6,
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      await _showCupertinoPicker2();
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_drop_down_sharp,
+                                      size: 24,
+                                      color: Color(0xFF666666),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
                 Expanded(
                   child: StreamBuilder<QuerySnapshot>(
