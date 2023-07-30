@@ -32,7 +32,6 @@ class _FavoriteResortState extends State<FavoriteResort> {
   //TODO: Dependency Injection********************************************
 
   final FirebaseAuth auth = FirebaseAuth.instance;
-  List<bool?> _isChecked = List<bool?>.filled(14, false);
   List<bool?> _isSelected = List<bool?>.filled(14, false);
   int? favoriteResort;
   final FirebaseFirestore ref = FirebaseFirestore.instance;
@@ -56,7 +55,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
                 ?Brightness.light
                 :Brightness.dark //ios:dark, android:light
         ));
-    bool? isSelected=_isChecked.contains(true);
+    bool? isSelected= _isSelected.contains(true);
 
     return Stack(
       children: [
@@ -121,7 +120,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
-                              buildCheckboxListTile(index),
+                              buildListTile(index),
                               if (index != 12)
                               Divider(
                                 height: 20,
@@ -154,8 +153,8 @@ class _FavoriteResortState extends State<FavoriteResort> {
             child: Container(
               padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
               child: ElevatedButton(
-                  onPressed: () async {
-                    if(isSelected) {
+                  onPressed: isSelected ? () async {
+
                       CustomFullScreenDialog.showDialog();
                       await _loginController.createUserDoc(0);
                       await userModelController
@@ -173,10 +172,8 @@ class _FavoriteResortState extends State<FavoriteResort> {
                           userModelController.favoriteResort!);
                       CustomFullScreenDialog.cancelDialog();
                       Get.offAll(() => MainHome(uid: userModelController.uid,));
-                    }else{
-                      null;
-                    }
-                  },
+
+                  }: null,
                   child: Text(
                     '가입완료',
                     style: TextStyle(
@@ -189,8 +186,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
                       elevation: 0,
                       splashFactory: InkRipple.splashFactory,
                       minimumSize: Size(1000, 56),
-                      backgroundColor:
-                      (isSelected)
+                      backgroundColor: isSelected
                           ? Color(0xff377EEA)
                           : Color(0xffDEDEDE))
               ),
@@ -201,38 +197,34 @@ class _FavoriteResortState extends State<FavoriteResort> {
     );
   }
 
-  CheckboxListTile buildCheckboxListTile(int index) {
-    return CheckboxListTile(
-      title: Text('${resortNameList[index]}', style: TextStyle(fontSize: 16),),
-      activeColor: Color(0xff377EEA),
+  ListTile buildListTile(int index) {
+    return ListTile(
+      trailing: _isSelected[index]!
+          ? Image.asset(
+        'assets/imgs/icons/icon_check_filled.png', // 체크된 상태의 이미지 어셋 경로
+        width: 24,
+        height: 24,
+      )
+          : Image.asset(
+        'assets/imgs/icons/icon_check_unfilled.png', // 언체크된 상태의 이미지 어셋 경로
+        width: 24,
+        height: 24,
+      ),
+      title: Text(
+        '${resortNameList[index]}',
+        style: TextStyle(fontSize: 16),
+      ),
       selected: _isSelected[index]!,
-      selectedTileColor: Color(0xff377EEA),
-      value: _isChecked[index],
-      contentPadding: EdgeInsets.symmetric(horizontal: 0),
-      onChanged: (bool? value) {
+      onTap: () {
         setState(() {
-          _isChecked = List<bool?>.filled(14, false);
           _isSelected = List<bool?>.filled(14, false);
-          _isChecked[index] = value;
-          _isSelected[index] = value;
-          if (value == false) {
-            favoriteResort = null;
-          } else {
-            favoriteResort = index;
-          }
+          _isSelected[index] = true;
+          favoriteResort = index;
         });
       },
     );
   }
 
-
-  ListTile buildListTile(int index) {
-    return ListTile(
-      title: Text('${resortNameList[index]}', style: TextStyle(fontSize: 16),),
-      selected: _isSelected[index]!,
-
-    );
-  }
 }
 
 
