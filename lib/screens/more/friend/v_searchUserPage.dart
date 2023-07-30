@@ -305,7 +305,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                 fit: BoxFit.cover,
                                               )
                                               : ExtendedImage.asset(
-                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                'assets/imgs/profile/img_profile_default_.png',
                                                 enableMemoryCache: true,
                                                 borderRadius: BorderRadius.circular(8),
                                                 fit: BoxFit.cover,
