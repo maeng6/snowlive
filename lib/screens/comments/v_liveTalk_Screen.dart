@@ -744,55 +744,59 @@ class _LiveTalkScreenState
                                                                   SizedBox(
                                                                     width: 8,
                                                                   ),
-                                                                  Container(
-                                                                    height: 24,
-                                                                    decoration: BoxDecoration(
-                                                                        color: Color(0xFFECECEC),
-                                                                        borderRadius: BorderRadius.circular(4)
-                                                                    ),
-                                                                    child: Padding(
-                                                                      padding: EdgeInsets.only(right: 6),
-                                                                      child: Row(
-                                                                        children: [
-                                                                          Padding(
-                                                                            padding:
-                                                                            const EdgeInsets.only(top: 2),
-                                                                            child:
-                                                                            IconButton(
-                                                                              onPressed:
-                                                                                  () {Get.to(() =>
-                                                                                    ReplyScreen(
-                                                                                      replyUid: chatDocs[index]['uid'],
-                                                                                      replyCount: chatDocs[index]['commentCount'],
-                                                                                      replyImage: chatDocs[index]['profileImageUrl'],
-                                                                                      replyDisplayName: chatDocs[index]['displayName'],
-                                                                                      replyResortNickname: chatDocs[index]['resortNickname'],
-                                                                                      comment: chatDocs[index]['comment'],
-                                                                                      commentTime: chatDocs[index]['timeStamp'],
-                                                                                    ));
-                                                                              },
-                                                                              icon: Icon(
-                                                                                Icons.insert_comment,
-                                                                                size: 14,
-                                                                                color: Color(0xFFC8C8C8),
+                                                                  GestureDetector(
+                                                                    onTap: (){
+                                                                      Get.to(() =>
+                                                                          ReplyScreen(
+                                                                            replyUid: chatDocs[index]['uid'],
+                                                                            replyCount: chatDocs[index]['commentCount'],
+                                                                            replyImage: chatDocs[index]['profileImageUrl'],
+                                                                            replyDisplayName: chatDocs[index]['displayName'],
+                                                                            replyResortNickname: chatDocs[index]['resortNickname'],
+                                                                            comment: chatDocs[index]['comment'],
+                                                                            commentTime: chatDocs[index]['timeStamp'],
+                                                                          ));
+                                                                    },
+                                                                    child: Container(
+                                                                      height: 24,
+                                                                      decoration: BoxDecoration(
+                                                                          color: Color(0xFFECECEC),
+                                                                          borderRadius: BorderRadius.circular(4)
+                                                                      ),
+                                                                      child: Padding(
+                                                                        padding: EdgeInsets.only(right: 6),
+                                                                        child: Row(
+                                                                          children: [
+                                                                            Padding(
+                                                                              padding:
+                                                                              const EdgeInsets.only(top: 2),
+                                                                              child:
+                                                                              IconButton(
+                                                                                onPressed:
+                                                                                    () {},
+                                                                                icon: Icon(
+                                                                                  Icons.insert_comment,
+                                                                                  size: 14,
+                                                                                  color: Color(0xFFC8C8C8),
+                                                                                ),
+                                                                                padding: EdgeInsets.zero,
+                                                                                constraints: BoxConstraints(),
                                                                               ),
-                                                                              padding: EdgeInsets.zero,
-                                                                              constraints: BoxConstraints(),
                                                                             ),
-                                                                          ),
-                                                                          Padding(
-                                                                            padding: EdgeInsets.only(bottom: 1),
-                                                                            child: Text(
-                                                                              '${chatDocs[index]['replyCount']}',
-                                                                              style: TextStyle(
-                                                                                  color: (chatDocs[index]['replyCount'] > 0)
-                                                                                      ? Color(0xFF666666)
-                                                                                      : Color(0xFF666666),
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  fontSize: 11),
-                                                                            ),
-                                                                          )
-                                                                        ],
+                                                                            Padding(
+                                                                              padding: EdgeInsets.only(bottom: 1),
+                                                                              child: Text(
+                                                                                '${chatDocs[index]['replyCount']}',
+                                                                                style: TextStyle(
+                                                                                    color: (chatDocs[index]['replyCount'] > 0)
+                                                                                        ? Color(0xFF666666)
+                                                                                        : Color(0xFF666666),
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    fontSize: 11),
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                        ),
                                                                       ),
                                                                     ),
                                                                   ),

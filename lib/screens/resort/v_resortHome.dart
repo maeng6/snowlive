@@ -442,7 +442,7 @@ class _ResortHomeState extends State<ResortHome>
                                                   SizedBox(
                                                     height: 4,
                                                   ),
-                                                  Text("위치정보는 랭킹전 점수 산정시에만 이용됩니다.",
+                                                  Text("위치정보는 랭킹전 점수 산정 시에만 이용됩니다.",
                                                     style: TextStyle(
                                                         fontSize: 13,
                                                         fontWeight: FontWeight.normal,

@@ -120,8 +120,10 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                         print(foundCrewID);
                                         foundCrewModel = await _liveCrewModelController.getFoundCrew(foundCrewID!);
                                         isFound = true;
+                                        CustomFullScreenDialog.cancelDialog();
                                       }
                                       else{
+                                        CustomFullScreenDialog.cancelDialog();
                                         isFound = false;
                                         Get.dialog(AlertDialog(
                                           contentPadding: EdgeInsets.only(
@@ -169,7 +171,6 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                     setState(() {
                                       isLoading = false;
                                     });
-                                    CustomFullScreenDialog.cancelDialog();
                                   },
                                   autofocus: true,
                                   textAlignVertical: TextAlignVertical.center,
@@ -240,8 +241,10 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                   print(foundCrewID);
                                   foundCrewModel = await _liveCrewModelController.getFoundCrew(foundCrewID!);
                                   isFound = true;
+                                  CustomFullScreenDialog.cancelDialog();
                                 }
                                   else{
+                                    CustomFullScreenDialog.cancelDialog();
                                     isFound = false;
                                     Get.dialog(AlertDialog(
                                       contentPadding: EdgeInsets.only(
@@ -289,7 +292,6 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                   setState(() {
                                     isLoading = false;
                                   });
-                                CustomFullScreenDialog.cancelDialog();
                                   },
                               child: Padding(
                                   padding: const EdgeInsets.only(right: 20),

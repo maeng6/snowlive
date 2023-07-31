@@ -79,6 +79,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
         .collection('user')
         .doc('${widget.uid}')
         .collection('friendsComment')
+        .orderBy('timeStamp', descending: true)
         .snapshots();
   }
 
