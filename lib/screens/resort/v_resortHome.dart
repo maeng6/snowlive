@@ -442,7 +442,7 @@ class _ResortHomeState extends State<ResortHome>
                                                   SizedBox(
                                                     height: 4,
                                                   ),
-                                                  Text("위치정보는 랭킹전 점수 산정시에만 이용됩니다.",
+                                                  Text("위치정보는 랭킹전 점수 산정 시에만 이용됩니다.",
                                                     style: TextStyle(
                                                         fontSize: 13,
                                                         fontWeight: FontWeight.normal,
@@ -608,7 +608,7 @@ class _ResortHomeState extends State<ResortHome>
                                       isSnackbarShown = true;
                                      Get.snackbar(
                                         '라이브 불가 지역입니다',
-                                        '자주가는 리조트에서만 라이브가 활성화됩니다.',
+                                        '자주가는 스키장에서만 라이브가 활성화됩니다.',
                                         margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
                                         snackPosition: SnackPosition.BOTTOM,
                                         backgroundColor: Colors.black87,
@@ -1909,7 +1909,7 @@ class _ResortHomeState extends State<ResortHome>
                                   isSnackbarShown = true;
                                   Get.snackbar(
                                     '라이브 불가 지역입니다',
-                                    '자주가는 리조트에서만 라이브가 활성화됩니다.',
+                                    '자주가는 스키장에서만 라이브가 활성화됩니다.',
                                     margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
                                     snackPosition: SnackPosition.BOTTOM,
                                     backgroundColor: Colors.black87,

@@ -112,6 +112,11 @@ class _SetModifyDescription_crewDetailState extends State<SetModifyDescription_c
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextFormField(
+                              onTap: (){
+                                _crewDescribTextEditingController.selection =
+                                    TextSelection.fromPosition(
+                                        TextPosition(offset: _crewDescribTextEditingController.text.length));
+                              },
                               maxLines: 22,
                               textAlignVertical: TextAlignVertical.top,
                               cursorColor: Color(0xff377EEA),

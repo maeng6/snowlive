@@ -26,7 +26,7 @@ class _SetCrewImageState extends State<SetCrewImage> {
   bool crewImage = false;
   XFile? _imageFile;
   XFile? _croppedFile;
-  Color? currentColor = Color(0xff3D83ED);
+  Color? currentColor = crewColorList[6];
   Color? currentColor_background = Color(0xffF1F1F3);
   void changeColor(Color color) => setState(() => currentColor = color);
 

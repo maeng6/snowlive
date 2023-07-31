@@ -764,7 +764,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                                         height: 32,
                                                       ),
                                                 SizedBox(height: 12,),
-                                              Text('데이터가 없습니다',
+                                              Text('데이터가 없습니다.',
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     color: Colors.white,

@@ -170,7 +170,8 @@ class LoginController extends GetxController {
           )
         ],
       ));
-    } else {
+    }
+    else {
       try {
         await deleteFleaItemAll(myUid: uid, fleaCount: fleaCount);
         await FlutterSecureStorage().delete(key: 'uid');
@@ -178,12 +179,20 @@ class LoginController extends GetxController {
             'user');
         await users.doc(uid).delete();
 
-        DocumentReference rankingDocRef = FirebaseFirestore.instance
-            .collection('Ranking')
-            .doc('${_seasonController.currentSeason}')
-            .collection('${_userModelController.favoriteResort}')
-            .doc("${_userModelController.uid}");
-        await rankingDocRef.delete();
+        for (int i = 0; i <= 12; i++) {
+          try {
+            DocumentReference rankingDocRef = FirebaseFirestore.instance
+                .collection('Ranking')
+                .doc('${_seasonController.currentSeason}')
+                .collection('$i')
+                .doc("${_userModelController.uid}");
+            await rankingDocRef.delete();
+          } catch (e) {
+            // 에러가 발생한 경우, 해당 값을 출력하고 다음 번호로 넘어감
+            print('Error occurred for value $i: $e');
+            continue;
+          }
+        }
 
         await ref.collection('liveCrew').doc(crewID).update({
           'memberUidList': FieldValue.arrayRemove([uid])
