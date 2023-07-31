@@ -32,7 +32,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
 
   var _stream;
   var _selectedValue = '카테고리';
-  var _selectedValue2 = '리조트';
+  var _selectedValue2 = '스키장';
   var _allCategories;
 
   var f = NumberFormat('###,###,###,###');
@@ -61,7 +61,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
         .where('category',
             isEqualTo:
                 (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
-        .where('location', isEqualTo: (_selectedValue2 == '리조트') ? _allCategories : '$_selectedValue2')
+        .where('location', isEqualTo: (_selectedValue2 == '스키장') ? _allCategories : '$_selectedValue2')
         .orderBy('timeStamp', descending: true)
         .limit(500)
         .snapshots();
@@ -150,7 +150,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '리조트';
+                            _selectedValue2 = '스키장';
                           });
                           Navigator.pop(context);
                         },

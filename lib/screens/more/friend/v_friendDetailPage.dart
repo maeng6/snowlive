@@ -375,9 +375,10 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                               context: context,
                                                               isScrollControlled: true,
                                                               builder: (BuildContext context) {
+                                                                final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
                                                                 return SafeArea(
                                                                   child: Container(
-                                                                    height: 240,
+                                                                    height: 240 + keyboardHeight,
                                                                     child: Padding(
                                                                       padding: EdgeInsets.only(
                                                                           left: 20, right: 20),
@@ -583,9 +584,10 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                               context: context,
                                                               isScrollControlled: true,
                                                               builder: (BuildContext context) {
+                                                                final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
                                                                 return SafeArea(
                                                                   child: Container(
-                                                                    height: 240,
+                                                                    height: 240 + keyboardHeight, // 키보드 높이만큼 추가 높이 적용
                                                                     child: Padding(
                                                                       padding: EdgeInsets.only(
                                                                           left: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom,),

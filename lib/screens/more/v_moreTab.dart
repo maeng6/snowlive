@@ -674,7 +674,7 @@ class _MoreTabState extends State<MoreTab> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  '리조트',
+                  '스키장',
                   style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -708,7 +708,7 @@ class _MoreTabState extends State<MoreTab> {
                   Get.to(() => ResortTab());
                 },
                 title: Text(
-                  '리조트 모아보기',
+                  '스키장 모아보기',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,

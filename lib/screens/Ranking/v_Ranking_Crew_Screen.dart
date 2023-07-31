@@ -98,7 +98,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ExtendedImage.asset(
-                          'assets/imgs/icons/icon_rankin_indi_nodata.png',
+                          'assets/imgs/icons/icon_rankin_crew_nodata.png',
                           enableMemoryCache: true,
                           shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.circular(7),

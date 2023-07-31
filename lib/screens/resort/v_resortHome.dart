@@ -608,7 +608,7 @@ class _ResortHomeState extends State<ResortHome>
                                       isSnackbarShown = true;
                                      Get.snackbar(
                                         '라이브 불가 지역입니다',
-                                        '자주가는 리조트에서만 라이브가 활성화됩니다.',
+                                        '자주가는 스키장에서만 라이브가 활성화됩니다.',
                                         margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
                                         snackPosition: SnackPosition.BOTTOM,
                                         backgroundColor: Colors.black87,
@@ -1909,7 +1909,7 @@ class _ResortHomeState extends State<ResortHome>
                                   isSnackbarShown = true;
                                   Get.snackbar(
                                     '라이브 불가 지역입니다',
-                                    '자주가는 리조트에서만 라이브가 활성화됩니다.',
+                                    '자주가는 스키장에서만 라이브가 활성화됩니다.',
                                     margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
                                     snackPosition: SnackPosition.BOTTOM,
                                     backgroundColor: Colors.black87,
