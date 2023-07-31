@@ -6,6 +6,7 @@ import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import '../../controller/vm_liveMapController.dart';
+import '../../model/m_crewLogoModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
 import '../LiveCrew/v_crewDetailPage_screen.dart';
 
@@ -24,6 +25,8 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   //TODO: Dependency Injection**************************************************
+
+  var assetBases;
 
   ScrollController _scrollController = ScrollController();
 
@@ -200,6 +203,13 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                   ? myItemKey
                                   : GlobalKey();
 
+                              for (var crewLogo in crewLogoList) {
+                                if (crewLogo.crewColor == crewDocs[index]['crewColor']) {
+                                  assetBases = crewLogo.crewLogoAsset;
+                                  break;
+                                }
+                              }
+
                               return Padding(
                                 key: itemKey,
                                 padding: const EdgeInsets.only(top: 6, bottom: 10),
@@ -253,7 +263,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(2.0),
                                             child: ExtendedImage.asset(
-                                              'assets/imgs/profile/img_profile_default_.png',
+                                              assetBases,
                                               enableMemoryCache: true,
                                               shape: BoxShape.rectangle,
                                               borderRadius: BorderRadius.circular(6),
