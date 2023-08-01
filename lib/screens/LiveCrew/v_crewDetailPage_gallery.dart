@@ -55,15 +55,27 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
 
             if(galleryDoc.length == 0){
               return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('이미지가 없습니다',
-                    style: TextStyle(
-                      color: Color(0xFF949494)
-                    ),
-                    ),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 50),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/imgs/icons/icon_nodata.png',
+                        scale: 4,
+                        width: 73,
+                        height: 73,
+                      ),
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Text('이미지가 없습니다',
+                      style: TextStyle(
+                        color: Color(0xFF949494)
+                      ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             }

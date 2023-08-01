@@ -938,6 +938,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
 
                         ),
                       ),
+                    if(memberUidList.contains(_userModelController.uid))
                     SizedBox(height: 12,),
                     Padding(
                       padding: const EdgeInsets.only(left: 16, right: 16),
