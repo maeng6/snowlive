@@ -86,7 +86,6 @@ class _RankingHomeState extends State<RankingHome> {
                                   fontSize: 20),
                             ),
                             onPressed: () async{
-                              HapticFeedback.lightImpact();
                               print('크루랭킹페이지로 전환');
                               setState(() {
                                 isTap[0] = true;
@@ -130,7 +129,6 @@ class _RankingHomeState extends State<RankingHome> {
                                   fontSize: 20),
                             ),
                             onPressed: () {
-                              HapticFeedback.lightImpact();
                               print('개인랭킹페이지로 전환');
                               setState(() {
                                 isTap[0] = false;

@@ -406,33 +406,12 @@ class _ResortHomeState extends State<ResortHome>
                                               contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
                                               elevation: 0,
                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                              // title: Row(
-                                              //   mainAxisAlignment: MainAxisAlignment.start,
-                                              //   children: [
-                                              //     Text("내 위치 공유 하기", style: TextStyle(
-                                              //       fontSize: 18,
-                                              //       fontWeight: FontWeight.bold,
-                                              //
-                                              //     ),),
-                                              //     IconButton(
-                                              //       icon: Icon(Icons.cancel_outlined),
-                                              //       onPressed: () async{
-                                              //         _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                              //         await _liveMapController.stopForegroundLocationService();
-                                              //         await _liveMapController.stopBackgroundLocationService();
-                                              //         Get.back();
-                                              //         CustomFullScreenDialog.cancelDialog();
-                                              //         print('라이브 OFF');
-                                              //       },
-                                              //     ),
-                                              //   ],
-                                              // ),
                                               content: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  Text("스노우라이브 랭킹전에 참여해 보세요!",
+                                                  Text("스노우라이브 랭킹전에 참여해 보세요",
                                                     style: TextStyle(
                                                         fontSize: 16,
                                                         fontWeight: FontWeight.bold,
@@ -440,45 +419,42 @@ class _ResortHomeState extends State<ResortHome>
                                                     ),
                                                   ),
                                                   SizedBox(
-                                                    height: 4,
+                                                    height: 8,
                                                   ),
-                                                  Text("위치정보는 랭킹전 점수 산정 시에만 이용됩니다.",
+                                                  Text("위치정보는 랭킹전 점수에만 이용됩니다",
                                                     style: TextStyle(
-                                                        fontSize: 13,
+                                                        fontSize: 14,
                                                         fontWeight: FontWeight.normal,
                                                         color: Color(0xFF949494)
                                                     ),
                                                   ),
-                                                  SizedBox(height: 30,),
+                                                  SizedBox(height: 24),
                                                   Obx(() => GestureDetector(
                                                     onTap: () {
                                                       _dialogController.isChecked.value = !_dialogController.isChecked.value;
                                                     },
-                                                    child: Transform.translate(
-                                                      offset: Offset(-16, 0),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Image.asset(
-                                                              _dialogController.isChecked.value
-                                                                  ? 'assets/imgs/icons/icon_check_filled.png'
-                                                                  : 'assets/imgs/icons/icon_check_unfilled.png',
-                                                              width: 20,
-                                                              height: 20,
-                                                            ),
-                                                          SizedBox(width: 10,),
-                                                          Text(
-                                                            '개인위치정보 사용 및 이용약관 동의',
-                                                            style: TextStyle(
-                                                              fontSize: 13,
-                                                            ),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Image.asset(
+                                                            _dialogController.isChecked.value
+                                                                ? 'assets/imgs/icons/icon_check_filled.png'
+                                                                : 'assets/imgs/icons/icon_check_unfilled.png',
+                                                            width: 24,
+                                                            height: 24,
                                                           ),
-                                                        ],
-                                                      ),
+                                                        SizedBox(width: 8),
+                                                        Text(
+                                                          '위치정보 사용 및 이용약관 동의',
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   )),
 
-                                                  SizedBox(height: 10,),
+                                                  SizedBox(height: 24),
                                                   GestureDetector(
                                                     onTap: (){
                                                       Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
@@ -487,14 +463,14 @@ class _ResortHomeState extends State<ResortHome>
                                                       child: Text('약관보기',
                                                         style: TextStyle(
                                                             decoration: TextDecoration.underline,
-                                                            fontSize: 12,
+                                                            fontSize: 14,
                                                             color: Color(0xFF949494)
                                                         ),
                                                       ),
                                                     ),
                                                   ),
                                                   SizedBox(
-                                                    height: 30,
+                                                    height: 28,
                                                   ),
                                                 ],
                                               ),
@@ -557,38 +533,6 @@ class _ResortHomeState extends State<ResortHome>
                                                           ),
                                                         ),
                                                       ),),
-
-
-
-                                                      // ButtonBar(
-                                                      //   buttonHeight: 48,
-                                                      //   alignment: MainAxisAlignment.center,
-                                                      //   children: [
-                                                      //     Obx(
-                                                      //           () => TextButton(
-                                                      //         style: TextButton.styleFrom(
-                                                      //           backgroundColor: _dialogController.isChecked.value ? Colors.blue : Colors.grey,
-                                                      //           foregroundColor: Colors.white,
-                                                      //           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                                                      //           shape: RoundedRectangleBorder(
-                                                      //             borderRadius: BorderRadius.circular(10),
-                                                      //           ),
-                                                      //         ),
-                                                      //         child: Text("위치 공유 시작하기"),
-                                                      //         onPressed: _dialogController.isChecked.value
-                                                      //             ? () async {
-                                                      //           Get.back();
-                                                      //           await _userModelController.updateIsOnLiveOn();
-                                                      //           await _liveMapController.startForegroundLocationService();
-                                                      //           await _userModelController.getCurrentUser(_userModelController.uid);
-                                                      //           CustomFullScreenDialog.cancelDialog();
-                                                      //           print('라이브 ON');
-                                                      //         }
-                                                      //             : null,
-                                                      //       ),
-                                                      //     ),
-                                                      //   ],
-                                                      // ),
                                                     ],
                                                   ),
                                                 ),
@@ -1724,33 +1668,12 @@ class _ResortHomeState extends State<ResortHome>
                                           contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
                                           elevation: 0,
                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                          // title: Row(
-                                          //   mainAxisAlignment: MainAxisAlignment.start,
-                                          //   children: [
-                                          //     Text("내 위치 공유 하기", style: TextStyle(
-                                          //       fontSize: 18,
-                                          //       fontWeight: FontWeight.bold,
-                                          //
-                                          //     ),),
-                                          //     IconButton(
-                                          //       icon: Icon(Icons.cancel_outlined),
-                                          //       onPressed: () async{
-                                          //         _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                          //         await _liveMapController.stopForegroundLocationService();
-                                          //         await _liveMapController.stopBackgroundLocationService();
-                                          //         Get.back();
-                                          //         CustomFullScreenDialog.cancelDialog();
-                                          //         print('라이브 OFF');
-                                          //       },
-                                          //     ),
-                                          //   ],
-                                          // ),
                                           content: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Text("스노우라이브 랭킹전에 참여해 보세요!",
+                                              Text("스노우라이브 랭킹전에 참여해 보세요",
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.bold,
@@ -1758,50 +1681,58 @@ class _ResortHomeState extends State<ResortHome>
                                                 ),
                                               ),
                                               SizedBox(
-                                                height: 4,
+                                                height: 8,
                                               ),
-                                              Text("위치정보는 랭킹전 점수 산정시에만 이용됩니다.",
+                                              Text("위치정보는 랭킹전 점수에만 이용됩니다",
                                                 style: TextStyle(
-                                                    fontSize: 13,
+                                                    fontSize: 14,
                                                     fontWeight: FontWeight.normal,
                                                     color: Color(0xFF949494)
                                                 ),
                                               ),
-                                              SizedBox(height: 10,),
-                                              Obx(() => Transform.translate(
-                                                offset: Offset(-14, 0),
+                                              SizedBox(height: 24),
+                                              Obx(() => GestureDetector(
+                                                onTap: () {
+                                                  _dialogController.isChecked.value = !_dialogController.isChecked.value;
+                                                },
                                                 child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                   children: [
-                                                    Checkbox(
-                                                      value: _dialogController.isChecked.value,
-                                                      onChanged: (newValue) {
-                                                        _dialogController.isChecked.value = newValue!;
-                                                      },
+                                                    Image.asset(
+                                                      _dialogController.isChecked.value
+                                                          ? 'assets/imgs/icons/icon_check_filled.png'
+                                                          : 'assets/imgs/icons/icon_check_unfilled.png',
+                                                      width: 24,
+                                                      height: 24,
                                                     ),
-                                                    Text('개인위치정보 사용 및 이용약관 동의',
+                                                    SizedBox(width: 8),
+                                                    Text(
+                                                      '위치정보 사용 및 이용약관 동의',
                                                       style: TextStyle(
                                                         fontSize: 14,
                                                       ),
                                                     ),
                                                   ],
                                                 ),
-                                              ),
-                                              ),
-                                              Center(
-                                                child: TextButton(
-                                                    onPressed: (){
-                                                      Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
-                                                    },
-                                                    child: Text('약관보기>',
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Color(0xFF949494)
-                                                      ),
-                                                    )),
+                                              )),
+
+                                              SizedBox(height: 24),
+                                              GestureDetector(
+                                                onTap: (){
+                                                  Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
+                                                },
+                                                child: Center(
+                                                  child: Text('약관보기',
+                                                    style: TextStyle(
+                                                        decoration: TextDecoration.underline,
+                                                        fontSize: 14,
+                                                        color: Color(0xFF949494)
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
                                               SizedBox(
-                                                height: 6,
+                                                height: 28,
                                               ),
                                             ],
                                           ),
@@ -1810,26 +1741,28 @@ class _ResortHomeState extends State<ResortHome>
                                               padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
                                               child: Row(
                                                 children: [
-                                                  ElevatedButton(onPressed: () async {
-                                                    _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                                    await _liveMapController.stopForegroundLocationService();
-                                                    await _liveMapController.stopBackgroundLocationService();
-                                                    Get.back();
-                                                    CustomFullScreenDialog.cancelDialog();
-                                                    print('라이브 OFF');
-                                                  },
-                                                    child: Text(
-                                                      '취소',
-                                                      style: TextStyle(
-                                                          color: Color(0xff3D83ED),
-                                                          fontSize: 15,
-                                                          fontWeight: FontWeight.bold),
-                                                    ),
-                                                    style: TextButton.styleFrom(
-                                                      splashFactory: InkRipple.splashFactory,
-                                                      elevation: 0,
-                                                      minimumSize: Size(100, 48),
-                                                      backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                  Expanded(
+                                                    child: ElevatedButton(onPressed: () async {
+                                                      _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                                      await _liveMapController.stopForegroundLocationService();
+                                                      await _liveMapController.stopBackgroundLocationService();
+                                                      Get.back();
+                                                      CustomFullScreenDialog.cancelDialog();
+                                                      print('라이브 OFF');
+                                                    },
+                                                      child: Text(
+                                                        '취소',
+                                                        style: TextStyle(
+                                                            color: Color(0xff3D83ED),
+                                                            fontSize: 15,
+                                                            fontWeight: FontWeight.bold),
+                                                      ),
+                                                      style: TextButton.styleFrom(
+                                                        splashFactory: InkRipple.splashFactory,
+                                                        elevation: 0,
+                                                        minimumSize: Size(100, 48),
+                                                        backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                      ),
                                                     ),
                                                   ),
                                                   SizedBox(width: 8,),
@@ -1853,45 +1786,15 @@ class _ResortHomeState extends State<ResortHome>
                                                             fontWeight: FontWeight.bold),
                                                       ),
                                                       style: TextButton.styleFrom(
-                                                        splashFactory: InkRipple.splashFactory,
-                                                        elevation: 0,
-                                                        minimumSize: Size(100, 48),
-                                                        backgroundColor: Color(0xFF3D83ED),
+                                                          splashFactory: InkRipple.splashFactory,
+                                                          elevation: 0,
+                                                          minimumSize: Size(100, 48),
+                                                          backgroundColor: _dialogController.isChecked.value
+                                                              ? Color(0xFF3D83ED)
+                                                              : Color(0xFFDEDEDE)
                                                       ),
                                                     ),
                                                   ),),
-
-
-
-                                                  // ButtonBar(
-                                                  //   buttonHeight: 48,
-                                                  //   alignment: MainAxisAlignment.center,
-                                                  //   children: [
-                                                  //     Obx(
-                                                  //           () => TextButton(
-                                                  //         style: TextButton.styleFrom(
-                                                  //           backgroundColor: _dialogController.isChecked.value ? Colors.blue : Colors.grey,
-                                                  //           foregroundColor: Colors.white,
-                                                  //           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                                                  //           shape: RoundedRectangleBorder(
-                                                  //             borderRadius: BorderRadius.circular(10),
-                                                  //           ),
-                                                  //         ),
-                                                  //         child: Text("위치 공유 시작하기"),
-                                                  //         onPressed: _dialogController.isChecked.value
-                                                  //             ? () async {
-                                                  //           Get.back();
-                                                  //           await _userModelController.updateIsOnLiveOn();
-                                                  //           await _liveMapController.startForegroundLocationService();
-                                                  //           await _userModelController.getCurrentUser(_userModelController.uid);
-                                                  //           CustomFullScreenDialog.cancelDialog();
-                                                  //           print('라이브 ON');
-                                                  //         }
-                                                  //             : null,
-                                                  //       ),
-                                                  //     ),
-                                                  //   ],
-                                                  // ),
                                                 ],
                                               ),
                                             ),

@@ -1591,7 +1591,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                         thickness: 8,
                                         height: 30,
                                         color: Color(0xFFEEEEEE),),
-                                      SizedBox(height: 30,),
+                                      SizedBox(height: 24),
                                       Padding(
                                           padding: EdgeInsets.only(left: 20, right: 20, bottom: 6),
                                           child: Text('친구톡',
@@ -2245,137 +2245,156 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                   && _userModelController.commentCheck! == false) {
                                                 Get.dialog(
                                                     AlertDialog(
-                                                      title: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          Text("친구톡 새로 등록하기"),
-                                                          IconButton(
-                                                            icon: Icon(Icons.cancel_outlined),
-                                                            onPressed: () {_dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                                            Navigator.pop(context);
-                                                            },
-                                                          ),
-                                                        ],
-                                                      ),
+                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                      elevation: 0,
+                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                                                       content: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisAlignment: MainAxisAlignment.start,
                                                         mainAxisSize: MainAxisSize.min,
                                                         children: [
-                                                          Text("기존 친구톡은 삭제됩니다.",
+                                                          Text("친구톡을 새로 등록하면 이전에 등록된 친구톡은 삭제됩니다. 계속하시겠습니까?",
+                                                            softWrap: true,
+                                                            overflow: TextOverflow.visible,
                                                             style: TextStyle(
-                                                                fontSize: 13
+                                                                fontSize: 16,
+                                                                fontWeight: FontWeight.bold,
+                                                                color: Color(0xFF111111),
+                                                              height: 1.4
                                                             ),
                                                           ),
-                                                          Text("계속하시겠습니까?",
-                                                            style: TextStyle(
-                                                                fontSize: 13
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.only(
-                                                                top: 10, bottom: 10),
-                                                            child: Divider(
-                                                              height: 1,
-                                                              color: Color(0xFFFDEDEDE),
-                                                            ),
+                                                          SizedBox(
+                                                            height: 24,
                                                           ),
                                                           Obx(() =>
-                                                              Row(
-                                                                children: [
-                                                                  Checkbox(
-                                                                    value: _dialogController.isChecked.value,
-                                                                    onChanged: (newValue) {
-                                                                      _dialogController.isChecked.value = newValue!;
-                                                                    },
-                                                                  ),
-                                                                  Text('다시 보지 않기.',
-                                                                    style: TextStyle(
-                                                                      fontSize: 12,
+                                                              GestureDetector(
+                                                                onTap: (){
+                                                                  _dialogController.isChecked.value = !_dialogController.isChecked.value;
+                                                                },
+                                                                child: Row(
+                                                                  children: [
+                                                                    Image.asset(
+                                                                      _dialogController.isChecked.value
+                                                                          ? 'assets/imgs/icons/icon_check_filled.png'
+                                                                          : 'assets/imgs/icons/icon_check_unfilled.png',
+                                                                      width: 24,
+                                                                      height: 24,
                                                                     ),
-                                                                  ),
-                                                                ],
+                                                                    // Checkbox(
+                                                                    //   value: _dialogController.isChecked.value,
+                                                                    //   onChanged: (newValue) {
+                                                                    //     _dialogController.isChecked.value = newValue!;
+                                                                    //   },
+                                                                    // ),
+                                                                    SizedBox(width: 8),
+                                                                    Text('다시 보지 않기',
+                                                                      style: TextStyle(
+                                                                        fontSize: 14,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 24,
                                                           ),
                                                         ],
                                                       ),
                                                       actions: [
-                                                        ButtonBar(
-                                                          alignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Obx(() => TextButton(
-                                                              style: TextButton.styleFrom(
-                                                                backgroundColor: Colors.blue,
-                                                                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                                                                shape: RoundedRectangleBorder(
-                                                                  borderRadius: BorderRadius.circular(10),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
+                                                          child: Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child: ElevatedButton(
+                                                                  onPressed: () async {
+                                                                  _dialogController.isChecked.value = false;
+                                                                    Navigator.pop(context);
+                                                                },
+                                                                  child: Text(
+                                                                    '취소',
+                                                                    style: TextStyle(
+                                                                        color: Color(0xff3D83ED),
+                                                                        fontSize: 15,
+                                                                        fontWeight: FontWeight.bold),
+                                                                  ),
+                                                                  style: TextButton.styleFrom(
+                                                                    splashFactory: InkRipple.splashFactory,
+                                                                    elevation: 0,
+                                                                    minimumSize: Size(100, 48),
+                                                                    backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                                  ),
                                                                 ),
                                                               ),
-                                                              child: Text("친구톡 등록",
-                                                                style: TextStyle(
-                                                                    color: Colors.white
+                                                              SizedBox(width: 8,),
+                                                              Obx(() => Expanded(
+                                                                child: ElevatedButton(
+                                                                  style: TextButton.styleFrom(
+                                                                    splashFactory: InkRipple.splashFactory,
+                                                                    elevation: 0,
+                                                                    minimumSize: Size(100, 48),
+                                                                    backgroundColor: Color(0xFF3D83ED),
+                                                                  ),
+                                                                  child: Text("친구톡 등록",
+                                                                    style: TextStyle(
+                                                                        color: Color(0xffffffff),
+                                                                        fontSize: 15,
+                                                                        fontWeight: FontWeight.bold),
+                                                                  ),
+                                                                  onPressed: _dialogController.isChecked.value
+                                                                      ? () async {
+                                                                    CustomFullScreenDialog.showDialog();
+                                                                    await _userModelController.updateCommentCheck();
+                                                                    await _friendsCommentModelController.sendMessage(
+                                                                      displayName: _userModelController.displayName,
+                                                                      profileImageUrl: _userModelController.profileImageUrl,
+                                                                      comment: _newComment,
+                                                                      commentCount: _userModelController.commentCount,
+                                                                      resortNickname: _userModelController.resortNickname,
+                                                                      myUid: _userModelController.uid,
+                                                                      friendsUid: widget.uid,
+                                                                    );
+                                                                    await _userModelController.getCurrentUser(
+                                                                        _userModelController.uid);
+                                                                    _friendTalkController.clear();
+                                                                    Navigator.pop(context);
+                                                                    FocusScope.of(context).unfocus();
+                                                                    CustomFullScreenDialog.cancelDialog();
+                                                                  }
+                                                                      : () async {
+                                                                    CustomFullScreenDialog
+                                                                        .showDialog();
+                                                                    await _friendsCommentModelController
+                                                                        .sendMessage(
+                                                                      displayName: _userModelController
+                                                                          .displayName,
+                                                                      profileImageUrl: _userModelController
+                                                                          .profileImageUrl,
+                                                                      comment: _newComment,
+                                                                      commentCount: _userModelController
+                                                                          .commentCount,
+                                                                      resortNickname: _userModelController
+                                                                          .resortNickname,
+                                                                      myUid: _userModelController
+                                                                          .uid,
+                                                                      friendsUid: widget
+                                                                          .uid,
+                                                                    );
+                                                                    _friendTalkController
+                                                                        .clear();
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                    FocusScope.of(context)
+                                                                        .unfocus();
+                                                                    CustomFullScreenDialog
+                                                                        .cancelDialog();
+                                                                  },
                                                                 ),
                                                               ),
-                                                              onPressed: _dialogController
-                                                                  .isChecked.value
-                                                                  ? () async {
-                                                                CustomFullScreenDialog
-                                                                    .showDialog();
-                                                                await _userModelController.updateCommentCheck();
-                                                                await _friendsCommentModelController.sendMessage(
-                                                                  displayName: _userModelController.displayName,
-                                                                  profileImageUrl: _userModelController.profileImageUrl,
-                                                                  comment: _newComment,
-                                                                  commentCount: _userModelController.commentCount,
-                                                                  resortNickname: _userModelController
-                                                                      .resortNickname,
-                                                                  myUid: _userModelController
-                                                                      .uid,
-                                                                  friendsUid: widget
-                                                                      .uid,
-                                                                );
-                                                                await _userModelController
-                                                                    .getCurrentUser(
-                                                                    _userModelController
-                                                                        .uid);
-                                                                _friendTalkController
-                                                                    .clear();
-                                                                Navigator.pop(
-                                                                    context);
-                                                                FocusScope.of(context)
-                                                                    .unfocus();
-                                                                CustomFullScreenDialog
-                                                                    .cancelDialog();
-                                                              }
-                                                                  : () async {
-                                                                CustomFullScreenDialog
-                                                                    .showDialog();
-                                                                await _friendsCommentModelController
-                                                                    .sendMessage(
-                                                                  displayName: _userModelController
-                                                                      .displayName,
-                                                                  profileImageUrl: _userModelController
-                                                                      .profileImageUrl,
-                                                                  comment: _newComment,
-                                                                  commentCount: _userModelController
-                                                                      .commentCount,
-                                                                  resortNickname: _userModelController
-                                                                      .resortNickname,
-                                                                  myUid: _userModelController
-                                                                      .uid,
-                                                                  friendsUid: widget
-                                                                      .uid,
-                                                                );
-                                                                _friendTalkController
-                                                                    .clear();
-                                                                Navigator.pop(
-                                                                    context);
-                                                                FocusScope.of(context)
-                                                                    .unfocus();
-                                                                CustomFullScreenDialog
-                                                                    .cancelDialog();
-                                                              },
-                                                            ),
-                                                            ),
-                                                          ],
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ],
                                                     )
