@@ -70,7 +70,23 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
             ) {
           if (!snapshot.hasData || snapshot.data == null) {
             return Center(
-              child: Text('가입한 크루가 없습니다'),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/imgs/icons/icon_nodata.png',
+                    scale: 4,
+                    width: 73,
+                    height: 73,
+                  ),
+                  SizedBox(height: 6,),
+                  Text('해당 스키장에 개설된 크루가 없습니다.',
+                    style: TextStyle(
+                        color: Color(0xFF949494)
+                    ),
+                  ),
+                ],
+              ),
             );
           } else if (snapshot.data!.docs.isNotEmpty) {
             final crewDocs = snapshot.data!.docs;
@@ -188,7 +204,23 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
             );
           }
           return Center(
-            child: Text('가입한 크루가 없습니다'),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/imgs/icons/icon_nodata.png',
+                  scale: 4,
+                  width: 73,
+                  height: 73,
+                ),
+                SizedBox(height: 6,),
+                Text('해당 스키장에 개설된 크루가 없습니다.',
+                style: TextStyle(
+                  color: Color(0xFF949494)
+                ),
+                ),
+              ],
+            ),
           );
         },
       ),

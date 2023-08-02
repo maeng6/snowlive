@@ -108,6 +108,31 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
               bottom: true,
               child: Scaffold(
                 backgroundColor: Colors.white,
+                appBar: AppBar(
+                  backgroundColor: Colors.white,
+                  leading: GestureDetector(
+                    child: Image.asset(
+                      'assets/imgs/icons/icon_snowLive_back.png',
+                      scale: 4,
+                      width: 26,
+                      height: 26,
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  elevation: 0.0,
+                  titleSpacing: 0,
+                  centerTitle: true,
+                  title: Text(
+                    '전체 랭킹',
+                    style: TextStyle(
+                      color: Color(0xFF111111),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
                 body: Container(
                   height: _size.height - 200,
                   child: Center(
@@ -116,14 +141,18 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ExtendedImage.asset(
-                          'assets/imgs/icons/icon_rankin_indi_nodata.png',
+                          'assets/imgs/icons/icon_rankin_crew_nodata.png',
                           enableMemoryCache: true,
                           shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.circular(7),
                           width: 80,
                           fit: BoxFit.cover,
                         ),
-                        Text("데이터가 없습니다"),
+                        Text("데이터가 없습니다",
+                        style: TextStyle(
+                          color: Color(0xFF949494)
+                        ),
+                        ),
                       ],
                     ),
                   ),
