@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_searchCrewController.dart';
 import 'package:snowlive3/controller/vm_timeStampController.dart';
 import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_home.dart';
+import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_searchUserController.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../../model/m_userModel.dart';
 import '../../controller/vm_liveCrewModelController.dart';
+import '../../model/m_crewLogoModel.dart';
 import '../../model/m_liveCrewModel.dart';
 
 class SearchCrewPage extends StatefulWidget {
@@ -29,6 +31,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
   var foundCrewID;
   bool isFound=false;
   LiveCrewModel? foundCrewModel;
+  var assetFoundCrew;
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +40,12 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
 
     //TODO: Dependency Injection**************************************************
     Get.put(SearchUserController(), permanent: true );
-    Get.put(SearchCrewController(), permanent: true );
     TimeStampController _timeStampController = Get.find<TimeStampController>();
     UserModelController _userModelController = Get.find<UserModelController>();
     SearchCrewController _searchCrewController = Get.find<SearchCrewController>();
     LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
     //TODO: Dependency Injection**************************************************
+
     return GestureDetector(
       onTap: (){
         FocusScope.of(context).unfocus();
@@ -119,6 +122,12 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                         foundCrewID = await _liveCrewModelController.searchCrewByCrewName(_crewName);
                                         print(foundCrewID);
                                         foundCrewModel = await _liveCrewModelController.getFoundCrew(foundCrewID!);
+                                        for (var crewLogo in crewLogoList) {
+                                          if (crewLogo.crewColor == foundCrewModel!.crewColor) {
+                                            assetFoundCrew = crewLogo.crewLogoAsset;
+                                            break;
+                                          }
+                                        }
                                         isFound = true;
                                         CustomFullScreenDialog.cancelDialog();
                                       }
@@ -240,6 +249,12 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                   foundCrewID = await _liveCrewModelController.searchCrewByCrewName(_crewName);
                                   print(foundCrewID);
                                   foundCrewModel = await _liveCrewModelController.getFoundCrew(foundCrewID!);
+                                  for (var crewLogo in crewLogoList) {
+                                    if (crewLogo.crewColor == foundCrewModel!.crewColor) {
+                                      assetFoundCrew = crewLogo.crewLogoAsset;
+                                      break;
+                                    }
+                                  }
                                   isFound = true;
                                   CustomFullScreenDialog.cancelDialog();
                                 }
@@ -302,106 +317,114 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                       ),
                         SizedBox(height: 6),
                         (isFound)
-                            ? Center(
-                              child: Container(
+                            ? GestureDetector(
+                          onTap: () async{
+                            CustomFullScreenDialog.showDialog();
+                            await _liveCrewModelController.getCurrnetCrew(foundCrewID);
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.to(()=> CrewDetailPage_screen());
+                          },
+                              child: Center(
+                                child: Container(
                           child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Color(0xFF3D83ED)
-                              ),
-                              width: 290,
-                              height: 457,
-                              child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Container(
-                                    width: 270,
-                                    height: 270,
-                                    decoration: BoxDecoration(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Color(foundCrewModel!.crewColor!)
+                                ),
+                                width: 290,
+                                height: 457,
+                                child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Container(
+                                      width: 270,
+                                      height: 270,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(8),
+                                          color: Colors.black12
+                                      ),
+                                      child: (foundCrewModel!.profileImageUrl!.isNotEmpty)
+                                          ? ExtendedImage.network(
+                                        '${foundCrewModel!.profileImageUrl}',
+                                        enableMemoryCache: true,
                                         borderRadius: BorderRadius.circular(8),
-                                        color: Colors.black12
-                                    ),
-                                    child: (foundCrewModel!.profileImageUrl!.isNotEmpty)
-                                        ? ExtendedImage.network(
-                                      '${foundCrewModel!.profileImageUrl}',
-                                      enableMemoryCache: true,
-                                      borderRadius: BorderRadius.circular(8),
-                                      fit: BoxFit.cover,
-                                    )
-                                        : ExtendedImage.asset(
-                                      'assets/imgs/profile/img_profile_default_circle.png',
-                                      enableMemoryCache: true,
-                                      borderRadius: BorderRadius.circular(8),
-                                      fit: BoxFit.cover,
+                                        fit: BoxFit.cover,
+                                      )
+                                          : ExtendedImage.asset(
+                                        assetFoundCrew,
+                                        enableMemoryCache: true,
+                                        borderRadius: BorderRadius.circular(8),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 6),
-                                        child: Row(
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 6),
+                                          child: Row(
+                                            children: [
+                                              Text('${foundCrewModel!.crewName}',
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white),),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 2,),
+                                        Row(
                                           children: [
-                                            Text('${foundCrewModel!.crewName}',
+                                            Text('${foundCrewModel!.baseResortNickName}',
                                               style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white),),
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: Colors.white
+                                              ),),
                                           ],
                                         ),
-                                      ),
-                                      SizedBox(height: 2,),
-                                      Row(
-                                        children: [
-                                          Text('${foundCrewModel!.baseResortNickName}',
-                                            style: TextStyle(
+                                        SizedBox(height: 14,),
+                                        Container(
+                                          height: 1,
+                                          width: _size.width- 136,
+                                          color: Colors.black12,
+                                        ),
+                                        SizedBox(height: 14,),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text('생성일', style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.white60,
+                                            ),),
+                                            Text('${_timeStampController.yyyymmddFormat(foundCrewModel!.resistDate).toString()}', style: TextStyle(
                                                 fontSize: 13,
-                                                fontWeight: FontWeight.normal,
+                                                fontWeight: FontWeight.bold,
                                                 color: Colors.white
                                             ),),
-                                        ],
-                                      ),
-                                      SizedBox(height: 14,),
-                                      Container(
-                                        height: 1,
-                                        width: _size.width- 136,
-                                        color: Colors.black12,
-                                      ),
-                                      SizedBox(height: 14,),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('생성일', style: TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.normal,
-                                            color: Colors.white60,
-                                          ),),
-                                          Text('${_timeStampController.yyyymmddFormat(foundCrewModel!.resistDate).toString()}', style: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white
-                                          ),),
-                                        ],
-                                      ),
-                                      SizedBox(height: 14,),
-                                      Container(
-                                        height: 1,
-                                        width: _size.width- 136,
-                                        color: Colors.black12,
-                                      ),
-                                    ],
+                                          ],
+                                        ),
+                                        SizedBox(height: 14,),
+                                        Container(
+                                          height: 1,
+                                          width: _size.width- 136,
+                                          color: Colors.black12,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
 
-                              ],
-                              ),
+                                ],
+                                ),
                           )
                       ),
+                              ),
                             )
                             : Container(
                           height: _size.height - 400,
@@ -432,7 +455,11 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                               child: Padding(
                                   padding: EdgeInsets.only(top: 16, bottom: MediaQuery.of(context).viewInsets.bottom + 16, right: 5),
                                   child: TextButton(
-                                      onPressed: () {
+                                      onPressed: () async{
+                                        CustomFullScreenDialog.showDialog();
+                                        await _liveCrewModelController.getCurrnetCrew(foundCrewID);
+                                        CustomFullScreenDialog.cancelDialog();
+                                        Get.to(()=> CrewDetailPage_screen());
                                       },
                                       style: TextButton.styleFrom(
                                         shape: const RoundedRectangleBorder(
@@ -441,16 +468,17 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                         splashFactory: InkRipple.splashFactory,
                                         minimumSize: Size(1000, 56),
                                         backgroundColor:
-                                        (isFound) ? Color(0xff3D83ED).withOpacity(0.2) : Color(0xffDEDEDE),
+                                        (isFound) ? Color(foundCrewModel!.crewColor!).withOpacity(0.2) : Color(0xffDEDEDE),
                                       ),
                                       child: Text('크루 보기',
                                         style: TextStyle(
-                                            color: (isFound) ? Color(0xff3D83ED) : Color(0xffFFFFFF),
+                                            color: (isFound) ? Color(foundCrewModel!.crewColor!) : Color(0xffFFFFFF),
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16),
                                       )
                                   )),
                             ),
+                            if(foundCrewID != _userModelController.liveCrew)
                             Expanded(
                               child: Padding(
                                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 16, left: 5, top: 16),
@@ -674,7 +702,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                         elevation: 0,
                                         splashFactory: InkRipple.splashFactory,
                                         minimumSize: Size(1000, 56),
-                                        backgroundColor: (isFound) ? Color(0xff3D83ED) : Color(0xffDEDEDE)),
+                                        backgroundColor: (isFound) ? Color(foundCrewModel!.crewColor!) : Color(0xffDEDEDE)),
                                     child: Text(
                                       '크루 가입하기',
                                       style: TextStyle(
@@ -685,7 +713,6 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                 ),
                               ),
                             )
-
                           ],
                         ),
                       ],
