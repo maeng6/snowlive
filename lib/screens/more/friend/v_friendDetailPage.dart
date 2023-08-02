@@ -684,6 +684,200 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                           ],
                                                         ),
                                                       )
+                                                      : (edit == true)
+                                                        ?GestureDetector(
+                                                            onTap: () {
+                                                              _stateMsgController.clear();
+                                                              showModalBottomSheet(
+                                                                context: context,
+                                                                isScrollControlled: true,
+                                                                builder: (BuildContext context) {
+                                                                  final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+                                                                  return SafeArea(
+                                                                    child: Container(
+                                                                      height: 224 + keyboardHeight, // 키보드 높이만큼 추가 높이 적용
+                                                                      child: Padding(
+                                                                        padding: EdgeInsets.only(
+                                                                          left: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom,),
+                                                                        child: Column(
+                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                                          children: [
+                                                                            SizedBox(
+                                                                              height: 24,
+                                                                            ),
+                                                                            Text(
+                                                                              '상태메세지를 입력해 주세요',
+                                                                              style: TextStyle(
+                                                                                  fontSize: 16,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: Color(
+                                                                                      0xFF111111)),
+                                                                            ),
+                                                                            SizedBox(
+                                                                              height: 18,
+                                                                            ),
+                                                                            Container(
+                                                                              height: 100,
+                                                                              child: Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                                children: [
+                                                                                  Form(
+                                                                                    key: _formKeyProfile2,
+                                                                                    child:
+                                                                                    TextFormField(
+                                                                                      cursorColor: Color(0xff377EEA),
+                                                                                      cursorHeight: 16,
+                                                                                      cursorWidth: 2,
+                                                                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                                                      controller: _stateMsgController..text = _initStateMsg,
+                                                                                      strutStyle:
+                                                                                      StrutStyle(leading: 0.3),
+                                                                                      decoration: InputDecoration(
+                                                                                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                                                                                          errorStyle: TextStyle(fontSize: 12,),
+                                                                                          labelStyle: TextStyle(color: Color(0xff666666), fontSize: 15),
+                                                                                          hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
+                                                                                          hintText: '상태메세지 입력',
+                                                                                          labelText: '상태메세지',
+                                                                                          contentPadding: EdgeInsets.only(
+                                                                                              top: 14, bottom: 8, left: 16, right: 16),
+                                                                                          fillColor: Color(0xFFEFEFEF),
+                                                                                          hoverColor: Colors.transparent,
+                                                                                          filled: true,
+                                                                                          focusColor: Colors.transparent,
+                                                                                          border: OutlineInputBorder(
+                                                                                            borderSide: BorderSide(color: Color(0xFFEFEFEF)),
+                                                                                            borderRadius: BorderRadius.circular(6),
+                                                                                          ),
+                                                                                          errorBorder:  OutlineInputBorder(
+                                                                                            borderSide: BorderSide(color: Colors.transparent),
+                                                                                          ),
+                                                                                          focusedBorder:  OutlineInputBorder(
+                                                                                            borderSide: BorderSide(color: Colors.transparent),
+                                                                                          ),
+                                                                                          enabledBorder: OutlineInputBorder(
+                                                                                            borderSide: BorderSide(color: Colors.transparent),
+                                                                                            borderRadius: BorderRadius.circular(6),
+                                                                                          )),
+                                                                                      validator: (val) {
+                                                                                        if (val!.length <= 20 && val.length >= 0) {
+                                                                                          return null;
+                                                                                        } else if (val.length == 0) {
+                                                                                          return '상태메세지를 입력해주세요.';
+                                                                                        } else {
+                                                                                          return '최대 글자 수를 초과했습니다.';
+                                                                                        }
+                                                                                      },
+                                                                                    ),
+                                                                                  ),
+                                                                                  Padding(
+                                                                                    padding: const EdgeInsets.only(top: 8),
+                                                                                    child: Text(
+                                                                                      '최대 20글자까지 입력 가능합니다.',
+                                                                                      style: TextStyle(
+                                                                                          color: Color(0xff949494),
+                                                                                          fontSize: 12),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                            Row(
+                                                                              children: [
+                                                                                Expanded(
+                                                                                  child: InkWell(
+                                                                                    child: ElevatedButton(
+                                                                                      onPressed: () {
+                                                                                        _stateMsgController.text =
+                                                                                        _userModelController.stateMsg!;
+                                                                                        Navigator.pop(context);
+                                                                                      },
+                                                                                      child: Text(
+                                                                                        '취소',
+                                                                                        style: TextStyle(
+                                                                                            color: Color(0xFF3D83ED),
+                                                                                            fontSize: 15,
+                                                                                            fontWeight: FontWeight.bold),
+                                                                                      ),
+                                                                                      style: TextButton.styleFrom(
+                                                                                          splashFactory: InkRipple.splashFactory,
+                                                                                          elevation: 0,
+                                                                                          minimumSize: Size(100, 56),
+                                                                                          backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                                                          padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  width: 10,
+                                                                                ),
+                                                                                Expanded(
+                                                                                  child: InkWell(
+                                                                                    child:
+                                                                                    ElevatedButton(
+                                                                                      onPressed: () {
+                                                                                        if (_formKeyProfile2.currentState!.validate()) {
+                                                                                          setState(() {
+                                                                                            _initStateMsg = _stateMsgController.text;
+                                                                                          });
+                                                                                          FocusScope.of(context).unfocus();
+                                                                                          Navigator.pop(context);
+                                                                                        } else {
+                                                                                          Get.snackbar(
+                                                                                              '입력 실패',
+                                                                                              '올바른 상태메세지를 입력해주세요.',
+                                                                                              snackPosition: SnackPosition.BOTTOM,
+                                                                                              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                                                                              backgroundColor: Colors.black87,
+                                                                                              colorText: Colors.white,
+                                                                                              duration: Duration(milliseconds: 3000));
+                                                                                        }
+                                                                                      },
+                                                                                      child: Text('변경',
+                                                                                        style: TextStyle(
+                                                                                            color: Colors.white,
+                                                                                            fontSize: 15,
+                                                                                            fontWeight: FontWeight.bold),
+                                                                                      ),
+                                                                                      style: TextButton
+                                                                                          .styleFrom(
+                                                                                          splashFactory:
+                                                                                          InkRipple.splashFactory,
+                                                                                          elevation: 0,
+                                                                                          minimumSize: Size(100, 56),
+                                                                                          backgroundColor: Color(0xFF3D83ED),
+                                                                                          padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            )
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              );
+                                                            },
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.only(
+                                                                  left: 4),
+                                                              child: Row(
+                                                                children: [
+                                                                  Text('상태메세지를 입력해 주세요.', style: TextStyle(
+                                                                      fontSize: 14,
+                                                                      color: Color(0xFF111111))),
+                                                                  Image.asset(
+                                                                    'assets/imgs/icons/icon_edit_pencil.png',
+                                                                    height: 20,
+                                                                    width: 20,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ))
                                                       : Container(),
                                                       SizedBox(
                                                         height: 6,
@@ -1266,7 +1460,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                           Get.offAll(()=>MainHome(uid: _userModelController.uid));
                                                         },
                                                         child: Container(
-                                                          height: 200,
                                                           width: _size.width / 2 - 25,
                                                           padding: EdgeInsets.all(16),
                                                           decoration: BoxDecoration(
@@ -1401,7 +1594,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             isPassDataZero = _liveMapController.areAllSlotValuesZero(passCountTimeData);
 
                                             return
-                                              (passCountData != null && passCountTimeData != null && isPassDataZero == false )
+                                              (passCountData != null && passCountTimeData != null && isPassDataZero == false || friendDocs[0]['uid'] == _userModelController.uid )
                                                   ? Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
@@ -1416,7 +1609,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                         ),)),
                                                   SizedBox(height: 10,),
                                                   Container(
-                                                      child: Container(
                                                         padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 60 : 20),
                                                         width: _size.width,
                                                         height: 214,
@@ -1425,14 +1617,25 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                             borderRadius: BorderRadius.circular(14),
                                                         ),
                                                         margin: EdgeInsets.symmetric(horizontal: 20),
-                                                        child: Center(
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Container(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Expanded(
+                                                              child: Container(
                                                                 margin: EdgeInsets.only(top: 6),
                                                                 child: passCountData?.entries.isEmpty ?? true
-                                                                    ? Center(child: Text('데이터가 없습니다'))
+                                                                    ? Center(child: Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [
+                                                                        Image.asset(
+                                                                          'assets/imgs/icons/icon_ranking_nodata_1.png',
+                                                                          scale: 4,
+                                                                          width: 43,
+                                                                          height: 32,
+                                                                        ),
+                                                                        Text('데이터가 없습니다'),
+                                                                      ],
+                                                                    ))
                                                                     : SingleChildScrollView(
                                                                   scrollDirection: Axis.horizontal,
                                                                       child: Row(
@@ -1488,12 +1691,11 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                 ),
                                                                     ),
                                                               ),
+                                                            ),
 
-                                                            ],
-                                                          ),
+                                                          ],
                                                         ),
-                                                      )
-                                                  ),
+                                                      ),
                                                   SizedBox(height: 32),
                                                   Padding(
                                                       padding: EdgeInsets.symmetric(horizontal: 20),
@@ -1521,7 +1723,18 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                 child: Container(
                                                                   child:
                                                                   passCountTimeData?.entries.isEmpty ?? true ?
-                                                                  Center(child: Text('데이터가 없습니다'))
+                                                                  Center(child: Column(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      Image.asset(
+                                                                        'assets/imgs/icons/icon_ranking_nodata_1.png',
+                                                                        scale: 4,
+                                                                        width: 43,
+                                                                        height: 32,
+                                                                      ),
+                                                                      Text('데이터가 없습니다'),
+                                                                    ],
+                                                                  ))
                                                                       : Row(
                                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                     children: barData2.map((data) {
