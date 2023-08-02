@@ -40,6 +40,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
 
     //TODO: Dependency Injection**************************************************
     Get.put(SearchUserController(), permanent: true );
+    Get.put(SearchCrewController(), permanent: true );
     TimeStampController _timeStampController = Get.find<TimeStampController>();
     UserModelController _userModelController = Get.find<UserModelController>();
     SearchCrewController _searchCrewController = Get.find<SearchCrewController>();

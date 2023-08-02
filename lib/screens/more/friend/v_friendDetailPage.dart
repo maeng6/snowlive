@@ -52,6 +52,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   bool isPassDataZero=false;
   Map? userRankingMap;
   var myCrewAsset;
+  String? lastPassTimeString;
 
   Future<void> _onRefresh() async {
     CustomFullScreenDialog.showDialog();
@@ -1599,8 +1600,13 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
                                             Map<String, dynamic>? passCountData = data?['passCountData'] as Map<String, dynamic>?;
                                             Map<String, dynamic>? passCountTimeData = data?['passCountTimeData'] as Map<String, dynamic>?;
-                                            Timestamp lastPassTime = data?['lastPassTime'];
-                                            String lastPassTimeString = _timeStampController.getAgoTime(lastPassTime);
+
+                                            if(lastPassTimeString != null && lastPassTimeString!.isNotEmpty) {
+                                              Timestamp lastPassTime = data?['lastPassTime'];
+                                              lastPassTimeString = _timeStampController.getAgoTime(lastPassTime);
+                                            }else {
+                                              lastPassTimeString = '정보 없음';
+                                            }
 
                                             List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);
                                             List<Map<String, dynamic>> barData2 = _liveMapController.calculateBarDataSlot(passCountTimeData);
@@ -1809,7 +1815,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                   Padding(
                                                       padding: EdgeInsets.symmetric(horizontal: 20),
                                                       child: Container(
-                                                        child: Text('마지막 라이딩 : $lastPassTimeString  ',
+                                                        child: Text('마지막 라이딩 : ${lastPassTimeString}  ',
                                                           style: TextStyle(
                                                               fontSize: 13,
                                                               color: Color(0xFF949494)

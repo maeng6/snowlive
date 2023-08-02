@@ -962,7 +962,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '슬로프별 라이딩 통계',
+                                  '라이딩 통계',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Color(0xFF111111),
