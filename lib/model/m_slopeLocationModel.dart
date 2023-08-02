@@ -765,14 +765,6 @@ List<LocationModel> yongpyong = [
     resort: 8,
   ),
   LocationModel(
-    name: '브릿지',
-    coordinates: [
-      LatLng(37.640431, 128.683205),
-    ],
-    type: 'slope',
-    resort: 8,
-  ),
-  LocationModel(
     name: '뉴골드',
     coordinates: [
       LatLng(37.638479, 128.686671),
@@ -829,7 +821,7 @@ List<LocationModel> yongpyong = [
     resort: 8,
   ),
   LocationModel(
-    name: '메가G',
+    name: '뉴그린',
     coordinates: [
       LatLng(37.640839, 128.677739),
     ],
@@ -853,7 +845,7 @@ List<LocationModel> yongpyong = [
     resort: 8,
   ),
   LocationModel(
-    name: '렌보',
+    name: '레인보',
     coordinates: [
       LatLng(37.622554, 128.663075),
     ],
@@ -1005,7 +997,7 @@ List<LocationModel> high1 = [
     resort: 11,
   ),
   LocationModel(
-    name: 'H탑',
+    name: 'H1탑',
     coordinates: [
       LatLng(37.194165, 128.819854),
     ],
