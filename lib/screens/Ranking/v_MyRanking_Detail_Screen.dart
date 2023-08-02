@@ -733,14 +733,24 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                     Container(
                                       child: Padding(
                                         padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 14),
-                                        child: Text(
+                                        child:
+                                        _userModelController.favoriteResort == 12 || _userModelController.favoriteResort == 0 || _userModelController.favoriteResort == 2
+                                        ? Text(
                                           '슬로프별 점수 현황',
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold
                                           ),
-                                        ),
+                                        )
+                                        : Text(
+                                          '리프트별 점수 현황',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold
+                                          ),
+                                        )
                                       ),
                                     ),
                                     Container(
@@ -869,7 +879,15 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text('자주타는 슬로프',
+                                            _userModelController.favoriteResort == 12 || _userModelController.favoriteResort == 0 || _userModelController.favoriteResort == 2
+                                            ? Text('자주타는 슬로프',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color(0xFF111111),
+                                                  fontWeight: FontWeight.bold
+                                              ),
+                                            )
+                                            : Text('자주타는 리프트',
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   color: Color(0xFF111111),

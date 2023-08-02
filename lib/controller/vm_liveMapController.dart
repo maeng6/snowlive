@@ -1053,7 +1053,7 @@ class LiveMapController extends GetxController {
   }
 
   List<Map<String, dynamic>> calculateBarDataSlot(Map<String, dynamic>? passCountTimeData) {
-    if (passCountTimeData == null || passCountTimeData.isEmpty) {
+    if (passCountTimeData == null || passCountTimeData.isEmpty || areAllSlotValuesZero(passCountTimeData)) {
       return []; // 데이터가 없을 경우 빈 리스트 반환
     }
 
