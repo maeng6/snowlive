@@ -334,6 +334,11 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                           key: _formKeyProfile,
                                                                                           child:
                                                                                           TextFormField(
+                                                                                            onTap: (){
+                                                                                              _displayNameController.selection =
+                                                                                                  TextSelection.fromPosition(
+                                                                                                      TextPosition(offset: _displayNameController.text.length));
+                                                                                            },
                                                                                             cursorColor: Color(0xff377EEA),
                                                                                             cursorHeight: 16,
                                                                                             cursorWidth: 2,
@@ -537,6 +542,11 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                           key: _formKeyProfile2,
                                                                                           child:
                                                                                           TextFormField(
+                                                                                            onTap: (){
+                                                                                              _stateMsgController.selection =
+                                                                                                  TextSelection.fromPosition(
+                                                                                                      TextPosition(offset: _stateMsgController.text.length));
+                                                                                            },
                                                                                             cursorColor: Color(0xff377EEA),
                                                                                             cursorHeight: 16,
                                                                                             cursorWidth: 2,
