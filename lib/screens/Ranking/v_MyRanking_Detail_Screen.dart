@@ -733,24 +733,15 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                     Container(
                                       child: Padding(
                                         padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 14),
-                                        child:
-                                        _userModelController.favoriteResort == 12 || _userModelController.favoriteResort == 0 || _userModelController.favoriteResort == 2
-                                        ? Text(
-                                          '슬로프별 점수 현황',
+                                        child: Text(
+                                          '포인트 상세',
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold
                                           ),
-                                        )
-                                        : Text(
-                                          '리프트별 점수 현황',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold
-                                          ),
-                                        )
+                                        ),
+
                                       ),
                                     ),
                                     Container(
@@ -849,63 +840,6 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
 
 
                                   ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 12,),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 16, right: 16),
-                              child: Container(
-                                height: 72,
-                                width: _size.width,
-                                decoration: BoxDecoration(
-                                    color: Color(0xFFFFFFFF),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        blurRadius: 2,
-                                        offset: Offset(1, 0),
-                                      ),
-                                    ]
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
-                                  child: Container(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            _userModelController.favoriteResort == 12 || _userModelController.favoriteResort == 0 || _userModelController.favoriteResort == 2
-                                            ? Text('자주타는 슬로프',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Color(0xFF111111),
-                                                  fontWeight: FontWeight.bold
-                                              ),
-                                            )
-                                            : Text('자주타는 리프트',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Color(0xFF111111),
-                                                  fontWeight: FontWeight.bold
-                                              ),
-                                            ),
-                                            Text('${_resortModelController.getSlopeName(maxPassCountSlope)}',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color(0xFF3D83ED)
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
                                 ),
                               ),
                             ),

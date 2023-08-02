@@ -10,6 +10,7 @@ import 'package:snowlive3/controller/vm_friendsCommentController.dart';
 import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
+import 'package:snowlive3/controller/vm_timeStampController.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/v_MainHome.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
@@ -113,7 +114,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   FriendsCommentModelController _friendsCommentModelController = Get.find<FriendsCommentModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
-
+  TimeStampController _timeStampController = Get.find<TimeStampController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -1598,20 +1599,22 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
                                             Map<String, dynamic>? passCountData = data?['passCountData'] as Map<String, dynamic>?;
                                             Map<String, dynamic>? passCountTimeData = data?['passCountTimeData'] as Map<String, dynamic>?;
+                                            Timestamp lastPassTime = data?['lastPassTime'];
+                                            String lastPassTimeString = _timeStampController.getAgoTime(lastPassTime);
 
                                             List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);
                                             List<Map<String, dynamic>> barData2 = _liveMapController.calculateBarDataSlot(passCountTimeData);
                                             isPassDataZero = _liveMapController.areAllSlotValuesZero(passCountTimeData);
 
                                             return
-                                              (passCountData != null && passCountTimeData != null && isPassDataZero == false || friendDocs[0]['uid'] == _userModelController.uid )
+                                              (passCountData != null && passCountTimeData != null || friendDocs[0]['uid'] == _userModelController.uid )
                                                   ? Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   SizedBox(height: 48,),
                                                   Padding(
                                                       padding: EdgeInsets.symmetric(horizontal: 20),
-                                                      child: Text('슬로프 라이딩 횟수',
+                                                      child: Text('라이딩 횟수',
                                                         style: TextStyle(
                                                             fontWeight: FontWeight.bold,
                                                             fontSize: 16,
@@ -1731,9 +1734,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                               child: Padding(
                                                                 padding: const EdgeInsets.symmetric(horizontal: 16),
                                                                 child: Container(
-                                                                  child:
-                                                                  passCountTimeData?.entries.isEmpty ?? true ?
-                                                                  Center(child: Column(
+                                                                  child: isPassDataZero
+                                                                      ? Center(child: Column(
                                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                                     children: [
                                                                       Image.asset(
@@ -1803,6 +1805,17 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                           ],
                                                         ),
                                                       ),
+                                                  SizedBox(height: 7,),
+                                                  Padding(
+                                                      padding: EdgeInsets.symmetric(horizontal: 20),
+                                                      child: Container(
+                                                        child: Text('마지막 라이딩 : $lastPassTimeString  ',
+                                                          style: TextStyle(
+                                                              fontSize: 13,
+                                                              color: Color(0xFF949494)
+                                                          ),),
+                                                        alignment: Alignment.bottomRight,
+                                                      )),
                                                   //시간대별 라이딩 횟수
                                                   SizedBox(height: 30),
                                                 ],
