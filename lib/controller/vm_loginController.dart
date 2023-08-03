@@ -126,9 +126,7 @@ class LoginController extends GetxController {
       }else{}
     }catch(e){}
 
-
-
-    if(leaderUid == _userModelController.uid){
+    if(leaderUid == _userModelController.uid && _userModelController.uid != ''){
       CustomFullScreenDialog.cancelDialog();
       return Get.dialog(AlertDialog(
         contentPadding: EdgeInsets.only(
