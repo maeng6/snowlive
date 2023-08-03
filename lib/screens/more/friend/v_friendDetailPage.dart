@@ -1567,7 +1567,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                '자주가는 리조트',
+                                                '자주가는 스키장',
                                                 style: TextStyle(
                                                     fontSize: 13,
                                                     color: Color(0xFF949494),
