@@ -109,19 +109,24 @@ class LoginController extends GetxController {
     String leaderUid='';
     DocumentReference? liveCrewRef;
     DocumentSnapshot? crewSnapshot;
-    await _userModelController.getCurrentUser_crew(uid);
-    if(_userModelController.liveCrew!.isNotEmpty
-        && _userModelController.liveCrew != '') {
-      liveCrewRef = await FirebaseFirestore.instance
-          .collection('liveCrew')
-          .doc('${_userModelController.liveCrew}');
-      crewSnapshot = await liveCrewRef.get();
-      if (crewSnapshot.exists) {
-        leaderUid = crewSnapshot.get('leaderUid');
-      } else {
-        print('Document does not exist on the database');
-      }
-    }else{}
+
+    try{
+      await _userModelController.getCurrentUser_crew(uid);
+      if(_userModelController.liveCrew!.isNotEmpty
+          && _userModelController.liveCrew != '') {
+        liveCrewRef = await FirebaseFirestore.instance
+            .collection('liveCrew')
+            .doc('${_userModelController.liveCrew}');
+        crewSnapshot = await liveCrewRef.get();
+        if (crewSnapshot.exists) {
+          leaderUid = crewSnapshot.get('leaderUid');
+        } else {
+          print('Document does not exist on the database');
+        }
+      }else{}
+    }catch(e){}
+
+
 
     if(leaderUid == _userModelController.uid){
       CustomFullScreenDialog.cancelDialog();
@@ -174,48 +179,48 @@ class LoginController extends GetxController {
     else {
       try {
         for (int i = 0; i <= 12; i++) {
-          try {
             DocumentReference rankingDocRef = FirebaseFirestore.instance
                 .collection('Ranking')
                 .doc('${_seasonController.currentSeason}')
                 .collection('$i')
                 .doc("${_userModelController.uid}");
             await rankingDocRef.delete();
-          } catch (e) {
-            // 에러가 발생한 경우, 해당 값을 출력하고 다음 번호로 넘어감
-            print('Error occurred for value $i: $e');
-            continue;
-          }
-        }
-
-        await ref.collection('liveCrew').doc(crewID).update({
-          'memberUidList': FieldValue.arrayRemove([uid])
-        });
-
-      } catch (e) {
-        CustomFullScreenDialog.cancelDialog();
-        Get.offAll(() => LoginPage());
-      }
+        }} catch (e) {}
+      //랭킹독 삭제
 
       try{
       await ref.collection('liveCrew').doc(crewID).update({
         'memberUidList': FieldValue.arrayRemove([uid])
       });}catch(e){}
+      //라이브크루 멤버인 경우 멤버목록에서 삭제
 
-      await deleteFleaItemAll(myUid: uid, fleaCount: fleaCount);
-      await FlutterSecureStorage().delete(key: 'uid');
-      CollectionReference users = FirebaseFirestore.instance.collection('user');
-      await users.doc(uid).delete();
-      User user = await FirebaseAuth.instance.currentUser!;
-      await user.delete();
+
+      try{
+        await deleteFleaItemAll(myUid: uid, fleaCount: fleaCount);
+      }catch(e){}
+      //중고거래 게시글 삭제
+
       try {
         await FirebaseStorage.instance.refFromURL('$uid.jpg').delete();
       }catch(e){}
-      CustomFullScreenDialog.cancelDialog();
-      Get.offAll(() => LoginPage());
+      //프사 삭제
+
+
+      try{
+        await FlutterSecureStorage().delete(key: 'uid');
+        CollectionReference users = FirebaseFirestore.instance.collection('user');
+        await users.doc(uid).delete();
+        User user = await FirebaseAuth.instance.currentUser!;
+        await user.delete();
+      }catch(e){
+        CustomFullScreenDialog.cancelDialog();
+        Get.offAll(()=>LoginPage());
+      }
+      //자동 로그인, 유저독, 유저 계정(어센) 삭제
 
     }
     CustomFullScreenDialog.cancelDialog();
+    Get.offAll(()=>LoginPage());
   }
 
   Future<void> createUserDoc(index) async {
