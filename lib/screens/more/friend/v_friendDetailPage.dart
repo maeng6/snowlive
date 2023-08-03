@@ -1601,12 +1601,13 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             Map<String, dynamic>? passCountData = data?['passCountData'] as Map<String, dynamic>?;
                                             Map<String, dynamic>? passCountTimeData = data?['passCountTimeData'] as Map<String, dynamic>?;
 
+                                            try{
                                             if(lastPassTimeString != null && lastPassTimeString!.isNotEmpty) {
                                               Timestamp lastPassTime = data?['lastPassTime'];
                                               lastPassTimeString = _timeStampController.getAgoTime(lastPassTime);
                                             }else {
                                               lastPassTimeString = '정보 없음';
-                                            }
+                                            }}catch(e){}
 
                                             List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);
                                             List<Map<String, dynamic>> barData2 = _liveMapController.calculateBarDataSlot(passCountTimeData);
