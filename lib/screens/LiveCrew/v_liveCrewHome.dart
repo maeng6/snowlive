@@ -167,9 +167,9 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
               fontSize: 18),
         ),
       ),
-      body: SingleChildScrollView(
-        child:
-        Column(
+      body:
+      SingleChildScrollView(
+        child: Column(
           children: [
             SizedBox(
               height: _statusBarSize + 58,
@@ -211,14 +211,14 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                 ),
               ),
             ),
-    StreamBuilder(
-    stream: FirebaseFirestore.instance
-        .collection('liveCrew')
-        .where('crewID', isEqualTo: _userModelController.liveCrew)
-        .snapshots(),
-    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-      if (!snapshot.hasData || snapshot.data == null) {}
-      else if (snapshot.data!.docs.isNotEmpty) {
+            StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('liveCrew')
+                    .where('crewID', isEqualTo: _userModelController.liveCrew)
+                    .snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                  if (!snapshot.hasData || snapshot.data == null) {}
+                  else if (snapshot.data!.docs.isNotEmpty) {
         final crewDocs = snapshot.data!.docs;
         if(crewDocs[0]['leaderUid'] == _userModelController.uid)
        return StreamBuilder(
@@ -230,8 +230,6 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
               if (!snapshot.hasData || snapshot.data == null) {}
               else if (snapshot.data!.docs.isNotEmpty) {
                 final applyDocs = snapshot.data!.docs;
-
-
                 return Padding(
                   padding: EdgeInsets.only(left: 16),
                   child: Column(
@@ -603,10 +601,10 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
 
         );
       }
-      else if (snapshot.connectionState == ConnectionState.waiting) {}
-      return Container();
-    }
-    ),
+                  else if (snapshot.connectionState == ConnectionState.waiting) {}
+                  return Container();
+                }
+                ),
             SizedBox(
               height: 24,
             ),
@@ -621,10 +619,52 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                         .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
                       if (!snapshot.hasData || snapshot.data == null || snapshot.data!.docs.isEmpty) {
-                        return Center(
-                          child: Text('개설된 크루가 없습니다.', style: TextStyle(
-                            color: Color(0xFF949494)
-                          ),),
+                        return Container(
+                          width: _size.width,
+                          height: 140,
+                        decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Color(0xFFF1F3F3),
+                        ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 22),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  height: 93,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('가입된 크루가 없습니다',
+                                        style: TextStyle(
+                                            color: Color(0xFF777777),
+                                            fontSize: 14
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(8),
+                                          color: Color(0xFFDEDEDE)
+                                        ),
+                                        width: 90,
+                                        height: 90,
+                                      child: ExtendedImage.asset(
+                                        'assets/imgs/profile/img_crew_profile_none.png',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(7),
+                                        width: 80,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                              ],
+                            ),
+                          ),
                         );
                       } else {
                         final crewDoc = snapshot.data!.docs.first;
@@ -903,10 +943,25 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                       .snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
                     if (!snapshot.hasData || snapshot.data == null) {
-                      return Center(
-                        child: Text('개설된 크루가 없습니다.', style: TextStyle(
-                            color: Color(0xFF949494)
-                        ),),
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 40),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                'assets/imgs/icons/icon_nodata.png',
+                                scale: 4,
+                                width: 64,
+                                height: 64,
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),Text('개설된 크루가 없습니다.', style: TextStyle(
+                                  color: Color(0xFF949494)
+                              ),),
+                            ],
+                          ),
+                        ),
                       );
                     } else if (snapshot.data!.docs.isNotEmpty) {
                       final crewDocs = snapshot.data!.docs;
@@ -1205,10 +1260,25 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                         child: CircularProgressIndicator(),
                       );
                     }
-                    return Center(
-                      child: Text('개설된 크루가 없습니다.', style: TextStyle(
-                          color: Color(0xFF949494)
-                      ),),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 40),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              'assets/imgs/icons/icon_nodata.png',
+                              scale: 4,
+                              width: 64,
+                              height: 64,
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),Text('개설된 크루가 없습니다.', style: TextStyle(
+                                color: Color(0xFF949494)
+                            ),),
+                          ],
+                        ),
+                      ),
                     );
                   }
               ),
@@ -1255,10 +1325,25 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                             .snapshots(),
                         builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                           if (!snapshot.hasData || snapshot.data == null) {
-                            return Center(
-                              child: Text('개설된 크루가 없습니다.', style: TextStyle(
-                                  color: Color(0xFF949494)
-                              ),),
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 40),
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Image.asset(
+                                      'assets/imgs/icons/icon_nodata.png',
+                                      scale: 4,
+                                      width: 64,
+                                      height: 64,
+                                    ),
+                                    SizedBox(
+                                      height: 6,
+                                    ),Text('개설된 크루가 없습니다.', style: TextStyle(
+                                        color: Color(0xFF949494)
+                                    ),),
+                                  ],
+                                ),
+                              ),
                             );
                           } else if (snapshot.data!.docs.isNotEmpty) {
                             final crewDocs = snapshot.data!.docs;
@@ -1367,10 +1452,25 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                               child: CircularProgressIndicator(),
                             );
                           }
-                          return Center(
-                            child: Text('개설된 크루가 없습니다.', style: TextStyle(
-                                color: Color(0xFF949494)
-                            ),),
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 40),
+                            child: Center(
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    'assets/imgs/icons/icon_nodata.png',
+                                    scale: 4,
+                                    width: 64,
+                                    height: 64,
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),Text('개설된 크루가 없습니다.', style: TextStyle(
+                                      color: Color(0xFF949494)
+                                  ),),
+                                ],
+                              ),
+                            ),
                           );
                         }
                     ),
