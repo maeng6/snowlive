@@ -1574,7 +1574,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                     fontWeight: FontWeight.normal),
                                               ),
                                               Text(
-                                                '${_resortModelController.getResortName(_userModelController.resortNickname!)}',
+                                                '${_resortModelController.getResortName(friendDocs[0]['resortNickname'])}',
                                                 style: TextStyle(
                                                     fontSize: 15,
                                                     color: Color(0xFF111111),
