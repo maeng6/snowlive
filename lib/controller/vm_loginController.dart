@@ -126,6 +126,8 @@ class LoginController extends GetxController {
       }else{}
     }catch(e){}
 
+    print('리더uid : $leaderUid');
+
     if(leaderUid == _userModelController.uid && _userModelController.uid != ''){
       CustomFullScreenDialog.cancelDialog();
       return Get.dialog(AlertDialog(
@@ -186,11 +188,15 @@ class LoginController extends GetxController {
         }} catch (e) {}
       //랭킹독 삭제
 
+      print('랭킹독 삭제 완료');
+
       try{
       await ref.collection('liveCrew').doc(crewID).update({
         'memberUidList': FieldValue.arrayRemove([uid])
       });}catch(e){}
       //라이브크루 멤버인 경우 멤버목록에서 삭제
+
+      print('크루 멤버 삭제');
 
 
       try{
@@ -198,18 +204,24 @@ class LoginController extends GetxController {
       }catch(e){}
       //중고거래 게시글 삭제
 
+      print('중고거래 게시글 삭제');
+
       try {
         await FirebaseStorage.instance.refFromURL('$uid.jpg').delete();
       }catch(e){}
       //프사 삭제
 
+      print('프사 삭제');
 
       try{
         await FlutterSecureStorage().delete(key: 'uid');
+        print('자동로그인 삭제');
         CollectionReference users = FirebaseFirestore.instance.collection('user');
         await users.doc(uid).delete();
-        User user = await FirebaseAuth.instance.currentUser!;
+        print('유저독 삭제');
+        User user = FirebaseAuth.instance.currentUser!;
         await user.delete();
+        print('어센 삭제');
       }catch(e){
         CustomFullScreenDialog.cancelDialog();
         Get.offAll(()=>LoginPage());
