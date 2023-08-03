@@ -112,19 +112,18 @@ class LoginController extends GetxController {
 
     try{
       await _userModelController.getCurrentUser_crew(uid);
-      if(_userModelController.liveCrew!.isNotEmpty
-          && _userModelController.liveCrew != '') {
+      if(_userModelController.liveCrew != null && _userModelController.liveCrew!.isNotEmpty) {
         liveCrewRef = await FirebaseFirestore.instance
             .collection('liveCrew')
             .doc('${_userModelController.liveCrew}');
         crewSnapshot = await liveCrewRef.get();
         if (crewSnapshot.exists) {
-          leaderUid = crewSnapshot.get('leaderUid');
+          leaderUid = crewSnapshot.get('leaderUid') ?? '';
         } else {
           print('Document does not exist on the database');
         }
       }else{}
-    }catch(e){}
+    } catch(e){}
 
     print('리더uid : $leaderUid');
 
@@ -175,41 +174,39 @@ class LoginController extends GetxController {
           )
         ],
       ));
-    }
-    else {
+    } else {
       try {
         for (int i = 0; i <= 12; i++) {
-            DocumentReference rankingDocRef = FirebaseFirestore.instance
-                .collection('Ranking')
-                .doc('${_seasonController.currentSeason}')
-                .collection('$i')
-                .doc("${_userModelController.uid}");
-            await rankingDocRef.delete();
-        }} catch (e) {}
-      //랭킹독 삭제
+          DocumentReference rankingDocRef = FirebaseFirestore.instance
+              .collection('Ranking')
+              .doc('${_seasonController.currentSeason}')
+              .collection('$i')
+              .doc("${_userModelController.uid}");
+          await rankingDocRef.delete();
+        }
+      } catch (e) {}
 
       print('랭킹독 삭제 완료');
 
       try{
-      await ref.collection('liveCrew').doc(crewID).update({
-        'memberUidList': FieldValue.arrayRemove([uid])
-      });}catch(e){}
-      //라이브크루 멤버인 경우 멤버목록에서 삭제
+        if (liveCrewRef != null) {
+          await liveCrewRef.collection('liveCrew').doc(crewID).update({
+            'memberUidList': FieldValue.arrayRemove([uid])
+          });
+        }
+      } catch(e){}
 
       print('크루 멤버 삭제');
 
-
       try{
         await deleteFleaItemAll(myUid: uid, fleaCount: fleaCount);
-      }catch(e){}
-      //중고거래 게시글 삭제
+      } catch(e){}
 
       print('중고거래 게시글 삭제');
 
       try {
         await FirebaseStorage.instance.refFromURL('$uid.jpg').delete();
-      }catch(e){}
-      //프사 삭제
+      } catch(e){}
 
       print('프사 삭제');
 
@@ -222,13 +219,12 @@ class LoginController extends GetxController {
         User user = FirebaseAuth.instance.currentUser!;
         await user.delete();
         print('어센 삭제');
-      }catch(e){
+      } catch(e){
         CustomFullScreenDialog.cancelDialog();
         Get.offAll(()=>LoginPage());
       }
-      //자동 로그인, 유저독, 유저 계정(어센) 삭제
-
     }
+
     CustomFullScreenDialog.cancelDialog();
     Get.offAll(()=>LoginPage());
   }
