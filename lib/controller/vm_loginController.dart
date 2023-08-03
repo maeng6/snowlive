@@ -173,12 +173,6 @@ class LoginController extends GetxController {
     }
     else {
       try {
-        await deleteFleaItemAll(myUid: uid, fleaCount: fleaCount);
-        await FlutterSecureStorage().delete(key: 'uid');
-        CollectionReference users = FirebaseFirestore.instance.collection(
-            'user');
-        await users.doc(uid).delete();
-
         for (int i = 0; i <= 12; i++) {
           try {
             DocumentReference rankingDocRef = FirebaseFirestore.instance
@@ -198,15 +192,28 @@ class LoginController extends GetxController {
           'memberUidList': FieldValue.arrayRemove([uid])
         });
 
-        User user = FirebaseAuth.instance.currentUser!;
-        await user.delete();
-        FirebaseStorage.instance.refFromURL('$uid.jpg').delete();
-        Get.offAll(() => LoginPage());
-        CustomFullScreenDialog.cancelDialog();
       } catch (e) {
         CustomFullScreenDialog.cancelDialog();
         Get.offAll(() => LoginPage());
       }
+
+      try{
+      await ref.collection('liveCrew').doc(crewID).update({
+        'memberUidList': FieldValue.arrayRemove([uid])
+      });}catch(e){}
+
+      await deleteFleaItemAll(myUid: uid, fleaCount: fleaCount);
+      await FlutterSecureStorage().delete(key: 'uid');
+      CollectionReference users = FirebaseFirestore.instance.collection('user');
+      await users.doc(uid).delete();
+      User user = await FirebaseAuth.instance.currentUser!;
+      await user.delete();
+      try {
+        await FirebaseStorage.instance.refFromURL('$uid.jpg').delete();
+      }catch(e){}
+      CustomFullScreenDialog.cancelDialog();
+      Get.offAll(() => LoginPage());
+
     }
     CustomFullScreenDialog.cancelDialog();
   }
