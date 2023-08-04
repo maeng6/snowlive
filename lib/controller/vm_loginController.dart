@@ -183,32 +183,32 @@ class LoginController extends GetxController {
               .collection('$i')
               .doc("${_userModelController.uid}");
           await rankingDocRef.delete();
+          print('랭킹독 삭제 완료');
         }
       } catch (e) {}
 
-      print('랭킹독 삭제 완료');
 
       try{
         if (liveCrewRef != null) {
-          await liveCrewRef.collection('liveCrew').doc(crewID).update({
+          await liveCrewRef.update({
             'memberUidList': FieldValue.arrayRemove([uid])
           });
+          print('크루 멤버 삭제');
         }
       } catch(e){}
 
-      print('크루 멤버 삭제');
 
       try{
         await deleteFleaItemAll(myUid: uid, fleaCount: fleaCount);
+        print('중고거래 게시글 삭제');
       } catch(e){}
 
-      print('중고거래 게시글 삭제');
 
       try {
         await FirebaseStorage.instance.refFromURL('$uid.jpg').delete();
+        print('프사 삭제');
       } catch(e){}
 
-      print('프사 삭제');
 
       try{
         await FlutterSecureStorage().delete(key: 'uid');
