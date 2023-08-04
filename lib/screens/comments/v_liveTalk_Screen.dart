@@ -663,83 +663,110 @@ class _LiveTalkScreenState
                                                               ),
                                                               Row(
                                                                 children: [
-                                                                  Container(
-                                                                    height: 24,
-                                                                    decoration: BoxDecoration(
-                                                                        color: (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
-                                                                            ? Color(0xFFFFCDCD)
-                                                                            : Color(0xFFECECEC),
-                                                                        borderRadius: BorderRadius.circular(4)
-                                                                    ),
-                                                                    child: Padding(
-                                                                      padding: EdgeInsets.only(right: 8),
-                                                                      child: Row(
-                                                                        children: [
-                                                                          (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
-                                                                              ? Padding(
-                                                                            padding: const EdgeInsets.only(top: 2),
-                                                                            child:
-                                                                            IconButton(
-                                                                              onPressed: () async {
-                                                                                var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
-                                                                                print(likeUid);
-                                                                                HapticFeedback.lightImpact();
-                                                                                if (_firstPress) {
-                                                                                  _firstPress = false;
-                                                                                  await _userModelController.deleteLikeUid(likeUid);
-                                                                                  await _commentModelController.likeDelete(likeUid);
-                                                                                  _firstPress =
-                                                                                  true;
-                                                                                }
-                                                                              },
-                                                                              icon: Icon(
-                                                                                Icons.favorite,
-                                                                                size: 14,
-                                                                                color: Color(0xFFD63636),
+                                                                  GestureDetector(
+                                                                    child: Container(
+                                                                      height: 24,
+                                                                      decoration: BoxDecoration(
+                                                                          color: (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
+                                                                              ? Color(0xFFFFCDCD)
+                                                                              : Color(0xFFECECEC),
+                                                                          borderRadius: BorderRadius.circular(4)
+                                                                      ),
+                                                                      child: Padding(
+                                                                        padding: EdgeInsets.only(right: 8),
+                                                                        child: Row(
+                                                                          children: [
+                                                                            (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
+                                                                                ? Padding(
+                                                                              padding: const EdgeInsets.only(top: 2),
+                                                                              child:
+                                                                              IconButton(
+                                                                                onPressed: () async {
+                                                                                  var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
+                                                                                  print(likeUid);
+                                                                                  HapticFeedback.lightImpact();
+                                                                                  if (_firstPress) {
+                                                                                    _firstPress = false;
+                                                                                    await _userModelController.deleteLikeUid(likeUid);
+                                                                                    await _commentModelController.likeDelete(likeUid);
+                                                                                    _firstPress =
+                                                                                    true;
+                                                                                  }
+                                                                                },
+                                                                                icon: Icon(
+                                                                                  Icons.favorite,
+                                                                                  size: 14,
+                                                                                  color: Color(0xFFD63636),
+                                                                                ),
+                                                                                padding: EdgeInsets.zero,
+                                                                                constraints: BoxConstraints(),
                                                                               ),
-                                                                              padding: EdgeInsets.zero,
-                                                                              constraints: BoxConstraints(),
-                                                                            ),
-                                                                          )
-                                                                              : Padding(
-                                                                            padding: const EdgeInsets.only(top: 2),
-                                                                            child:
-                                                                            IconButton(
-                                                                              onPressed: () async {
-                                                                                var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
-                                                                                print(likeUid);
-                                                                                HapticFeedback.lightImpact();
-                                                                                if (_firstPress) {
-                                                                                  _firstPress = false;
-                                                                                  await _userModelController.updateLikeUid(likeUid);
-                                                                                  await _commentModelController.likeUpdate(likeUid);
-                                                                                  _firstPress = true;
-                                                                                }
-                                                                              },
-                                                                              icon: Icon(Icons.favorite,
-                                                                                size: 14,
-                                                                                color: Color(0xFFC8C8C8),
+                                                                            )
+                                                                                : Padding(
+                                                                              padding: const EdgeInsets.only(top: 2),
+                                                                              child:
+                                                                              IconButton(
+                                                                                onPressed: () async {
+                                                                                  var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
+                                                                                  print(likeUid);
+                                                                                  HapticFeedback.lightImpact();
+                                                                                  if (_firstPress) {
+                                                                                    _firstPress = false;
+                                                                                    await _userModelController.updateLikeUid(likeUid);
+                                                                                    await _commentModelController.likeUpdate(likeUid);
+                                                                                    _firstPress = true;
+                                                                                  }
+                                                                                },
+                                                                                icon: Icon(Icons.favorite,
+                                                                                  size: 14,
+                                                                                  color: Color(0xFFC8C8C8),
+                                                                                ),
+                                                                                padding: EdgeInsets.zero,
+                                                                                constraints: BoxConstraints(),
                                                                               ),
-                                                                              padding: EdgeInsets.zero,
-                                                                              constraints: BoxConstraints(),
                                                                             ),
-                                                                          ),
-                                                                          Padding(
-                                                                            padding: EdgeInsets.only(bottom: 1),
-                                                                            child: Text(
-                                                                              '${chatDocs[index]['likeCount']}',
-                                                                              style: TextStyle(
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  fontSize: 11,
-                                                                                  color:
-                                                                                  (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
-                                                                                      ? Color(0xFF111111)
-                                                                                      : Color(0xFF666666)),
+                                                                            Padding(
+                                                                              padding: EdgeInsets.only(bottom: 1),
+                                                                              child: Text(
+                                                                                '${chatDocs[index]['likeCount']}',
+                                                                                style: TextStyle(
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    fontSize: 11,
+                                                                                    color:
+                                                                                    (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
+                                                                                        ? Color(0xFF111111)
+                                                                                        : Color(0xFF666666)),
+                                                                              ),
                                                                             ),
-                                                                          ),
-                                                                        ],
+                                                                          ],
+                                                                        ),
                                                                       ),
                                                                     ),
+                                                                    onTap: () async{
+                                                                     if (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}')){
+                                                                       var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
+                                                                       print(likeUid);
+                                                                       HapticFeedback.lightImpact();
+                                                                       if (_firstPress) {
+                                                                         _firstPress = false;
+                                                                         await _userModelController.deleteLikeUid(likeUid);
+                                                                         await _commentModelController.likeDelete(likeUid);
+                                                                         _firstPress =
+                                                                         true;
+                                                                       }
+                                                                     } else{
+                                                                       var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
+                                                                       print(likeUid);
+                                                                       HapticFeedback.lightImpact();
+                                                                       if (_firstPress) {
+                                                                         _firstPress = false;
+                                                                         await _userModelController.updateLikeUid(likeUid);
+                                                                         await _commentModelController.likeUpdate(likeUid);
+                                                                         _firstPress = true;
+                                                                       }
+                                                                     }
+
+                                                                    },
                                                                   ),
                                                                   SizedBox(
                                                                     width: 8,
@@ -772,8 +799,18 @@ class _LiveTalkScreenState
                                                                               const EdgeInsets.only(top: 2),
                                                                               child:
                                                                               IconButton(
-                                                                                onPressed:
-                                                                                    () {},
+                                                                                onPressed: () {
+                                                                                  Get.to(() =>
+                                                                                      ReplyScreen(
+                                                                                        replyUid: chatDocs[index]['uid'],
+                                                                                        replyCount: chatDocs[index]['commentCount'],
+                                                                                        replyImage: chatDocs[index]['profileImageUrl'],
+                                                                                        replyDisplayName: chatDocs[index]['displayName'],
+                                                                                        replyResortNickname: chatDocs[index]['resortNickname'],
+                                                                                        comment: chatDocs[index]['comment'],
+                                                                                        commentTime: chatDocs[index]['timeStamp'],
+                                                                                      ));
+                                                                                },
                                                                                 icon: Icon(
                                                                                   Icons.insert_comment,
                                                                                   size: 14,
