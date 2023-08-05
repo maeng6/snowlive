@@ -1199,8 +1199,8 @@ class _LiveTalkScreenState
                                   errorStyle: TextStyle(
                                     fontSize: 12,
                                   ),
-                                  hintStyle: TextStyle(
-                                      color: Color(0xff949494), fontSize: 14),
+                                  labelStyle: TextStyle(color: Color(0xff949494), fontSize: 15),
+                                  hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
                                   hintText: '라이브톡 남기기',
                                   contentPadding: EdgeInsets.only(
                                       top: 10, bottom: 10, left: 16, right: 16),
@@ -1208,6 +1208,9 @@ class _LiveTalkScreenState
                                     borderSide: BorderSide(
                                         color: Color(0xFFDEDEDE)),
                                     borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  focusedBorder:  OutlineInputBorder(
+                                    borderSide: BorderSide(color: Color(0xFFDEDEDE)),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
