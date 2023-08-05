@@ -204,20 +204,24 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
             children: [
               Text(
                 '스노우마켓 이용을 위해\n전화번호 인증을\n진행해 주세요.',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    height: 1.3),
               ),
               SizedBox(
-                height: 10,
+                height: 8,
               ),
               Text(
                 '전화번호 인증은 최초 1회만 진행됩니다.',
                 style: TextStyle(
-                  color: Color(0xff949494),
-                  fontSize: 14,
+                    color: Color(0xff949494),
+                    fontSize: 13,
+                    height: 1.5
                 ),
               ),
               SizedBox(
-                height: 40,
+                height: 30,
               ),
               Form(
                 key: _formKey,
@@ -246,6 +250,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                 controller: _textEditingController,
                                 strutStyle: StrutStyle(leading: 0.3),
                                 decoration: InputDecoration(
+                                    floatingLabelBehavior: FloatingLabelBehavior.never,
                                     errorStyle: TextStyle(
                                       fontSize: 12,
                                     ),
@@ -254,13 +259,23 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                     hintText: '010-0000-0000',
                                     labelText: '전화번호',
                                     contentPadding: EdgeInsets.only(
-                                        top: 20, bottom: 20, left: 20, right: 20),
+                                        top: 20, bottom: 16, left: 16, right: 16),
+                                    fillColor: Color(0xFFEFEFEF),
+                                    hoverColor: Colors.transparent,
+                                    filled: true,
+                                    focusColor: Colors.transparent,
                                     border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                      borderSide: BorderSide(color: Color(0xFFEFEFEF)),
                                       borderRadius: BorderRadius.circular(6),
                                     ),
+                                    errorBorder:  OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.transparent),
+                                    ),
+                                    focusedBorder:  OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.transparent),
+                                    ),
                                     enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                      borderSide: BorderSide(color: Colors.transparent),
                                       borderRadius: BorderRadius.circular(6),
                                     )),
                                 validator: (val) {
@@ -280,66 +295,68 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                             Positioned(
                               right: 8,
                               child: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: ElevatedButton(onPressed: () async {
-                                  if(_textEditingController.text.trim().isEmpty
-                                      || !_formKey.currentState!.validate() || buttonColorActive == false)
-                                  {return ;}
-                                  CustomFullScreenDialog.showDialog();
-                                  FocusScope.of(context).unfocus();
-                                  try{
-                                    await _auth.verifyPhoneNumber(
-                                      timeout: const Duration(seconds: 90),
-                                      codeAutoRetrievalTimeout: (String verificationId) {
-                                        // Auto-resolution timed out...
-                                      },
-                                      phoneNumber: "+82"+_phoneNumber.trim(),
-                                      verificationCompleted: (phoneAuthCredential) async {
-                                        print("otp 문자옴");
-                                      },
-                                      verificationFailed: (verificationFailed) async {
-                                        print(verificationFailed.code);
+                                padding: EdgeInsets.only(top: 6),
+                                child: Center(
+                                  child: ElevatedButton(onPressed: () async {
+                                    if(_textEditingController.text.trim().isEmpty
+                                        || !_formKey.currentState!.validate() || buttonColorActive == false)
+                                    {return ;}
+                                    CustomFullScreenDialog.showDialog();
+                                    FocusScope.of(context).unfocus();
+                                    try{
+                                      await _auth.verifyPhoneNumber(
+                                        timeout: const Duration(seconds: 90),
+                                        codeAutoRetrievalTimeout: (String verificationId) {
+                                          // Auto-resolution timed out...
+                                        },
+                                        phoneNumber: "+82"+_phoneNumber.trim(),
+                                        verificationCompleted: (phoneAuthCredential) async {
+                                          print("otp 문자옴");
+                                        },
+                                        verificationFailed: (verificationFailed) async {
+                                          print(verificationFailed.code);
 
-                                        print("코드발송실패");
+                                          print("코드발송실패");
 
-                                      },
-                                      codeSent: (verificationId, resendingToken) async {
-                                        print("코드보냄");
+                                        },
+                                        codeSent: (verificationId, resendingToken) async {
+                                          print("코드보냄");
 
-                                        setState(() {
-                                          requestedAuth=true;
-                                          buttonColorActive=false;
-                                          this.verificationId = verificationId;
-                                        });
-                                      },
-                                    );
-                                    startTimer();
-                                  }catch(e){print('에러');}
-                                  CustomFullScreenDialog.cancelDialog();
-                                },
-                                  child:
-                                  (isFirstSent == true)
-                                  ? Text(
-                                    '인증번호 발송',
-                                    style: TextStyle(
-                                        color: Color(0xFF377EEA),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15),
-                                  )
-                                  : Text(
-                                    '인증번호 재발송',
-                                    style: TextStyle(
-                                        color: Color(0xFF377EEA),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15),
+                                          setState(() {
+                                            requestedAuth=true;
+                                            buttonColorActive=false;
+                                            this.verificationId = verificationId;
+                                          });
+                                        },
+                                      );
+                                      startTimer();
+                                    }catch(e){print('에러');}
+                                    CustomFullScreenDialog.cancelDialog();
+                                  },
+                                    child:
+                                    (isFirstSent == true)
+                                    ? Text(
+                                      '인증번호 발송',
+                                      style: TextStyle(
+                                          color: Color(0xFF377EEA),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15),
+                                    )
+                                    : Text(
+                                      '인증번호 재발송',
+                                      style: TextStyle(
+                                          color: Color(0xFF377EEA),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 13),
+                                        shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(Radius.circular(6))),
+                                        elevation: 0,
+                                        splashFactory: InkRipple.splashFactory,
+                                        backgroundColor: Colors.transparent),
                                   ),
-                                  style: TextButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 13),
-                                      shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(Radius.circular(6))),
-                                      elevation: 0,
-                                      splashFactory: InkRipple.splashFactory,
-                                      backgroundColor: Color(0xffFFFFFF)),
                                 )
 
                               ),
@@ -366,6 +383,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                 controller: _textEditingController2,
                                 strutStyle: StrutStyle(leading: 0.3),
                                 decoration: InputDecoration(
+                                    floatingLabelBehavior: FloatingLabelBehavior.never,
                                     errorStyle: TextStyle(
                                       fontSize: 12,
                                     ),
@@ -374,13 +392,23 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                     hintText: '6자리 코드 입력',
                                     labelText: '인증번호',
                                     contentPadding: EdgeInsets.only(
-                                        top: 20, bottom: 20, left: 20, right: 20),
+                                        top: 20, bottom: 16, left: 16, right: 16),
+                                    fillColor: Color(0xFFEFEFEF),
+                                    hoverColor: Colors.transparent,
+                                    filled: true,
+                                    focusColor: Colors.transparent,
                                     border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                      borderSide: BorderSide(color: Color(0xFFEFEFEF)),
                                       borderRadius: BorderRadius.circular(6),
                                     ),
+                                    errorBorder:  OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.transparent),
+                                    ),
+                                    focusedBorder:  OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.transparent),
+                                    ),
                                     enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                      borderSide: BorderSide(color: Colors.transparent),
                                       borderRadius: BorderRadius.circular(6),
                                     )),
                                 validator: (val2) {
@@ -399,7 +427,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                               Positioned(
                                 right: 8,
                                 child: Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 23.5, horizontal: 14),
+                                    padding: EdgeInsets.symmetric(vertical: 23, horizontal: 14),
                                     child: Text('유효시간 $minutes:$seconds',
                                     style: TextStyle(
                                       color: Color(0xFFD32F2F),
