@@ -490,8 +490,8 @@ class UserModelController extends GetxController{
     ref.collection('user').doc(userMe);
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
     await documentReference.get();
-    List likeUidList = documentSnapshot.get('likeUidList');
-    this._likeUidList!.value = likeUidList;
+    List repoUidList = documentSnapshot.get('repoUidList');
+    this._repoUidList!.value = repoUidList;
   }
 
   Future<void> updateLikeUidList() async {

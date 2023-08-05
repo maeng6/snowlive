@@ -279,9 +279,9 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                 );
                               }),
                           child: Padding(
-                            padding: const EdgeInsets.only(bottom: 1, right: 10),
+                            padding: const EdgeInsets.only(bottom: 1, right: 16),
                             child: Icon(
-                              Icons.more_vert_rounded,
+                              Icons.more_horiz_rounded,
                               size: 28,
                               color: Color(0xFF111111),
                             ),
@@ -321,16 +321,10 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                       color: Colors.white,
                                                       height: 180,
                                                       child: Padding(
-                                                        padding: const EdgeInsets
-                                                            .symmetric(
-                                                            horizontal: 20.0),
+                                                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
                                                         child: Column(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                          mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
                                                           children: [
                                                             SizedBox(
                                                               height: 30,
@@ -339,54 +333,39 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                               '삭제하시겠습니까?',
                                                               style: TextStyle(
                                                                   fontSize: 20,
-                                                                  fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                                  color: Color(
-                                                                      0xFF111111)),
+                                                                  fontWeight: FontWeight.bold,
+                                                                  color: Color(0xFF111111)),
                                                             ),
                                                             SizedBox(
                                                               height: 30,
                                                             ),
                                                             Row(
-                                                              mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceEvenly,
+                                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                               children: [
                                                                 Expanded(
                                                                   child:
                                                                   ElevatedButton(
                                                                     onPressed:
                                                                         () {
-                                                                      Navigator.pop(
-                                                                          context);
+                                                                      Navigator.pop(context);
                                                                     },
                                                                     child: Text(
                                                                       '취소',
                                                                       style: TextStyle(
                                                                           color: Colors
                                                                               .white,
-                                                                          fontSize:
-                                                                          15,
-                                                                          fontWeight:
-                                                                          FontWeight.bold),
+                                                                          fontSize: 15,
+                                                                          fontWeight: FontWeight.bold),
                                                                     ),
                                                                     style: TextButton.styleFrom(
                                                                         splashFactory:
-                                                                        InkRipple
-                                                                            .splashFactory,
-                                                                        elevation:
-                                                                        0,
+                                                                        InkRipple.splashFactory,
+                                                                        elevation: 0,
                                                                         minimumSize:
-                                                                        Size(
-                                                                            100,
-                                                                            56),
+                                                                        Size(100, 56),
                                                                         backgroundColor:
-                                                                        Color(
-                                                                            0xff555555),
-                                                                        padding: EdgeInsets.symmetric(
-                                                                            horizontal:
-                                                                            0)),
+                                                                        Color(0xff555555),
+                                                                        padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                   ),
                                                                 ),
                                                                 SizedBox(
@@ -411,39 +390,24 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                                         };
                                                                         Navigator.pop(context);
                                                                       } catch (e) {}
-                                                                      print(
-                                                                          '댓글 삭제 완료');
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                      CustomFullScreenDialog
-                                                                          .cancelDialog();
+                                                                      print('댓글 삭제 완료');
+                                                                      Navigator.pop(context);
+                                                                      CustomFullScreenDialog.cancelDialog();
                                                                     },
-                                                                    child: Text(
-                                                                      '확인',
+                                                                    child: Text('확인',
                                                                       style: TextStyle(
-                                                                          color: Colors
-                                                                              .white,
-                                                                          fontSize:
-                                                                          15,
-                                                                          fontWeight:
-                                                                          FontWeight.bold),
+                                                                          color: Colors.white,
+                                                                          fontSize: 15,
+                                                                          fontWeight: FontWeight.bold),
                                                                     ),
                                                                     style: TextButton.styleFrom(
-                                                                        splashFactory:
-                                                                        InkRipple
-                                                                            .splashFactory,
-                                                                        elevation:
-                                                                        0,
+                                                                        splashFactory: InkRipple.splashFactory,
+                                                                        elevation: 0,
                                                                         minimumSize:
-                                                                        Size(
-                                                                            100,
-                                                                            56),
+                                                                        Size(100, 56),
                                                                         backgroundColor:
-                                                                        Color(
-                                                                            0xff2C97FB),
-                                                                        padding: EdgeInsets.symmetric(
-                                                                            horizontal:
-                                                                            0)),
+                                                                        Color(0xff2C97FB),
+                                                                        padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                   ),
                                                                 ),
                                                               ],
@@ -465,9 +429,9 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                 );
                               }),
                           child: Padding(
-                            padding: const EdgeInsets.only(bottom: 1, right: 10),
+                            padding: const EdgeInsets.only(bottom: 1, right: 16),
                             child: Icon(
-                              Icons.more_vert_rounded,
+                              Icons.more_horiz_rounded,
                               size: 28,
                               color: Color(0xFF111111),
                             ),
@@ -481,17 +445,13 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                   body: Column(
                     children: [
                       Container(
-                        height: _size.height -
-                            MediaQuery.of(context).viewPadding.top -
-                            58 -
-                            MediaQuery.of(context).viewPadding.bottom -
-                            88,
+                        height: _size.height - MediaQuery.of(context).viewPadding.top - 58 - MediaQuery.of(context).viewPadding.bottom - 88,
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
                               if (_fleaModelController.itemImagesUrls!.isEmpty)
                                 Container(
-                                  color: Color(0xFFDEDEDE),
+                                  color: Color(0xFFB9D5FF),
                                   child: ExtendedImage.asset(
                                     'assets/imgs/profile/img_profile_default_.png',
                                     fit: BoxFit.fitHeight,
@@ -612,16 +572,10 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                                   _fleaModelController.otherShare(contents: '${_fleaModelController.kakaoUrl}');
                                                                 }else{
                                                                   Get.dialog(AlertDialog(
-                                                                    contentPadding: EdgeInsets.only(
-                                                                        bottom: 0,
-                                                                        left: 20,
-                                                                        right: 20,
-                                                                        top: 30),
+                                                                    contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
                                                                     elevation: 0,
                                                                     shape: RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10.0)),
+                                                                        borderRadius: BorderRadius.circular(10.0)),
                                                                     buttonPadding:
                                                                     EdgeInsets.symmetric(
                                                                         horizontal: 20,
@@ -643,15 +597,12 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                                                 '확인',
                                                                                 style: TextStyle(
                                                                                   fontSize: 15,
-                                                                                  color: Color(
-                                                                                      0xff377EEA),
-                                                                                  fontWeight: FontWeight
-                                                                                      .bold,
+                                                                                  color: Color(0xff377EEA),
+                                                                                  fontWeight: FontWeight.bold,
                                                                                 ),
                                                                               )),
                                                                         ],
-                                                                        mainAxisAlignment: MainAxisAlignment
-                                                                            .center,
+                                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                                       )
                                                                     ],
                                                                   ));
@@ -662,8 +613,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                                   borderRadius: BorderRadius.circular(3),
                                                                   color: Colors.yellow,
                                                                 ),
-                                                                padding: EdgeInsets.only(
-                                                                    right: 6, left: 6, top: 2, bottom: 3),
+                                                                padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
                                                                 child: Text(
                                                                   '카카오 오픈채팅 바로가기',
                                                                   style: TextStyle(

@@ -128,7 +128,7 @@ class _WelcomePageState extends State<WelcomePage> {
                         });
                       },
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Row(
                           children: [
                             Image.asset(
