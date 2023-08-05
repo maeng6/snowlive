@@ -45,12 +45,34 @@ class _RepoListState extends State<RepoList> {
             .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
-            print(_userModelController.uid);
-            print('null');
             return Center(
-              child: Text('차단목록이 비어있습니다.'),
+              child: Transform.translate(
+                offset: Offset(0, -40),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/imgs/icons/icon_nodata.png',
+                      scale: 4,
+                      width: 73,
+                      height: 73,
+                    ),
+                    SizedBox(
+                      height: 6,
+                    ),
+                    Text('차단목록이 비어있습니다',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                          color: Color(0xFF949494)
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             );
-          } else if (snapshot.data!.docs.isNotEmpty) {
+          }
+          else if (snapshot.data!.docs.isNotEmpty) {
             final repoDocs = snapshot.data!.docs;
             return ListView.builder(
               itemCount: repoDocs.length,
@@ -181,12 +203,38 @@ class _RepoListState extends State<RepoList> {
                 );
               },
             );
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
+          }
+          else if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
-          return Container();
+          return Center(
+            child: Transform.translate(
+              offset: Offset(0, -40),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/imgs/icons/icon_nodata.png',
+                    scale: 4,
+                    width: 73,
+                    height: 73,
+                  ),
+                  SizedBox(
+                    height: 6,
+                  ),
+                  Text('차단목록이 비어있습니다',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal,
+                        color: Color(0xFF949494)
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
         },
       )
 
