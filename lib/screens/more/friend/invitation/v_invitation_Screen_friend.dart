@@ -60,7 +60,7 @@ class _InvitationScreen_friendState extends State<InvitationScreen_friend> {
               centerTitle: true,
               titleSpacing: 0,
               title: Text(
-                '친구등록',
+                '친구추가',
                 style: TextStyle(
                     color: Color(0xFF111111),
                     fontWeight: FontWeight.bold,
