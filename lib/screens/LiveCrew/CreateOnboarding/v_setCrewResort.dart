@@ -143,7 +143,7 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '크루의 베이스 리조트를\n설정해 주세요.',
+                        '크루의 베이스 스키장을\n설정해 주세요.',
                         style: TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,

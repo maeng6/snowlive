@@ -20,7 +20,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
   List<XFile> _imageFiles = [];
   Map<String, String?> _tileSelected = {
     "구분": '',
-    "리조트": ''
+    "스키장": ''
   };
   bool? bulletinCrewImageSelected = false;
   int i = 0;

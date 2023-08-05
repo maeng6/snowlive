@@ -37,6 +37,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
 
   var assetCrew;
 
+  Map? crewRankingMap;
+
   @override
   Widget build(BuildContext context) {
 
@@ -317,7 +319,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '크루랭킹(위)',
+                                        '크루랭킹',
                                         style: TextStyle(
                                             fontSize: 13,
                                             color: Color(0xFFFFFFFF).withOpacity(0.7)
@@ -338,17 +340,13 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                           } else if (snapshot.hasError) {
                                             return Text('Error: ${snapshot.error}');
                                           } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+
                                             final crewDocs = snapshot.data!.docs;
-                                            int rank = 1;
-                                            for (var doc in crewDocs) {
-                                              if (doc.id == _liveCrewModelController.crewID) {
-                                                break;
-                                              }
-                                              rank++;
-                                            }
+                                            crewRankingMap =  _liveMapController.calculateRankCrewAll2(crewDocs: crewDocs);
+
                                             return Row(
                                               children: [
-                                                Text('${rank}',
+                                                Text('${crewRankingMap!['${_liveCrewModelController.crewID}']}',
                                                   style: GoogleFonts.bebasNeue(
                                                       color: Color(0xFFFFFFFF),
                                                       fontSize: 28
