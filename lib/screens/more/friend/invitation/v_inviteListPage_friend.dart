@@ -44,7 +44,6 @@ class _InviteListPage_friendState extends State<InviteListPage_friend> {
                         child: Center(
                           child: ListTile(
                             contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                            onTap: () {},
                             title: Text(
                               inviDocs[index]['displayName'],
                               style: TextStyle(

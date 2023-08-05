@@ -80,7 +80,6 @@ class _RepoListState extends State<RepoList> {
                 return ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   minVerticalPadding: 20,
-                  onTap: () {},
                   title: Text(
                     repoDocs[index]['displayName'],
                     style: TextStyle(
@@ -89,8 +88,9 @@ class _RepoListState extends State<RepoList> {
                       color: Color(0xFF111111),
                     ),
                   ),
-                  trailing: GestureDetector(
-                    onTap: (){
+                  trailing:
+                  ElevatedButton(
+                    onPressed: (){
                       showModalBottomSheet(
                           context: context,
                           builder: (context) {
@@ -131,7 +131,7 @@ class _RepoListState extends State<RepoList> {
                                             child: Text(
                                               '취소',
                                               style: TextStyle(
-                                                  color: Colors.white,
+                                                  color: Color(0xFF3D83ED),
                                                   fontSize: 15,
                                                   fontWeight:
                                                   FontWeight.bold),
@@ -143,7 +143,7 @@ class _RepoListState extends State<RepoList> {
                                                 minimumSize:
                                                 Size(100, 56),
                                                 backgroundColor:
-                                                Color(0xff555555),
+                                                Color(0xFF3D83ED).withOpacity(0.2),
                                                 padding:
                                                 EdgeInsets.symmetric(
                                                     horizontal: 0)),
@@ -156,10 +156,10 @@ class _RepoListState extends State<RepoList> {
                                           child: ElevatedButton(
                                             onPressed: () async {
                                               try{
-                                              Navigator.pop(context);
-                                              CustomFullScreenDialog.showDialog();
-                                              await _userModelController.deleteRepoUid(repoDocs[index]['uid']);
-                                              CustomFullScreenDialog.cancelDialog();
+                                                Navigator.pop(context);
+                                                CustomFullScreenDialog.showDialog();
+                                                await _userModelController.deleteRepoUid(repoDocs[index]['uid']);
+                                                CustomFullScreenDialog.cancelDialog();
                                               }catch(e){
                                                 Navigator.pop(context);
                                               }
@@ -180,7 +180,7 @@ class _RepoListState extends State<RepoList> {
                                                 minimumSize:
                                                 Size(100, 56),
                                                 backgroundColor:
-                                                Color(0xff2C97FB),
+                                                Color(0xFF3D83ED),
                                                 padding:
                                                 EdgeInsets.symmetric(
                                                     horizontal: 0)),
@@ -193,13 +193,16 @@ class _RepoListState extends State<RepoList> {
                               ),
                             );
                           });
-                    },
-                    child: Image.asset(
-                      'assets/imgs/icons/icon_arrow_g.png',
-                      height: 24,
-                      width: 24,
-                    ),
-                  ),
+                    }, child: Text('차단해제', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF949494)),),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFFFFFFF),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        side: BorderSide(
+                            color: Color(0xFFDEDEDE)
+                        )
+                    ),),
                 );
               },
             );
