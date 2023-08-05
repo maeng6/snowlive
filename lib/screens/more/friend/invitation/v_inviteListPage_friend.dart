@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../../../controller/vm_userModelController.dart';
+import '../v_friendDetailPage.dart';
 
 class InviteListPage_friend extends StatefulWidget {
   const InviteListPage_friend({Key? key}) : super(key: key);
@@ -44,6 +46,84 @@ class _InviteListPage_friendState extends State<InviteListPage_friend> {
                         child: Center(
                           child: ListTile(
                             contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                            leading:  (inviDocs[index]['profileImageUrl'].isNotEmpty)
+                                ? GestureDetector(
+                              onTap: () {
+                                Get.to(() =>
+                                    FriendDetailPage(uid: inviDocs[index]['uid'],
+                                      favoriteResort: inviDocs[index]['favoriteResort'],));
+                              },
+                              child: Container(
+                                width: 56,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Stack(
+                                        fit: StackFit.loose,
+                                        children: [
+                                          Container(
+                                            alignment: Alignment.center,
+                                            child: ExtendedImage.network(
+                                              inviDocs[index]['profileImageUrl'],
+                                              enableMemoryCache: true,
+                                              shape: BoxShape.circle,
+                                              borderRadius: BorderRadius.circular(8),
+                                              width: 40,
+                                              height: 40,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ]),
+                                  ],
+                                ),
+                              ),
+                            )
+                                : GestureDetector(
+                              onTap: () {
+                                Get.to(() =>
+                                    FriendDetailPage(
+                                      uid: inviDocs[index]['uid'],
+                                      favoriteResort: inviDocs[index]['favoriteResort'],));
+                              },
+                              child: Container(
+                                width: 56,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Stack(
+                                      fit: StackFit.loose,
+                                      children: [
+                                        Container(
+                                          alignment: Alignment.center,
+                                          child: ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
+                                            enableMemoryCache:
+                                            true,
+                                            shape: BoxShape.circle,
+                                            borderRadius:
+                                            BorderRadius.circular(8),
+                                            width: 40,
+                                            height: 40,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        (inviDocs[index]['isOnLive'] == true)
+                                            ? Positioned(
+                                          child: Image.asset(
+                                            'assets/imgs/icons/icon_badge_live.png',
+                                            width: 32,
+                                          ),
+                                          right: 0,
+                                          bottom: 0,
+                                        )
+                                            : Container()
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                             title: Text(
                               inviDocs[index]['displayName'],
                               style: TextStyle(
