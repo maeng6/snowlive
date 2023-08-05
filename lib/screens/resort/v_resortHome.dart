@@ -348,10 +348,10 @@ class _ResortHomeState extends State<ResortHome>
                             borderRadius: BorderRadius.circular(40),
                             boxShadow: [
                               BoxShadow(
-                                color: Color(0xFF3D6FED).withOpacity(0.2),
+                                color: Color(0xFF000000).withOpacity(0.1),
                                 spreadRadius: 4,
-                                blurRadius: 12,
-                                offset: Offset(0, 4), // changes position of shadow
+                                blurRadius: 16,
+                                offset: Offset(0, 6), // changes position of shadow
                               ),
                             ],
                           ),

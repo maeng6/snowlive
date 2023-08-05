@@ -179,12 +179,18 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
         return Scaffold(
           appBar: AppBar(
             actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 4),
-                child: IconButton(
-                  icon: Icon(Icons.location_searching,
-                  size: 24,),
-                  onPressed: _scrollToMyRanking,
+              GestureDetector(
+                onTap: _scrollToMyRanking,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: Text('My 크루',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF3D83ED)
+                    ),),
+                  ),
                 ),
               ),
             ],
