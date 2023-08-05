@@ -2422,7 +2422,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                 Row(
                                                                                   children: [
                                                                                     Text(
-                                                                                      commentDocs[index]['displayName'],
+                                                                                      userData['displayName'],
                                                                                       style: TextStyle(
                                                                                           fontSize: 13,
                                                                                           color: Color(0xFF949494)
