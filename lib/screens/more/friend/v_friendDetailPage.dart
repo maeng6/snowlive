@@ -1025,38 +1025,39 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                               onPressed: () async {
                                                                                 await _userModelController.getCurrentUser(_userModelController.uid);
                                                                                 if (_userModelController.whoInviteMe!.contains(widget.uid)) {
-                                                                                  Get.dialog(AlertDialog(
-                                                                                    contentPadding: EdgeInsets.only(bottom: 0, right: 20, top: 30),
-                                                                                    elevation: 0,
-                                                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                                                                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                    content: Text(
-                                                                                      '이미 요청받은 회원입니다.',
-                                                                                      style: TextStyle(
-                                                                                          fontWeight: FontWeight.w600,
-                                                                                          fontSize: 15),
-                                                                                    ),
-                                                                                    actions: [
-                                                                                      Row(
-                                                                                        children: [
-                                                                                          TextButton(
-                                                                                              onPressed: () {
-                                                                                                Navigator.pop(context);
-                                                                                                Get.back();
-                                                                                              },
-                                                                                              child: Text(
-                                                                                                '확인',
-                                                                                                style: TextStyle(
-                                                                                                  fontSize: 15,
-                                                                                                  color: Color(0xFF949494),
-                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                ),
-                                                                                              )),
+                                                                                  Navigator.pop(context);
+                                                                                  Get.dialog(
+                                                                                      AlertDialog(
+                                                                                        contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                        elevation: 0,
+                                                                                        shape: RoundedRectangleBorder(
+                                                                                            borderRadius: BorderRadius.circular(10.0)),
+                                                                                        buttonPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                                                                                        content: Text(
+                                                                                          '이미 친구 요청을 받은 회원입니다.',
+                                                                                          style: TextStyle(
+                                                                                              fontWeight: FontWeight.w600,
+                                                                                              fontSize: 15),
+                                                                                        ),
+                                                                                        actions: [
+                                                                                          Row(
+                                                                                            children: [
+                                                                                              TextButton(
+                                                                                                  onPressed: () async {
+                                                                                                      Navigator.pop(context);
+                                                                                                  },
+                                                                                                  child: Text('확인',
+                                                                                                    style: TextStyle(
+                                                                                                      fontSize: 15,
+                                                                                                      color: Color(0xFF3D83ED),
+                                                                                                      fontWeight: FontWeight.bold,
+                                                                                                    ),
+                                                                                                  )),
+                                                                                            ],
+                                                                                            mainAxisAlignment: MainAxisAlignment.end,
+                                                                                          )
                                                                                         ],
-                                                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                                                      )
-                                                                                    ],
-                                                                                  ));
+                                                                                      ));
                                                                                 } else {
                                                                                   CustomFullScreenDialog.showDialog();
                                                                                   await _userModelController.updateInvitation(friendUid: widget.uid);

@@ -42,7 +42,7 @@ class _InviteListPage_friendState extends State<InviteListPage_friend> {
                   return Column(
                     children: [
                       Container(
-                        height: 64,
+                        height: 80,
                         child: Center(
                           child: ListTile(
                             contentPadding: EdgeInsets.symmetric(horizontal: 0),
@@ -63,8 +63,7 @@ class _InviteListPage_friendState extends State<InviteListPage_friend> {
                                         fit: StackFit.loose,
                                         children: [
                                           Container(
-                                            alignment: Alignment.center,
-                                            child: ExtendedImage.network(
+                                            alignment: Alignment.centerLeft,                                            child: ExtendedImage.network(
                                               inviDocs[index]['profileImageUrl'],
                                               enableMemoryCache: true,
                                               shape: BoxShape.circle,
@@ -96,8 +95,7 @@ class _InviteListPage_friendState extends State<InviteListPage_friend> {
                                       fit: StackFit.loose,
                                       children: [
                                         Container(
-                                          alignment: Alignment.center,
-                                          child: ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
+                                          alignment: Alignment.centerLeft,                                          child: ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
                                             enableMemoryCache:
                                             true,
                                             shape: BoxShape.circle,
@@ -124,12 +122,15 @@ class _InviteListPage_friendState extends State<InviteListPage_friend> {
                                 ),
                               ),
                             ),
-                            title: Text(
-                              inviDocs[index]['displayName'],
-                              style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16,
-                                color: Color(0xFF111111),
+                            title: Transform.translate(
+                              offset: Offset(-20, 0),
+                              child: Text(
+                                inviDocs[index]['displayName'],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 16,
+                                  color: Color(0xFF111111),
+                                ),
                               ),
                             ),
                             trailing: ElevatedButton(
@@ -163,8 +164,7 @@ class _InviteListPage_friendState extends State<InviteListPage_friend> {
                                                 height: 30,
                                               ),
                                               Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 children: [
                                                   Expanded(
                                                     child: ElevatedButton(
@@ -240,6 +240,8 @@ class _InviteListPage_friendState extends State<InviteListPage_friend> {
                                     });
                               }, child: Text('요청취소', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF949494)),),
                               style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(horizontal: 11),
+                                  minimumSize: Size(56, 32),
                                 backgroundColor: Color(0xFFffffff),
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(

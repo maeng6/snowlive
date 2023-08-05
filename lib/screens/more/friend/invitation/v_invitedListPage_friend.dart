@@ -45,7 +45,7 @@ class _InvitedListPage_friendState extends State<InvitedListPage_friend> {
                   return Column(
                     children: [
                       Container(
-                        height: 64,
+                        height: 80,
                         child: Center(
                           child: ListTile(
                             contentPadding: EdgeInsets.symmetric(horizontal: 0),
@@ -66,7 +66,7 @@ class _InvitedListPage_friendState extends State<InvitedListPage_friend> {
                                         fit: StackFit.loose,
                                         children: [
                                           Container(
-                                            alignment: Alignment.center,
+                                            alignment: Alignment.centerLeft,
                                             child: ExtendedImage.network(
                                               inviDocs[index]['profileImageUrl'],
                                               enableMemoryCache: true,
@@ -99,7 +99,7 @@ class _InvitedListPage_friendState extends State<InvitedListPage_friend> {
                                       fit: StackFit.loose,
                                       children: [
                                         Container(
-                                          alignment: Alignment.center,
+                                          alignment: Alignment.centerLeft,
                                           child: ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
                                             enableMemoryCache:
                                             true,
@@ -127,17 +127,21 @@ class _InvitedListPage_friendState extends State<InvitedListPage_friend> {
                                 ),
                               ),
                             ),
-                            title: Text(
-                              inviDocs[index]['displayName'],
-                              style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16,
-                                color: Color(0xFF111111),
+                            title: Transform.translate(
+                              offset: Offset(-20, 0),
+                              child: Text(
+                                inviDocs[index]['displayName'],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 16,
+                                  color: Color(0xFF111111),
+                                ),
                               ),
                             ),
                             trailing: Container(
                               width: 134,
                               child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   ElevatedButton(
                                     onPressed: (){
@@ -236,6 +240,7 @@ class _InvitedListPage_friendState extends State<InvitedListPage_friend> {
                                         });
                                   }, child: Text('수락', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFFFFFFFF)),),
                                   style: ElevatedButton.styleFrom(
+                                    minimumSize: Size(58, 32),
                                     backgroundColor: Color(0xFF3D83ED),
                                     elevation: 0,
                                       shape: RoundedRectangleBorder(
@@ -350,6 +355,7 @@ class _InvitedListPage_friendState extends State<InvitedListPage_friend> {
                                           });
                                     }, child: Text('거절', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF949494)),),
                                     style: ElevatedButton.styleFrom(
+                                        minimumSize: Size(58, 32),
                                       backgroundColor: Color(0xFFFFFFFF),
                                       elevation: 0,
                                       shape: RoundedRectangleBorder(
