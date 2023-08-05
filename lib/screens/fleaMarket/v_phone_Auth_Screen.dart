@@ -383,6 +383,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                 controller: _textEditingController2,
                                 strutStyle: StrutStyle(leading: 0.3),
                                 decoration: InputDecoration(
+                                    floatingLabelBehavior: FloatingLabelBehavior.never,
                                     errorStyle: TextStyle(
                                       fontSize: 12,
                                     ),
@@ -391,13 +392,23 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                     hintText: '6자리 코드 입력',
                                     labelText: '인증번호',
                                     contentPadding: EdgeInsets.only(
-                                        top: 20, bottom: 20, left: 20, right: 20),
+                                        top: 20, bottom: 16, left: 16, right: 16),
+                                    fillColor: Color(0xFFEFEFEF),
+                                    hoverColor: Colors.transparent,
+                                    filled: true,
+                                    focusColor: Colors.transparent,
                                     border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                      borderSide: BorderSide(color: Color(0xFFEFEFEF)),
                                       borderRadius: BorderRadius.circular(6),
                                     ),
+                                    errorBorder:  OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.transparent),
+                                    ),
+                                    focusedBorder:  OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.transparent),
+                                    ),
                                     enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                      borderSide: BorderSide(color: Colors.transparent),
                                       borderRadius: BorderRadius.circular(6),
                                     )),
                                 validator: (val2) {
@@ -416,7 +427,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                               Positioned(
                                 right: 8,
                                 child: Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 23.5, horizontal: 14),
+                                    padding: EdgeInsets.symmetric(vertical: 23, horizontal: 14),
                                     child: Text('유효시간 $minutes:$seconds',
                                     style: TextStyle(
                                       color: Color(0xFFD32F2F),
