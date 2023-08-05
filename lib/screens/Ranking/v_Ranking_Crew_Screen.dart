@@ -415,7 +415,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                     .showDialog();
                                                 await _liveCrewModelController
                                                     .getCurrnetCrew(
-                                                    crewDocs[1]['crewID']);
+                                                    crewDocs[2]['crewID']);
                                                 CustomFullScreenDialog
                                                     .cancelDialog();
                                                 Get.to(() =>

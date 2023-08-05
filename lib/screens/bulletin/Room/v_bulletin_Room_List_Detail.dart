@@ -539,6 +539,8 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                       ),
                                       Row(
                                         children: [
+
+
                                           Text('${_bulletinRoomModelController.displayName}',
                                             //chatDocs[index].get('displayName'),
                                             style: TextStyle(
