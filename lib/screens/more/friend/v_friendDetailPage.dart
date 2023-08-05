@@ -376,7 +376,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                   borderRadius: BorderRadius.circular(6),
                                                                                                 )),
                                                                                             validator: (val) {
-                                                                                              if (val!.length <= 20 && val.length >= 1) {
+                                                                                              if (val!.length <= 8 && val.length >= 1) {
                                                                                                 return null;
                                                                                               } else if (val.length == 0) {
                                                                                                 return '닉네임을 입력해주세요.';
