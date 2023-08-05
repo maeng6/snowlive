@@ -127,20 +127,12 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                       //selected: _isSelected[index]!,
                                       onTap: () async {
                                         Get.dialog(AlertDialog(
-                                          contentPadding: EdgeInsets.only(
-                                              bottom: 0,
-                                              left: 20,
-                                              right: 20,
-                                              top: 30),
+                                          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
                                           elevation: 0,
                                           shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  10.0)),
+                                              borderRadius: BorderRadius.circular(10.0)),
                                           buttonPadding:
-                                          EdgeInsets.symmetric(
-                                              horizontal: 20,
-                                              vertical: 0),
+                                          EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                                           content: Text(
                                             '이 회원을 신고하시겠습니까?',
                                             style: TextStyle(
@@ -299,7 +291,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 1, right: 10),
                     child: Icon(
-                      Icons.more_vert_rounded,
+                      Icons.more_horiz_rounded,
                       size: 28,
                       color: Color(0xFF111111),
                     ),
@@ -526,7 +518,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 1, right: 10),
                     child: Icon(
-                      Icons.more_vert_rounded,
+                      Icons.more_horiz_rounded,
                       size: 28,
                       color: Color(0xFF111111),
                     ),
@@ -625,75 +617,81 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                 Column(
                                   children: [
                                     Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        StreamBuilder(
-                                            stream:  FirebaseFirestore.instance
-                                                .collection('user')
-                                                .where('uid', isEqualTo: _bulletinCrewModelController.uid)
-                                                .snapshots(),
-                                            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                                              if (!snapshot.hasData || snapshot.data == null) {
-                                                return  SizedBox();
-                                              }
-                                              final userDoc = snapshot.data!.docs;
-                                              final userData = userDoc.isNotEmpty ? userDoc[0] : null;
-                                              if (userData == null) {
-                                                return SizedBox();
-                                              }
-                                              return Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: [
-                                                  if (userData['profileImageUrl'] != "")
-                                                    GestureDetector(
-                                                      onTap: (){
-                                                        Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                                      },
-                                                      child: ExtendedImage.network(
-                                                        userData['profileImageUrl'],
-                                                        cache: true,
-                                                        shape: BoxShape.circle,
-                                                        borderRadius:
-                                                        BorderRadius.circular(20),
-                                                        width: 20,
-                                                        height: 20,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                  if (userData['profileImageUrl'] == "")
-                                                    GestureDetector(
-                                                      onTap: (){
-                                                        Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                                      },
-                                                      child: ExtendedImage.asset(
-                                                        'assets/imgs/profile/img_profile_default_circle.png',
-                                                        shape: BoxShape.circle,
-                                                        borderRadius:
-                                                        BorderRadius.circular(20),
-                                                        width: 20,
-                                                        height: 20,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                ],
-                                              );
-                                            }),
-                                        SizedBox(width: 5,),
-                                        Text('${_bulletinCrewModelController.displayName}',
-                                          //chatDocs[index].get('displayName'),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 14,
-                                              color: Color(0xFF949494)),
+                                        Row(
+                                          children: [
+                                            StreamBuilder(
+                                                stream:  FirebaseFirestore.instance
+                                                    .collection('user')
+                                                    .where('uid', isEqualTo: _bulletinCrewModelController.uid)
+                                                    .snapshots(),
+                                                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                                                  if (!snapshot.hasData || snapshot.data == null) {
+                                                    return  SizedBox();
+                                                  }
+                                                  final userDoc = snapshot.data!.docs;
+                                                  final userData = userDoc.isNotEmpty ? userDoc[0] : null;
+                                                  if (userData == null) {
+                                                    return SizedBox();
+                                                  }
+                                                  return Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      if (userData['profileImageUrl'] != "")
+                                                        GestureDetector(
+                                                          onTap: (){
+                                                            Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                                                          },
+                                                          child: ExtendedImage.network(
+                                                            userData['profileImageUrl'],
+                                                            cache: true,
+                                                            shape: BoxShape.circle,
+                                                            borderRadius:
+                                                            BorderRadius.circular(20),
+                                                            width: 20,
+                                                            height: 20,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
+                                                      if (userData['profileImageUrl'] == "")
+                                                        GestureDetector(
+                                                          onTap: (){
+                                                            Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                                                          },
+                                                          child: ExtendedImage.asset(
+                                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                                            shape: BoxShape.circle,
+                                                            borderRadius:
+                                                            BorderRadius.circular(20),
+                                                            width: 20,
+                                                            height: 20,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
+                                                    ],
+                                                  );
+                                                }),
+                                            SizedBox(width: 5,),
+                                            Text('${_bulletinCrewModelController.displayName}',
+                                              //chatDocs[index].get('displayName'),
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.normal,
+                                                  fontSize: 14,
+                                                  color: Color(0xFF949494)),
+                                            ),
+                                            Text(
+                                              '·${_bulletinCrewModelController.location}',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.normal,
+                                                  fontSize: 14,
+                                                  color: Color(0xFF949494)),
+                                            ),
+                                          ],
+
                                         ),
-                                        Text(
-                                          '·${_bulletinCrewModelController.location}',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 14,
-                                              color: Color(0xFF949494)),
-                                        ),
-                                        Text('    $_time',
+                                        Text('$_time',
                                           style: TextStyle(
                                               fontSize: 14,
                                               color: Color(0xFF949494),
@@ -733,6 +731,9 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.normal,
                                                 color: Color(0xFFB7B7B7)),
+                                          ),
+                                          SizedBox(
+                                            height: 6,
                                           ),
                                           Container(
                                             width: _size.width,
@@ -836,7 +837,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                   )
                                                                 ],
                                                               )
-                                                              :Scrollbar(
+                                                              : Scrollbar(
                                                             child: ListView.builder(
                                                               controller: _scrollController2,
                                                               shrinkWrap: true,
@@ -874,8 +875,6 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                             Row(
                                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                                               children: [
-                                                                                SizedBox(
-                                                                                    width: 10),
                                                                                 Column(
                                                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -895,131 +894,124 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                             return SizedBox();
                                                                                           }
                                                                                           return Row(
-                                                                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                            mainAxisAlignment: MainAxisAlignment.start,
                                                                                             children: [
-                                                                                              Row(
+                                                                                              if (userData['profileImageUrl'] != "")
+                                                                                                GestureDetector(
+                                                                                                  onTap: (){
+                                                                                                    Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                                                                                                  },
+                                                                                                  child: ExtendedImage.network(
+                                                                                                    userData['profileImageUrl'],
+                                                                                                    cache: true,
+                                                                                                    shape: BoxShape.circle,
+                                                                                                    borderRadius:
+                                                                                                    BorderRadius.circular(20),
+                                                                                                    width: 40,
+                                                                                                    height: 40,
+                                                                                                    fit: BoxFit.cover,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              if (userData['profileImageUrl'] == "")
+                                                                                                GestureDetector(
+                                                                                                  onTap: (){
+                                                                                                    Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                                                                                                  },
+                                                                                                  child: ExtendedImage.asset(
+                                                                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                    shape: BoxShape.circle,
+                                                                                                    borderRadius:
+                                                                                                    BorderRadius.circular(20),
+                                                                                                    width: 40,
+                                                                                                    height: 40,
+                                                                                                    fit: BoxFit.cover,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              SizedBox(width: 12,),
+                                                                                              Column(
+                                                                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                 children: [
-                                                                                                  if (userData['profileImageUrl'] != "")
-                                                                                                    GestureDetector(
-                                                                                                      onTap: (){
-                                                                                                        Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                                                                                      },
-                                                                                                      child: ExtendedImage.network(
-                                                                                                        userData['profileImageUrl'],
-                                                                                                        cache: true,
-                                                                                                        shape: BoxShape.circle,
-                                                                                                        borderRadius:
-                                                                                                        BorderRadius.circular(20),
-                                                                                                        width: 40,
-                                                                                                        height: 40,
-                                                                                                        fit: BoxFit.cover,
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                  if (userData['profileImageUrl'] == "")
-                                                                                                    GestureDetector(
-                                                                                                      onTap: (){
-                                                                                                        Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                                                                                      },
-                                                                                                      child: ExtendedImage.asset(
-                                                                                                        'assets/imgs/profile/img_profile_default_circle.png',
-                                                                                                        shape: BoxShape.circle,
-                                                                                                        borderRadius:
-                                                                                                        BorderRadius.circular(20),
-                                                                                                        width: 40,
-                                                                                                        height: 40,
-                                                                                                        fit: BoxFit.cover,
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                  SizedBox(width: 12,),
-                                                                                                  Column(
-                                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                  Row(
                                                                                                     children: [
-                                                                                                      Row(
-                                                                                                        children: [
-                                                                                                          Text(
-                                                                                                            userData['displayName'],
-                                                                                                            style: TextStyle(
-                                                                                                                fontWeight: FontWeight.bold,
-                                                                                                                fontSize: 14,
-                                                                                                                color: Color(0xFF111111)),
-                                                                                                          ),
-                                                                                                          SizedBox(
-                                                                                                              width: 6),
-                                                                                                          Text(
-                                                                                                            userData['resortNickname'],
-                                                                                                            style: TextStyle(
-                                                                                                                fontSize: 13,
-                                                                                                                color: Color(0xFF949494),
-                                                                                                                fontWeight: FontWeight.w300),
-                                                                                                          ),
-                                                                                                          SizedBox(
-                                                                                                              width: 1),
-                                                                                                          Text(
-                                                                                                            '· $_time',
-                                                                                                            style: TextStyle(
-                                                                                                                fontSize: 13,
-                                                                                                                color: Color(0xFF949494),
-                                                                                                                fontWeight: FontWeight.w300),
-                                                                                                          ),
-                                                                                                          SizedBox(
-                                                                                                              width: 6),
-                                                                                                          Padding(
-                                                                                                            padding: EdgeInsets.only(top: 1),
-                                                                                                            child: Container(
-                                                                                                              decoration: BoxDecoration(
-                                                                                                                borderRadius: BorderRadius.circular(30),
-                                                                                                                color:
-                                                                                                                (replyDocs[index].get('uid')==_bulletinCrewModelController.uid)
-                                                                                                                    ? Color(0xFFE1EDFF)
-                                                                                                                    : Colors.white,
-                                                                                                              ),
-                                                                                                              child: Padding(
-                                                                                                                padding: const EdgeInsets.only(top: 1, bottom: 3, left: 6, right: 6),
-                                                                                                                child: Text(
-                                                                                                                  '글쓴이',
-                                                                                                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.normal,
-                                                                                                                      color:
-                                                                                                                      (replyDocs[index].get('uid')==_bulletinCrewModelController.uid)
-                                                                                                                          ? Color(0xFF3D83ED)
-                                                                                                                          : Colors.white),
-                                                                                                                ),
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                        ],
+                                                                                                      Text(
+                                                                                                        userData['displayName'],
+                                                                                                        style: TextStyle(
+                                                                                                            fontWeight: FontWeight.bold,
+                                                                                                            fontSize: 14,
+                                                                                                            color: Color(0xFF111111)),
                                                                                                       ),
                                                                                                       SizedBox(
-                                                                                                        height: 2,
-                                                                                                      ),
-                                                                                                      Row(
-                                                                                                        children: [
-                                                                                                          Container(
-                                                                                                            constraints:
-                                                                                                            BoxConstraints(maxWidth: _size.width - 140),
-                                                                                                            child:
-                                                                                                            Text(
-                                                                                                              replyDocs[index].get('reply'),
-                                                                                                              maxLines:
-                                                                                                              1000,
-                                                                                                              overflow:
-                                                                                                              TextOverflow.ellipsis,
-                                                                                                              style: TextStyle(
-                                                                                                                  color: Color(0xFF111111),
-                                                                                                                  fontWeight: FontWeight.normal,
-                                                                                                                  fontSize: 13),
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                        ],
+                                                                                                          width: 6),
+                                                                                                      Text(
+                                                                                                        userData['resortNickname'],
+                                                                                                        style: TextStyle(
+                                                                                                            fontSize: 13,
+                                                                                                            color: Color(0xFF949494),
+                                                                                                            fontWeight: FontWeight.w300),
                                                                                                       ),
                                                                                                       SizedBox(
-                                                                                                        height: 8,
+                                                                                                          width: 1),
+                                                                                                      Text(
+                                                                                                        '· $_time',
+                                                                                                        style: TextStyle(
+                                                                                                            fontSize: 13,
+                                                                                                            color: Color(0xFF949494),
+                                                                                                            fontWeight: FontWeight.w300),
+                                                                                                      ),
+                                                                                                      SizedBox(
+                                                                                                          width: 6),
+                                                                                                      Padding(
+                                                                                                        padding: EdgeInsets.only(top: 1),
+                                                                                                        child: Container(
+                                                                                                          decoration: BoxDecoration(
+                                                                                                            borderRadius: BorderRadius.circular(30),
+                                                                                                            color:
+                                                                                                            (replyDocs[index].get('uid')==_bulletinCrewModelController.uid)
+                                                                                                                ? Color(0xFFE1EDFF)
+                                                                                                                : Colors.white,
+                                                                                                          ),
+                                                                                                          child: Padding(
+                                                                                                            padding: const EdgeInsets.only(top: 1, bottom: 3, left: 6, right: 6),
+                                                                                                            child: Text(
+                                                                                                              '글쓴이',
+                                                                                                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.normal,
+                                                                                                                  color:
+                                                                                                                  (replyDocs[index].get('uid')==_bulletinCrewModelController.uid)
+                                                                                                                      ? Color(0xFF3D83ED)
+                                                                                                                      : Colors.white),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        ),
                                                                                                       ),
                                                                                                     ],
-                                                                                                  )
+                                                                                                  ),
+                                                                                                  SizedBox(
+                                                                                                    height: 2,
+                                                                                                  ),
+                                                                                                  Row(
+                                                                                                    children: [
+                                                                                                      Container(
+                                                                                                        constraints:
+                                                                                                        BoxConstraints(maxWidth: _size.width - 140),
+                                                                                                        child:
+                                                                                                        Text(
+                                                                                                          replyDocs[index].get('reply'),
+                                                                                                          maxLines:
+                                                                                                          1000,
+                                                                                                          overflow:
+                                                                                                          TextOverflow.ellipsis,
+                                                                                                          style: TextStyle(
+                                                                                                              color: Color(0xFF111111),
+                                                                                                              fontWeight: FontWeight.normal,
+                                                                                                              fontSize: 13),
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                    ],
+                                                                                                  ),
+                                                                                                  SizedBox(
+                                                                                                    height: 8,
+                                                                                                  ),
                                                                                                 ],
-                                                                                              ),
-                                                                                              SizedBox(width: 12),
+                                                                                              )
                                                                                             ],
                                                                                           );
                                                                                         }),
