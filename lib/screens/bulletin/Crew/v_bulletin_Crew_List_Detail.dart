@@ -10,6 +10,7 @@ import 'package:snowlive3/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_bulletinCrewController.dart';
 import '../../../controller/vm_bulletinCrewReplyController.dart';
 import '../../comments/v_profileImageScreen.dart';
+import '../../more/friend/v_friendDetailPage.dart';
 
 class Bulletin_Crew_List_Detail extends StatefulWidget {
   Bulletin_Crew_List_Detail({Key? key}) : super(key: key);
@@ -625,6 +626,59 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                   children: [
                                     Row(
                                       children: [
+                                        StreamBuilder(
+                                            stream:  FirebaseFirestore.instance
+                                                .collection('user')
+                                                .where('uid', isEqualTo: _bulletinCrewModelController.uid)
+                                                .snapshots(),
+                                            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                                              if (!snapshot.hasData || snapshot.data == null) {
+                                                return  SizedBox();
+                                              }
+                                              final userDoc = snapshot.data!.docs;
+                                              final userData = userDoc.isNotEmpty ? userDoc[0] : null;
+                                              if (userData == null) {
+                                                return SizedBox();
+                                              }
+                                              return Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  if (userData['profileImageUrl'] != "")
+                                                    GestureDetector(
+                                                      onTap: (){
+                                                        Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                                                      },
+                                                      child: ExtendedImage.network(
+                                                        userData['profileImageUrl'],
+                                                        cache: true,
+                                                        shape: BoxShape.circle,
+                                                        borderRadius:
+                                                        BorderRadius.circular(20),
+                                                        width: 20,
+                                                        height: 20,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  if (userData['profileImageUrl'] == "")
+                                                    GestureDetector(
+                                                      onTap: (){
+                                                        Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                                                      },
+                                                      child: ExtendedImage.asset(
+                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                        shape: BoxShape.circle,
+                                                        borderRadius:
+                                                        BorderRadius.circular(20),
+                                                        width: 20,
+                                                        height: 20,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                ],
+                                              );
+                                            }),
+                                        SizedBox(width: 5,),
                                         Text('${_bulletinCrewModelController.displayName}',
                                           //chatDocs[index].get('displayName'),
                                           style: TextStyle(
@@ -820,129 +874,155 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                             Row(
                                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                                               children: [
-                                                                                if (replyDocs[index]['profileImageUrl'] != "")
-                                                                                  Padding(
-                                                                                    padding: EdgeInsets.only(top: 4),
-                                                                                    child: GestureDetector(
-                                                                                      onTap: () {
-                                                                                        Get.to(() =>
-                                                                                            ProfileImagePage(
-                                                                                              CommentProfileUrl:
-                                                                                              replyDocs[index]['profileImageUrl'],
-                                                                                            ));
-                                                                                      },
-                                                                                      child: ExtendedImage.network(
-                                                                                        replyDocs[index]['profileImageUrl'],
-                                                                                        cache: true,
-                                                                                        shape: BoxShape.circle,
-                                                                                        borderRadius: BorderRadius.circular(20),
-                                                                                        width: 26,
-                                                                                        height: 26,
-                                                                                        fit: BoxFit.cover,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                if (replyDocs[index]['profileImageUrl'] == "")
-                                                                                  Padding(
-                                                                                    padding: EdgeInsets.only(top:4),
-                                                                                    child: GestureDetector(
-                                                                                      onTap: () {
-                                                                                        Get.to(() =>
-                                                                                            ProfileImagePage(
-                                                                                                CommentProfileUrl: ''));
-                                                                                      },
-                                                                                      child: ExtendedImage.asset(
-                                                                                        'assets/imgs/profile/img_profile_default_circle.png',
-                                                                                        shape: BoxShape.circle,
-                                                                                        borderRadius: BorderRadius.circular(20),
-                                                                                        width: 26,
-                                                                                        height: 26,
-                                                                                        fit: BoxFit.cover,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
                                                                                 SizedBox(
                                                                                     width: 10),
                                                                                 Column(
                                                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                                                   children: [
-                                                                                    Row(
-                                                                                      children: [
-                                                                                        Text(
-                                                                                          replyDocs[index].get('displayName'),
-                                                                                          style: TextStyle(
-                                                                                              fontWeight: FontWeight.bold,
-                                                                                              fontSize: 14,
-                                                                                              color: Color(0xFF111111)),
-                                                                                        ),
-                                                                                        SizedBox(
-                                                                                            width: 6),
-                                                                                        Text(
-                                                                                          replyDocs[index].get('replyResortNickname'),
-                                                                                          style: TextStyle(
-                                                                                              fontSize: 13,
-                                                                                              color: Color(0xFF949494),
-                                                                                              fontWeight: FontWeight.w300),
-                                                                                        ),
-                                                                                        SizedBox(
-                                                                                            width: 1),
-                                                                                        Text('· $_time',
-                                                                                          style: TextStyle(
-                                                                                              fontSize: 13,
-                                                                                              color: Color(0xFF949494),
-                                                                                              fontWeight: FontWeight.w300),
-                                                                                        ),
-                                                                                        SizedBox(
-                                                                                            width: 6),
-                                                                                        Padding(
-                                                                                          padding: EdgeInsets.only(top: 1),
-                                                                                          child: Container(
-                                                                                            decoration: BoxDecoration(
-                                                                                              borderRadius: BorderRadius.circular(30),
-                                                                                              color:
-                                                                                              (replyDocs[index].get('uid')==_bulletinCrewModelController.uid)
-                                                                                                  ? Color(0xFFE1EDFF)
-                                                                                                  : Colors.white,
-                                                                                            ),
-                                                                                            child: Padding(
-                                                                                              padding: const EdgeInsets.only(top: 1, bottom: 3, left: 6, right: 6),
-                                                                                              child: Text(
-                                                                                                '글쓴이',
-                                                                                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.normal,
-                                                                                                    color:
-                                                                                                    (replyDocs[index].get('uid')==_bulletinCrewModelController.uid)
-                                                                                                        ? Color(0xFF3D83ED)
-                                                                                                        : Colors.white),
+                                                                                    StreamBuilder(
+                                                                                        stream:  FirebaseFirestore.instance
+                                                                                            .collection('user')
+                                                                                            .where('uid', isEqualTo: replyDocs[index]['uid'])
+                                                                                            .snapshots(),
+                                                                                        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                                                                                          if (!snapshot.hasData || snapshot.data == null) {
+                                                                                            return SizedBox();
+                                                                                          }
+                                                                                          final userDoc = snapshot.data!.docs;
+                                                                                          final userData = userDoc.isNotEmpty ? userDoc[0] : null;
+                                                                                          if (userData == null) {
+                                                                                            return SizedBox();
+                                                                                          }
+                                                                                          return Row(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                                            children: [
+                                                                                              Row(
+                                                                                                children: [
+                                                                                                  if (userData['profileImageUrl'] != "")
+                                                                                                    GestureDetector(
+                                                                                                      onTap: (){
+                                                                                                        Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                                                                                                      },
+                                                                                                      child: ExtendedImage.network(
+                                                                                                        userData['profileImageUrl'],
+                                                                                                        cache: true,
+                                                                                                        shape: BoxShape.circle,
+                                                                                                        borderRadius:
+                                                                                                        BorderRadius.circular(20),
+                                                                                                        width: 40,
+                                                                                                        height: 40,
+                                                                                                        fit: BoxFit.cover,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  if (userData['profileImageUrl'] == "")
+                                                                                                    GestureDetector(
+                                                                                                      onTap: (){
+                                                                                                        Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                                                                                                      },
+                                                                                                      child: ExtendedImage.asset(
+                                                                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                        shape: BoxShape.circle,
+                                                                                                        borderRadius:
+                                                                                                        BorderRadius.circular(20),
+                                                                                                        width: 40,
+                                                                                                        height: 40,
+                                                                                                        fit: BoxFit.cover,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  SizedBox(width: 12,),
+                                                                                                  Column(
+                                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                    children: [
+                                                                                                      Row(
+                                                                                                        children: [
+                                                                                                          Text(
+                                                                                                            userData['displayName'],
+                                                                                                            style: TextStyle(
+                                                                                                                fontWeight: FontWeight.bold,
+                                                                                                                fontSize: 14,
+                                                                                                                color: Color(0xFF111111)),
+                                                                                                          ),
+                                                                                                          SizedBox(
+                                                                                                              width: 6),
+                                                                                                          Text(
+                                                                                                            userData['resortNickname'],
+                                                                                                            style: TextStyle(
+                                                                                                                fontSize: 13,
+                                                                                                                color: Color(0xFF949494),
+                                                                                                                fontWeight: FontWeight.w300),
+                                                                                                          ),
+                                                                                                          SizedBox(
+                                                                                                              width: 1),
+                                                                                                          Text(
+                                                                                                            '· $_time',
+                                                                                                            style: TextStyle(
+                                                                                                                fontSize: 13,
+                                                                                                                color: Color(0xFF949494),
+                                                                                                                fontWeight: FontWeight.w300),
+                                                                                                          ),
+                                                                                                          SizedBox(
+                                                                                                              width: 6),
+                                                                                                          Padding(
+                                                                                                            padding: EdgeInsets.only(top: 1),
+                                                                                                            child: Container(
+                                                                                                              decoration: BoxDecoration(
+                                                                                                                borderRadius: BorderRadius.circular(30),
+                                                                                                                color:
+                                                                                                                (replyDocs[index].get('uid')==_bulletinCrewModelController.uid)
+                                                                                                                    ? Color(0xFFE1EDFF)
+                                                                                                                    : Colors.white,
+                                                                                                              ),
+                                                                                                              child: Padding(
+                                                                                                                padding: const EdgeInsets.only(top: 1, bottom: 3, left: 6, right: 6),
+                                                                                                                child: Text(
+                                                                                                                  '글쓴이',
+                                                                                                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.normal,
+                                                                                                                      color:
+                                                                                                                      (replyDocs[index].get('uid')==_bulletinCrewModelController.uid)
+                                                                                                                          ? Color(0xFF3D83ED)
+                                                                                                                          : Colors.white),
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        ],
+                                                                                                      ),
+                                                                                                      SizedBox(
+                                                                                                        height: 2,
+                                                                                                      ),
+                                                                                                      Row(
+                                                                                                        children: [
+                                                                                                          Container(
+                                                                                                            constraints:
+                                                                                                            BoxConstraints(maxWidth: _size.width - 140),
+                                                                                                            child:
+                                                                                                            Text(
+                                                                                                              replyDocs[index].get('reply'),
+                                                                                                              maxLines:
+                                                                                                              1000,
+                                                                                                              overflow:
+                                                                                                              TextOverflow.ellipsis,
+                                                                                                              style: TextStyle(
+                                                                                                                  color: Color(0xFF111111),
+                                                                                                                  fontWeight: FontWeight.normal,
+                                                                                                                  fontSize: 13),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        ],
+                                                                                                      ),
+                                                                                                      SizedBox(
+                                                                                                        height: 8,
+                                                                                                      ),
+                                                                                                    ],
+                                                                                                  )
+                                                                                                ],
                                                                                               ),
-                                                                                            ),
-                                                                                          ),
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
-                                                                                    SizedBox(
-                                                                                      height: 2,
-                                                                                    ),
-                                                                                    Row(
-                                                                                      children: [
-                                                                                        Container(
-                                                                                          constraints: BoxConstraints(maxWidth: _size.width - 140),
-                                                                                          child:
-                                                                                          Text(
-                                                                                            replyDocs[index].get('reply'),
-                                                                                            maxLines: 1000,
-                                                                                            overflow: TextOverflow.ellipsis,
-                                                                                            style: TextStyle(
-                                                                                                color: Color(0xFF111111),
-                                                                                                fontWeight: FontWeight.normal,
-                                                                                                fontSize: 13),
-                                                                                          ),
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
-                                                                                    SizedBox(
-                                                                                      height: 8,
-                                                                                    ),
+                                                                                              SizedBox(width: 12),
+                                                                                            ],
+                                                                                          );
+                                                                                        }),
                                                                                   ],
                                                                                 ),
                                                                               ],
@@ -1121,7 +1201,8 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                 child: ListTile(
                                                                                                   contentPadding: EdgeInsets.zero,
                                                                                                   title: Center(
-                                                                                                    child: Text('삭제',
+                                                                                                    child: Text(
+                                                                                                      '삭제',
                                                                                                       style: TextStyle(
                                                                                                         fontSize: 15,
                                                                                                         fontWeight: FontWeight.bold,
@@ -1177,14 +1258,15 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                                             CustomFullScreenDialog.showDialog();
                                                                                                                             try {
                                                                                                                               await FirebaseFirestore.instance
-                                                                                                                                  .collection('bulletinCrew')
-                                                                                                                                  .doc('${_bulletinCrewModelController.uid}#${_bulletinCrewModelController.bulletinCrewCount}')
+                                                                                                                                  .collection('bulletinRoom')
+                                                                                                                                  .doc('${_bulletinCrewModelController.uid}#${_bulletinCrewModelController..bulletinCrewCount}')
                                                                                                                                   .collection('reply')
                                                                                                                                   .doc('${_userModelController.uid}${replyDocs[index]['commentCount']}')
                                                                                                                                   .delete();
                                                                                                                               await _bulletinCrewModelController.reduceBulletinCrewReplyCount(
                                                                                                                                   bullUid: _bulletinCrewModelController.uid,
                                                                                                                                   bullCount: _bulletinCrewModelController.bulletinCrewCount);
+
                                                                                                                             } catch (e) {}
                                                                                                                             print('댓글 삭제 완료');
                                                                                                                             Navigator.pop(context);
@@ -1216,11 +1298,16 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                   }),
                                                                               child:
                                                                               Padding(
-                                                                                padding: const EdgeInsets.only(bottom: 22),
+                                                                                padding: const EdgeInsets
+                                                                                    .only(
+                                                                                    bottom:
+                                                                                    22),
                                                                                 child:
                                                                                 Icon(
-                                                                                  Icons.more_vert,
-                                                                                  color: Color(0xFFdedede),
+                                                                                  Icons
+                                                                                      .more_vert,
+                                                                                  color: Color(
+                                                                                      0xFFdedede),
                                                                                 ),
                                                                               ),
                                                                             )
