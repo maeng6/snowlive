@@ -151,6 +151,7 @@ class _ResortHomeState extends State<ResortHome>
                                 data: Theme.of(context).copyWith(
                                   canvasColor: Colors.white,),
                                 child: Drawer(
+                                  width: 240,
                                   child: Column(
                                     children: [
                                       Expanded(
@@ -224,6 +225,7 @@ class _ResortHomeState extends State<ResortHome>
                               data: Theme.of(context).copyWith(
                                 canvasColor: Colors.white,),
                               child: Drawer(
+                                width: 240,
                                 child: Column(
                                   children: [
                                     Expanded(
@@ -313,18 +315,8 @@ class _ResortHomeState extends State<ResortHome>
                                                               ),),
                                                             ],
                                                           ),
-                                                          GestureDetector(
-                                                            onTap:(){},
-                                                            child: Image.asset(
-                                                              'assets/imgs/icons/icon_live_map.png',
-                                                              scale: 4,
-                                                              width: 26,
-                                                              height: 26,
-                                                            ),
-                                                          ),
                                                         ],
                                                       ),
-
                                                     ),
                                                     if (index != liveFriendDocs.length - 1)  // 마지막 요소가 아니라면
                                                       Padding(
