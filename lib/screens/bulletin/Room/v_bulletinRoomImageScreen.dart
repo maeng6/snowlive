@@ -32,7 +32,6 @@ class _BulletinRoomImageScreenState extends State<BulletinRoomImageScreen> {
     Size _size = MediaQuery.of(context).size;
 
     return Dismissible(
-      background: FleaMarket_List_Detail(),
       direction: DismissDirection.down,
       key: UniqueKey(),
       onDismissed: (_)=>Navigator.pop(context),
