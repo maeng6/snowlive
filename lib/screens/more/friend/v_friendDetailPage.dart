@@ -1648,12 +1648,17 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                                   children: [
                                                                         Image.asset(
-                                                                          'assets/imgs/icons/icon_ranking_nodata_1.png',
+                                                                          'assets/imgs/icons/icon_profile_nodata_1.png',
                                                                           scale: 4,
                                                                           width: 43,
                                                                           height: 32,
                                                                         ),
-                                                                        Text('데이터가 없습니다'),
+                                                                        SizedBox(
+                                                                          height: 10,
+                                                                        ),
+                                                                        Text('데이터가 없습니다', style: TextStyle(
+                                                                          color: Color(0xFF7A89A0)
+                                                                        ),),
                                                                       ],
                                                                     ))
                                                                     : SingleChildScrollView(
@@ -1742,18 +1747,27 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                 padding: const EdgeInsets.symmetric(horizontal: 16),
                                                                 child: Container(
                                                                   child: isPassDataZero
-                                                                      ? Center(child: Column(
+                                                                      ? Center(
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets.only(top: 20),
+                                                                        child: Column(
                                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                                     children: [
-                                                                      Image.asset(
-                                                                        'assets/imgs/icons/icon_ranking_nodata_1.png',
-                                                                        scale: 4,
-                                                                        width: 43,
-                                                                        height: 32,
-                                                                      ),
-                                                                      Text('데이터가 없습니다'),
+                                                                        Image.asset(
+                                                                          'assets/imgs/icons/icon_profile_nodata_1.png',
+                                                                          scale: 4,
+                                                                          width: 43,
+                                                                          height: 32,
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height: 10,
+                                                                        ),
+                                                                        Text('데이터가 없습니다', style: TextStyle(
+                                                                            color: Color(0xFF7A89A0)
+                                                                        ),),
                                                                     ],
-                                                                  ))
+                                                                  ),
+                                                                      ))
                                                                       : Row(
                                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                     children: barData2.map((data) {
@@ -1808,7 +1822,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                 ),
                                                               ),
                                                             ),
-
                                                           ],
                                                         ),
                                                       ),
@@ -1816,11 +1829,28 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                   Padding(
                                                       padding: EdgeInsets.symmetric(horizontal: 20),
                                                       child: Container(
-                                                        child: Text('마지막 라이딩 : ${lastPassTimeString}  ',
-                                                          style: TextStyle(
-                                                              fontSize: 13,
-                                                              color: Color(0xFF949494)
-                                                          ),),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.only(right: 4),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.end,
+                                                            children: [
+                                                              Text('마지막 라이딩',
+                                                                style: TextStyle(
+                                                                    fontSize: 13,
+                                                                    color: Color(0xFF949494)
+                                                                ),),
+                                                              SizedBox(
+                                                                width: 4,
+                                                              ),
+                                                              Text('${lastPassTimeString}',
+                                                                style: TextStyle(
+                                                                    fontSize: 13,
+                                                                    fontWeight: FontWeight.bold,
+                                                                    color: Color(0xFF949494)
+                                                                ),),
+                                                            ],
+                                                          ),
+                                                        ),
                                                         alignment: Alignment.bottomRight,
                                                       )),
                                                   //시간대별 라이딩 횟수
