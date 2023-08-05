@@ -31,13 +31,6 @@ class ResortTab extends StatelessWidget {
           backgroundColor: Color(0xFFF1F1F3),
           elevation: 0.0,
           titleSpacing: 0,
-          title: Text(
-            '리조트',
-            style: TextStyle(
-                color: Color(0xFF111111),
-                fontWeight: FontWeight.bold,
-                fontSize: 20),
-          ),
         ),
       ),
       body: Padding(

@@ -25,7 +25,7 @@ class _Bulletin_Crew_ModifyPageState extends State<Bulletin_Crew_ModifyPage> {
   List<XFile> _imageFiles = [];
   Map<String, String?> _tileSelected = {
     "구분": '',
-    "리조트": ''
+    "스키장": ''
   };
   bool? bulletinCrewImageSelected = false;
   int i = 0;
@@ -526,7 +526,7 @@ class _Bulletin_Crew_ModifyPageState extends State<Bulletin_Crew_ModifyPage> {
                                   children: [
                                     if (isLocationSelected==true)
                                       Text(
-                                        '리조트',
+                                        '스키장',
                                         style:
                                         TextStyle(color: Color(0xff949494), fontSize: 12),
                                       ),

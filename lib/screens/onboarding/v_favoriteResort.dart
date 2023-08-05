@@ -91,7 +91,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
                   Column(
                     children: [
                       Text(
-                        '자주가는 리조트를 \n선택해 주세요.',
+                        '자주가는 스키장을\n선택해 주세요.',
                         style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
@@ -102,7 +102,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
                     height: 8,
                   ),
                   Text(
-                    '자주가는 리조트는 1개만 선택할 수 있습니다.',
+                    '자주가는 스키장은 1개만 선택할 수 있습니다.',
                     style: TextStyle(
                         color: Color(0xff949494),
                         fontSize: 13,
