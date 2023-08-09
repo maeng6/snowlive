@@ -35,7 +35,7 @@ class _EmailSignupPageState extends State<EmailSignupPage> {
         child: Stack(
           children: [
             Scaffold(backgroundColor: Colors.white,
-              resizeToAvoidBottomInset: false,
+              resizeToAvoidBottomInset: true,
               extendBodyBehindAppBar: true,
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(58),
@@ -70,7 +70,7 @@ class _EmailSignupPageState extends State<EmailSignupPage> {
               body: SingleChildScrollView(
                 child: Padding(
                   padding:
-                  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),
+                  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize + 80),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
