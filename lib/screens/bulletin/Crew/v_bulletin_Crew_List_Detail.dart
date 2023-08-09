@@ -1427,13 +1427,6 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                     ],
                   ),
                 ),
-                Text(
-                  '운영자가 실시간으로 악성댓글을 관리합니다.',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFFC8C8C8),
-                  ),
-                ),
                 SizedBox(
                   height: 16,
                 )
