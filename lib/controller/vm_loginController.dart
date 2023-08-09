@@ -103,7 +103,33 @@ class LoginController extends GetxController {
      }
   }
 
-  Future<dynamic> deleteUser({required uid, required fleaCount,required crewID}) async {
+  Future<void> deleteBulletinCrewAll({required myUid, required bulletinCrewCount}) async{
+    print(myUid);
+    for (int i = bulletinCrewCount; i > -1; i--) {
+      DocumentReference bulletinCrewDocs = FirebaseFirestore
+          .instance.collection('bulletinCrew').doc('$myUid#$i');
+      FirebaseFirestore.instance.runTransaction((transaction) async => await transaction.delete(bulletinCrewDocs));
+      print(i);
+    }
+  }
+
+  Future<void> deleteBulletinRoomAll({required myUid, required bulletinRoomCount}) async{
+    print(myUid);
+    for (int i = bulletinRoomCount; i > -1; i--) {
+      DocumentReference bulletinRoomDocs = FirebaseFirestore
+          .instance.collection('bulletinRoom').doc('$myUid#$i');
+      FirebaseFirestore.instance.runTransaction((transaction) async => await transaction.delete(bulletinRoomDocs));
+      print(i);
+    }
+  }
+
+  Future<dynamic> deleteUser({
+    required uid,
+    required fleaCount,
+    required bulletinCrewCount,
+    required bulletinRoomCount,
+    required crewID}) async {
+
     CustomFullScreenDialog.showDialog();
 
     String leaderUid='';
@@ -201,6 +227,16 @@ class LoginController extends GetxController {
       try{
         await deleteFleaItemAll(myUid: uid, fleaCount: fleaCount);
         print('중고거래 게시글 삭제');
+      } catch(e){}
+
+      try{
+        await deleteBulletinCrewAll(myUid: uid, bulletinCrewCount: bulletinCrewCount);
+        print('커뮤니티 크루 게시글 삭제');
+      } catch(e){}
+
+      try{
+        await deleteBulletinRoomAll(myUid: uid, bulletinRoomCount: bulletinRoomCount);
+        print('커뮤니티 시즌방 게시글 삭제');
       } catch(e){}
 
 

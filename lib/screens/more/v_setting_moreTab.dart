@@ -112,7 +112,9 @@ class setting_moreTab extends StatelessWidget {
                                         await _loginController.deleteUser(
                                             uid: _userModelController.uid,
                                             fleaCount: _userModelController.fleaCount,
-                                            crewID: _userModelController.liveCrew
+                                            crewID: _userModelController.liveCrew,
+                                            bulletinCrewCount: _userModelController.bulletinCrewCount,
+                                            bulletinRoomCount: _userModelController.bulletinCrewCount,
                                         );
 
                                     },
