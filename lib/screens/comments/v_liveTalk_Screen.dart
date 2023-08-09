@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:snowlive3/screens/comments/v_noUserScreen.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/comments/v_reply_Screen.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
@@ -232,6 +233,7 @@ class _LiveTalkScreenState
 
                                                                             Get.to(() => FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: favoriteResort,));
                                                                           } else {
+                                                                            Get.to(()=>NoUserScreen());
                                                                           }
                                                                         },
                                                                         child: ExtendedImage.network(
@@ -258,7 +260,7 @@ class _LiveTalkScreenState
 
                                                                             Get.to(() => FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: favoriteResort,));
                                                                           } else {
-                                                                            // user 문서를 찾을 수 없는 경우에 대한 처리를 여기에 추가하세요.
+                                                                            Get.to(()=>NoUserScreen());
                                                                           }
                                                                         },
                                                                         child: ExtendedImage

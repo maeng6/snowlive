@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:snowlive3/controller/vm_commentController.dart';
 import 'package:snowlive3/controller/vm_replyModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:snowlive3/screens/comments/v_noUserScreen.dart';
 import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
@@ -349,9 +350,22 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                           Padding(
                                                             padding: EdgeInsets.only(top: 4),
                                                             child: GestureDetector(
-                                                              onTap: () {
-                                                                Get.to(() =>
-                                                                    FriendDetailPage(uid: replyDocs[index]['uid'], favoriteResort: replyDocs[index]['favoriteResort'],));
+                                                              onTap: () async{
+                                                                QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
+                                                                    .collection('user')
+                                                                    .where('uid', isEqualTo: replyDocs[index]['uid'])
+                                                                    .get();
+
+                                                                if (userQuerySnapshot.docs.isNotEmpty) {
+                                                                  DocumentSnapshot userDoc = userQuerySnapshot.docs.first;
+                                                                  int favoriteResort = userDoc['favoriteResort'];
+                                                                  print(favoriteResort);
+                                                                  print(replyDocs[index]['uid']);
+
+                                                                  Get.to(() => FriendDetailPage(uid: replyDocs[index]['uid'], favoriteResort: favoriteResort,));
+                                                                } else {
+                                                                  Get.to(()=>NoUserScreen());
+                                                                }
                                                               },
                                                               child: ExtendedImage.network(
                                                                 replyDocs[index]['profileImageUrl'],
@@ -368,9 +382,22 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                           Padding(
                                                             padding: EdgeInsets.only(top:4),
                                                             child: GestureDetector(
-                                                              onTap: () {
-                                                                Get.to(() =>
-                                                                    FriendDetailPage(uid: replyDocs[index]['uid'], favoriteResort: replyDocs[index]['favoriteResort'],));
+                                                              onTap: () async{
+                                                                QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
+                                                                    .collection('user')
+                                                                    .where('uid', isEqualTo: replyDocs[index]['uid'])
+                                                                    .get();
+
+                                                                if (userQuerySnapshot.docs.isNotEmpty) {
+                                                                  DocumentSnapshot userDoc = userQuerySnapshot.docs.first;
+                                                                  int favoriteResort = userDoc['favoriteResort'];
+                                                                  print(favoriteResort);
+                                                                  print(replyDocs[index]['uid']);
+
+                                                                  Get.to(() => FriendDetailPage(uid: replyDocs[index]['uid'], favoriteResort: favoriteResort,));
+                                                                } else {
+                                                                  Get.to(()=>NoUserScreen());
+                                                                }
                                                               },
                                                               child: ExtendedImage.asset(
                                                                 'assets/imgs/profile/img_profile_default_circle.png',
