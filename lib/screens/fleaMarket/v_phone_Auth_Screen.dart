@@ -29,6 +29,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
   bool buttonColorActive = true;
   bool buttonColorActive2 = true;
   bool isFirstSent = true;
+  bool isFirstSentClick = false;
   var _phoneNumber;
   var _veriNumber;
 
@@ -298,6 +299,11 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                 padding: EdgeInsets.only(top: 6),
                                 child: Center(
                                   child: ElevatedButton(onPressed: () async {
+                                    setState(() {
+                                      requestedAuth=true;
+                                      isFirstSentClick=true;
+                                      isFirstSent=true;
+                                    });
                                     if(_textEditingController.text.trim().isEmpty
                                         || !_formKey.currentState!.validate() || buttonColorActive == false)
                                     {return ;}
@@ -323,7 +329,6 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                           print("코드보냄");
 
                                           setState(() {
-                                            requestedAuth=true;
                                             buttonColorActive=false;
                                             this.verificationId = verificationId;
                                           });
@@ -338,7 +343,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                     ? Text(
                                       '인증번호 발송',
                                       style: TextStyle(
-                                          color: Color(0xFF377EEA),
+                                          color: isFirstSentClick ? Color(0xFF949494) : Color(0xFF377EEA),
                                           fontWeight: FontWeight.bold,
                                           fontSize: 15),
                                     )
