@@ -36,7 +36,7 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
         child: Stack(
           children: [
             Scaffold(backgroundColor: Colors.white,
-              resizeToAvoidBottomInset: false,
+              resizeToAvoidBottomInset: true,
               extendBodyBehindAppBar: true,
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(58),
@@ -71,7 +71,7 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
               body: SingleChildScrollView(
                 child: Padding(
                   padding:
-                  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),
+                  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize + 60),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,

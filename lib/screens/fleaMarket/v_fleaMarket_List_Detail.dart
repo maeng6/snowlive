@@ -504,132 +504,151 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                     child: Column(
                                       children: [
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            if (_fleaModelController.profileImageUrl!.isEmpty)
-                                              GestureDetector(
-                                                onTap: (){
-                                                  Get.to(()=>FriendDetailPage(uid: _fleaModelController.uid, favoriteResort: userDocs[0]['favoriteResort'],));
-                                                },
-                                                child: ExtendedImage.asset(
-                                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                                  shape: BoxShape.circle,
-                                                  borderRadius: BorderRadius.circular(20),
-                                                  width: 32,
-                                                  height: 32,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            if (_fleaModelController.profileImageUrl!.isNotEmpty)
-                                              GestureDetector(
-                                                onTap: (){
-                                                  Get.to(()=>FriendDetailPage(uid: _fleaModelController.uid, favoriteResort: userDocs[0]['favoriteResort']));
-                                                },
-                                                child: ExtendedImage.network(
-                                                  '${_fleaModelController.profileImageUrl}',
-                                                  shape: BoxShape.circle,
-                                                  borderRadius: BorderRadius.circular(20),
-                                                  width: 32,
-                                                  height: 32,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            SizedBox(width: 12),
-                                            Padding(
-                                              padding: const EdgeInsets.only(bottom: 2),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                if (_fleaModelController.profileImageUrl!.isEmpty)
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      Get.to(()=>FriendDetailPage(uid: _fleaModelController.uid, favoriteResort: userDocs[0]['favoriteResort'],));
+                                                    },
+                                                    child: ExtendedImage.asset(
+                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                      shape: BoxShape.circle,
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      width: 32,
+                                                      height: 32,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                if (_fleaModelController.profileImageUrl!.isNotEmpty)
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      Get.to(()=>FriendDetailPage(uid: _fleaModelController.uid, favoriteResort: userDocs[0]['favoriteResort']));
+                                                    },
+                                                    child: ExtendedImage.network(
+                                                      '${_fleaModelController.profileImageUrl}',
+                                                      shape: BoxShape.circle,
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      width: 32,
+                                                      height: 32,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                SizedBox(width: 12),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(bottom: 2),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
-                                                          Text(
-                                                            '${_fleaModelController.displayName}',
-                                                            //chatDocs[index].get('displayName'),
-                                                            style: TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                fontSize: 14,
-                                                                color: Color(0xFF111111)),
-                                                          ),
-                                                          SizedBox(width: 6),
-                                                          Text(
-                                                            '$_time',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                color: Color(0xFF949494),
-                                                                fontWeight:
-                                                                FontWeight.w300),
-                                                          ),
-                                                          SizedBox(width: 6,),
-                                                          if(_fleaModelController.kakaoUrl != null && _fleaModelController.kakaoUrl != '')
-                                                            GestureDetector(
-                                                              onTap: (){
-                                                                if(_fleaModelController.kakaoUrl!.isNotEmpty && _fleaModelController.kakaoUrl != '' ) {
-                                                                  _fleaModelController.otherShare(contents: '${_fleaModelController.kakaoUrl}');
-                                                                }else{
-                                                                  Get.dialog(AlertDialog(
-                                                                    contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                    elevation: 0,
-                                                                    shape: RoundedRectangleBorder(
-                                                                        borderRadius: BorderRadius.circular(10.0)),
-                                                                    buttonPadding:
-                                                                    EdgeInsets.symmetric(
-                                                                        horizontal: 20,
-                                                                        vertical: 0),
-                                                                    content: Text(
-                                                                      '연결된 카카오 오픈채팅이 없습니다.',
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight.w600,
-                                                                          fontSize: 15),
-                                                                    ),
-                                                                    actions: [
-                                                                      Row(
-                                                                        children: [
-                                                                          TextButton(
-                                                                              onPressed: () async {
-                                                                                Navigator.pop(context);
-                                                                              },
-                                                                              child: Text(
-                                                                                '확인',
-                                                                                style: TextStyle(
-                                                                                  fontSize: 15,
-                                                                                  color: Color(0xff377EEA),
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
-                                                                              )),
-                                                                        ],
-                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                      )
-                                                                    ],
-                                                                  ));
-                                                                }
-                                                              },
-                                                              child: Container(
-                                                                decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(3),
-                                                                  color: Colors.yellow,
-                                                                ),
-                                                                padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                                                child: Text(
-                                                                  '카카오 오픈채팅 바로가기',
-                                                                  style: TextStyle(
-                                                                      fontWeight: FontWeight.bold,
-                                                                      fontSize: 12,
-                                                                      color: Colors.black),
-                                                                ),
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                '${_fleaModelController.displayName}',
+                                                                //chatDocs[index].get('displayName'),
+                                                                style: TextStyle(
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize: 14,
+                                                                    color: Color(0xFF111111)),
                                                               ),
-                                                            ),
+                                                              SizedBox(width: 6),
+                                                              Text(
+                                                                '$_time',
+                                                                style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    color: Color(0xFF949494),
+                                                                    fontWeight:
+                                                                    FontWeight.w300),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ],
                                                       ),
                                                     ],
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
+                                            if(_fleaModelController.kakaoUrl != null && _fleaModelController.kakaoUrl != '')
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(_fleaModelController.kakaoUrl!.isNotEmpty && _fleaModelController.kakaoUrl != '' ) {
+                                                    _fleaModelController.otherShare(contents: '${_fleaModelController.kakaoUrl}');
+                                                  }else{
+                                                    Get.dialog(AlertDialog(
+                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                      elevation: 0,
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(10.0)),
+                                                      buttonPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 20,
+                                                          vertical: 0),
+                                                      content: Text(
+                                                        '연결된 카카오 오픈채팅이 없습니다.',
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: 15),
+                                                      ),
+                                                      actions: [
+                                                        Row(
+                                                          children: [
+                                                            TextButton(
+                                                                onPressed: () async {
+                                                                  Navigator.pop(context);
+                                                                },
+                                                                child: Text(
+                                                                  '확인',
+                                                                  style: TextStyle(
+                                                                    fontSize: 15,
+                                                                    color: Color(0xff377EEA),
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
+                                                                )),
+                                                          ],
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                        )
+                                                      ],
+                                                    ));
+                                                  }
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    color: Color(0xFFFEE500),
+                                                  ),
+                                                  padding: EdgeInsets.only(right: 8, left: 6, top: 5, bottom: 5),
+                                                  child: Row(
+                                                    children: [
+                                                      ExtendedImage.asset(
+                                                        'assets/imgs/logos/kakao_logo.png',
+                                                        enableMemoryCache: true,
+                                                        shape: BoxShape.rectangle,
+                                                        borderRadius: BorderRadius.circular(7),
+                                                        width: 18,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 2,
+                                                      ),
+                                                      Text(
+                                                        '카카오 오픈채팅',
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 12,
+                                                            color: Colors.black),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
                                           ],
                                         ),
                                         Divider(

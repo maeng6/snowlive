@@ -26,15 +26,26 @@ class NoUserScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Column(
-              children: [
-                Icon(Icons.no_accounts_outlined,
-                size: 70,
-                color: Color(0xFF949494),
-                ),
-                SizedBox(height: 10,),
-                Text('이미 탈퇴한 사용자입니다')
-              ],
+            Padding(
+              padding: const EdgeInsets.only(bottom: 100),
+              child: Column(
+                children: [
+                  Center(
+                    child: Image.asset('assets/imgs/icons/icon_friend_nouser.png',
+                      width: 72,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Center(
+                    child: Text(
+                      '이미 탈퇴한 사용자입니다',
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF666666)),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
