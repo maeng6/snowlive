@@ -71,7 +71,7 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
               body: SingleChildScrollView(
                 child: Padding(
                   padding:
-                  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize + 60),
+                  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize + 80),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
