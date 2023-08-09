@@ -1383,90 +1383,110 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                         .where('uid', isEqualTo: friendDocs[0]['uid'] )
                                                         .snapshots(),
                                                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                                      if (!snapshot.hasData || snapshot.data == null) {}
+                                                      if (!snapshot.hasData || snapshot.data == null) {
+                                                        return Container();
+                                                      }
+                                                      else if (snapshot.connectionState == ConnectionState.waiting) {
+                                                        return CircularProgressIndicator();
+                                                      }
+                                                      else if (snapshot.hasError) {
+                                                        return Text('오류: ${snapshot.error}');
+                                                      }
                                                       else if (snapshot.data!.docs.isNotEmpty) {
+
                                                         final rankingDocs = snapshot.data!.docs;
-                                                        // 동점자인 경우 lastPassTime을 기준으로 최신 순으로 정렬
-                                                        rankingDocs.sort((a, b) {
-                                                          final aTotalScore = a['totalScore'] as int;
-                                                          final bTotalScore = b['totalScore'] as int;
-                                                          final aLastPassTime = a['lastPassTime'] as Timestamp?;
-                                                          final bLastPassTime = b['lastPassTime'] as Timestamp?;
-
-                                                          if (aTotalScore == bTotalScore) {
-                                                            if (aLastPassTime != null && bLastPassTime != null) {
-                                                              return bLastPassTime.compareTo(aLastPassTime);
-                                                            }
-                                                          }
-
-                                                          return bTotalScore.compareTo(aTotalScore);
-                                                        });
-
-                                                        userRankingMap =  _liveMapController.calculateRankIndiAll2(userRankingDocs: rankingDocs);
 
                                                         for(var rankingTier in rankingTierList)
                                                           if(rankingDocs[0]['tier'] == rankingTier.tierName)
-                                                            return Container(
-                                                                width: _size.width / 2 - 25,
-                                                                padding: EdgeInsets.all(16),
-                                                                decoration: BoxDecoration(
-                                                                    borderRadius: BorderRadius.circular(10),
-                                                                    color: Color(0xFF1D59B4)
-                                                                ),
-                                                                child: Row(
-                                                                  children: [
-                                                                    Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                            return StreamBuilder<QuerySnapshot>(
+                                                              stream: FirebaseFirestore.instance
+                                                                  .collection('Ranking')
+                                                                  .doc('${_seasonController.currentSeason}')
+                                                                  .collection('${friendDocs[0]['favoriteResort']}')
+                                                                  .orderBy('totalScore', descending: true)
+                                                                  .snapshots(),
+                                                              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                                                if (!snapshot.hasData || snapshot.data == null) {
+                                                                  return Container();
+                                                                }
+                                                                else if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                  return CircularProgressIndicator();
+                                                                }
+                                                                else if (snapshot.hasError) {
+                                                                  return Text('오류: ${snapshot.error}');
+                                                                } else{
+
+                                                                  final rankingDocs_total = snapshot.data!.docs;
+
+                                                                  userRankingMap =  _liveMapController.calculateRankIndiAll2(userRankingDocs: rankingDocs_total);
+
+                                                                  print(userRankingMap);
+
+                                                                  return Container(
+                                                                    width: _size.width / 2 - 25,
+                                                                    padding: EdgeInsets.all(16),
+                                                                    decoration: BoxDecoration(
+                                                                        borderRadius: BorderRadius.circular(10),
+                                                                        color: Color(0xFF1D59B4)
+                                                                    ),
+                                                                    child: Row(
                                                                       children: [
-                                                                        Text('개인랭킹',
-                                                                          style: TextStyle(
-                                                                              fontWeight: FontWeight.normal,
-                                                                              fontSize: 13,
-                                                                              color: Color(0xFFFFFFFF).withOpacity(0.6)
-                                                                          ),),
-                                                                        SizedBox(height: 10),
                                                                         Column(
                                                                           crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          mainAxisAlignment: MainAxisAlignment.start,
                                                                           children: [
-                                                                            Transform.translate(
-                                                                              offset: Offset(-10,-10),
-                                                                              child: ExtendedImage.asset(
-                                                                                rankingTier.badgeAsset,
-                                                                                enableMemoryCache: true,
-                                                                                fit: BoxFit.cover,
-                                                                                width: 64,
-                                                                              ),
-                                                                            ),
-                                                                            SizedBox(
-                                                                              height: 15,
-                                                                            ),
-                                                                            Text('${rankingDocs[0]['totalScore']}점',
+                                                                            Text('개인랭킹',
                                                                               style: TextStyle(
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  fontSize: 16,
-                                                                                  color: Color(0xFFFFFFFF)
-                                                                              ),
-                                                                            ),
-                                                                            SizedBox(
-                                                                              height: 3,
-                                                                            ),
-                                                                            Text(
-                                                                              '${userRankingMap!['${rankingDocs[0]['uid']}']}등',
-                                                                              style: TextStyle(
+                                                                                  fontWeight: FontWeight.normal,
                                                                                   fontSize: 13,
-                                                                                  color: Color(0xFFFFFFFF)
-                                                                              ),
-                                                                            ),
+                                                                                  color: Color(0xFFFFFFFF).withOpacity(0.6)
+                                                                              ),),
+                                                                            SizedBox(height: 10),
+                                                                            Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Transform.translate(
+                                                                                  offset: Offset(-10,-10),
+                                                                                  child: ExtendedImage.asset(
+                                                                                    rankingTier.badgeAsset,
+                                                                                    enableMemoryCache: true,
+                                                                                    fit: BoxFit.cover,
+                                                                                    width: 64,
+                                                                                  ),
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  height: 15,
+                                                                                ),
+                                                                                Text('${rankingDocs[0]['totalScore']}점',
+                                                                                  style: TextStyle(
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      fontSize: 16,
+                                                                                      color: Color(0xFFFFFFFF)
+                                                                                  ),
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  height: 3,
+                                                                                ),
+                                                                                Text(
+                                                                                  '${userRankingMap!['${rankingDocs[0]['uid']}']}등',
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      color: Color(0xFFFFFFFF)
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            )
                                                                           ],
-                                                                        )
+                                                                        ),
                                                                       ],
                                                                     ),
-                                                                  ],
-                                                                ),
-                                                              );
+                                                                  );
+                                                                }
+
+                                                              }
+                                                            );
                                                       }
-                                                      else if (snapshot.connectionState == ConnectionState.waiting) {}
+
                                                       return (friendDocs[0]['uid'] == _userModelController.uid)
                                                           ?GestureDetector(
                                                         onTap: (){
