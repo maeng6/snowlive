@@ -123,7 +123,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                                 fontSize: 14),
                                           ),
                                           onPressed: () async{
-                                            Get.offAll(()=>MainHome(uid: _userModelController.uid));
+                                            Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
                                           },
                                           style: ElevatedButton.styleFrom(
                                             padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
@@ -200,7 +200,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                                 fontSize: 14),
                                           ),
                                           onPressed: () async{
-                                            Get.offAll(()=>MainHome(uid: _userModelController.uid));
+                                            Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
                                           },
                                           style: ElevatedButton.styleFrom(
                                             padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
@@ -277,7 +277,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                                 fontSize: 14),
                                           ),
                                           onPressed: () async{
-                                            Get.offAll(()=>MainHome(uid: _userModelController.uid));
+                                            Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
                                           },
                                           style: ElevatedButton.styleFrom(
                                             padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
@@ -364,7 +364,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                                       fontSize: 14),
                                                 ),
                                                 onPressed: () async{
-                                                  Get.offAll(()=>MainHome(uid: _userModelController.uid));
+                                                  Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
                                                 },
                                                 style: ElevatedButton.styleFrom(
                                                   padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
@@ -441,7 +441,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                                       fontSize: 14),
                                                 ),
                                                 onPressed: () async{
-                                                  Get.offAll(()=>MainHome(uid: _userModelController.uid));
+                                                  Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
                                                 },
                                                 style: ElevatedButton.styleFrom(
                                                   padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
@@ -518,7 +518,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                                       fontSize: 14),
                                                 ),
                                                 onPressed: () async{
-                                                  Get.offAll(()=>MainHome(uid: _userModelController.uid));
+                                                  Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
                                                 },
                                                 style: ElevatedButton.styleFrom(
                                                   padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
@@ -596,7 +596,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                               fontSize: 14),
                                         ),
                                         onPressed: () async{
-                                          Get.offAll(()=>MainHome(uid: _userModelController.uid));
+                                          Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
                                         },
                                         style: ElevatedButton.styleFrom(
                                           padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
@@ -905,7 +905,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                               fontSize: 14),
                                         ),
                                         onPressed: () async{
-                                          Get.offAll(()=>MainHome(uid: _userModelController.uid));
+                                          Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
                                         },
                                         style: ElevatedButton.styleFrom(
                                           padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),

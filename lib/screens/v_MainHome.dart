@@ -15,8 +15,10 @@ import 'more/v_moreTab.dart';
 
 class MainHome extends StatefulWidget {
 
-  MainHome({Key? key,required this.uid}) : super(key: key);
+  MainHome({Key? key,required this.uid, required this.initialPage}) : super(key: key);
   String? uid;
+  final int initialPage; // 초기 페이지 인덱스 (기본값은 0)
+
   @override
   State<MainHome> createState() => _MainHomeState();
 }
@@ -39,8 +41,9 @@ class _MainHomeState extends State<MainHome> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    _currentPage = widget.initialPage;
+    _pageController = PageController(initialPage: widget.initialPage); // 초기 페이지 설정
   }
 
 

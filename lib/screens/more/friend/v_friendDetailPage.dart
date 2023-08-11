@@ -8,6 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:snowlive3/controller/vm_DialogController_resortHome.dart';
 import 'package:snowlive3/controller/vm_friendsCommentController.dart';
 import 'package:snowlive3/controller/vm_liveMapController.dart';
+import 'package:snowlive3/controller/vm_mainHomeController.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_timeStampController.dart';
@@ -116,6 +117,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
+  MainHomeController _mainHomeController = Get.find<MainHomeController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -1422,63 +1424,68 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 
                                                                   print(userRankingMap);
 
-                                                                  return Container(
-                                                                    width: _size.width / 2 - 25,
-                                                                    padding: EdgeInsets.all(16),
-                                                                    decoration: BoxDecoration(
-                                                                        borderRadius: BorderRadius.circular(10),
-                                                                        color: Color(0xFF1D59B4)
-                                                                    ),
-                                                                    child: Row(
-                                                                      children: [
-                                                                        Column(
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                                          children: [
-                                                                            Text('개인랭킹',
-                                                                              style: TextStyle(
-                                                                                  fontWeight: FontWeight.normal,
-                                                                                  fontSize: 13,
-                                                                                  color: Color(0xFFFFFFFF).withOpacity(0.6)
-                                                                              ),),
-                                                                            SizedBox(height: 10),
-                                                                            Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                Transform.translate(
-                                                                                  offset: Offset(-10,-10),
-                                                                                  child: ExtendedImage.asset(
-                                                                                    rankingTier.badgeAsset,
-                                                                                    enableMemoryCache: true,
-                                                                                    fit: BoxFit.cover,
-                                                                                    width: 64,
+                                                                  return GestureDetector(
+                                                                    onTap: (){
+                                                                      Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 2));
+                                                                    },
+                                                                    child: Container(
+                                                                      width: _size.width / 2 - 25,
+                                                                      padding: EdgeInsets.all(16),
+                                                                      decoration: BoxDecoration(
+                                                                          borderRadius: BorderRadius.circular(10),
+                                                                          color: Color(0xFF1D59B4)
+                                                                      ),
+                                                                      child: Row(
+                                                                        children: [
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                            children: [
+                                                                              Text('개인랭킹',
+                                                                                style: TextStyle(
+                                                                                    fontWeight: FontWeight.normal,
+                                                                                    fontSize: 13,
+                                                                                    color: Color(0xFFFFFFFF).withOpacity(0.6)
+                                                                                ),),
+                                                                              SizedBox(height: 10),
+                                                                              Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  Transform.translate(
+                                                                                    offset: Offset(-10,-10),
+                                                                                    child: ExtendedImage.asset(
+                                                                                      rankingTier.badgeAsset,
+                                                                                      enableMemoryCache: true,
+                                                                                      fit: BoxFit.cover,
+                                                                                      width: 64,
+                                                                                    ),
                                                                                   ),
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  height: 15,
-                                                                                ),
-                                                                                Text('${rankingDocs[0]['totalScore']}점',
-                                                                                  style: TextStyle(
-                                                                                      fontWeight: FontWeight.bold,
-                                                                                      fontSize: 16,
-                                                                                      color: Color(0xFFFFFFFF)
+                                                                                  SizedBox(
+                                                                                    height: 15,
                                                                                   ),
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  height: 3,
-                                                                                ),
-                                                                                Text(
-                                                                                  '${userRankingMap!['${rankingDocs[0]['uid']}']}등',
-                                                                                  style: TextStyle(
-                                                                                      fontSize: 13,
-                                                                                      color: Color(0xFFFFFFFF)
+                                                                                  Text('${rankingDocs[0]['totalScore']}점',
+                                                                                    style: TextStyle(
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        fontSize: 16,
+                                                                                        color: Color(0xFFFFFFFF)
+                                                                                    ),
                                                                                   ),
-                                                                                ),
-                                                                              ],
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      ],
+                                                                                  SizedBox(
+                                                                                    height: 3,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    '${userRankingMap!['${rankingDocs[0]['uid']}']}등',
+                                                                                    style: TextStyle(
+                                                                                        fontSize: 13,
+                                                                                        color: Color(0xFFFFFFFF)
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                   );
                                                                 }
@@ -1490,7 +1497,50 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       return (friendDocs[0]['uid'] == _userModelController.uid)
                                                           ?GestureDetector(
                                                         onTap: (){
-                                                          Get.offAll(()=>MainHome(uid: _userModelController.uid));
+                                                          Get.dialog(
+                                                              AlertDialog(
+                                                                contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                elevation: 0,
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius: BorderRadius.circular(10.0)),
+                                                                buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                content: Text(
+                                                                  '홈화면으로 이동하여 라이브 버튼을 ON으로 바꾸고 랭킹전에 참여하세요!',
+                                                                  style: TextStyle(
+                                                                      fontWeight: FontWeight.w600,
+                                                                      fontSize: 15),
+                                                                ),
+                                                                actions: [
+                                                                  Row(
+                                                                    children: [
+                                                                      TextButton(
+                                                                          onPressed: () {
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child: Text('취소',
+                                                                            style: TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: Color(0xFF949494),
+                                                                              fontWeight: FontWeight.bold,
+                                                                            ),
+                                                                          )),
+                                                                      TextButton(
+                                                                          onPressed: () {
+                                                                            Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
+                                                                          },
+                                                                          child: Text(
+                                                                            '이동하기',
+                                                                            style: TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: Color(0xFF3D83ED),
+                                                                              fontWeight: FontWeight.bold,
+                                                                            ),
+                                                                          ))
+                                                                    ],
+                                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                                  )
+                                                                ],
+                                                              ));
                                                         },
                                                         child: Container(
                                                           width: _size.width / 2 - 25,
@@ -1530,47 +1580,52 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                           ),
                                                         ),
                                                       )
-                                                          : Container(
+                                                          : GestureDetector(
+                                                        onTap: (){
+                                                          Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 2));
+                                                        },
+                                                            child: Container(
                                                         width: _size.width / 2 - 25,
                                                         padding: EdgeInsets.all(16),
                                                         decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(10),
-                                                            color: Color(0xFFf1f3f3)
+                                                              borderRadius: BorderRadius.circular(10),
+                                                              color: Color(0xFFf1f3f3)
                                                         ),
                                                         child: Row(
-                                                          children: [
-                                                            Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              mainAxisAlignment: MainAxisAlignment.start,
-                                                              children: [
-                                                                Text('개인랭킹',
-                                                                  style: TextStyle(
-                                                                      fontWeight: FontWeight.normal,
-                                                                      fontSize: 13,
-                                                                      color: Color(0xFF444444).withOpacity(0.8)
-                                                                  ),),
-                                                                SizedBox(height: 97),
-                                                                Text('미참여',
-                                                                  style: TextStyle(
-                                                                      fontWeight: FontWeight.bold,
-                                                                      fontSize: 16,
-                                                                      color: Color(0xFF444444)
+                                                            children: [
+                                                              Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                children: [
+                                                                  Text('개인랭킹',
+                                                                    style: TextStyle(
+                                                                        fontWeight: FontWeight.normal,
+                                                                        fontSize: 13,
+                                                                        color: Color(0xFF444444).withOpacity(0.8)
+                                                                    ),),
+                                                                  SizedBox(height: 97),
+                                                                  Text('미참여',
+                                                                    style: TextStyle(
+                                                                        fontWeight: FontWeight.bold,
+                                                                        fontSize: 16,
+                                                                        color: Color(0xFF444444)
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 3,
-                                                                ),
-                                                                Text('점수가 없습니다',
-                                                                  style: TextStyle(
-                                                                      fontSize: 13,
-                                                                      color: Color(0xFF949494)
+                                                                  SizedBox(
+                                                                    height: 3,
                                                                   ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
+                                                                  Text('점수가 없습니다',
+                                                                    style: TextStyle(
+                                                                        fontSize: 13,
+                                                                        color: Color(0xFF949494)
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
                                                         ),
-                                                      );
+                                                      ),
+                                                          );
                                                     }),
                                               ],
                                             ),

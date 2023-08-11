@@ -42,7 +42,7 @@ class _LoadingPageState extends State<LoadingPage> {
     // 로그인 관련 작업
     _logInController.loginAgain().then((_) {
       if (_logInController.loginUid != null) {
-        Get.offAll(() => MainHome(uid: _logInController.loginUid));
+        Get.offAll(() => MainHome(uid: _logInController.loginUid, initialPage: 0,));
       } else {
         Get.offAll(() => LoginPage());
       }

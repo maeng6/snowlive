@@ -179,7 +179,7 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
                   await userModelController.updateIsOnLiveOff();
                   CustomFullScreenDialog.cancelDialog();
                   await Get.offAll(
-                          () => MainHome(uid: userModelController.uid));
+                          () => MainHome(uid: userModelController.uid, initialPage: 0,));
                 }
                     : null, // isSelected가 false일 경우 버튼 클릭 이벤트 비활성화
                 child: Text(
