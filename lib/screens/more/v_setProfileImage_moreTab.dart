@@ -153,14 +153,18 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                             CustomFullScreenDialog.showDialog();
                                             try {
                                               _imageFile = await _imageController.getSingleImage(ImageSource.camera);
-                                              _croppedFile = await _imageController.cropImage(_imageFile);
-                                              CustomFullScreenDialog.cancelDialog();
-                                              profileImage = true;
-                                              setState(() {});
-                                              Navigator.pop(context);
+                                              if(_imageFile != null){
+                                                _croppedFile = await _imageController.cropImage(_imageFile);
+                                              }
+                                              if(_croppedFile != null){
+                                                profileImage = true;
+                                                setState(() {});
+                                              }
                                             } catch (e) {
                                               CustomFullScreenDialog.cancelDialog();
                                             }
+                                            CustomFullScreenDialog.cancelDialog();
+                                            Navigator.pop(context);
                                           },
                                           child: Text(
                                             '사진 촬영',
@@ -185,14 +189,18 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                             CustomFullScreenDialog.showDialog();
                                             try {
                                               _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
-                                              _croppedFile = await _imageController.cropImage(_imageFile);
-                                              CustomFullScreenDialog.cancelDialog();
-                                              profileImage = true;
-                                              setState(() {});
-                                              Navigator.pop(context);
+                                              if(_imageFile != null){
+                                                _croppedFile = await _imageController.cropImage(_imageFile);
+                                              }
+                                              if(_croppedFile != null){
+                                                profileImage = true;
+                                                setState(() {});
+                                              }
                                             } catch (e) {
                                               CustomFullScreenDialog.cancelDialog();
                                             }
+                                            CustomFullScreenDialog.cancelDialog();
+                                            Navigator.pop(context);
                                           },
                                           child: Text(
                                             '앨범에서 선택',
@@ -296,14 +304,18 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                             CustomFullScreenDialog.showDialog();
                                             try {
                                               _imageFile = await _imageController.getSingleImage(ImageSource.camera);
-                                              _croppedFile = await _imageController.cropImage(_imageFile);
-                                              CustomFullScreenDialog.cancelDialog();
-                                              profileImage = true;
-                                              setState(() {});
-                                              Navigator.pop(context);
+                                              if(_imageFile != null){
+                                                _croppedFile = await _imageController.cropImage(_imageFile);
+                                              }
+                                              if(_croppedFile != null){
+                                                profileImage = true;
+                                                setState(() {});
+                                              }
                                             } catch (e) {
                                               CustomFullScreenDialog.cancelDialog();
                                             }
+                                            CustomFullScreenDialog.cancelDialog();
+                                            Navigator.pop(context);
                                           },
                                           child: Text(
                                             '사진 촬영',
@@ -331,16 +343,19 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                           onPressed: () async {
                                             CustomFullScreenDialog.showDialog();
                                             try {
-                                              _imageFile =
-                                              await _imageController.getSingleImage(ImageSource.gallery);
-                                              _croppedFile = await _imageController.cropImage(_imageFile);
-                                              CustomFullScreenDialog.cancelDialog();
-                                              profileImage = true;
-                                              setState(() {});
-                                              Navigator.pop(context);
+                                              _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
+                                              if(_imageFile != null){
+                                                _croppedFile = await _imageController.cropImage(_imageFile);
+                                              }
+                                              if(_croppedFile != null){
+                                                profileImage = true;
+                                                setState(() {});
+                                              }
                                             } catch (e) {
                                               CustomFullScreenDialog.cancelDialog();
                                             }
+                                            CustomFullScreenDialog.cancelDialog();
+                                            Navigator.pop(context);
                                           },
                                           child: Text(
                                             '앨범에서 선택',

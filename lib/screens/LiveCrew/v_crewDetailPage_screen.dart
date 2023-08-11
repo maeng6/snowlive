@@ -157,7 +157,6 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
             ),
             Column(
               children: [
-                if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid))
                 Row(
                   children: [
                     Column(
@@ -207,7 +206,6 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                         )
                       ],
                     ),
-                    if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid))
                     Column(
                       children: [
                         Padding(
@@ -256,7 +254,6 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                         )
                       ],
                     ),
-                    if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid))
                       Column(
                         children: [
                           Padding(
