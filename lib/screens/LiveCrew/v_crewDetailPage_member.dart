@@ -705,7 +705,31 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                 ],
                               );
                             }else{
-                             return SizedBox();
+                             return Container(
+                               height: _size.height - 400,
+                               child: Column(
+                                 mainAxisAlignment: MainAxisAlignment.center,
+                                 children: [
+                                   Center(
+                                     child: Image.asset('assets/imgs/icons/icon_no_member.png',
+                                       width: 100,
+                                     ),
+                                   ),
+                                   SizedBox(height: 12),
+                                   Center(
+                                     child: Padding(
+                                       padding: const EdgeInsets.only(bottom: 50),
+                                       child: Text(
+                                         '가입된 크루원이 없습니다',
+                                         style: TextStyle(
+                                             fontSize: 14,
+                                             color: Color(0xFF666666)),
+                                       ),
+                                     ),
+                                   ),
+                                 ],
+                               ),
+                             );
                             }
                           },
                         ),

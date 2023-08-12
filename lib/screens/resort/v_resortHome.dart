@@ -591,7 +591,7 @@ class _ResortHomeState extends State<ResortHome>
                                   style: TextStyle(
                                       fontSize: 14,
                                       letterSpacing: -0.1,
-                                      color: Color(0xFFC8C8C8),
+                                      color: Color(0xFF949494),
                                       fontWeight: FontWeight.w900,
                                       overflow: TextOverflow.ellipsis),
                                 ),
