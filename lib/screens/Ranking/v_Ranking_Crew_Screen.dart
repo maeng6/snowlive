@@ -131,24 +131,33 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
           crewRankingMap =
               _liveMapController.calculateRankCrewAll2(crewDocs: crewDocs);
 
-          for (var crewLogo in crewLogoList) {
-            if (crewLogo.crewColor == crewDocs[0]['crewColor']) {
-              assetTop1 = crewLogo.crewLogoAsset;
-              break;
+          if (crewDocs.isNotEmpty) {
+            for (var crewLogo in crewLogoList) {
+              if (crewLogo.crewColor == crewDocs[0]['crewColor']) {
+                assetTop1 = crewLogo.crewLogoAsset;
+                break;
+              }
             }
           }
-          for (var crewLogo in crewLogoList) {
-            if (crewLogo.crewColor == crewDocs[1]['crewColor']) {
-              assetTop2 = crewLogo.crewLogoAsset;
-              break;
+
+          if (crewDocs.length > 1) {
+            for (var crewLogo in crewLogoList) {
+              if (crewLogo.crewColor == crewDocs[1]['crewColor']) {
+                assetTop2 = crewLogo.crewLogoAsset;
+                break;
+              }
             }
           }
-          for (var crewLogo in crewLogoList) {
-            if (crewLogo.crewColor == crewDocs[2]['crewColor']) {
-              assetTop3 = crewLogo.crewLogoAsset;
-              break;
+
+          if (crewDocs.length > 2) {
+            for (var crewLogo in crewLogoList) {
+              if (crewLogo.crewColor == crewDocs[2]['crewColor']) {
+                assetTop3 = crewLogo.crewLogoAsset;
+                break;
+              }
             }
           }
+
           print(assetTop1);
           print(assetTop2);
           print(assetTop3);
