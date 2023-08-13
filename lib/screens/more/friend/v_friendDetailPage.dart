@@ -21,6 +21,7 @@ import '../../../model/m_rankingTierModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 import '../../LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
 import '../../LiveCrew/v_crewDetailPage_screen.dart';
+import '../../Ranking/v_Ranking_Indi_Screen_detail.dart';
 import '../v_setProfileImage_moreTab.dart';
 
 class FriendDetailPage extends StatefulWidget {
@@ -1423,7 +1424,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 
                                                                   return GestureDetector(
                                                                     onTap: (){
-                                                                      Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 2));
+                                                                      Get.to(()=>RankingIndiScreenDetail());
                                                                     },
                                                                     child: Container(
                                                                       width: _size.width / 2 - 25,

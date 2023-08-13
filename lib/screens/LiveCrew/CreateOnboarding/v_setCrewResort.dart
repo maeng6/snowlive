@@ -133,7 +133,7 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
             ),
           ),
           body: Padding(
-            padding:  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: 140),
+            padding:  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16),
             child: Container(
               color: Colors.white,
               child: Column(
@@ -193,6 +193,9 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
                           );
                         }),
                   ),
+                  SizedBox(
+                    height: 90,
+                  )
                 ],
               ),
             ),
@@ -205,7 +208,7 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
           child: Container(
             color: Colors.white,
             width: _size.width,
-            height: 124,
+            height: 90,
           ),
         ),
         Positioned(
@@ -285,6 +288,7 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
 
   ListTile buildCheckboxListTile(int index) {
     return ListTile(
+      contentPadding: EdgeInsets.zero,
       title: Text('${resortNameList[index]}', style: TextStyle(fontSize: 16),),
       selected: _isSelected[index]!,
       trailing: _isChecked[index]!
