@@ -7,6 +7,7 @@ import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/controller/vm_liveMapController.dart';
 import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:snowlive3/screens/Ranking/v_MyRanking_Detail_Screen.dart';
 import 'package:snowlive3/screens/Ranking/v_Ranking_indi_All_Screen.dart';
 import '../../model/m_rankingTierModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
@@ -66,6 +67,52 @@ class _RankingIndiScreenDetailState extends State<RankingIndiScreenDetail> {
               fontWeight: FontWeight.bold,
               fontSize: 20),
         ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(top: 10, right: 16),
+            child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 2),
+                    child: Container(
+                      padding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 12), // 텍스트와 테두리 간의 패딩
+                      decoration: BoxDecoration(
+                        color: Color(0xFF3D6FED),
+                        borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
+                      ),
+                      child: GestureDetector(
+                        onTap: (){
+                          Get.to(()=>MyRankingDetailPage());
+                        },
+                        child: Row(
+                          children: [
+                            ExtendedImage.asset(
+                              'assets/imgs/icons/icon_crown_circle.png',
+                              enableMemoryCache: true,
+                              shape: BoxShape.circle,
+                              borderRadius: BorderRadius.circular(8),
+                              width: 15,
+                              height: 15,
+                              fit: BoxFit.cover,
+                            ),
+                            SizedBox(width: 3 ,),
+                            Text(
+                              '내 점수',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFFFFFFFF)
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ]
+            ),
+          ),
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
