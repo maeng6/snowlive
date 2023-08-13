@@ -283,38 +283,33 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
     );
   }
 
-  CheckboxListTile buildCheckboxListTile(int index) {
-    return CheckboxListTile(
+  ListTile buildCheckboxListTile(int index) {
+    return ListTile(
       title: Text('${resortNameList[index]}', style: TextStyle(fontSize: 16),),
-      activeColor: widget.crewColor,
       selected: _isSelected[index]!,
-      selectedTileColor: widget.crewColor,
-      value: _isChecked[index],
-      contentPadding: EdgeInsets.symmetric(horizontal: 0),
-      onChanged: (bool? value) {
+      trailing: _isChecked[index]!
+          ? Image.asset(
+        'assets/imgs/icons/icon_check_filled.png',
+        width: 24,
+        height: 24,
+      )
+          : Image.asset(
+        'assets/imgs/icons/icon_check_unfilled.png',
+        width: 24,
+        height: 24,
+      ),
+      onTap: () {
         setState(() {
           _isChecked = List<bool?>.filled(14, false);
           _isSelected = List<bool?>.filled(14, false);
-          _isChecked[index] = value;
-          _isSelected[index] = value;
-          if (value == false) {
-            baseResort = null;
-          } else {
-            baseResort = index;
-          }
+          _isChecked[index] = true;
+          _isSelected[index] = true;
+          baseResort = index;
         });
       },
     );
   }
 
-
-  ListTile buildListTile(int index) {
-    return ListTile(
-      title: Text('${resortNameList[index]}', style: TextStyle(fontSize: 16),),
-      selected: _isSelected[index]!,
-
-    );
-  }
 }
 
 
