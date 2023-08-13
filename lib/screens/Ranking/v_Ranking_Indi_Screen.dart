@@ -160,7 +160,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                     if (!snapshot.hasData || snapshot.data == null) {
                                                       return  Container(
                                                         height: 154,
-                                                        width: _size.width / 3 - 12,
+                                                        width: (_size.width - 40) / 3,
                                                       );
                                                     }
                                                     else if (snapshot.data!.docs.isNotEmpty) {
@@ -175,7 +175,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                             borderRadius: BorderRadius.circular(8),
                                                           ),
                                                           height: 154,
-                                                          width: _size.width / 3 - 16,
+                                                          width: (_size.width - 48) / 3,
                                                           child: Column(
                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                             children: [
@@ -228,12 +228,12 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                     else if (snapshot.connectionState == ConnectionState.waiting) {
                                                       return Container(
                                                         height: 154,
-                                                        width: _size.width / 3 - 12,
+                                                        width: (_size.width - 48) / 3,
                                                       );
                                                     } else {
                                                       return Container(
                                                         height: 154,
-                                                        width: _size.width / 3 - 12,
+                                                        width: (_size.width - 48) / 3,
                                                       );
                                                     }
                                                   },
@@ -261,7 +261,6 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                             borderRadius: BorderRadius.circular(8),
                                                           ),
                                                           height: 154,
-                                                          width: _size.width / 3 - 12,
                                                           child: Column(
                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                             children: [
@@ -308,17 +307,18 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                               ),
                                                             ],
                                                           ),
+                                                          width: (_size.width - 48) / 3,
                                                         ),
                                                       );
                                                     } else if (snapshot.connectionState == ConnectionState.waiting) {
                                                       return Container(
                                                         height: 154,
-                                                        width: _size.width / 3 - 12,
+                                                        width: (_size.width - 48) / 3,
                                                       );
                                                     } else {
                                                       return Container(
                                                         height: 154,
-                                                        width: _size.width / 3 - 12,
+                                                        width: (_size.width - 48) / 3,
                                                       );
                                                     }
                                                   },
@@ -346,7 +346,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                             borderRadius: BorderRadius.circular(8),
                                                           ),
                                                           height: 154,
-                                                          width: _size.width / 3 - 12,
+                                                          width: (_size.width - 48) / 3,
                                                           child: Column(
                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                             children: [
@@ -398,12 +398,12 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                     } else if (snapshot.connectionState == ConnectionState.waiting) {
                                                       return Container(
                                                         height: 154,
-                                                        width: _size.width / 3 - 12,
+                                                        width: (_size.width - 48) / 3,
                                                       );
                                                     } else {
                                                       return Container(
                                                         height: 154,
-                                                        width: _size.width / 3 - 12,
+                                                        width: (_size.width - 48) / 3,
                                                       );
                                                     }
                                                   },

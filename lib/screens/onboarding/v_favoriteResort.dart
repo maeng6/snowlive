@@ -82,7 +82,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
             ),
           ),
           body: Padding(
-            padding:  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: 130),
+            padding:  EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16),
             child: Container(
               color: Colors.white,
               child: Column(
@@ -130,6 +130,9 @@ class _FavoriteResortState extends State<FavoriteResort> {
                           );
                         }),
                   ),
+                  SizedBox(
+                    height: 90,
+                  )
                 ],
               ),
             ),

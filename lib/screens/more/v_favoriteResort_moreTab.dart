@@ -84,7 +84,7 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
           ),
           body: Padding(
             padding: EdgeInsets.only(
-                top: _statusBarSize + 58, left: 16, right: 16, bottom: 130),
+                top: _statusBarSize + 58, left: 16, right: 16),
             child: Container(
               color: Colors.white,
               child: Column(
@@ -139,6 +139,9 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
                           );
                         }),
                   ),
+                  SizedBox(
+                    height: 90,
+                  )
                 ],
               ),
             ),

@@ -134,19 +134,16 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
           leading:
           (edit == false)
               ? GestureDetector(
-            child: Padding(
-              padding: EdgeInsets.only(top: _statusBarSize - 30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Image.asset(
-                    'assets/imgs/icons/icon_snowLive_back.png',
-                    scale: 4,
-                    width: 26,
-                    height: 26,
-                  ),
-                ],
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/imgs/icons/icon_snowLive_back.png',
+                  scale: 4,
+                  width: 26,
+                  height: 26,
+                ),
+              ],
             ),
             onTap: () {
               // Navigator.popUntil(context, (route) => route.isFirst);
@@ -156,14 +153,11 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
           )
               : GestureDetector(
             child: Padding(
-              padding: EdgeInsets.only(top: _statusBarSize - 30, left: 12),
+              padding: EdgeInsets.only(left: 10),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4),
-                    child: Text('취소', style: TextStyle(fontSize: 16, color: Color(0xFF111111), fontWeight: FontWeight.bold),),
-                  ),
+                  Text('취소', style: TextStyle(fontSize: 16, color: Color(0xFF111111), fontWeight: FontWeight.bold),),
                 ],
               ),
             ),
@@ -177,14 +171,11 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
             if(edit == true)
               GestureDetector(
                 child: Padding(
-                  padding: EdgeInsets.only(top: _statusBarSize - 30, right: 20),
+                  padding: EdgeInsets.only(right: 20),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 4),
-                        child: Text('완료', style: TextStyle(fontSize: 16, color: Color(0xFF111111), fontWeight: FontWeight.bold),),
-                      ),
+                      Text('완료', style: TextStyle(fontSize: 16, color: Color(0xFF111111), fontWeight: FontWeight.bold),),
                     ],
                   ),
                 ),
@@ -229,7 +220,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
               color: Colors.white,
               child: SafeArea(
                 child: Container(
-                  height: _size.height - 160,
+                  height: _size.height,
                   width: _size.width,
                   child: Stack(
                     children: [
@@ -490,409 +481,415 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                         ),
                                                       ),
                                                       (_initStateMsg.isNotEmpty)
-                                                      ? Container(
+                                                          ? Padding(
+                                                            padding: const EdgeInsets.only(top: 2),
+                                                            child: Container(
                                                         child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                                          children: [
-                                                            (edit ==true)
-                                                                ? Text(_initStateMsg, style: TextStyle(
-                                                                fontSize: 14,
-                                                                color: Color(0xFF111111)),)
-                                                                : Text('${friendDocs[0]['stateMsg']}', style: TextStyle(
-                                                                fontSize: 14,
-                                                                color: Color(0xFF111111)),
-                                                            ),
-                                                            if(edit == true)
-                                                              GestureDetector(
-                                                                  onTap: () {
-                                                                    _stateMsgController.clear();
-                                                                    showModalBottomSheet(
-                                                                      context: context,
-                                                                      isScrollControlled: true,
-                                                                      builder: (BuildContext context) {
-                                                                        final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-                                                                        return SafeArea(
-                                                                          child: Container(
-                                                                            height: 224 + keyboardHeight, // 키보드 높이만큼 추가 높이 적용
-                                                                            child: Padding(
-                                                                              padding: EdgeInsets.only(
-                                                                                  left: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom,),
-                                                                              child: Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                                                children: [
-                                                                                  SizedBox(
-                                                                                    height: 24,
-                                                                                  ),
-                                                                                  Text(
-                                                                                    '상태메세지를 입력해 주세요',
-                                                                                    style: TextStyle(
-                                                                                        fontSize: 16,
-                                                                                        fontWeight: FontWeight.bold,
-                                                                                        color: Color(
-                                                                                            0xFF111111)),
-                                                                                  ),
-                                                                                  SizedBox(
-                                                                                    height: 18,
-                                                                                  ),
-                                                                                  Container(
-                                                                                    height: 100,
-                                                                                    child: Column(
-                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                            children: [
+                                                              (edit ==true)
+                                                                  ? Text(_initStateMsg, style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  color: Color(0xFF111111)),)
+                                                                  : Text('${friendDocs[0]['stateMsg']}', style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  color: Color(0xFF111111)),
+                                                              ),
+                                                              if(edit == true)
+                                                                GestureDetector(
+                                                                    onTap: () {
+                                                                      _stateMsgController.clear();
+                                                                      showModalBottomSheet(
+                                                                        context: context,
+                                                                        isScrollControlled: true,
+                                                                        builder: (BuildContext context) {
+                                                                          final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+                                                                          return SafeArea(
+                                                                            child: Container(
+                                                                              height: 224 + keyboardHeight, // 키보드 높이만큼 추가 높이 적용
+                                                                              child: Padding(
+                                                                                padding: EdgeInsets.only(
+                                                                                    left: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom,),
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                                  children: [
+                                                                                    SizedBox(
+                                                                                      height: 24,
+                                                                                    ),
+                                                                                    Text(
+                                                                                      '상태메세지를 입력해 주세요',
+                                                                                      style: TextStyle(
+                                                                                          fontSize: 16,
+                                                                                          fontWeight: FontWeight.bold,
+                                                                                          color: Color(
+                                                                                              0xFF111111)),
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height: 18,
+                                                                                    ),
+                                                                                    Container(
+                                                                                      height: 100,
+                                                                                      child: Column(
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                                        children: [
+                                                                                          Form(
+                                                                                            key: _formKeyProfile2,
+                                                                                            child:
+                                                                                            TextFormField(
+                                                                                              onTap: (){
+                                                                                                _stateMsgController.selection =
+                                                                                                    TextSelection.fromPosition(
+                                                                                                        TextPosition(offset: _stateMsgController.text.length));
+                                                                                              },
+                                                                                              cursorColor: Color(0xff377EEA),
+                                                                                              cursorHeight: 16,
+                                                                                              cursorWidth: 2,
+                                                                                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                                                              controller: _stateMsgController..text = _initStateMsg,
+                                                                                              strutStyle:
+                                                                                              StrutStyle(leading: 0.3),
+                                                                                              decoration: InputDecoration(
+                                                                                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                                                                                  errorStyle: TextStyle(fontSize: 12,),
+                                                                                                  labelStyle: TextStyle(color: Color(0xff666666), fontSize: 15),
+                                                                                                  hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
+                                                                                                  hintText: '상태메세지 입력',
+                                                                                                  labelText: '상태메세지',
+                                                                                                  contentPadding: EdgeInsets.only(
+                                                                                                      top: 14, bottom: 8, left: 16, right: 16),
+                                                                                                  fillColor: Color(0xFFEFEFEF),
+                                                                                                  hoverColor: Colors.transparent,
+                                                                                                  filled: true,
+                                                                                                  focusColor: Colors.transparent,
+                                                                                                  border: OutlineInputBorder(
+                                                                                                    borderSide: BorderSide(color: Color(0xFFEFEFEF)),
+                                                                                                    borderRadius: BorderRadius.circular(6),
+                                                                                                  ),
+                                                                                                  errorBorder:  OutlineInputBorder(
+                                                                                                    borderSide: BorderSide(color: Colors.transparent),
+                                                                                                  ),
+                                                                                                  focusedBorder:  OutlineInputBorder(
+                                                                                                    borderSide: BorderSide(color: Colors.transparent),
+                                                                                                  ),
+                                                                                                  enabledBorder: OutlineInputBorder(
+                                                                                                    borderSide: BorderSide(color: Colors.transparent),
+                                                                                                    borderRadius: BorderRadius.circular(6),
+                                                                                                  )),
+                                                                                              validator: (val) {
+                                                                                                if (val!.length <= 20 && val.length >= 0) {
+                                                                                                  return null;
+                                                                                                } else if (val.length == 0) {
+                                                                                                  return '상태메세지를 입력해주세요.';
+                                                                                                } else {
+                                                                                                  return '최대 글자 수를 초과했습니다.';
+                                                                                                }
+                                                                                              },
+                                                                                            ),
+                                                                                          ),
+                                                                                          Padding(
+                                                                                            padding: const EdgeInsets.only(top: 8),
+                                                                                            child: Text(
+                                                                                              '최대 20글자까지 입력 가능합니다.',
+                                                                                              style: TextStyle(
+                                                                                                  color: Color(0xff949494),
+                                                                                                  fontSize: 12),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                    Row(
                                                                                       children: [
-                                                                                        Form(
-                                                                                          key: _formKeyProfile2,
-                                                                                          child:
-                                                                                          TextFormField(
-                                                                                            onTap: (){
-                                                                                              _stateMsgController.selection =
-                                                                                                  TextSelection.fromPosition(
-                                                                                                      TextPosition(offset: _stateMsgController.text.length));
-                                                                                            },
-                                                                                            cursorColor: Color(0xff377EEA),
-                                                                                            cursorHeight: 16,
-                                                                                            cursorWidth: 2,
-                                                                                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                                                            controller: _stateMsgController..text = _initStateMsg,
-                                                                                            strutStyle:
-                                                                                            StrutStyle(leading: 0.3),
-                                                                                            decoration: InputDecoration(
-                                                                                                floatingLabelBehavior: FloatingLabelBehavior.never,
-                                                                                                errorStyle: TextStyle(fontSize: 12,),
-                                                                                                labelStyle: TextStyle(color: Color(0xff666666), fontSize: 15),
-                                                                                                hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
-                                                                                                hintText: '상태메세지 입력',
-                                                                                                labelText: '상태메세지',
-                                                                                                contentPadding: EdgeInsets.only(
-                                                                                                    top: 14, bottom: 8, left: 16, right: 16),
-                                                                                                fillColor: Color(0xFFEFEFEF),
-                                                                                                hoverColor: Colors.transparent,
-                                                                                                filled: true,
-                                                                                                focusColor: Colors.transparent,
-                                                                                                border: OutlineInputBorder(
-                                                                                                  borderSide: BorderSide(color: Color(0xFFEFEFEF)),
-                                                                                                  borderRadius: BorderRadius.circular(6),
-                                                                                                ),
-                                                                                                errorBorder:  OutlineInputBorder(
-                                                                                                  borderSide: BorderSide(color: Colors.transparent),
-                                                                                                ),
-                                                                                                focusedBorder:  OutlineInputBorder(
-                                                                                                  borderSide: BorderSide(color: Colors.transparent),
-                                                                                                ),
-                                                                                                enabledBorder: OutlineInputBorder(
-                                                                                                  borderSide: BorderSide(color: Colors.transparent),
-                                                                                                  borderRadius: BorderRadius.circular(6),
-                                                                                                )),
-                                                                                            validator: (val) {
-                                                                                              if (val!.length <= 20 && val.length >= 0) {
-                                                                                                return null;
-                                                                                              } else if (val.length == 0) {
-                                                                                                return '상태메세지를 입력해주세요.';
-                                                                                              } else {
-                                                                                                return '최대 글자 수를 초과했습니다.';
-                                                                                              }
-                                                                                            },
+                                                                                        Expanded(
+                                                                                          child: InkWell(
+                                                                                            child: ElevatedButton(
+                                                                                              onPressed: () {
+                                                                                                _stateMsgController.text =
+                                                                                                _userModelController.stateMsg!;
+                                                                                                Navigator.pop(context);
+                                                                                              },
+                                                                                              child: Text(
+                                                                                                '취소',
+                                                                                                style: TextStyle(
+                                                                                                    color: Color(0xFF3D83ED),
+                                                                                                    fontSize: 15,
+                                                                                                    fontWeight: FontWeight.bold),
+                                                                                              ),
+                                                                                              style: TextButton.styleFrom(
+                                                                                                  splashFactory: InkRipple.splashFactory,
+                                                                                                  elevation: 0,
+                                                                                                  minimumSize: Size(100, 56),
+                                                                                                  backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                            ),
                                                                                           ),
                                                                                         ),
-                                                                                        Padding(
-                                                                                          padding: const EdgeInsets.only(top: 8),
-                                                                                          child: Text(
-                                                                                            '최대 20글자까지 입력 가능합니다.',
-                                                                                            style: TextStyle(
-                                                                                                color: Color(0xff949494),
-                                                                                                fontSize: 12),
+                                                                                        SizedBox(
+                                                                                          width: 10,
+                                                                                        ),
+                                                                                        Expanded(
+                                                                                          child: InkWell(
+                                                                                            child:
+                                                                                            ElevatedButton(
+                                                                                              onPressed: () {
+                                                                                                if (_formKeyProfile2.currentState!.validate()) {
+                                                                                                  setState(() {
+                                                                                                    _initStateMsg = _stateMsgController.text;
+                                                                                                  });
+                                                                                                  FocusScope.of(context).unfocus();
+                                                                                                  Navigator.pop(context);
+                                                                                                } else {
+                                                                                                  Get.snackbar(
+                                                                                                      '입력 실패',
+                                                                                                      '올바른 상태메세지를 입력해주세요.',
+                                                                                                      snackPosition: SnackPosition.BOTTOM,
+                                                                                                      margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                                                                                      backgroundColor: Colors.black87,
+                                                                                                      colorText: Colors.white,
+                                                                                                      duration: Duration(milliseconds: 3000));
+                                                                                                }
+                                                                                              },
+                                                                                              child: Text('변경',
+                                                                                                style: TextStyle(
+                                                                                                    color: Colors.white,
+                                                                                                    fontSize: 15,
+                                                                                                    fontWeight: FontWeight.bold),
+                                                                                              ),
+                                                                                              style: TextButton
+                                                                                                  .styleFrom(
+                                                                                                  splashFactory:
+                                                                                                  InkRipple.splashFactory,
+                                                                                                  elevation: 0,
+                                                                                                  minimumSize: Size(100, 56),
+                                                                                                  backgroundColor: Color(0xFF3D83ED),
+                                                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                            ),
                                                                                           ),
                                                                                         ),
                                                                                       ],
-                                                                                    ),
-                                                                                  ),
-                                                                                  Row(
-                                                                                    children: [
-                                                                                      Expanded(
-                                                                                        child: InkWell(
-                                                                                          child: ElevatedButton(
-                                                                                            onPressed: () {
-                                                                                              _stateMsgController.text =
-                                                                                              _userModelController.stateMsg!;
-                                                                                              Navigator.pop(context);
-                                                                                            },
-                                                                                            child: Text(
-                                                                                              '취소',
-                                                                                              style: TextStyle(
-                                                                                                  color: Color(0xFF3D83ED),
-                                                                                                  fontSize: 15,
-                                                                                                  fontWeight: FontWeight.bold),
-                                                                                            ),
-                                                                                            style: TextButton.styleFrom(
-                                                                                                splashFactory: InkRipple.splashFactory,
-                                                                                                elevation: 0,
-                                                                                                minimumSize: Size(100, 56),
-                                                                                                backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
-                                                                                                padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                      SizedBox(
-                                                                                        width: 10,
-                                                                                      ),
-                                                                                      Expanded(
-                                                                                        child: InkWell(
-                                                                                          child:
-                                                                                          ElevatedButton(
-                                                                                            onPressed: () {
-                                                                                              if (_formKeyProfile2.currentState!.validate()) {
-                                                                                                setState(() {
-                                                                                                  _initStateMsg = _stateMsgController.text;
-                                                                                                });
-                                                                                                FocusScope.of(context).unfocus();
-                                                                                                Navigator.pop(context);
-                                                                                              } else {
-                                                                                                Get.snackbar(
-                                                                                                    '입력 실패',
-                                                                                                    '올바른 상태메세지를 입력해주세요.',
-                                                                                                    snackPosition: SnackPosition.BOTTOM,
-                                                                                                    margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                                                                                    backgroundColor: Colors.black87,
-                                                                                                    colorText: Colors.white,
-                                                                                                    duration: Duration(milliseconds: 3000));
-                                                                                              }
-                                                                                            },
-                                                                                            child: Text('변경',
-                                                                                              style: TextStyle(
-                                                                                                  color: Colors.white,
-                                                                                                  fontSize: 15,
-                                                                                                  fontWeight: FontWeight.bold),
-                                                                                            ),
-                                                                                            style: TextButton
-                                                                                                .styleFrom(
-                                                                                                splashFactory:
-                                                                                                InkRipple.splashFactory,
-                                                                                                elevation: 0,
-                                                                                                minimumSize: Size(100, 56),
-                                                                                                backgroundColor: Color(0xFF3D83ED),
-                                                                                                padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
-                                                                                  )
-                                                                                ],
+                                                                                    )
+                                                                                  ],
+                                                                                ),
                                                                               ),
                                                                             ),
+                                                                          );
+                                                                        },
+                                                                      );
+                                                                    },
+                                                                    child: Padding(
+                                                                      padding: const EdgeInsets.only(
+                                                                          left: 4),
+                                                                      child: Image.asset(
+                                                                        'assets/imgs/icons/icon_edit_pencil.png',
+                                                                        height: 20,
+                                                                        width: 20,
+                                                                      ),
+                                                                    )),
+                                                            ],
+                                                        ),
+                                                      ),
+                                                          )
+                                                          : (edit == true)
+                                                          ? Padding(
+                                                        padding: const EdgeInsets.only(top: 2),
+                                                            child: GestureDetector(
+                                                              onTap: () {
+                                                                _stateMsgController.clear();
+                                                                showModalBottomSheet(
+                                                                  context: context,
+                                                                  isScrollControlled: true,
+                                                                  builder: (BuildContext context) {
+                                                                    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+                                                                    return SafeArea(
+                                                                      child: Container(
+                                                                        height: 224 + keyboardHeight, // 키보드 높이만큼 추가 높이 적용
+                                                                        child: Padding(
+                                                                          padding: EdgeInsets.only(
+                                                                            left: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom,),
+                                                                          child: Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                            children: [
+                                                                              SizedBox(
+                                                                                height: 24,
+                                                                              ),
+                                                                              Text(
+                                                                                '상태메세지를 입력해 주세요',
+                                                                                style: TextStyle(
+                                                                                    fontSize: 16,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    color: Color(
+                                                                                        0xFF111111)),
+                                                                              ),
+                                                                              SizedBox(
+                                                                                height: 18,
+                                                                              ),
+                                                                              Container(
+                                                                                height: 100,
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Form(
+                                                                                      key: _formKeyProfile2,
+                                                                                      child:
+                                                                                      TextFormField(
+                                                                                        cursorColor: Color(0xff377EEA),
+                                                                                        cursorHeight: 16,
+                                                                                        cursorWidth: 2,
+                                                                                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                                                        controller: _stateMsgController..text = _initStateMsg,
+                                                                                        strutStyle:
+                                                                                        StrutStyle(leading: 0.3),
+                                                                                        decoration: InputDecoration(
+                                                                                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                                                                                            errorStyle: TextStyle(fontSize: 12,),
+                                                                                            labelStyle: TextStyle(color: Color(0xff666666), fontSize: 15),
+                                                                                            hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
+                                                                                            hintText: '상태메세지 입력',
+                                                                                            labelText: '상태메세지',
+                                                                                            contentPadding: EdgeInsets.only(
+                                                                                                top: 14, bottom: 8, left: 16, right: 16),
+                                                                                            fillColor: Color(0xFFEFEFEF),
+                                                                                            hoverColor: Colors.transparent,
+                                                                                            filled: true,
+                                                                                            focusColor: Colors.transparent,
+                                                                                            border: OutlineInputBorder(
+                                                                                              borderSide: BorderSide(color: Color(0xFFEFEFEF)),
+                                                                                              borderRadius: BorderRadius.circular(6),
+                                                                                            ),
+                                                                                            errorBorder:  OutlineInputBorder(
+                                                                                              borderSide: BorderSide(color: Colors.transparent),
+                                                                                            ),
+                                                                                            focusedBorder:  OutlineInputBorder(
+                                                                                              borderSide: BorderSide(color: Colors.transparent),
+                                                                                            ),
+                                                                                            enabledBorder: OutlineInputBorder(
+                                                                                              borderSide: BorderSide(color: Colors.transparent),
+                                                                                              borderRadius: BorderRadius.circular(6),
+                                                                                            )),
+                                                                                        validator: (val) {
+                                                                                          if (val!.length <= 20 && val.length >= 0) {
+                                                                                            return null;
+                                                                                          } else if (val.length == 0) {
+                                                                                            return '상태메세지를 입력해주세요.';
+                                                                                          } else {
+                                                                                            return '최대 글자 수를 초과했습니다.';
+                                                                                          }
+                                                                                        },
+                                                                                      ),
+                                                                                    ),
+                                                                                    Padding(
+                                                                                      padding: const EdgeInsets.only(top: 8),
+                                                                                      child: Text(
+                                                                                        '최대 20글자까지 입력 가능합니다.',
+                                                                                        style: TextStyle(
+                                                                                            color: Color(0xff949494),
+                                                                                            fontSize: 12),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              Row(
+                                                                                children: [
+                                                                                  Expanded(
+                                                                                    child: InkWell(
+                                                                                      child: ElevatedButton(
+                                                                                        onPressed: () {
+                                                                                          _stateMsgController.text =
+                                                                                          _userModelController.stateMsg!;
+                                                                                          Navigator.pop(context);
+                                                                                        },
+                                                                                        child: Text(
+                                                                                          '취소',
+                                                                                          style: TextStyle(
+                                                                                              color: Color(0xFF3D83ED),
+                                                                                              fontSize: 15,
+                                                                                              fontWeight: FontWeight.bold),
+                                                                                        ),
+                                                                                        style: TextButton.styleFrom(
+                                                                                            splashFactory: InkRipple.splashFactory,
+                                                                                            elevation: 0,
+                                                                                            minimumSize: Size(100, 56),
+                                                                                            backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                                                            padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    width: 10,
+                                                                                  ),
+                                                                                  Expanded(
+                                                                                    child: InkWell(
+                                                                                      child:
+                                                                                      ElevatedButton(
+                                                                                        onPressed: () {
+                                                                                          if (_formKeyProfile2.currentState!.validate()) {
+                                                                                            setState(() {
+                                                                                              _initStateMsg = _stateMsgController.text;
+                                                                                            });
+                                                                                            FocusScope.of(context).unfocus();
+                                                                                            Navigator.pop(context);
+                                                                                          } else {
+                                                                                            Get.snackbar(
+                                                                                                '입력 실패',
+                                                                                                '올바른 상태메세지를 입력해주세요.',
+                                                                                                snackPosition: SnackPosition.BOTTOM,
+                                                                                                margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                                                                                backgroundColor: Colors.black87,
+                                                                                                colorText: Colors.white,
+                                                                                                duration: Duration(milliseconds: 3000));
+                                                                                          }
+                                                                                        },
+                                                                                        child: Text('변경',
+                                                                                          style: TextStyle(
+                                                                                              color: Colors.white,
+                                                                                              fontSize: 15,
+                                                                                              fontWeight: FontWeight.bold),
+                                                                                        ),
+                                                                                        style: TextButton
+                                                                                            .styleFrom(
+                                                                                            splashFactory:
+                                                                                            InkRipple.splashFactory,
+                                                                                            elevation: 0,
+                                                                                            minimumSize: Size(100, 56),
+                                                                                            backgroundColor: Color(0xFF3D83ED),
+                                                                                            padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              )
+                                                                            ],
                                                                           ),
-                                                                        );
-                                                                      },
+                                                                        ),
+                                                                      ),
                                                                     );
                                                                   },
-                                                                  child: Padding(
-                                                                    padding: const EdgeInsets.only(
-                                                                        left: 4),
-                                                                    child: Image.asset(
+                                                                );
+                                                              },
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.only(
+                                                                    left: 4),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Text('상태메세지를 입력해 주세요.', style: TextStyle(
+                                                                        fontSize: 14,
+                                                                        color: Color(0xFF111111))),
+                                                                    Image.asset(
                                                                       'assets/imgs/icons/icon_edit_pencil.png',
                                                                       height: 20,
                                                                       width: 20,
                                                                     ),
-                                                                  )),
-                                                          ],
-                                                        ),
-                                                      )
-                                                      : (edit == true)
-                                                        ?GestureDetector(
-                                                            onTap: () {
-                                                              _stateMsgController.clear();
-                                                              showModalBottomSheet(
-                                                                context: context,
-                                                                isScrollControlled: true,
-                                                                builder: (BuildContext context) {
-                                                                  final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-                                                                  return SafeArea(
-                                                                    child: Container(
-                                                                      height: 224 + keyboardHeight, // 키보드 높이만큼 추가 높이 적용
-                                                                      child: Padding(
-                                                                        padding: EdgeInsets.only(
-                                                                          left: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom,),
-                                                                        child: Column(
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                                          children: [
-                                                                            SizedBox(
-                                                                              height: 24,
-                                                                            ),
-                                                                            Text(
-                                                                              '상태메세지를 입력해 주세요',
-                                                                              style: TextStyle(
-                                                                                  fontSize: 16,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  color: Color(
-                                                                                      0xFF111111)),
-                                                                            ),
-                                                                            SizedBox(
-                                                                              height: 18,
-                                                                            ),
-                                                                            Container(
-                                                                              height: 100,
-                                                                              child: Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                                                children: [
-                                                                                  Form(
-                                                                                    key: _formKeyProfile2,
-                                                                                    child:
-                                                                                    TextFormField(
-                                                                                      cursorColor: Color(0xff377EEA),
-                                                                                      cursorHeight: 16,
-                                                                                      cursorWidth: 2,
-                                                                                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                                                      controller: _stateMsgController..text = _initStateMsg,
-                                                                                      strutStyle:
-                                                                                      StrutStyle(leading: 0.3),
-                                                                                      decoration: InputDecoration(
-                                                                                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                                                                                          errorStyle: TextStyle(fontSize: 12,),
-                                                                                          labelStyle: TextStyle(color: Color(0xff666666), fontSize: 15),
-                                                                                          hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
-                                                                                          hintText: '상태메세지 입력',
-                                                                                          labelText: '상태메세지',
-                                                                                          contentPadding: EdgeInsets.only(
-                                                                                              top: 14, bottom: 8, left: 16, right: 16),
-                                                                                          fillColor: Color(0xFFEFEFEF),
-                                                                                          hoverColor: Colors.transparent,
-                                                                                          filled: true,
-                                                                                          focusColor: Colors.transparent,
-                                                                                          border: OutlineInputBorder(
-                                                                                            borderSide: BorderSide(color: Color(0xFFEFEFEF)),
-                                                                                            borderRadius: BorderRadius.circular(6),
-                                                                                          ),
-                                                                                          errorBorder:  OutlineInputBorder(
-                                                                                            borderSide: BorderSide(color: Colors.transparent),
-                                                                                          ),
-                                                                                          focusedBorder:  OutlineInputBorder(
-                                                                                            borderSide: BorderSide(color: Colors.transparent),
-                                                                                          ),
-                                                                                          enabledBorder: OutlineInputBorder(
-                                                                                            borderSide: BorderSide(color: Colors.transparent),
-                                                                                            borderRadius: BorderRadius.circular(6),
-                                                                                          )),
-                                                                                      validator: (val) {
-                                                                                        if (val!.length <= 20 && val.length >= 0) {
-                                                                                          return null;
-                                                                                        } else if (val.length == 0) {
-                                                                                          return '상태메세지를 입력해주세요.';
-                                                                                        } else {
-                                                                                          return '최대 글자 수를 초과했습니다.';
-                                                                                        }
-                                                                                      },
-                                                                                    ),
-                                                                                  ),
-                                                                                  Padding(
-                                                                                    padding: const EdgeInsets.only(top: 8),
-                                                                                    child: Text(
-                                                                                      '최대 20글자까지 입력 가능합니다.',
-                                                                                      style: TextStyle(
-                                                                                          color: Color(0xff949494),
-                                                                                          fontSize: 12),
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                            Row(
-                                                                              children: [
-                                                                                Expanded(
-                                                                                  child: InkWell(
-                                                                                    child: ElevatedButton(
-                                                                                      onPressed: () {
-                                                                                        _stateMsgController.text =
-                                                                                        _userModelController.stateMsg!;
-                                                                                        Navigator.pop(context);
-                                                                                      },
-                                                                                      child: Text(
-                                                                                        '취소',
-                                                                                        style: TextStyle(
-                                                                                            color: Color(0xFF3D83ED),
-                                                                                            fontSize: 15,
-                                                                                            fontWeight: FontWeight.bold),
-                                                                                      ),
-                                                                                      style: TextButton.styleFrom(
-                                                                                          splashFactory: InkRipple.splashFactory,
-                                                                                          elevation: 0,
-                                                                                          minimumSize: Size(100, 56),
-                                                                                          backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
-                                                                                          padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  width: 10,
-                                                                                ),
-                                                                                Expanded(
-                                                                                  child: InkWell(
-                                                                                    child:
-                                                                                    ElevatedButton(
-                                                                                      onPressed: () {
-                                                                                        if (_formKeyProfile2.currentState!.validate()) {
-                                                                                          setState(() {
-                                                                                            _initStateMsg = _stateMsgController.text;
-                                                                                          });
-                                                                                          FocusScope.of(context).unfocus();
-                                                                                          Navigator.pop(context);
-                                                                                        } else {
-                                                                                          Get.snackbar(
-                                                                                              '입력 실패',
-                                                                                              '올바른 상태메세지를 입력해주세요.',
-                                                                                              snackPosition: SnackPosition.BOTTOM,
-                                                                                              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                                                                              backgroundColor: Colors.black87,
-                                                                                              colorText: Colors.white,
-                                                                                              duration: Duration(milliseconds: 3000));
-                                                                                        }
-                                                                                      },
-                                                                                      child: Text('변경',
-                                                                                        style: TextStyle(
-                                                                                            color: Colors.white,
-                                                                                            fontSize: 15,
-                                                                                            fontWeight: FontWeight.bold),
-                                                                                      ),
-                                                                                      style: TextButton
-                                                                                          .styleFrom(
-                                                                                          splashFactory:
-                                                                                          InkRipple.splashFactory,
-                                                                                          elevation: 0,
-                                                                                          minimumSize: Size(100, 56),
-                                                                                          backgroundColor: Color(0xFF3D83ED),
-                                                                                          padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              );
-                                                            },
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.only(
-                                                                  left: 4),
-                                                              child: Row(
-                                                                children: [
-                                                                  Text('상태메세지를 입력해 주세요.', style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      color: Color(0xFF111111))),
-                                                                  Image.asset(
-                                                                    'assets/imgs/icons/icon_edit_pencil.png',
-                                                                    height: 20,
-                                                                    width: 20,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ))
-                                                      : Container(),
+                                                                  ],
+                                                                ),
+                                                              )),
+                                                          )
+                                                          : Container(),
                                                       SizedBox(
                                                         height: 6,
                                                       ),

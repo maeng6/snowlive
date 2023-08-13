@@ -209,7 +209,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                     .circular(8),
                                               ),
                                               height: 154,
-                                              width: _size.width / 3 - 12,
+                                              width: (_size.width - 48) / 3,
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment
                                                     .center,
@@ -321,7 +321,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                     .circular(8),
                                               ),
                                               height: 154,
-                                              width: _size.width / 3 - 12,
+                                              width: (_size.width - 48) / 3,
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment
                                                     .center,
@@ -433,7 +433,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                     .circular(8),
                                               ),
                                               height: 154,
-                                              width: _size.width / 3 - 12,
+                                              width: (_size.width - 48) / 3,
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment
                                                     .center,
