@@ -1493,7 +1493,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       }
 
                                                       return (friendDocs[0]['uid'] == _userModelController.uid)
-                                                          ?GestureDetector(
+                                                          ? GestureDetector(
                                                         onTap: (){
                                                           Get.dialog(
                                                               AlertDialog(
@@ -1580,7 +1580,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       )
                                                           : GestureDetector(
                                                         onTap: (){
-                                                          Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 2));
+                                                          Get.to(()=>RankingIndiScreenDetail());
                                                         },
                                                             child: Container(
                                                         width: _size.width / 2 - 25,
