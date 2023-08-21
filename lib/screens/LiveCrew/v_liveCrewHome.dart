@@ -1364,86 +1364,101 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                     }
                                   }
 
-                                  return GestureDetector(
-                                    onTap: () async {
-                                      CustomFullScreenDialog.showDialog();
-                                      await _liveCrewModelController.getCurrnetCrew(doc['crewID']);
-                                      CustomFullScreenDialog.cancelDialog();
-                                      Get.to(() => CrewDetailPage_screen());
-                                    },
-                                    child: Padding(
-                                      padding: EdgeInsets.only(right: 10),
-                                      child: Container(
-                                        height: 64,
-                                        width: MediaQuery.of(context).size.width,
-                                        child: Row(
-                                          children: [
-                                            (doc['profileImageUrl'].isNotEmpty)
-                                                ? Container(
-                                              width: 48,
-                                              height: 48,
-                                              decoration: BoxDecoration(
-                                                color: Color(doc['crewColor']),
-                                                borderRadius: BorderRadius.circular(8),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(2.0),
-                                                child: ExtendedImage.network(
-                                                  doc['profileImageUrl'],
-                                                  enableMemoryCache: true,
-                                                  shape: BoxShape.rectangle,
-                                                  borderRadius: BorderRadius.circular(6),
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            )
-                                                : Container(
-                                              width: 48,
-                                              height: 48,
-                                              decoration: BoxDecoration(
-                                                color: Color(doc['crewColor']),
-                                                borderRadius: BorderRadius.circular(8),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(2.0),
-                                                child: ExtendedImage.asset(
-                                                  assetBases,
-                                                  enableMemoryCache: true,
-                                                  shape: BoxShape.rectangle,
-                                                  borderRadius: BorderRadius.circular(6),
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 15),
-                                            Padding(
-                                              padding: const EdgeInsets.only(bottom: 2),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    doc['crewName'],
-                                                    style: TextStyle(fontSize: 15, color: Color(0xFF111111)),
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 1,
+                                  return StreamBuilder<QuerySnapshot>(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('user')
+                                        .where('uid', isEqualTo: doc['leaderUid'])
+                                        .snapshots(),
+                                    builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                                      if (!snapshot.hasData || snapshot.data == null) {
+                                        return Container();
+                                      }
+
+                                        final userDoc = snapshot.data!.docs;
+
+                                        return GestureDetector(
+                                        onTap: () async {
+                                          CustomFullScreenDialog.showDialog();
+                                          await _liveCrewModelController.getCurrnetCrew(doc['crewID']);
+                                          CustomFullScreenDialog.cancelDialog();
+                                          Get.to(() => CrewDetailPage_screen());
+                                        },
+                                        child: Padding(
+                                          padding: EdgeInsets.only(right: 10),
+                                          child: Container(
+                                            height: 64,
+                                            width: MediaQuery.of(context).size.width,
+                                            child: Row(
+                                              children: [
+                                                (doc['profileImageUrl'].isNotEmpty)
+                                                    ? Container(
+                                                  width: 48,
+                                                  height: 48,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(doc['crewColor']),
+                                                    borderRadius: BorderRadius.circular(8),
                                                   ),
-                                                  SizedBox(
-                                                    height: 2,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(2.0),
+                                                    child: ExtendedImage.network(
+                                                      doc['profileImageUrl'],
+                                                      enableMemoryCache: true,
+                                                      shape: BoxShape.rectangle,
+                                                      borderRadius: BorderRadius.circular(6),
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
-                                                  Text(
-                                                    '${doc['crewLeader']} / ${(doc['memberUidList'] as List).length}명',
-                                                    style: TextStyle(fontSize: 13, color: Color(0xFF949494)),
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 1,
-                                                  )
-                                                ],
-                                              ),
+                                                )
+                                                    : Container(
+                                                  width: 48,
+                                                  height: 48,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(doc['crewColor']),
+                                                    borderRadius: BorderRadius.circular(8),
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(2.0),
+                                                    child: ExtendedImage.asset(
+                                                      assetBases,
+                                                      enableMemoryCache: true,
+                                                      shape: BoxShape.rectangle,
+                                                      borderRadius: BorderRadius.circular(6),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 15),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(bottom: 2),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        doc['crewName'],
+                                                        style: TextStyle(fontSize: 15, color: Color(0xFF111111)),
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 1,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                      Text(
+                                                        '${userDoc[0]['displayName']} / ${(doc['memberUidList'] as List).length}명',
+                                                        style: TextStyle(fontSize: 13, color: Color(0xFF949494)),
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 1,
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
-                                    ),
+                                      );
+                                      }
+
                                   );
                                 }).toList(),
                               ),
