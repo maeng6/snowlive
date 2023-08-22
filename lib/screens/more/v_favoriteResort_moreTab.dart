@@ -105,7 +105,7 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
                     height: 8,
                   ),
                   Text(
-                    '자주가는 리조트는 1개만 선택할 수 있습니다.',
+                    '자주가는 스키장은 1개만 선택할 수 있습니다.',
                     style: TextStyle(
                         color: Color(0xff949494),
                         fontSize: 13,
