@@ -554,12 +554,12 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                             .deleteProfileImageUrl();
                                         CustomFullScreenDialog.cancelDialog();
                                         Navigator.pop(context);
-                                        Get.snackbar('프로필 이미지', '기본 이미지로 변경이 완료되었습니다.',
-                                            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                            snackPosition: SnackPosition.BOTTOM,
-                                            backgroundColor: Colors.black87,
-                                            colorText: Colors.white,
-                                            duration: Duration(milliseconds: 3000));
+                                        // Get.snackbar('프로필 이미지', '기본 이미지로 변경이 완료되었습니다.',
+                                        //     margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                        //     snackPosition: SnackPosition.BOTTOM,
+                                        //     backgroundColor: Colors.black87,
+                                        //     colorText: Colors.white,
+                                        //     duration: Duration(milliseconds: 3000));
                                         Navigator.pop(context);
                                       },
                                       child: Text(
