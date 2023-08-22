@@ -116,7 +116,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
-    return Scaffold(
+    return Obx(()=>Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
         floatingActionButton:
@@ -1500,7 +1500,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
           ],
         ),
       )
-    );
+    ));
   }
 }
 

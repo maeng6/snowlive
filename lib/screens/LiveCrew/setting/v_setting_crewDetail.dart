@@ -323,11 +323,13 @@ class Setting_crewDetail extends StatelessWidget {
                                             await _userModelController.getCurrentUser_crew(_userModelController.uid);
                                             CustomFullScreenDialog.cancelDialog();
                                             for(int i=0; i<2; i++){
+                                              await _userModelController.getCurrentUser(_userModelController.uid);
                                               Get.back();
                                             }
                                           } catch (e) {
                                             print('삭제 오류');
                                             for(int i=0; i<2; i++){
+                                              await _userModelController.getCurrentUser(_userModelController.uid);
                                               Get.back();
                                             }
                                           }

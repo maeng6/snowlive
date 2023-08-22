@@ -165,7 +165,7 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
                     height: 8,
                   ),
                   Text(
-                    '베이스 리조트를 변경하면 자주가는 리조트도 함께 바뀝니다.',
+                    '베이스 스키장을 변경하면 자주가는 스키장도 함께 바뀝니다.',
                     style: TextStyle(
                         color: Color(0xff949494),
                         fontSize: 13,
@@ -263,7 +263,7 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
                         fontSize: 16),
                   )
                       : Text(
-                    '베이스 리조트 변경',
+                    '베이스 스키장 변경',
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
