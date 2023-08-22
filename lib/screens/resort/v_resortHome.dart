@@ -20,6 +20,7 @@ import 'package:snowlive3/screens/discover/v_discover_calendar.dart';
 import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
 import 'package:snowlive3/screens/more/v_noticeListPage.dart';
 import 'package:snowlive3/screens/more/v_noticeTile_resortHome.dart';
+import 'package:snowlive3/screens/v_MainHome.dart';
 import 'package:snowlive3/screens/v_webPage.dart';
 import 'package:snowlive3/controller/vm_resortModelController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
@@ -1250,6 +1251,7 @@ class _ResortHomeState extends State<ResortHome>
                                             ),
                                             GestureDetector(
                                               onTap: (){
+                                                Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 3));
                                               },
                                               child: Container(
                                                   padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 22),
@@ -2580,39 +2582,44 @@ class _ResortHomeState extends State<ResortHome>
                                           SizedBox(
                                             height: 12,
                                           ),
-                                          Container(
-                                              padding: EdgeInsets.only(
-                                                  left: 20,
-                                                  right: 20,
-                                                  top: 20,
-                                                  bottom: 22),
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                  BorderRadius.circular(
-                                                      14)),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    '라이브톡',
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                        FontWeight.bold,
-                                                        color:
-                                                        Color(0xFFC8C8C8)),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 20,
-                                                  ),
-                                                  CommentTile_resortHome(),
-                                                ],
-                                              )),
+                                          GestureDetector(
+                                            onTap: (){
+                                              Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 3));
+                                            },
+                                            child: Container(
+                                                padding: EdgeInsets.only(
+                                                    left: 20,
+                                                    right: 20,
+                                                    top: 20,
+                                                    bottom: 22),
+                                                width: double.infinity,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                    BorderRadius.circular(
+                                                        14)),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      '라이브톡',
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                          FontWeight.bold,
+                                                          color:
+                                                          Color(0xFFC8C8C8)),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    CommentTile_resortHome(),
+                                                  ],
+                                                )),
+                                          ),
                                           SizedBox(
                                             height: 12,
                                           ),

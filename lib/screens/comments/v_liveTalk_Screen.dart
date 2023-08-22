@@ -145,6 +145,7 @@ class _LiveTalkScreenState
                             }
                             final chatDocs = snapshot.data!.docs;
                             return Scrollbar(
+                              controller: _scrollController,
                               child: ListView.builder(
                                 controller: _scrollController,
                                 reverse: true,
@@ -1284,6 +1285,7 @@ class _LiveTalkScreenState
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 64),
                 child: FloatingActionButton(
+                  heroTag: 'liveTalkScreen',
                   mini: true,
                   elevation: 0.5,
                   shape: RoundedRectangleBorder(

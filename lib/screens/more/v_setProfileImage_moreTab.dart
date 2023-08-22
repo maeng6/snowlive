@@ -532,7 +532,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                             fontSize: 15,
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      style: TextButton.styleFrom(ㅂ
+                                      style: TextButton.styleFrom(
                                           splashFactory:
                                           InkRipple.splashFactory,
                                           elevation: 0,
