@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
-import 'package:snowlive3/controller/vm_seasonController.dart';
 import 'package:snowlive3/controller/vm_userModelController.dart';
 import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:snowlive3/widget/w_fullScreenDialog.dart';
@@ -20,7 +19,6 @@ class LiveCrewListMoreScreen extends StatefulWidget {
 class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
-  SeasonController _seasonController = Get.find<SeasonController>();
   LiveCrewModelController _liveCrewModelController =
   Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
@@ -66,8 +64,7 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
             .snapshots(),
         builder: (
             context,
-            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
-            ) {
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,) {
           if (!snapshot.hasData || snapshot.data == null) {
             return Center(
               child: Column(
@@ -105,10 +102,10 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
                       .collection('user')
                       .where('uid', isEqualTo: doc['leaderUid'])
                       .snapshots(),
-                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
 
                     if (!snapshot.hasData || snapshot.data == null) {
-                      return Container();
+                      return SizedBox.shrink();
                     }
 
                     final userDoc = snapshot.data!.docs;

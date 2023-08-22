@@ -250,10 +250,10 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                     .collection('user')
                                     .where('uid', isEqualTo: crewDocs[index]['leaderUid'])
                                     .snapshots(),
-                                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
 
                                   if (!snapshot.hasData || snapshot.data == null) {
-                                    return Container();
+                                    return SizedBox.shrink();
                                   }
 
                                   final userDoc = snapshot.data!.docs;
