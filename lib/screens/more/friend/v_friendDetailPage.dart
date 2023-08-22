@@ -184,11 +184,9 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                   CustomFullScreenDialog.showDialog();
                   try {
                     if(_displayNameController.text == '' || _displayNameController.text ==null) {
-                      await _userModelController.updateNickname(
-                          _userModelController.displayName);
+                      await _userModelController.updateNickname(_userModelController.displayName);
                     }else{
-                      await _userModelController.updateNickname(
-                          _displayNameController.text);
+                      await _userModelController.updateNickname(_displayNameController.text);
                     }
                     await _userModelController.updateStateMsg(_stateMsgController.text);
                     await _userModelController.getCurrentUser(_userModelController.uid);
@@ -201,6 +199,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                     edit=false;
                   });
                   CustomFullScreenDialog.cancelDialog();
+                  print('프로필 변경완료');
                 },
               ),
           ],
@@ -1423,8 +1422,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 
                                                                 userRankingMap =  _liveMapController.calculateRankIndiAll2(userRankingDocs: rankingDocs_total);
 
-                                                                print(userRankingMap);
-
                                                                 return GestureDetector(
                                                                   onTap: (){
                                                                     Get.to(()=>RankingIndiScreenDetail());
@@ -1681,7 +1678,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                           try{
                                             Timestamp lastPassTime = data?['lastPassTime'];
                                             lastPassTimeString = _timeStampController.getAgoTime(lastPassTime);
-                                          print(lastPassTimeString);
                                           }catch(e){}
 
                                           List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);

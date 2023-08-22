@@ -447,12 +447,12 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                     await _userModelController.updateProfileImageUrl(profileImageUrl);
                     CustomFullScreenDialog.cancelDialog();
                     Navigator.pop(context);
-                    Get.snackbar('프로필 이미지', '선택한 이미지로 변경이 완료되었습니다.',
-                        margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Colors.black87,
-                        colorText: Colors.white,
-                        duration: Duration(milliseconds: 3000));
+                    // Get.snackbar('프로필 이미지', '선택한 이미지로 변경이 완료되었습니다.',
+                    //     margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                    //     snackPosition: SnackPosition.BOTTOM,
+                    //     backgroundColor: Colors.black87,
+                    //     colorText: Colors.white,
+                    //     duration: Duration(milliseconds: 3000));
                   } else {
                     null;
                   }
@@ -532,7 +532,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                                             fontSize: 15,
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      style: TextButton.styleFrom(
+                                      style: TextButton.styleFrom(ㅂ
                                           splashFactory:
                                           InkRipple.splashFactory,
                                           elevation: 0,
