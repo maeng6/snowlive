@@ -725,26 +725,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                               builder: (BuildContext context, AsyncSnapshot<
                                   QuerySnapshot> snapshot) {
                                 if (!snapshot.hasData || snapshot.data == null) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black12,
-                                          spreadRadius: 0,
-                                          blurRadius: 6,
-                                          offset: Offset(
-                                              0, 0), // changes position of shadow
-                                        ),
-                                      ],
-                                      color: Colors.grey,
-                                    ),
-                                    height: 80,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16),
-                                      child: Text('가입한 크루가 없습니다. 크루에 가입해서 즐겨라 '),
-                                    ),
-                                  );
+                                  return SizedBox.shrink();
                                 }
                                 else if (snapshot.data!.docs.isNotEmpty) {
                                   final myCrewDocs = snapshot.data!.docs;
@@ -895,29 +876,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                     }
                                   );
                                 }
-                                else if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {}
+                                else if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return Center(child: CircularProgressIndicator(),);
+                                }
                                 else if (snapshot.hasError) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black12,
-                                          spreadRadius: 0,
-                                          blurRadius: 6,
-                                          offset: Offset(
-                                              0, 0), // changes position of shadow
-                                        ),
-                                      ],
-                                      color: Colors.grey,
-                                    ),
-                                    height: 80,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16),
-                                      child: Text('가입한 크루가 없습니다.'),
-                                    ),
-                                  );
+                                  return SizedBox.shrink();
                                 }
                                 return Center();
                               },
