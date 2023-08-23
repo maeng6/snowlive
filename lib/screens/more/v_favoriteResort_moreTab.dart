@@ -134,13 +134,13 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
                                 Divider(
                                   height: 20,
                                   thickness: 0.5,
-                                )
+                                ),
                             ],
                           );
                         }),
                   ),
                   SizedBox(
-                    height: 90,
+                    height: 130,
                   )
                 ],
               ),

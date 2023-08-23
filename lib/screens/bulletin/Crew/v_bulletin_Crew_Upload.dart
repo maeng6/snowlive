@@ -41,7 +41,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
       onTap: () async {
         isLocationSelected = true;
         SelectedLocation = bulletinCrewResortList[index];
-        _tileSelected['리조트'] = SelectedLocation;
+        _tileSelected['스키장'] = SelectedLocation;
         print(_tileSelected);
         Navigator.pop(context);
         setState(() {});
@@ -111,8 +111,8 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                             colorText: Colors.white,
                             duration: Duration(milliseconds: 3000));
                       }
-                      else if(_tileSelected["리조트"]!.isEmpty){
-                        Get.snackbar('선택되지않은 항목', '리조트를 선택해주세요.',
+                      else if(_tileSelected["스키장"]!.isEmpty){
+                        Get.snackbar('선택되지않은 항목', '스키장을 선택해주세요.',
                             margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
                             snackPosition: SnackPosition.BOTTOM,
                             backgroundColor: Colors.black87,
@@ -423,7 +423,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                   children: [
                                     if (isLocationSelected==true)
                                       Text(
-                                        '리조트',
+                                        '스키장',
                                         style:
                                         TextStyle(color: Color(0xff949494), fontSize: 12),
                                       ),
@@ -452,7 +452,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      '리조트를 선택해주세요.',
+                                                      '스키장을 선택해주세요.',
                                                       style: TextStyle(
                                                           fontSize: 20,
                                                           fontWeight: FontWeight.bold),
@@ -497,7 +497,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                       )
                                           : Padding(
                                         padding: EdgeInsets.only(bottom: 6),
-                                        child: Text('리조트', style: TextStyle(
+                                        child: Text('스키장', style: TextStyle(
                                             fontSize: 16, color: Color(0xFF949494)
                                         ),),
                                       ),),

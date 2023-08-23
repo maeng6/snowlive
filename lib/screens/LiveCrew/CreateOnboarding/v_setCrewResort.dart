@@ -194,7 +194,7 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
                         }),
                   ),
                   SizedBox(
-                    height: 90,
+                    height: 130,
                   )
                 ],
               ),

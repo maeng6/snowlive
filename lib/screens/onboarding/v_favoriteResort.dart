@@ -131,7 +131,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
                         }),
                   ),
                   SizedBox(
-                    height: 90,
+                    height: 130,
                   )
                 ],
               ),

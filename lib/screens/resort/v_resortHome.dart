@@ -753,7 +753,7 @@ class _ResortHomeState extends State<ResortHome>
                                                                   .start,
                                                               children: [
                                                                 Text(
-                                                                  '리조트를 선택해주세요.',
+                                                                  '스키장을 선택해주세요.',
                                                                   style: TextStyle(
                                                                       fontSize:
                                                                       20,
@@ -765,7 +765,7 @@ class _ResortHomeState extends State<ResortHome>
                                                                   height: 10,
                                                                 ),
                                                                 Text(
-                                                                  '관심있는 리조트를 선택해 리조트와 관련된 실시간 날씨 정보와 웹캠, 슬로프 오픈 현황 등을 확인하세요.',
+                                                                  '관심있는 스키장을 선택해 스키장과 관련된 실시간 날씨 정보와 웹캠, 슬로프 오픈 현황 등을 확인하세요.',
                                                                   style: TextStyle(
                                                                       fontSize:
                                                                       14,
@@ -1444,7 +1444,7 @@ class _ResortHomeState extends State<ResortHome>
                                                         ),
                                                         Text(
                                                           '기상청에서 제공해주는 실시간 데이터를 사용해'
-                                                              '각 리조트별 날씨정보를 제공하고있어요. '
+                                                              '각 스키장별 날씨정보를 제공하고있어요. '
                                                               '추후 더 자세한 날씨 데이터를 제공하기 위해 '
                                                               '업데이트 할 예정입니다.',
                                                           style: TextStyle(
@@ -2005,7 +2005,7 @@ class _ResortHomeState extends State<ResortHome>
                                                                 .start,
                                                             children: [
                                                               Text(
-                                                                '리조트를 선택해주세요.',
+                                                                '스키장을 선택해주세요.',
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                     20,
@@ -2017,7 +2017,7 @@ class _ResortHomeState extends State<ResortHome>
                                                                 height: 10,
                                                               ),
                                                               Text(
-                                                                '관심있는 리조트를 선택해 리조트와 관련된 실시간 날씨 정보와 웹캠, 슬로프 오픈 현황 등을 확인하세요.',
+                                                                '관심있는 스키장을 선택해 스키장과 관련된 실시간 날씨 정보와 웹캠, 슬로프 오픈 현황 등을 확인하세요.',
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                     14,
@@ -2797,7 +2797,7 @@ class _ResortHomeState extends State<ResortHome>
                                                       ),
                                                       Text(
                                                         '기상청에서 제공해주는 실시간 데이터를 사용해'
-                                                            '각 리조트별 날씨정보를 제공하고있어요. '
+                                                            '각 스키장별 날씨정보를 제공하고있어요. '
                                                             '추후 더 자세한 날씨 데이터를 제공하기 위해 '
                                                             '업데이트 할 예정입니다.',
                                                         style: TextStyle(

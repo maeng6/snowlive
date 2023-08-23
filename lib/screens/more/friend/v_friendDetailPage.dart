@@ -1224,6 +1224,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                             CustomFullScreenDialog.showDialog();
                                                             await _liveCrewModelController.getCurrnetCrew(friendDocs[0]['liveCrew']);
                                                             CustomFullScreenDialog.cancelDialog();
+                                                            setState(() {edit=false;});
                                                             Get.to(()=>CrewDetailPage_screen());
                                                           },
                                                           child: Container(
@@ -1297,6 +1298,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                     return (friendDocs[0]['uid'] == _userModelController.uid)
                                                           ? GestureDetector(
                                                         onTap: (){
+                                                          setState(() {edit=false;});
                                                           Get.to(()=>FirstPage_createCrew());
                                                         },
                                                         child: Container(
@@ -1424,6 +1426,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 
                                                                 return GestureDetector(
                                                                   onTap: (){
+                                                                    setState(() {edit=false;});
                                                                     Get.to(()=>RankingIndiScreenDetail());
                                                                   },
                                                                   child: Container(
@@ -1580,6 +1583,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                     )
                                                         : GestureDetector(
                                                       onTap: (){
+                                                        setState(() {edit=false;});
                                                         Get.to(()=>RankingIndiScreenDetail());
                                                       },
                                                           child: Container(
@@ -1678,7 +1682,9 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                           try{
                                             Timestamp lastPassTime = data?['lastPassTime'];
                                             lastPassTimeString = _timeStampController.getAgoTime(lastPassTime);
-                                          }catch(e){}
+                                          }catch(e){
+                                            lastPassTimeString = '정보 없음';
+                                          }
 
                                           List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);
                                           List<Map<String, dynamic>> barData2 = _liveMapController.calculateBarDataSlot(passCountTimeData);
@@ -2034,6 +2040,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                   GestureDetector(
                                                                     onTap: (){
                                                                       Get.back();
+                                                                      setState(() {edit=false;});
                                                                       Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
                                                                     },
                                                                     child: ExtendedImage.network(
@@ -2051,6 +2058,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                   GestureDetector(
                                                                     onTap: (){
                                                                       Get.back();
+                                                                      setState(() {edit=false;});
                                                                       Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
                                                                     },
                                                                     child: ExtendedImage.asset(
