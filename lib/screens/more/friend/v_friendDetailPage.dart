@@ -1272,11 +1272,18 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                     SizedBox(
                                                                       height: 34,
                                                                     ),
-                                                                    Text('${crewDocs[0]['crewName']}',
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight.bold,
-                                                                          fontSize: 16,
-                                                                          color: Color(0xFFFFFFFF)
+                                                                    Container(
+                                                                      width: _size.width / 2 - 57,
+                                                                      child: Align(
+                                                                        child: Text('${crewDocs[0]['crewName']}',
+                                                                          style: TextStyle(
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 16,
+                                                                              color: Color(0xFFFFFFFF),
+                                                                          ),
+                                                                          overflow: TextOverflow.ellipsis,
+                                                                          maxLines: 1,
+                                                                        ),
                                                                       ),
                                                                     ),
                                                                     SizedBox(
@@ -1715,7 +1722,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       ),
                                                       margin: EdgeInsets.symmetric(horizontal: 20),
                                                       child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
                                                         children: [
                                                           Expanded(
                                                             child: Container(
@@ -1751,6 +1758,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                     double barHeightRatio = data['barHeightRatio'];
                                                                     Color barColor = data['barColor'];
                                                                     return Container(
+                                                                      padding: EdgeInsets.only(bottom: 10),
                                                                       margin: EdgeInsets.symmetric(horizontal: 5),
                                                                       width: barData.length < 5 ? _size.width / 5 - 25 : _size.width / 5 - 28,
                                                                       height: 195,
