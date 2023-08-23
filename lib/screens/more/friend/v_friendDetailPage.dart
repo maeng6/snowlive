@@ -1097,7 +1097,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                             ); //친구로등록하기
                                                         }
                                                         else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                          return CircularProgressIndicator();
+                                                          return Center(child: CircularProgressIndicator());
                                                         }
                                                         return SizedBox.shrink();
                                                       },),
@@ -1206,7 +1206,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       return SizedBox.shrink();
                                                     }
                                                     else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                      return CircularProgressIndicator();
+                                                      return Center(child: CircularProgressIndicator());
                                                     }
                                                     else if (snapshot.hasError) {
                                                       return Text('오류: ${snapshot.error}');
@@ -1391,7 +1391,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       return SizedBox.shrink();
                                                     }
                                                     else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                      return CircularProgressIndicator();
+                                                      return Center(child: CircularProgressIndicator());
                                                     }
                                                     else if (snapshot.hasError) {
                                                       return Text('오류: ${snapshot.error}');
@@ -1414,7 +1414,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                 return SizedBox.shrink();
                                                               }
                                                               else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                return CircularProgressIndicator();
+                                                                return Center(child: CircularProgressIndicator());
                                                               }
                                                               else if (snapshot.hasError) {
                                                                 return Text('오류: ${snapshot.error}');
@@ -1672,7 +1672,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             return Text("오류가 발생했습니다");
                                           }
                                           else if (snapshot.connectionState == ConnectionState.waiting) {
-                                            return CircularProgressIndicator();
+                                            return Center(child: CircularProgressIndicator());
                                           }
 
                                           Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
@@ -1983,7 +1983,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                     ),
                                                   ));
                                                 } else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return CircularProgressIndicator();
+                                                  return Center(child: CircularProgressIndicator());
                                                 }
                                                 else if (snapshot.data!.docs.isNotEmpty) {
                                                   List commentDocs = snapshot.data!.docs;
