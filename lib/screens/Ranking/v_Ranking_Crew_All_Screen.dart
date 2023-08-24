@@ -322,11 +322,16 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                             ),
                                           ),
                                           if (crewDocs[index]['description'].isNotEmpty)
-                                          Text(
-                                            crewDocs[index]['description'],
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Color(0xFF949494)
+                                          SizedBox(
+                                            width: 200,
+                                            child: Text(
+                                              crewDocs[index]['description'],
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Color(0xFF949494)
+                                              ),
                                             ),
                                           ),
                                         ],
