@@ -662,11 +662,16 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                             ),
                                                           ),
                                                           if (crewDocs[index]['description'].isNotEmpty)
-                                                            Text(
-                                                              crewDocs[index]['description'],
-                                                              style: TextStyle(
-                                                                fontSize: 12,
-                                                                color: Color(0xFF949494),
+                                                            SizedBox(
+                                                              width: 200,
+                                                              child: Text(
+                                                                crewDocs[index]['description'],
+                                                                maxLines: 1,
+                                                                overflow: TextOverflow.ellipsis,
+                                                                style: TextStyle(
+                                                                    fontSize: 12,
+                                                                    color: Color(0xFF949494)
+                                                                ),
                                                               ),
                                                             ),
                                                         ],
@@ -823,14 +828,18 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                 ),
                                                 SizedBox(height: 2,),
                                                 if (myCrewDocs[0]['description'].isNotEmpty)
-                                                Text(
-                                                  '${myCrewDocs[0]['description']}',
-                                                  style: TextStyle(
-                                                    color: Color(0xFFFFFFFF),
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.normal,
+                                                  SizedBox(
+                                                    width: 200,
+                                                    child: Text(
+                                                      '${myCrewDocs[0]['description']}',
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: Color(0xFF949494)
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
                                               ],
                                             ),
                                           ),
