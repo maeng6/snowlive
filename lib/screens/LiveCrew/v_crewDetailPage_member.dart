@@ -152,6 +152,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                         width : _size.width,
                         child: ListView.builder(
                           shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
                           itemCount: crewMemberDocs.length,
                           itemBuilder: (BuildContext context, int index) {
                             if(crewMemberDocs[index]['uid'] != leaderUid){
