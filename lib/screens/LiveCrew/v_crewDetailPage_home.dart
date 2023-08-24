@@ -85,7 +85,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
             return SizedBox.shrink();
           }
           else if(snapshot.connectionState == ConnectionState.waiting){
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
           else if(snapshot.data!.docs.isNotEmpty){
 
@@ -610,7 +610,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                 SizedBox.shrink();
                                               }
                                               else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return CircularProgressIndicator();
+                                                return Center(child: CircularProgressIndicator());
                                               }
                                               else if (snapshot.hasError) {
                                                 return Text('Error: ${snapshot.error}');
@@ -632,7 +632,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                       SizedBox.shrink();
                                                     }
                                                     else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                      return CircularProgressIndicator();
+                                                      return Center(child: CircularProgressIndicator());
                                                     }
                                                     else if (snapshot.hasError) {
                                                       return Text('Error: ${snapshot.error}');
@@ -1018,7 +1018,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                             return Text('Error: ${snapshot.error}');
                                           }
                                           else if (snapshot.connectionState == ConnectionState.waiting) {
-                                            return CircularProgressIndicator();
+                                            return Center(child: CircularProgressIndicator());
                                           }
                                           else if (snapshot.data!.docs.isNotEmpty) {
                                             final crewDocs = snapshot.data!.docs;
@@ -1183,7 +1183,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                               return Text("오류가 발생했습니다");
                                             }
                                             else if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return CircularProgressIndicator();
+                                              return Center(child: CircularProgressIndicator());
                                             }
                                             else if (snapshot.data?.docs.first.data()['passCountTimeData'] != null) {
                                               Map<String, dynamic> passCountTimeData = snapshot.data?.docs.first.data()['passCountTimeData'];
@@ -1325,7 +1325,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                 }
 
                                 if(snapshot.connectionState == ConnectionState.waiting){
-                                  return CircularProgressIndicator();
+                                  return Center(child: CircularProgressIndicator());
                                 }
 
                                 List<String> galleryUrlList = [];

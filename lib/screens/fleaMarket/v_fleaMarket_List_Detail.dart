@@ -308,6 +308,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                 style: TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold,
+                                                  color: Color(0xFFD63636)
                                                 ),
                                               ),
                                             ),
@@ -390,7 +391,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                                         };
                                                                         Navigator.pop(context);
                                                                       } catch (e) {}
-                                                                      print('댓글 삭제 완료');
+                                                                      print('게시글 삭제 완료');
                                                                       Navigator.pop(context);
                                                                       CustomFullScreenDialog.cancelDialog();
                                                                     },

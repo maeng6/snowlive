@@ -324,6 +324,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                 style: TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold,
+                                                  color: Color(0xFFD63636)
                                                 ),
                                               ),
                                             ),
@@ -1147,6 +1148,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                                                     style: TextStyle(
                                                                                                       fontSize: 15,
                                                                                                       fontWeight: FontWeight.bold,
+                                                                                                      color: Color(0xFFD63636)
                                                                                                     ),
                                                                                                   ),
                                                                                                 ),

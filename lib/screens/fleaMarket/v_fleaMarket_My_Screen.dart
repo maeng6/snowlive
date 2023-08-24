@@ -136,40 +136,40 @@ class _FleaMarket_My_ScreenState
                         );
                       }
                       final chatDocs = snapshot.data!.docs;
-                      return Scrollbar(
-                        child:
-                        (chatDocs.length == 0)
-                            ? Transform.translate(
-                          offset: Offset(0, -40),
-                          child: Container(
-                            width: _size.width,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/imgs/icons/icon_nodata.png',
-                                  scale: 4,
-                                  width: 73,
-                                  height: 73,
+                      return (chatDocs.length == 0)
+                          ? Transform.translate(
+                        offset: Offset(0, -40),
+                        child: Container(
+                          width: _size.width,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/imgs/icons/icon_nodata.png',
+                                scale: 4,
+                                width: 73,
+                                height: 73,
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text('게시판에 글이 없습니다.',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                    color: Color(0xFF949494)
                                 ),
-                                SizedBox(
-                                  height: 6,
-                                ),
-                                Text('게시판에 글이 없습니다.',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal,
-                                      color: Color(0xFF949494)
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        )
-                            : ListView.builder(
-                          controller: _scrollController, // ScrollController 연결
-                          itemCount: chatDocs.length,
-                          itemBuilder: (context, index) {
+                        ),
+                      )
+                          : Scrollbar(
+                        controller: _scrollController,
+                        child: ListView.builder(
+                        controller: _scrollController, // ScrollController 연결
+                        itemCount: chatDocs.length,
+                        itemBuilder: (context, index) {
                             String _time = _fleaModelController
                                 .getAgoTime(chatDocs[index].get('timeStamp'));
                             return GestureDetector(
@@ -325,9 +325,9 @@ class _FleaMarket_My_ScreenState
                                 ],
                               ),
                             );
-                          },
-                        ),
-                      );
+                        },
+                      ),
+                          );
                     },
                   ),
                 ),

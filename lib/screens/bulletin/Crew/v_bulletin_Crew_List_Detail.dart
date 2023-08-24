@@ -348,6 +348,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                           style: TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.bold,
+                                            color: Color(0xFFD63636)
                                           ),
                                         ),
                                       ),
@@ -1198,6 +1199,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                       style: TextStyle(
                                                                                                         fontSize: 15,
                                                                                                         fontWeight: FontWeight.bold,
+                                                                                                        color: Color(0xFFD63636)
                                                                                                       ),
                                                                                                     ),
                                                                                                   ),

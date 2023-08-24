@@ -1219,87 +1219,110 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                           break;
                                                         }
                                                       }
-                                                      return GestureDetector(
-                                                          onTap: () async {
-                                                            CustomFullScreenDialog.showDialog();
-                                                            await _liveCrewModelController.getCurrnetCrew(friendDocs[0]['liveCrew']);
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                            setState(() {edit=false;});
-                                                            Get.to(()=>CrewDetailPage_screen());
-                                                          },
-                                                          child: Container(
-                                                            width: _size.width / 2 - 25,
-                                                            padding: EdgeInsets.all(16),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(10),
-                                                                color: Color(crewDocs[0]['crewColor'])
-                                                            ),
-                                                            child: Row(
-                                                              children: [
-                                                                Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                      return StreamBuilder<QuerySnapshot>(
+                                                        stream: FirebaseFirestore.instance
+                                                            .collection('user')
+                                                            .where('uid', isEqualTo: crewDocs[0].get('leaderUid'))
+                                                            .snapshots(),
+                                                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+
+                                                          if (!snapshot.hasData || snapshot.data == null) {
+                                                            return SizedBox.shrink();
+                                                          }
+                                                          else if(snapshot.connectionState == ConnectionState.waiting){
+                                                            return Center(child: CircularProgressIndicator());
+                                                          }
+
+                                                          else if(snapshot.data!.docs.isNotEmpty){
+
+                                                          final userDoc = snapshot.data!.docs;
+
+                                                          return GestureDetector(
+                                                              onTap: () async {
+                                                                CustomFullScreenDialog.showDialog();
+                                                                await _liveCrewModelController.getCurrnetCrew(friendDocs[0]['liveCrew']);
+                                                                CustomFullScreenDialog.cancelDialog();
+                                                                setState(() {edit=false;});
+                                                                Get.to(()=>CrewDetailPage_screen());
+                                                              },
+                                                              child: Container(
+                                                                width: _size.width / 2 - 25,
+                                                                padding: EdgeInsets.all(16),
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius: BorderRadius.circular(10),
+                                                                    color: Color(crewDocs[0]['crewColor'])
+                                                                ),
+                                                                child: Row(
                                                                   children: [
-                                                                    Text('가입한 크루',
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight.normal,
-                                                                          fontSize: 13,
-                                                                          color: Color(0xFFFFFFFF).withOpacity(0.6)
-                                                                      ),),
-                                                                    SizedBox(height: 12),
-                                                                    (crewDocs[0]['profileImageUrl'].isNotEmpty)
-                                                                        ? Container(
-                                                                            width: 50,
-                                                                            height: 50,
-                                                                            child: ExtendedImage.network(
-                                                                              crewDocs[0]['profileImageUrl'],
-                                                                              enableMemoryCache: true,
-                                                                              shape: BoxShape.rectangle,
-                                                                              borderRadius: BorderRadius.circular(6),
-                                                                              fit: BoxFit.cover,
-                                                                            ))
-                                                                        : Container(
-                                                                          width: 50,
-                                                                          height: 50,
-                                                                          child: ExtendedImage.asset(
-                                                                            myCrewAsset,
-                                                                            enableMemoryCache: true,
-                                                                            shape: BoxShape.rectangle,
-                                                                            borderRadius: BorderRadius.circular(6),
-                                                                            fit: BoxFit.cover,
-                                                                          ),
-                                                                        ),
-                                                                    SizedBox(
-                                                                      height: 34,
-                                                                    ),
-                                                                    Container(
-                                                                      width: _size.width / 2 - 57,
-                                                                      child: Align(
-                                                                        child: Text('${crewDocs[0]['crewName']}',
+                                                                    Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                      children: [
+                                                                        Text('가입한 크루',
                                                                           style: TextStyle(
-                                                                              fontWeight: FontWeight.bold,
-                                                                              fontSize: 16,
-                                                                              color: Color(0xFFFFFFFF),
-                                                                          ),
-                                                                          overflow: TextOverflow.ellipsis,
-                                                                          maxLines: 1,
+                                                                              fontWeight: FontWeight.normal,
+                                                                              fontSize: 13,
+                                                                              color: Color(0xFFFFFFFF).withOpacity(0.6)
+                                                                          ),),
+                                                                        SizedBox(height: 12),
+                                                                        (crewDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                            ? Container(
+                                                                                width: 50,
+                                                                                height: 50,
+                                                                                child: ExtendedImage.network(
+                                                                                  crewDocs[0]['profileImageUrl'],
+                                                                                  enableMemoryCache: true,
+                                                                                  shape: BoxShape.rectangle,
+                                                                                  borderRadius: BorderRadius.circular(6),
+                                                                                  fit: BoxFit.cover,
+                                                                                ))
+                                                                            : Container(
+                                                                              width: 50,
+                                                                              height: 50,
+                                                                              child: ExtendedImage.asset(
+                                                                                myCrewAsset,
+                                                                                enableMemoryCache: true,
+                                                                                shape: BoxShape.rectangle,
+                                                                                borderRadius: BorderRadius.circular(6),
+                                                                                fit: BoxFit.cover,
+                                                                              ),
+                                                                            ),
+                                                                        SizedBox(
+                                                                          height: 34,
                                                                         ),
-                                                                      ),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      height: 3,
-                                                                    ),
-                                                                    Text('${crewDocs[0]['crewLeader']}',
-                                                                      style: TextStyle(
-                                                                          fontSize: 13,
-                                                                          color: Color(0xFFFFFFFF)
-                                                                      ),
+                                                                        Container(
+                                                                          width: _size.width / 2 - 57,
+                                                                          child: Align(
+                                                                            alignment: Alignment.centerLeft,
+                                                                            child: Text('${crewDocs[0]['crewName']}',
+                                                                              style: TextStyle(
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  fontSize: 16,
+                                                                                  color: Color(0xFFFFFFFF),
+                                                                              ),
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                              maxLines: 1,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height: 3,
+                                                                        ),
+                                                                        Text('${userDoc[0]['displayName']}',
+                                                                          style: TextStyle(
+                                                                              fontSize: 13,
+                                                                              color: Color(0xFFFFFFFF)
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   ],
                                                                 ),
-                                                              ],
-                                                            ),
-                                                          )
+                                                              )
+                                                          );
+                                                          }
+                                                          return SizedBox.shrink();
+                                                        }
                                                       );
                                                     }
                                                     return (friendDocs[0]['uid'] == _userModelController.uid)
