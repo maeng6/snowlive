@@ -202,7 +202,7 @@ class _ResortHomeState extends State<ResortHome>
                                                         color: Color(0xFF111111)
                                                       ),),
                                                     ),
-                                                    subtitle: Text('즐겨찾는 친구를 등록하고\n친구의 라이브 상태를 확인하세요!',
+                                                    subtitle: Text('즐겨찾는 친구를 등록하고\n친구의 라이브 상태를 확인하세요.',
                                                       style: TextStyle(
                                                           fontSize: 14,
                                                           fontWeight: FontWeight.normal,

@@ -315,7 +315,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                   SizedBox(
                                     height: 2,
                                   ),
-                                  Text('친구의 라이브 상태를 확인할 수 있어요!'),
+                                  Text('친구의 라이브 상태를 확인할 수 있어요.'),
                                 ],
                               ),
                             );
@@ -566,7 +566,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                                 height: 2,
                                               ),
                                               Text(
-                                                '친구의 라이브 상태를 확인할 수 있어요!',
+                                                '친구의 라이브 상태를 확인할 수 있어요.',
                                                 style: TextStyle(
                                                     fontSize: 13,
                                                     color: Color(0xFF666666)),
@@ -748,7 +748,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                                   height: 2,
                                                 ),
                                                 Text(
-                                                  '친구의 라이브 상태를 확인할 수 있어요!',
+                                                  '친구의 라이브 상태를 확인할 수 있어요.',
                                                   style: TextStyle(
                                                       fontSize: 13,
                                                       color: Color(0xFF949494)),
