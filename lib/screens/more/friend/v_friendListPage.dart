@@ -1023,6 +1023,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                                                         15,
                                                                         fontWeight:
                                                                         FontWeight.bold,
+                                                                        color: Color(0xFFD63636)
                                                                       ),
                                                                     ),
                                                                   ),
@@ -1156,6 +1157,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                                                         fontSize: 15,
                                                                         fontWeight:
                                                                         FontWeight.bold,
+                                                                        color: Color(0xFFD63636)
                                                                       ),
                                                                     ),
                                                                   ),

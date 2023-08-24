@@ -654,6 +654,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                             style: TextStyle(
                                                                               fontSize: 15,
                                                                               fontWeight: FontWeight.bold,
+                                                                              color: Color(0xFFD63636)
                                                                             ),
                                                                           ),
                                                                         ),
