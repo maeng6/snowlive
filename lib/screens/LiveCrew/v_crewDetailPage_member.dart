@@ -729,7 +729,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                  ],
                                ),
                              );
-                            } return Container();
+                            } return SizedBox.shrink();
                           },
                         ),
                       ),

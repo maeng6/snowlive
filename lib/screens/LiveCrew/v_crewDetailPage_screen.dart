@@ -68,31 +68,19 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                         final alarmDocs = snapshot.data!.docs;
                         return  Padding(
                           padding: const EdgeInsets.only(top: 4),
-                          child: Stack(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(right: 5),
-                                child: IconButton(
-                                  onPressed: () async{
-                                    Get.to(()=>Setting_crewDetail());
-                                  },
-                                  icon: Image.asset(
-                                    'assets/imgs/icons/icon_settings.png',
-                                    scale: 4,
-                                    width: 26,
-                                    height: 26,
-                                  ),
-                                ),
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 5),
+                            child: IconButton(
+                              onPressed: () async{
+                                Get.to(()=>Setting_crewDetail());
+                              },
+                              icon: Image.asset(
+                                'assets/imgs/icons/icon_settings.png',
+                                scale: 4,
+                                width: 26,
+                                height: 26,
                               ),
-                              Positioned(  // draw a red marble
-                                top: 10,
-                                left: 32,
-                                child: new Icon(Icons.brightness_1, size: 6.0,
-                                    color:
-                                    (alarmDocs[0]['newInvited_crew']==true)
-                                        ?Color(0xFFD32F2F):Colors.white),
-                              )
-                            ],
+                            ),
                           ),
                         );
                       }
