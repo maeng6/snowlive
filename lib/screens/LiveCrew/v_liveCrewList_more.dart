@@ -91,12 +91,6 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
               itemCount: crewDocs.length,
               itemBuilder: (context, index) {
                 final doc = crewDocs[index];
-                for (var crewLogo in crewLogoList) {
-                  if (crewLogo.crewColor == doc['crewColor']) {
-                    assetBases = crewLogo.crewLogoAsset;
-                    break;
-                  }
-                }
                 return StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('user')
@@ -109,6 +103,13 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
                     }
 
                     final userDoc = snapshot.data!.docs;
+
+                    for (var crewLogo in crewLogoList) {
+                      if (crewLogo.crewColor == doc['crewColor']) {
+                        assetBases = crewLogo.crewLogoAsset;
+                        break;
+                      }
+                    }
 
                     return GestureDetector(
                       onTap: () async {

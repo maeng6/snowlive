@@ -1357,13 +1357,6 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                               child: Column(
                                 children: crewDocs.map((doc) {
 
-                                  for (var crewLogo in crewLogoList) {
-                                    if (crewLogo.crewColor == doc['crewColor']) {
-                                      assetBases = crewLogo.crewLogoAsset;
-                                      break;
-                                    }
-                                  }
-
                                   return StreamBuilder<QuerySnapshot>(
                                     stream: FirebaseFirestore.instance
                                         .collection('user')
@@ -1373,8 +1366,14 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                       if (!snapshot.hasData || snapshot.data == null) {
                                         return Container();
                                       }
-
                                         final userDoc = snapshot.data!.docs;
+
+                                      for (var crewLogo in crewLogoList) {
+                                        if (crewLogo.crewColor == doc['crewColor']) {
+                                          assetBases = crewLogo.crewLogoAsset;
+                                          break;
+                                        }
+                                      }
 
                                         return GestureDetector(
                                         onTap: () async {

@@ -151,7 +151,6 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                       Container(
                         width : _size.width,
                         child: ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: crewMemberDocs.length,
                           itemBuilder: (BuildContext context, int index) {
@@ -704,7 +703,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                     SizedBox(height: 15,)
                                 ],
                               );
-                            }else{
+                            }else if(crewMemberDocs.isEmpty || crewMemberDocs == null || crewMemberDocs.length ==1){
                              return Container(
                                height: _size.height - 400,
                                child: Column(
@@ -730,7 +729,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                  ],
                                ),
                              );
-                            }
+                            } return Container();
                           },
                         ),
                       ),

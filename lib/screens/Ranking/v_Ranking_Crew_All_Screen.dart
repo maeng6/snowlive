@@ -238,13 +238,6 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                   ? myItemKey
                                   : GlobalKey();
 
-                              for (var crewLogo in crewLogoList) {
-                                if (crewLogo.crewColor == crewDocs[index]['crewColor']) {
-                                  assetBases = crewLogo.crewLogoAsset;
-                                  break;
-                                }
-                              }
-
                               return StreamBuilder<QuerySnapshot>(
                                 stream: FirebaseFirestore.instance
                                     .collection('user')
@@ -257,6 +250,13 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                   }
 
                                   final userDoc = snapshot.data!.docs;
+
+                                  for (var crewLogo in crewLogoList) {
+                                    if (crewLogo.crewColor == crewDocs[index]['crewColor']) {
+                                      assetBases = crewLogo.crewLogoAsset;
+                                      break;
+                                    }
+                                  }
 
                                   return Padding(
                                     key: itemKey,
