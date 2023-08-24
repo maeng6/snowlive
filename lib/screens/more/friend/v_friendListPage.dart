@@ -311,7 +311,7 @@ class _FriendListPageState extends State<FriendListPage> {
                               color: Colors.white,
                               child: Column(
                                 children: [
-                                  Text('즐겨찾는 친구를 등록하면'),
+                                  Text('즐겨찾는 친구를 등록하면, 홈화면에서'),
                                   SizedBox(
                                     height: 2,
                                   ),
@@ -557,7 +557,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                                 height: 4,
                                               ),
                                               Text(
-                                                '즐겨찾는 친구를 등록하면',
+                                                '즐겨찾는 친구를 등록하면, 홈화면에서',
                                                 style: TextStyle(
                                                     fontSize: 13,
                                                     color: Color(0xFF666666)),
@@ -739,7 +739,7 @@ class _FriendListPageState extends State<FriendListPage> {
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  '즐겨찾는 친구를 등록하면',
+                                                  '즐겨찾는 친구를 등록하면, 홈화면에서',
                                                   style: TextStyle(
                                                       fontSize: 13,
                                                       color: Color(0xFF949494)),
