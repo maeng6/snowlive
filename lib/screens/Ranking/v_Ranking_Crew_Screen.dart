@@ -822,6 +822,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   ),
                                                 ),
                                                 SizedBox(height: 2,),
+                                                if (myCrewDocs[0]['description'].isNotEmpty)
                                                 Text(
                                                   '${myCrewDocs[0]['description']}',
                                                   style: TextStyle(
