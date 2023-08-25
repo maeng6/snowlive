@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:snowlive3/controller/vm_imageController.dart';
 import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
 import 'package:snowlive3/screens/LiveCrew/setting/v_setting_SNS.dart';
 import 'package:snowlive3/screens/LiveCrew/setting/v_setting_description.dart';
@@ -17,6 +18,7 @@ class Setting_crewDetail extends StatelessWidget {
     //TODO: Dependency Injection**************************************************
     LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
     UserModelController _userModelController = Get.find<UserModelController>();
+    ImageController _imageController = Get.find<ImageController>();
     //TODO: Dependency Injection**************************************************
     return Scaffold(
       backgroundColor: Colors.white,
@@ -318,6 +320,7 @@ class Setting_crewDetail extends StatelessWidget {
                                           try {
                                             Navigator.pop(context);
                                             CustomFullScreenDialog.showDialog();
+                                            await _imageController.deleteAllCrewGalleryImages('${_liveCrewModelController.crewID}');
                                             await _liveCrewModelController
                                                 .deleteCrew(crewID: _liveCrewModelController.crewID);
                                             await _userModelController.getCurrentUser_crew(_userModelController.uid);

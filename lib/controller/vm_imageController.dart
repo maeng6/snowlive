@@ -260,6 +260,20 @@ class ImageController extends GetxController {
     await FirebaseStorage.instance.refFromURL(imageUrl).delete();
   }
 
+  Future<void> deleteAllCrewGalleryImages(String crewID) async {
+    final docRef = FirebaseFirestore.instance.collection('liveCrew').doc(crewID);
+
+    // Fetch the document from Firestore
+    DocumentSnapshot docSnapshot = await docRef.get();
+
+    // Get the galleryUrlList from the document
+    List<String> galleryUrlList = List<String>.from(docSnapshot['galleryUrlList']);
+
+    // Delete each image from Firebase Storage and remove from the list
+    for (final imageUrl in galleryUrlList) {
+      await deleteCrewGalleryImage(imageUrl, crewID);
+    }
+  }
 
 
 }
