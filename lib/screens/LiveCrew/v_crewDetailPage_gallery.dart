@@ -27,6 +27,8 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
   //TODO: Dependency Injection**************************************************
 
   XFile? _imageFile;
+  List<XFile> _imageFiles = [];
+
   final picker = ImagePicker();
 
 
@@ -207,8 +209,8 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
                                       Navigator.pop(context);
                                       CustomFullScreenDialog.showDialog();
                                       try {
-                                        _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
-                                        await _imageController.setNewImage_Crew_Gallery(newImage: _imageFile!, crewID: _liveCrewModelController.crewID!);
+                                        _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
+                                        await _imageController.setNewMultiImages_Crew_Gallery(newImages: _imageFiles, crewID: _liveCrewModelController.crewID!);
                                         CustomFullScreenDialog.cancelDialog();
                                         setState(() {});
                                       } catch (e) {

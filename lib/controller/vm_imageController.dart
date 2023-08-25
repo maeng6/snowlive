@@ -240,6 +240,47 @@ class ImageController extends GetxController {
     return downloadUrl;
   }
 
+  Future<List<String>> setNewMultiImages_Crew_Gallery({required List<XFile> newImages, required String crewID}) async {
+    String? uid = await FlutterSecureStorage().read(key: 'uid');
+    var metaData = SettableMetadata(contentType: 'image/jpeg');
+    List<String> downloadUrls = [];
+
+    try {
+      for (final newImage in newImages) {
+        String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+        String fileName = '$crewID\_$timestamp.jpg';
+
+        // 폴더 존재 여부 확인
+        ListResult listResult = await FirebaseStorage.instance.ref('images/crewGallery/$crewID/').listAll();
+        bool folderExists = listResult.items.isNotEmpty;
+
+        if (!folderExists) {
+          // 폴더가 존재하지 않으면 생성
+          await FirebaseStorage.instance.ref('images/crewGallery/$crewID/').putData(Uint8List.fromList([]));
+        }
+
+        // 이미지 업로드
+        Reference ref = FirebaseStorage.instance.ref('images/crewGallery/$crewID/$fileName');
+        await ref.putFile(File(newImage.path), metaData);
+
+        // 다운로드 URL 가져오기
+        String downloadUrl = await ref.getDownloadURL();
+        downloadUrls.add(downloadUrl);
+      }
+
+      // Firestore에 URL 추가
+      final docRef = FirebaseFirestore.instance.collection('liveCrew').doc(_liveCrewModelController.crewID);
+      await docRef.set({
+        'galleryUrlList': FieldValue.arrayUnion(downloadUrls),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      print('Error creating folder or uploading images: $e');
+    }
+
+    return downloadUrls;
+  }
+
+
 
   Future<void> deleteCrewGalleryImage(String imageUrl, String crewID) async {
     final docRef = FirebaseFirestore.instance.collection('liveCrew').doc(crewID);
