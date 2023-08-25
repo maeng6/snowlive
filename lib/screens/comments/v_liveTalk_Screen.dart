@@ -828,9 +828,7 @@ class _LiveTalkScreenState
                                                                               child: Text(
                                                                                 '${chatDocs[index]['replyCount']}',
                                                                                 style: TextStyle(
-                                                                                    color: (chatDocs[index]['replyCount'] > 0)
-                                                                                        ? Color(0xFF666666)
-                                                                                        : Color(0xFF666666),
+                                                                                    color: Color(0xFF666666),
                                                                                     fontWeight: FontWeight.bold,
                                                                                     fontSize: 11),
                                                                               ),

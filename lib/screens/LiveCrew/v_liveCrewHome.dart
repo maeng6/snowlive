@@ -1393,19 +1393,16 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                     ? Container(
                                                   width: 48,
                                                   height: 48,
-                                                  decoration: BoxDecoration(
-                                                    color: Color(doc['crewColor']),
-                                                    borderRadius: BorderRadius.circular(8),
-                                                  ),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(2.0),
-                                                    child: ExtendedImage.network(
-                                                      doc['profileImageUrl'],
-                                                      enableMemoryCache: true,
-                                                      shape: BoxShape.rectangle,
-                                                      borderRadius: BorderRadius.circular(6),
-                                                      fit: BoxFit.cover,
-                                                    ),
+                                                  // decoration: BoxDecoration(
+                                                  //   color: Color(doc['crewColor']),
+                                                  //   borderRadius: BorderRadius.circular(8),
+                                                  // ),
+                                                  child: ExtendedImage.network(
+                                                    doc['profileImageUrl'],
+                                                    enableMemoryCache: true,
+                                                    shape: BoxShape.rectangle,
+                                                    borderRadius: BorderRadius.circular(6),
+                                                    fit: BoxFit.cover,
                                                   ),
                                                 )
                                                     : Container(

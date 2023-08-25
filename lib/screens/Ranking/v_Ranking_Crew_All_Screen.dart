@@ -274,19 +274,16 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                             ? Container(
                                             width: 46,
                                             height: 46,
-                                            decoration: BoxDecoration(
-                                                color: Color(crewDocs[index]['crewColor']),
-                                                borderRadius: BorderRadius.circular(8)
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(2.0),
-                                              child: ExtendedImage.network(
-                                                crewDocs[index]['profileImageUrl'],
-                                                enableMemoryCache: true,
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius.circular(6),
-                                                fit: BoxFit.cover,
-                                              ),
+                                            // decoration: BoxDecoration(
+                                            //     color: Color(crewDocs[index]['crewColor']),
+                                            //     borderRadius: BorderRadius.circular(8)
+                                            // ),
+                                            child: ExtendedImage.network(
+                                              crewDocs[index]['profileImageUrl'],
+                                              enableMemoryCache: true,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(6),
+                                              fit: BoxFit.cover,
                                             ))
                                             : Container(
                                           width: 46,

@@ -575,7 +575,9 @@ class _FriendListPageState extends State<FriendListPage> {
                                             ],
                                           ),
                                         );
-                                      } else if (snapshot.data!.docs.isNotEmpty) {
+                                      }
+                                      else if (snapshot.connectionState == ConnectionState.waiting) {}
+                                      else if (snapshot.data!.docs.isNotEmpty) {
                                         final bestfriendDocs = snapshot.data!.docs;
                                         Size _size = MediaQuery.of(context).size;
                                         return SingleChildScrollView(
@@ -725,10 +727,6 @@ class _FriendListPageState extends State<FriendListPage> {
                                                 ),
                                               ],
                                             ));
-                                      } else if (snapshot.connectionState == ConnectionState.waiting) {
-                                        return Center(
-                                          child: CircularProgressIndicator(),
-                                        );
                                       }
                                       return Container(
                                         color: Colors.white,

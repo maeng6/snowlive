@@ -68,6 +68,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
         .snapshots();
   }
 
+
   _showCupertinoPicker() async {
     await showCupertinoModalPopup(
         context: context,
@@ -499,189 +500,186 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                       );
                     }
                     final chatDocs = snapshot.data!.docs;
-                    return Scrollbar(
-                      child:
-                      (chatDocs.length == 0)
-                      ? Transform.translate(
-                        offset: Offset(0, -40),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/imgs/icons/icon_nodata.png',
-                              scale: 4,
-                              width: 73,
-                              height: 73,
+                    return (chatDocs.length == 0)
+                    ? Transform.translate(
+                      offset: Offset(0, -40),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/imgs/icons/icon_nodata.png',
+                            scale: 4,
+                            width: 73,
+                            height: 73,
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text('게시판에 글이 없습니다.',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                                color: Color(0xFF949494)
                             ),
-                            SizedBox(
-                              height: 6,
-                            ),
-                            Text('게시판에 글이 없습니다.',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                  color: Color(0xFF949494)
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                      : ListView.builder(
-                        controller: _scrollController, // ScrollController 연결
-                        itemCount: chatDocs.length,
-                        itemBuilder: (context, index) {
-                          String _time = _timeStampController.yyyymmddFormat(chatDocs[index].get('timeStamp'));
-                          return GestureDetector(
-                            onTap: () async {
-                              if (_userModelController.repoUidList!
-                                  .contains(chatDocs[index].get('uid'))) {
-                                return;
-                              }
-                              CustomFullScreenDialog.showDialog();
-                              await _bulletinCrewModelController.getCurrentBulletinCrew(
-                                  uid: chatDocs[index].get('uid'),
-                                  bulletinCrewCount:
-                                  chatDocs[index].get('bulletinCrewCount'));
-                              CustomFullScreenDialog.cancelDialog();
-                              Get.to(() => Bulletin_Crew_List_Detail());
-                            },
-                            child: Obx(() => Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(top: 2),
-                                  child: Container(
-                                    color: Colors.white,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        (_userModelController.repoUidList!
-                                            .contains(chatDocs[index]
-                                            .get('uid')))
-                                            ? Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets
-                                                .symmetric(
-                                                vertical: 24),
-                                            child: Text(
-                                              '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
-                                              style: TextStyle(
-                                                  fontWeight:
-                                                  FontWeight
-                                                      .normal,
-                                                  fontSize: 12,
-                                                  color: Color(
-                                                      0xffc8c8c8)),
-                                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                    : ListView.builder(
+                      controller: _scrollController, // ScrollController 연결
+                      itemCount: chatDocs.length,
+                      itemBuilder: (context, index) {
+                        String _time = _timeStampController.yyyymmddFormat(chatDocs[index].get('timeStamp'));
+                        return GestureDetector(
+                          onTap: () async {
+                            if (_userModelController.repoUidList!
+                                .contains(chatDocs[index].get('uid'))) {
+                              return;
+                            }
+                            CustomFullScreenDialog.showDialog();
+                            await _bulletinCrewModelController.getCurrentBulletinCrew(
+                                uid: chatDocs[index].get('uid'),
+                                bulletinCrewCount:
+                                chatDocs[index].get('bulletinCrewCount'));
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.to(() => Bulletin_Crew_List_Detail());
+                          },
+                          child: Obx(() => Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 2),
+                                child: Container(
+                                  color: Colors.white,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      (_userModelController.repoUidList!
+                                          .contains(chatDocs[index]
+                                          .get('uid')))
+                                          ? Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets
+                                              .symmetric(
+                                              vertical: 24),
+                                          child: Text(
+                                            '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
+                                            style: TextStyle(
+                                                fontWeight:
+                                                FontWeight
+                                                    .normal,
+                                                fontSize: 12,
+                                                color: Color(
+                                                    0xffc8c8c8)),
                                           ),
-                                        )
-                                            : Row(
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(vertical: 6),
-                                                  child: Container(
-                                                    width: _size.width-32,
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text(
-                                                          chatDocs[index].get('category'),
-                                                          style: TextStyle(
-                                                              fontWeight: FontWeight.normal,
-                                                              fontSize: 13,
-                                                              color: Color(0xFF111111)),
-                                                        ),
-                                                        SizedBox(
-                                                          height: 2,
-                                                        ),
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            Expanded(
-                                                              child: Row(
-                                                                children: [
-                                                                  Expanded(
-                                                                    child: Container(
-                                                                      constraints: BoxConstraints(
-                                                                          maxWidth: _size.width - 164),
+                                        ),
+                                      )
+                                          : Row(
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 6),
+                                                child: Container(
+                                                  width: _size.width-32,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        chatDocs[index].get('category'),
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.normal,
+                                                            fontSize: 13,
+                                                            color: Color(0xFF111111)),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Row(
+                                                              children: [
+                                                                Expanded(
+                                                                  child: Container(
+                                                                    constraints: BoxConstraints(
+                                                                        maxWidth: _size.width - 164),
+                                                                    child: Text(
+                                                                      chatDocs[index].get('title'),
+                                                                      maxLines: 2,
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                      style: TextStyle(
+                                                                          fontWeight: FontWeight.bold,
+                                                                          fontSize: 15,
+                                                                          color: Color(0xFF111111)),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding: EdgeInsets.only(left: 16),
+                                                                  child: Container(
+                                                                    decoration: BoxDecoration(
+                                                                      borderRadius: BorderRadius.circular(50),
+                                                                      color: Color(0xFFE1EDFF),
+                                                                    ),
+                                                                    child: Padding(
+                                                                      padding: const EdgeInsets.only(top: 2, bottom: 4, left: 8, right: 8),
                                                                       child: Text(
-                                                                        chatDocs[index].get('title'),
-                                                                        maxLines: 2,
-                                                                        overflow: TextOverflow.ellipsis,
+                                                                        chatDocs[index].get('bulletinCrewReplyCount').toString(),
+                                                                        maxLines: 1,
+                                                                        overflow:  TextOverflow.ellipsis,
                                                                         style: TextStyle(
-                                                                            fontWeight: FontWeight.bold,
-                                                                            fontSize: 15,
-                                                                            color: Color(0xFF111111)),
+                                                                            fontWeight: FontWeight.normal,
+                                                                            fontSize: 11,
+                                                                            color: Color(0xFF3D83ED)),
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                  Padding(
-                                                                    padding: EdgeInsets.only(left: 16),
-                                                                    child: Container(
-                                                                      decoration: BoxDecoration(
-                                                                        borderRadius: BorderRadius.circular(50),
-                                                                        color: Color(0xFFE1EDFF),
-                                                                      ),
-                                                                      child: Padding(
-                                                                        padding: const EdgeInsets.only(top: 2, bottom: 4, left: 8, right: 8),
-                                                                        child: Text(
-                                                                          chatDocs[index].get('bulletinCrewReplyCount').toString(),
-                                                                          maxLines: 1,
-                                                                          overflow:  TextOverflow.ellipsis,
-                                                                          style: TextStyle(
-                                                                              fontWeight: FontWeight.normal,
-                                                                              fontSize: 11,
-                                                                              color: Color(0xFF3D83ED)),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
+                                                                ),
+                                                              ],
                                                             ),
-                                                          ],
-                                                        ),
-                                                        SizedBox(
-                                                          height: 8,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Text(
-                                                              chatDocs[index].get('location'),
-                                                              style: TextStyle(
-                                                                  fontSize: 13,
-                                                                  color: Color(0xFF949494),
-                                                                  fontWeight: FontWeight.normal),
-                                                            ),
-                                                            Text('   $_time',
-                                                              style: TextStyle(
-                                                                  fontSize: 13,
-                                                                  color: Color(0xFF949494),
-                                                                  fontWeight: FontWeight.normal),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        height: 8,
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            chatDocs[index].get('location'),
+                                                            style: TextStyle(
+                                                                fontSize: 13,
+                                                                color: Color(0xFF949494),
+                                                                fontWeight: FontWeight.normal),
+                                                          ),
+                                                          Text('   $_time',
+                                                            style: TextStyle(
+                                                                fontSize: 13,
+                                                                color: Color(0xFF949494),
+                                                                fontWeight: FontWeight.normal),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              ],
-                                            ),
-                                      ],
-                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                    ],
                                   ),
                                 ),
-                                Divider(
-                                  color: Color(0xFFECECEC),
-                                  height: 24,
-                                  thickness: 0.5,
-                                ),
-                              ],
-                            )),
-                          );
-                        },
-                      ),
+                              ),
+                              Divider(
+                                color: Color(0xFFECECEC),
+                                height: 24,
+                                thickness: 0.5,
+                              ),
+                            ],
+                          )),
+                        );
+                      },
                     );
                   },
                 ),

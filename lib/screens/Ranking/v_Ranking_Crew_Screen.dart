@@ -600,25 +600,21 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                             ? Container(
                                                             width: 46,
                                                             height: 46,
-                                                            decoration: BoxDecoration(
-                                                                color: Color(
-                                                                    crewDocs[index]['crewColor']),
-                                                                borderRadius: BorderRadius
-                                                                    .circular(8)
-                                                            ),
-                                                            child: Padding(
-                                                              padding: const EdgeInsets
-                                                                  .all(2.0),
-                                                              child: ExtendedImage
-                                                                  .network(
-                                                                crewDocs[index]['profileImageUrl'],
-                                                                enableMemoryCache: true,
-                                                                shape: BoxShape
-                                                                    .rectangle,
-                                                                borderRadius: BorderRadius
-                                                                    .circular(6),
-                                                                fit: BoxFit.cover,
-                                                              ),
+                                                            // decoration: BoxDecoration(
+                                                            //     color: Color(
+                                                            //         crewDocs[index]['crewColor']),
+                                                            //     borderRadius: BorderRadius
+                                                            //         .circular(8)
+                                                            // ),
+                                                            child: ExtendedImage
+                                                                .network(
+                                                              crewDocs[index]['profileImageUrl'],
+                                                              enableMemoryCache: true,
+                                                              shape: BoxShape
+                                                                  .rectangle,
+                                                              borderRadius: BorderRadius
+                                                                  .circular(6),
+                                                              fit: BoxFit.cover,
                                                             ))
                                                             : Container(
                                                           width: 46,
@@ -768,43 +764,36 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                 ? Container(
                                                 width: 48,
                                                 height: 48,
-                                                decoration: BoxDecoration(
-                                                    color: Color(
-                                                        myCrewDocs[0]['crewColor']),
-                                                    borderRadius: BorderRadius
-                                                        .circular(8)
-                                                ),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      2.0),
-                                                  child: ExtendedImage.network(
-                                                    myCrewDocs[0]['profileImageUrl'],
-                                                    enableMemoryCache: true,
-                                                    shape: BoxShape.rectangle,
-                                                    borderRadius: BorderRadius
-                                                        .circular(6),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ))
-                                                : Container(
-                                              width: 48,
-                                              height: 48,
-                                              decoration: BoxDecoration(
-                                                  color: Color(
-                                                      myCrewDocs[0]['crewColor']),
-                                                  borderRadius: BorderRadius
-                                                      .circular(8)
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(2.0),
-                                                child: ExtendedImage.asset(
-                                                  crewLogo.crewLogoAsset,
+                                                // decoration: BoxDecoration(
+                                                //     color: Color(
+                                                //         myCrewDocs[0]['crewColor']),
+                                                //     borderRadius: BorderRadius
+                                                //         .circular(8)
+                                                // ),
+                                                child: ExtendedImage.network(
+                                                  myCrewDocs[0]['profileImageUrl'],
                                                   enableMemoryCache: true,
                                                   shape: BoxShape.rectangle,
                                                   borderRadius: BorderRadius
                                                       .circular(6),
                                                   fit: BoxFit.cover,
-                                                ),
+                                                ))
+                                                : Container(
+                                              width: 48,
+                                              height: 48,
+                                              // decoration: BoxDecoration(
+                                              //     color: Color(
+                                              //         myCrewDocs[0]['crewColor']),
+                                              //     borderRadius: BorderRadius
+                                              //         .circular(8)
+                                              // ),
+                                              child: ExtendedImage.asset(
+                                                crewLogo.crewLogoAsset,
+                                                enableMemoryCache: true,
+                                                shape: BoxShape.rectangle,
+                                                borderRadius: BorderRadius
+                                                    .circular(6),
+                                                fit: BoxFit.cover,
                                               ),
                                             ),
                                           ),
