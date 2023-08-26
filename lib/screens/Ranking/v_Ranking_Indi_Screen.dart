@@ -606,7 +606,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                 return Lottie.asset('assets/json/loadings_wht_final.json');
                               } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                                 // 데이터가 없을 때 처리
-                                return Padding(
+                                return Obx(()=>Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 16),
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -680,7 +680,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                         ),
                                       ],
                                     )
-                                );
+                                ));
                               }
                               final rankingDocs = snapshot.data!.docs;
                               int myScore = rankingDocs[0]['totalScore'];
