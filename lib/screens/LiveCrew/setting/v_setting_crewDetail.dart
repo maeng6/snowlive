@@ -18,6 +18,7 @@ class Setting_crewDetail extends StatelessWidget {
     //TODO: Dependency Injection**************************************************
     LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
     UserModelController _userModelController = Get.find<UserModelController>();
+    Get.put(ImageController(), permanent: true);
     ImageController _imageController = Get.find<ImageController>();
     //TODO: Dependency Injection**************************************************
     return Scaffold(
