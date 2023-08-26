@@ -589,7 +589,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                 blurRadius: 6,
                                 offset: Offset(0, 0), // changes position of shadow
                               ),],
-                            color: Color(0xFFDBE9FF),
+                            color: Color(0xFF3D83ED),
                           ),
                           height: 80,
                           child: StreamBuilder<QuerySnapshot>(
@@ -694,7 +694,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                     Text(
                                       '${userRankingMap?['${_userModelController.uid}']}',
                                       style: TextStyle(
-                                        color: Color(0xFF3D83ED),
+                                        color: Color(0xFFffffff),
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -736,7 +736,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                         Text(
                                           '${_userModelController.displayName}',
                                           style: TextStyle(
-                                            color: Color(0xFF111111),
+                                            color: Color(0xFFffffff),
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -745,7 +745,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                         _liveCrewModelController.crewName != ''
                                             ? Text('${_liveCrewModelController.crewName}',
                                           style: TextStyle(
-                                              color: Color(0xFF666666),
+                                              color: Color(0xFFffffff).withOpacity(0.6),
                                               fontSize: 12,
                                               fontWeight: FontWeight.normal
                                           ),
@@ -759,7 +759,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                         Text(
                                           '${myScore}점',
                                           style: TextStyle(
-                                            color: Color(0xFF111111),
+                                            color: Color(0xFFffffff),
                                             fontWeight: FontWeight.normal,
                                             fontSize: 18,
                                           ),
