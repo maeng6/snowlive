@@ -1291,97 +1291,97 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                         ],
                       ),
                     ),
-                    Container(
-                      width: _size.width,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFFFFFFF),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 40),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '크루 갤러리',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Color(0xFF111111),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 16),
-                            StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance
-                                  .collection('liveCrew')
-                                  .where('crewID', isEqualTo: _liveCrewModelController.crewID)
-                                  .snapshots(),
-                              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                if (snapshot.hasError) {
-                                  return Text('이미지 로드 실패');
-                                }
-
-                                if (snapshot.data == null || !snapshot.hasData) {
-                                  return SizedBox.shrink();
-                                }
-
-                                if(snapshot.connectionState == ConnectionState.waiting){
-                                  return Center(child: CircularProgressIndicator());
-                                }
-
-                                List<String> galleryUrlList = [];
-                                for (var doc in snapshot.data!.docs) {
-                                  galleryUrlList.addAll(List<String>.from(doc['galleryUrlList'] ?? []));
-                                }
-
-                                if (galleryUrlList.isEmpty) {
-                                  return Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 40, bottom: 10),
-                                      child: Text(
-                                        '이미지가 없습니다',
-                                        style: TextStyle(fontSize: 13, color: Color(0xFF949494)),
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                return GridView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: galleryUrlList.length > 6 ? 6 : galleryUrlList.length,
-                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    crossAxisSpacing: 1, // Horizontal gap
-                                    mainAxisSpacing: 1, // Vertical gap
-                                  ),
-                                  itemBuilder: (BuildContext context, int index) {
-                                    String imageUrl = galleryUrlList.reversed.toList()[index];
-                                    return ExtendedImage.network(
-                                      imageUrl,
-                                      fit: BoxFit.cover,
-                                      cache: true,
-                                      loadStateChanged: (ExtendedImageState state) {
-                                        switch (state.extendedImageLoadState) {
-                                          case LoadState.loading:
-                                            return Center(child: CircularProgressIndicator());
-                                          case LoadState.completed:
-                                            return null;
-                                          case LoadState.failed:
-                                            return Icon(Icons.error);
-                                          default:
-                                            return null;
-                                        }
-                                      },
-                                    );
-                                  },
-                                );
-                              },
-                            )
-
-                          ],
-                        ),
-                      ),
-                    ),
+                    // Container(
+                    //   width: _size.width,
+                    //   decoration: BoxDecoration(
+                    //     color: Color(0xFFFFFFFF),
+                    //   ),
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 40),
+                    //     child: Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Text(
+                    //           '크루 갤러리',
+                    //           style: TextStyle(
+                    //             fontSize: 16,
+                    //             color: Color(0xFF111111),
+                    //             fontWeight: FontWeight.bold,
+                    //           ),
+                    //         ),
+                    //         SizedBox(height: 16),
+                    //         StreamBuilder<QuerySnapshot>(
+                    //           stream: FirebaseFirestore.instance
+                    //               .collection('liveCrew')
+                    //               .where('crewID', isEqualTo: _liveCrewModelController.crewID)
+                    //               .snapshots(),
+                    //           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    //             if (snapshot.hasError) {
+                    //               return Text('이미지 로드 실패');
+                    //             }
+                    //
+                    //             if (snapshot.data == null || !snapshot.hasData) {
+                    //               return SizedBox.shrink();
+                    //             }
+                    //
+                    //             if(snapshot.connectionState == ConnectionState.waiting){
+                    //               return Center(child: CircularProgressIndicator());
+                    //             }
+                    //
+                    //             List<String> galleryUrlList = [];
+                    //             for (var doc in snapshot.data!.docs) {
+                    //               galleryUrlList.addAll(List<String>.from(doc['galleryUrlList'] ?? []));
+                    //             }
+                    //
+                    //             if (galleryUrlList.isEmpty) {
+                    //               return Center(
+                    //                 child: Padding(
+                    //                   padding: const EdgeInsets.only(top: 40, bottom: 10),
+                    //                   child: Text(
+                    //                     '이미지가 없습니다',
+                    //                     style: TextStyle(fontSize: 13, color: Color(0xFF949494)),
+                    //                   ),
+                    //                 ),
+                    //               );
+                    //             }
+                    //
+                    //             return GridView.builder(
+                    //               physics: NeverScrollableScrollPhysics(),
+                    //               shrinkWrap: true,
+                    //               itemCount: galleryUrlList.length > 6 ? 6 : galleryUrlList.length,
+                    //               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    //                 crossAxisCount: 3,
+                    //                 crossAxisSpacing: 1, // Horizontal gap
+                    //                 mainAxisSpacing: 1, // Vertical gap
+                    //               ),
+                    //               itemBuilder: (BuildContext context, int index) {
+                    //                 String imageUrl = galleryUrlList.reversed.toList()[index];
+                    //                 return ExtendedImage.network(
+                    //                   imageUrl,
+                    //                   fit: BoxFit.cover,
+                    //                   cache: true,
+                    //                   loadStateChanged: (ExtendedImageState state) {
+                    //                     switch (state.extendedImageLoadState) {
+                    //                       case LoadState.loading:
+                    //                         return Center(child: CircularProgressIndicator());
+                    //                       case LoadState.completed:
+                    //                         return null;
+                    //                       case LoadState.failed:
+                    //                         return Icon(Icons.error);
+                    //                       default:
+                    //                         return null;
+                    //                     }
+                    //                   },
+                    //                 );
+                    //               },
+                    //             );
+                    //           },
+                    //         )
+                    //
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                     Container(
                       color: Colors.white,
                       child: Padding(
