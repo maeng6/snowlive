@@ -116,13 +116,13 @@ class _MainHomeState extends State<MainHome> {
                         color: Colors.white),
                   ),
                   Image.asset(
-                    'assets/imgs/icons/icon_discover_off.png',
+                    'assets/imgs/icons/icon_discover_off_beta.png',
                     scale: 4,
                   ),
                 ],
               ),
               activeIcon: Image.asset(
-                'assets/imgs/icons/icon_discover_on.png',
+                'assets/imgs/icons/icon_discover_on_beta.png',
                 scale: 4,
               ),
               label: '랭킹',
