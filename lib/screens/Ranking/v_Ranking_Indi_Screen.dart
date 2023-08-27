@@ -648,7 +648,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                             Text(
                                               '${_userModelController.displayName}',
                                               style: TextStyle(
-                                                color: Color(0xFF111111),
+                                                color: Color(0xFFFFFFFF),
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -657,7 +657,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                             _liveCrewModelController.crewName != ''
                                             ? Text('${_liveCrewModelController.crewName}',
                                               style: TextStyle(
-                                                  color: Color(0xFF666666),
+                                                  color: Color(0xFFFFFFFF).withOpacity(0.6),
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.normal
                                               ),
@@ -671,7 +671,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                             Text(
                                               '점수가 없습니다',
                                               style: TextStyle(
-                                                color: Color(0xFF111111),
+                                                color: Color(0xFFFFFFFF),
                                                 fontWeight: FontWeight.normal,
                                                 fontSize: 16,
                                               ),
