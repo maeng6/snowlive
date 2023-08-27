@@ -848,15 +848,18 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                                                   onTap: (){
                                                                                                     Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
                                                                                                   },
-                                                                                                  child: ExtendedImage.network(
-                                                                                                    userData['profileImageUrl'],
-                                                                                                    cache: true,
-                                                                                                    shape: BoxShape.circle,
-                                                                                                    borderRadius:
-                                                                                                    BorderRadius.circular(20),
-                                                                                                    width: 40,
-                                                                                                    height: 40,
-                                                                                                    fit: BoxFit.cover,
+                                                                                                  child: Padding(
+                                                                                                    padding: const EdgeInsets.only(bottom: 8),
+                                                                                                    child: ExtendedImage.network(
+                                                                                                      userData['profileImageUrl'],
+                                                                                                      cache: true,
+                                                                                                      shape: BoxShape.circle,
+                                                                                                      borderRadius:
+                                                                                                      BorderRadius.circular(20),
+                                                                                                      width: 26,
+                                                                                                      height: 26,
+                                                                                                      fit: BoxFit.cover,
+                                                                                                    ),
                                                                                                   ),
                                                                                                 ),
                                                                                               if (userData['profileImageUrl'] == "")
@@ -864,14 +867,16 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                                                   onTap: (){
                                                                                                     Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
                                                                                                   },
-                                                                                                  child: ExtendedImage.asset(
-                                                                                                    'assets/imgs/profile/img_profile_default_circle.png',
-                                                                                                    shape: BoxShape.circle,
-                                                                                                    borderRadius:
-                                                                                                    BorderRadius.circular(20),
-                                                                                                    width: 40,
-                                                                                                    height: 40,
-                                                                                                    fit: BoxFit.cover,
+                                                                                                  child: Padding(
+                                                                                                    padding: const EdgeInsets.only(bottom: 8),
+                                                                                                    child: ExtendedImage.asset(
+                                                                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                      shape: BoxShape.circle,
+                                                                                                      borderRadius: BorderRadius.circular(20),
+                                                                                                      width: 26,
+                                                                                                      height: 26,
+                                                                                                      fit: BoxFit.cover,
+                                                                                                    ),
                                                                                                   ),
                                                                                                 ),
                                                                                               SizedBox(width: 10),
