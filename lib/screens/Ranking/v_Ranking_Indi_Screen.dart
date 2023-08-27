@@ -772,7 +772,9 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 .where('uid', isEqualTo: _userModelController.uid )
                                                 .snapshots(),
                                             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                              if (!snapshot.hasData || snapshot.data == null) {}
+                                              if (!snapshot.hasData || snapshot.data == null) {
+                                                return SizedBox.shrink();
+                                              }
                                               else if (snapshot.data!.docs.isNotEmpty) {
                                                 final rankingDocs = snapshot.data!.docs;
                                                 for(var rankingTier in rankingTierList)
@@ -787,10 +789,10 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                       ),
                                                     );
                                               }
-                                              else if (snapshot.connectionState == ConnectionState.waiting) {}
-                                              return Center(
-                                                child: CircularProgressIndicator(),
-                                              );
+                                              else if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return Center(child: CircularProgressIndicator(),);
+                                              }
+                                              return SizedBox.shrink();
                                             })
                                       ],
                                     ),
