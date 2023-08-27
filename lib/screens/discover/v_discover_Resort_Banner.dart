@@ -62,7 +62,8 @@ class _DiscoverScreen_ResortBannerState
         // 데이터 로드 중이라면
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
-              child: Lottie.asset('assets/json/loadings_wht_final.json'));
+              child: CircularProgressIndicator(),
+          );
         }
         // 오류가 발생했다면
         else if (snapshot.hasError) {
@@ -73,9 +74,35 @@ class _DiscoverScreen_ResortBannerState
           return Container(); // 빈 컨테이너 반환
         }
         else if (snapshot.data!.docs.isNotEmpty) {
-          final _imageUrls = snapshot.data!.docs;
-          return (_imageUrls.isNotEmpty)
-              ? GestureDetector(
+          // final _imageUrls = snapshot.data!.docs;
+          // return (_imageUrls.isNotEmpty)
+          //     ? GestureDetector(
+          //   onTap: () async {
+          //     final urlSnapshot = await FirebaseFirestore.instance
+          //         .collection('discover_banner_url')
+          //         .doc('${_userModelController.favoriteResort}')
+          //         .collection('1')
+          //         .where('url', isEqualTo: _imageUrls[_currentIndex]['url'])
+          //         .get();
+          //     if (urlSnapshot.docs.isNotEmpty) {
+          //       String landingUrl =
+          //       urlSnapshot.docs.first['landingUrl'];
+          //       Get.to(() => WebPage(url: landingUrl));
+          //     }
+          //   },
+          //   child: Container(
+          //     width: _size.width,
+          //     child: ExtendedImage.network(
+          //       _imageUrls[0]['url'], // 첫 번째 이미지만 보여줌
+          //       cache: true,
+          //       fit: BoxFit.scaleDown,
+          //     ),
+          //   ),
+          // )
+      final _imageUrls = snapshot.data!.docs;
+      return Column(
+        children: [
+          GestureDetector(
             onTap: () async {
               final urlSnapshot = await FirebaseFirestore.instance
                   .collection('discover_banner_url')
@@ -91,91 +118,58 @@ class _DiscoverScreen_ResortBannerState
             },
             child: Container(
               width: _size.width,
-              child: ExtendedImage.network(
-                _imageUrls[0]['url'], // 첫 번째 이미지만 보여줌
-                cache: true,
-                fit: BoxFit.scaleDown,
+              child: CarouselSlider(
+                carouselController: _carouselController,
+                options: CarouselOptions(
+                  enableInfiniteScroll: false,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 3),
+                  viewportFraction: 1.0,
+                  aspectRatio: 16 / 4,
+                  enlargeCenterPage: true,
+                  initialPage: 0,
+                ),
+                items: _imageUrls.map((url) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return ExtendedImage.network(
+                        url['url'],
+                        cache: true,
+                        fit: BoxFit.scaleDown,
+                      );
+                    },
+                  );
+                }).toList(),
               ),
             ),
-          )
+          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: _imageUrls.map((url) {
+          //     int index = _imageUrls.indexOf(url);
+          //     return Container(
+          //       width: 6,
+          //       height: 6,
+          //       margin: EdgeInsets.only(top: 12, right: 6),
+          //       decoration: BoxDecoration(
+          //         shape: BoxShape.circle,
+          //         color: _currentIndex == index
+          //             ? Color(0xFF949494)
+          //             : Color(0xFFDEDEDE),
+          //       ),
+          //     );
+          //   }).toList(),
+          // ),
+        ],
+      );// 배너 여러개일 경우 캐러셀 타입
 
-
-
-      // final _imageUrls = snapshot.data!.docs;
-      // return (_imageUrls.isNotEmpty)
-      //     ? Column(
-      //   children: [
-      //     GestureDetector(
-      //       onTap: () async {
-      //         final urlSnapshot = await FirebaseFirestore.instance
-      //             .collection('discover_banner_url')
-      //             .doc('${_userModelController.favoriteResort}')
-      //             .collection('1')
-      //             .where('url', isEqualTo: _imageUrls[_currentIndex]['url'])
-      //             .get();
-      //         if (urlSnapshot.docs.isNotEmpty) {
-      //           String landingUrl =
-      //           urlSnapshot.docs.first['landingUrl'];
-      //           Get.to(() => WebPage(url: landingUrl));
-      //         }
-      //       },
-      //       child: Container(
-      //         width: _size.width,
-      //         child: CarouselSlider(
-      //           carouselController: _carouselController,
-      //           options: CarouselOptions(
-      //             viewportFraction: 1.0,
-      //             aspectRatio: 16 / 4,
-      //             enlargeCenterPage: true,
-      //             initialPage: 0,
-      //             onPageChanged: (index, reason) {
-      //               setState(() {
-      //                 _currentIndex = index;
-      //               });
-      //             },
-      //           ),
-      //           items: _imageUrls.map((url) {
-      //             return Builder(
-      //               builder: (BuildContext context) {
-      //                 return ExtendedImage.network(
-      //                   url['url'],
-      //                   cache: true,
-      //                   fit: BoxFit.scaleDown,
-      //                 );
-      //               },
-      //             );
-      //           }).toList(),
-      //         ),
-      //       ),
-      //     ),
-      //     Row(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       children: _imageUrls.map((url) {
-      //         int index = _imageUrls.indexOf(url);
-      //         return Container(
-      //           width: 6,
-      //           height: 6,
-      //           margin: EdgeInsets.only(top: 12, right: 6),
-      //           decoration: BoxDecoration(
-      //             shape: BoxShape.circle,
-      //             color: _currentIndex == index
-      //                 ? Color(0xFF949494)
-      //                 : Color(0xFFDEDEDE),
-      //           ),
-      //         );
-      //       }).toList(),
-      //     ),
-      //   ],
-      // ) // 배너 여러개일 경우 캐러셀 타입
-
-
-          : Container();
     }
     else if (snapshot.hasError) {
       return Text('Error: ${snapshot.error}');
     } else {
       return Center(
-          child: Lottie.asset('assets/json/loadings_wht_final.json'));
+        child: CircularProgressIndicator(),
+      );
     }
       },
     );
