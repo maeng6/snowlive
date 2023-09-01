@@ -133,7 +133,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                 Get.to(()=>InvitationScreen_crew());
               },
               icon: Image.asset(
-                'assets/imgs/icons/icon_settings.png',
+                'assets/imgs/icons/icon_noti_off.png',
                 scale: 4,
                 width: 26,
                 height: 26,
