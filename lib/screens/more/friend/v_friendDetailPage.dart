@@ -1294,7 +1294,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                       ),
                                                                     ),
                                                                     SizedBox(
-                                                                      height: 50,
+                                                                      height: 35,
                                                                     ),
                                                                     Container(
                                                                       width: _size.width / 2 - 57,
@@ -1312,7 +1312,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                       ),
                                                                     ),
                                                                     SizedBox(
-                                                                      height: 3,
+                                                                      height: 19,
                                                                     ),
                                                                   ],
                                                                 ),
