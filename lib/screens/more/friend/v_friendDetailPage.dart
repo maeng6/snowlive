@@ -40,6 +40,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   var _userStream;
   var _crewStream;
   var _rankStream;
+  var _rankStream2;
+  var _rankStream3;
   final _formKeyProfile = GlobalKey<FormState>();
   final _formKeyProfile3 = GlobalKey<FormState>();
   final _formKeyProfile2 = GlobalKey<FormState>();
@@ -70,6 +72,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
     _userStream = userStream();
     _crewStream = crewStream();
     _rankStream = rankStream();
+    _rankStream2 = rankStream2();
+    _rankStream3 = rankStream3();
     // TODO: implement initState
     super.initState();
     _stateMsgController.text = '';
@@ -108,6 +112,26 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
         .doc("${widget.uid}")
         .snapshots();
   }
+
+  Stream<QuerySnapshot> rankStream2() {
+    return  FirebaseFirestore.instance
+        .collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${widget.favoriteResort}')
+        .where('uid', isEqualTo: widget.uid )
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> rankStream3() {
+    return    FirebaseFirestore.instance
+        .collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${widget.favoriteResort}')
+        .orderBy('totalScore', descending: true)
+        .snapshots();
+  }
+
+
 
   //TODO: Dependency Injection**************************************************
   DialogController _dialogController = Get.find<DialogController>();
@@ -1219,110 +1243,82 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                           break;
                                                         }
                                                       }
-                                                      return StreamBuilder<QuerySnapshot>(
-                                                        stream: FirebaseFirestore.instance
-                                                            .collection('user')
-                                                            .where('uid', isEqualTo: crewDocs[0].get('leaderUid'))
-                                                            .snapshots(),
-                                                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-
-                                                          if (!snapshot.hasData || snapshot.data == null) {
-                                                            return SizedBox.shrink();
-                                                          }
-                                                          else if(snapshot.connectionState == ConnectionState.waiting){
-                                                            return Center(child: CircularProgressIndicator());
-                                                          }
-
-                                                          else if(snapshot.data!.docs.isNotEmpty){
-
-                                                          final userDoc = snapshot.data!.docs;
-
-                                                          return GestureDetector(
-                                                              onTap: () async {
-                                                                CustomFullScreenDialog.showDialog();
-                                                                await _liveCrewModelController.getCurrnetCrew(friendDocs[0]['liveCrew']);
-                                                                CustomFullScreenDialog.cancelDialog();
-                                                                setState(() {edit=false;});
-                                                                Get.to(()=>CrewDetailPage_screen());
-                                                              },
-                                                              child: Container(
-                                                                width: _size.width / 2 - 25,
-                                                                padding: EdgeInsets.all(16),
-                                                                decoration: BoxDecoration(
-                                                                    borderRadius: BorderRadius.circular(10),
-                                                                    color: Color(crewDocs[0]['crewColor'])
-                                                                ),
-                                                                child: Row(
+                                                      return GestureDetector(
+                                                          onTap: () async {
+                                                            CustomFullScreenDialog.showDialog();
+                                                            await _liveCrewModelController.getCurrnetCrew(friendDocs[0]['liveCrew']);
+                                                            CustomFullScreenDialog.cancelDialog();
+                                                            setState(() {edit=false;});
+                                                            Get.to(()=>CrewDetailPage_screen());
+                                                          },
+                                                          child: Container(
+                                                            width: _size.width / 2 - 25,
+                                                            padding: EdgeInsets.all(16),
+                                                            decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(10),
+                                                                color: Color(crewDocs[0]['crewColor'])
+                                                            ),
+                                                            child: Row(
+                                                              children: [
+                                                                Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                                   children: [
-                                                                    Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                                      children: [
-                                                                        Text('가입한 크루',
+                                                                    Text('가입한 크루',
+                                                                      style: TextStyle(
+                                                                          fontWeight: FontWeight.normal,
+                                                                          fontSize: 13,
+                                                                          color: Color(0xFFFFFFFF).withOpacity(0.6)
+                                                                      ),),
+                                                                    SizedBox(height: 12),
+                                                                    (crewDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                        ? Container(
+                                                                        width: 50,
+                                                                        height: 50,
+                                                                        child: ExtendedImage.network(
+                                                                          crewDocs[0]['profileImageUrl'],
+                                                                          enableMemoryCache: true,
+                                                                          shape: BoxShape.rectangle,
+                                                                          borderRadius: BorderRadius.circular(6),
+                                                                          fit: BoxFit.cover,
+                                                                        ))
+                                                                        : Container(
+                                                                      width: 50,
+                                                                      height: 50,
+                                                                      child: ExtendedImage.asset(
+                                                                        myCrewAsset,
+                                                                        enableMemoryCache: true,
+                                                                        shape: BoxShape.rectangle,
+                                                                        borderRadius: BorderRadius.circular(6),
+                                                                        fit: BoxFit.cover,
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height: 50,
+                                                                    ),
+                                                                    Container(
+                                                                      width: _size.width / 2 - 57,
+                                                                      child: Align(
+                                                                        alignment: Alignment.centerLeft,
+                                                                        child: Text('${crewDocs[0]['crewName']}',
                                                                           style: TextStyle(
-                                                                              fontWeight: FontWeight.normal,
-                                                                              fontSize: 13,
-                                                                              color: Color(0xFFFFFFFF).withOpacity(0.6)
-                                                                          ),),
-                                                                        SizedBox(height: 12),
-                                                                        (crewDocs[0]['profileImageUrl'].isNotEmpty)
-                                                                            ? Container(
-                                                                                width: 50,
-                                                                                height: 50,
-                                                                                child: ExtendedImage.network(
-                                                                                  crewDocs[0]['profileImageUrl'],
-                                                                                  enableMemoryCache: true,
-                                                                                  shape: BoxShape.rectangle,
-                                                                                  borderRadius: BorderRadius.circular(6),
-                                                                                  fit: BoxFit.cover,
-                                                                                ))
-                                                                            : Container(
-                                                                              width: 50,
-                                                                              height: 50,
-                                                                              child: ExtendedImage.asset(
-                                                                                myCrewAsset,
-                                                                                enableMemoryCache: true,
-                                                                                shape: BoxShape.rectangle,
-                                                                                borderRadius: BorderRadius.circular(6),
-                                                                                fit: BoxFit.cover,
-                                                                              ),
-                                                                            ),
-                                                                        SizedBox(
-                                                                          height: 34,
-                                                                        ),
-                                                                        Container(
-                                                                          width: _size.width / 2 - 57,
-                                                                          child: Align(
-                                                                            alignment: Alignment.centerLeft,
-                                                                            child: Text('${crewDocs[0]['crewName']}',
-                                                                              style: TextStyle(
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  fontSize: 16,
-                                                                                  color: Color(0xFFFFFFFF),
-                                                                              ),
-                                                                              overflow: TextOverflow.ellipsis,
-                                                                              maxLines: 1,
-                                                                            ),
+                                                                            fontWeight: FontWeight.bold,
+                                                                            fontSize: 16,
+                                                                            color: Color(0xFFFFFFFF),
                                                                           ),
+                                                                          overflow: TextOverflow.ellipsis,
+                                                                          maxLines: 1,
                                                                         ),
-                                                                        SizedBox(
-                                                                          height: 3,
-                                                                        ),
-                                                                        Text('${userDoc[0]['displayName']}',
-                                                                          style: TextStyle(
-                                                                              fontSize: 13,
-                                                                              color: Color(0xFFFFFFFF)
-                                                                          ),
-                                                                        ),
-                                                                      ],
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height: 3,
                                                                     ),
                                                                   ],
                                                                 ),
-                                                              )
-                                                          );
-                                                          }
-                                                          return SizedBox.shrink();
-                                                        }
+                                                              ],
+                                                            ),
+                                                          )
                                                       );
                                                     }
                                                     return (friendDocs[0]['uid'] == _userModelController.uid)
@@ -1410,12 +1406,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       );
                                                   }),
                                               StreamBuilder<QuerySnapshot>(
-                                                  stream: FirebaseFirestore.instance
-                                                      .collection('Ranking')
-                                                      .doc('${_seasonController.currentSeason}')
-                                                      .collection('${friendDocs[0]['favoriteResort']}')
-                                                      .where('uid', isEqualTo: friendDocs[0]['uid'] )
-                                                      .snapshots(),
+                                                  stream: _rankStream2,
                                                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                                                     if (!snapshot.hasData || snapshot.data == null) {
                                                       return SizedBox.shrink();
@@ -1433,12 +1424,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       for(var rankingTier in rankingTierList)
                                                         if(rankingDocs[0]['tier'] == rankingTier.tierName)
                                                           return StreamBuilder<QuerySnapshot>(
-                                                            stream: FirebaseFirestore.instance
-                                                                .collection('Ranking')
-                                                                .doc('${_seasonController.currentSeason}')
-                                                                .collection('${friendDocs[0]['favoriteResort']}')
-                                                                .orderBy('totalScore', descending: true)
-                                                                .snapshots(),
+                                                            stream: _rankStream3,
                                                             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                                                               if (!snapshot.hasData || snapshot.data == null) {
                                                                 return SizedBox.shrink();
