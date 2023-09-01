@@ -24,6 +24,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
   bool profileImage = false;
   XFile? _imageFile;
   XFile? _croppedFile;
+  bool _isSelected = true;
 
   @override
   void initState() {
@@ -57,6 +58,9 @@ class _SetProfileImageState extends State<SetProfileImage> {
                 ?Brightness.light
                 :Brightness.dark //ios:dark, android:light
         ));
+
+    _isSelected = _userModelController.profileImageUrl!.isNotEmpty;
+
 
     return Stack(
       children: [
@@ -172,21 +176,19 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                                 onPressed: () async {
                                                   CustomFullScreenDialog.showDialog();
                                                   try {
-                                                    _imageFile =
-                                                    await _imageController
-                                                        .getSingleImage(
-                                                        ImageSource.camera);
-                                                    _croppedFile =
-                                                    await _imageController.cropImage(_imageFile);
-                                                    CustomFullScreenDialog
-                                                        .cancelDialog();
-                                                    profileImage = true;
-                                                    setState(() {});
-                                                    Navigator.pop(context);
+                                                    _imageFile = await _imageController.getSingleImage(ImageSource.camera);
+                                                    if(_imageFile != null){
+                                                      _croppedFile = await _imageController.cropImage(_imageFile);
+                                                    }
+                                                    if(_croppedFile != null){
+                                                      profileImage = true;
+                                                      setState(() {});
+                                                    }
                                                   } catch (e) {
-                                                    CustomFullScreenDialog
-                                                        .cancelDialog();
+                                                    CustomFullScreenDialog.cancelDialog();
                                                   }
+                                                  CustomFullScreenDialog.cancelDialog();
+                                                  Navigator.pop(context);
                                                 },
                                                 child: Text(
                                                   '사진 촬영',
@@ -212,14 +214,18 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                                   CustomFullScreenDialog.showDialog();
                                                   try {
                                                     _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
-                                                    _croppedFile = await _imageController.cropImage(_imageFile);
-                                                    CustomFullScreenDialog.cancelDialog();
-                                                    profileImage = true;
-                                                    setState(() {});
-                                                    Navigator.pop(context);
+                                                    if(_imageFile != null){
+                                                      _croppedFile = await _imageController.cropImage(_imageFile);
+                                                    }
+                                                    if(_croppedFile != null){
+                                                      profileImage = true;
+                                                      setState(() {});
+                                                    }
                                                   } catch (e) {
                                                     CustomFullScreenDialog.cancelDialog();
                                                   }
+                                                  CustomFullScreenDialog.cancelDialog();
+                                                  Navigator.pop(context);
                                                 },
                                                 child: Text(
                                                   '앨범에서 선택',
@@ -331,14 +337,18 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                                   CustomFullScreenDialog.showDialog();
                                                   try {
                                                     _imageFile = await _imageController.getSingleImage(ImageSource.camera);
-                                                    _croppedFile = await _imageController.cropImage(_imageFile);
-                                                    CustomFullScreenDialog.cancelDialog();
-                                                    profileImage = true;
-                                                    setState(() {});
-                                                    Navigator.pop(context);
+                                                    if(_imageFile != null){
+                                                      _croppedFile = await _imageController.cropImage(_imageFile);
+                                                    }
+                                                    if(_croppedFile != null){
+                                                      profileImage = true;
+                                                      setState(() {});
+                                                    }
                                                   } catch (e) {
                                                     CustomFullScreenDialog.cancelDialog();
                                                   }
+                                                  CustomFullScreenDialog.cancelDialog();
+                                                  Navigator.pop(context);
                                                 },
                                                 child: Text(
                                                   '사진 촬영',
@@ -363,21 +373,19 @@ class _SetProfileImageState extends State<SetProfileImage> {
                                                 onPressed: () async {
                                                   CustomFullScreenDialog.showDialog();
                                                   try {
-                                                    _imageFile =
-                                                    await _imageController
-                                                        .getSingleImage(
-                                                        ImageSource.gallery);
-                                                    _croppedFile =
-                                                    await _imageController.cropImage(_imageFile);
-                                                    CustomFullScreenDialog
-                                                        .cancelDialog();
-                                                    profileImage = true;
-                                                    setState(() {});
-                                                    Navigator.pop(context);
+                                                    _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
+                                                    if(_imageFile != null){
+                                                      _croppedFile = await _imageController.cropImage(_imageFile);
+                                                    }
+                                                    if(_croppedFile != null){
+                                                      profileImage = true;
+                                                      setState(() {});
+                                                    }
                                                   } catch (e) {
-                                                    CustomFullScreenDialog
-                                                        .cancelDialog();
+                                                    CustomFullScreenDialog.cancelDialog();
                                                   }
+                                                  CustomFullScreenDialog.cancelDialog();
+                                                  Navigator.pop(context);
                                                 },
                                                 child: Text(
                                                   '앨범에서 선택',
@@ -408,6 +416,30 @@ class _SetProfileImageState extends State<SetProfileImage> {
                           },
                           child: Stack(
                             children: [
+                              if (_isSelected)
+                                Container(
+                                  width: 160,
+                                  height: 160,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: ClipOval(
+                                    child: ExtendedImage.network(
+                                      _userModelController.profileImageUrl!,
+                                      fit: BoxFit.cover,
+                                      width: 160,
+                                      height: 160,
+                                      cache: true,
+                                      loadStateChanged: (state) {
+                                        if (state.extendedImageLoadState == LoadState.loading) {
+                                          return CircularProgressIndicator();
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              if (!_isSelected)
                               Container(
                                 width: 160,
                                 height: 160,
