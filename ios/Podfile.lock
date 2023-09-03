@@ -636,8 +636,6 @@ PODS:
     - AppAuth/Core
   - background_fetch (1.1.6):
     - Flutter
-  - background_location (0.0.1):
-    - Flutter
   - BoringSSL-GRPC (0.0.24):
     - BoringSSL-GRPC/Implementation (= 0.0.24)
     - BoringSSL-GRPC/Interface (= 0.0.24)
@@ -937,7 +935,6 @@ PODS:
 
 DEPENDENCIES:
   - background_fetch (from `.symlinks/plugins/background_fetch/ios`)
-  - background_location (from `.symlinks/plugins/background_location/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
@@ -1003,8 +1000,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   background_fetch:
     :path: ".symlinks/plugins/background_fetch/ios"
-  background_location:
-    :path: ".symlinks/plugins/background_location/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   firebase_analytics:
@@ -1060,7 +1055,6 @@ SPEC CHECKSUMS:
   abseil: 926fb7a82dc6d2b8e1f2ed7f3a718bce691d1e46
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
   background_fetch: bc9b44b0bf8b434e282a2ac9be8662800a0296ed
-  background_location: 1b80c1fe3abd9912bca298618f6e365abf6f588f
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
   cloud_firestore: 818ebb1a8235177a0dcf7005c14aed5408b8342c
   CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
@@ -1120,4 +1114,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 43d3b7cc60a44f79aba5978f053b90e6f093ba0c
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.11.3

@@ -73,10 +73,6 @@ dependencies:
   google_maps_flutter: ^2.2.8
   location: ^4.4.0
   geolocator: ^9.0.2
-  background_location:
-    git:
-      url: https://github.com/hilalbaig/background_location.git
-      ref: master
   google_maps_flutter_platform_interface: ^2.2.7
   image_cropper: ^4.0.1
   flutter_speed_dial: ^7.0.0
