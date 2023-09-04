@@ -576,7 +576,9 @@ class _FriendListPageState extends State<FriendListPage> {
                                           ),
                                         );
                                       }
-                                      else if (snapshot.connectionState == ConnectionState.waiting) {}
+                                      else if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return Container();
+                                      }
                                       else if (snapshot.data!.docs.isNotEmpty) {
                                         final bestfriendDocs = snapshot.data!.docs;
                                         Size _size = MediaQuery.of(context).size;
@@ -587,12 +589,23 @@ class _FriendListPageState extends State<FriendListPage> {
                                               children: [
                                                 Padding(
                                                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                                                  child: Text(
-                                                    '즐겨찾기 ${bestfriendDocs.length}',
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.normal,
-                                                        fontSize: 13,
-                                                        color: Color(0xFF949494)),
+                                                  child: Row(
+                                                    children: [
+                                                      Text(
+                                                        '즐겨찾기',
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.normal,
+                                                            fontSize: 13,
+                                                            color: Color(0xFF949494)),
+                                                      ),
+                                                      Text(
+                                                        ' ${bestfriendDocs.length}',
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.normal,
+                                                            fontSize: 13,
+                                                            color: Color(0xFF949494)),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                                 SizedBox(height: 12),

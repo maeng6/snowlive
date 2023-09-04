@@ -25,7 +25,7 @@ class ImageController extends GetxController {
 
   Future<XFile?> getSingleImage(ImageSource) async {
     final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(imageQuality: 100, source: ImageSource);
+    final XFile? image = await _picker.pickImage(imageQuality: 70, source: ImageSource);
     if (image != null) {
       return image;
     }else {
@@ -68,7 +68,7 @@ class ImageController extends GetxController {
     List<XFile> selectedImages = [];
     final ImagePicker _picker = ImagePicker();
     selectedImages =
-        await _picker.pickMultiImage(imageQuality: 100);
+        await _picker.pickMultiImage(imageQuality: 70);
     if (selectedImages != null) {
       return selectedImages;
     }else {
