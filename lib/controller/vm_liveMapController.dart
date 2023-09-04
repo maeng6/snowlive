@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_geolocation/flutter_background_geolocation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -136,7 +137,13 @@ class LiveMapController extends GetxController {
         logLevel: bg.Config.LOG_LEVEL_VERBOSE,
         locationUpdateInterval: 5000,
         disableLocationAuthorizationAlert: true,
-        showsBackgroundLocationIndicator: true
+        showsBackgroundLocationIndicator: true,
+      backgroundPermissionRationale: PermissionRationale(
+        title: "Allow {applicationName} to access to this device's location when closed or not in use?",
+        message: "위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요. 이 앱은 앱이 종료되었거나 사용 중이 아닐 때도 위치 데이터를 수집하여 라이브 서비스 기능을 지원합니다.",
+        positiveAction: 'Change to {backgroundPermissionOptionLabel}',
+        negativeAction: 'Cancel',
+      ),
     ));
 
     await bg.BackgroundGeolocation.start();
