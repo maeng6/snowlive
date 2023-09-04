@@ -80,6 +80,17 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <permission
+        android:name="your.package.name.permission.ACCESS_FINE_LOCATION"
+        android:protectionLevel="signature" />
+    <uses-permission
+        android:name="your.package.name.permission.ACCESS_FINE_LOCATION"
+        android:maxSdkVersion="22" />
+    <meta-data
+        android:name="com.google.android.gms.location.permission.REQUEST_LOCATION"
+        android:value="@string/location_permission_description" />
+
 
 
 

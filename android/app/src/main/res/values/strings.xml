@@ -4,4 +4,6 @@
     <string name="facebook_app_id">800346431212759</string>
     <string name="fb_login_protocol_scheme">fb1234</string>
     <string name="facebook_client_token">12931cb5692f4ac0f07d146dda19ca2f</string>
+    <string name="location_permission_description">위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요. 이 앱은 앱이 종료되었거나 사용 중이 아닐 때도 위치 데이터를 수집하여 라이브 서비스 기능을 지원합니다.</string>
+
 </resources>
