@@ -90,7 +90,7 @@
     <meta-data
         android:name="com.google.android.gms.location.permission.REQUEST_LOCATION"
         android:value="@string/location_permission_description" />
-
+    <meta-data android:name="com.transistorsoft.locationmanager.permission.BACKGROUND_LOCATION_RATIONALE" android:value="@string/background_location_rationale" />
 
 
 
