@@ -713,7 +713,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                             if (!snapshot.hasData || snapshot.data == null) {
                               return SizedBox.shrink();
                             }
-                            else if (snapshot.data!.docs.isNotEmpty) {
+                            else if (snapshot.data!.docs.isNotEmpty && _userModelController.favoriteResort ==snapshot.data!.docs[0]['baseResort'] ) {
                               final myCrewDocs = snapshot.data!.docs;
                               for (var crewLogo in crewLogoList)
                                 if (myCrewDocs[0]['crewColor'] == crewLogo.crewColor)
