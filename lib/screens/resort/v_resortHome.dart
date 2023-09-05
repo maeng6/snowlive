@@ -414,7 +414,7 @@ class _ResortHomeState extends State<ResortHome>
                                                   SizedBox(
                                                     height: 8,
                                                   ),
-                                                  Text("위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요. 이 앱은 항상 허용을 하면 앱이 종료되었거나 사용 중이 아닐 때도 위치 데이터를 수집하여 라이브 서비스 기능을 지원합니다.",
+                                                  Text("위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요. 이 앱은 항상 허용을 하면 앱이 사용 중이 아닐 때도 위치 데이터를 수집하여 라이브 서비스 기능을 지원합니다.",
                                                     style: TextStyle(
                                                         fontSize: 14,
                                                         fontWeight: FontWeight.normal,
@@ -1677,7 +1677,7 @@ class _ResortHomeState extends State<ResortHome>
                                               SizedBox(
                                                 height: 8,
                                               ),
-                                              Text("위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요. 이 앱은 항상 허용을 하면 앱이 종료되었거나 사용 중이 아닐 때도 위치 데이터를 수집하여 라이브 서비스 기능을 지원합니다.",
+                                              Text("위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요. 이 앱은 항상 허용을 하면 앱이 사용 중이 아닐 때도 위치 데이터를 수집하여 라이브 서비스 기능을 지원합니다.",
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.normal,
