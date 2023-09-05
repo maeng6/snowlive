@@ -85,6 +85,8 @@ class LiveMapController extends GetxController {
 
     // 위치 서비스를 시작 (포그라운드)
     _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
+
+
       try {
         // await updateFirebaseWithLocation(position);
         await _resortModelController.getFavoriteResort(_userModelController.favoriteResort);
@@ -99,7 +101,6 @@ class LiveMapController extends GetxController {
         }
 
         if(!withinBoundary && _userModelController.uid != null){
-          _dialogController.isChecked.value = false;
           await checkAndUpdatePassCountOff();
           await _userModelController.updateIsOnLiveOff();
           await stopForegroundLocationService();
@@ -113,13 +114,6 @@ class LiveMapController extends GetxController {
       }
     });
 
-    try{
-      await startBackgroundLocationService();
-      print('백그라운드 시작');
-    }catch(e, stackTrace){
-      print('백그라운드 서비스 오류: $e');
-      print('Stack trace: $stackTrace');
-    }
   }
 
   Future<void> startBackgroundLocationService() async {
@@ -176,7 +170,6 @@ class LiveMapController extends GetxController {
         }
 
         if(!withinBoundary && _userModelController.uid != null){
-          _dialogController.isChecked.value = false;
           await checkAndUpdatePassCountOff();
           await _userModelController.updateIsOnLiveOff();
           await stopForegroundLocationService();

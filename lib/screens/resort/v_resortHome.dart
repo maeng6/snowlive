@@ -374,193 +374,199 @@ class _ResortHomeState extends State<ResortHome>
                                   }
                                 } else {
                                   if(!isSnackbarShown) {
-                                  CustomFullScreenDialog.showDialog();
                                   HapticFeedback.lightImpact();
-                                  await _liveMapController.startForegroundLocationService();
-                                  await Future.delayed(Duration(seconds: 2)); // Wait for 1 second
-                                  await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
-                                  if (_userModelController.withinBoundary == true) {
-                                    Get.dialog(
-                                      WillPopScope(
-                                        onWillPop: () async => false, // Prevents dialog from closing on Android back button press
+                                  Get.dialog(
+                                    WillPopScope(
+                                      onWillPop: () async => false, // Prevents dialog from closing on Android back button press
+                                      child: GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        onTap: () async {
+                                          _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                          await _liveMapController.stopForegroundLocationService();
+                                          await _liveMapController.stopBackgroundLocationService();
+                                          Get.back();
+                                          CustomFullScreenDialog.cancelDialog();
+                                          print('라이브 OFF');
+                                        },
                                         child: GestureDetector(
-                                          behavior: HitTestBehavior.translucent,
-                                          onTap: () async {
-                                            _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                            await _liveMapController.stopForegroundLocationService();
-                                            await _liveMapController.stopBackgroundLocationService();
-                                            Get.back();
-                                            CustomFullScreenDialog.cancelDialog();
-                                            print('라이브 OFF');
-                                          },
-                                          child: GestureDetector(
-                                            onTap: () {},
-                                            child: AlertDialog(
-                                              contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                              elevation: 0,
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                              content: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text("스노우라이브 랭킹전에 참여해 보세요",
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Color(0xFF111111)
-                                                    ),
+                                          onTap: () {},
+                                          child: AlertDialog(
+                                            contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                            elevation: 0,
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                            content: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text("스노우라이브 랭킹전에 참여해 보세요",
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Color(0xFF111111)
                                                   ),
-                                                  SizedBox(
-                                                    height: 8,
+                                                ),
+                                                SizedBox(
+                                                  height: 8,
+                                                ),
+                                                Text("위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요. 이 앱은 항상 허용을 하면 앱이 사용 중이 아닐 때도 위치 데이터를 수집하여 라이브 서비스 기능을 지원합니다.",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.normal,
+                                                      color: Color(0xFF949494)
                                                   ),
-                                                  Text("위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요. 이 앱은 항상 허용을 하면 앱이 사용 중이 아닐 때도 위치 데이터를 수집하여 라이브 서비스 기능을 지원합니다.",
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.normal,
-                                                        color: Color(0xFF949494)
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 24),
-                                                  Obx(() => GestureDetector(
-                                                    onTap: () {
-                                                      _dialogController.isChecked.value = !_dialogController.isChecked.value;
-                                                    },
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: [
-                                                        Image.asset(
-                                                            _dialogController.isChecked.value
-                                                                ? 'assets/imgs/icons/icon_check_filled.png'
-                                                                : 'assets/imgs/icons/icon_check_unfilled.png',
-                                                            width: 24,
-                                                            height: 24,
-                                                          ),
-                                                        SizedBox(width: 8),
-                                                        Text(
-                                                          '위치정보 사용 및 이용약관 동의',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )),
-
-                                                  SizedBox(height: 24),
-                                                  GestureDetector(
-                                                    onTap: (){
-                                                      Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
-                                                    },
-                                                    child: Center(
-                                                      child: Text('약관보기',
-                                                        style: TextStyle(
-                                                            decoration: TextDecoration.underline,
-                                                            fontSize: 14,
-                                                            color: Color(0xFF949494)
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 28,
-                                                  ),
-                                                ],
-                                              ),
-                                              actions: [
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
+                                                ),
+                                                SizedBox(height: 24),
+                                                Obx(() => GestureDetector(
+                                                  onTap: () {
+                                                    _dialogController.isChecked.value = !_dialogController.isChecked.value;
+                                                  },
                                                   child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
                                                     children: [
-                                                      Expanded(
-                                                        child: ElevatedButton(onPressed: () async {
-                                                          _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                                          await _liveMapController.stopForegroundLocationService();
-                                                          await _liveMapController.stopBackgroundLocationService();
-                                                          Get.back();
-                                                          CustomFullScreenDialog.cancelDialog();
-                                                          print('라이브 OFF');
-                                                        },
-                                                            child: Text(
-                                                              '취소',
-                                                              style: TextStyle(
-                                                                  color: Color(0xff3D83ED),
-                                                                  fontSize: 15,
-                                                                  fontWeight: FontWeight.bold),
-                                                            ),
-                                                          style: TextButton.styleFrom(
-                                                              splashFactory: InkRipple.splashFactory,
-                                                              elevation: 0,
-                                                              minimumSize: Size(100, 48),
-                                                              backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
-                                                              ),
+                                                      Image.asset(
+                                                        _dialogController.isChecked.value
+                                                            ? 'assets/imgs/icons/icon_check_filled.png'
+                                                            : 'assets/imgs/icons/icon_check_unfilled.png',
+                                                        width: 24,
+                                                        height: 24,
+                                                      ),
+                                                      SizedBox(width: 8),
+                                                      Text(
+                                                        '위치정보 사용 및 이용약관 동의',
+                                                        style: TextStyle(
+                                                          fontSize: 14,
                                                         ),
                                                       ),
-                                                      SizedBox(width: 8,),
-                                                      Obx(() => Expanded(
-                                                        child: ElevatedButton(
-                                                          onPressed: _dialogController.isChecked.value
-                                                              ? () async {
-                                                            Get.back();
-                                                            await _userModelController.updateIsOnLiveOn();
+                                                    ],
+                                                  ),
+                                                )),
+
+                                                SizedBox(height: 24),
+                                                GestureDetector(
+                                                  onTap: (){
+                                                    Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
+                                                  },
+                                                  child: Center(
+                                                    child: Text('약관보기',
+                                                      style: TextStyle(
+                                                          decoration: TextDecoration.underline,
+                                                          fontSize: 14,
+                                                          color: Color(0xFF949494)
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 28,
+                                                ),
+                                              ],
+                                            ),
+                                            actions: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: ElevatedButton(onPressed: () async {
+                                                        _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                                        await _liveMapController.stopForegroundLocationService();
+                                                        await _liveMapController.stopBackgroundLocationService();
+                                                        Get.back();
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                        print('라이브 OFF');
+                                                      },
+                                                        child: Text(
+                                                          '취소',
+                                                          style: TextStyle(
+                                                              color: Color(0xff3D83ED),
+                                                              fontSize: 15,
+                                                              fontWeight: FontWeight.bold),
+                                                        ),
+                                                        style: TextButton.styleFrom(
+                                                          splashFactory: InkRipple.splashFactory,
+                                                          elevation: 0,
+                                                          minimumSize: Size(100, 48),
+                                                          backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 8,),
+                                                    Obx(() => Expanded(
+                                                      child: ElevatedButton(
+                                                        onPressed: _dialogController.isChecked.value ? () async {
+                                                          Navigator.pop(context);
+                                                          print('이 프린트 지우면안됨');
+                                                          CustomFullScreenDialog.showDialog();
                                                             await _liveMapController.startForegroundLocationService();
+                                                            await _liveMapController.startBackgroundLocationService();
+                                                          await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
+                                                          _dialogController.isChecked.value = false;
+                                                          CustomFullScreenDialog.cancelDialog();
+                                                          if (_userModelController.withinBoundary == true) {
+                                                            await _userModelController.updateIsOnLiveOn();
+                                                            try{
+                                                            }catch(e, stackTrace){
+                                                              print('백그라운드 서비스 오류: $e');
+                                                              print('Stack trace: $stackTrace');
+                                                            }
                                                             await _userModelController.getCurrentUser(_userModelController.uid);
-                                                            CustomFullScreenDialog.cancelDialog();
                                                             print('라이브 ON');
                                                           }
-                                                              : null,
-                                                          child: Text(
-                                                            '동의',
-                                                            style: TextStyle(
-                                                                color: Color(0xffffffff),
-                                                                fontSize: 15,
-                                                                fontWeight: FontWeight.bold),
-                                                          ),
-                                                          style: TextButton.styleFrom(
+                                                          else {
+                                                            if(!isSnackbarShown){
+                                                              isSnackbarShown = true;
+                                                              Get.snackbar(
+                                                                '라이브 불가 지역입니다',
+                                                                '자주가는 스키장에서만 라이브가 활성화됩니다.',
+                                                                margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                                                snackPosition: SnackPosition.BOTTOM,
+                                                                backgroundColor: Colors.black87,
+                                                                colorText: Colors.white,
+                                                                duration: Duration(milliseconds: 3000),
+                                                              );
+                                                              Future.delayed(Duration(milliseconds: 4500), () {
+                                                                isSnackbarShown = false;
+                                                              });
+                                                              print('라이브 불가 지역');
+                                                            }
+                                                            await _liveMapController.stopForegroundLocationService();
+                                                            await _liveMapController.stopBackgroundLocationService();
+                                                          }
+                                                          setState(() {});
+
+                                                        }
+                                                            : null,
+                                                        child: Text(
+                                                          '동의',
+                                                          style: TextStyle(
+                                                              color: Color(0xffffffff),
+                                                              fontSize: 15,
+                                                              fontWeight: FontWeight.bold),
+                                                        ),
+                                                        style: TextButton.styleFrom(
                                                             splashFactory: InkRipple.splashFactory,
                                                             elevation: 0,
                                                             minimumSize: Size(100, 48),
                                                             backgroundColor: _dialogController.isChecked.value
-                                                              ? Color(0xFF3D83ED)
-                                                              : Color(0xFFDEDEDE)
-                                                          ),
+                                                                ? Color(0xFF3D83ED)
+                                                                : Color(0xFFDEDEDE)
                                                         ),
-                                                      ),),
-                                                    ],
-                                                  ),
+                                                      ),
+                                                    ),),
+                                                  ],
                                                 ),
+                                              ),
 
-                                              ],
-                                            ),
+                                            ],
                                           ),
                                         ),
                                       ),
-                                      barrierDismissible: true,
-                                    );
-
-
-                                  } else {
-                                    CustomFullScreenDialog.cancelDialog();
-                                    if(!isSnackbarShown){
-                                      isSnackbarShown = true;
-                                     Get.snackbar(
-                                        '라이브 불가 지역입니다',
-                                        '자주가는 스키장에서만 라이브가 활성화됩니다.',
-                                        margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                        snackPosition: SnackPosition.BOTTOM,
-                                        backgroundColor: Colors.black87,
-                                        colorText: Colors.white,
-                                        duration: Duration(milliseconds: 3000),
-                                      );
-                                      Future.delayed(Duration(milliseconds: 4500), () {
-                                        isSnackbarShown = false;
-                                      });
-                                      print('라이브 불가 지역');
-                                    }
-                                    await _liveMapController.stopForegroundLocationService();
-                                    await _liveMapController.stopBackgroundLocationService();
-                                  }}
-                                  setState(() {});
+                                    ),
+                                    barrierDismissible: true,
+                                  );
+                                 // await Future.delayed(Duration(seconds: 2)); // Wait for 1 second
+                                  }
                                 }
 
                               },
@@ -1625,30 +1631,28 @@ class _ResortHomeState extends State<ResortHome>
                       child: FloatingActionButton.extended(
                           onPressed: () async {
                             if (_userModelController.isOnLive == true) {
-                              HapticFeedback.lightImpact();
-                              _dialogController.isChecked.value = false;
-                              CustomFullScreenDialog.showDialog();
-                              await _userModelController.updateIsOnLiveOff();
-                              await _liveMapController.stopForegroundLocationService();
-                              await _liveMapController.stopBackgroundLocationService();
-                              await _liveMapController.checkAndUpdatePassCountOff();
-                              await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
-                              setState(() {});
-                              CustomFullScreenDialog.cancelDialog();
-                              print('라이브 OFF');
+                              if(!isSnackbarShown) {
+                                HapticFeedback.lightImpact();
+                                _dialogController.isChecked.value = false;
+                                CustomFullScreenDialog.showDialog();
+                                await _userModelController.updateIsOnLiveOff();
+                                await _liveMapController.stopForegroundLocationService();
+                                await _liveMapController.stopBackgroundLocationService();
+                                await _liveMapController.checkAndUpdatePassCountOff();
+                                await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
+                                setState(() {});
+                                CustomFullScreenDialog.cancelDialog();
+                                print('라이브 OFF');
+                              }
                             } else {
-                              HapticFeedback.lightImpact();
-                              CustomFullScreenDialog.showDialog();
-                              await _liveMapController.startForegroundLocationService();
-                              await Future.delayed(Duration(seconds: 2)); // Wait for 1 second
-                              await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
-                              if(_userModelController.withinBoundary == true) {
+                              if(!isSnackbarShown) {
+                                HapticFeedback.lightImpact();
                                 Get.dialog(
                                   WillPopScope(
                                     onWillPop: () async => false, // Prevents dialog from closing on Android back button press
                                     child: GestureDetector(
                                       behavior: HitTestBehavior.translucent,
-                                      onTap: () async{
+                                      onTap: () async {
                                         _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
                                         await _liveMapController.stopForegroundLocationService();
                                         await _liveMapController.stopBackgroundLocationService();
@@ -1762,14 +1766,47 @@ class _ResortHomeState extends State<ResortHome>
                                                   SizedBox(width: 8,),
                                                   Obx(() => Expanded(
                                                     child: ElevatedButton(
-                                                      onPressed: _dialogController.isChecked.value
-                                                          ? () async {
-                                                        Get.back();
-                                                        await _userModelController.updateIsOnLiveOn();
+                                                      onPressed: _dialogController.isChecked.value ? () async {
+                                                        Navigator.pop(context);
+                                                        print('이 프린트 지우면 안됨');
+                                                        CustomFullScreenDialog.showDialog();
                                                         await _liveMapController.startForegroundLocationService();
-                                                        await _userModelController.getCurrentUser(_userModelController.uid);
+                                                        await _liveMapController.startBackgroundLocationService();
+                                                        await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
+                                                        _dialogController.isChecked.value = false;
                                                         CustomFullScreenDialog.cancelDialog();
-                                                        print('라이브 ON');
+                                                        if (_userModelController.withinBoundary == true) {
+                                                          await _userModelController.updateIsOnLiveOn();
+                                                          try{
+                                                          }catch(e, stackTrace){
+                                                            print('백그라운드 서비스 오류: $e');
+                                                            print('Stack trace: $stackTrace');
+                                                          }
+                                                          await _userModelController.getCurrentUser(_userModelController.uid);
+                                                          print('라이브 ON');
+                                                        }
+                                                        else {
+                                                          if(!isSnackbarShown){
+                                                            isSnackbarShown = true;
+                                                            Get.snackbar(
+                                                              '라이브 불가 지역입니다',
+                                                              '자주가는 스키장에서만 라이브가 활성화됩니다.',
+                                                              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                                              snackPosition: SnackPosition.BOTTOM,
+                                                              backgroundColor: Colors.black87,
+                                                              colorText: Colors.white,
+                                                              duration: Duration(milliseconds: 3000),
+                                                            );
+                                                            Future.delayed(Duration(milliseconds: 4500), () {
+                                                              isSnackbarShown = false;
+                                                            });
+                                                            print('라이브 불가 지역');
+                                                          }
+                                                          await _liveMapController.stopForegroundLocationService();
+                                                          await _liveMapController.stopBackgroundLocationService();
+                                                        }
+                                                        setState(() {});
+
                                                       }
                                                           : null,
                                                       child: Text(
@@ -1800,57 +1837,51 @@ class _ResortHomeState extends State<ResortHome>
                                   ),
                                   barrierDismissible: true,
                                 );
-                              }else{
-                                CustomFullScreenDialog.cancelDialog();
-                                if(!isSnackbarShown){
-                                  isSnackbarShown = true;
-                                  Get.snackbar(
-                                    '라이브 불가 지역입니다',
-                                    '자주가는 스키장에서만 라이브가 활성화됩니다.',
-                                    margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                    snackPosition: SnackPosition.BOTTOM,
-                                    backgroundColor: Colors.black87,
-                                    colorText: Colors.white,
-                                    duration: Duration(milliseconds: 3000),
-                                  );
-                                  Future.delayed(Duration(milliseconds: 2500), () {
-                                    isSnackbarShown = false;
-                                  });
-                                  print('라이브 불가 지역');
-                                }
-                                await _liveMapController.stopForegroundLocationService();
-                                await _liveMapController.stopBackgroundLocationService();
+                                // await Future.delayed(Duration(seconds: 2)); // Wait for 1 second
                               }
-                              setState(() {});
                             }
+
                           },
-                          icon: (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true)
-                              ? Image.asset('assets/imgs/icons/icon_live_on.png', width: 50)
-                              : Image.asset('assets/imgs/icons/icon_live_off.png', width: 50),
+                          elevation: 0,
+                          icon:  (_userModelController.isOnLive == true && _userModelController.withinBoundary ==true)
+                              ? Transform.translate(
+                              offset: Offset(4,0),
+                              child: Image.asset('assets/imgs/icons/icon_live_on.png', width: 50))
+                              : Transform.translate(
+                              offset: Offset(4,0),
+                              child: Image.asset('assets/imgs/icons/icon_live_off.png', width: 50)),
                           label: (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true)
-                              ? Text(
-                            'live on',
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                overflow: TextOverflow.ellipsis),
+                              ? Transform.translate(
+                            offset: Offset(0,-0.5),
+                            child: Text(
+                              'ON',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  letterSpacing: -0.1,
+                                  color: Color(0xFFFFFFFF),
+                                  fontWeight: FontWeight.w900,
+                                  overflow: TextOverflow.ellipsis),
+                            ),
                           )
-                              : Text(
-                            'live off',
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                overflow: TextOverflow.ellipsis),
+                              : Transform.translate(
+                            offset: Offset(0,-0.5),
+                            child: Text(
+                              'OFF',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  letterSpacing: -0.1,
+                                  color: Color(0xFF949494),
+                                  fontWeight: FontWeight.w900,
+                                  overflow: TextOverflow.ellipsis),
+                            ),
                           ),
-                          backgroundColor: (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true)
-                              ? Color(0xFF3D83ED)
-                              : Colors.grey),
+                          backgroundColor:
+                          (_userModelController.isOnLive == true  && _userModelController.withinBoundary ==true)
+                              ? Color(0xFF3D6FED)
+                              : Color(0xFFFFFFFF)),
 
                   ),
-                    floatingActionButtonLocation:
-                    FloatingActionButtonLocation.endFloat,
+                    floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
                     backgroundColor: Color(0xFFF1F1F3),
                     extendBodyBehindAppBar: true,
                     appBar: PreferredSize(

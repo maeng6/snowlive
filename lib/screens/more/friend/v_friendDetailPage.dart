@@ -1940,12 +1940,19 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                               SizedBox(
                                                                 width: 4,
                                                               ),
-                                                              Text('${lastPassTimeString}',
+                                                              isPassDataZero
+                                                                  ? Text('정보없음',
                                                                 style: TextStyle(
                                                                     fontSize: 13,
                                                                     fontWeight: FontWeight.bold,
                                                                     color: Color(0xFF949494)
-                                                                ),),
+                                                                ),)
+                                                              : Text('${lastPassTimeString}',
+                                                                style: TextStyle(
+                                                                    fontSize: 13,
+                                                                    fontWeight: FontWeight.bold,
+                                                                    color: Color(0xFF949494)
+                                                                ),)
                                                             ],
                                                           ),
                                                         ),
