@@ -347,6 +347,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                             StreamBuilder(
                                               stream: FirebaseFirestore.instance
                                                   .collection('liveCrew')
+                                                  .where('baseResort', isEqualTo: _liveCrewModelController.baseResort)
                                                   .orderBy('totalScore', descending: true)
                                                   .snapshots(),
                                               builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {

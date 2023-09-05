@@ -706,8 +706,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                         child: StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
                               .collection('liveCrew')
-                              .where('crewID', isEqualTo: _userModelController
-                              .liveCrew)
+                              .where('crewID', isEqualTo: _userModelController.liveCrew)
                               .snapshots(),
                           builder: (BuildContext context, AsyncSnapshot<
                               QuerySnapshot> snapshot) {
@@ -741,8 +740,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           Text(
-                                            '${crewRankingMap!['${_userModelController
-                                                .liveCrew}']}',
+                                            '${crewRankingMap!['${_userModelController.liveCrew}']}',
                                             style: TextStyle(
                                               color: Color(0xFFFFFFFF),
                                               fontSize: 15,
