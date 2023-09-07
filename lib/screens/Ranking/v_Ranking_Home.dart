@@ -4,10 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
-import 'package:snowlive3/screens/Ranking/v_MyRanking_Detail_Screen.dart';
-import 'package:snowlive3/screens/Ranking/v_Ranking_Crew_Screen.dart';
-import 'package:snowlive3/screens/Ranking/v_Ranking_Indi_Screen.dart';
+import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
+import 'package:com.snowlive/screens/Ranking/v_MyRanking_Detail_Screen.dart';
+import 'package:com.snowlive/screens/Ranking/v_Ranking_Crew_Screen.dart';
+import 'package:com.snowlive/screens/Ranking/v_Ranking_Indi_Screen.dart';
 import '../../controller/vm_userModelController.dart';
 
 

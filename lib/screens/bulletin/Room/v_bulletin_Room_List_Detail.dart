@@ -4,10 +4,10 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/bulletin/Room/v_bulletinRoomImageScreen.dart';
-import 'package:snowlive3/screens/bulletin/Room/v_bulletin_Room_ModifyPage.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/screens/bulletin/Room/v_bulletinRoomImageScreen.dart';
+import 'package:com.snowlive/screens/bulletin/Room/v_bulletin_Room_ModifyPage.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 import '../../../controller/vm_bulletinRoomReplyController.dart';
 import '../../../controller/vm_bulletinRoomController.dart';

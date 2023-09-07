@@ -1,8 +1,8 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 import '../../../controller/vm_searchUserController.dart';
 import '../../../controller/vm_userModelController.dart';

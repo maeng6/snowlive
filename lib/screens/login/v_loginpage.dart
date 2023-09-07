@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/screens/login/v_email_login.dart';
-import 'package:snowlive3/widget/w_loginButton.dart';
+import 'package:com.snowlive/screens/login/v_email_login.dart';
+import 'package:com.snowlive/widget/w_loginButton.dart';
 
 final auth = FirebaseAuth.instance;
 final ref = FirebaseFirestore.instance;

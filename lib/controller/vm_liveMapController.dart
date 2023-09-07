@@ -8,14 +8,14 @@ import 'package:flutter_background_geolocation/flutter_background_geolocation.da
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:snowlive3/controller/vm_DialogController_resortHome.dart';
-import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
-import 'package:snowlive3/controller/vm_rankingTierModelController.dart';
-import 'package:snowlive3/controller/vm_resortModelController.dart';
-import 'package:snowlive3/controller/vm_seasonController.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/model/m_slopeLocationModel.dart';
-import 'package:snowlive3/model/m_slopeScoreModel.dart';
+import 'package:com.snowlive/controller/vm_DialogController_resortHome.dart';
+import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
+import 'package:com.snowlive/controller/vm_rankingTierModelController.dart';
+import 'package:com.snowlive/controller/vm_resortModelController.dart';
+import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/model/m_slopeLocationModel.dart';
+import 'package:com.snowlive/model/m_slopeScoreModel.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 
 class LiveMapController extends GetxController {

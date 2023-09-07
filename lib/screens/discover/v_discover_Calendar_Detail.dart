@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class Discover_Calendar_Detail_Screen extends StatefulWidget {

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:snowlive3/screens/more/friend/invitation/v_inviteListPage_friend.dart';
-import 'package:snowlive3/screens/more/friend/invitation/v_invitedListPage_friend.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/screens/more/friend/invitation/v_inviteListPage_friend.dart';
+import 'package:com.snowlive/screens/more/friend/invitation/v_invitedListPage_friend.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 import '../../../../controller/vm_userModelController.dart';
 

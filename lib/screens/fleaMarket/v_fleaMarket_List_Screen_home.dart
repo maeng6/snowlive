@@ -6,8 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:snowlive3/controller/vm_fleaMarketController.dart';
-import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
+import 'package:com.snowlive/controller/vm_fleaMarketController.dart';
+import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 

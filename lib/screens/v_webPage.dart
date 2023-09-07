@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';

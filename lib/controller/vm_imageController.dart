@@ -8,8 +8,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
+import 'package:com.snowlive/controller/vm_userModelController.dart';
 import '../widget/w_fullScreenDialog.dart';
 
 class ImageController extends GetxController {

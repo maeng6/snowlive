@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:snowlive3/model/m_commentModel.dart';
-import 'package:snowlive3/model/m_fleaChatModel.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/model/m_commentModel.dart';
+import 'package:com.snowlive/model/m_fleaChatModel.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 class FleaChatModelController extends GetxController {
 

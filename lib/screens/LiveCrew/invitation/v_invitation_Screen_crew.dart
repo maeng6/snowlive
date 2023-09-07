@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:snowlive3/screens/LiveCrew/invitation/v_inviteListPage_crew.dart';
-import 'package:snowlive3/screens/LiveCrew/invitation/v_invitedListPage_crew.dart';
+import 'package:com.snowlive/screens/LiveCrew/invitation/v_inviteListPage_crew.dart';
+import 'package:com.snowlive/screens/LiveCrew/invitation/v_invitedListPage_crew.dart';
 
 import '../../../controller/vm_liveCrewModelController.dart';
 import '../../../controller/vm_userModelController.dart';

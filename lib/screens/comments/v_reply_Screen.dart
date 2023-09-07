@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/controller/vm_commentController.dart';
-import 'package:snowlive3/controller/vm_replyModelController.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/comments/v_noUserScreen.dart';
-import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
-import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/controller/vm_commentController.dart';
+import 'package:com.snowlive/controller/vm_replyModelController.dart';
+import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/screens/comments/v_noUserScreen.dart';
+import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
+import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 class ReplyScreen extends StatefulWidget {
   ReplyScreen({Key? key,

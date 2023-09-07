@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/controller/vm_loginController.dart';
-import 'package:snowlive3/screens/onboarding/v_WelcomePage.dart';
+import 'package:com.snowlive/controller/vm_loginController.dart';
+import 'package:com.snowlive/screens/onboarding/v_WelcomePage.dart';
 import '../login/v_loginpage.dart';
 
 class FirstPage extends StatefulWidget {

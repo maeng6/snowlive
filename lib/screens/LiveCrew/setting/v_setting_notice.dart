@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:snowlive3/controller/vm_fleaMarketController.dart';
-import 'package:snowlive3/model/m_fleaMarketModel.dart';
-import 'package:snowlive3/screens/v_MainHome.dart';
+import 'package:com.snowlive/controller/vm_fleaMarketController.dart';
+import 'package:com.snowlive/model/m_fleaMarketModel.dart';
+import 'package:com.snowlive/screens/v_MainHome.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../../widget/w_fullScreenDialog.dart';

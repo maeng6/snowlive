@@ -1,7 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:snowlive3/screens/comments/v_liveTalk_Screen.dart';
+import 'package:com.snowlive/screens/comments/v_liveTalk_Screen.dart';
 
 class ProfileImagePage extends StatefulWidget {
   ProfileImagePage({Key? key, required this.CommentProfileUrl}) : super(key: key);

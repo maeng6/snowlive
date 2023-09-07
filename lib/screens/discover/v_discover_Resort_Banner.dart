@@ -5,7 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:snowlive3/screens/v_webPage.dart';
+import 'package:com.snowlive/screens/v_webPage.dart';
 
 import '../../controller/vm_userModelController.dart';
 

@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/onboarding/v_setProfileImage.dart';
+import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/screens/onboarding/v_setProfileImage.dart';
 
 class SetNickname extends StatefulWidget {
   SetNickname({Key? key}) : super(key: key);

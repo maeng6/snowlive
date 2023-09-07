@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/controller/vm_loginController.dart';
-import 'package:snowlive3/screens/onboarding/v_setNickname.dart';
-import 'package:snowlive3/screens/v_webPage.dart';
+import 'package:com.snowlive/controller/vm_loginController.dart';
+import 'package:com.snowlive/screens/onboarding/v_setNickname.dart';
+import 'package:com.snowlive/screens/v_webPage.dart';
 import '../login/v_loginpage.dart';
 
 class WelcomePage extends StatefulWidget {

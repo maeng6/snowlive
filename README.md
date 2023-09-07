@@ -1,4 +1,4 @@
-# snowlive3
+# com.snowlive
 
 A new Flutter project.
 

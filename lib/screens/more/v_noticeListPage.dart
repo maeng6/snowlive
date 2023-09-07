@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:snowlive3/controller/vm_timeStampController.dart';
-import 'package:snowlive3/screens/more/v_noticeDetailPage.dart';
+import 'package:com.snowlive/controller/vm_timeStampController.dart';
+import 'package:com.snowlive/screens/more/v_noticeDetailPage.dart';
 
 
 class NoticeList extends StatefulWidget {

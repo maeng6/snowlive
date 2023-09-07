@@ -3,9 +3,9 @@
 // import 'package:get/get.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:snowlive3/controller/vm_liveMapController.dart';
-// import 'package:snowlive3/controller/vm_resortModelController.dart';
-// import 'package:snowlive3/controller/vm_userModelController.dart';
+// import 'package:com.snowlive/controller/vm_liveMapController.dart';
+// import 'package:com.snowlive/controller/vm_resortModelController.dart';
+// import 'package:com.snowlive/controller/vm_userModelController.dart';
 //
 // class LiveMap_Screen extends StatefulWidget {
 //   @override

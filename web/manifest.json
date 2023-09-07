@@ -1,6 +1,6 @@
 {
-    "name": "snowlive3",
-    "short_name": "snowlive3",
+    "name": "com.snowlive",
+    "short_name": "com.snowlive",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

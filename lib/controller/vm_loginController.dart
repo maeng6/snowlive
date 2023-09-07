@@ -7,11 +7,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:snowlive3/controller/vm_loadingPage.dart';
-import 'package:snowlive3/controller/vm_seasonController.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/login/v_loginpage.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/controller/vm_loadingPage.dart';
+import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/screens/login/v_loginpage.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 import '../screens/onboarding/v_FirstPage.dart';
 
@@ -74,7 +74,11 @@ class LoginController extends GetxController {
   }
 
   Future<void> loginAgain() async {
-    this.loginUid = await FlutterSecureStorage().read(key: 'uid');
+    try {
+      this.loginUid = await FlutterSecureStorage().read(key: 'uid');
+    }catch(e){
+      this.loginUid = null;
+    }
   }
 
   Future<void> loginFail() async {
