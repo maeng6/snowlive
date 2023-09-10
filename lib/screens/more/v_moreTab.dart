@@ -562,7 +562,7 @@ class _MoreTabState extends State<MoreTab> {
                       ],
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Column(
                         children: [
                           GestureDetector(
