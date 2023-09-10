@@ -57,6 +57,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   Map? userRankingMap;
   var myCrewAsset;
   String? lastPassTimeString;
+  bool? isCheckedDispName;
 
   Future<void> _onRefresh() async {
     CustomFullScreenDialog.showDialog();
@@ -448,14 +449,63 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                         child: InkWell(
                                                                                           child:
                                                                                           ElevatedButton(
-                                                                                            onPressed: () {
+                                                                                            onPressed: () async{
+                                                                                              CustomFullScreenDialog.showDialog();
                                                                                               if (_formKeyProfile.currentState!.validate()) {
-                                                                                                setState(() {
-                                                                                                  _initialDisplayName = _displayNameController.text;
-                                                                                                });
-                                                                                                FocusScope.of(context).unfocus();
-                                                                                                Navigator.pop(context);
+                                                                                                isCheckedDispName =  await _userModelController.checkDuplicateDisplayName(_displayNameController.text);
+                                                                                                if (isCheckedDispName == true) {
+                                                                                                  CustomFullScreenDialog.cancelDialog();
+                                                                                                  setState(() {
+                                                                                                    _initialDisplayName = _displayNameController.text;
+                                                                                                  });
+                                                                                                  FocusScope.of(context).unfocus();
+                                                                                                  Navigator.pop(context);
+                                                                                                } else {
+                                                                                                  CustomFullScreenDialog.cancelDialog();
+                                                                                                  Get.dialog(AlertDialog(
+                                                                                                    contentPadding: EdgeInsets.only(
+                                                                                                        bottom: 0,
+                                                                                                        left: 20,
+                                                                                                        right: 20,
+                                                                                                        top: 30),
+                                                                                                    elevation: 0,
+                                                                                                    shape: RoundedRectangleBorder(
+                                                                                                        borderRadius:
+                                                                                                        BorderRadius.circular(
+                                                                                                            10.0)),
+                                                                                                    buttonPadding:
+                                                                                                    EdgeInsets.symmetric(
+                                                                                                        horizontal: 20,
+                                                                                                        vertical: 0),
+                                                                                                    content: Text(
+                                                                                                      '이미 존재하는 활동명입니다.\n다른 활동명을 입력해주세요.',
+                                                                                                      style: TextStyle(
+                                                                                                          fontWeight: FontWeight.w600,
+                                                                                                          fontSize: 15),
+                                                                                                    ),
+                                                                                                    actions: [
+                                                                                                      Row(
+                                                                                                        children: [
+                                                                                                          TextButton(
+                                                                                                              onPressed: () {
+                                                                                                                Navigator.pop(context);
+                                                                                                              },
+                                                                                                              child: Text(
+                                                                                                                '확인',
+                                                                                                                style: TextStyle(
+                                                                                                                  fontSize: 15,
+                                                                                                                  color: Color(0xff377EEA),
+                                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                                ),
+                                                                                                              )),
+                                                                                                        ],
+                                                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                      )
+                                                                                                    ],
+                                                                                                  ));
+                                                                                                }
                                                                                               } else {
+                                                                                                CustomFullScreenDialog.cancelDialog();
                                                                                                 Get.snackbar(
                                                                                                     '입력 실패',
                                                                                                     '올바른 활동명을 입력해 주세요',
