@@ -1,3 +1,4 @@
+import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,8 +33,7 @@ class _RankingHomeState extends State<RankingHome> {
   Widget build(BuildContext context) {
 
     //TODO: Dependency Injection**************************************************
-    UserModelController _userModelController = Get.find<UserModelController>();
-    LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+    SeasonController _seasonController = Get.find<SeasonController>();
     //TODO: Dependency Injection**************************************************
 
     Size _size = MediaQuery.of(context).size;
@@ -128,7 +128,8 @@ class _RankingHomeState extends State<RankingHome> {
                                       : FontWeight.bold,
                                   fontSize: 20),
                             ),
-                            onPressed: () {
+                            onPressed: () async{
+                              await _seasonController.getCurrentSeason();
                               print('개인랭킹페이지로 전환');
                               setState(() {
                                 isTap[0] = false;

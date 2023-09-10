@@ -128,6 +128,15 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            _selectedValue = '플레이트';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('플레이트')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
                             _selectedValue = '기타';
                           });
                           Navigator.pop(context);

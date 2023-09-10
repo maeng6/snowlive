@@ -713,7 +713,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                             Expanded(
                                               child: ListView.builder(
                                                   padding: EdgeInsets.zero,
-                                                  itemCount: 5,
+                                                  itemCount: fleaCategoryList.length,
                                                   itemBuilder: (context, index) {
                                                     return Builder(
                                                         builder: (context) {

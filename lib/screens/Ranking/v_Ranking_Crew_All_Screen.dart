@@ -217,141 +217,139 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                   fontSize: 18),
             ),
           ),
-          body: SingleChildScrollView(
-                child: Container(
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Container(
-                      color: Colors.white,
-                          height: _size.height,
-                          width: _size.width,
-                          child: ListView.builder(
-                            controller: _scrollController,
-                            shrinkWrap: true,
-                            itemCount: crewDocs.length,
-                            itemBuilder: (context, index) {
-                              final document = crewDocs[index];
+          body: Container(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                color: Colors.white,
+                    height: _size.height,
+                    width: _size.width,
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      shrinkWrap: true,
+                      itemCount: crewDocs.length,
+                      itemBuilder: (context, index) {
+                        final document = crewDocs[index];
 
-                              // Assign myItemKey for the logged-in user's ListTile
-                              final itemKey = document.get('crewID') == _userModelController.liveCrew
-                                  ? myItemKey
-                                  : GlobalKey();
+                        // Assign myItemKey for the logged-in user's ListTile
+                        final itemKey = document.get('crewID') == _userModelController.liveCrew
+                            ? myItemKey
+                            : GlobalKey();
 
-                              for (var crewLogo in crewLogoList) {
-                                if (crewLogo.crewColor == crewDocs[index]['crewColor']) {
-                                  assetBases = crewLogo.crewLogoAsset;
-                                  break;
-                                }
-                              }
+                        for (var crewLogo in crewLogoList) {
+                          if (crewLogo.crewColor == crewDocs[index]['crewColor']) {
+                            assetBases = crewLogo.crewLogoAsset;
+                            break;
+                          }
+                        }
 
-                              return  Padding(
-                                key: itemKey,
-                                padding: const EdgeInsets.only(top: 6, bottom: 10),
-                                child: Row(
+                        return  Padding(
+                          key: itemKey,
+                          padding: const EdgeInsets.only(top: 6, bottom: 10),
+                          child: Row(
+                            children: [
+                              Text(
+                                '${crewRankingMap!['${crewDocs[index]['crewID']}']}',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                    color: Color(0xFF111111)
+                                ),
+                              ),
+                              SizedBox(width: 14),
+                              GestureDetector(
+                                onTap: () async{
+                                  CustomFullScreenDialog.showDialog();
+                                  await _liveCrewModelController.getCurrnetCrew(crewDocs[index]['crewID']);
+                                  CustomFullScreenDialog.cancelDialog();
+                                  Get.to(()=>CrewDetailPage_screen());
+                                },
+                                child: Container(
+                                  width: 48,
+                                  height: 48,
+                                  child:
+                                  (crewDocs[index]['profileImageUrl'].isNotEmpty)
+                                      ? Container(
+                                      width: 46,
+                                      height: 46,
+                                      // decoration: BoxDecoration(
+                                      //     color: Color(crewDocs[index]['crewColor']),
+                                      //     borderRadius: BorderRadius.circular(8)
+                                      // ),
+                                      child: ExtendedImage.network(
+                                        crewDocs[index]['profileImageUrl'],
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(6),
+                                        fit: BoxFit.cover,
+                                      ))
+                                      : Container(
+                                    width: 46,
+                                    height: 46,
+                                    decoration: BoxDecoration(
+                                        color: Color(crewDocs[index]['crewColor']),
+                                        borderRadius: BorderRadius.circular(8)
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: ExtendedImage.asset(
+                                        assetBases,
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(6),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 14),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 3),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '${crewRankingMap!['${crewDocs[index]['crewID']}']}',
+                                      crewDocs[index]['crewName'],
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold,
                                           fontSize: 15,
                                           color: Color(0xFF111111)
                                       ),
                                     ),
-                                    SizedBox(width: 14),
-                                    GestureDetector(
-                                      onTap: () async{
-                                        CustomFullScreenDialog.showDialog();
-                                        await _liveCrewModelController.getCurrnetCrew(crewDocs[index]['crewID']);
-                                        CustomFullScreenDialog.cancelDialog();
-                                        Get.to(()=>CrewDetailPage_screen());
-                                      },
-                                      child: Container(
-                                        width: 48,
-                                        height: 48,
-                                        child:
-                                        (crewDocs[index]['profileImageUrl'].isNotEmpty)
-                                            ? Container(
-                                            width: 46,
-                                            height: 46,
-                                            // decoration: BoxDecoration(
-                                            //     color: Color(crewDocs[index]['crewColor']),
-                                            //     borderRadius: BorderRadius.circular(8)
-                                            // ),
-                                            child: ExtendedImage.network(
-                                              crewDocs[index]['profileImageUrl'],
-                                              enableMemoryCache: true,
-                                              shape: BoxShape.rectangle,
-                                              borderRadius: BorderRadius.circular(6),
-                                              fit: BoxFit.cover,
-                                            ))
-                                            : Container(
-                                          width: 46,
-                                          height: 46,
-                                          decoration: BoxDecoration(
-                                              color: Color(crewDocs[index]['crewColor']),
-                                              borderRadius: BorderRadius.circular(8)
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: ExtendedImage.asset(
-                                              assetBases,
-                                              enableMemoryCache: true,
-                                              shape: BoxShape.rectangle,
-                                              borderRadius: BorderRadius.circular(6),
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
+                                    if (crewDocs[index]['description'].isNotEmpty)
+                                    SizedBox(
+                                      width: 200,
+                                      child: Text(
+                                        crewDocs[index]['description'],
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xFF949494)
                                         ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 14),
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: 3),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            crewDocs[index]['crewName'],
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                color: Color(0xFF111111)
-                                            ),
-                                          ),
-                                          if (crewDocs[index]['description'].isNotEmpty)
-                                          SizedBox(
-                                            width: 200,
-                                            child: Text(
-                                              crewDocs[index]['description'],
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Color(0xFF949494)
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(child: SizedBox()),
-                                    Text(
-                                      '${crewDocs[index].get('totalScore').toString()}점',
-                                      style: TextStyle(
-                                        color: Color(0xFF111111),
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 18,
                                       ),
                                     ),
                                   ],
                                 ),
-                              );
-                            },
+                              ),
+                              Expanded(child: SizedBox()),
+                              Text(
+                                '${crewDocs[index].get('totalScore').toString()}점',
+                                style: TextStyle(
+                                  color: Color(0xFF111111),
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ),
+            ),
+          ),
         );
       },
     );

@@ -180,155 +180,153 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                   fontSize: 20),
             ),
           ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                height: _size.height,
-                width: _size.width,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  controller: _scrollController,
-                  itemCount: documents.length,
-                  itemBuilder: (context, index) {
-                    final document = documents[index];
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              height: _size.height,
+              width: _size.width,
+              child: ListView.builder(
+                shrinkWrap: true,
+                controller: _scrollController,
+                itemCount: documents.length,
+                itemBuilder: (context, index) {
+                  final document = documents[index];
 
-                    // Assign myItemKey for the logged-in user's ListTile
-                    final itemKey = document.get('uid') == _userModelController.uid
-                        ? myItemKey
-                        : GlobalKey();
+                  // Assign myItemKey for the logged-in user's ListTile
+                  final itemKey = document.get('uid') == _userModelController.uid
+                      ? myItemKey
+                      : GlobalKey();
 
-                    return StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('user')
-                          .where('uid', isEqualTo: document.get('uid'))
-                          .snapshots(),
-                      builder: (context,
-                          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                              snapshot) {
-                        if (!snapshot.hasData || snapshot.data == null) {
-                          return ListTile(
-                            title: Text(''),
-                          );
-                        }
-                        final userDoc = snapshot.data!.docs;
-                        final userData = userDoc.isNotEmpty ? userDoc[0] : null;
-
-                        if (userData == null) {
-                          return ListTile(
-                            title: Text('User not found'),
-                          );
-                        }
-
-                        return Padding(
-                          key: itemKey, // Apply the key here
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: Row(
-                            children: [
-                              Text(
-                                '${userRankingMap!['${userDoc[0]['uid']}']}',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                    color: Color(0xFF111111)),
-                              ),
-                              SizedBox(width: 14),
-                              GestureDetector(
-                                onTap: () {
-                                  Get.to(() =>
-                                      FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                },
-                                child: Container(
-                                  width: 48,
-                                  height: 48,
-                                  child: userData['profileImageUrl'].isNotEmpty
-                                      ? ExtendedImage.network(
-                                          userData['profileImageUrl'],
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : ExtendedImage.asset(
-                                          'assets/imgs/profile/img_profile_default_circle.png',
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                        ),
-                                ),
-                              ),
-                              SizedBox(width: 14),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 3),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      userData['displayName'],
-                                      style: TextStyle(
-                                          fontSize: 15, color: Color(0xFF111111)),
-                                    ),
-                                    StreamBuilder<QuerySnapshot>(
-                                      stream: FirebaseFirestore.instance
-                                          .collection('liveCrew')
-                                          .where('crewID',
-                                              isEqualTo: userData['liveCrew'])
-                                          .snapshots(),
-                                      builder: (context,
-                                          AsyncSnapshot<QuerySnapshot> snapshot) {
-                                        if (snapshot.hasError) {
-                                          return Text("오류가 발생했습니다");
-                                        }
-
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.waiting) {
-                                          return CircularProgressIndicator();
-                                        }
-
-                                        if (!snapshot.hasData ||
-                                            snapshot.data!.docs.isEmpty) {
-                                          return SizedBox();
-                                        }
-
-                                        var crewData = snapshot.data!.docs.first
-                                            .data() as Map<String, dynamic>?;
-
-                                        // 크루명 가져오기
-                                        String crewName =
-                                            crewData?['crewName'] ?? '';
-
-                                        return Text(
-                                          crewName,
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: Color(0xFF949494)),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Expanded(child: SizedBox()),
-                              Text(
-                                '${document.get('totalScore').toString()}점',
-                                style: TextStyle(
-                                  color: Color(0xFF111111),
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
+                  return StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection('user')
+                        .where('uid', isEqualTo: document.get('uid'))
+                        .snapshots(),
+                    builder: (context,
+                        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                            snapshot) {
+                      if (!snapshot.hasData || snapshot.data == null) {
+                        return ListTile(
+                          title: Text(''),
                         );
-                      },
-                    );
-                  },
-                ),
+                      }
+                      final userDoc = snapshot.data!.docs;
+                      final userData = userDoc.isNotEmpty ? userDoc[0] : null;
+
+                      if (userData == null) {
+                        return ListTile(
+                          title: Text('User not found'),
+                        );
+                      }
+
+                      return Padding(
+                        key: itemKey, // Apply the key here
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Row(
+                          children: [
+                            Text(
+                              '${userRankingMap!['${userDoc[0]['uid']}']}',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: Color(0xFF111111)),
+                            ),
+                            SizedBox(width: 14),
+                            GestureDetector(
+                              onTap: () {
+                                Get.to(() =>
+                                    FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                              },
+                              child: Container(
+                                width: 48,
+                                height: 48,
+                                child: userData['profileImageUrl'].isNotEmpty
+                                    ? ExtendedImage.network(
+                                        userData['profileImageUrl'],
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.circle,
+                                        borderRadius: BorderRadius.circular(8),
+                                        width: 48,
+                                        height: 48,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : ExtendedImage.asset(
+                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.circle,
+                                        borderRadius: BorderRadius.circular(8),
+                                        width: 48,
+                                        height: 48,
+                                        fit: BoxFit.cover,
+                                      ),
+                              ),
+                            ),
+                            SizedBox(width: 14),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 3),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    userData['displayName'],
+                                    style: TextStyle(
+                                        fontSize: 15, color: Color(0xFF111111)),
+                                  ),
+                                  StreamBuilder<QuerySnapshot>(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('liveCrew')
+                                        .where('crewID',
+                                            isEqualTo: userData['liveCrew'])
+                                        .snapshots(),
+                                    builder: (context,
+                                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                                      if (snapshot.hasError) {
+                                        return Text("오류가 발생했습니다");
+                                      }
+
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return CircularProgressIndicator();
+                                      }
+
+                                      if (!snapshot.hasData ||
+                                          snapshot.data!.docs.isEmpty) {
+                                        return SizedBox();
+                                      }
+
+                                      var crewData = snapshot.data!.docs.first
+                                          .data() as Map<String, dynamic>?;
+
+                                      // 크루명 가져오기
+                                      String crewName =
+                                          crewData?['crewName'] ?? '';
+
+                                      return Text(
+                                        crewName,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xFF949494)),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(child: SizedBox()),
+                            Text(
+                              '${document.get('totalScore').toString()}점',
+                              style: TextStyle(
+                                color: Color(0xFF111111),
+                                fontWeight: FontWeight.normal,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ),

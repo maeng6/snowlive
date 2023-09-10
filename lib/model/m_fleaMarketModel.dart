@@ -145,7 +145,7 @@ class FleaModel {
 
 }
 
-List<dynamic> fleaCategoryList = ['데크', '바인딩', '부츠', '의류', '기타'];
+List<dynamic> fleaCategoryList = ['데크', '바인딩', '부츠', '의류','플레이트', '기타'];
 
 List<dynamic> fleaLocationList = [
   '곤지암리조트',

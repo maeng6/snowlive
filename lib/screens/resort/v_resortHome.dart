@@ -308,24 +308,39 @@ class _ResortHomeState extends State<ResortHome>
                                                               ),
                                                                   ),
                                                               SizedBox(width: 10),
-                                                              Text(
-                                                                '${liveFriendDocs[index]['displayName']}', style: TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight: FontWeight.normal,
-                                                                  color: Color(0xFF111111)
-                                                              ),),
+                                                              Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Text(
+                                                                    '${liveFriendDocs[index]['displayName']}', style: TextStyle(
+                                                                      fontSize: 15,
+                                                                      fontWeight: FontWeight.normal,
+                                                                      color: Color(0xFF111111)
+                                                                  ),),
+                                                                  SizedBox(
+                                                                    height: 1,
+                                                                  ),
+                                                                  (liveFriendDocs[index]['stateMsg'] == '')
+                                                                  ? SizedBox.shrink()
+                                                                  : Container(
+                                                                    width: 150,
+                                                                    child: Text(
+                                                                      '${liveFriendDocs[index]['stateMsg']}',
+                                                                      maxLines: 1,
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                      style: TextStyle(
+                                                                        fontSize: 12,
+                                                                        fontWeight: FontWeight.normal,
+                                                                        color: Color(0xFF949494),
+                                                                    ),),
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ],
                                                           ),
                                                         ],
                                                       ),
                                                     ),
-                                                    if (index != liveFriendDocs.length - 1)  // 마지막 요소가 아니라면
-                                                      Padding(
-                                                        padding: EdgeInsets.symmetric(horizontal: 16),
-                                                        child: Divider(
-                                                          color: Color(0xFFECECEC),
-                                                        ),
-                                                      ),
                                                   ],
                                                 );
                                               }),

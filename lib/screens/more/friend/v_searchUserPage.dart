@@ -49,70 +49,178 @@ class _SearchUserPageState extends State<SearchUserPage> {
         child: SafeArea(
           top: false,
           bottom: true,
-          child: Scaffold(
-            appBar:AppBar(
-              backgroundColor: Colors.white,
-              leading: GestureDetector(
-                child: Image.asset(
-                  'assets/imgs/icons/icon_snowLive_back.png',
-                  scale: 4,
-                  width: 26,
-                  height: 26,
+          child: Stack(
+            children: [
+              Scaffold(
+                backgroundColor: Colors.white,
+                appBar:AppBar(
+                  backgroundColor: Colors.white,
+                  leading: GestureDetector(
+                    child: Image.asset(
+                      'assets/imgs/icons/icon_snowLive_back.png',
+                      scale: 4,
+                      width: 26,
+                      height: 26,
+                    ),
+                    onTap: () {
+                      Get.back();
+                    },
+                  ),
+                  // actions: [
+                  //   GestureDetector(
+                  //     onTap: (){
+                  //       Get.to(()=>SearchUserPage());
+                  //     },
+                  //     child: Icon(Icons.search),
+                  //   )
+                  // ],
+                  elevation: 0.0,
+                  titleSpacing: 0,
+                  centerTitle: true,
+                  title: Text('친구 검색',
+                    style: TextStyle(
+                        color: Color(0xFF111111),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
+                  ),
                 ),
-                onTap: () {
-                  Get.back();
-                },
-              ),
-              // actions: [
-              //   GestureDetector(
-              //     onTap: (){
-              //       Get.to(()=>SearchUserPage());
-              //     },
-              //     child: Icon(Icons.search),
-              //   )
-              // ],
-              elevation: 0.0,
-              titleSpacing: 0,
-              centerTitle: true,
-              title: Text('친구 검색',
-                style: TextStyle(
-                    color: Color(0xFF111111),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
-              ),
-            ),
-            body: SingleChildScrollView(
-              child: Container(
-                color: Colors.white,
-                child:  Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Stack(
-                          children: [
-                            Form(
-                              key: _formKey,
-                              child: Padding(
-                                padding: EdgeInsets.only(bottom: 30, top: 2),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6),
+                body: SingleChildScrollView(
+                  child: Container(
+                        color: Colors.white,
+                        child:  Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Stack(
+                              children: [
+                                Form(
+                                  key: _formKey,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: TextFormField(
+                                      onFieldSubmitted: (val) async{
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        if (_formKey.currentState!.validate()) {
+                                          _nickName = _textEditingController.text;
+                                          CustomFullScreenDialog.showDialog();
+                                          isCheckedDispName =  await _userModelController.checkDuplicateDisplayName(_nickName);
+                                          if (isCheckedDispName == false) {
+
+                                            foundUserUid =  await _searchUserController.searchUsersByDisplayName(_nickName);
+                                            foundUserModel = await _userModelController.getFoundUser(foundUserUid!);
+                                            foundUserTier = await _searchUserController.searchUsersTier(uid: foundUserUid);
+                                            foundUserCrewName = await _searchUserController.searchUsersCrewName(uid: foundUserUid);
+                                            isFound = true;
+                                            CustomFullScreenDialog.cancelDialog();
+                                          }
+                                          else{
+                                            CustomFullScreenDialog.cancelDialog();
+                                            isFound = false;
+                                            Get.dialog(AlertDialog(
+                                              contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                              buttonPadding:
+                                              EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                              content: Text('존재하지 않는 활동명입니다.\n활동명 전체를 정확히 입력해주세요.',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 15),
+                                              ),
+                                              actions: [
+                                                Row(
+                                                  children: [
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: Text(
+                                                          '확인',
+                                                          style: TextStyle(
+                                                            fontSize: 15,
+                                                            color: Color(0xff377EEA),
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        )),
+                                                  ],
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                )
+                                              ],
+                                            ));
+                                          }
+                                        } else {}
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                      },
+                                      autofocus: true,
+                                      textAlignVertical: TextAlignVertical.center,
+                                      cursorColor: Color(0xff949494),
+                                      cursorHeight: 16,
+                                      cursorWidth: 2,
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      controller: _textEditingController,
+                                      strutStyle: StrutStyle(leading: 0.3),
+                                      decoration: InputDecoration(
+                                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                                          errorStyle: TextStyle(
+                                            fontSize: 12,
+                                          ),
+                                          labelStyle: TextStyle(color: Color(0xff666666), fontSize: 15),
+                                          hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
+                                          hintText: '활동명 입력',
+                                          labelText: '활동명 입력',
+                                          contentPadding: EdgeInsets.only(
+                                              top: 14, bottom: 8, left: 16, right: 16),
+                                          fillColor: Color(0xFFEFEFEF),
+                                          hoverColor: Colors.transparent,
+                                          filled: true,
+                                          focusColor: Colors.transparent,
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Color(0xFFEFEFEF)),
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          errorBorder:  OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.transparent),
+                                          ),
+                                          focusedBorder:  OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.transparent),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.transparent),
+                                            borderRadius: BorderRadius.circular(6),
+                                          )),
+                                      validator: (val) {
+                                        if (val!.length <= 20 && val.length >= 1) {
+                                          return null;
+                                        } else if (val.length == 0) {
+                                          return '활동명을 입력해주세요.';
+                                        } else {
+                                          return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                        }
+                                      },
+                                    ),
                                   ),
-                                  child: TextFormField(
-                                    onFieldSubmitted: (val) async{
+                                ),
+                                Positioned(
+                                  right: -4,
+                                  top: 15,
+                                  child: GestureDetector(
+                                    onTap: () async{
                                       setState(() {
                                         isLoading = true;
                                       });
                                       if (_formKey.currentState!.validate()) {
-                                        _nickName = _textEditingController.text;
                                         CustomFullScreenDialog.showDialog();
+                                        _nickName = _textEditingController.text;
                                         isCheckedDispName =  await _userModelController.checkDuplicateDisplayName(_nickName);
                                         if (isCheckedDispName == false) {
-
                                           foundUserUid =  await _searchUserController.searchUsersByDisplayName(_nickName);
                                           foundUserModel = await _userModelController.getFoundUser(foundUserUid!);
                                           foundUserTier = await _searchUserController.searchUsersTier(uid: foundUserUid);
@@ -154,267 +262,170 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                             ],
                                           ));
                                         }
-                                      } else {}
+                                      }
+                                      else {}
                                       setState(() {
                                         isLoading = false;
                                       });
                                     },
-                                    autofocus: true,
-                                    textAlignVertical: TextAlignVertical.center,
-                                    cursorColor: Color(0xff949494),
-                                    cursorHeight: 16,
-                                    cursorWidth: 2,
-                                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                                    controller: _textEditingController,
-                                    strutStyle: StrutStyle(leading: 0.3),
-                                    decoration: InputDecoration(
-                                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                                        errorStyle: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                        labelStyle: TextStyle(color: Color(0xff666666), fontSize: 15),
-                                        hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
-                                        hintText: '활동명 입력',
-                                        labelText: '활동명 입력',
-                                        contentPadding: EdgeInsets.only(
-                                            top: 14, bottom: 8, left: 16, right: 16),
-                                        fillColor: Color(0xFFEFEFEF),
-                                        hoverColor: Colors.transparent,
-                                        filled: true,
-                                        focusColor: Colors.transparent,
-                                        border: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Color(0xFFEFEFEF)),
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
-                                        errorBorder:  OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.transparent),
-                                        ),
-                                        focusedBorder:  OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.transparent),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.transparent),
-                                          borderRadius: BorderRadius.circular(6),
-                                        )),
-                                    validator: (val) {
-                                      if (val!.length <= 20 && val.length >= 1) {
-                                        return null;
-                                      } else if (val.length == 0) {
-                                        return '활동명을 입력해주세요.';
-                                      } else {
-                                        return '최대 입력 가능한 글자 수를 초과했습니다.';
-                                      }
-                                    },
+                                    child: Padding(
+                                        padding: const EdgeInsets.only(right: 20),
+                                        child: Icon(Icons.search, color: Color(0xFF666666),),)
                                   ),
-                                ),
-                              ),
+                                )
+                              ],
                             ),
-                            Positioned(
-                              right: -4,
-                              top: 15,
-                              child: GestureDetector(
-                                onTap: () async{
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  if (_formKey.currentState!.validate()) {
-                                    CustomFullScreenDialog.showDialog();
-                                    _nickName = _textEditingController.text;
-                                    isCheckedDispName =  await _userModelController.checkDuplicateDisplayName(_nickName);
-                                    if (isCheckedDispName == false) {
-                                      foundUserUid =  await _searchUserController.searchUsersByDisplayName(_nickName);
-                                      foundUserModel = await _userModelController.getFoundUser(foundUserUid!);
-                                      foundUserTier = await _searchUserController.searchUsersTier(uid: foundUserUid);
-                                      foundUserCrewName = await _searchUserController.searchUsersCrewName(uid: foundUserUid);
-                                      isFound = true;
-                                      CustomFullScreenDialog.cancelDialog();
-                                    }
-                                    else{
-                                      isFound = false;
-                                      Get.dialog(AlertDialog(
-                                        contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                        buttonPadding:
-                                        EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                        content: Text('존재하지 않는 활동명입니다.\n활동명 전체를 정확히 입력해주세요.',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 15),
-                                        ),
-                                        actions: [
-                                          Row(
-                                            children: [
-                                              TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text(
-                                                    '확인',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Color(0xff377EEA),
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  )),
-                                            ],
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                          )
-                                        ],
-                                      ));
-                                    }
-                                  }
-                                  else {}
-                                  setState(() {
-                                    isLoading = false;
-                                  });
+                              SizedBox(height: 20),
+                              (isFound)
+                                  ? GestureDetector(
+                                onTap: (){
+                                  Get.to(()=> FriendDetailPage(uid: foundUserUid, favoriteResort: foundUserModel!.favoriteResort));
                                 },
-                                child: Padding(
-                                    padding: const EdgeInsets.only(right: 20),
-                                    child: Icon(Icons.search, color: Color(0xFF666666),),)
-                              ),
-                            )
-                          ],
-                        ),
-                          SizedBox(height: 6),
-                          (isFound)
-                              ? GestureDetector(
-                            onTap: (){
-                              Get.to(()=> FriendDetailPage(uid: foundUserUid, favoriteResort: foundUserModel!.favoriteResort));
-                            },
-                                child: Center(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: Color(0xFF3D83ED)
-                                    ),
-                                      width: 290,
-                                      height: 457,
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(10),
-                                            child: Container(
-                                                width: 270,
-                                                height: 270,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(8),
-                                                color: Colors.black12
-                                              ),
-                                              child:
-                                              (foundUserModel!.profileImageUrl!.isNotEmpty)
-                                                  ? ExtendedImage.network(
-                                                    '${foundUserModel!.profileImageUrl}',
-                                                    enableMemoryCache: true,
+                                    child: Center(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(8),
+                                          color: Color(0xFF3D83ED)
+                                        ),
+                                          width: 290,
+                                          height: 457,
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.all(10),
+                                                child: Container(
+                                                    width: 270,
+                                                    height: 270,
+                                                  decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(8),
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                  : ExtendedImage.asset(
-                                                    'assets/imgs/profile/img_profile_default_.png',
-                                                    enableMemoryCache: true,
-                                                    borderRadius: BorderRadius.circular(8),
-                                                    fit: BoxFit.cover,
+                                                    color: Colors.black12
                                                   ),
-                                                ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.only(top: 6),
                                                   child:
-                                                  Row(
-                                                    children: [
-                                                      Text('${foundUserModel!.displayName}', style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Colors.white
-                                                      ),),
-                                                      for(var rankingTier in rankingTierList)
-                                                        if(foundUserTier == rankingTier.tierName)
-                                                          ExtendedImage.asset(
-                                                            enableMemoryCache:true,
-                                                            rankingTier.badgeAsset,
-                                                            scale: 8,
-                                                          ),
-                                                      if(foundUserTier == '')
-                                                        Container()
-                                                    ],
-                                                  )
-
-                                                ),
-                                                SizedBox(height: 2,),
-                                                Text('${foundUserModel!.resortNickname}', style: TextStyle(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.normal,
-                                                    color: Colors.white
-                                                ),),
-                                                SizedBox(height: 14,),
-                                                Container(
-                                                  height: 1,
-                                                  width: _size.width- 136,
-                                                  color: Colors.black12,
-                                                ),
-                                                SizedBox(height: 14,),
-                                                Row(
-                                                  children: [
-                                                    Container(
-                                                      width: 200,
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text('라이브 크루', style: TextStyle(
-                                                            fontSize: 13,
-                                                            fontWeight: FontWeight.normal,
-                                                            color: Colors.white60,
-                                                          ),),
-                                                          (foundUserCrewName != '' && foundUserCrewName != null)
-                                                          ? Text('$foundUserCrewName', style: TextStyle(
-                                                              fontSize: 13,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Colors.white
-                                                          ),)
-                                                              :Text('활동중인 크루가 없습니다.', style: TextStyle(
-                                                              fontSize: 13,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Colors.white
-                                                          ),)
-                                                        ],
+                                                  (foundUserModel!.profileImageUrl!.isNotEmpty)
+                                                      ? ExtendedImage.network(
+                                                        '${foundUserModel!.profileImageUrl}',
+                                                        enableMemoryCache: true,
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                      : ExtendedImage.asset(
+                                                        'assets/imgs/profile/img_profile_default_.png',
+                                                        enableMemoryCache: true,
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        fit: BoxFit.cover,
                                                       ),
+                                                    ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(top: 6),
+                                                      child:
+                                                      Row(
+                                                        children: [
+                                                          Text('${foundUserModel!.displayName}', style: TextStyle(
+                                                              fontSize: 20,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Colors.white
+                                                          ),),
+                                                          for(var rankingTier in rankingTierList)
+                                                            if(foundUserTier == rankingTier.tierName)
+                                                              ExtendedImage.asset(
+                                                                enableMemoryCache:true,
+                                                                rankingTier.badgeAsset,
+                                                                scale: 8,
+                                                              ),
+                                                          if(foundUserTier == '')
+                                                            Container()
+                                                        ],
+                                                      )
+
+                                                    ),
+                                                    SizedBox(height: 2,),
+                                                    Text('${foundUserModel!.resortNickname}', style: TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight: FontWeight.normal,
+                                                        color: Colors.white
+                                                    ),),
+                                                    SizedBox(height: 14,),
+                                                    Container(
+                                                      height: 1,
+                                                      width: _size.width- 136,
+                                                      color: Colors.black12,
+                                                    ),
+                                                    SizedBox(height: 14,),
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                          width: 200,
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text('라이브 크루', style: TextStyle(
+                                                                fontSize: 13,
+                                                                fontWeight: FontWeight.normal,
+                                                                color: Colors.white60,
+                                                              ),),
+                                                              (foundUserCrewName != '' && foundUserCrewName != null)
+                                                              ? Text('$foundUserCrewName', style: TextStyle(
+                                                                  fontSize: 13,
+                                                                  fontWeight: FontWeight.bold,
+                                                                  color: Colors.white
+                                                              ),)
+                                                                  :Text('활동중인 크루가 없습니다.', style: TextStyle(
+                                                                  fontSize: 13,
+                                                                  fontWeight: FontWeight.bold,
+                                                                  color: Colors.white
+                                                              ),)
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 14,),
+                                                    Container(
+                                                      height: 1,
+                                                      width: _size.width- 136,
+                                                      color: Colors.black12,
                                                     ),
                                                   ],
                                                 ),
-                                                SizedBox(height: 14,),
-                                                Container(
-                                                  height: 1,
-                                                  width: _size.width- 136,
-                                                  color: Colors.black12,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      )
+                                              ),
+                                            ],
+                                          )
+                                      ),
+                                    ),
+                                  )
+                                  : Container(
+                                height: _size.height - 360,
+                                    child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                    Center(child: Image.asset('assets/imgs/icons/icon_friend_search_illust.png', scale: 4, width: 180, height: 100,))
+                                ],
+                              ),
                                   ),
-                                ),
-                              )
-                              : Container(
-                            height: _size.height - 400,
-                                child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                                Center(child: Image.asset('assets/imgs/icons/icon_friend_search_illust.png', scale: 4, width: 180, height: 100,))
                             ],
                           ),
-                              ),
-
-                        ],
+                        ),
                       ),
-                      Column(
+                ),
+              ),
+              Positioned(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                right: 0,
+                left: 0,
+                child: SafeArea(
+                  child: Container(
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16, right: 16),
+                      child: Column(
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 10),
@@ -434,8 +445,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                         onPressed: () {
                                           if(isFound) {
                                             Get.to(() => FriendDetailPage(
-                                                  uid: foundUserModel!.uid,
-                                                  favoriteResort: foundUserModel!.favoriteResort,));
+                                              uid: foundUserModel!.uid,
+                                              favoriteResort: foundUserModel!.favoriteResort,));
                                           }
                                         },
                                         style: TextButton.styleFrom(
@@ -631,11 +642,11 @@ class _SearchUserPageState extends State<SearchUserPage> {
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         ),
       ),

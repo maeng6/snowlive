@@ -621,7 +621,7 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                                               Expanded(
                                                 child: ListView.builder(
                                                     padding: EdgeInsets.zero,
-                                                    itemCount: 5,
+                                                    itemCount: fleaCategoryList.length,
                                                     itemBuilder: (context, index) {
                                                       return Builder(
                                                           builder: (context) {

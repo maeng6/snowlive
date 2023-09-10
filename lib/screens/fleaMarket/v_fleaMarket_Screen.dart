@@ -82,6 +82,7 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             AppBar(
+              automaticallyImplyLeading: false,
               actions: [
                 Padding(
                   padding: const EdgeInsets.only(right: 16),

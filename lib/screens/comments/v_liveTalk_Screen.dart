@@ -107,6 +107,7 @@ class _LiveTalkScreenState
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(58),
               child: AppBar(
+                automaticallyImplyLeading: false,
                 centerTitle: false,
                 titleSpacing: 0,
                 title: Padding(
