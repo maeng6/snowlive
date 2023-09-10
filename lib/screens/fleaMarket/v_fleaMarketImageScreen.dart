@@ -2,8 +2,8 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:snowlive3/controller/vm_fleaMarketController.dart';
-import 'package:snowlive3/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
+import 'package:com.snowlive/controller/vm_fleaMarketController.dart';
+import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 
 
 class FleaMarketImageScreen extends StatefulWidget {

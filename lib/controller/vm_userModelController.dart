@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:snowlive3/model/m_userModel.dart';
-import 'package:snowlive3/screens/login/v_loginpage.dart';
+import 'package:com.snowlive/model/m_userModel.dart';
+import 'package:com.snowlive/screens/login/v_loginpage.dart';
 import '../model/m_resortModel.dart';
 
 class UserModelController extends GetxController{

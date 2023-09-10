@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:snowlive3/model/m_timeStampModel.dart';
+import 'package:com.snowlive/model/m_timeStampModel.dart';
 
 class TimeStampController extends GetxController{
 

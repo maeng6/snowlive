@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/discover/v_discover_Calendar_Detail.dart';
+import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/screens/discover/v_discover_Calendar_Detail.dart';
 
 class DiscoverScreen_Calendar extends StatefulWidget {
   @override

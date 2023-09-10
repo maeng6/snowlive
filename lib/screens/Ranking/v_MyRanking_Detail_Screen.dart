@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:snowlive3/controller/vm_liveMapController.dart';
-import 'package:snowlive3/controller/vm_resortModelController.dart';
-import 'package:snowlive3/controller/vm_seasonController.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/model/m_rankingTierModel.dart';
-import 'package:snowlive3/model/m_slopeScoreModel.dart';
-import 'package:snowlive3/screens/v_MainHome.dart';
+import 'package:com.snowlive/controller/vm_liveMapController.dart';
+import 'package:com.snowlive/controller/vm_resortModelController.dart';
+import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/model/m_rankingTierModel.dart';
+import 'package:com.snowlive/model/m_slopeScoreModel.dart';
+import 'package:com.snowlive/screens/v_MainHome.dart';
 
 import '../resort/v_resortHome.dart';
 

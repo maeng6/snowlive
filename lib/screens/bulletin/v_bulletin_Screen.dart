@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:snowlive3/controller/vm_fleaChatController.dart';
-import 'package:snowlive3/screens/bulletin/Crew/v_bulletin_Crew_List_Screen.dart';
-import 'package:snowlive3/screens/bulletin/Room/v_bulletin_Room_List_Screen.dart';
+import 'package:com.snowlive/controller/vm_fleaChatController.dart';
+import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_List_Screen.dart';
+import 'package:com.snowlive/screens/bulletin/Room/v_bulletin_Room_List_Screen.dart';
 import '../../controller/vm_bulletinCrewController.dart';
 import '../../controller/vm_bulletinRoomController.dart';
 

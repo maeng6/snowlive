@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/model/m_licenseModel.dart';
-import 'package:snowlive3/screens/more/v_licenseDetailPage.dart';
+import 'package:com.snowlive/model/m_licenseModel.dart';
+import 'package:com.snowlive/screens/more/v_licenseDetailPage.dart';
 
 class LicenseListPage extends StatelessWidget {
   const LicenseListPage({Key? key}) : super(key: key);

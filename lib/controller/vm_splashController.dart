@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:snowlive3/model/m_splashScreen.dart';
+import 'package:com.snowlive/model/m_splashScreen.dart';
 
 class SplashController extends GetxController{
 

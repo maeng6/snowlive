@@ -3,12 +3,12 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
-import 'package:snowlive3/controller/vm_liveMapController.dart';
-import 'package:snowlive3/controller/vm_seasonController.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/Ranking/v_MyRanking_Detail_Screen.dart';
-import 'package:snowlive3/screens/Ranking/v_Ranking_indi_All_Screen.dart';
+import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
+import 'package:com.snowlive/controller/vm_liveMapController.dart';
+import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/screens/Ranking/v_MyRanking_Detail_Screen.dart';
+import 'package:com.snowlive/screens/Ranking/v_Ranking_indi_All_Screen.dart';
 import '../../model/m_rankingTierModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 

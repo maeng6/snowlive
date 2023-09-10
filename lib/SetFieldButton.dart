@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 Future<void> updateFieldsForAllDocuments() async {
   // Get a reference to the Firestore collection

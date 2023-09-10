@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/discover/v_discover_Resort_Banner.dart';
-import 'package:snowlive3/screens/discover/v_discover_calendar.dart';
-import 'package:snowlive3/screens/discover/v_discover_info.dart';
-import 'package:snowlive3/screens/discover/v_discover_tip.dart';
+import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/screens/discover/v_discover_Resort_Banner.dart';
+import 'package:com.snowlive/screens/discover/v_discover_calendar.dart';
+import 'package:com.snowlive/screens/discover/v_discover_info.dart';
+import 'package:com.snowlive/screens/discover/v_discover_tip.dart';
 
 
 class DiscoverScreen extends StatefulWidget {

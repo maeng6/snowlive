@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:snowlive3/controller/vm_imageController.dart';
-import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/controller/vm_imageController.dart';
+import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
+import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 class PhotoViewerPage extends StatefulWidget {
   final List<dynamic> photoList;

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
-import 'package:snowlive3/screens/more/friend/invitation/v_invitation_Screen_friend.dart';
-import 'package:snowlive3/screens/more/friend/v_setting_friendList.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
+import 'package:com.snowlive/screens/more/friend/invitation/v_invitation_Screen_friend.dart';
+import 'package:com.snowlive/screens/more/friend/v_setting_friendList.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import 'v_searchUserPage.dart';
 

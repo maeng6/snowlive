@@ -6,11 +6,11 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:snowlive3/controller/vm_imageController.dart';
-import 'package:snowlive3/controller/vm_liveCrewModelController.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
-import 'package:snowlive3/screens/LiveCrew/v_crewDetailPage_gallery_viewer.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/controller/vm_imageController.dart';
+import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
+import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_gallery_viewer.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 import '../comments/v_profileImageScreen.dart';
 

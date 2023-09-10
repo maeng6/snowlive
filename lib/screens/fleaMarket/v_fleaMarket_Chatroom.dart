@@ -8,10 +8,10 @@ import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/controller/vm_fleaChatController.dart';
-import 'package:snowlive3/screens/comments/v_profileImageScreen.dart';
-import 'package:snowlive3/screens/more/friend/v_friendDetailPage.dart';
-import 'package:snowlive3/screens/v_MainHome.dart';
+import 'package:com.snowlive/controller/vm_fleaChatController.dart';
+import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
+import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
+import 'package:com.snowlive/screens/v_MainHome.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 

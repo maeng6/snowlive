@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowlive3/model/m_resortModel.dart';
-import 'package:snowlive3/screens/v_webPage.dart';
+import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/screens/v_webPage.dart';
 
 class ResortTab extends StatelessWidget {
   ResortTab({Key? key}) : super(key: key);

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:snowlive3/controller/vm_imageController.dart';
-import 'package:snowlive3/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/controller/vm_imageController.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_loginController.dart';
 import '../../../controller/vm_userModelController.dart';
 

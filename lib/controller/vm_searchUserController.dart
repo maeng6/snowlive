@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:snowlive3/controller/vm_seasonController.dart';
-import 'package:snowlive3/controller/vm_userModelController.dart';
+import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/controller/vm_userModelController.dart';
 import '../model/m_userModel.dart';
 
 class SearchUserController extends GetxController{

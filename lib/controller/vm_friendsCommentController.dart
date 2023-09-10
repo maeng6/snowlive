@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:snowlive3/model/m_commentModel.dart';
-import 'package:snowlive3/model/m_friendsCommentModel.dart';
+import 'package:com.snowlive/model/m_commentModel.dart';
+import 'package:com.snowlive/model/m_friendsCommentModel.dart';
 
 class FriendsCommentModelController extends GetxController {
   RxString? _uid = ''.obs;

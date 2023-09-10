@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:snowlive3/controller/vm_imageController.dart';
-import 'package:snowlive3/screens/more/friend/v_repoList.dart';
+import 'package:com.snowlive/controller/vm_imageController.dart';
+import 'package:com.snowlive/screens/more/friend/v_repoList.dart';
 import '../../../controller/vm_userModelController.dart';
 
 class Setting_friendList extends StatelessWidget {
