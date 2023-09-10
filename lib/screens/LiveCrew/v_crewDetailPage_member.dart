@@ -25,44 +25,44 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
-    return Column(
-      children: [
-        StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('user')
-              .where('liveCrew', isEqualTo: _liveCrewModelController.crewID)
-              .orderBy('displayName', descending: false)
-              .snapshots(),
-          builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-            if (!snapshot.hasData || snapshot.data == null) {
-              return Container();
-            } else if (snapshot.data!.docs.isNotEmpty) {
-              final crewMemberDocs = snapshot.data!.docs;
-
-              // leader 정보를 찾는 로직 추가
-              DocumentSnapshot<Map<String, dynamic>>? leaderDoc;
-              for (var doc in crewMemberDocs) {
-                if (doc.id == _liveCrewModelController.leaderUid) {
-                  leaderDoc = doc;
-                  break;
-                }
-              }
-
-              if (leaderDoc == null) {
-                // 리더 정보를 찾지 못했을 때의 처리
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('user')
+                .where('liveCrew', isEqualTo: _liveCrewModelController.crewID)
+                .orderBy('displayName', descending: false)
+                .snapshots(),
+            builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+              if (!snapshot.hasData || snapshot.data == null) {
                 return Container();
-              }
+              } else if (snapshot.data!.docs.isNotEmpty) {
+                final crewMemberDocs = snapshot.data!.docs;
 
-              // leader 정보를 가진 leaderDoc를 이용한 로직 수행
-              String leaderProfileImage = leaderDoc.data()!['profileImageUrl'];
-              String leaderName = leaderDoc.data()!['displayName'];
-              String leaderUid = leaderDoc.data()!['uid'];
-              String leaderMsg = leaderDoc.data()!['stateMsg'];
-              int leaderFavoriteResort = leaderDoc.data()!['favoriteResort'];
+                // leader 정보를 찾는 로직 추가
+                DocumentSnapshot<Map<String, dynamic>>? leaderDoc;
+                for (var doc in crewMemberDocs) {
+                  if (doc.id == _liveCrewModelController.leaderUid) {
+                    leaderDoc = doc;
+                    break;
+                  }
+                }
 
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
+                if (leaderDoc == null) {
+                  // 리더 정보를 찾지 못했을 때의 처리
+                  return Container();
+                }
+
+                // leader 정보를 가진 leaderDoc를 이용한 로직 수행
+                String leaderProfileImage = leaderDoc.data()!['profileImageUrl'];
+                String leaderName = leaderDoc.data()!['displayName'];
+                String leaderUid = leaderDoc.data()!['uid'];
+                String leaderMsg = leaderDoc.data()!['stateMsg'];
+                int leaderFavoriteResort = leaderDoc.data()!['favoriteResort'];
+
+                return Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 30),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -736,19 +736,19 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                       ),
                     ],
                   ),
-                ),
-              );
-            } else if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            return Container();
-          },
-        )
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return Container();
+            },
+          )
 
 
-      ],
+        ],
+      ),
     );
   }
 }

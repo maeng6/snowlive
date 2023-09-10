@@ -1195,7 +1195,9 @@ class _FriendListPageState extends State<FriendListPage> {
                         ],
                       ),
                     ),
-
+                    SizedBox(
+                      height: 16,
+                    )
                   ],
                 );
               },
