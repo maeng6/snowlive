@@ -138,6 +138,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                   children: [
                                                     TextButton(
                                                         onPressed: () {
+                                                          CustomFullScreenDialog.cancelDialog();
                                                           Navigator.pop(context);
                                                         },
                                                         child: Text(
@@ -154,7 +155,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                               ],
                                             ));
                                           }
-                                        } else {}
+                                        }
+                                        else {}
                                         setState(() {
                                           isLoading = false;
                                         });
@@ -246,6 +248,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                 children: [
                                                   TextButton(
                                                       onPressed: () {
+                                                        CustomFullScreenDialog.cancelDialog();
                                                         Navigator.pop(context);
                                                       },
                                                       child: Text(
