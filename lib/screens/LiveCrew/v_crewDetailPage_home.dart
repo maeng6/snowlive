@@ -721,18 +721,24 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                     SizedBox(
                                                                                       height: 12,
                                                                                     ),
-                                                                                    Text('${memberUserDocs[0]['displayName']}',
-                                                                                      style: TextStyle(
-                                                                                          fontSize: 15,
-                                                                                          color: Color(0xFF111111)
-                                                                                      ),),
+                                                                                    Container(
+                                                                                      width: _size.width * 0.2,
+                                                                                      child: Text('${memberUserDocs[0]['displayName']}',
+                                                                                        textAlign: TextAlign.center,
+                                                                                        overflow: TextOverflow.ellipsis,
+                                                                                        maxLines: 1,
+                                                                                        style: TextStyle(
+                                                                                            fontSize: 14,
+                                                                                            color: Color(0xFF111111)
+                                                                                        ),),
+                                                                                    ),
                                                                                     SizedBox(
                                                                                       height: 2,
                                                                                     ),
                                                                                     // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
                                                                                     Text('${memberScoreDocs[0]['totalScore']}점',
                                                                                       style: TextStyle(
-                                                                                          fontSize: 14,
+                                                                                          fontSize: 13,
                                                                                           fontWeight: FontWeight.bold,
                                                                                           color: Color(0xFF111111)
                                                                                       ),),
@@ -818,18 +824,24 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                     SizedBox(
                                                                                       height: 12,
                                                                                     ),
-                                                                                    Text('${memberUserDocs[0]['displayName']}',
-                                                                                      style: TextStyle(
-                                                                                          fontSize: 15,
-                                                                                          color: Color(0xFF111111)
-                                                                                      ),),
+                                                                                    Container(
+                                                                                      width: _size.width * 0.2,
+                                                                                      child: Text('${memberUserDocs[0]['displayName']}',
+                                                                                        overflow: TextOverflow.ellipsis,
+                                                                                        maxLines: 1,
+                                                                                        textAlign: TextAlign.center,
+                                                                                        style: TextStyle(
+                                                                                            fontSize: 14,
+                                                                                            color: Color(0xFF111111)
+                                                                                        ),),
+                                                                                    ),
                                                                                     SizedBox(
                                                                                       height: 2,
                                                                                     ),
                                                                                     // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
                                                                                     Text('${memberScoreDocs[1]['totalScore']}점',
                                                                                       style: TextStyle(
-                                                                                          fontSize: 14,
+                                                                                          fontSize: 13,
                                                                                           fontWeight: FontWeight.bold,
                                                                                           color: Color(0xFF111111)
                                                                                       ),),
@@ -916,18 +928,24 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                     SizedBox(
                                                                                       height: 12,
                                                                                     ),
-                                                                                    Text('${memberUserDocs[0]['displayName']}',
-                                                                                      style: TextStyle(
-                                                                                          fontSize: 15,
-                                                                                          color: Color(0xFF111111)
-                                                                                      ),),
+                                                                                    Container(
+                                                                                      width: _size.width * 0.2,
+                                                                                      child: Text('${memberUserDocs[0]['displayName']}',
+                                                                                        overflow: TextOverflow.ellipsis,
+                                                                                        maxLines: 1,
+                                                                                        textAlign: TextAlign.center,
+                                                                                        style: TextStyle(
+                                                                                            fontSize: 14,
+                                                                                            color: Color(0xFF111111)
+                                                                                        ),),
+                                                                                    ),
                                                                                     SizedBox(
                                                                                       height: 2,
                                                                                     ),
                                                                                     // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
                                                                                     Text('${memberScoreDocs[2]['totalScore']}점',
                                                                                       style: TextStyle(
-                                                                                          fontSize: 14,
+                                                                                          fontSize: 13,
                                                                                           fontWeight: FontWeight.bold,
                                                                                           color: Color(0xFF111111)
                                                                                       ),),
