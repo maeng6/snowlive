@@ -429,7 +429,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 10),
-                            child: Text('활동명 전체를 정확히 입력해야 검색이 완료됩니다.', style: TextStyle(
+                            child: Text('활동명 전체를 정확히 입력해야 검색이 완료됩니다.',
+                              style: TextStyle(
                                 fontWeight: FontWeight.normal,
                                 fontSize: 13,
                                 color: Color(0xFF949494)
@@ -440,7 +441,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                             children: [
                               Expanded(
                                 child: Padding(
-                                    padding: EdgeInsets.only(top: 16, bottom: MediaQuery.of(context).viewInsets.bottom + 16, right: 5),
+                                    padding: EdgeInsets.only(top: 16, bottom: 16, right: 5),
                                     child: TextButton(
                                         onPressed: () {
                                           if(isFound) {
@@ -468,7 +469,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                               ),
                               Expanded(
                                 child: Padding(
-                                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 16, left: 5, top: 16),
+                                  padding: EdgeInsets.only(bottom: 16, left: 5, top: 16),
                                   child: TextButton(
                                       onPressed: () async {
                                         Get.dialog(AlertDialog(
