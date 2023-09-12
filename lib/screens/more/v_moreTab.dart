@@ -643,7 +643,8 @@ class _MoreTabState extends State<MoreTab> {
                               Image.asset('assets/imgs/icons/icon_moretab_room.png', width: 46),
                               SizedBox(height: 6),
                               Text('커뮤니티', style: TextStyle(
-                                  fontSize: 14
+                                  fontSize: 14,
+                                  color: Color(0xFF555555)
                               ),)
                             ],
                           ),
