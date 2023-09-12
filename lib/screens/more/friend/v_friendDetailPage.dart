@@ -256,27 +256,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                 stream: _userStream,
                                 builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                                   if (!snapshot.hasData || snapshot.data == null || snapshot.data!.docs.isEmpty) {
-                                    return Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Center(
-                                              child: Icon(Icons.no_accounts_outlined,
-                                                size: 80,
-                                              ),
-                                            ),
-                                            Center(
-                                              child: Text('이미 탈퇴한 회원입니다',
-                                                style: TextStyle(
-                                                    fontSize: 16
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    );
+                                    return SizedBox.shrink();
                                   }
                                   final friendDocs = snapshot.data!.docs;
                                   final List whoInviteMe = friendDocs[0]['whoInviteMe'];
