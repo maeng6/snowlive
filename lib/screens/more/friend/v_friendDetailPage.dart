@@ -79,6 +79,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
     super.initState();
     _stateMsgController.text = '';
     _friendTalkController.text = '';
+    _displayNameController.text = '';
     _initStateMsg = _userModelController.stateMsg!;
     _initialDisplayName = _userModelController.displayName!;
   }
@@ -143,7 +144,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
-  MainHomeController _mainHomeController = Get.find<MainHomeController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -430,18 +430,15 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                           child:
                                                                                           ElevatedButton(
                                                                                             onPressed: () async{
-                                                                                              CustomFullScreenDialog.showDialog();
                                                                                               if (_formKeyProfile.currentState!.validate()) {
                                                                                                 isCheckedDispName =  await _userModelController.checkDuplicateDisplayName(_displayNameController.text);
                                                                                                 if (isCheckedDispName == true) {
-                                                                                                  CustomFullScreenDialog.cancelDialog();
                                                                                                   setState(() {
                                                                                                     _initialDisplayName = _displayNameController.text;
                                                                                                   });
                                                                                                   FocusScope.of(context).unfocus();
                                                                                                   Navigator.pop(context);
                                                                                                 } else {
-                                                                                                  CustomFullScreenDialog.cancelDialog();
                                                                                                   Get.dialog(AlertDialog(
                                                                                                     contentPadding: EdgeInsets.only(
                                                                                                         bottom: 0,
@@ -485,7 +482,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                   ));
                                                                                                 }
                                                                                               } else {
-                                                                                                CustomFullScreenDialog.cancelDialog();
                                                                                                 Get.snackbar(
                                                                                                     '입력 실패',
                                                                                                     '올바른 활동명을 입력해 주세요',
