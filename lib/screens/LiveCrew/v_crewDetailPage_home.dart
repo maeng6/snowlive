@@ -655,9 +655,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                               child: Column(
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                 children: [
-                                                                  SizedBox(height: 10,),
+                                                                  SizedBox(height: 10),
                                                                   Container(
-                                                                      height: 132,
                                                                       child:  StreamBuilder(
                                                                           stream: FirebaseFirestore.instance
                                                                               .collection('user')
@@ -677,73 +676,71 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                             }
                                                                             else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                                                                               final memberUserDocs = snapshot.data!.docs;
-                                                                              return Container(
-                                                                                child: Column(
-                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                  children: [
-                                                                                    (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
-                                                                                        ? GestureDetector(
-                                                                                      onTap: () {
-                                                                                        Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
-                                                                                      },
-                                                                                      child: Container(
-                                                                                          width: _size.width * 0.2,
-                                                                                          height: _size.width * 0.2,
-                                                                                          child: ExtendedImage.network(
-                                                                                            memberUserDocs[0]['profileImageUrl'],
-                                                                                            enableMemoryCache: true,
-                                                                                            shape: BoxShape.circle,
-                                                                                            borderRadius: BorderRadius.circular(8),
-                                                                                            width: _size.width * 0.2,
-                                                                                            height: _size.width * 0.2,
-                                                                                            fit: BoxFit.cover,
-                                                                                          )),
-                                                                                    )
-                                                                                        : GestureDetector(
-                                                                                      onTap: () {
-                                                                                        Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
-                                                                                      },
-                                                                                      child: Container(
+                                                                              return Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                children: [
+                                                                                  (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                                      ? GestureDetector(
+                                                                                    onTap: () {
+                                                                                      Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
+                                                                                    },
+                                                                                    child: Container(
                                                                                         width: _size.width * 0.2,
                                                                                         height: _size.width * 0.2,
-                                                                                        child: ExtendedImage.asset(
-                                                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                        child: ExtendedImage.network(
+                                                                                          memberUserDocs[0]['profileImageUrl'],
                                                                                           enableMemoryCache: true,
                                                                                           shape: BoxShape.circle,
                                                                                           borderRadius: BorderRadius.circular(8),
                                                                                           width: _size.width * 0.2,
                                                                                           height: _size.width * 0.2,
                                                                                           fit: BoxFit.cover,
-                                                                                        ),
+                                                                                        )),
+                                                                                  )
+                                                                                      : GestureDetector(
+                                                                                    onTap: () {
+                                                                                      Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
+                                                                                    },
+                                                                                    child: Container(
+                                                                                      width: _size.width * 0.2,
+                                                                                      height: _size.width * 0.2,
+                                                                                      child: ExtendedImage.asset(
+                                                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                        enableMemoryCache: true,
+                                                                                        shape: BoxShape.circle,
+                                                                                        borderRadius: BorderRadius.circular(8),
+                                                                                        width: _size.width * 0.2,
+                                                                                        height: _size.width * 0.2,
+                                                                                        fit: BoxFit.cover,
                                                                                       ),
                                                                                     ),
+                                                                                  ),
 
-                                                                                    SizedBox(
-                                                                                      height: 12,
-                                                                                    ),
-                                                                                    Container(
-                                                                                      width: _size.width * 0.2,
-                                                                                      child: Text('${memberUserDocs[0]['displayName']}',
-                                                                                        textAlign: TextAlign.center,
-                                                                                        overflow: TextOverflow.ellipsis,
-                                                                                        maxLines: 1,
-                                                                                        style: TextStyle(
-                                                                                            fontSize: 14,
-                                                                                            color: Color(0xFF111111)
-                                                                                        ),),
-                                                                                    ),
-                                                                                    SizedBox(
-                                                                                      height: 2,
-                                                                                    ),
-                                                                                    // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                                    Text('${memberScoreDocs[0]['totalScore']}점',
+                                                                                  SizedBox(
+                                                                                    height: 10,
+                                                                                  ),
+                                                                                  Container(
+                                                                                    width: _size.width * 0.2,
+                                                                                    child: Text('${memberUserDocs[0]['displayName']}',
+                                                                                      textAlign: TextAlign.center,
+                                                                                      overflow: TextOverflow.ellipsis,
+                                                                                      maxLines: 1,
                                                                                       style: TextStyle(
-                                                                                          fontSize: 13,
-                                                                                          fontWeight: FontWeight.bold,
+                                                                                          fontSize: 14,
                                                                                           color: Color(0xFF111111)
                                                                                       ),),
-                                                                                  ],
-                                                                                ),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 2,
+                                                                                  ),
+                                                                                  // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
+                                                                                  Text('${memberScoreDocs[0]['totalScore']}점',
+                                                                                    style: TextStyle(
+                                                                                        fontSize: 13,
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        color: Color(0xFF111111)
+                                                                                    ),),
+                                                                                ],
                                                                               );
                                                                             }
                                                                             return Container();
@@ -761,7 +758,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                 children: [
                                                                   SizedBox(height: 10,),
                                                                   Container(
-                                                                      height: 132,
                                                                       child:  StreamBuilder(
                                                                           stream: FirebaseFirestore.instance
                                                                               .collection('user')
@@ -781,72 +777,70 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                             }
                                                                             else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                                                                               final memberUserDocs = snapshot.data!.docs;
-                                                                              return Container(
-                                                                                child: Column(
-                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                  children: [
-                                                                                    (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
-                                                                                        ? GestureDetector(
-                                                                                      onTap: () {
-                                                                                        Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
-                                                                                      },
-                                                                                      child: Container(
-                                                                                          width: _size.width * 0.2,
-                                                                                          height: _size.width * 0.2,
-                                                                                          child: ExtendedImage.network(
-                                                                                            memberUserDocs[0]['profileImageUrl'],
-                                                                                            enableMemoryCache: true,
-                                                                                            shape: BoxShape.circle,
-                                                                                            borderRadius: BorderRadius.circular(8),
-                                                                                            width: _size.width * 0.2,
-                                                                                            height: _size.width * 0.2,
-                                                                                            fit: BoxFit.cover,
-                                                                                          )),
-                                                                                    )
-                                                                                        : GestureDetector(
-                                                                                      onTap: () {
-                                                                                        Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
-                                                                                      },
-                                                                                      child: Container(
+                                                                              return Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                children: [
+                                                                                  (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                                      ? GestureDetector(
+                                                                                    onTap: () {
+                                                                                      Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
+                                                                                    },
+                                                                                    child: Container(
                                                                                         width: _size.width * 0.2,
                                                                                         height: _size.width * 0.2,
-                                                                                        child: ExtendedImage.asset(
-                                                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                        child: ExtendedImage.network(
+                                                                                          memberUserDocs[0]['profileImageUrl'],
                                                                                           enableMemoryCache: true,
                                                                                           shape: BoxShape.circle,
                                                                                           borderRadius: BorderRadius.circular(8),
                                                                                           width: _size.width * 0.2,
                                                                                           height: _size.width * 0.2,
                                                                                           fit: BoxFit.cover,
-                                                                                        ),
+                                                                                        )),
+                                                                                  )
+                                                                                      : GestureDetector(
+                                                                                    onTap: () {
+                                                                                      Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
+                                                                                    },
+                                                                                    child: Container(
+                                                                                      width: _size.width * 0.2,
+                                                                                      height: _size.width * 0.2,
+                                                                                      child: ExtendedImage.asset(
+                                                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                        enableMemoryCache: true,
+                                                                                        shape: BoxShape.circle,
+                                                                                        borderRadius: BorderRadius.circular(8),
+                                                                                        width: _size.width * 0.2,
+                                                                                        height: _size.width * 0.2,
+                                                                                        fit: BoxFit.cover,
                                                                                       ),
                                                                                     ),
-                                                                                    SizedBox(
-                                                                                      height: 12,
-                                                                                    ),
-                                                                                    Container(
-                                                                                      width: _size.width * 0.2,
-                                                                                      child: Text('${memberUserDocs[0]['displayName']}',
-                                                                                        overflow: TextOverflow.ellipsis,
-                                                                                        maxLines: 1,
-                                                                                        textAlign: TextAlign.center,
-                                                                                        style: TextStyle(
-                                                                                            fontSize: 14,
-                                                                                            color: Color(0xFF111111)
-                                                                                        ),),
-                                                                                    ),
-                                                                                    SizedBox(
-                                                                                      height: 2,
-                                                                                    ),
-                                                                                    // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                                    Text('${memberScoreDocs[1]['totalScore']}점',
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 10,
+                                                                                  ),
+                                                                                  Container(
+                                                                                    width: _size.width * 0.2,
+                                                                                    child: Text('${memberUserDocs[0]['displayName']}',
+                                                                                      overflow: TextOverflow.ellipsis,
+                                                                                      maxLines: 1,
+                                                                                      textAlign: TextAlign.center,
                                                                                       style: TextStyle(
-                                                                                          fontSize: 13,
-                                                                                          fontWeight: FontWeight.bold,
+                                                                                          fontSize: 14,
                                                                                           color: Color(0xFF111111)
                                                                                       ),),
-                                                                                  ],
-                                                                                ),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 2,
+                                                                                  ),
+                                                                                  // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
+                                                                                  Text('${memberScoreDocs[1]['totalScore']}점',
+                                                                                    style: TextStyle(
+                                                                                        fontSize: 13,
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        color: Color(0xFF111111)
+                                                                                    ),),
+                                                                                ],
                                                                               );
                                                                             }
                                                                             return Container();
@@ -864,7 +858,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                 children: [
                                                                   SizedBox(height: 10,),
                                                                   Container(
-                                                                      height: 132,
                                                                       child:  StreamBuilder(
                                                                           stream: FirebaseFirestore.instance
                                                                               .collection('user')
@@ -884,73 +877,71 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                             }
                                                                             else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                                                                               final memberUserDocs = snapshot.data!.docs;
-                                                                              return Container(
-                                                                                child: Column(
-                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                  children: [
-                                                                                    (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
-                                                                                        ? GestureDetector(
-                                                                                      onTap: () {
-                                                                                        Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
-                                                                                      },
-                                                                                      child: Container(
-                                                                                          width: _size.width * 0.2,
-                                                                                          height: _size.width * 0.2,
-                                                                                          child: ExtendedImage.network(
-                                                                                            memberUserDocs[0]['profileImageUrl'],
-                                                                                            enableMemoryCache: true,
-                                                                                            shape: BoxShape.circle,
-                                                                                            borderRadius: BorderRadius.circular(8),
-                                                                                            width: _size.width * 0.2,
-                                                                                            height: _size.width * 0.2,
-                                                                                            fit: BoxFit.cover,
-                                                                                          )),
-                                                                                    )
-                                                                                        : GestureDetector(
-                                                                                      onTap: () {
-                                                                                        Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
-                                                                                      },
-                                                                                      child: Container(
+                                                                              return Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                children: [
+                                                                                  (memberUserDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                                      ? GestureDetector(
+                                                                                    onTap: () {
+                                                                                      Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
+                                                                                    },
+                                                                                    child: Container(
                                                                                         width: _size.width * 0.2,
                                                                                         height: _size.width * 0.2,
-                                                                                        child: ExtendedImage.asset(
-                                                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                        child: ExtendedImage.network(
+                                                                                          memberUserDocs[0]['profileImageUrl'],
                                                                                           enableMemoryCache: true,
                                                                                           shape: BoxShape.circle,
                                                                                           borderRadius: BorderRadius.circular(8),
                                                                                           width: _size.width * 0.2,
                                                                                           height: _size.width * 0.2,
                                                                                           fit: BoxFit.cover,
-                                                                                        ),
+                                                                                        )),
+                                                                                  )
+                                                                                      : GestureDetector(
+                                                                                    onTap: () {
+                                                                                      Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
+                                                                                    },
+                                                                                    child: Container(
+                                                                                      width: _size.width * 0.2,
+                                                                                      height: _size.width * 0.2,
+                                                                                      child: ExtendedImage.asset(
+                                                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                        enableMemoryCache: true,
+                                                                                        shape: BoxShape.circle,
+                                                                                        borderRadius: BorderRadius.circular(8),
+                                                                                        width: _size.width * 0.2,
+                                                                                        height: _size.width * 0.2,
+                                                                                        fit: BoxFit.cover,
                                                                                       ),
                                                                                     ),
+                                                                                  ),
 
-                                                                                    SizedBox(
-                                                                                      height: 12,
-                                                                                    ),
-                                                                                    Container(
-                                                                                      width: _size.width * 0.2,
-                                                                                      child: Text('${memberUserDocs[0]['displayName']}',
-                                                                                        overflow: TextOverflow.ellipsis,
-                                                                                        maxLines: 1,
-                                                                                        textAlign: TextAlign.center,
-                                                                                        style: TextStyle(
-                                                                                            fontSize: 14,
-                                                                                            color: Color(0xFF111111)
-                                                                                        ),),
-                                                                                    ),
-                                                                                    SizedBox(
-                                                                                      height: 2,
-                                                                                    ),
-                                                                                    // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                                    Text('${memberScoreDocs[2]['totalScore']}점',
+                                                                                  SizedBox(
+                                                                                    height: 10,
+                                                                                  ),
+                                                                                  Container(
+                                                                                    width: _size.width * 0.2,
+                                                                                    child: Text('${memberUserDocs[0]['displayName']}',
+                                                                                      overflow: TextOverflow.ellipsis,
+                                                                                      maxLines: 1,
+                                                                                      textAlign: TextAlign.center,
                                                                                       style: TextStyle(
-                                                                                          fontSize: 13,
-                                                                                          fontWeight: FontWeight.bold,
+                                                                                          fontSize: 14,
                                                                                           color: Color(0xFF111111)
                                                                                       ),),
-                                                                                  ],
-                                                                                ),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 2,
+                                                                                  ),
+                                                                                  // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
+                                                                                  Text('${memberScoreDocs[2]['totalScore']}점',
+                                                                                    style: TextStyle(
+                                                                                        fontSize: 13,
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        color: Color(0xFF111111)
+                                                                                    ),),
+                                                                                ],
                                                                               );
                                                                             }
                                                                             return Container();
