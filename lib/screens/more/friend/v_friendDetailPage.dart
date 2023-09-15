@@ -1190,11 +1190,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                         if(edit == true){
                                                           Get.to(() => SetProfileImage_moreTab());
                                                         }
-                                                        else {
-                                                          Get.to(() =>
-                                                              ProfileImagePage(
-                                                                  CommentProfileUrl: ''));
-                                                        }
                                                       },
                                                       child: Container(
                                                         width: 110,

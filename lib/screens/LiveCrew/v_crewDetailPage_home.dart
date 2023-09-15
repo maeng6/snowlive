@@ -140,10 +140,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                           )),
                                     )
                                         : GestureDetector(
-                                      onTap: () {
-                                        Get.to(() => ProfileImagePage(
-                                            CommentProfileUrl: ''));
-                                      },
+                                      onTap: () {},
                                       child: Container(
                                         decoration: BoxDecoration(
                                           boxShadow: [
