@@ -493,9 +493,9 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                                             if(applyDocs[index]['liveCrew'] == null || applyDocs[index]['liveCrew'] == ''){
                                                                               Navigator.pop(context);
                                                                               CustomFullScreenDialog.showDialog();
-                                                                              await _liveCrewModelController.updateCrewMember(applyUid: applyDocs[index]['uid'], crewID: _liveCrewModelController.crewID);
-                                                                              await _liveCrewModelController.deleteInvitation_crew(crewID: _liveCrewModelController.crewID, applyUid: applyDocs[index]['uid']);
-                                                                              await _liveCrewModelController.getCurrnetCrew(_liveCrewModelController.crewID);
+                                                                              await _liveCrewModelController.updateCrewMember(applyUid: applyDocs[index]['uid'], crewID: _userModelController.liveCrew);
+                                                                              await _liveCrewModelController.deleteInvitation_crew(crewID: _userModelController.liveCrew, applyUid: applyDocs[index]['uid']);
+                                                                              await _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
                                                                               CustomFullScreenDialog.cancelDialog();
                                                                             }else{
                                                                               Get.dialog(AlertDialog(
@@ -823,10 +823,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                   )),
                                             )
                                                 : GestureDetector(
-                                              onTap: () {
-                                                Get.to(() => ProfileImagePage(
-                                                    CommentProfileUrl: ''));
-                                              },
+                                              onTap: () {},
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   boxShadow: [
