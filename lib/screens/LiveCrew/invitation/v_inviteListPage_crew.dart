@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/model/m_crewLogoModel.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,8 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
 
+  var assetBases;
+
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
@@ -36,9 +39,18 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
               return Center();
             } else if (snapshot.data!.docs.isNotEmpty) {
               final inviDocs = snapshot.data!.docs;
+
               return ListView.builder(
                 itemCount: inviDocs.length,
                 itemBuilder: (BuildContext context, int index) {
+
+                  for (var crewLogo in crewLogoList) {
+                    if (crewLogo.crewColor == inviDocs[index]['crewColor']) {
+                      assetBases = crewLogo.crewLogoAsset;
+                      break;
+                    }
+                  }
+
                   return Column(
                     children: [
                       Container(
@@ -93,7 +105,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(2),
                                       child: ExtendedImage.asset(
-                                        'assets/imgs/profile/img_profile_default_.png',
+                                        assetBases,
                                         enableMemoryCache: true,
                                         shape: BoxShape.rectangle,
                                         borderRadius:
@@ -158,7 +170,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                                       child: Text(
                                                         '취소',
                                                         style: TextStyle(
-                                                            color: Colors.white,
+                                                            color: Color(0xFF3D83ED),
                                                             fontSize: 15,
                                                             fontWeight:
                                                             FontWeight.bold),
@@ -170,7 +182,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                                           minimumSize:
                                                           Size(60, 56),
                                                           backgroundColor:
-                                                          Color(0xff555555),
+                                                          Color(0xffD8E7FD),
                                                           padding:
                                                           EdgeInsets.symmetric(
                                                               horizontal: 0)),
@@ -209,7 +221,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                                           minimumSize:
                                                           Size(60, 56),
                                                           backgroundColor:
-                                                          Color(0xff2C97FB),
+                                                          Color(0xff3D83ED),
                                                           padding:
                                                           EdgeInsets.symmetric(
                                                               horizontal: 0)),
