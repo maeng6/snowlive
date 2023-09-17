@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_imageController.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_gallery_viewer.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
   Widget build(BuildContext context) {
 
     final Size _size = MediaQuery.of(context).size;
+    Get.put(ImageController(), permanent: true);
 
     return Scaffold(
         backgroundColor: Color(0xFFFFFFFF),
