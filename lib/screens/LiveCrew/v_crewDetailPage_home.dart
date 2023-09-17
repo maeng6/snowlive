@@ -1317,12 +1317,17 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Text(
-                                  '전체 보기',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF666666),
-                                    fontWeight: FontWeight.bold,
+                                GestureDetector(
+                                  onTap: (){
+
+                                  },
+                                  child: Text(
+                                    '전체 보기',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF666666),
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ],
