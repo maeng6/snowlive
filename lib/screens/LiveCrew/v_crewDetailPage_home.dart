@@ -1324,7 +1324,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                   child: Text(
                                     '전체 보기',
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 13,
                                       color: Color(0xFF666666),
                                       fontWeight: FontWeight.bold,
                                     ),
