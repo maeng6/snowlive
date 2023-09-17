@@ -1306,15 +1306,28 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              '크루 갤러리',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Color(0xFF111111),
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '크루 갤러리',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xFF111111),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '전체 보기',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Color(0xFF666666),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 16),
+                            SizedBox(height: 20),
                             StreamBuilder<QuerySnapshot>(
                               stream: FirebaseFirestore.instance
                                   .collection('liveCrew')
