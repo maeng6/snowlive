@@ -386,8 +386,8 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                                           try{
                                                                             Navigator.pop(context);
                                                                             CustomFullScreenDialog.showDialog();
-                                                                            await _liveCrewModelController.deleteInvitation_crew(crewID: _liveCrewModelController.crewID, applyUid: applyDocs[index]['uid']);
-                                                                            await _liveCrewModelController.getCurrnetCrew(_liveCrewModelController.crewID);
+                                                                            await _liveCrewModelController.deleteInvitation_crew(crewID: _userModelController.liveCrew, applyUid: applyDocs[index]['uid']);
+                                                                            await _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
                                                                             CustomFullScreenDialog.cancelDialog();
                                                                           }catch(e){
                                                                             Navigator.pop(context);

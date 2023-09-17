@@ -50,7 +50,7 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return SizedBox.shrink();
             }
 
             final galleryDoc = snapshot.data!.docs[0]['galleryUrlList'];
@@ -104,7 +104,7 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
                   loadStateChanged: (ExtendedImageState state) {
                     switch (state.extendedImageLoadState) {
                       case LoadState.loading:
-                        return Center(child: CircularProgressIndicator());
+                        return SizedBox.shrink();
                       case LoadState.completed:
                         return null;
                       case LoadState.failed:

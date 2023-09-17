@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_gallery_viewer.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -1306,31 +1307,13 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '크루 갤러리',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Color(0xFF111111),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: (){
-
-                                  },
-                                  child: Text(
-                                    '전체 보기',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Color(0xFF666666),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              '크루 갤러리',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Color(0xFF111111),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             SizedBox(height: 20),
                             StreamBuilder<QuerySnapshot>(
@@ -1379,22 +1362,31 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                   ),
                                   itemBuilder: (BuildContext context, int index) {
                                     String imageUrl = galleryUrlList.reversed.toList()[index];
-                                    return ExtendedImage.network(
-                                      imageUrl,
-                                      fit: BoxFit.cover,
-                                      cache: true,
-                                      loadStateChanged: (ExtendedImageState state) {
-                                        switch (state.extendedImageLoadState) {
-                                          case LoadState.loading:
-                                            return Center(child: CircularProgressIndicator());
-                                          case LoadState.completed:
-                                            return null;
-                                          case LoadState.failed:
-                                            return Icon(Icons.error);
-                                          default:
-                                            return null;
-                                        }
+                                    return GestureDetector(
+                                      onTap: (){
+                                        List<String> visibleImages = galleryUrlList.reversed.toList().sublist(0, galleryUrlList.length > 6 ? 6 : galleryUrlList.length);
+                                        Get.to(()=>PhotoViewerPage(
+                                          photoList: visibleImages,
+                                          initialIndex: index,
+                                        ));
                                       },
+                                      child: ExtendedImage.network(
+                                        imageUrl,
+                                        fit: BoxFit.cover,
+                                        cache: true,
+                                        loadStateChanged: (ExtendedImageState state) {
+                                          switch (state.extendedImageLoadState) {
+                                            case LoadState.loading:
+                                              return Center(child: CircularProgressIndicator());
+                                            case LoadState.completed:
+                                              return null;
+                                            case LoadState.failed:
+                                              return Icon(Icons.error);
+                                            default:
+                                              return null;
+                                          }
+                                        },
+                                      ),
                                     );
                                   },
                                 );
