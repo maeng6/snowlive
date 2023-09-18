@@ -629,7 +629,7 @@ class _LiveTalkScreenState
                                                                       Row(
                                                                         children: [
                                                                           Text(
-                                                                            userDocs[0].get('resortNickname'),
+                                                                            chatDocs[index].get('resortNickname'),
                                                                             style: TextStyle(
                                                                                 fontWeight: FontWeight.w300,
                                                                                 fontSize: 12,
