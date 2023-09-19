@@ -535,6 +535,25 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                       child: CircularProgressIndicator(),
                                     );
                                   }
+                                  else if (snapshot.data!.docs.isEmpty){
+                                    return Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/imgs/icons/icon_nodata_white.png',
+                                          scale: 4,
+                                          width: 73,
+                                          height: 73,
+                                        ),
+                                        SizedBox(height: 6,),
+                                        Text('라이브톡이 없습니다.',
+                                          style: TextStyle(
+                                              color: Color(0xFF666666)
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
                                   final chatDocs = snapshot.data!.docs;
                                   return Scrollbar(
                                     controller: _scrollController,
