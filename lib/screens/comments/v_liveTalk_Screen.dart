@@ -41,6 +41,14 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
   var _allCategories;
   var _alluser;
 
+  int counter = 0;
+  List<bool> isTap = [
+    true,
+    false,
+    false,
+    false
+  ];
+
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
@@ -110,6 +118,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = false;
                             _selectedValue = '필터';
                             _selectedValue2 = '전체';
                           });
@@ -122,6 +134,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            isTap[0] = false;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = true;
                             _selectedValue = '곤지암';
                             _selectedValue2 = '전체';
                           });
@@ -132,6 +148,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            isTap[0] = false;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = true;
                             _selectedValue = '무주';
                             _selectedValue2 = '전체';
                           });
@@ -142,6 +162,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            isTap[0] = false;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = true;
                             _selectedValue = '비발디';
                             _selectedValue2 = '전체';
                           });
@@ -152,6 +176,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            isTap[0] = false;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = true;
                             _selectedValue = '알펜시아';
                             _selectedValue2 = '전체';
                           });
@@ -162,6 +190,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            isTap[0] = false;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = true;
                             _selectedValue = '에덴밸리';
                             _selectedValue2 = '전체';
                           });
@@ -172,6 +204,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            isTap[0] = false;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = true;
                             _selectedValue = '강촌';
                             _selectedValue2 = '전체';
                           });
@@ -182,6 +218,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            isTap[0] = false;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = true;
                             _selectedValue = '오크밸리';
                             _selectedValue2 = '전체';
                           });
@@ -192,6 +232,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            isTap[0] = false;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = true;
                             _selectedValue = '오투';
                             _selectedValue2 = '전체';
                           });
@@ -202,6 +246,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            isTap[0] = false;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = true;
                             _selectedValue = '용평';
                             _selectedValue2 = '전체';
                           });
@@ -212,6 +260,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            isTap[0] = false;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = true;
                             _selectedValue = '웰리힐리';
                             _selectedValue2 = '전체';
                           });
@@ -222,6 +274,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            isTap[0] = false;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = true;
                             _selectedValue = '지산';
                             _selectedValue2 = '전체';
                           });
@@ -232,6 +288,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            isTap[0] = false;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = true;
                             _selectedValue = '하이원';
                             _selectedValue2 = '전체';
                           });
@@ -242,13 +302,16 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
+                            isTap[0] = false;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = true;
                             _selectedValue = '휘닉스';
                             _selectedValue2 = '전체';
                           });
                           Navigator.pop(context);
                         },
                         child: Text('휘닉스평창')),
-
                   ],
                   cancelButton: CupertinoActionSheetAction(
                     child: Text('닫기'),
@@ -307,56 +370,146 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
             body: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.only(top: 6, bottom: 16.0, left: 16, right: 16),
                   child: Container(
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  isTap[0] = true;
+                                  isTap[1] = false;
+                                  isTap[2] = false;
+                                  isTap[3] = false;
+                                  _selectedValue = '필터';
+                                  _selectedValue2 = '전체';
+                                  _stream = newStream();
+                                });
+                              },
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: (isTap[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      border: Border.all(
+                                        color: (isTap[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                    ),
+                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  height: 32,
+                                    child: Text('# 전체',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: (isTap[0] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                    ),)
+                                ),
+                            ),
+                            SizedBox(width: 6),
+                            GestureDetector(
+                              onTap: (){
+                                HapticFeedback.lightImpact();
+                                setState(() {
+                                  isTap[0] = false;
+                                  isTap[1] = true;
+                                  isTap[2] = false;
+                                  isTap[3] = false;
+                                  _selectedValue = '${_userModelController.resortNickname}';
+                                  _selectedValue2 = '전체';
+                                  _stream = newStream();
+                                });
+                              },
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                      borderRadius: BorderRadius.circular(30.0),
+                                        border: Border.all(
+                                          color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                    height: 32,
+                                    child: Text('# 자주가는',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: (isTap[1] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                      ),)
+                                ),
+                            ),
+                            SizedBox(width: 6),
+                            GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  isTap[0] = false;
+                                  isTap[1] = false;
+                                  isTap[2] = true;
+                                  isTap[3] = false;
+                                  _selectedValue2 = 'SNOWLIVE';
+                                  _stream = newStream();
+                                });
+                                print(_selectedValue2);
+                              },
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      border: Border.all(
+                                        color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                    height: 32,
+                                    child: Text('# 소식',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                      ),)
+                                ),
+                            ),
+                          ],
+                        ),
                         GestureDetector(
-                          onTap: (){
-                            setState(() {
-                              _selectedValue = '필터';
-                              _selectedValue2 = '전체';
-                              _stream = newStream();
-                            });
-                          },
-                            child: Text('전체'),),
-                        SizedBox(width: 15,),
-                        GestureDetector(
-                          onTap: (){
-                            HapticFeedback.lightImpact();
-                            setState(() {
-                              _selectedValue = '${_userModelController.resortNickname}';
-                              _selectedValue2 = '전체';
-                              _stream = newStream();
-                            });
-                          },
-                            child: Text('자주가는 스키장')),
-                        SizedBox(width: 15,),
-                        GestureDetector(
-                          onTap: (){
-                            setState(() {
-                              _selectedValue2 = 'SNOWLIVE';
-                              _stream = newStream();
-                            });
-                            print(_selectedValue2);
-                          },
-                            child: Text('라이브 소식')),
-                        SizedBox(width: 15,),
-                        GestureDetector(
-                          onTap: () async{
-                            await _showCupertinoPicker();
-                          },
-                            child: (_selectedValue == null)
-                                ? Text('필터',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF555555)))
-                                : Text('${_resortModelController.getResortName(_selectedValue)}',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF555555))))
+                            onTap: () async{
+                              await _showCupertinoPicker();
+                            },
+                            child: Container(
+                                decoration: BoxDecoration(
+                                  color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(
+                                    color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                height: 32,
+                                child:(isTap[3] == true)
+                                    ? Text(_selectedValue,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: (isTap[3] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)))
+                               : Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 4),
+                                              child: ExtendedImage.asset(
+                                          'assets/imgs/icons/icon_livetalk_filter.png',
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.rectangle,
+                                          width: 12,
+                                        ),
+                                            ),
+                                       Text('필터',
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF777777)))
+                                      ],
+                                    )
+
+                            ),
+
+                        )
                       ],
                     ),
                   ),

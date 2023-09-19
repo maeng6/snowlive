@@ -61,8 +61,8 @@ class _MainHomeState extends State<MainHome> {
 
     return Obx(()=>Scaffold(
         bottomNavigationBar: BottomNavigationBar(
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
           backgroundColor: Colors.white,
           elevation: 10,
           type: BottomNavigationBarType.fixed,
@@ -85,7 +85,6 @@ class _MainHomeState extends State<MainHome> {
             BottomNavigationBarItem(
               icon: Stack(
                 children: [
-
                   Positioned(
                     top: 3,
                     right: 3,
@@ -224,15 +223,15 @@ class _MainHomeState extends State<MainHome> {
               label: '더보기',
             ), //모어
           ],
-          selectedItemColor: Color(0xFF949494),
-          unselectedItemColor: Color(0xFF949494),
+          selectedItemColor: Color(0xFF222222),
+          unselectedItemColor: Color(0xFF222222),
           unselectedLabelStyle: TextStyle(
-            color: Color(0xFF949494),
+            color: Color(0xFF222222),
             fontSize: 12,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.normal,
           ),
           selectedLabelStyle: TextStyle(
-            color: Color(0xFF949494),
+            color: Color(0xFF222222),
             fontSize: 12,
             fontWeight: FontWeight.bold,
           ),
