@@ -226,11 +226,11 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '에덴벨리리조트';
+                            _selectedValue2 = '에덴밸리리조트';
                           });
                           Navigator.pop(context);
                         },
-                        child: Text('에덴벨리리조트')),
+                        child: Text('에덴밸리리조트')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
