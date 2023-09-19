@@ -103,7 +103,7 @@ List<ResortModel> resortList = [
   ),//알펜
   ResortModel(
     index:4,
-    resortName: '에덴벨리리조트',
+    resortName: '에덴밸리리조트',
     resortAddress: '양산시 원동면',
     resortUrl: 'http://www.edenvalley.co.kr/',
     webcamUrl: 'http://www.edenvalley.co.kr/CS/cam_pop1.asp',
@@ -113,7 +113,7 @@ List<ResortModel> resortList = [
     longitude: 128.9844681,
     nX: 95,
     nY: 80,
-    resortNickname: '에덴벨리',
+    resortNickname: '에덴밸리',
       resortLogo: 'assets/imgs/resort/img_resort_logo_5.png'
 
   ),//에덴
