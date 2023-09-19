@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:com.snowlive/controller/vm_resortModelController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   CommentModelController _commentModelController = Get.find<CommentModelController>();
+  ResortModelController _resortModelController = Get.find<ResortModelController>();
   //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -344,7 +346,17 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                           onTap: () async{
                             await _showCupertinoPicker();
                           },
-                            child: Text('필터'))
+                            child: (_selectedValue == null)
+                                ? Text('필터',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF555555)))
+                                : Text('${_resortModelController.getResortName(_selectedValue)}',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF555555))))
                       ],
                     ),
                   ),

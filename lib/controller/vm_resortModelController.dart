@@ -118,8 +118,8 @@ class ResortModelController extends GetxController{
         return '무주덕유산리조트';
       case '비발디':
         return '비발디파크';
-      case '에덴벨리':
-        return '에덴벨리리조트';
+      case '에덴밸리':
+        return '에덴밸리리조트';
       case '강촌':
         return '엘리시안강촌';
       case '오크밸리':
