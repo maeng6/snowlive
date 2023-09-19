@@ -1373,14 +1373,15 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                         suffixIcon: IconButton(
                                           splashColor: Colors.transparent,
                                           onPressed: () async {
+                                            if (_controller.text.trim().isEmpty) {
+                                              return;
+                                            }
                                             try{
                                               CustomFullScreenDialog.showDialog();
                                               await _userModelController.getCurrentUser(_userModelController.uid);
                                               await _userModelController.updateCommentCount(_userModelController.commentCount);
                                               await _userModelController.getCurrentUser(_userModelController.uid);
-                                            if (_controller.text.trim().isEmpty) {
-                                              return;
-                                            }
+
                                             String? livetalkImageUrl = "";
                                             if (_imageFile != null) {
                                               livetalkImageUrl = await _imageController.setNewImage_livetalk(_imageFile!, _userModelController.commentCount);
