@@ -70,15 +70,14 @@ class _MainHomeState extends State<MainHome> {
           onTap: _onItemTapped,
           items: [
             BottomNavigationBarItem(
-              icon: ExtendedImage.asset(
-                'assets/imgs/icons/icon_home_off.png',
-                scale: 4,
-                enableMemoryCache: true,
+              icon: ImageIcon(
+                  AssetImage('assets/imgs/icons/icon_home_off.png'),
+                size: 40,
               ),
-              activeIcon: ExtendedImage.asset(
-                'assets/imgs/icons/icon_home_on.png',
-                scale: 4,
-                enableMemoryCache: true,
+              activeIcon:
+              ImageIcon(
+                AssetImage( 'assets/imgs/icons/icon_home_on.png'),
+                size: 40,
               ),
               label: '홈',
             ),
@@ -92,15 +91,15 @@ class _MainHomeState extends State<MainHome> {
                         size: 6.0,
                         color: Colors.white),
                   ),
-                  Image.asset(
-                    'assets/imgs/icons/icon_market_off.png',
-                    scale: 4,
+                  ImageIcon(
+                    AssetImage('assets/imgs/icons/icon_market_off.png'),
+                    size: 40,
                   ),
                 ],
               ),
-              activeIcon: Image.asset(
-                'assets/imgs/icons/icon_market_on.png',
-                scale: 4,
+              activeIcon: ImageIcon(
+                AssetImage('assets/imgs/icons/icon_market_on.png'),
+                size: 40,
               ),
               label: '스노우마켓',
             ), //브랜드
@@ -114,33 +113,35 @@ class _MainHomeState extends State<MainHome> {
                         size: 6.0,
                         color: Colors.white),
                   ),
-                  Image.asset(
-                    'assets/imgs/icons/icon_discover_off.png',
-                    scale: 4,
+                  ImageIcon(
+                    AssetImage('assets/imgs/icons/icon_discover_off.png'),
+                    size: 40,
                   ),
                 ],
               ),
-              activeIcon: Image.asset(
-                'assets/imgs/icons/icon_discover_on.png',
-                scale: 4,
+              activeIcon: ImageIcon(
+                AssetImage('assets/imgs/icons/icon_discover_on.png'),
+                size: 40,
               ),
               label: '랭킹',
             ),
             BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/imgs/icons/icon_livetalk_off.png',
-                scale: 4,
+              icon: ImageIcon(
+                AssetImage('assets/imgs/icons/icon_livetalk_off.png'),
+                size: 40,
               ),
-              activeIcon: Image.asset('assets/imgs/icons/icon_livetalk_on.png',
-                  scale: 4),
+              activeIcon: ImageIcon(
+                AssetImage('assets/imgs/icons/icon_livetalk_on.png'),
+                size: 40,
+              ),
               label: '라이브톡',
             ), //라톡
             BottomNavigationBarItem(
               icon: Stack(
                 children: [
-                  Image.asset(
-                    'assets/imgs/icons/icon_more_off.png',
-                    scale: 4,
+                  ImageIcon(
+                    AssetImage('assets/imgs/icons/icon_more_off.png'),
+                    size: 40,
                   ),
                   Positioned(
                     // draw a red marble
@@ -182,7 +183,10 @@ class _MainHomeState extends State<MainHome> {
               ),
               activeIcon: Stack(
                 children: [
-                  Image.asset('assets/imgs/icons/icon_more_on.png', scale: 4),
+                  ImageIcon(
+                  AssetImage('assets/imgs/icons/icon_more_on.png'),
+                  size: 40,
+                ),
                   Positioned(
                     // draw a red marble
                     top: 2,
