@@ -73,11 +73,13 @@ class _MainHomeState extends State<MainHome> {
               icon: ImageIcon(
                   AssetImage('assets/imgs/icons/icon_home_off.png'),
                 size: 40,
+                color: Color(0xFF444444),
               ),
               activeIcon:
               ImageIcon(
                 AssetImage( 'assets/imgs/icons/icon_home_on.png'),
                 size: 40,
+                color: Color(0xFF444444),
               ),
               label: '홈',
             ),
@@ -94,12 +96,14 @@ class _MainHomeState extends State<MainHome> {
                   ImageIcon(
                     AssetImage('assets/imgs/icons/icon_market_off.png'),
                     size: 40,
+                    color: Color(0xFF444444),
                   ),
                 ],
               ),
               activeIcon: ImageIcon(
                 AssetImage('assets/imgs/icons/icon_market_on.png'),
                 size: 40,
+                color: Color(0xFF444444),
               ),
               label: '스노우마켓',
             ), //브랜드
@@ -116,12 +120,14 @@ class _MainHomeState extends State<MainHome> {
                   ImageIcon(
                     AssetImage('assets/imgs/icons/icon_discover_off.png'),
                     size: 40,
+                    color: Color(0xFF444444),
                   ),
                 ],
               ),
               activeIcon: ImageIcon(
                 AssetImage('assets/imgs/icons/icon_discover_on.png'),
                 size: 40,
+                color: Color(0xFF444444),
               ),
               label: '랭킹',
             ),
@@ -129,10 +135,12 @@ class _MainHomeState extends State<MainHome> {
               icon: ImageIcon(
                 AssetImage('assets/imgs/icons/icon_livetalk_off.png'),
                 size: 40,
+                color: Color(0xFF444444),
               ),
               activeIcon: ImageIcon(
                 AssetImage('assets/imgs/icons/icon_livetalk_on.png'),
                 size: 40,
+                color: Color(0xFF444444),
               ),
               label: '라이브톡',
             ), //라톡
@@ -142,6 +150,7 @@ class _MainHomeState extends State<MainHome> {
                   ImageIcon(
                     AssetImage('assets/imgs/icons/icon_more_off.png'),
                     size: 40,
+                    color: Color(0xFF444444),
                   ),
                   Positioned(
                     // draw a red marble
@@ -186,6 +195,7 @@ class _MainHomeState extends State<MainHome> {
                   ImageIcon(
                   AssetImage('assets/imgs/icons/icon_more_on.png'),
                   size: 40,
+                    color: Color(0xFF444444),
                 ),
                   Positioned(
                     // draw a red marble
@@ -232,10 +242,12 @@ class _MainHomeState extends State<MainHome> {
             fontSize: 12,
             fontWeight: FontWeight.normal,
           ),
+          selectedItemColor: Color(0xFF222222),
+          unselectedItemColor: Color(0xFF222222),
           selectedLabelStyle: TextStyle(
             color: Color(0xFF222222),
             fontSize: 12,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.normal,
           ),
         ),
         body: PageView(

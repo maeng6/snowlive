@@ -556,14 +556,14 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                               color: Color(0xFFECECEC),
                             ),
                             Container(
-                              height: 120,
+                              height: _size.height,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
                                     child: TextFormField(
-                                      maxLines: 10,
+                                      maxLines: null,
                                       textAlignVertical: TextAlignVertical.center,
                                       cursorColor: Color(0xff3D6FED),
                                       cursorHeight: 16,

@@ -656,14 +656,14 @@ class _Bulletin_Crew_ModifyPageState extends State<Bulletin_Crew_ModifyPage> {
                               color: Color(0xFFECECEC),
                             ),
                             Container(
-                              height: 120,
+                              height: _size.height,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
                                     child: TextFormField(
-                                      maxLines: 10,
+                                      maxLines: null,
                                       textAlignVertical: TextAlignVertical.center,
                                       cursorColor: Color(0xff3D6FED),
                                       cursorHeight: 16,

@@ -558,14 +558,14 @@ class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
                           color: Color(0xFFECECEC),
                         ),
                       Container(
-                        height: _size.height - 400,
+                        height: _size.height,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
                               child: TextFormField(
-                                maxLines: 10,
+                                maxLines: null,
                                 textAlignVertical: TextAlignVertical.center,
                                 cursorColor: Color(0xff3D6FED),
                                 cursorHeight: 16,
