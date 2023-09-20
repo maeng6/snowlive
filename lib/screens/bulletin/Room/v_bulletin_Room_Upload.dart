@@ -558,7 +558,7 @@ class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
                           color: Color(0xFFECECEC),
                         ),
                       Container(
-                        height: _size.height,
+                        height: _size.height-500,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,

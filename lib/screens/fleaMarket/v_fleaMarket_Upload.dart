@@ -800,14 +800,14 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                         ),
                       ),
                       Container(
-                        height: 120,
+                        height: _size.height-500,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
                               child: TextFormField(
-                                maxLines: 10,
+                                maxLines: null,
                                 textAlignVertical: TextAlignVertical.center,
                                 cursorColor: Color(0xff3D6FED),
                                 cursorHeight: 16,
