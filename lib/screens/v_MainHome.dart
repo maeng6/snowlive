@@ -30,7 +30,7 @@ class _MainHomeState extends State<MainHome> {
   PageController _pageController = PageController();
 
   void _onItemTapped(int index) {
-      _pageController.jumpToPage(index);
+    _pageController.jumpToPage(index);
   }
 
   void changePage(int index) {
@@ -144,39 +144,39 @@ class _MainHomeState extends State<MainHome> {
                   ),
                   Positioned(
                     // draw a red marble
-                    top: 2,
-                    right: 0.0,
-                    child:
-                    StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('newAlarm')
-                          .where('uid', isEqualTo: _userModelController.uid!)
-                          .snapshots(),
-                      builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                        if (!snapshot.hasData || snapshot.data == null) {
+                      top: 2,
+                      right: 0.0,
+                      child:
+                      StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection('newAlarm')
+                            .where('uid', isEqualTo: _userModelController.uid!)
+                            .snapshots(),
+                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                          if (!snapshot.hasData || snapshot.data == null) {
+                            return new Icon(Icons.brightness_1,
+                                size: 7.0,
+                                color: Colors.white);
+                          }
+                          else if (snapshot.data!.docs.isNotEmpty) {
+                            final alarmDocs = snapshot.data!.docs;
+                            return new Icon(Icons.brightness_1,
+                                size: 7.0,
+                                color: (alarmDocs[0]['newInvited_friend'] == true || alarmDocs[0]['newInvited_crew'] == true)
+                                    ? Color(0xFFD32F2F)
+                                    : Colors.white);
+                          }
+                          else if (snapshot.connectionState == ConnectionState.waiting) {
+                            return new Icon(Icons.brightness_1,
+                                size: 7.0,
+                                color: Colors.white);
+                          }
                           return new Icon(Icons.brightness_1,
                               size: 7.0,
                               color: Colors.white);
-                        }
-                        else if (snapshot.data!.docs.isNotEmpty) {
-                          final alarmDocs = snapshot.data!.docs;
-                          return new Icon(Icons.brightness_1,
-                              size: 7.0,
-                              color: (alarmDocs[0]['newInvited_friend'] == true || alarmDocs[0]['newInvited_crew'] == true)
-                                  ? Color(0xFFD32F2F)
-                                  : Colors.white);
-                        }
-                        else if (snapshot.connectionState == ConnectionState.waiting) {
-                          return new Icon(Icons.brightness_1,
-                              size: 7.0,
-                              color: Colors.white);
-                        }
-                        return new Icon(Icons.brightness_1,
-                            size: 7.0,
-                            color: Colors.white);
 
-                      },
-                    )
+                        },
+                      )
                   )
                 ],
               ),
@@ -185,46 +185,44 @@ class _MainHomeState extends State<MainHome> {
                   Image.asset('assets/imgs/icons/icon_more_on.png', scale: 4),
                   Positioned(
                     // draw a red marble
-                    top: 2,
-                    right: 0.0,
-                    child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('newAlarm')
-                          .where('uid', isEqualTo: _userModelController.uid!)
-                          .snapshots(),
-                      builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                        if (!snapshot.hasData || snapshot.data == null) {
+                      top: 2,
+                      right: 0.0,
+                      child: StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection('newAlarm')
+                            .where('uid', isEqualTo: _userModelController.uid!)
+                            .snapshots(),
+                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                          if (!snapshot.hasData || snapshot.data == null) {
+                            return new Icon(Icons.brightness_1,
+                                size: 7.0,
+                                color: Colors.white);
+                          }
+                          else if (snapshot.data!.docs.isNotEmpty) {
+                            final alarmDocs = snapshot.data!.docs;
+                            return new Icon(Icons.brightness_1,
+                                size: 7.0,
+                                color: (alarmDocs[0]['newInvited_friend'] == true || alarmDocs[0]['newInvited_crew'] == true)
+                                    ? Color(0xFFD32F2F)
+                                    : Colors.white);
+                          }
+                          else if (snapshot.connectionState == ConnectionState.waiting) {
+                            return new Icon(Icons.brightness_1,
+                                size: 7.0,
+                                color: Colors.white);
+                          }
                           return new Icon(Icons.brightness_1,
                               size: 7.0,
                               color: Colors.white);
-                        }
-                        else if (snapshot.data!.docs.isNotEmpty) {
-                          final alarmDocs = snapshot.data!.docs;
-                          return new Icon(Icons.brightness_1,
-                              size: 7.0,
-                              color: (alarmDocs[0]['newInvited_friend'] == true || alarmDocs[0]['newInvited_crew'] == true)
-                                  ? Color(0xFFD32F2F)
-                                  : Colors.white);
-                        }
-                        else if (snapshot.connectionState == ConnectionState.waiting) {
-                          return new Icon(Icons.brightness_1,
-                              size: 7.0,
-                              color: Colors.white);
-                        }
-                        return new Icon(Icons.brightness_1,
-                            size: 7.0,
-                            color: Colors.white);
 
-                      },
-                    )
+                        },
+                      )
                   )
                 ],
               ),
               label: '더보기',
             ), //모어
           ],
-          selectedItemColor: Color(0xFF222222),
-          unselectedItemColor: Color(0xFF222222),
           unselectedLabelStyle: TextStyle(
             color: Color(0xFF222222),
             fontSize: 12,
