@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:com.snowlive/controller/vm_resortModelController.dart';
 import 'package:extended_image/extended_image.dart';
@@ -58,8 +59,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
 
   var _stream;
   bool _isVisible = false;
-
-  ScrollController _scrollController = ScrollController();
+  final _scrollController = ScrollController();
+  final _streamController = StreamController<List<QueryDocumentSnapshot>>();
+  late List<QueryDocumentSnapshot> allDocuments = [];
+  QueryDocumentSnapshot? lastDocument;
 
   @override
   void initState() {
@@ -68,7 +71,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
     _updateMethodComment();
     // TODO: implement initState
     super.initState();
-    _stream = newStream();
+    _loadInitialData();
     _scrollController.addListener(() {
       setState(() {
         if (_scrollController.position.userScrollDirection ==
@@ -84,6 +87,44 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
     });
   }
 
+  _loadInitialData() async {
+    var snapshot = await FirebaseFirestore.instance
+        .collection('liveTalk')
+        .where('displayName', isEqualTo: (_selectedValue2 == '전체') ? _alluser : 'SNOWLIVE')
+        .where('resortNickname', isEqualTo: (_selectedValue == '필터') ? _allCategories : '$_selectedValue')
+        .orderBy('timeStamp', descending: true)
+        .limit(5)
+        .get();
+
+    allDocuments = snapshot.docs;
+
+    if (allDocuments.isNotEmpty) {
+      lastDocument = allDocuments.last;
+    }
+
+    _streamController.add(allDocuments);
+  }
+
+  _loadMoreData() async {
+    if (lastDocument == null) return;
+
+    var snapshot = await FirebaseFirestore.instance
+        .collection('liveTalk')
+        .where('displayName', isEqualTo: (_selectedValue2 == '전체') ? _alluser : 'SNOWLIVE')
+        .where('resortNickname', isEqualTo: (_selectedValue == '필터') ? _allCategories : '$_selectedValue')
+        .orderBy('timeStamp', descending: true)
+        .startAfterDocument(lastDocument!)
+        .limit(5)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      lastDocument = snapshot.docs.last;
+      allDocuments.addAll(snapshot.docs);
+      _streamController.add(allDocuments);
+    }
+  }
+
+
   _updateMethod() async {
     await _userModelController.updateRepoUidList();
   }
@@ -98,7 +139,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
         .where('displayName', isEqualTo: (_selectedValue2 == '전체') ? _alluser : 'SNOWLIVE')
         .where('resortNickname', isEqualTo: (_selectedValue == '필터') ? _allCategories : '$_selectedValue')
         .orderBy('timeStamp', descending: true)
-        .limit(500)
+        .limit(50)
         .snapshots();
   }
 
@@ -325,7 +366,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
           );
         });
     setState(() {
-      _stream = newStream();
+      _loadInitialData();
     });
   }
 
@@ -386,25 +427,25 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                   isTap[3] = false;
                                   _selectedValue = '필터';
                                   _selectedValue2 = '전체';
-                                  _stream = newStream();
+                                  _loadInitialData();
                                 });
                               },
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      color: (isTap[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      border: Border.all(
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    color: (isTap[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    border: Border.all(
                                         color: (isTap[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                    ),
+                                  ),
                                   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                   height: 32,
-                                    child: Text('# 전체',
+                                  child: Text('# 전체',
                                     style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: (isTap[0] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: (isTap[0] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
                                     ),)
-                                ),
+                              ),
                             ),
                             SizedBox(width: 6),
                             GestureDetector(
@@ -417,25 +458,25 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                   isTap[3] = false;
                                   _selectedValue = '${_userModelController.resortNickname}';
                                   _selectedValue2 = '전체';
-                                  _stream = newStream();
+                                  _loadInitialData();
                                 });
                               },
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                      borderRadius: BorderRadius.circular(30.0),
-                                        border: Border.all(
-                                          color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                    ),
-                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                    height: 32,
-                                    child: Text('# 자주가는',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          color: (isTap[1] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                      ),)
-                                ),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    border: Border.all(
+                                        color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  height: 32,
+                                  child: Text('# 자주가는',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: (isTap[1] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                    ),)
+                              ),
                             ),
                             SizedBox(width: 6),
                             GestureDetector(
@@ -446,68 +487,68 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                   isTap[2] = true;
                                   isTap[3] = false;
                                   _selectedValue2 = 'SNOWLIVE';
-                                  _stream = newStream();
+                                  _loadInitialData();
                                 });
                                 print(_selectedValue2);
                               },
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      border: Border.all(
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    border: Border.all(
                                         color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                    ),
-                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                    height: 32,
-                                    child: Text('# 소식',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                      ),)
-                                ),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  height: 32,
+                                  child: Text('# 소식',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                    ),)
+                              ),
                             ),
                           ],
                         ),
                         GestureDetector(
-                            onTap: () async{
-                              await _showCupertinoPicker();
-                            },
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(
+                          onTap: () async{
+                            await _showCupertinoPicker();
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
                                     color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                ),
-                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                height: 32,
-                                child:(isTap[3] == true)
-                                    ? Text(_selectedValue,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: (isTap[3] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)))
-                               : Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(right: 4),
-                                              child: ExtendedImage.asset(
-                                          'assets/imgs/icons/icon_livetalk_filter.png',
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.rectangle,
-                                          width: 12,
-                                        ),
-                                            ),
-                                       Text('필터',
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFF777777)))
-                                      ],
-                                    )
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              height: 32,
+                              child:(isTap[3] == true)
+                                  ? Text(_selectedValue,
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: (isTap[3] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)))
+                                  : Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 4),
+                                    child: ExtendedImage.asset(
+                                      'assets/imgs/icons/icon_livetalk_filter.png',
+                                      enableMemoryCache: true,
+                                      shape: BoxShape.rectangle,
+                                      width: 12,
+                                    ),
+                                  ),
+                                  Text('필터',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF777777)))
+                                ],
+                              )
 
-                            ),
+                          ),
 
                         )
                       ],
@@ -522,8 +563,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                         Column(
                           children: [
                             Expanded(
-                              child: StreamBuilder<QuerySnapshot>(
-                                stream: _stream,
+                              child: StreamBuilder<List<QueryDocumentSnapshot>>(
+                                stream: _streamController.stream,
                                 builder: (context, snapshot) {
                                   if (!snapshot.hasData) {
                                     return Container(
@@ -535,7 +576,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                       child: CircularProgressIndicator(),
                                     );
                                   }
-                                  else if (snapshot.data!.docs.isEmpty){
+                                  else if (snapshot.data!.isEmpty){
                                     return Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
@@ -554,145 +595,314 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                       ],
                                     );
                                   }
-                                  final chatDocs = snapshot.data!.docs;
-                                  return Scrollbar(
-                                    controller: _scrollController,
-                                    child: ListView.builder(
+                                  final chatDocs = snapshot.data!;
+                                  return RefreshIndicator(
+                                    onRefresh: () async {
+                                      await _loadMoreData();
+                                    },
+                                    child: Scrollbar(
                                       controller: _scrollController,
-                                      reverse: true,
-                                      itemCount: chatDocs.length,
-                                      itemBuilder: (context, index) {
-                                        String _time = _commentModelController
-                                            .getAgoTime(chatDocs[index].get('timeStamp'));
-                                        return StreamBuilder<QuerySnapshot>(
-                                          stream: FirebaseFirestore.instance
-                                              .collection('user')
-                                              .where('uid', isEqualTo: chatDocs[index]['uid'])
-                                              .snapshots(),
-                                            builder: (context,snapshot){
-                                              if (!snapshot.hasData || snapshot.data == null) {}
-                                              else if (snapshot.data!.docs.isNotEmpty) {
-                                                final userDocs = snapshot.data!.docs;
-                                                return Padding(
-                                                  padding:
-                                                  const EdgeInsets.only(
-                                                      left: 12, right: 12, bottom: 10),
-                                                  child: Obx(() =>
-                                                      Container(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment.start,
-                                                          children: [
-                                                            (_userModelController.repoUidList!.contains(chatDocs[index].get('uid')))
-                                                                ? Container(
-                                                              padding: EdgeInsets.symmetric(
-                                                                  horizontal: 16, vertical: 14),
-                                                              decoration: BoxDecoration(
-                                                                  color: Colors.white,
-                                                                  borderRadius: BorderRadius
-                                                                      .circular(8)
-                                                              ),
-                                                              child: Center(
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                      vertical: 12),
-                                                                  child: Text(
-                                                                    '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
-                                                                    style: TextStyle(
-                                                                        fontWeight:
-                                                                        FontWeight.normal,
-                                                                        fontSize: 12,
-                                                                        color:
-                                                                        Color(0xffc8c8c8)),
+                                      child: ListView.builder(
+                                        controller: _scrollController,
+                                        reverse: true,
+                                        itemCount: chatDocs.length,
+                                        itemBuilder: (context, index) {
+                                          String _time = _commentModelController
+                                              .getAgoTime(chatDocs[index].get('timeStamp'));
+                                          return StreamBuilder<QuerySnapshot>(
+                                              stream: FirebaseFirestore.instance
+                                                  .collection('user')
+                                                  .where('uid', isEqualTo: chatDocs[index]['uid'])
+                                                  .snapshots(),
+                                              builder: (context,snapshot){
+                                                if (!snapshot.hasData || snapshot.data == null) {}
+                                                else if (snapshot.data!.docs.isNotEmpty) {
+                                                  final userDocs = snapshot.data!.docs;
+                                                  return Padding(
+                                                    padding:
+                                                    const EdgeInsets.only(
+                                                        left: 12, right: 12, bottom: 10),
+                                                    child: Obx(() =>
+                                                        Container(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                            CrossAxisAlignment.start,
+                                                            children: [
+                                                              (_userModelController.repoUidList!.contains(chatDocs[index].get('uid')))
+                                                                  ? Container(
+                                                                padding: EdgeInsets.symmetric(
+                                                                    horizontal: 16, vertical: 14),
+                                                                decoration: BoxDecoration(
+                                                                    color: Colors.white,
+                                                                    borderRadius: BorderRadius
+                                                                        .circular(8)
+                                                                ),
+                                                                child: Center(
+                                                                  child: Padding(
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        vertical: 12),
+                                                                    child: Text(
+                                                                      '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
+                                                                      style: TextStyle(
+                                                                          fontWeight:
+                                                                          FontWeight.normal,
+                                                                          fontSize: 12,
+                                                                          color:
+                                                                          Color(0xffc8c8c8)),
+                                                                    ),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                            )
-                                                                : Container(
-                                                              padding: EdgeInsets.symmetric(
-                                                                  vertical: 14),
-                                                              decoration: BoxDecoration(
-                                                                  color: Colors.white,
-                                                                  borderRadius: BorderRadius
-                                                                      .circular(8)
-                                                              ),
-                                                              width: _size.width - 24,
-                                                              child: Row(
-                                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: [
-                                                                  Column(
-                                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                                                                        child: Container(
-                                                                          width: _size.width - 56,
-                                                                          child: Row(
-                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                                                            children: [
-                                                                              Row(
-                                                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                children: [
-                                                                                  if (userDocs[0]['profileImageUrl'] != "")
-                                                                                    GestureDetector(
-                                                                                      onTap: () async {
+                                                              )
+                                                                  : Container(
+                                                                padding: EdgeInsets.symmetric(
+                                                                    vertical: 14),
+                                                                decoration: BoxDecoration(
+                                                                    color: Colors.white,
+                                                                    borderRadius: BorderRadius
+                                                                        .circular(8)
+                                                                ),
+                                                                width: _size.width - 24,
+                                                                child: Row(
+                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: [
+                                                                    Column(
+                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                                                                          child: Container(
+                                                                            width: _size.width - 56,
+                                                                            child: Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                                              children: [
+                                                                                Row(
+                                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                  children: [
+                                                                                    if (userDocs[0]['profileImageUrl'] != "")
+                                                                                      GestureDetector(
+                                                                                        onTap: () async {
                                                                                           Get.to(() => FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: userDocs[0]['favoriteResort'],));
-                                                                                      },
-                                                                                      child: ExtendedImage.network(
-                                                                                        userDocs[0]['profileImageUrl'],
-                                                                                        cache: true,
-                                                                                        shape: BoxShape.circle,
-                                                                                        borderRadius: BorderRadius.circular(20),
-                                                                                        width: 24,
-                                                                                        height: 24,
-                                                                                        fit: BoxFit.cover,
+                                                                                        },
+                                                                                        child: ExtendedImage.network(
+                                                                                          userDocs[0]['profileImageUrl'],
+                                                                                          cache: true,
+                                                                                          shape: BoxShape.circle,
+                                                                                          borderRadius: BorderRadius.circular(20),
+                                                                                          width: 24,
+                                                                                          height: 24,
+                                                                                          fit: BoxFit.cover,
+                                                                                        ),
+                                                                                      ),
+                                                                                    if (userDocs[0]['profileImageUrl'] == "")
+                                                                                      GestureDetector(
+                                                                                        onTap: () async {
+                                                                                          Get.to(() => FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: userDocs[0]['favoriteResort'],));
+                                                                                        },
+                                                                                        child: ExtendedImage
+                                                                                            .asset(
+                                                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                          shape: BoxShape.circle,
+                                                                                          borderRadius: BorderRadius.circular(20),
+                                                                                          width: 24,
+                                                                                          height: 24,
+                                                                                          fit: BoxFit.cover,
+                                                                                        ),
+                                                                                      ),
+                                                                                    SizedBox(width: 8),
+                                                                                    Padding(
+                                                                                      padding: EdgeInsets.only(bottom: 1),
+                                                                                      child: Text(
+                                                                                        userDocs[0].get('displayName'),
+                                                                                        style: TextStyle(
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                            fontSize: 12,
+                                                                                            color: Color(0xFF111111)),
                                                                                       ),
                                                                                     ),
-                                                                                  if (userDocs[0]['profileImageUrl'] == "")
-                                                                                    GestureDetector(
-                                                                                      onTap: () async {
-                                                                                        Get.to(() => FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: userDocs[0]['favoriteResort'],));
-                                                                                      },
-                                                                                      child: ExtendedImage
-                                                                                          .asset(
-                                                                                        'assets/imgs/profile/img_profile_default_circle.png',
-                                                                                        shape: BoxShape.circle,
-                                                                                        borderRadius: BorderRadius.circular(20),
-                                                                                        width: 24,
-                                                                                        height: 24,
-                                                                                        fit: BoxFit.cover,
-                                                                                      ),
-                                                                                    ),
-                                                                                  SizedBox(width: 8),
-                                                                                  Padding(
-                                                                                    padding: EdgeInsets.only(bottom: 1),
-                                                                                    child: Text(
-                                                                                      userDocs[0].get('displayName'),
-                                                                                      style: TextStyle(
-                                                                                          fontWeight: FontWeight.bold,
-                                                                                          fontSize: 12,
-                                                                                          color: Color(0xFF111111)),
-                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                                (chatDocs[index]['uid'] != _userModelController.uid)
+                                                                                    ? GestureDetector(
+                                                                                  onTap: () =>
+                                                                                      showModalBottomSheet(
+                                                                                          enableDrag: false,
+                                                                                          context: context,
+                                                                                          builder: (context) {
+                                                                                            return SafeArea(
+                                                                                              child: Container(
+                                                                                                height: 140,
+                                                                                                child: Padding(
+                                                                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
+                                                                                                  child: Column(
+                                                                                                    children: [
+                                                                                                      GestureDetector(
+                                                                                                        child: ListTile(
+                                                                                                          contentPadding: EdgeInsets.zero,
+                                                                                                          title: Center(
+                                                                                                            child: Text(
+                                                                                                              '신고하기',
+                                                                                                              style: TextStyle(
+                                                                                                                fontSize: 15,
+                                                                                                                fontWeight: FontWeight.bold,
+                                                                                                              ),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                          //selected: _isSelected[index]!,
+                                                                                                          onTap: () async {
+                                                                                                            Get.dialog(
+                                                                                                                AlertDialog(
+                                                                                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                                  elevation: 0,
+                                                                                                                  shape: RoundedRectangleBorder(
+                                                                                                                      borderRadius: BorderRadius.circular(10.0)),
+                                                                                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                                  content: Text(
+                                                                                                                    '이 회원을 신고하시겠습니까?',
+                                                                                                                    style: TextStyle(
+                                                                                                                        fontWeight: FontWeight.w600,
+                                                                                                                        fontSize: 15),
+                                                                                                                  ),
+                                                                                                                  actions: [
+                                                                                                                    Row(
+                                                                                                                      children: [
+                                                                                                                        TextButton(
+                                                                                                                            onPressed: () {
+                                                                                                                              Navigator.pop(context);
+                                                                                                                            },
+                                                                                                                            child: Text('취소',
+                                                                                                                              style: TextStyle(
+                                                                                                                                fontSize: 15,
+                                                                                                                                color: Color(0xFF949494),
+                                                                                                                                fontWeight: FontWeight.bold,
+                                                                                                                              ),
+                                                                                                                            )),
+                                                                                                                        TextButton(
+                                                                                                                            onPressed: () async {var repoUid = chatDocs[index].get('uid');
+                                                                                                                            await _userModelController.repoUpdate(repoUid);
+                                                                                                                            Navigator.pop(context);
+                                                                                                                            Navigator.pop(context);
+                                                                                                                            },
+                                                                                                                            child: Text(
+                                                                                                                              '신고',
+                                                                                                                              style: TextStyle(
+                                                                                                                                fontSize: 15,
+                                                                                                                                color: Color(0xFF3D83ED),
+                                                                                                                                fontWeight: FontWeight.bold,
+                                                                                                                              ),
+                                                                                                                            ))
+                                                                                                                      ],
+                                                                                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                                    )
+                                                                                                                  ],
+                                                                                                                ));
+                                                                                                          },
+                                                                                                          shape: RoundedRectangleBorder(
+                                                                                                              borderRadius: BorderRadius
+                                                                                                                  .circular(
+                                                                                                                  10)),
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                      GestureDetector(
+                                                                                                        child: ListTile(
+                                                                                                          contentPadding: EdgeInsets.zero,
+                                                                                                          title: Center(
+                                                                                                            child: Text(
+                                                                                                              '이 회원의 글 모두 숨기기',
+                                                                                                              style: TextStyle(
+                                                                                                                fontSize: 15,
+                                                                                                                fontWeight: FontWeight
+                                                                                                                    .bold,
+                                                                                                              ),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                          //selected: _isSelected[index]!,
+                                                                                                          onTap: () async {
+                                                                                                            Get
+                                                                                                                .dialog(
+                                                                                                                AlertDialog(
+                                                                                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                                  elevation: 0,
+                                                                                                                  shape: RoundedRectangleBorder(
+                                                                                                                      borderRadius: BorderRadius.circular(10.0)),
+                                                                                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                                  content: Text(
+                                                                                                                    '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.',
+                                                                                                                    style: TextStyle(
+                                                                                                                        fontWeight: FontWeight.w600,
+                                                                                                                        fontSize: 15),
+                                                                                                                  ),
+                                                                                                                  actions: [
+                                                                                                                    Row(
+                                                                                                                      children: [
+                                                                                                                        TextButton(
+                                                                                                                            onPressed: () {
+                                                                                                                              Navigator.pop(context);
+                                                                                                                            },
+                                                                                                                            child: Text(
+                                                                                                                              '취소',
+                                                                                                                              style: TextStyle(
+                                                                                                                                fontSize: 15,
+                                                                                                                                color: Color(0xFF949494),
+                                                                                                                                fontWeight: FontWeight.bold,
+                                                                                                                              ),
+                                                                                                                            )),
+                                                                                                                        TextButton(
+                                                                                                                            onPressed: () {
+                                                                                                                              var repoUid = chatDocs[index].get('uid');
+                                                                                                                              _userModelController.updateRepoUid(repoUid);
+                                                                                                                              Navigator.pop(context);
+                                                                                                                              Navigator.pop(context);
+                                                                                                                            },
+                                                                                                                            child: Text('확인',
+                                                                                                                              style: TextStyle(
+                                                                                                                                fontSize: 15,
+                                                                                                                                color: Color(0xFF3D83ED),
+                                                                                                                                fontWeight: FontWeight.bold,
+                                                                                                                              ),
+                                                                                                                            ))
+                                                                                                                      ],
+                                                                                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                                    )
+                                                                                                                  ],
+                                                                                                                ));
+                                                                                                          },
+                                                                                                          shape: RoundedRectangleBorder(
+                                                                                                              borderRadius: BorderRadius.circular(10)),
+                                                                                                        ),
+                                                                                                      )
+                                                                                                    ],
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                            );
+                                                                                          }),
+                                                                                  child: Icon(
+                                                                                    Icons.more_horiz,
+                                                                                    color: Color(0xFFdedede),
+                                                                                    size: 20,
                                                                                   ),
-                                                                                ],
-                                                                              ),
-                                                                              (chatDocs[index]['uid'] != _userModelController.uid)
-                                                                                  ? GestureDetector(
-                                                                                onTap: () =>
-                                                                                    showModalBottomSheet(
-                                                                                        enableDrag: false,
-                                                                                        context: context,
-                                                                                        builder: (context) {
-                                                                                          return SafeArea(
-                                                                                            child: Container(
-                                                                                              height: 140,
-                                                                                              child: Padding(
-                                                                                                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
+                                                                                )
+                                                                                    : GestureDetector(
+                                                                                  onTap: () =>
+                                                                                      showModalBottomSheet(
+                                                                                          enableDrag:
+                                                                                          false,
+                                                                                          context: context,
+                                                                                          builder: (
+                                                                                              context) {
+                                                                                            return Container(
+                                                                                              height: 100,
+                                                                                              child:
+                                                                                              Padding(
+                                                                                                padding: const EdgeInsets
+                                                                                                    .symmetric(
+                                                                                                    horizontal: 20.0,
+                                                                                                    vertical: 14),
                                                                                                 child: Column(
                                                                                                   children: [
                                                                                                     GestureDetector(
@@ -700,560 +910,396 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                         contentPadding: EdgeInsets.zero,
                                                                                                         title: Center(
                                                                                                           child: Text(
-                                                                                                            '신고하기',
+                                                                                                            '삭제',
                                                                                                             style: TextStyle(
-                                                                                                              fontSize: 15,
-                                                                                                              fontWeight: FontWeight.bold,
+                                                                                                                fontSize: 15,
+                                                                                                                fontWeight: FontWeight.bold,
+                                                                                                                color: Color(0xFFD63636)
                                                                                                             ),
                                                                                                           ),
                                                                                                         ),
                                                                                                         //selected: _isSelected[index]!,
                                                                                                         onTap: () async {
-                                                                                                          Get.dialog(
-                                                                                                              AlertDialog(
-                                                                                                                contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                                                elevation: 0,
-                                                                                                                shape: RoundedRectangleBorder(
-                                                                                                                    borderRadius: BorderRadius.circular(10.0)),
-                                                                                                                buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                                content: Text(
-                                                                                                                  '이 회원을 신고하시겠습니까?',
-                                                                                                                  style: TextStyle(
-                                                                                                                      fontWeight: FontWeight.w600,
-                                                                                                                      fontSize: 15),
-                                                                                                                ),
-                                                                                                                actions: [
-                                                                                                                  Row(
-                                                                                                                    children: [
-                                                                                                                      TextButton(
-                                                                                                                          onPressed: () {
-                                                                                                                            Navigator.pop(context);
-                                                                                                                          },
-                                                                                                                          child: Text('취소',
-                                                                                                                            style: TextStyle(
-                                                                                                                              fontSize: 15,
-                                                                                                                              color: Color(0xFF949494),
+                                                                                                          Navigator.pop(context);
+                                                                                                          showModalBottomSheet(
+                                                                                                              context: context,
+                                                                                                              builder: (context) {
+                                                                                                                return Container(
+                                                                                                                  color: Colors.white,
+                                                                                                                  height: 180,
+                                                                                                                  child: Padding(
+                                                                                                                    padding: const EdgeInsets.symmetric(
+                                                                                                                        horizontal: 20.0),
+                                                                                                                    child: Column(
+                                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                                                                      children: [
+                                                                                                                        SizedBox(
+                                                                                                                          height: 30,
+                                                                                                                        ),
+                                                                                                                        Text(
+                                                                                                                          '삭제하시겠습니까?',
+                                                                                                                          style: TextStyle(
+                                                                                                                              fontSize: 20,
                                                                                                                               fontWeight: FontWeight.bold,
+                                                                                                                              color: Color(0xFF111111)),
+                                                                                                                        ),
+                                                                                                                        SizedBox(
+                                                                                                                          height: 30,
+                                                                                                                        ),
+                                                                                                                        Row(
+                                                                                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                                                          children: [
+                                                                                                                            Expanded(
+                                                                                                                              child: ElevatedButton(
+                                                                                                                                onPressed: () {
+                                                                                                                                  Navigator.pop(context);
+                                                                                                                                },
+                                                                                                                                child: Text(
+                                                                                                                                  '취소',
+                                                                                                                                  style: TextStyle(
+                                                                                                                                      color: Colors.white,
+                                                                                                                                      fontSize: 15,
+                                                                                                                                      fontWeight: FontWeight.bold),
+                                                                                                                                ),
+                                                                                                                                style: TextButton.styleFrom(
+                                                                                                                                    splashFactory: InkRipple.splashFactory,
+                                                                                                                                    elevation: 0,
+                                                                                                                                    minimumSize: Size(100, 56),
+                                                                                                                                    backgroundColor: Color(0xff555555),
+                                                                                                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                                              ),
                                                                                                                             ),
-                                                                                                                          )),
-                                                                                                                      TextButton(
-                                                                                                                          onPressed: () async {var repoUid = chatDocs[index].get('uid');
-                                                                                                                          await _userModelController.repoUpdate(repoUid);
-                                                                                                                          Navigator.pop(context);
-                                                                                                                          Navigator.pop(context);
-                                                                                                                          },
-                                                                                                                          child: Text(
-                                                                                                                            '신고',
-                                                                                                                            style: TextStyle(
-                                                                                                                              fontSize: 15,
-                                                                                                                              color: Color(0xFF3D83ED),
-                                                                                                                              fontWeight: FontWeight.bold,
+                                                                                                                            SizedBox(
+                                                                                                                              width: 10,
                                                                                                                             ),
-                                                                                                                          ))
-                                                                                                                    ],
-                                                                                                                    mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                                  )
-                                                                                                                ],
-                                                                                                              ));
+                                                                                                                            Expanded(
+                                                                                                                              child: ElevatedButton(
+                                                                                                                                onPressed: () async {
+                                                                                                                                  CustomFullScreenDialog.showDialog();
+                                                                                                                                  try {
+                                                                                                                                    await FirebaseFirestore.instance.collection('liveTalk').doc('${_userModelController.uid}${chatDocs[index]['commentCount']}').delete();
+                                                                                                                                    await _imageController.deleteLiveTalkImage(uid: _userModelController.uid!, count: chatDocs[index]['commentCount']);
+
+                                                                                                                                  } catch (e) {}
+                                                                                                                                  print('라이브톡 삭제 완료');
+                                                                                                                                  Navigator.pop(context);
+                                                                                                                                  CustomFullScreenDialog.cancelDialog();
+                                                                                                                                },
+                                                                                                                                child: Text('확인',
+                                                                                                                                  style: TextStyle(
+                                                                                                                                      color: Colors.white,
+                                                                                                                                      fontSize: 15,
+                                                                                                                                      fontWeight: FontWeight.bold),
+                                                                                                                                ),
+                                                                                                                                style: TextButton.styleFrom(
+                                                                                                                                    splashFactory: InkRipple.splashFactory,
+                                                                                                                                    elevation: 0,
+                                                                                                                                    minimumSize: Size(100, 56),
+                                                                                                                                    backgroundColor: Color(0xff2C97FB),
+                                                                                                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                                              ),
+                                                                                                                            ),
+                                                                                                                          ],
+                                                                                                                        )
+                                                                                                                      ],
+                                                                                                                    ),
+                                                                                                                  ),
+                                                                                                                );
+                                                                                                              });
                                                                                                         },
-                                                                                                        shape: RoundedRectangleBorder(
-                                                                                                            borderRadius: BorderRadius
-                                                                                                                .circular(
-                                                                                                                10)),
+                                                                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                                                                       ),
                                                                                                     ),
-                                                                                                    GestureDetector(
-                                                                                                      child: ListTile(
-                                                                                                        contentPadding: EdgeInsets.zero,
-                                                                                                        title: Center(
-                                                                                                          child: Text(
-                                                                                                            '이 회원의 글 모두 숨기기',
-                                                                                                            style: TextStyle(
-                                                                                                              fontSize: 15,
-                                                                                                              fontWeight: FontWeight
-                                                                                                                  .bold,
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                        ),
-                                                                                                        //selected: _isSelected[index]!,
-                                                                                                        onTap: () async {
-                                                                                                          Get
-                                                                                                              .dialog(
-                                                                                                              AlertDialog(
-                                                                                                                contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                                                elevation: 0,
-                                                                                                                shape: RoundedRectangleBorder(
-                                                                                                                    borderRadius: BorderRadius.circular(10.0)),
-                                                                                                                buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                                content: Text(
-                                                                                                                  '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.',
-                                                                                                                  style: TextStyle(
-                                                                                                                      fontWeight: FontWeight.w600,
-                                                                                                                      fontSize: 15),
-                                                                                                                ),
-                                                                                                                actions: [
-                                                                                                                  Row(
-                                                                                                                    children: [
-                                                                                                                      TextButton(
-                                                                                                                          onPressed: () {
-                                                                                                                            Navigator.pop(context);
-                                                                                                                          },
-                                                                                                                          child: Text(
-                                                                                                                            '취소',
-                                                                                                                            style: TextStyle(
-                                                                                                                              fontSize: 15,
-                                                                                                                              color: Color(0xFF949494),
-                                                                                                                              fontWeight: FontWeight.bold,
-                                                                                                                            ),
-                                                                                                                          )),
-                                                                                                                      TextButton(
-                                                                                                                          onPressed: () {
-                                                                                                                            var repoUid = chatDocs[index].get('uid');
-                                                                                                                            _userModelController.updateRepoUid(repoUid);
-                                                                                                                            Navigator.pop(context);
-                                                                                                                            Navigator.pop(context);
-                                                                                                                          },
-                                                                                                                          child: Text('확인',
-                                                                                                                            style: TextStyle(
-                                                                                                                              fontSize: 15,
-                                                                                                                              color: Color(0xFF3D83ED),
-                                                                                                                              fontWeight: FontWeight.bold,
-                                                                                                                            ),
-                                                                                                                          ))
-                                                                                                                    ],
-                                                                                                                    mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                                  )
-                                                                                                                ],
-                                                                                                              ));
-                                                                                                        },
-                                                                                                        shape: RoundedRectangleBorder(
-                                                                                                            borderRadius: BorderRadius.circular(10)),
-                                                                                                      ),
-                                                                                                    )
                                                                                                   ],
                                                                                                 ),
                                                                                               ),
-                                                                                            ),
-                                                                                          );
-                                                                                        }),
-                                                                                child: Icon(
-                                                                                  Icons.more_horiz,
-                                                                                  color: Color(0xFFdedede),
-                                                                                  size: 20,
+                                                                                            );
+                                                                                          }),
+                                                                                  child: Icon(Icons.more_horiz,
+                                                                                    color: Color(0xFFdedede),
+                                                                                    size: 20,
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Column(
+                                                                          children: [
+                                                                            if (chatDocs[index]['livetalkImageUrl'] != "")
+                                                                              Padding(
+                                                                                padding: EdgeInsets.only(top: 14, bottom: 6),
+                                                                                child: GestureDetector(
+                                                                                  onTap: () {Get.to(() =>
+                                                                                      ProfileImagePage(
+                                                                                        CommentProfileUrl: chatDocs[index]['livetalkImageUrl'],
+                                                                                      ));
+                                                                                  },
+                                                                                  child: ExtendedImage.network(
+                                                                                    chatDocs[index]['livetalkImageUrl'],
+                                                                                    cache: true,
+                                                                                    width: _size.width - 24,
+                                                                                    height: _size.width - 24,
+                                                                                    fit: BoxFit.cover,
+                                                                                  ),
                                                                                 ),
+                                                                              ),
+                                                                            if (chatDocs[index]['livetalkImageUrl'] == "")
+                                                                              Container(
+                                                                                height: 0,
                                                                               )
-                                                                                  : GestureDetector(
-                                                                                onTap: () =>
-                                                                                    showModalBottomSheet(
-                                                                                        enableDrag:
-                                                                                        false,
-                                                                                        context: context,
-                                                                                        builder: (
-                                                                                            context) {
-                                                                                          return Container(
-                                                                                            height: 100,
-                                                                                            child:
-                                                                                            Padding(
-                                                                                              padding: const EdgeInsets
-                                                                                                  .symmetric(
-                                                                                                  horizontal: 20.0,
-                                                                                                  vertical: 14),
-                                                                                              child: Column(
-                                                                                                children: [
-                                                                                                  GestureDetector(
-                                                                                                    child: ListTile(
-                                                                                                      contentPadding: EdgeInsets.zero,
-                                                                                                      title: Center(
-                                                                                                        child: Text(
-                                                                                                          '삭제',
-                                                                                                          style: TextStyle(
-                                                                                                              fontSize: 15,
-                                                                                                              fontWeight: FontWeight.bold,
-                                                                                                              color: Color(0xFFD63636)
-                                                                                                          ),
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                      //selected: _isSelected[index]!,
-                                                                                                      onTap: () async {
-                                                                                                        Navigator.pop(context);
-                                                                                                        showModalBottomSheet(
-                                                                                                            context: context,
-                                                                                                            builder: (context) {
-                                                                                                              return Container(
-                                                                                                                color: Colors.white,
-                                                                                                                height: 180,
-                                                                                                                child: Padding(
-                                                                                                                  padding: const EdgeInsets.symmetric(
-                                                                                                                      horizontal: 20.0),
-                                                                                                                  child: Column(
-                                                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                                                                                    children: [
-                                                                                                                      SizedBox(
-                                                                                                                        height: 30,
-                                                                                                                      ),
-                                                                                                                      Text(
-                                                                                                                        '삭제하시겠습니까?',
-                                                                                                                        style: TextStyle(
-                                                                                                                            fontSize: 20,
-                                                                                                                            fontWeight: FontWeight.bold,
-                                                                                                                            color: Color(0xFF111111)),
-                                                                                                                      ),
-                                                                                                                      SizedBox(
-                                                                                                                        height: 30,
-                                                                                                                      ),
-                                                                                                                      Row(
-                                                                                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                                                                        children: [
-                                                                                                                          Expanded(
-                                                                                                                            child: ElevatedButton(
-                                                                                                                              onPressed: () {
-                                                                                                                                Navigator.pop(context);
-                                                                                                                              },
-                                                                                                                              child: Text(
-                                                                                                                                '취소',
-                                                                                                                                style: TextStyle(
-                                                                                                                                    color: Colors.white,
-                                                                                                                                    fontSize: 15,
-                                                                                                                                    fontWeight: FontWeight.bold),
-                                                                                                                              ),
-                                                                                                                              style: TextButton.styleFrom(
-                                                                                                                                  splashFactory: InkRipple.splashFactory,
-                                                                                                                                  elevation: 0,
-                                                                                                                                  minimumSize: Size(100, 56),
-                                                                                                                                  backgroundColor: Color(0xff555555),
-                                                                                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                                                            ),
-                                                                                                                          ),
-                                                                                                                          SizedBox(
-                                                                                                                            width: 10,
-                                                                                                                          ),
-                                                                                                                          Expanded(
-                                                                                                                            child: ElevatedButton(
-                                                                                                                              onPressed: () async {
-                                                                                                                                CustomFullScreenDialog.showDialog();
-                                                                                                                                try {
-                                                                                                                                  await FirebaseFirestore.instance.collection('liveTalk').doc('${_userModelController.uid}${chatDocs[index]['commentCount']}').delete();
-                                                                                                                                  await _imageController.deleteLiveTalkImage(uid: _userModelController.uid!, count: chatDocs[index]['commentCount']);
-
-                                                                                                                                } catch (e) {}
-                                                                                                                                print('라이브톡 삭제 완료');
-                                                                                                                                Navigator.pop(context);
-                                                                                                                                CustomFullScreenDialog.cancelDialog();
-                                                                                                                              },
-                                                                                                                              child: Text('확인',
-                                                                                                                                style: TextStyle(
-                                                                                                                                    color: Colors.white,
-                                                                                                                                    fontSize: 15,
-                                                                                                                                    fontWeight: FontWeight.bold),
-                                                                                                                              ),
-                                                                                                                              style: TextButton.styleFrom(
-                                                                                                                                  splashFactory: InkRipple.splashFactory,
-                                                                                                                                  elevation: 0,
-                                                                                                                                  minimumSize: Size(100, 56),
-                                                                                                                                  backgroundColor: Color(0xff2C97FB),
-                                                                                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                                                            ),
-                                                                                                                          ),
-                                                                                                                        ],
-                                                                                                                      )
-                                                                                                                    ],
-                                                                                                                  ),
-                                                                                                                ),
-                                                                                                              );
-                                                                                                            });
-                                                                                                      },
-                                                                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                ],
+                                                                          ],
+                                                                        ),
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.symmetric(
+                                                                              horizontal: 16),
+                                                                          child: Column(
+                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              SizedBox(
+                                                                                height: 8,
+                                                                              ),
+                                                                              Row(
+                                                                                children: [
+                                                                                  Container(
+                                                                                    constraints: BoxConstraints(
+                                                                                        maxWidth: _size.width - 56),
+                                                                                    child: Text(
+                                                                                      chatDocs[index].get('comment'),
+                                                                                      maxLines: 1000,
+                                                                                      overflow: TextOverflow.ellipsis,
+                                                                                      style: TextStyle(
+                                                                                          color: Color(0xFF111111),
+                                                                                          fontWeight: FontWeight.normal,
+                                                                                          fontSize: 14),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              SizedBox(
+                                                                                height: 4,
+                                                                              ),
+                                                                              Row(
+                                                                                children: [
+                                                                                  Text(
+                                                                                    chatDocs[index].get('resortNickname'),
+                                                                                    style: TextStyle(
+                                                                                        fontWeight: FontWeight.w300,
+                                                                                        fontSize: 12,
+                                                                                        color: Color(0xFF949494)),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                      width: 1),
+                                                                                  Text(' $_time',
+                                                                                    style: TextStyle(
+                                                                                        fontSize: 12,
+                                                                                        color: Color(0xFF949494),
+                                                                                        fontWeight: FontWeight.w300),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              SizedBox(
+                                                                                height: 16,
+                                                                              ),
+                                                                              Row(
+                                                                                children: [
+                                                                                  GestureDetector(
+                                                                                    child: Container(
+                                                                                      height: 24,
+                                                                                      decoration: BoxDecoration(
+                                                                                          color: (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
+                                                                                              ? Color(0xFFFFCDCD)
+                                                                                              : Color(0xFFECECEC),
+                                                                                          borderRadius: BorderRadius.circular(4)
+                                                                                      ),
+                                                                                      child: Padding(
+                                                                                        padding: EdgeInsets.only(right: 8),
+                                                                                        child: Row(
+                                                                                          children: [
+                                                                                            (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
+                                                                                                ? Padding(
+                                                                                              padding: const EdgeInsets.only(top: 2),
+                                                                                              child:
+                                                                                              IconButton(
+                                                                                                onPressed: () async {
+                                                                                                  var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
+                                                                                                  print(likeUid);
+                                                                                                  HapticFeedback.lightImpact();
+                                                                                                  if (_firstPress) {
+                                                                                                    _firstPress = false;
+                                                                                                    await _userModelController.deleteLikeUid(likeUid);
+                                                                                                    await _commentModelController.likeDelete(likeUid);
+                                                                                                    _firstPress =
+                                                                                                    true;
+                                                                                                  }
+                                                                                                },
+                                                                                                icon: Icon(
+                                                                                                  Icons.favorite,
+                                                                                                  size: 14,
+                                                                                                  color: Color(0xFFD63636),
+                                                                                                ),
+                                                                                                padding: EdgeInsets.zero,
+                                                                                                constraints: BoxConstraints(),
+                                                                                              ),
+                                                                                            )
+                                                                                                : Padding(
+                                                                                              padding: const EdgeInsets.only(top: 2),
+                                                                                              child:
+                                                                                              IconButton(
+                                                                                                onPressed: () async {
+                                                                                                  var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
+                                                                                                  print(likeUid);
+                                                                                                  HapticFeedback.lightImpact();
+                                                                                                  if (_firstPress) {
+                                                                                                    _firstPress = false;
+                                                                                                    await _userModelController.updateLikeUid(likeUid);
+                                                                                                    await _commentModelController.likeUpdate(likeUid);
+                                                                                                    _firstPress = true;
+                                                                                                  }
+                                                                                                },
+                                                                                                icon: Icon(Icons.favorite,
+                                                                                                  size: 14,
+                                                                                                  color: Color(0xFFC8C8C8),
+                                                                                                ),
+                                                                                                padding: EdgeInsets.zero,
+                                                                                                constraints: BoxConstraints(),
                                                                                               ),
                                                                                             ),
-                                                                                          );
-                                                                                        }),
-                                                                                child: Icon(Icons.more_horiz,
-                                                                                  color: Color(0xFFdedede),
-                                                                                  size: 20,
-                                                                                ),
-                                                                              )
+                                                                                            Padding(
+                                                                                              padding: EdgeInsets.only(bottom: 1),
+                                                                                              child: Text(
+                                                                                                '${chatDocs[index]['likeCount']}',
+                                                                                                style: TextStyle(
+                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                    fontSize: 11,
+                                                                                                    color:
+                                                                                                    (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
+                                                                                                        ? Color(0xFF111111)
+                                                                                                        : Color(0xFF666666)),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                    onTap: () async{
+                                                                                      if (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}')){
+                                                                                        var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
+                                                                                        print(likeUid);
+                                                                                        HapticFeedback.lightImpact();
+                                                                                        if (_firstPress) {
+                                                                                          _firstPress = false;
+                                                                                          await _userModelController.deleteLikeUid(likeUid);
+                                                                                          await _commentModelController.likeDelete(likeUid);
+                                                                                          _firstPress =
+                                                                                          true;
+                                                                                        }
+                                                                                      } else{
+                                                                                        var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
+                                                                                        print(likeUid);
+                                                                                        HapticFeedback.lightImpact();
+                                                                                        if (_firstPress) {
+                                                                                          _firstPress = false;
+                                                                                          await _userModelController.updateLikeUid(likeUid);
+                                                                                          await _commentModelController.likeUpdate(likeUid);
+                                                                                          _firstPress = true;
+                                                                                        }
+                                                                                      }
+
+                                                                                    },
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    width: 8,
+                                                                                  ),
+                                                                                  GestureDetector(
+                                                                                    onTap: (){
+                                                                                      Get.to(() =>
+                                                                                          ReplyScreen(
+                                                                                            replyUid: chatDocs[index]['uid'],
+                                                                                            replyCount: chatDocs[index]['commentCount'],
+                                                                                            replyImage: userDocs[0]['profileImageUrl'],
+                                                                                            replyDisplayName: userDocs[0]['displayName'],
+                                                                                            replyResortNickname: chatDocs[index]['resortNickname'],
+                                                                                            comment: chatDocs[index]['comment'],
+                                                                                            commentTime: chatDocs[index]['timeStamp'],
+                                                                                          ));
+                                                                                    },
+                                                                                    child: Container(
+                                                                                      height: 24,
+                                                                                      decoration: BoxDecoration(
+                                                                                          color: Color(0xFFECECEC),
+                                                                                          borderRadius: BorderRadius.circular(4)
+                                                                                      ),
+                                                                                      child: Padding(
+                                                                                        padding: EdgeInsets.only(right: 6),
+                                                                                        child: Row(
+                                                                                          children: [
+                                                                                            Padding(
+                                                                                              padding:
+                                                                                              const EdgeInsets.only(top: 2),
+                                                                                              child:
+                                                                                              IconButton(
+                                                                                                onPressed: () {
+                                                                                                  Get.to(() =>
+                                                                                                      ReplyScreen(
+                                                                                                        replyUid: chatDocs[index]['uid'],
+                                                                                                        replyCount: chatDocs[index]['commentCount'],
+                                                                                                        replyImage: userDocs[0]['profileImageUrl'],
+                                                                                                        replyDisplayName: userDocs[0]['displayName'],
+                                                                                                        replyResortNickname: chatDocs[index]['resortNickname'],
+                                                                                                        comment: chatDocs[index]['comment'],
+                                                                                                        commentTime: chatDocs[index]['timeStamp'],
+                                                                                                      ));
+                                                                                                },
+                                                                                                icon: Icon(
+                                                                                                  Icons.insert_comment,
+                                                                                                  size: 14,
+                                                                                                  color: Color(0xFFC8C8C8),
+                                                                                                ),
+                                                                                                padding: EdgeInsets.zero,
+                                                                                                constraints: BoxConstraints(),
+                                                                                              ),
+                                                                                            ),
+                                                                                            Padding(
+                                                                                              padding: EdgeInsets.only(bottom: 1),
+                                                                                              child: Text(
+                                                                                                '${chatDocs[index]['replyCount']}',
+                                                                                                style: TextStyle(
+                                                                                                    color: Color(0xFF666666),
+                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                    fontSize: 11),
+                                                                                              ),
+                                                                                            )
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
                                                                             ],
                                                                           ),
                                                                         ),
-                                                                      ),
-                                                                      Column(
-                                                                        children: [
-                                                                          if (chatDocs[index]['livetalkImageUrl'] != "")
-                                                                            Padding(
-                                                                              padding: EdgeInsets.only(top: 14, bottom: 6),
-                                                                              child: GestureDetector(
-                                                                                onTap: () {Get.to(() =>
-                                                                                    ProfileImagePage(
-                                                                                      CommentProfileUrl: chatDocs[index]['livetalkImageUrl'],
-                                                                                    ));
-                                                                                },
-                                                                                child: ExtendedImage.network(
-                                                                                  chatDocs[index]['livetalkImageUrl'],
-                                                                                  cache: true,
-                                                                                  width: _size.width - 24,
-                                                                                  height: _size.width - 24,
-                                                                                  fit: BoxFit.cover,
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          if (chatDocs[index]['livetalkImageUrl'] == "")
-                                                                            Container(
-                                                                              height: 0,
-                                                                            )
-                                                                        ],
-                                                                      ),
-                                                                      Padding(
-                                                                        padding: const EdgeInsets.symmetric(
-                                                                            horizontal: 16),
-                                                                        child: Column(
-                                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            SizedBox(
-                                                                              height: 8,
-                                                                            ),
-                                                                            Row(
-                                                                              children: [
-                                                                                Container(
-                                                                                  constraints: BoxConstraints(
-                                                                                      maxWidth: _size.width - 56),
-                                                                                  child: Text(
-                                                                                    chatDocs[index].get('comment'),
-                                                                                    maxLines: 1000,
-                                                                                    overflow: TextOverflow.ellipsis,
-                                                                                    style: TextStyle(
-                                                                                        color: Color(0xFF111111),
-                                                                                        fontWeight: FontWeight.normal,
-                                                                                        fontSize: 14),
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                            SizedBox(
-                                                                              height: 4,
-                                                                            ),
-                                                                            Row(
-                                                                              children: [
-                                                                                Text(
-                                                                                  chatDocs[index].get('resortNickname'),
-                                                                                  style: TextStyle(
-                                                                                      fontWeight: FontWeight.w300,
-                                                                                      fontSize: 12,
-                                                                                      color: Color(0xFF949494)),
-                                                                                ),
-                                                                                SizedBox(
-                                                                                    width: 1),
-                                                                                Text(' $_time',
-                                                                                  style: TextStyle(
-                                                                                      fontSize: 12,
-                                                                                      color: Color(0xFF949494),
-                                                                                      fontWeight: FontWeight.w300),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                            SizedBox(
-                                                                              height: 16,
-                                                                            ),
-                                                                            Row(
-                                                                              children: [
-                                                                                GestureDetector(
-                                                                                  child: Container(
-                                                                                    height: 24,
-                                                                                    decoration: BoxDecoration(
-                                                                                        color: (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
-                                                                                            ? Color(0xFFFFCDCD)
-                                                                                            : Color(0xFFECECEC),
-                                                                                        borderRadius: BorderRadius.circular(4)
-                                                                                    ),
-                                                                                    child: Padding(
-                                                                                      padding: EdgeInsets.only(right: 8),
-                                                                                      child: Row(
-                                                                                        children: [
-                                                                                          (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
-                                                                                              ? Padding(
-                                                                                            padding: const EdgeInsets.only(top: 2),
-                                                                                            child:
-                                                                                            IconButton(
-                                                                                              onPressed: () async {
-                                                                                                var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
-                                                                                                print(likeUid);
-                                                                                                HapticFeedback.lightImpact();
-                                                                                                if (_firstPress) {
-                                                                                                  _firstPress = false;
-                                                                                                  await _userModelController.deleteLikeUid(likeUid);
-                                                                                                  await _commentModelController.likeDelete(likeUid);
-                                                                                                  _firstPress =
-                                                                                                  true;
-                                                                                                }
-                                                                                              },
-                                                                                              icon: Icon(
-                                                                                                Icons.favorite,
-                                                                                                size: 14,
-                                                                                                color: Color(0xFFD63636),
-                                                                                              ),
-                                                                                              padding: EdgeInsets.zero,
-                                                                                              constraints: BoxConstraints(),
-                                                                                            ),
-                                                                                          )
-                                                                                              : Padding(
-                                                                                            padding: const EdgeInsets.only(top: 2),
-                                                                                            child:
-                                                                                            IconButton(
-                                                                                              onPressed: () async {
-                                                                                                var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
-                                                                                                print(likeUid);
-                                                                                                HapticFeedback.lightImpact();
-                                                                                                if (_firstPress) {
-                                                                                                  _firstPress = false;
-                                                                                                  await _userModelController.updateLikeUid(likeUid);
-                                                                                                  await _commentModelController.likeUpdate(likeUid);
-                                                                                                  _firstPress = true;
-                                                                                                }
-                                                                                              },
-                                                                                              icon: Icon(Icons.favorite,
-                                                                                                size: 14,
-                                                                                                color: Color(0xFFC8C8C8),
-                                                                                              ),
-                                                                                              padding: EdgeInsets.zero,
-                                                                                              constraints: BoxConstraints(),
-                                                                                            ),
-                                                                                          ),
-                                                                                          Padding(
-                                                                                            padding: EdgeInsets.only(bottom: 1),
-                                                                                            child: Text(
-                                                                                              '${chatDocs[index]['likeCount']}',
-                                                                                              style: TextStyle(
-                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                  fontSize: 11,
-                                                                                                  color:
-                                                                                                  (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
-                                                                                                      ? Color(0xFF111111)
-                                                                                                      : Color(0xFF666666)),
-                                                                                            ),
-                                                                                          ),
-                                                                                        ],
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  onTap: () async{
-                                                                                    if (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}')){
-                                                                                      var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
-                                                                                      print(likeUid);
-                                                                                      HapticFeedback.lightImpact();
-                                                                                      if (_firstPress) {
-                                                                                        _firstPress = false;
-                                                                                        await _userModelController.deleteLikeUid(likeUid);
-                                                                                        await _commentModelController.likeDelete(likeUid);
-                                                                                        _firstPress =
-                                                                                        true;
-                                                                                      }
-                                                                                    } else{
-                                                                                      var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
-                                                                                      print(likeUid);
-                                                                                      HapticFeedback.lightImpact();
-                                                                                      if (_firstPress) {
-                                                                                        _firstPress = false;
-                                                                                        await _userModelController.updateLikeUid(likeUid);
-                                                                                        await _commentModelController.likeUpdate(likeUid);
-                                                                                        _firstPress = true;
-                                                                                      }
-                                                                                    }
-
-                                                                                  },
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  width: 8,
-                                                                                ),
-                                                                                GestureDetector(
-                                                                                  onTap: (){
-                                                                                    Get.to(() =>
-                                                                                        ReplyScreen(
-                                                                                          replyUid: chatDocs[index]['uid'],
-                                                                                          replyCount: chatDocs[index]['commentCount'],
-                                                                                          replyImage: userDocs[0]['profileImageUrl'],
-                                                                                          replyDisplayName: userDocs[0]['displayName'],
-                                                                                          replyResortNickname: chatDocs[index]['resortNickname'],
-                                                                                          comment: chatDocs[index]['comment'],
-                                                                                          commentTime: chatDocs[index]['timeStamp'],
-                                                                                        ));
-                                                                                  },
-                                                                                  child: Container(
-                                                                                    height: 24,
-                                                                                    decoration: BoxDecoration(
-                                                                                        color: Color(0xFFECECEC),
-                                                                                        borderRadius: BorderRadius.circular(4)
-                                                                                    ),
-                                                                                    child: Padding(
-                                                                                      padding: EdgeInsets.only(right: 6),
-                                                                                      child: Row(
-                                                                                        children: [
-                                                                                          Padding(
-                                                                                            padding:
-                                                                                            const EdgeInsets.only(top: 2),
-                                                                                            child:
-                                                                                            IconButton(
-                                                                                              onPressed: () {
-                                                                                                Get.to(() =>
-                                                                                                    ReplyScreen(
-                                                                                                      replyUid: chatDocs[index]['uid'],
-                                                                                                      replyCount: chatDocs[index]['commentCount'],
-                                                                                                      replyImage: userDocs[0]['profileImageUrl'],
-                                                                                                      replyDisplayName: userDocs[0]['displayName'],
-                                                                                                      replyResortNickname: chatDocs[index]['resortNickname'],
-                                                                                                      comment: chatDocs[index]['comment'],
-                                                                                                      commentTime: chatDocs[index]['timeStamp'],
-                                                                                                    ));
-                                                                                              },
-                                                                                              icon: Icon(
-                                                                                                Icons.insert_comment,
-                                                                                                size: 14,
-                                                                                                color: Color(0xFFC8C8C8),
-                                                                                              ),
-                                                                                              padding: EdgeInsets.zero,
-                                                                                              constraints: BoxConstraints(),
-                                                                                            ),
-                                                                                          ),
-                                                                                          Padding(
-                                                                                            padding: EdgeInsets.only(bottom: 1),
-                                                                                            child: Text(
-                                                                                              '${chatDocs[index]['replyCount']}',
-                                                                                              style: TextStyle(
-                                                                                                  color: Color(0xFF666666),
-                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                  fontSize: 11),
-                                                                                            ),
-                                                                                          )
-                                                                                        ],
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )),
-                                                );
+                                                            ],
+                                                          ),
+                                                        )),
+                                                  );
+                                                }
+                                                else if (snapshot.connectionState == ConnectionState.waiting) {}
+                                                return SizedBox.shrink();
                                               }
-                                              else if (snapshot.connectionState == ConnectionState.waiting) {}
-                                              return SizedBox.shrink();
-                                            }
-                                        );
+                                          );
 
 
-                                      },
+                                        },
+                                      ),
                                     ),
                                   );
                                 },
@@ -1267,12 +1313,12 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                               EdgeInsets.only(top: 12, left: 10, right: 16, bottom: 12),
                               child: Row(
                                 children: [
-                                Container(
-                                padding: EdgeInsets.zero,
-                                width: 40,
-                                child:
-                                (livetalkImage) //이 값이 true이면 이미지업로드가 된 상태이므로, 미리보기 띄움
-                                    ? IconButton(
+                                  Container(
+                                    padding: EdgeInsets.zero,
+                                    width: 40,
+                                    child:
+                                    (livetalkImage) //이 값이 true이면 이미지업로드가 된 상태이므로, 미리보기 띄움
+                                        ? IconButton(
                                       icon: Icon(Icons.photo_camera,
                                         size: 28,
                                         color: Color(0xFF444444),),
@@ -1404,7 +1450,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                         );
                                       },
                                     )
-                                    : IconButton(
+                                        : IconButton(
                                       icon: Icon(Icons.photo_camera,
                                         size: 28,
                                         color: Color(0xFF444444),
@@ -1527,112 +1573,112 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                         );
                                       },
                                     ),),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: TextFormField(
-                                    key: _formKey,
-                                    cursorColor: Color(0xff377EEA),
-                                    controller: _controller,
-                                    strutStyle: StrutStyle(leading: 0.3),
-                                    maxLines: null,
-                                    keyboardType: TextInputType.multiline,
-                                    enableSuggestions: false,
-                                    autocorrect: false,
-                                    textInputAction: TextInputAction.newline,
-                                    decoration: InputDecoration(
-                                        suffixIcon: IconButton(
-                                          splashColor: Colors.transparent,
-                                          onPressed: () async {
-                                            if (_controller.text.trim().isEmpty) {
-                                              return;
-                                            }
-                                            try{
-                                              CustomFullScreenDialog.showDialog();
-                                              await _userModelController.getCurrentUser(_userModelController.uid);
-                                              await _userModelController.updateCommentCount(_userModelController.commentCount);
-                                              await _userModelController.getCurrentUser(_userModelController.uid);
-
-                                            String? livetalkImageUrl = "";
-                                            if (_imageFile != null) {
-                                              livetalkImageUrl = await _imageController.setNewImage_livetalk(_imageFile!, _userModelController.commentCount);
-                                              await _commentModelController.updateLivetalkImageUrl(livetalkImageUrl);
-
-                                              setState(() {
-                                                _imageFile = null;
-                                                livetalkImage = false;
-                                              });
-                                            }
-                                            _controller.clear();
-                                            _scrollController.jumpTo(0);
-                                            try {
-                                              await _commentModelController.sendMessage(
-                                                  displayName: _userModelController.displayName,
-                                                  uid: _userModelController.uid,
-                                                  profileImageUrl: _userModelController.profileImageUrl,
-                                                  comment: _newComment,
-                                                  commentCount: _userModelController.commentCount,
-                                                  resortNickname: _userModelController.resortNickname,
-                                                  likeCount: _commentModelController.likeCount,
-                                                  replyCount: _commentModelController.replyCount,
-                                                  livetalkImageUrl: livetalkImageUrl);
-                                              FocusScope.of(context).unfocus();
-                                              _controller.clear();
-                                              setState(() {});
-                                            } catch (e) {
-                                              CustomFullScreenDialog.cancelDialog();
-                                            }
-                                            CustomFullScreenDialog.cancelDialog();
-                                            } catch(e){
-                                            CustomFullScreenDialog.cancelDialog();
-                                            }
-                                          },
-                                          icon: (_controller.text.trim().isEmpty)
-                                              ? Image.asset(
-                                            'assets/imgs/icons/icon_livetalk_send_g.png',
-                                            width: 27,
-                                            height: 27,
-                                          )
-                                              : Image.asset(
-                                            'assets/imgs/icons/icon_livetalk_send.png',
-                                            width: 27,
-                                            height: 27,
-                                          ),
-                                        ),
-                                        errorStyle: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                        labelStyle: TextStyle(color: Color(0xff949494), fontSize: 15),
-                                        hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
-                                        hintText: '라이브톡 남기기',
-                                        contentPadding: EdgeInsets.only(
-                                            top: 10, bottom: 10, left: 16, right: 16),
-                                        border: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0xFFDEDEDE)),
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
-                                        focusedBorder:  OutlineInputBorder(
-                                          borderSide: BorderSide(color: Color(0xFFDEDEDE)),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0xFFDEDEDE)),
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
-                                        errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0xFFFF3726)),
-                                          borderRadius: BorderRadius.circular(6),
-                                        )),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _newComment = value;
-                                      });
-                                    },
+                                  SizedBox(
+                                    width: 10,
                                   ),
-                                ),
+                                  Expanded(
+                                    child: TextFormField(
+                                      key: _formKey,
+                                      cursorColor: Color(0xff377EEA),
+                                      controller: _controller,
+                                      strutStyle: StrutStyle(leading: 0.3),
+                                      maxLines: null,
+                                      keyboardType: TextInputType.multiline,
+                                      enableSuggestions: false,
+                                      autocorrect: false,
+                                      textInputAction: TextInputAction.newline,
+                                      decoration: InputDecoration(
+                                          suffixIcon: IconButton(
+                                            splashColor: Colors.transparent,
+                                            onPressed: () async {
+                                              if (_controller.text.trim().isEmpty) {
+                                                return;
+                                              }
+                                              try{
+                                                CustomFullScreenDialog.showDialog();
+                                                await _userModelController.getCurrentUser(_userModelController.uid);
+                                                await _userModelController.updateCommentCount(_userModelController.commentCount);
+                                                await _userModelController.getCurrentUser(_userModelController.uid);
+
+                                                String? livetalkImageUrl = "";
+                                                if (_imageFile != null) {
+                                                  livetalkImageUrl = await _imageController.setNewImage_livetalk(_imageFile!, _userModelController.commentCount);
+                                                  await _commentModelController.updateLivetalkImageUrl(livetalkImageUrl);
+
+                                                  setState(() {
+                                                    _imageFile = null;
+                                                    livetalkImage = false;
+                                                  });
+                                                }
+                                                _controller.clear();
+                                                _scrollController.jumpTo(0);
+                                                try {
+                                                  await _commentModelController.sendMessage(
+                                                      displayName: _userModelController.displayName,
+                                                      uid: _userModelController.uid,
+                                                      profileImageUrl: _userModelController.profileImageUrl,
+                                                      comment: _newComment,
+                                                      commentCount: _userModelController.commentCount,
+                                                      resortNickname: _userModelController.resortNickname,
+                                                      likeCount: _commentModelController.likeCount,
+                                                      replyCount: _commentModelController.replyCount,
+                                                      livetalkImageUrl: livetalkImageUrl);
+                                                  FocusScope.of(context).unfocus();
+                                                  _controller.clear();
+                                                  setState(() {});
+                                                } catch (e) {
+                                                  CustomFullScreenDialog.cancelDialog();
+                                                }
+                                                CustomFullScreenDialog.cancelDialog();
+                                              } catch(e){
+                                                CustomFullScreenDialog.cancelDialog();
+                                              }
+                                            },
+                                            icon: (_controller.text.trim().isEmpty)
+                                                ? Image.asset(
+                                              'assets/imgs/icons/icon_livetalk_send_g.png',
+                                              width: 27,
+                                              height: 27,
+                                            )
+                                                : Image.asset(
+                                              'assets/imgs/icons/icon_livetalk_send.png',
+                                              width: 27,
+                                              height: 27,
+                                            ),
+                                          ),
+                                          errorStyle: TextStyle(
+                                            fontSize: 12,
+                                          ),
+                                          labelStyle: TextStyle(color: Color(0xff949494), fontSize: 15),
+                                          hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
+                                          hintText: '라이브톡 남기기',
+                                          contentPadding: EdgeInsets.only(
+                                              top: 10, bottom: 10, left: 16, right: 16),
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Color(0xFFDEDEDE)),
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          focusedBorder:  OutlineInputBorder(
+                                            borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Color(0xFFDEDEDE)),
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          errorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Color(0xFFFF3726)),
+                                            borderRadius: BorderRadius.circular(6),
+                                          )),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _newComment = value;
+                                        });
+                                      },
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -1643,25 +1689,25 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                           bottom: 72,
                           child: Stack(
                             alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: _size.width,
-                              height: 112,
-                              color: Color(0xFF000000).withAlpha(180),
-                            ),
-                            Container(
-                              width: 100,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(4), // 반지름 60.0인 원형으로 자르기
+                            children: [
+                              Container(
+                                width: _size.width,
+                                height: 112,
+                                color: Color(0xFF000000).withAlpha(180),
                               ),
-                              child: (_imageFile == null)
-                                  ? null
-                                  : Image.file(File(_imageFile!.path),
-                                  fit: BoxFit.cover),
-                            ),
-                            Positioned(
+                              Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(4), // 반지름 60.0인 원형으로 자르기
+                                ),
+                                child: (_imageFile == null)
+                                    ? null
+                                    : Image.file(File(_imageFile!.path),
+                                    fit: BoxFit.cover),
+                              ),
+                              Positioned(
                                   top: 8,
                                   right: 8,
                                   child: GestureDetector(
@@ -1674,9 +1720,9 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                       setState(() {});
                                     },
                                   )),
-                          ],
-                        ),
-                            )
+                            ],
+                          ),
+                        )
                             : Container(),
                       ],
                     ),
