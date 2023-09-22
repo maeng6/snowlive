@@ -530,11 +530,21 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                           ],
                                                         ),
                                                       ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 2),
+                                                        child: Text(
+                                                          '${_resortModelController.getResortName(friendDocs[0]['resortNickname'])}',
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              color: Color(0xFF949494),
+                                                              fontWeight: FontWeight.normal),
+                                                        ),
+                                                      ),
                                                       (_initStateMsg.isNotEmpty)
                                                           ? Padding(
-                                                            padding: const EdgeInsets.only(top: 2),
+                                                            padding: const EdgeInsets.only(top: 6),
                                                             child: Container(
-                                                        child: Row(
+                                                              child: Row(
                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                             crossAxisAlignment: CrossAxisAlignment.center,
                                                             children: [
@@ -757,8 +767,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                       child: Container(
                                                                         height: 224 + keyboardHeight, // 키보드 높이만큼 추가 높이 적용
                                                                         child: Padding(
-                                                                          padding: EdgeInsets.only(
-                                                                            left: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom,),
+                                                                          padding: EdgeInsets.only(left: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom,),
                                                                           child: Column(
                                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                                             mainAxisAlignment: MainAxisAlignment.start,
@@ -924,7 +933,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                               },
                                                               child: Padding(
                                                                 padding: const EdgeInsets.only(
-                                                                    left: 4),
+                                                                    top: 6),
                                                                 child: Row(
                                                                   children: [
                                                                     Text('상태메세지를 입력해 주세요.', style: TextStyle(
@@ -1672,36 +1681,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                     }),
                                               ],
                                             ),
-                                        SizedBox(height: 16),
-                                        Container(
-                                          width: _size.width,
-                                          height: 64,
-                                          padding: EdgeInsets.only(left: 16, right: 20),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFf1f3f3),
-                                            borderRadius: BorderRadius.circular(10),
-                                            // border: Border.all(color: Color(0xFFDEDEDE), width: 1),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '자주가는 스키장',
-                                                style: TextStyle(
-                                                    fontSize: 13,
-                                                    color: Color(0xFF949494),
-                                                    fontWeight: FontWeight.normal),
-                                              ),
-                                              Text(
-                                                '${_resortModelController.getResortName(friendDocs[0]['resortNickname'])}',
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Color(0xFF111111),
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                        )
                                           ],
                                         ),
                                       ),

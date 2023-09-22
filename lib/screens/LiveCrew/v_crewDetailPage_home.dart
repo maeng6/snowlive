@@ -685,15 +685,15 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                       Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
                                                                                     },
                                                                                     child: Container(
-                                                                                        width: _size.width * 0.2,
-                                                                                        height: _size.width * 0.2,
+                                                                                        width: _size.width * 0.15,
+                                                                                        height: _size.width * 0.15,
                                                                                         child: ExtendedImage.network(
                                                                                           memberUserDocs[0]['profileImageUrl'],
                                                                                           enableMemoryCache: true,
                                                                                           shape: BoxShape.circle,
                                                                                           borderRadius: BorderRadius.circular(8),
-                                                                                          width: _size.width * 0.2,
-                                                                                          height: _size.width * 0.2,
+                                                                                          width: _size.width * 0.15,
+                                                                                          height: _size.width * 0.15,
                                                                                           fit: BoxFit.cover,
                                                                                         )),
                                                                                   )
@@ -702,15 +702,15 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                       Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
                                                                                     },
                                                                                     child: Container(
-                                                                                      width: _size.width * 0.2,
-                                                                                      height: _size.width * 0.2,
+                                                                                      width: _size.width * 0.15,
+                                                                                      height: _size.width * 0.15,
                                                                                       child: ExtendedImage.asset(
                                                                                         'assets/imgs/profile/img_profile_default_circle.png',
                                                                                         enableMemoryCache: true,
                                                                                         shape: BoxShape.circle,
                                                                                         borderRadius: BorderRadius.circular(8),
-                                                                                        width: _size.width * 0.2,
-                                                                                        height: _size.width * 0.2,
+                                                                                        width: _size.width * 0.15,
+                                                                                        height: _size.width * 0.15,
                                                                                         fit: BoxFit.cover,
                                                                                       ),
                                                                                     ),
@@ -786,15 +786,15 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                       Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
                                                                                     },
                                                                                     child: Container(
-                                                                                        width: _size.width * 0.2,
-                                                                                        height: _size.width * 0.2,
+                                                                                        width: _size.width * 0.15,
+                                                                                        height: _size.width * 0.15,
                                                                                         child: ExtendedImage.network(
                                                                                           memberUserDocs[0]['profileImageUrl'],
                                                                                           enableMemoryCache: true,
                                                                                           shape: BoxShape.circle,
                                                                                           borderRadius: BorderRadius.circular(8),
-                                                                                          width: _size.width * 0.2,
-                                                                                          height: _size.width * 0.2,
+                                                                                          width: _size.width * 0.15,
+                                                                                          height: _size.width * 0.15,
                                                                                           fit: BoxFit.cover,
                                                                                         )),
                                                                                   )
@@ -803,15 +803,15 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                       Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
                                                                                     },
                                                                                     child: Container(
-                                                                                      width: _size.width * 0.2,
-                                                                                      height: _size.width * 0.2,
+                                                                                      width: _size.width * 0.15,
+                                                                                      height: _size.width * 0.15,
                                                                                       child: ExtendedImage.asset(
                                                                                         'assets/imgs/profile/img_profile_default_circle.png',
                                                                                         enableMemoryCache: true,
                                                                                         shape: BoxShape.circle,
                                                                                         borderRadius: BorderRadius.circular(8),
-                                                                                        width: _size.width * 0.2,
-                                                                                        height: _size.width * 0.2,
+                                                                                        width: _size.width * 0.15,
+                                                                                        height: _size.width * 0.15,
                                                                                         fit: BoxFit.cover,
                                                                                       ),
                                                                                     ),
@@ -886,15 +886,15 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                       Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
                                                                                     },
                                                                                     child: Container(
-                                                                                        width: _size.width * 0.2,
-                                                                                        height: _size.width * 0.2,
+                                                                                        width: _size.width * 0.15,
+                                                                                        height: _size.width * 0.15,
                                                                                         child: ExtendedImage.network(
                                                                                           memberUserDocs[0]['profileImageUrl'],
                                                                                           enableMemoryCache: true,
                                                                                           shape: BoxShape.circle,
                                                                                           borderRadius: BorderRadius.circular(8),
-                                                                                          width: _size.width * 0.2,
-                                                                                          height: _size.width * 0.2,
+                                                                                          width: _size.width * 0.15,
+                                                                                          height: _size.width * 0.15,
                                                                                           fit: BoxFit.cover,
                                                                                         )),
                                                                                   )
@@ -903,15 +903,15 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                       Get.to(() => FriendDetailPage(uid: memberUserDocs[0]['uid'], favoriteResort: memberUserDocs[0]['favoriteResort'],));
                                                                                     },
                                                                                     child: Container(
-                                                                                      width: _size.width * 0.2,
-                                                                                      height: _size.width * 0.2,
+                                                                                      width: _size.width * 0.15,
+                                                                                      height: _size.width * 0.15,
                                                                                       child: ExtendedImage.asset(
                                                                                         'assets/imgs/profile/img_profile_default_circle.png',
                                                                                         enableMemoryCache: true,
                                                                                         shape: BoxShape.circle,
                                                                                         borderRadius: BorderRadius.circular(8),
-                                                                                        width: _size.width * 0.2,
-                                                                                        height: _size.width * 0.2,
+                                                                                        width: _size.width * 0.15,
+                                                                                        height: _size.width * 0.15,
                                                                                         fit: BoxFit.cover,
                                                                                       ),
                                                                                     ),

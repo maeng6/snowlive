@@ -515,8 +515,8 @@ class _MoreTabState extends State<MoreTab> {
                                   Image.asset('assets/imgs/icons/icon_moretab_friends.png', width: 46,),
                                   Positioned(
                                     // draw a red marble
-                                      top: 2,
-                                      right: 0.0,
+                                      bottom: 0,
+                                      right: 0,
                                       child:
                                       StreamBuilder(
                                         stream: FirebaseFirestore.instance
@@ -531,7 +531,26 @@ class _MoreTabState extends State<MoreTab> {
                                           }
                                           else if (snapshot.data!.docs.isNotEmpty) {
                                             final alarmDocs = snapshot.data!.docs;
-                                            return new Icon(Icons.brightness_1,
+                                            return
+                                              (alarmDocs[0]['newInvited_friend'] == true)
+                                          ? Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                                          decoration: BoxDecoration(
+                                          color: Color(0xFFCBE0FF),
+                                          borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: Text('NEW',
+                                          style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF3D83ED)
+                                          ),
+
+                                          ),
+                                          )
+                                              :
+                                          Container();
+                                              new Icon(Icons.brightness_1,
                                                 size: 7.0,
                                                 color: (alarmDocs[0]['newInvited_friend'] == true)
                                                     ? Color(0xFFD32F2F)
