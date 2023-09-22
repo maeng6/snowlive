@@ -445,6 +445,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                   isTap[1] = false;
                                   isTap[2] = true;
                                   isTap[3] = false;
+                                  _selectedValue = '필터';
                                   _selectedValue2 = 'SNOWLIVE';
                                   _stream = newStream();
                                 });
