@@ -59,7 +59,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
 
   var _stream;
   bool _isVisible = false;
-  final _scrollController = ScrollController();
+  // final _scrollController = ScrollController();
   final _streamController = StreamController<List<QueryDocumentSnapshot>>();
   late List<QueryDocumentSnapshot> allDocuments = [];
   QueryDocumentSnapshot? lastDocument;
@@ -72,19 +72,19 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
     // TODO: implement initState
     super.initState();
     _loadInitialData();
-    _scrollController.addListener(() {
-      setState(() {
-        if (_scrollController.position.userScrollDirection ==
-            ScrollDirection.reverse) {
-          _isVisible = true;
-        } else if (_scrollController.position.userScrollDirection ==
-            ScrollDirection.forward ||
-            _scrollController.position.pixels <=
-                _scrollController.position.maxScrollExtent) {
-          _isVisible = false;
-        }
-      });
-    });
+    // _scrollController.addListener(() {
+    //   setState(() {
+    //     if (_scrollController.position.userScrollDirection ==
+    //         ScrollDirection.reverse) {
+    //       _isVisible = true;
+    //     } else if (_scrollController.position.userScrollDirection ==
+    //         ScrollDirection.forward ||
+    //         _scrollController.position.pixels <=
+    //             _scrollController.position.maxScrollExtent) {
+    //       _isVisible = false;
+    //     }
+    //   });
+    // });
   }
 
   _loadInitialData() async {
@@ -600,10 +600,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                     onRefresh: () async {
                                       await _loadMoreData();
                                     },
-                                    child: Scrollbar(
-                                      controller: _scrollController,
-                                      child: ListView.builder(
-                                        controller: _scrollController,
+                                    child: ListView.builder(
+                                      //  controller: _scrollController,
                                         reverse: true,
                                         itemCount: chatDocs.length,
                                         itemBuilder: (context, index) {
@@ -1300,7 +1298,6 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
 
                                         },
                                       ),
-                                    ),
                                   );
                                 },
                               ),
@@ -1611,7 +1608,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                   });
                                                 }
                                                 _controller.clear();
-                                                _scrollController.jumpTo(0);
+                                                //_scrollController.jumpTo(0);
                                                 try {
                                                   await _commentModelController.sendMessage(
                                                       displayName: _userModelController.displayName,
@@ -1730,27 +1727,27 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                 ),
               ],
             ),
-            floatingActionButton: Visibility(
-              visible: _isVisible,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 64),
-                child: FloatingActionButton(
-                  heroTag: 'liveTalkScreen',
-                  mini: true,
-                  elevation: 0.5,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero
-                  ),
-                  backgroundColor: Color(0xFF111111),
-                  foregroundColor: Colors.white,
-                  onPressed: () {
-                    _scrollController.jumpTo(0);
-                  },
-                  child: Icon(Icons.arrow_downward,
-                    size: 24,),
-                ),
-              ),
-            ),
+            // floatingActionButton: Visibility(
+            //   visible: _isVisible,
+            //   child: Padding(
+            //     padding: const EdgeInsets.only(bottom: 64),
+            //     child: FloatingActionButton(
+            //       heroTag: 'liveTalkScreen',
+            //       mini: true,
+            //       elevation: 0.5,
+            //       shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.zero
+            //       ),
+            //       backgroundColor: Color(0xFF111111),
+            //       foregroundColor: Colors.white,
+            //       onPressed: () {
+            //         _scrollController.jumpTo(0);
+            //       },
+            //       child: Icon(Icons.arrow_downward,
+            //         size: 24,),
+            //     ),
+            //   ),
+            // ),
           ),)
         ,
       )

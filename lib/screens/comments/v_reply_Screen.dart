@@ -408,7 +408,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                         SizedBox(
                                                                             width: 6),
                                                                         Text(
-                                                                          replyDocs[index]['resortNickname'],
+                                                                          replyDocs[index]['replyResortNickname'],
                                                                           style: TextStyle(
                                                                               fontSize: 13,
                                                                               color: Color(0xFF949494),
