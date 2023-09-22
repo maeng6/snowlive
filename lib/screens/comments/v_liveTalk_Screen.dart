@@ -1202,7 +1202,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                         child: Container(
                                                                           height: 24,
                                                                           decoration: BoxDecoration(
-                                                                              color: Color(0xFFECECEC),
+                                                                              color:
+                                                                              (chatDocs[index]['replyCount'] != 0)
+                                                                                  ? Color(0xFFCBE0FF)
+                                                                                  : Color(0xFFECECEC),
                                                                               borderRadius: BorderRadius.circular(4)
                                                                           ),
                                                                           child: Padding(
@@ -1229,7 +1232,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                     icon: Icon(
                                                                                       Icons.insert_comment,
                                                                                       size: 14,
-                                                                                      color: Color(0xFFC8C8C8),
+                                                                                      color:
+                                                                                      (chatDocs[index]['replyCount'] != 0)
+                                                                                      ? Color(0xFF3D83ED)
+                                                                                      : Color(0xFFC8C8C8),
                                                                                     ),
                                                                                     padding: EdgeInsets.zero,
                                                                                     constraints: BoxConstraints(),
@@ -1240,7 +1246,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                   child: Text(
                                                                                     '${chatDocs[index]['replyCount']}',
                                                                                     style: TextStyle(
-                                                                                        color: Color(0xFF666666),
+                                                                                        color:
+                                                                                        (chatDocs[index]['replyCount'] != 0)
+                                                                                            ? Color(0xFF111111)
+                                                                                            : Color(0xFF666666),
                                                                                         fontWeight: FontWeight.bold,
                                                                                         fontSize: 11),
                                                                                   ),
@@ -1696,23 +1705,48 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
             ),
             floatingActionButton: Visibility(
               visible: _isVisible,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 64),
-                child: FloatingActionButton(
-                  heroTag: 'liveTalkScreen',
-                  mini: true,
-                  elevation: 0.5,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 64, left: 32),
+                    child: Container(
+                      width: 106,
+                      child: FloatingActionButton(
+                        heroTag: 'liveTalkScreen',
+                        mini: true,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(40)
+                        ),
+                        backgroundColor: Color(0xFF000000).withOpacity(0.8),
+                        foregroundColor: Colors.white,
+                        onPressed: () {
+                          _scrollController.jumpTo(0);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.arrow_downward_rounded,
+                              color: Color(0xFFffffff),
+                              size: 16),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 2, right: 3),
+                              child: Text('최신글 보기',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFffffff).withOpacity(0.8),
+                                  letterSpacing: 0
+                              ),),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                  backgroundColor: Color(0xFF111111),
-                  foregroundColor: Colors.white,
-                  onPressed: () {
-                    _scrollController.jumpTo(0);
-                  },
-                  child: Icon(Icons.arrow_downward,
-                    size: 24,),
-                ),
+                ],
               ),
             ),
           ),)
