@@ -35,6 +35,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
   var _firstPress = true;
   bool livetalkImage = false;
   XFile? _imageFile;
+  bool anony = false;
 
   var _selectedValue = '필터';
   var _selectedValue2 = '전체';
@@ -628,7 +629,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                                       children: [
-                                                                        if (chatDocs[index]['profileImageUrl'] != "")
+                                                                        if (chatDocs[index]['profileImageUrl'] != "" && chatDocs[index]['profileImageUrl'] != "anony")
                                                                           GestureDetector(
                                                                             onTap: () async {
                                                                               QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
@@ -686,30 +687,43 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               fit: BoxFit.cover,
                                                                             ),
                                                                           ),
+                                                                        if (chatDocs[index]['profileImageUrl'] == "anony")
+                                                                          GestureDetector(
+                                                                            onTap: () async {},
+                                                                            child: ExtendedImage.asset(
+                                                                              'assets/imgs/icons/img_profile_default_anony_circle.png',
+                                                                              shape: BoxShape.circle,
+                                                                              borderRadius: BorderRadius.circular(20),
+                                                                              width: 24,
+                                                                              height: 24,
+                                                                              fit: BoxFit.cover,
+                                                                            ),
+                                                                          ),
+
                                                                         SizedBox(width: 8),
                                                                         Padding(
-                                                                          padding: EdgeInsets.only(bottom: 1),
-                                                                          child:
-                                                                          Row(
-                                                                          children: [
-                                                                            Text(
-                                                                              chatDocs[index].get('displayName'),
-                                                                              style: TextStyle(
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  fontSize: 12,
-                                                                                  color: Color(0xFF111111)),
-                                                                            ),
-                                                                            if(chatDocs[index].get('displayName') == 'SNOWLIVE')
+                                                                            padding: EdgeInsets.only(bottom: 1),
+                                                                            child:
+                                                                            Row(
+                                                                              children: [
+                                                                                Text(
+                                                                                  chatDocs[index].get('displayName'),
+                                                                                  style: TextStyle(
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      fontSize: 12,
+                                                                                      color: Color(0xFF111111)),
+                                                                                ),
+                                                                                if(chatDocs[index].get('displayName') == 'SNOWLIVE')
 
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.only(left : 2.0),
-                                                                              child: Image.asset(
-                                                                                  'assets/imgs/icons/icon_snowlive_operator.png',
-                                                                                scale: 5.5,
-                                                                              ),
+                                                                                  Padding(
+                                                                                    padding: const EdgeInsets.only(left : 2.0),
+                                                                                    child: Image.asset(
+                                                                                      'assets/imgs/icons/icon_snowlive_operator.png',
+                                                                                      scale: 5.5,
+                                                                                    ),
+                                                                                  )
+                                                                              ],
                                                                             )
-                                                                          ],
-                                                                          )
                                                                         ),
                                                                       ],
                                                                     ),
@@ -1248,8 +1262,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                       size: 14,
                                                                                       color:
                                                                                       (chatDocs[index]['replyCount'] != 0)
-                                                                                      ? Color(0xFF3D83ED)
-                                                                                      : Color(0xFFC8C8C8),
+                                                                                          ? Color(0xFF3D83ED)
+                                                                                          : Color(0xFFC8C8C8),
                                                                                     ),
                                                                                     padding: EdgeInsets.zero,
                                                                                     constraints: BoxConstraints(),
@@ -1563,29 +1577,57 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                   SizedBox(
                                     width: 8,
                                   ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFFCBE0FF),
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                          'assets/imgs/icons/icon_livetalk_check.png',
-                                          scale: 4,
-                                          width: 10,
-                                          height: 10,
-                                        ),
-                                        SizedBox(width: 2,),
-                                        Text('익명',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12,
-                                              color: Color(0xFF3D83ED)
+                                  GestureDetector(
+                                    onTap: (){
+                                      setState(() {
+                                        if(anony == true){
+                                          setState(() {
+                                            anony = false;
+                                          });
+                                        }else{
+                                          setState(() {
+                                            anony = true;
+                                          });
+                                        }
+                                      });
+                                    },
+                                    child:Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color:
+                                        (anony == true)
+                                            ? Color(0xFFCBE0FF)
+                                            : Color(0xFFECECEC),
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          (anony == true)
+                                              ? Image.asset(
+                                            'assets/imgs/icons/icon_livetalk_check.png',
+                                            scale: 4,
+                                            width: 10,
+                                            height: 10,
+                                          )
+                                              :  Image.asset(
+                                            'assets/imgs/icons/icon_livetalk_check_off.png',
+                                            scale: 4,
+                                            width: 10,
+                                            height: 10,
                                           ),
-                                        ),
-                                      ],
+                                          SizedBox(width: 2,),
+                                          Text('익명',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                                color:
+                                                (anony == true)
+                                                    ? Color(0xFF3D83ED)
+                                                    :Color(0xFF949494)
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   SizedBox(
@@ -1629,9 +1671,15 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                 _scrollController.jumpTo(0);
                                                 try {
                                                   await _commentModelController.sendMessage(
-                                                      displayName: _userModelController.displayName,
+                                                      displayName:
+                                                      (anony == false)
+                                                          ? _userModelController.displayName
+                                                          : "익명",
                                                       uid: _userModelController.uid,
-                                                      profileImageUrl: _userModelController.profileImageUrl,
+                                                      profileImageUrl:
+                                                      (anony == false)
+                                                          ? _userModelController.profileImageUrl
+                                                          : 'anony',
                                                       comment: _newComment,
                                                       commentCount: _userModelController.commentCount,
                                                       resortNickname: _userModelController.resortNickname,
@@ -1771,17 +1819,17 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Icon(Icons.arrow_downward_rounded,
-                              color: Color(0xFFffffff),
-                              size: 16),
+                                color: Color(0xFFffffff),
+                                size: 16),
                             Padding(
                               padding: const EdgeInsets.only(left: 2, right: 3),
                               child: Text('최신글 보기',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFFffffff).withOpacity(0.8),
-                                  letterSpacing: 0
-                              ),),
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFffffff).withOpacity(0.8),
+                                    letterSpacing: 0
+                                ),),
                             )
                           ],
                         ),
