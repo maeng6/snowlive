@@ -513,7 +513,7 @@ class _MoreTabState extends State<MoreTab> {
                             children: [
                               Stack(
                                 children: [
-                                  Image.asset('assets/imgs/icons/icon_moretab_friends.png', width: 46,),
+                                  Image.asset('assets/imgs/icons/icon_moretab_friends.png', width: 40,),
                                   Positioned(
                                     // draw a red marble
                                       bottom: 0,
@@ -581,76 +581,73 @@ class _MoreTabState extends State<MoreTab> {
                         SizedBox(height: 25,),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () async{
-                              CustomFullScreenDialog.showDialog();
-                              if(_userModelController.liveCrew!.isEmpty){
-                                CustomFullScreenDialog.cancelDialog();
-                                Get.to(()=>FirstPage_createCrew());
-                              }
-                              else{
-                                await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                await _liveCrewModelController.deleteInvitationAlarm_crew(leaderUid: _userModelController.uid);
-                                CustomFullScreenDialog.cancelDialog();
-                                Get.to(()=>LiveCrewHome());
-                              }
-                            },
-                            child: Column(
-                              children: [
-                                Stack(
-                                  children: [
-                                    Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 46,),
-                                    Positioned(
-                                      // draw a red marble
-                                        top: 2,
-                                        right: 0.0,
-                                        child:
-                                        StreamBuilder(
-                                          stream: FirebaseFirestore.instance
-                                              .collection('newAlarm')
-                                              .where('uid', isEqualTo: _userModelController.uid!)
-                                              .snapshots(),
-                                          builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                            if (!snapshot.hasData || snapshot.data == null) {
-                                              return new Icon(Icons.brightness_1,
-                                                  size: 7.0,
-                                                  color: Colors.white);
-                                            }
-                                            else if (snapshot.data!.docs.isNotEmpty) {
-                                              final alarmDocs = snapshot.data!.docs;
-                                              return new Icon(Icons.brightness_1,
-                                                  size: 7.0,
-                                                  color: (alarmDocs[0]['newInvited_crew'] == true)
-                                                      ? Color(0xFFD32F2F)
-                                                      : Colors.white);
-                                            }
-                                            else if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return new Icon(Icons.brightness_1,
-                                                  size: 7.0,
-                                                  color: Colors.white);
-                                            }
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () async{
+                            CustomFullScreenDialog.showDialog();
+                            if(_userModelController.liveCrew!.isEmpty){
+                              CustomFullScreenDialog.cancelDialog();
+                              Get.to(()=>FirstPage_createCrew());
+                            }
+                            else{
+                              await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                              await _liveCrewModelController.deleteInvitationAlarm_crew(leaderUid: _userModelController.uid);
+                              CustomFullScreenDialog.cancelDialog();
+                              Get.to(()=>LiveCrewHome());
+                            }
+                          },
+                          child: Column(
+                            children: [
+                              Stack(
+                                children: [
+                                  Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 40),
+                                  Positioned(
+                                    // draw a red marble
+                                      top: 2,
+                                      right: 0.0,
+                                      child:
+                                      StreamBuilder(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('newAlarm')
+                                            .where('uid', isEqualTo: _userModelController.uid!)
+                                            .snapshots(),
+                                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                          if (!snapshot.hasData || snapshot.data == null) {
                                             return new Icon(Icons.brightness_1,
                                                 size: 7.0,
                                                 color: Colors.white);
-                                          },
-                                        )
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 6),
-                                Text('라이브크루',style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF555555)
-                                ),)
-                              ],
-                            ),
+                                          }
+                                          else if (snapshot.data!.docs.isNotEmpty) {
+                                            final alarmDocs = snapshot.data!.docs;
+                                            return new Icon(Icons.brightness_1,
+                                                size: 7.0,
+                                                color: (alarmDocs[0]['newInvited_crew'] == true)
+                                                    ? Color(0xFFD32F2F)
+                                                    : Colors.white);
+                                          }
+                                          else if (snapshot.connectionState == ConnectionState.waiting) {
+                                            return new Icon(Icons.brightness_1,
+                                                size: 7.0,
+                                                color: Colors.white);
+                                          }
+                                          return new Icon(Icons.brightness_1,
+                                              size: 7.0,
+                                              color: Colors.white);
+                                        },
+                                      )
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 6),
+                              Text('라이브크루',style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xFF555555)
+                              ),)
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     Column(
                       children: [
@@ -660,7 +657,7 @@ class _MoreTabState extends State<MoreTab> {
                           },
                           child: Column(
                             children: [
-                              Image.asset('assets/imgs/icons/icon_moretab_room.png', width: 46),
+                              Image.asset('assets/imgs/icons/icon_moretab_room.png', width: 40),
                               SizedBox(height: 6),
                               Text('커뮤니티', style: TextStyle(
                                   fontSize: 14,
@@ -677,15 +674,18 @@ class _MoreTabState extends State<MoreTab> {
                           onTap: (){
                             Get.to(()=>EventPage());
                           },
-                          child: Column(
-                            children: [
-                              Image.asset('assets/imgs/icons/icon_moretab_event.png', width: 46),
-                              SizedBox(height: 6),
-                              Text('이벤트', style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF555555)
-                              ),)
-                            ],
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Column(
+                              children: [
+                                Image.asset('assets/imgs/icons/icon_moretab_event.png', width: 40),
+                                SizedBox(height: 6),
+                                Text('이벤트', style: TextStyle(
+                                    fontSize: 14,
+                                    color: Color(0xFF555555)
+                                ),)
+                              ],
+                            ),
                           ),
                         ),
                       ],

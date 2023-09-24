@@ -31,6 +31,7 @@ class ReplyScreen extends StatefulWidget {
   var comment;
   var commentTime;
 
+
   @override
   State<ReplyScreen> createState() => _ReplyScreenState();
 }
@@ -40,6 +41,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
   final _controller = TextEditingController();
   var _newReply = '';
   final _formKey = GlobalKey<FormState>();
+  bool anony = false;
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
@@ -181,7 +183,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                     Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        if (widget.replyImage != "")
+                                        if (widget.replyImage != "" && widget.replyImage != 'anony')
                                           Padding(
                                             padding: EdgeInsets.only(top: 5),
                                             child: GestureDetector(
@@ -221,6 +223,24 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                               ),
                                             ),
                                           ),
+                                        if (widget.replyImage == "anony")
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 5),
+                                            child: GestureDetector(
+                                              onTap: () {},
+                                              child: ExtendedImage.asset(
+                                                'assets/imgs/icons/img_profile_default_anony_circle.png',
+                                                shape: BoxShape.circle,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    20),
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+
                                         SizedBox(width: 10),
                                         Column(
                                           mainAxisAlignment: MainAxisAlignment.start,
@@ -346,7 +366,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                     Row(
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        if (replyDocs[index]['profileImageUrl'] != "")
+                                                        if (replyDocs[index]['profileImageUrl'] != "" && replyDocs[index]['profileImageUrl'] != 'anony')
                                                           Padding(
                                                             padding: EdgeInsets.only(top: 4),
                                                             child: GestureDetector(
@@ -397,6 +417,21 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                               },
                                                               child: ExtendedImage.asset(
                                                                 'assets/imgs/profile/img_profile_default_circle.png',
+                                                                shape: BoxShape.circle,
+                                                                borderRadius: BorderRadius.circular(20),
+                                                                width: 26,
+                                                                height: 26,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        if (replyDocs[index]['profileImageUrl'] == "anony")
+                                                          Padding(
+                                                            padding: EdgeInsets.only(top:4),
+                                                            child: GestureDetector(
+                                                              onTap: () async{},
+                                                              child: ExtendedImage.asset(
+                                                                'assets/imgs/icons/img_profile_default_anony_circle.png',
                                                                 shape: BoxShape.circle,
                                                                 borderRadius: BorderRadius.circular(20),
                                                                 width: 26,
@@ -777,6 +812,62 @@ class _ReplyScreenState extends State<ReplyScreen> {
                           padding: EdgeInsets.only(bottom: 6),
                           child: Row(
                             children: [
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    if(anony == true){
+                                      setState(() {
+                                        anony = false;
+                                      });
+                                    }else{
+                                      setState(() {
+                                        anony = true;
+                                      });
+                                    }
+                                  });
+                                },
+                                child:Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color:
+                                    (anony == true)
+                                        ? Color(0xFFCBE0FF)
+                                        : Color(0xFFECECEC),
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      (anony == true)
+                                          ? Image.asset(
+                                        'assets/imgs/icons/icon_livetalk_check.png',
+                                        scale: 4,
+                                        width: 10,
+                                        height: 10,
+                                      )
+                                          :  Image.asset(
+                                        'assets/imgs/icons/icon_livetalk_check_off.png',
+                                        scale: 4,
+                                        width: 10,
+                                        height: 10,
+                                      ),
+                                      SizedBox(width: 2,),
+                                      Text('익명',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                            color:
+                                            (anony == true)
+                                                ? Color(0xFF3D83ED)
+                                                :Color(0xFF949494)
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 14,
+                              ),
                               Expanded(
                                 child: TextFormField(
                                   key: _formKey,
@@ -802,10 +893,16 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                             await _commentModelController.replyCountUpdate('${widget.replyUid}${widget.replyCount}');
                                             await _replyModelController.sendReply(
                                                 replyResortNickname: _userModelController.resortNickname,
-                                                displayName: _userModelController.displayName,
+                                                displayName:
+                                                (anony == false)
+                                                ? _userModelController.displayName
+                                                : '익명',
                                                 uid: _userModelController.uid,
                                                 replyLocationUid: widget.replyUid,
-                                                profileImageUrl: _userModelController.profileImageUrl,
+                                                profileImageUrl:
+                                                (anony == false)
+                                                ? _userModelController.profileImageUrl
+                                                : 'anony',
                                                 reply: _newReply,
                                                 replyLocationUidCount: widget.replyCount,
                                                 commentCount: _userModelController.commentCount);
