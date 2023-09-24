@@ -58,7 +58,7 @@ class _MainHomeState extends State<MainHome> {
     //TODO: Dependency Injection************************************************
 
     _noticeController.getIsNewNotice();
-//ㅋㅋㅋzzzzkkkkdddd
+
     return Obx(()=>Scaffold(
         bottomNavigationBar: BottomNavigationBar(
           showSelectedLabels: true,
