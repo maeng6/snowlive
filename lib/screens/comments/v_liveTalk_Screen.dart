@@ -702,28 +702,28 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
 
                                                                         SizedBox(width: 8),
                                                                         Padding(
-                                                                            padding: EdgeInsets.only(bottom: 1),
-                                                                            child:
-                                                                            Row(
-                                                                              children: [
-                                                                                Text(
-                                                                                  chatDocs[index].get('displayName'),
-                                                                                  style: TextStyle(
-                                                                                      fontWeight: FontWeight.bold,
-                                                                                      fontSize: 12,
-                                                                                      color: Color(0xFF111111)),
-                                                                                ),
-                                                                                if(chatDocs[index].get('displayName') == 'SNOWLIVE')
+                                                                          padding: EdgeInsets.only(bottom: 1),
+                                                                          child:
+                                                                          Row(
+                                                                          children: [
+                                                                            Text(
+                                                                              chatDocs[index].get('displayName'),
+                                                                              style: TextStyle(
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  fontSize: 12,
+                                                                                  color: Color(0xFF111111)),
+                                                                            ),
+                                                                            if(chatDocs[index].get('displayName') == 'SNOWLIVE')
 
-                                                                                  Padding(
-                                                                                    padding: const EdgeInsets.only(left : 2.0),
-                                                                                    child: Image.asset(
-                                                                                      'assets/imgs/icons/icon_snowlive_operator.png',
-                                                                                      scale: 5.5,
-                                                                                    ),
-                                                                                  )
-                                                                              ],
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.only(left : 2.0),
+                                                                              child: Image.asset(
+                                                                                  'assets/imgs/icons/icon_snowlive_operator.png',
+                                                                                scale: 5.5,
+                                                                              ),
                                                                             )
+                                                                          ],
+                                                                          )
                                                                         ),
                                                                       ],
                                                                     ),
@@ -1262,8 +1262,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                       size: 14,
                                                                                       color:
                                                                                       (chatDocs[index]['replyCount'] != 0)
-                                                                                          ? Color(0xFF3D83ED)
-                                                                                          : Color(0xFFC8C8C8),
+                                                                                      ? Color(0xFF3D83ED)
+                                                                                      : Color(0xFFC8C8C8),
                                                                                     ),
                                                                                     padding: EdgeInsets.zero,
                                                                                     constraints: BoxConstraints(),
@@ -1596,25 +1596,25 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                       decoration: BoxDecoration(
                                         color:
                                         (anony == true)
-                                            ? Color(0xFFCBE0FF)
-                                            : Color(0xFFECECEC),
+                                        ? Color(0xFFCBE0FF)
+                                        : Color(0xFFECECEC),
                                         borderRadius: BorderRadius.circular(30),
                                       ),
                                       child: Row(
                                         children: [
                                           (anony == true)
-                                              ? Image.asset(
+                                          ? Image.asset(
                                             'assets/imgs/icons/icon_livetalk_check.png',
                                             scale: 4,
                                             width: 10,
                                             height: 10,
                                           )
-                                              :  Image.asset(
-                                            'assets/imgs/icons/icon_livetalk_check_off.png',
-                                            scale: 4,
-                                            width: 10,
-                                            height: 10,
-                                          ),
+                                          :  Image.asset(
+                                        'assets/imgs/icons/icon_livetalk_check_off.png',
+                                        scale: 4,
+                                        width: 10,
+                                        height: 10,
+                                      ),
                                           SizedBox(width: 2,),
                                           Text('익명',
                                             style: TextStyle(
@@ -1622,7 +1622,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                 fontSize: 12,
                                                 color:
                                                 (anony == true)
-                                                    ? Color(0xFF3D83ED)
+                                                ? Color(0xFF3D83ED)
                                                     :Color(0xFF949494)
                                             ),
                                           ),
@@ -1673,13 +1673,13 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                   await _commentModelController.sendMessage(
                                                       displayName:
                                                       (anony == false)
-                                                          ? _userModelController.displayName
-                                                          : "익명",
+                                                      ? _userModelController.displayName
+                                                      : "익명",
                                                       uid: _userModelController.uid,
                                                       profileImageUrl:
                                                       (anony == false)
-                                                          ? _userModelController.profileImageUrl
-                                                          : 'anony',
+                                                      ? _userModelController.profileImageUrl
+                                                      : 'anony',
                                                       comment: _newComment,
                                                       commentCount: _userModelController.commentCount,
                                                       resortNickname: _userModelController.resortNickname,
@@ -1819,17 +1819,17 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Icon(Icons.arrow_downward_rounded,
-                                color: Color(0xFFffffff),
-                                size: 16),
+                              color: Color(0xFFffffff),
+                              size: 16),
                             Padding(
                               padding: const EdgeInsets.only(left: 2, right: 3),
                               child: Text('최신글 보기',
-                                style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFFffffff).withOpacity(0.8),
-                                    letterSpacing: 0
-                                ),),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFffffff).withOpacity(0.8),
+                                  letterSpacing: 0
+                              ),),
                             )
                           ],
                         ),
