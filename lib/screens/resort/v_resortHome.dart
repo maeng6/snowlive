@@ -1349,22 +1349,22 @@ class _ResortHomeState extends State<ResortHome>
                                                     FleaMarket_List_Screen_Home(),
                                                   ],
                                                 )),
-                                            SizedBox(
-                                              height: 12,
-                                            ),
-                                            Container(
-                                                padding: EdgeInsets.only(left: 20, right: 20, top: 26, bottom: 24),
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius: BorderRadius.circular(14)),
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    Get.to(() => NoticeList());
-                                                  },
-                                                  child:
-                                                  NoticeTile_resortHome(),
-                                                )),
+                                            // SizedBox(
+                                            //   height: 12,
+                                            // ),
+                                            // Container(
+                                            //     padding: EdgeInsets.only(left: 20, right: 20, top: 26, bottom: 24),
+                                            //     width: double.infinity,
+                                            //     decoration: BoxDecoration(
+                                            //         color: Colors.white,
+                                            //         borderRadius: BorderRadius.circular(14)),
+                                            //     child: GestureDetector(
+                                            //       onTap: () {
+                                            //         Get.to(() => NoticeList());
+                                            //       },
+                                            //       child:
+                                            //       NoticeTile_resortHome(),
+                                            //     )),
                                             SizedBox(
                                               height: 20,
                                             ),
@@ -1594,7 +1594,7 @@ class _ResortHomeState extends State<ResortHome>
                                                     child: Column(
                                                       children: [
                                                         Text(
-                                                          'Copyright by 134CreativeLab 2022.',
+                                                          'Copyright by 134CreativeLab 2023.',
                                                           style: TextStyle(
                                                             color: Color(
                                                                 0xFFc8c8c8),
@@ -2727,27 +2727,24 @@ class _ResortHomeState extends State<ResortHome>
                                                   FleaMarket_List_Screen_Home(),
                                                 ],
                                               )),
-                                          SizedBox(
-                                            height: 12,
-                                          ),
-                                          Container(
-                                              padding: EdgeInsets.only(
-                                                  left: 20,
-                                                  right: 20,
-                                                  top: 26,
-                                                  bottom: 24),
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                  BorderRadius.circular(
-                                                      14)),
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Get.to(() => NoticeList());
-                                                },
-                                                child: NoticeTile_resortHome(),
-                                              )),
+                                          // Container(
+                                          //     padding: EdgeInsets.only(
+                                          //         left: 20,
+                                          //         right: 20,
+                                          //         top: 26,
+                                          //         bottom: 24),
+                                          //     width: double.infinity,
+                                          //     decoration: BoxDecoration(
+                                          //         color: Colors.white,
+                                          //         borderRadius:
+                                          //         BorderRadius.circular(
+                                          //             14)),
+                                          //     child: GestureDetector(
+                                          //       onTap: () {
+                                          //         Get.to(() => NoticeList());
+                                          //       },
+                                          //       child: NoticeTile_resortHome(),
+                                          //     )),
                                           SizedBox(
                                             height: 20,
                                           ),
@@ -2968,7 +2965,7 @@ class _ResortHomeState extends State<ResortHome>
                                                   child: Column(
                                                     children: [
                                                       Text(
-                                                        'Copyright by 134CreativeLab 2022.',
+                                                        'Copyright by 134CreativeLab 2023.',
                                                         style: TextStyle(
                                                           color:
                                                           Color(0xFFc8c8c8),

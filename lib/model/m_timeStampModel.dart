@@ -7,7 +7,7 @@ class TimeStamp{
   late String agoTime;
 
   String yyyymmddFormat(Timestamp timestamp) {
-    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final DateFormat formatter = DateFormat('yyyy.MM.dd');
     final dateTime = timestamp.toDate();
     final formattedDateTime = formatter.format(dateTime);
     return formattedDateTime;

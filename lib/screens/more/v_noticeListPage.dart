@@ -85,36 +85,52 @@ class _NoticeListState extends State<NoticeList> {
                   ));
                 },
                 child: Container(
-                  padding: EdgeInsets.only(left: 16, right: 16, top: 14, bottom: 14),
+                  padding: EdgeInsets.only(left: 16, right: 16),
                   color: Colors.transparent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  child: Column(
                     children: [
-                      Container(
-                        constraints: BoxConstraints(maxWidth: _size.width - 180),
-                        child: Text(
-                          noticeDocs[index].get('noticeTitle'),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF111111)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                constraints: BoxConstraints(maxWidth: _size.width - 80),
+                                child: Text(
+                                  noticeDocs[index].get('noticeTitle'),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF111111)
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text(_timeStampController.yyyymmddFormat(noticeDocs[index].get('timeStamp')),style: TextStyle(
+                                  fontWeight: FontWeight.normal, color: Color(0xFF949494), fontSize: 14
+                              ),),
+                            ],
                           ),
+                          SizedBox(
+                            width: 12,
+                          ),
+                          Image.asset('assets/imgs/icons/icon_arrow_g.png',
+                            height: 24,
+                            width: 24,
+                          )
+                        ],
+                      ),
+                      if (noticeDocs.length != index+1)
+                        Divider(
+                          height: 50,
+                          thickness: 0.5,
                         ),
-                      ),
-                      Expanded(child: SizedBox()),
-                      Text(_timeStampController.yyyymmddFormat(noticeDocs[index].get('timeStamp')),style: TextStyle(
-                        fontWeight: FontWeight.normal, color: Color(0xFF949494), fontSize: 14
-                      ),),
-                      SizedBox(
-                        width: 12,
-                      ),
-                      Image.asset('assets/imgs/icons/icon_arrow_g.png',
-                        height: 24,
-                        width: 24,
-                      )
                     ],
                   ),
                 ),

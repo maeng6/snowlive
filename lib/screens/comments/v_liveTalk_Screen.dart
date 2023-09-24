@@ -1561,7 +1561,35 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                       },
                                     ),),
                                   SizedBox(
-                                    width: 10,
+                                    width: 8,
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFCBE0FF),
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Image.asset(
+                                          'assets/imgs/icons/icon_livetalk_check.png',
+                                          scale: 4,
+                                          width: 10,
+                                          height: 10,
+                                        ),
+                                        SizedBox(width: 2,),
+                                        Text('익명',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12,
+                                              color: Color(0xFF3D83ED)
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 14,
                                   ),
                                   Expanded(
                                     child: TextFormField(
@@ -1640,7 +1668,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                           hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
                                           hintText: '라이브톡 남기기',
                                           contentPadding: EdgeInsets.only(
-                                              top: 10, bottom: 10, left: 16, right: 16),
+                                              top: 2, bottom: 2, left: 12, right: 16),
                                           border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: Color(0xFFDEDEDE)),
