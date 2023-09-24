@@ -45,7 +45,7 @@ class _MainHomeState extends State<MainHome> {
     _currentPage = widget.initialPage;
     _pageController = PageController(initialPage: widget.initialPage); // 초기 페이지 설정
   }
-
+//123456789
 
   @override
   Widget build(BuildContext context) {
