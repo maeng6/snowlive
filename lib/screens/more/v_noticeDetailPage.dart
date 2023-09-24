@@ -49,43 +49,49 @@ class _NoticeDetailState extends State<NoticeDetail> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${widget.noticeTile}',
-                style: GoogleFonts.notoSans(
-                    color: Color(0xFF111111),
-                    fontWeight: FontWeight.w900,
-                    fontSize: 20),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                '${widget.noticeDetail}',
-                maxLines:
-                1000,
-                overflow:
-                TextOverflow.ellipsis,
-                style: TextStyle(
-                    color: Color(0xFF111111),
-                    fontWeight: FontWeight.normal,
-                    fontSize: 16),
-              ),
-              Text(
-                '${widget.noticeDetail2}',
-                maxLines:
-                1000,
-                overflow:
-                TextOverflow.ellipsis,
-                style: TextStyle(
-                    color: Color(0xFF111111),
-                    fontWeight: FontWeight.normal,
-                    fontSize: 16),
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${widget.noticeTile}',
+                  style: TextStyle(
+                      color: Color(0xFF111111),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Text(
+                  '${widget.noticeDetail}',
+                  maxLines:
+                  1000,
+                  overflow:
+                  TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: Color(0xFF111111),
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Text(
+                  '${widget.noticeDetail2}',
+                  maxLines:
+                  1000,
+                  overflow:
+                  TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: Color(0xFF111111),
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16),
+                ),
+              ],
+            ),
           ),
         ),
       ),
