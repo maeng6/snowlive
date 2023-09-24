@@ -84,21 +84,10 @@ class _MainHomeState extends State<MainHome> {
               label: '홈',
             ),
             BottomNavigationBarItem(
-              icon: Stack(
-                children: [
-                  Positioned(
-                    top: 3,
-                    right: 3,
-                    child: Icon(Icons.brightness_1,
-                        size: 6.0,
-                        color: Colors.white),
-                  ),
-                  ImageIcon(
-                    AssetImage('assets/imgs/icons/icon_market_off.png'),
-                    size: 40,
-                    color: Color(0xFF444444),
-                  ),
-                ],
+              icon: ImageIcon(
+                AssetImage('assets/imgs/icons/icon_market_off.png'),
+                size: 40,
+                color: Color(0xFF444444),
               ),
               activeIcon: ImageIcon(
                 AssetImage('assets/imgs/icons/icon_market_on.png'),
@@ -156,34 +145,30 @@ class _MainHomeState extends State<MainHome> {
                     // draw a red marble
                       top: 2,
                       right: 0.0,
-                      child:
-                      StreamBuilder(
+                      child: StreamBuilder(
                         stream: FirebaseFirestore.instance
                             .collection('newAlarm')
                             .where('uid', isEqualTo: _userModelController.uid!)
                             .snapshots(),
                         builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                           if (!snapshot.hasData || snapshot.data == null) {
-                            return new Icon(Icons.brightness_1,
-                                size: 7.0,
-                                color: Colors.white);
+                            return  SizedBox.shrink();
                           }
                           else if (snapshot.data!.docs.isNotEmpty) {
+
                             final alarmDocs = snapshot.data!.docs;
-                            return new Icon(Icons.brightness_1,
-                                size: 7.0,
-                                color: (alarmDocs[0]['newInvited_friend'] == true || alarmDocs[0]['newInvited_crew'] == true)
-                                    ? Color(0xFFD32F2F)
-                                    : Colors.white);
+                            if(alarmDocs[0]['newInvited_friend'] == true || alarmDocs[0]['newInvited_crew'] == true){
+                              return new Icon(Icons.brightness_1,
+                                  size: 7.0,
+                                  color:  Color(0xFFD32F2F));
+                            }else {
+                              return SizedBox.shrink();
+                            }
                           }
                           else if (snapshot.connectionState == ConnectionState.waiting) {
-                            return new Icon(Icons.brightness_1,
-                                size: 7.0,
-                                color: Colors.white);
+                            return SizedBox.shrink();
                           }
-                          return new Icon(Icons.brightness_1,
-                              size: 7.0,
-                              color: Colors.white);
+                          return SizedBox.shrink();
 
                         },
                       )
@@ -208,26 +193,23 @@ class _MainHomeState extends State<MainHome> {
                             .snapshots(),
                         builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                           if (!snapshot.hasData || snapshot.data == null) {
-                            return new Icon(Icons.brightness_1,
-                                size: 7.0,
-                                color: Colors.white);
+                            return  SizedBox.shrink();
                           }
                           else if (snapshot.data!.docs.isNotEmpty) {
+
                             final alarmDocs = snapshot.data!.docs;
+                            if(alarmDocs[0]['newInvited_friend'] == true || alarmDocs[0]['newInvited_crew'] == true){
                             return new Icon(Icons.brightness_1,
                                 size: 7.0,
-                                color: (alarmDocs[0]['newInvited_friend'] == true || alarmDocs[0]['newInvited_crew'] == true)
-                                    ? Color(0xFFD32F2F)
-                                    : Colors.white);
-                          }
+                                color:  Color(0xFFD32F2F));
+                            }else {
+                              return SizedBox.shrink();
+                            }
+    }
                           else if (snapshot.connectionState == ConnectionState.waiting) {
-                            return new Icon(Icons.brightness_1,
-                                size: 7.0,
-                                color: Colors.white);
+                            return SizedBox.shrink();
                           }
-                          return new Icon(Icons.brightness_1,
-                              size: 7.0,
-                              color: Colors.white);
+                          return SizedBox.shrink();
 
                         },
                       )
