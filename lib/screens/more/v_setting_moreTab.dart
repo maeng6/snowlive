@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/screens/more/v_licenseListPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_imageController.dart';
 import 'package:com.snowlive/screens/more/friend/v_repoList.dart';
 import '../../controller/vm_loginController.dart';
 import '../../controller/vm_userModelController.dart';
+import '../v_webPage.dart';
 
 class setting_moreTab extends StatelessWidget {
   const setting_moreTab({Key? key}) : super(key: key);
@@ -35,6 +37,91 @@ class setting_moreTab extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 16),
+            minVerticalPadding: 20,
+            onTap: () {
+              Get.to(() => WebPage(
+                url:
+                'https://sites.google.com/view/snowlive-termsofservice/%ED%99%88',
+              ));
+            },
+            title: Text(
+              '이용약관',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Color(0xFF111111)),
+            ),
+            trailing: Image.asset(
+              'assets/imgs/icons/icon_arrow_g.png',
+              height: 24,
+              width: 24,
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 16),
+            minVerticalPadding: 20,
+            onTap: () {
+              Get.to(() => WebPage(
+                url:
+                'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88',
+              ));
+            },
+            title: Text(
+              '개인정보처리방침',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Color(0xFF111111)),
+            ),
+            trailing: Image.asset(
+              'assets/imgs/icons/icon_arrow_g.png',
+              height: 24,
+              width: 24,
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 16),
+            minVerticalPadding: 20,
+            onTap: () {
+              Get.to(() => WebPage(
+                url:
+                'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88',
+              ));
+            },
+            title: Text(
+              '위치정보이용약관',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Color(0xFF111111)),
+            ),
+            trailing: Image.asset(
+              'assets/imgs/icons/icon_arrow_g.png',
+              height: 24,
+              width: 24,
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 16),
+            minVerticalPadding: 20,
+            onTap: () {
+              Get.to(() => LicenseListPage());
+            },
+            title: Text(
+              '오픈소스라이선스',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Color(0xFF111111)),
+            ),
+            trailing: Image.asset(
+              'assets/imgs/icons/icon_arrow_g.png',
+              height: 24,
+              width: 24,
+            ),
+          ),
           ListTile(
             contentPadding: EdgeInsets.symmetric(horizontal: 16),
             minVerticalPadding: 20,

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/screens/more/v_eventPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -670,6 +671,25 @@ class _MoreTabState extends State<MoreTab> {
                         ),
                       ],
                     ),
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: (){
+                            Get.to(()=>EventPage());
+                          },
+                          child: Column(
+                            children: [
+                              Image.asset('assets/imgs/icons/icon_moretab_event.png', width: 46),
+                              SizedBox(height: 6),
+                              Text('이벤트', style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xFF555555)
+                              ),)
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                     // Column(
                     //   children: [
                     //     GestureDetector(
@@ -747,7 +767,7 @@ class _MoreTabState extends State<MoreTab> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  '소식',
+                  '고객센터',
                   style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -785,85 +805,22 @@ class _MoreTabState extends State<MoreTab> {
                   height: 24,
                   width: 24,
                 ),
-              ),
-              ListTile(
+              ),ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
                 onTap: () {
-                  Get.to(() => WebPage(
-                        url:
-                            'https://sites.google.com/view/snowlive-termsofservice/%ED%99%88',
-                      ));
+                  _liveCrewModelController.otherShare(contents: 'http://pf.kakao.com/_LxnDdG/chat');
                 },
-                title: Text(
-                  '이용약관',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Color(0xFF111111)),
-                ),
-                trailing: Image.asset(
-                  'assets/imgs/icons/icon_arrow_g.png',
-                  height: 24,
-                  width: 24,
-                ),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                minVerticalPadding: 20,
-                onTap: () {
-                  Get.to(() => WebPage(
-                        url:
-                            'https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88',
-                      ));
-                },
-                title: Text(
-                  '개인정보처리방침',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Color(0xFF111111)),
-                ),
-                trailing: Image.asset(
-                  'assets/imgs/icons/icon_arrow_g.png',
-                  height: 24,
-                  width: 24,
-                ),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                minVerticalPadding: 20,
-                onTap: () {
-                  Get.to(() => WebPage(
-                    url:
-                    'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88',
-                  ));
-                },
-                title: Text(
-                  '위치정보이용약관',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Color(0xFF111111)),
-                ),
-                trailing: Image.asset(
-                  'assets/imgs/icons/icon_arrow_g.png',
-                  height: 24,
-                  width: 24,
-                ),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                minVerticalPadding: 20,
-                onTap: () {
-                  Get.to(() => LicenseListPage());
-                },
-                title: Text(
-                  '오픈소스라이선스',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Color(0xFF111111)),
+                title: Stack(
+                  children: [
+                    Text(
+                      '1:1 고객 문의',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Color(0xFF111111)),
+                    ),
+                  ],
                 ),
                 trailing: Image.asset(
                   'assets/imgs/icons/icon_arrow_g.png',
