@@ -104,8 +104,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                               : Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    if (chatDocs[index]['profileImageUrl'] !=
-                                        "")
+                                    if (chatDocs[index]['profileImageUrl'] != "" && chatDocs[index]['profileImageUrl'] != "anony")
                                       Transform.translate(
                                         offset: Offset(0, 6),
                                         child: GestureDetector(
@@ -124,8 +123,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                           ),
                                         ),
                                       ),
-                                    if (chatDocs[index]['profileImageUrl'] ==
-                                        "")
+                                    if (chatDocs[index]['profileImageUrl'] == "")
                                       Transform.translate(
                                         offset: Offset(0, 6),
                                         child: GestureDetector(
@@ -143,6 +141,24 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                           ),
                                         ),
                                       ),
+                                    if (chatDocs[index]['profileImageUrl'] == "anony")
+                                      Transform.translate(
+                                        offset: Offset(0, 6),
+                                        child: GestureDetector(
+                                          onTap: (){
+
+                                          },
+                                          child: ExtendedImage.asset(
+                                            'assets/imgs/icons/img_profile_default_anony_circle.png',
+                                            shape: BoxShape.circle,
+                                            borderRadius:
+                                            BorderRadius.circular(20),
+                                            width: 32,
+                                            height: 32,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
                                     SizedBox(width: 12),
                                     Column(
                                       mainAxisAlignment: MainAxisAlignment.start,
@@ -153,13 +169,20 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                             Row(
                                               children: [
                                                 Text(
-                                                  chatDocs[index]
-                                                      .get('displayName'),
+                                                  chatDocs[index].get('displayName'),
                                                   style: TextStyle(
                                                       fontWeight: FontWeight.bold,
                                                       fontSize: 14,
                                                       color: Color(0xFF111111)),
                                                 ),
+                                                if(chatDocs[index].get('displayName') == 'SNOWLIVE')
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(left : 2.0),
+                                                    child: Image.asset(
+                                                      'assets/imgs/icons/icon_snowlive_operator.png',
+                                                      scale: 5.5,
+                                                    ),
+                                                  ),
                                                 SizedBox(width: 6),
                                                 Text(
                                                   chatDocs[index]

@@ -258,6 +258,14 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                       color: Color(
                                                           0xFF111111)),
                                                 ),
+                                                if(widget.replyDisplayName == 'SNOWLIVE')
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(left : 2.0),
+                                                    child: Image.asset(
+                                                      'assets/imgs/icons/icon_snowlive_operator.png',
+                                                      scale: 5.5,
+                                                    ),
+                                                  ),
                                                 SizedBox(width: 6),
                                                 Text(
                                                   widget.replyResortNickname,
@@ -455,6 +463,14 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                       fontSize: 14,
                                                                       color: Color(0xFF111111)),
                                                                 ),
+                                                                if(replyDocs[index]['displayName'] == 'SNOWLIVE')
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.only(left : 2.0),
+                                                                    child: Image.asset(
+                                                                      'assets/imgs/icons/icon_snowlive_operator.png',
+                                                                      scale: 5.5,
+                                                                    ),
+                                                                  ),
                                                                 SizedBox(
                                                                     width: 6),
                                                                 Text(
