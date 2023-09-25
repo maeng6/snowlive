@@ -130,6 +130,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '필터';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -148,6 +149,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '곤지암';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -164,6 +166,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '무주';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -180,6 +183,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '비발디';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -196,6 +200,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '알펜시아';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -212,6 +217,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '에덴밸리';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -228,6 +234,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '강촌';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -244,6 +251,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '오크밸리';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -260,6 +268,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '오투';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -276,6 +285,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '용평';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -292,6 +302,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '웰리힐리';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -308,6 +319,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '지산';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -324,6 +336,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '하이원';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -340,6 +353,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '휘닉스';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -558,39 +572,45 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             await _showCupertinoPicker();
                           },
                           child: Container(
-                              decoration: BoxDecoration(
-                                color: (isTap[4] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                borderRadius: BorderRadius.circular(6),
-                                border: Border.all(
-                                    color: (isTap[4] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                              ),
-                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                              height: 32,
-                              child:(isTap[4] == true)
-                                  ? Text(_selectedValue,
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: (isTap[4] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)))
-                                  : Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 4),
-                                    child: ExtendedImage.asset(
-                                      'assets/imgs/icons/icon_livetalk_filter.png',
-                                      enableMemoryCache: true,
-                                      shape: BoxShape.rectangle,
-                                      width: 12,
-                                    ),
+                            color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    color: (isTap[4] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                        color: (isTap[4] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
                                   ),
-                                  Text('필터',
+                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  height: 32,
+                                  child:(isTap[4] == true)
+                                      ? Text(_selectedValue,
                                       style: TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFF777777)))
-                                ],
-                              )
+                                          color: (isTap[4] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)))
+                                      : Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 4),
+                                        child: ExtendedImage.asset(
+                                          'assets/imgs/icons/icon_livetalk_filter.png',
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.rectangle,
+                                          width: 12,
+                                        ),
+                                      ),
+                                      Text('필터',
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF777777)))
+                                    ],
+                                  )
 
+                              ),
+                            ),
                           ),
 
                         )
