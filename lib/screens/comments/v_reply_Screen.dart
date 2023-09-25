@@ -320,8 +320,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                   ),),
                                 )
                                 :Expanded(
-                                  child: Scrollbar(
-                                    child: ListView.builder(
+                                  child:ListView.builder(
                                       controller: _scrollController,
                                       shrinkWrap: true,
                                       reverse: false,
@@ -807,7 +806,6 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                         );
                                       },
                                     ),
-                                  ),
                                 ),
                               ],
                             ),
