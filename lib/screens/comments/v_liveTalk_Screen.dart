@@ -422,146 +422,149 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          child: Row(
-                            children: [
-                              GestureDetector(
-                                onTap: (){
-                                  HapticFeedback.lightImpact();
-                                  setState(() {
-                                    isTap[0] = true;
-                                    isTap[1] = false;
-                                    isTap[2] = false;
-                                    isTap[3] = false;
-                                    isTap[4] = false;
-                                    _selectedValue = '필터';
-                                    _selectedValue2 = '전체';
-                                    _selectedValue3 = '전체';
-                                    _isVisible = false;
-                                    _stream = newStream();
-                                  });
-                                },
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      color: (isTap[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      border: Border.all(
-                                          color: (isTap[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                    ),
-                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                    height: 32,
-                                    child: Text('# 전체',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          color: (isTap[0] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                      ),)
-                                ),
-                              ),
-                              SizedBox(width: 6),
-                              GestureDetector(
-                                onTap: (){
-                                  HapticFeedback.lightImpact();
-                                  setState(() {
-                                    isTap[0] = false;
-                                    isTap[1] = true;
-                                    isTap[2] = false;
-                                    isTap[3] = false;
-                                    isTap[4] = false;
-                                    _selectedValue = '${_userModelController.resortNickname}';
-                                    _selectedValue2 = '전체';
-                                    _selectedValue3 = '전체';
-                                    _isVisible = false;
-                                    _stream = newStream();
-                                  });
-                                },
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      border: Border.all(
-                                          color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                    ),
-                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                    height: 32,
-                                    child: Text('# 자주가는',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          color: (isTap[1] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                      ),)
-                                ),
-                              ),
-                              SizedBox(width: 6),
-                              GestureDetector(
-                                onTap: (){
-                                  setState(() {
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: (){
                                     HapticFeedback.lightImpact();
-                                    isTap[0] = false;
-                                    isTap[1] = false;
-                                    isTap[2] = true;
-                                    isTap[3] = false;
-                                    isTap[4] = false;
-                                    _selectedValue = '필터';
-                                    _selectedValue2 = 'SNOWLIVE';
-                                    _selectedValue3 = '전체';
-                                    _isVisible = false;
-                                    _stream = newStream();
-                                  });
-                                  print(_selectedValue2);
-                                },
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      border: Border.all(
-                                          color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                    ),
-                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                    height: 32,
-                                    child: Text('# 소식',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                      ),)
+                                    setState(() {
+                                      isTap[0] = true;
+                                      isTap[1] = false;
+                                      isTap[2] = false;
+                                      isTap[3] = false;
+                                      isTap[4] = false;
+                                      _selectedValue = '필터';
+                                      _selectedValue2 = '전체';
+                                      _selectedValue3 = '전체';
+                                      _isVisible = false;
+                                      _stream = newStream();
+                                    });
+                                  },
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: (isTap[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                        borderRadius: BorderRadius.circular(30.0),
+                                        border: Border.all(
+                                            color: (isTap[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                      ),
+                                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                      height: 32,
+                                      child: Text('# 전체',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: (isTap[0] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                        ),)
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 6),
-                              GestureDetector(
-                                onTap: (){
-                                  setState(() {
+                                SizedBox(width: 6),
+                                GestureDetector(
+                                  onTap: (){
                                     HapticFeedback.lightImpact();
-                                    isTap[0] = false;
-                                    isTap[1] = false;
-                                    isTap[2] = false;
-                                    isTap[3] = true;
-                                    isTap[4] = false;
-                                    _selectedValue = '필터';
-                                    _selectedValue2 = '전체';
-                                    _selectedValue3 = '${_userModelController.uid}';
-                                    _isVisible = false;
-                                    _stream = newStream();
-                                  });
-                                  print(_selectedValue3);
-                                },
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      border: Border.all(
-                                          color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                    ),
-                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                    height: 32,
-                                    child: Text('# 내글',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          color: (isTap[3] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                      ),)
+                                    setState(() {
+                                      isTap[0] = false;
+                                      isTap[1] = true;
+                                      isTap[2] = false;
+                                      isTap[3] = false;
+                                      isTap[4] = false;
+                                      _selectedValue = '${_userModelController.resortNickname}';
+                                      _selectedValue2 = '전체';
+                                      _selectedValue3 = '전체';
+                                      _isVisible = false;
+                                      _stream = newStream();
+                                    });
+                                  },
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                        borderRadius: BorderRadius.circular(30.0),
+                                        border: Border.all(
+                                            color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                      ),
+                                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                      height: 32,
+                                      child: Text('# 자주가는',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: (isTap[1] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                        ),)
+                                  ),
                                 ),
-                              ),
-                            ],
+                                SizedBox(width: 6),
+                                GestureDetector(
+                                  onTap: (){
+                                    setState(() {
+                                      HapticFeedback.lightImpact();
+                                      isTap[0] = false;
+                                      isTap[1] = false;
+                                      isTap[2] = true;
+                                      isTap[3] = false;
+                                      isTap[4] = false;
+                                      _selectedValue = '필터';
+                                      _selectedValue2 = 'SNOWLIVE';
+                                      _selectedValue3 = '전체';
+                                      _isVisible = false;
+                                      _stream = newStream();
+                                    });
+                                    print(_selectedValue2);
+                                  },
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                        borderRadius: BorderRadius.circular(30.0),
+                                        border: Border.all(
+                                            color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                      ),
+                                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                      height: 32,
+                                      child: Text('# 소식',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                        ),)
+                                  ),
+                                ),
+                                SizedBox(width: 6),
+                                GestureDetector(
+                                  onTap: (){
+                                    setState(() {
+                                      HapticFeedback.lightImpact();
+                                      isTap[0] = false;
+                                      isTap[1] = false;
+                                      isTap[2] = false;
+                                      isTap[3] = true;
+                                      isTap[4] = false;
+                                      _selectedValue = '필터';
+                                      _selectedValue2 = '전체';
+                                      _selectedValue3 = '${_userModelController.uid}';
+                                      _isVisible = false;
+                                      _stream = newStream();
+                                    });
+                                    print(_selectedValue3);
+                                  },
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                        borderRadius: BorderRadius.circular(30.0),
+                                        border: Border.all(
+                                            color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                      ),
+                                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                      height: 32,
+                                      child: Text('# 내글',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: (isTap[3] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                        ),)
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         GestureDetector(
@@ -569,39 +572,45 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             await _showCupertinoPicker();
                           },
                           child: Container(
-                              decoration: BoxDecoration(
-                                color: (isTap[4] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                borderRadius: BorderRadius.circular(6),
-                                border: Border.all(
-                                    color: (isTap[4] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                              ),
-                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                              height: 32,
-                              child:(isTap[4] == true)
-                                  ? Text(_selectedValue,
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: (isTap[4] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)))
-                                  : Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 4),
-                                    child: ExtendedImage.asset(
-                                      'assets/imgs/icons/icon_livetalk_filter.png',
-                                      enableMemoryCache: true,
-                                      shape: BoxShape.rectangle,
-                                      width: 12,
-                                    ),
+                            color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    color: (isTap[4] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                        color: (isTap[4] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
                                   ),
-                                  Text('필터',
+                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  height: 32,
+                                  child:(isTap[4] == true)
+                                      ? Text(_selectedValue,
                                       style: TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFF777777)))
-                                ],
-                              )
+                                          color: (isTap[4] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)))
+                                      : Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 4),
+                                        child: ExtendedImage.asset(
+                                          'assets/imgs/icons/icon_livetalk_filter.png',
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.rectangle,
+                                          width: 12,
+                                        ),
+                                      ),
+                                      Text('필터',
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF777777)))
+                                    ],
+                                  )
 
+                              ),
+                            ),
                           ),
 
                         )
