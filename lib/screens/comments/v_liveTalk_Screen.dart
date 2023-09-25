@@ -130,6 +130,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '필터';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -148,6 +149,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '곤지암';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -164,6 +166,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '무주';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -180,6 +183,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '비발디';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -196,6 +200,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '알펜시아';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -212,6 +217,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '에덴밸리';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -228,6 +234,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '강촌';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -244,6 +251,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '오크밸리';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -260,6 +268,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '오투';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -276,6 +285,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '용평';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -292,6 +302,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '웰리힐리';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -308,6 +319,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '지산';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -324,6 +336,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '하이원';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -340,6 +353,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue = '휘닉스';
                             _selectedValue2 = '전체';
                             _selectedValue3 = '전체';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -408,149 +422,146 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: (){
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: (){
+                                  HapticFeedback.lightImpact();
+                                  setState(() {
+                                    isTap[0] = true;
+                                    isTap[1] = false;
+                                    isTap[2] = false;
+                                    isTap[3] = false;
+                                    isTap[4] = false;
+                                    _selectedValue = '필터';
+                                    _selectedValue2 = '전체';
+                                    _selectedValue3 = '전체';
+                                    _isVisible = false;
+                                    _stream = newStream();
+                                  });
+                                },
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: (isTap[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      border: Border.all(
+                                          color: (isTap[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                    height: 32,
+                                    child: Text('# 전체',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: (isTap[0] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                      ),)
+                                ),
+                              ),
+                              SizedBox(width: 6),
+                              GestureDetector(
+                                onTap: (){
+                                  HapticFeedback.lightImpact();
+                                  setState(() {
+                                    isTap[0] = false;
+                                    isTap[1] = true;
+                                    isTap[2] = false;
+                                    isTap[3] = false;
+                                    isTap[4] = false;
+                                    _selectedValue = '${_userModelController.resortNickname}';
+                                    _selectedValue2 = '전체';
+                                    _selectedValue3 = '전체';
+                                    _isVisible = false;
+                                    _stream = newStream();
+                                  });
+                                },
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      border: Border.all(
+                                          color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                    height: 32,
+                                    child: Text('# 자주가는',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: (isTap[1] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                      ),)
+                                ),
+                              ),
+                              SizedBox(width: 6),
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
                                     HapticFeedback.lightImpact();
-                                    setState(() {
-                                      isTap[0] = true;
-                                      isTap[1] = false;
-                                      isTap[2] = false;
-                                      isTap[3] = false;
-                                      isTap[4] = false;
-                                      _selectedValue = '필터';
-                                      _selectedValue2 = '전체';
-                                      _selectedValue3 = '전체';
-                                      _isVisible = false;
-                                      _stream = newStream();
-                                    });
-                                  },
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        color: (isTap[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                        borderRadius: BorderRadius.circular(30.0),
-                                        border: Border.all(
-                                            color: (isTap[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                      ),
-                                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                      height: 32,
-                                      child: Text('# 전체',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: (isTap[0] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                        ),)
-                                  ),
+                                    isTap[0] = false;
+                                    isTap[1] = false;
+                                    isTap[2] = true;
+                                    isTap[3] = false;
+                                    isTap[4] = false;
+                                    _selectedValue = '필터';
+                                    _selectedValue2 = 'SNOWLIVE';
+                                    _selectedValue3 = '전체';
+                                    _isVisible = false;
+                                    _stream = newStream();
+                                  });
+                                  print(_selectedValue2);
+                                },
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      border: Border.all(
+                                          color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                    height: 32,
+                                    child: Text('# 소식',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                      ),)
                                 ),
-                                SizedBox(width: 6),
-                                GestureDetector(
-                                  onTap: (){
+                              ),
+                              SizedBox(width: 6),
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
                                     HapticFeedback.lightImpact();
-                                    setState(() {
-                                      isTap[0] = false;
-                                      isTap[1] = true;
-                                      isTap[2] = false;
-                                      isTap[3] = false;
-                                      isTap[4] = false;
-                                      _selectedValue = '${_userModelController.resortNickname}';
-                                      _selectedValue2 = '전체';
-                                      _selectedValue3 = '전체';
-                                      _isVisible = false;
-                                      _stream = newStream();
-                                    });
-                                  },
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                        borderRadius: BorderRadius.circular(30.0),
-                                        border: Border.all(
-                                            color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                      ),
-                                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                      height: 32,
-                                      child: Text('# 자주가는',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: (isTap[1] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                        ),)
-                                  ),
+                                    isTap[0] = false;
+                                    isTap[1] = false;
+                                    isTap[2] = false;
+                                    isTap[3] = true;
+                                    isTap[4] = false;
+                                    _selectedValue = '필터';
+                                    _selectedValue2 = '전체';
+                                    _selectedValue3 = '${_userModelController.uid}';
+                                    _isVisible = false;
+                                    _stream = newStream();
+                                  });
+                                  print(_selectedValue3);
+                                },
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      border: Border.all(
+                                          color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                    height: 32,
+                                    child: Text('# 내글',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: (isTap[3] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                      ),)
                                 ),
-                                SizedBox(width: 6),
-                                GestureDetector(
-                                  onTap: (){
-                                    setState(() {
-                                      HapticFeedback.lightImpact();
-                                      isTap[0] = false;
-                                      isTap[1] = false;
-                                      isTap[2] = true;
-                                      isTap[3] = false;
-                                      isTap[4] = false;
-                                      _selectedValue = '필터';
-                                      _selectedValue2 = 'SNOWLIVE';
-                                      _selectedValue3 = '전체';
-                                      _isVisible = false;
-                                      _stream = newStream();
-                                    });
-                                    print(_selectedValue2);
-                                  },
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                        borderRadius: BorderRadius.circular(30.0),
-                                        border: Border.all(
-                                            color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                      ),
-                                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                      height: 32,
-                                      child: Text('# 소식',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                        ),)
-                                  ),
-                                ),
-                                SizedBox(width: 6),
-                                GestureDetector(
-                                  onTap: (){
-                                    setState(() {
-                                      HapticFeedback.lightImpact();
-                                      isTap[0] = false;
-                                      isTap[1] = false;
-                                      isTap[2] = false;
-                                      isTap[3] = true;
-                                      isTap[4] = false;
-                                      _selectedValue = '필터';
-                                      _selectedValue2 = '전체';
-                                      _selectedValue3 = '${_userModelController.uid}';
-                                      _isVisible = false;
-                                      _stream = newStream();
-                                    });
-                                    print(_selectedValue3);
-                                  },
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                        borderRadius: BorderRadius.circular(30.0),
-                                        border: Border.all(
-                                            color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                      ),
-                                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                      height: 32,
-                                      child: Text('# 내글',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: (isTap[3] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                        ),)
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                         GestureDetector(
