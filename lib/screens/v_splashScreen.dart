@@ -17,7 +17,7 @@ class SplashScreen extends StatelessWidget {
         duration: 1500,
         splash: ExtendedImage.network(
           imageUrl,
-          fit: BoxFit.fill,
+          fit: BoxFit.fitHeight,
           enableMemoryCache: true,
               ),
         nextScreen: LoadingPage()

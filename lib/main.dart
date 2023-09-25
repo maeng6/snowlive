@@ -85,7 +85,7 @@ class _MyAppState extends State<MyApp> {
             } else {
               return ExtendedImage.asset(
                 'assets/imgs/splash_screen/splash_logo.png',
-                fit: BoxFit.fitHeight,
+                fit: BoxFit.fill,
                 enableMemoryCache: true,
               );
             }
