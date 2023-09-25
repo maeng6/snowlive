@@ -106,7 +106,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                   children: [
                                     if (chatDocs[index]['profileImageUrl'] != "" && chatDocs[index]['profileImageUrl'] != "anony")
                                       Transform.translate(
-                                        offset: Offset(0, 6),
+                                        offset: Offset(0, 2),
                                         child: GestureDetector(
                                           onTap: (){
 
@@ -125,7 +125,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                       ),
                                     if (chatDocs[index]['profileImageUrl'] == "")
                                       Transform.translate(
-                                        offset: Offset(0, 6),
+                                        offset: Offset(0, 2),
                                         child: GestureDetector(
                                           onTap: (){
 
@@ -143,7 +143,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                       ),
                                     if (chatDocs[index]['profileImageUrl'] == "anony")
                                       Transform.translate(
-                                        offset: Offset(0, 6),
+                                        offset: Offset(0, 2),
                                         child: GestureDetector(
                                           onTap: (){
 
