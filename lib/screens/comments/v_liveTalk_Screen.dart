@@ -39,12 +39,14 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
 
   var _selectedValue = '필터';
   var _selectedValue2 = '전체';
+  var _selectedValue3 = '전체';
   var _allCategories;
   var _alluser;
 
   int counter = 0;
   List<bool> isTap = [
     true,
+    false,
     false,
     false,
     false
@@ -96,6 +98,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
   Stream<QuerySnapshot> newStream() {
     return FirebaseFirestore.instance
         .collection('liveTalk')
+        .where('uid', isEqualTo: (_selectedValue3 == '전체') ? _alluser : _userModelController.uid)
         .where('displayName', isEqualTo: (_selectedValue2 == '전체') ? _alluser : 'SNOWLIVE')
         .where('resortNickname', isEqualTo: (_selectedValue == '필터') ? _allCategories : '$_selectedValue')
         .orderBy('timeStamp', descending: true)
@@ -123,8 +126,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             isTap[1] = false;
                             isTap[2] = false;
                             isTap[3] = false;
+                            isTap[4] = false;
                             _selectedValue = '필터';
                             _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
                           });
                           Navigator.pop(context);
                         },
@@ -138,9 +143,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             isTap[0] = false;
                             isTap[1] = false;
                             isTap[2] = false;
-                            isTap[3] = true;
+                            isTap[3] = false;
+                            isTap[4] = true;
                             _selectedValue = '곤지암';
                             _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
                           });
                           Navigator.pop(context);
                         },
@@ -152,9 +159,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             isTap[0] = false;
                             isTap[1] = false;
                             isTap[2] = false;
-                            isTap[3] = true;
+                            isTap[3] = false;
+                            isTap[4] = true;
                             _selectedValue = '무주';
                             _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
                           });
                           Navigator.pop(context);
                         },
@@ -166,9 +175,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             isTap[0] = false;
                             isTap[1] = false;
                             isTap[2] = false;
-                            isTap[3] = true;
+                            isTap[3] = false;
+                            isTap[4] = true;
                             _selectedValue = '비발디';
                             _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
                           });
                           Navigator.pop(context);
                         },
@@ -180,9 +191,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             isTap[0] = false;
                             isTap[1] = false;
                             isTap[2] = false;
-                            isTap[3] = true;
+                            isTap[3] = false;
+                            isTap[4] = true;
                             _selectedValue = '알펜시아';
                             _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
                           });
                           Navigator.pop(context);
                         },
@@ -194,9 +207,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             isTap[0] = false;
                             isTap[1] = false;
                             isTap[2] = false;
-                            isTap[3] = true;
+                            isTap[3] = false;
+                            isTap[4] = true;
                             _selectedValue = '에덴밸리';
                             _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
                           });
                           Navigator.pop(context);
                         },
@@ -208,9 +223,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             isTap[0] = false;
                             isTap[1] = false;
                             isTap[2] = false;
-                            isTap[3] = true;
+                            isTap[3] = false;
+                            isTap[4] = true;
                             _selectedValue = '강촌';
                             _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
                           });
                           Navigator.pop(context);
                         },
@@ -222,9 +239,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             isTap[0] = false;
                             isTap[1] = false;
                             isTap[2] = false;
-                            isTap[3] = true;
+                            isTap[3] = false;
+                            isTap[4] = true;
                             _selectedValue = '오크밸리';
                             _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
                           });
                           Navigator.pop(context);
                         },
@@ -236,9 +255,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             isTap[0] = false;
                             isTap[1] = false;
                             isTap[2] = false;
-                            isTap[3] = true;
+                            isTap[3] = false;
+                            isTap[4] = true;
                             _selectedValue = '오투';
                             _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
                           });
                           Navigator.pop(context);
                         },
@@ -250,9 +271,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             isTap[0] = false;
                             isTap[1] = false;
                             isTap[2] = false;
-                            isTap[3] = true;
+                            isTap[3] = false;
+                            isTap[4] = true;
                             _selectedValue = '용평';
                             _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
                           });
                           Navigator.pop(context);
                         },
@@ -264,9 +287,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             isTap[0] = false;
                             isTap[1] = false;
                             isTap[2] = false;
-                            isTap[3] = true;
+                            isTap[3] = false;
+                            isTap[4] = true;
                             _selectedValue = '웰리힐리';
                             _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
                           });
                           Navigator.pop(context);
                         },
@@ -278,9 +303,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             isTap[0] = false;
                             isTap[1] = false;
                             isTap[2] = false;
-                            isTap[3] = true;
+                            isTap[3] = false;
+                            isTap[4] = true;
                             _selectedValue = '지산';
                             _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
                           });
                           Navigator.pop(context);
                         },
@@ -292,9 +319,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             isTap[0] = false;
                             isTap[1] = false;
                             isTap[2] = false;
-                            isTap[3] = true;
+                            isTap[3] = false;
+                            isTap[4] = true;
                             _selectedValue = '하이원';
                             _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
                           });
                           Navigator.pop(context);
                         },
@@ -306,9 +335,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             isTap[0] = false;
                             isTap[1] = false;
                             isTap[2] = false;
-                            isTap[3] = true;
+                            isTap[3] = false;
+                            isTap[4] = true;
                             _selectedValue = '휘닉스';
                             _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
                           });
                           Navigator.pop(context);
                         },
@@ -386,8 +417,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                   isTap[1] = false;
                                   isTap[2] = false;
                                   isTap[3] = false;
+                                  isTap[4] = false;
                                   _selectedValue = '필터';
                                   _selectedValue2 = '전체';
+                                  _selectedValue3 = '전체';
                                   _stream = newStream();
                                 });
                               },
@@ -417,8 +450,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                   isTap[1] = true;
                                   isTap[2] = false;
                                   isTap[3] = false;
+                                  isTap[4] = false;
                                   _selectedValue = '${_userModelController.resortNickname}';
                                   _selectedValue2 = '전체';
+                                  _selectedValue3 = '전체';
                                   _stream = newStream();
                                 });
                               },
@@ -448,8 +483,10 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                   isTap[1] = false;
                                   isTap[2] = true;
                                   isTap[3] = false;
+                                  isTap[4] = false;
                                   _selectedValue = '필터';
                                   _selectedValue2 = 'SNOWLIVE';
+                                  _selectedValue3 = '전체';
                                   _stream = newStream();
                                 });
                                 print(_selectedValue2);
@@ -471,6 +508,40 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                     ),)
                               ),
                             ),
+                            SizedBox(width: 6),
+                            GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  HapticFeedback.lightImpact();
+                                  isTap[0] = false;
+                                  isTap[1] = false;
+                                  isTap[2] = false;
+                                  isTap[3] = true;
+                                  isTap[4] = false;
+                                  _selectedValue = '필터';
+                                  _selectedValue2 = '전체';
+                                  _selectedValue3 = '${_userModelController.uid}';
+                                  _stream = newStream();
+                                });
+                                print(_selectedValue3);
+                              },
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    border: Border.all(
+                                        color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  height: 32,
+                                  child: Text('# 내글',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: (isTap[3] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                    ),)
+                              ),
+                            ),
                           ],
                         ),
                         GestureDetector(
@@ -479,19 +550,19 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                           },
                           child: Container(
                               decoration: BoxDecoration(
-                                color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                color: (isTap[4] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
                                 borderRadius: BorderRadius.circular(6),
                                 border: Border.all(
-                                    color: (isTap[3] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                    color: (isTap[4] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
                               ),
                               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               height: 32,
-                              child:(isTap[3] == true)
+                              child:(isTap[4] == true)
                                   ? Text(_selectedValue,
                                   style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
-                                      color: (isTap[3] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)))
+                                      color: (isTap[4] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)))
                                   : Row(
                                 children: [
                                   Padding(
