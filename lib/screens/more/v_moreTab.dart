@@ -537,14 +537,14 @@ class _MoreTabState extends State<MoreTab> {
                                           ? Container(
                                           padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
                                           decoration: BoxDecoration(
-                                          color: Color(0xFFCBE0FF),
+                                          color: Color(0xFFD6382B),
                                           borderRadius: BorderRadius.circular(6),
                                           ),
                                           child: Text('NEW',
                                           style: TextStyle(
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFF3D83ED)
+                                          color: Color(0xFFFFFFFF)
                                           ),
 
                                           ),
