@@ -1,9 +1,11 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:com.snowlive/controller/vm_loadingPage.dart';
 class SplashScreen extends StatelessWidget {
-  SplashScreen({Key? key}) : super(key: key);
+  final String imageUrl;
+  SplashScreen({Key? key, required this.imageUrl}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +15,10 @@ class SplashScreen extends StatelessWidget {
         splashTransition: SplashTransition.fadeTransition,
         splashIconSize: double.maxFinite,
         duration: 1500,
-        //TODO: Dependency Injection********************************************
-        splash: Image.asset(
-                'assets/imgs/splash_screen/splash1.png',
-          fit: BoxFit.fitHeight,
+        splash: ExtendedImage.network(
+          imageUrl,
+          fit: BoxFit.fill,
+          enableMemoryCache: true,
               ),
         nextScreen: LoadingPage()
     );
