@@ -457,10 +457,13 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                   padding: EdgeInsets.only(top: 16, bottom: MediaQuery.of(context).viewInsets.bottom + 16, right: 5),
                                   child: TextButton(
                                       onPressed: () async{
-                                        CustomFullScreenDialog.showDialog();
-                                        await _liveCrewModelController.getCurrnetCrew(foundCrewID);
-                                        CustomFullScreenDialog.cancelDialog();
-                                        Get.to(()=> CrewDetailPage_screen());
+                                        if(foundCrewID != null && foundCrewID != '') {
+                                          CustomFullScreenDialog.showDialog();
+                                          await _liveCrewModelController
+                                              .getCurrnetCrew(foundCrewID);
+                                          CustomFullScreenDialog.cancelDialog();
+                                          Get.to(() => CrewDetailPage_screen());
+                                        }else {}
                                       },
                                       style: TextButton.styleFrom(
                                         shape: const RoundedRectangleBorder(
@@ -485,216 +488,322 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 16, left: 5, top: 16),
                                 child: TextButton(
                                     onPressed: () async {
-                                      Get.dialog(AlertDialog(
-                                        contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10.0)),
-                                        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                        content: Text(
-                                          '${foundCrewModel!.crewName}에 가입하시겠습니까?',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 15),
-                                        ),
-                                        actions: [
-                                          (foundCrewModel!.memberUidList!.contains(_userModelController.uid!))
-                                              ? Row(
-                                            children: [
-                                              TextButton(
-                                                  onPressed: () async{
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text(
-                                                    '확인',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Color(0xff377EEA),
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ))
-                                            ],
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                          )
-                                              : Column(
-                                            children: [
-                                              ElevatedButton(
-                                                  onPressed: () async{
-                                                    if(_userModelController.liveCrew!.isEmpty || _userModelController.liveCrew == ''){
-                                                      Get.dialog(AlertDialog(
-                                                        contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                      if(foundCrewID != null && foundCrewID != '') {
+                                        Get.dialog(AlertDialog(
+                                          contentPadding: EdgeInsets.only(
+                                              bottom: 0,
+                                              left: 20,
+                                              right: 20,
+                                              top: 30),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius
+                                                  .circular(10.0)),
+                                          buttonPadding: EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 0),
+                                          content: Text(
+                                            '${foundCrewModel!
+                                                .crewName}에 가입하시겠습니까?',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 15),
+                                          ),
+                                          actions: [
+                                            (foundCrewModel!.memberUidList!
+                                                .contains(
+                                                _userModelController.uid!))
+                                                ? Row(
+                                              children: [
+                                                TextButton(
+                                                    onPressed: () async {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text(
+                                                      '확인',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(
+                                                            0xff377EEA),
+                                                        fontWeight: FontWeight
+                                                            .bold,
+                                                      ),
+                                                    ))
+                                              ],
+                                              mainAxisAlignment: MainAxisAlignment
+                                                  .center,
+                                            )
+                                                : Column(
+                                              children: [
+                                                ElevatedButton(
+                                                    onPressed: () async {
+                                                      if (_userModelController
+                                                          .liveCrew!.isEmpty ||
+                                                          _userModelController
+                                                              .liveCrew == '') {
+                                                        Get.dialog(AlertDialog(
+                                                          contentPadding: EdgeInsets
+                                                              .only(bottom: 0,
+                                                              left: 20,
+                                                              right: 20,
+                                                              top: 30),
+                                                          elevation: 0,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius
+                                                                  .circular(
+                                                                  10.0)),
+                                                          buttonPadding: EdgeInsets
+                                                              .symmetric(
+                                                              horizontal: 20,
+                                                              vertical: 0),
+                                                          content: Text(
+                                                            '가입신청을 하시겠습니까?',
+                                                            style: TextStyle(
+                                                                fontWeight: FontWeight
+                                                                    .w600,
+                                                                fontSize: 15),
+                                                          ),
+                                                          actions: [
+                                                            Row(
+                                                              children: [
+                                                                TextButton(
+                                                                    onPressed: () {
+                                                                      Navigator
+                                                                          .pop(
+                                                                          context);
+                                                                    },
+                                                                    child: Text(
+                                                                      '취소',
+                                                                      style: TextStyle(
+                                                                        fontSize: 15,
+                                                                        color: Color(
+                                                                            0xFF949494),
+                                                                        fontWeight: FontWeight
+                                                                            .bold,
+                                                                      ),
+                                                                    )),
+                                                                TextButton(
+                                                                    onPressed: () async {
+                                                                      if (_userModelController
+                                                                          .applyCrewList!
+                                                                          .contains(
+                                                                          foundCrewModel!
+                                                                              .crewID)) {
+                                                                        Get
+                                                                            .dialog(
+                                                                            AlertDialog(
+                                                                              contentPadding: EdgeInsets
+                                                                                  .only(
+                                                                                  bottom: 0,
+                                                                                  left: 20,
+                                                                                  right: 20,
+                                                                                  top: 30),
+                                                                              elevation: 0,
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius
+                                                                                      .circular(
+                                                                                      10.0)),
+                                                                              buttonPadding:
+                                                                              EdgeInsets
+                                                                                  .symmetric(
+                                                                                  horizontal: 20,
+                                                                                  vertical: 0),
+                                                                              content: Text(
+                                                                                '이미 요청중입니다.',
+                                                                                style: TextStyle(
+                                                                                    fontWeight: FontWeight
+                                                                                        .w600,
+                                                                                    fontSize: 15),
+                                                                              ),
+                                                                              actions: [
+                                                                                Row(
+                                                                                  children: [
+                                                                                    TextButton(
+                                                                                        onPressed: () async {
+                                                                                          Navigator
+                                                                                              .pop(
+                                                                                              context);
+                                                                                          Navigator
+                                                                                              .pop(
+                                                                                              context);
+                                                                                          Navigator
+                                                                                              .pop(
+                                                                                              context);
+                                                                                        },
+                                                                                        child: Text(
+                                                                                          '확인',
+                                                                                          style: TextStyle(
+                                                                                            fontSize: 15,
+                                                                                            color: Color(
+                                                                                                0xff377EEA),
+                                                                                            fontWeight: FontWeight
+                                                                                                .bold,
+                                                                                          ),
+                                                                                        )),
+                                                                                  ],
+                                                                                  mainAxisAlignment: MainAxisAlignment
+                                                                                      .center,
+                                                                                )
+                                                                              ],
+                                                                            ));
+                                                                      } else {
+                                                                        CustomFullScreenDialog
+                                                                            .showDialog();
+                                                                        print(
+                                                                            _liveCrewModelController
+                                                                                .leaderUid);
+                                                                        await _liveCrewModelController
+                                                                            .updateInvitation_crew(
+                                                                            crewID: foundCrewID);
+                                                                        await _liveCrewModelController
+                                                                            .updateInvitationAlarm_crew(
+                                                                            leaderUid: foundCrewModel!
+                                                                                .leaderUid);
+                                                                        await _userModelController
+                                                                            .getCurrentUser(
+                                                                            _userModelController
+                                                                                .uid);
+                                                                        CustomFullScreenDialog
+                                                                            .cancelDialog();
+                                                                        Navigator
+                                                                            .pop(
+                                                                            context);
+                                                                        Navigator
+                                                                            .pop(
+                                                                            context);
+                                                                        Get
+                                                                            .snackbar(
+                                                                          '가입신청 완료',
+                                                                          '신청 목록은 라이브크루 페이지에서 확인하실 수 있습니다.',
+                                                                          margin: EdgeInsets
+                                                                              .only(
+                                                                              right: 20,
+                                                                              left: 20,
+                                                                              bottom: 12),
+                                                                          snackPosition: SnackPosition
+                                                                              .BOTTOM,
+                                                                          backgroundColor: Colors
+                                                                              .black87,
+                                                                          colorText: Colors
+                                                                              .white,
+                                                                          duration: Duration(
+                                                                              milliseconds: 3000),
+                                                                        );
+                                                                      }
+                                                                    },
+                                                                    child: Text(
+                                                                      '확인',
+                                                                      style: TextStyle(
+                                                                        fontSize: 15,
+                                                                        color: Color(
+                                                                            0xFF3D83ED),
+                                                                        fontWeight: FontWeight
+                                                                            .bold,
+                                                                      ),
+                                                                    ))
+                                                              ],
+                                                              mainAxisAlignment: MainAxisAlignment
+                                                                  .end,
+                                                            )
+                                                          ],
+                                                        ));
+                                                      } else {
+                                                        Get.dialog(AlertDialog(
+                                                          contentPadding: EdgeInsets
+                                                              .only(bottom: 0,
+                                                              left: 20,
+                                                              right: 20,
+                                                              top: 30),
+                                                          elevation: 0,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius
+                                                                  .circular(
+                                                                  10.0)),
+                                                          buttonPadding: EdgeInsets
+                                                              .symmetric(
+                                                              horizontal: 20,
+                                                              vertical: 0),
+                                                          content: Text(
+                                                            '라이브 크루는 1개만 가입할 수 있습니다.',
+                                                            style: TextStyle(
+                                                                fontWeight: FontWeight
+                                                                    .w600,
+                                                                fontSize: 15),
+                                                          ),
+                                                          actions: [
+                                                            Row(
+                                                              children: [
+                                                                TextButton(
+                                                                    onPressed: () {
+                                                                      Navigator
+                                                                          .pop(
+                                                                          context);
+                                                                      Get
+                                                                          .back();
+                                                                    },
+                                                                    child: Text(
+                                                                      '확인',
+                                                                      style: TextStyle(
+                                                                        fontSize: 15,
+                                                                        color: Color(
+                                                                            0xFF949494),
+                                                                        fontWeight: FontWeight
+                                                                            .bold,
+                                                                      ),
+                                                                    )),
+                                                              ],
+                                                              mainAxisAlignment: MainAxisAlignment
+                                                                  .end,
+                                                            )
+                                                          ],
+                                                        ));
+                                                      }
+                                                    },
+                                                    style: TextButton.styleFrom(
+                                                        shape: const RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius
+                                                                .all(Radius
+                                                                .circular(6))),
                                                         elevation: 0,
-                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                                        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                        content: Text(
-                                                          '가입신청을 하시겠습니까?',
-                                                          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                                                        ),
-                                                        actions: [
-                                                          Row(
-                                                            children: [
-                                                              TextButton(
-                                                                  onPressed: () {
-                                                                    Navigator.pop(context);
-                                                                  },
-                                                                  child: Text(
-                                                                    '취소',
-                                                                    style: TextStyle(
-                                                                      fontSize: 15,
-                                                                      color: Color(0xFF949494),
-                                                                      fontWeight: FontWeight.bold,
-                                                                    ),
-                                                                  )),
-                                                              TextButton(
-                                                                  onPressed: () async {
-                                                                    if(_userModelController.applyCrewList!.contains(foundCrewModel!.crewID)){
-                                                                      Get.dialog(AlertDialog(
-                                                                        contentPadding: EdgeInsets.only(
-                                                                            bottom: 0,
-                                                                            left: 20,
-                                                                            right: 20,
-                                                                            top: 30),
-                                                                        elevation: 0,
-                                                                        shape: RoundedRectangleBorder(
-                                                                            borderRadius:
-                                                                            BorderRadius.circular(
-                                                                                10.0)),
-                                                                        buttonPadding:
-                                                                        EdgeInsets.symmetric(
-                                                                            horizontal: 20,
-                                                                            vertical: 0),
-                                                                        content: Text(
-                                                                          '이미 요청중입니다.',
-                                                                          style: TextStyle(
-                                                                              fontWeight: FontWeight.w600,
-                                                                              fontSize: 15),
-                                                                        ),
-                                                                        actions: [
-                                                                          Row(
-                                                                            children: [
-                                                                              TextButton(
-                                                                                  onPressed: () async {
-                                                                                    Navigator.pop(context);
-                                                                                    Navigator.pop(context);
-                                                                                    Navigator.pop(context);
-                                                                                  },
-                                                                                  child: Text(
-                                                                                    '확인',
-                                                                                    style: TextStyle(
-                                                                                      fontSize: 15,
-                                                                                      color: Color(
-                                                                                          0xff377EEA),
-                                                                                      fontWeight: FontWeight
-                                                                                          .bold,
-                                                                                    ),
-                                                                                  )),
-                                                                            ],
-                                                                            mainAxisAlignment: MainAxisAlignment
-                                                                                .center,
-                                                                          )
-                                                                        ],
-                                                                      ));
+                                                        splashFactory: InkRipple
+                                                            .splashFactory,
+                                                        minimumSize: Size(
+                                                            1000, 48),
+                                                        backgroundColor: Color(
+                                                            0xff377EEA)
 
-                                                                    } else{
-                                                                      CustomFullScreenDialog.showDialog();
-                                                                      print(_liveCrewModelController.leaderUid);
-                                                                      await _liveCrewModelController.updateInvitation_crew(crewID: foundCrewID);
-                                                                      await _liveCrewModelController.updateInvitationAlarm_crew(leaderUid: foundCrewModel!.leaderUid);
-                                                                      await _userModelController.getCurrentUser(_userModelController.uid);
-                                                                      CustomFullScreenDialog.cancelDialog();
-                                                                      Navigator.pop(context);
-                                                                      Navigator.pop(context);
-                                                                      Get.snackbar(
-                                                                        '가입신청 완료',
-                                                                        '신청 목록은 라이브크루 페이지에서 확인하실 수 있습니다.',
-                                                                        margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                                                        snackPosition: SnackPosition.BOTTOM,
-                                                                        backgroundColor: Colors.black87,
-                                                                        colorText: Colors.white,
-                                                                        duration: Duration(milliseconds: 3000),
-                                                                      );
-                                                                    }
-                                                                  },
-                                                                  child: Text(
-                                                                    '확인',
-                                                                    style: TextStyle(
-                                                                      fontSize: 15,
-                                                                      color: Color(0xFF3D83ED),
-                                                                      fontWeight: FontWeight.bold,
-                                                                    ),
-                                                                  ))
-                                                            ],
-                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                          )
-                                                        ],
-                                                      ));
-                                                    }else{
-                                                      Get.dialog(AlertDialog(
-                                                        contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                        elevation: 0,
-                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                                        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                        content: Text('라이브 크루는 1개만 가입할 수 있습니다.',
-                                                          style: TextStyle(
-                                                              fontWeight: FontWeight.w600,
-                                                              fontSize: 15),
-                                                        ),
-                                                        actions: [
-                                                          Row(
-                                                            children: [
-                                                              TextButton(
-                                                                  onPressed: () {
-                                                                    Navigator.pop(context);
-                                                                    Get.back();
-                                                                  },
-                                                                  child: Text('확인',
-                                                                    style: TextStyle(
-                                                                      fontSize: 15,
-                                                                      color: Color(0xFF949494),
-                                                                      fontWeight: FontWeight.bold,
-                                                                    ),
-                                                                  )),
-                                                            ],
-                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                          )
-                                                        ],
-                                                      ));
-                                                    }
-                                                  },
-                                                  style: TextButton.styleFrom(
-                                                      shape: const RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.all(Radius.circular(6))),
-                                                      elevation: 0,
-                                                      splashFactory: InkRipple.splashFactory,
-                                                      minimumSize: Size(1000, 48),
-                                                      backgroundColor: Color(0xff377EEA)
-
-                                                  ),
-                                                  child: Text(
-                                                    '가입신청',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Color(0xffffffff),
-                                                      fontWeight: FontWeight.bold,
                                                     ),
-                                                  )),
-                                              TextButton(
-                                                  onPressed: () async{
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text(
-                                                    '취소',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Color(0xff949494),
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ))
-                                            ],
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                          )
-                                        ],
-                                      ));
+                                                    child: Text(
+                                                      '가입신청',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(
+                                                            0xffffffff),
+                                                        fontWeight: FontWeight
+                                                            .bold,
+                                                      ),
+                                                    )),
+                                                TextButton(
+                                                    onPressed: () async {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text(
+                                                      '취소',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(
+                                                            0xff949494),
+                                                        fontWeight: FontWeight
+                                                            .bold,
+                                                      ),
+                                                    ))
+                                              ],
+                                              mainAxisAlignment: MainAxisAlignment
+                                                  .center,
+                                            )
+                                          ],
+                                        ));
+                                      }else{}
                                     },
                                     style: TextButton.styleFrom(
                                         shape: const RoundedRectangleBorder(
