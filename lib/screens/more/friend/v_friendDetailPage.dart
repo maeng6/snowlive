@@ -292,6 +292,14 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                   fontWeight: FontWeight.bold,
                                                                   color: Color(0xFF111111)
                                                               ),),
+                                                            if(friendDocs[0]['displayName'] == 'SNOWLIVE')
+                                                              Padding(
+                                                                padding: const EdgeInsets.only(left : 2.0),
+                                                                child: Image.asset(
+                                                                  'assets/imgs/icons/icon_snowlive_operator.png',
+                                                                  scale: 5.5,
+                                                                ),
+                                                              ),
                                                             if(edit == true)
                                                               GestureDetector(
                                                                   onTap: () {
@@ -529,6 +537,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                   )),
                                                           ],
                                                         ),
+
                                                       ),
                                                       Padding(
                                                         padding: const EdgeInsets.only(top: 2),

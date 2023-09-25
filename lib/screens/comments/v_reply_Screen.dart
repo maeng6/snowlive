@@ -64,13 +64,6 @@ class _ReplyScreenState extends State<ReplyScreen> {
     // TODO: implement initState
     super.initState();
     _replyStream = replyNewStream();
-    _controller.addListener(() {
-      setState(() {
-        if(_controller.text.trim().isNotEmpty){
-          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-        }
-      });
-    });
   }
 
   _updateMethod() async {
@@ -258,6 +251,14 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                       color: Color(
                                                           0xFF111111)),
                                                 ),
+                                                if(widget.replyDisplayName == 'SNOWLIVE')
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(left : 2.0),
+                                                    child: Image.asset(
+                                                      'assets/imgs/icons/icon_snowlive_operator.png',
+                                                      scale: 5.5,
+                                                    ),
+                                                  ),
                                                 SizedBox(width: 6),
                                                 Text(
                                                   widget.replyResortNickname,
@@ -455,6 +456,14 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                       fontSize: 14,
                                                                       color: Color(0xFF111111)),
                                                                 ),
+                                                                if(replyDocs[index]['displayName'] == 'SNOWLIVE')
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.only(left : 2.0),
+                                                                    child: Image.asset(
+                                                                      'assets/imgs/icons/icon_snowlive_operator.png',
+                                                                      scale: 5.5,
+                                                                    ),
+                                                                  ),
                                                                 SizedBox(
                                                                     width: 6),
                                                                 Text(
@@ -511,139 +520,142 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                           enableDrag: false,
                                                           context: context,
                                                           builder: (context) {
-                                                            return Container(
-                                                              height:
-                                                              190,
-                                                              child:
-                                                              Padding(
-                                                                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
-                                                                child: Column(
-                                                                  children: [
-                                                                    GestureDetector(
-                                                                      child: ListTile(
-                                                                        contentPadding: EdgeInsets.zero,
-                                                                        title: Center(
-                                                                          child: Text(
-                                                                            '신고하기',
-                                                                            style: TextStyle(
-                                                                              fontSize: 15,
-                                                                              fontWeight: FontWeight.bold,
+                                                            return SafeArea(
+                                                              child: Container(
+                                                                height:
+                                                                (replyDocs[index]['displayName'] == '익명') ? 90 : 140,
+                                                                child:
+                                                                Padding(
+                                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
+                                                                  child: Column(
+                                                                    children: [
+                                                                      GestureDetector(
+                                                                        child: ListTile(
+                                                                          contentPadding: EdgeInsets.zero,
+                                                                          title: Center(
+                                                                            child: Text(
+                                                                              '신고하기',
+                                                                              style: TextStyle(
+                                                                                fontSize: 15,
+                                                                                fontWeight: FontWeight.bold,
+                                                                              ),
                                                                             ),
                                                                           ),
+                                                                          //selected: _isSelected[index]!,
+                                                                          onTap: () async {
+                                                                            Get.dialog(AlertDialog(
+                                                                              contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                              elevation: 0,
+                                                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                                                              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                              content: Text(
+                                                                                '이 회원을 신고하시겠습니까?',
+                                                                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                                                                              ),
+                                                                              actions: [
+                                                                                Row(
+                                                                                  children: [
+                                                                                    TextButton(
+                                                                                        onPressed: () {
+                                                                                          Navigator.pop(context);
+                                                                                        },
+                                                                                        child: Text(
+                                                                                          '취소',
+                                                                                          style: TextStyle(
+                                                                                            fontSize: 15,
+                                                                                            color: Color(0xFF949494),
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                          ),
+                                                                                        )),
+                                                                                    TextButton(
+                                                                                        onPressed: () async {
+                                                                                          var repoUid = replyDocs[index].get('uid');
+                                                                                          await _userModelController.repoUpdate(repoUid);
+                                                                                          Navigator.pop(context);
+                                                                                          Navigator.pop(context);
+                                                                                        },
+                                                                                        child: Text(
+                                                                                          '신고',
+                                                                                          style: TextStyle(
+                                                                                            fontSize: 15,
+                                                                                            color: Color(0xFF3D83ED),
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                          ),
+                                                                                        ))
+                                                                                  ],
+                                                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                                                )
+                                                                              ],
+                                                                            ));
+                                                                          },
+                                                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                                         ),
-                                                                        //selected: _isSelected[index]!,
-                                                                        onTap: () async {
-                                                                          Get.dialog(AlertDialog(
-                                                                            contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                            elevation: 0,
-                                                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                                                            buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                            content: Text(
-                                                                              '이 회원을 신고하시겠습니까?',
-                                                                              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                                                                            ),
-                                                                            actions: [
-                                                                              Row(
-                                                                                children: [
-                                                                                  TextButton(
-                                                                                      onPressed: () {
-                                                                                        Navigator.pop(context);
-                                                                                      },
-                                                                                      child: Text(
-                                                                                        '취소',
-                                                                                        style: TextStyle(
-                                                                                          fontSize: 15,
-                                                                                          color: Color(0xFF949494),
-                                                                                          fontWeight: FontWeight.bold,
-                                                                                        ),
-                                                                                      )),
-                                                                                  TextButton(
-                                                                                      onPressed: () async {
-                                                                                        var repoUid = replyDocs[index].get('uid');
-                                                                                        await _userModelController.repoUpdate(repoUid);
-                                                                                        Navigator.pop(context);
-                                                                                        Navigator.pop(context);
-                                                                                      },
-                                                                                      child: Text(
-                                                                                        '신고',
-                                                                                        style: TextStyle(
-                                                                                          fontSize: 15,
-                                                                                          color: Color(0xFF3D83ED),
-                                                                                          fontWeight: FontWeight.bold,
-                                                                                        ),
-                                                                                      ))
-                                                                                ],
-                                                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                                              )
-                                                                            ],
-                                                                          ));
-                                                                        },
-                                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                                       ),
-                                                                    ),
-                                                                    GestureDetector(
-                                                                      child: ListTile(
-                                                                        contentPadding: EdgeInsets.zero,
-                                                                        title: Center(
-                                                                          child: Text(
-                                                                            '이 회원의 글 모두 숨기기',
-                                                                            style: TextStyle(
-                                                                              fontSize: 15,
-                                                                              fontWeight: FontWeight.bold,
+                                                                      if(replyDocs[index]['displayName'] != '익명')
+                                                                      GestureDetector(
+                                                                        child: ListTile(
+                                                                          contentPadding: EdgeInsets.zero,
+                                                                          title: Center(
+                                                                            child: Text(
+                                                                              '이 회원의 글 모두 숨기기',
+                                                                              style: TextStyle(
+                                                                                fontSize: 15,
+                                                                                fontWeight: FontWeight.bold,
+                                                                              ),
                                                                             ),
                                                                           ),
+                                                                          //selected: _isSelected[index]!,
+                                                                          onTap: () async {
+                                                                            Get.dialog(AlertDialog(
+                                                                              contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                              elevation: 0,
+                                                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                                                              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                              content: Text(
+                                                                                '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.',
+                                                                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                                                                              ),
+                                                                              actions: [
+                                                                                Row(
+                                                                                  children: [
+                                                                                    TextButton(
+                                                                                        onPressed: () {
+                                                                                          Navigator.pop(context);
+                                                                                        },
+                                                                                        child: Text(
+                                                                                          '취소',
+                                                                                          style: TextStyle(
+                                                                                            fontSize: 15,
+                                                                                            color: Color(0xFF949494),
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                          ),
+                                                                                        )),
+                                                                                    TextButton(
+                                                                                        onPressed: () {
+                                                                                          var repoUid = replyDocs[index].get('uid');
+                                                                                          _userModelController.updateRepoUid(repoUid);
+                                                                                          Navigator.pop(context);
+                                                                                          Navigator.pop(context);
+                                                                                        },
+                                                                                        child: Text(
+                                                                                          '확인',
+                                                                                          style: TextStyle(
+                                                                                            fontSize: 15,
+                                                                                            color: Color(0xFF3D83ED),
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                          ),
+                                                                                        ))
+                                                                                  ],
+                                                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                                                )
+                                                                              ],
+                                                                            ));
+                                                                          },
+                                                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                                         ),
-                                                                        //selected: _isSelected[index]!,
-                                                                        onTap: () async {
-                                                                          Get.dialog(AlertDialog(
-                                                                            contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                            elevation: 0,
-                                                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                                                            buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                            content: Text(
-                                                                              '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.',
-                                                                              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                                                                            ),
-                                                                            actions: [
-                                                                              Row(
-                                                                                children: [
-                                                                                  TextButton(
-                                                                                      onPressed: () {
-                                                                                        Navigator.pop(context);
-                                                                                      },
-                                                                                      child: Text(
-                                                                                        '취소',
-                                                                                        style: TextStyle(
-                                                                                          fontSize: 15,
-                                                                                          color: Color(0xFF949494),
-                                                                                          fontWeight: FontWeight.bold,
-                                                                                        ),
-                                                                                      )),
-                                                                                  TextButton(
-                                                                                      onPressed: () {
-                                                                                        var repoUid = replyDocs[index].get('uid');
-                                                                                        _userModelController.updateRepoUid(repoUid);
-                                                                                        Navigator.pop(context);
-                                                                                        Navigator.pop(context);
-                                                                                      },
-                                                                                      child: Text(
-                                                                                        '확인',
-                                                                                        style: TextStyle(
-                                                                                          fontSize: 15,
-                                                                                          color: Color(0xFF3D83ED),
-                                                                                          fontWeight: FontWeight.bold,
-                                                                                        ),
-                                                                                      ))
-                                                                                ],
-                                                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                                              )
-                                                                            ],
-                                                                          ));
-                                                                        },
-                                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                                                      ),
-                                                                    )
-                                                                  ],
+                                                                      )
+                                                                    ],
+                                                                  ),
                                                                 ),
                                                               ),
                                                             );

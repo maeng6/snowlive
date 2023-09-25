@@ -380,6 +380,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                           children: [
                             GestureDetector(
                               onTap: (){
+                                HapticFeedback.lightImpact();
                                 setState(() {
                                   isTap[0] = true;
                                   isTap[1] = false;
@@ -442,6 +443,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             GestureDetector(
                               onTap: (){
                                 setState(() {
+                                  HapticFeedback.lightImpact();
                                   isTap[0] = false;
                                   isTap[1] = false;
                                   isTap[2] = true;
@@ -736,7 +738,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               builder: (context) {
                                                                                 return SafeArea(
                                                                                   child: Container(
-                                                                                    height: 140,
+                                                                                    height:
+                                                                                    (chatDocs[index]['displayName'] == '익명') ? 90 : 140,
                                                                                     child: Padding(
                                                                                       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
                                                                                       child: Column(
@@ -808,6 +811,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                       10)),
                                                                                             ),
                                                                                           ),
+                                                                                          if(chatDocs[index]['displayName'] != '익명')
                                                                                           GestureDetector(
                                                                                             child: ListTile(
                                                                                               contentPadding: EdgeInsets.zero,
