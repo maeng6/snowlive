@@ -16,7 +16,7 @@ class SplashModel {
 
  Future<SplashModel> getSplashImage() async {
   DocumentReference<Map<String, dynamic>> documentReference =
-  FirebaseFirestore.instance.collection('splash').doc('image');
+  await FirebaseFirestore.instance.collection('splash').doc('image');
   final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
   await documentReference.get();
   SplashModel splashmodel = SplashModel.fromSnapShot(documentSnapshot);
