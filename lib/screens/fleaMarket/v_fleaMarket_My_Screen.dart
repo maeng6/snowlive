@@ -178,6 +178,7 @@ class _FleaMarket_My_ScreenState
                                 await _fleaModelController.getCurrentFleaItem(
                                     uid: chatDocs[index].get('uid'),
                                     fleaCount: chatDocs[index].get('fleaCount'));
+                                await _fleaModelController.updateViewerUid();
                                 CustomFullScreenDialog.cancelDialog();
                                 Get.to(()=>FleaMarket_List_Detail());
                               },
@@ -269,6 +270,24 @@ class _FleaMarket_My_ScreenState
                                                               fontSize: 16),
                                                         ),
                                                       ),
+                                                      SizedBox(width: 10,),
+                                                      Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.remove_red_eye_outlined,
+                                                            color: Color(0xFF949494),
+                                                            size: 15,
+                                                          ),
+                                                          SizedBox(width: 5,),
+                                                          Text(
+                                                              '${chatDocs[index]['viewerUid'].length.toString()}',
+                                                              style: TextStyle(
+                                                                  fontSize: 13,
+                                                                  color: Color(0xFF949494),
+                                                                  fontWeight: FontWeight.normal)
+                                                          )
+                                                        ],
+                                                      )
                                                     ],
                                                   ),
                                                   SizedBox(
