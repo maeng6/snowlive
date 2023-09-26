@@ -719,6 +719,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                               ],
                                                             ),
                                                             Row(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
                                                               children: [
                                                                 Text(
                                                                   '$_time',
@@ -732,22 +733,26 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                                               .normal),
                                                                 ),
                                                                 SizedBox(width: 10,),
-                                                                Row(
-                                                                  children: [
-                                                                    Icon(
-                                                                      Icons.remove_red_eye_outlined,
-                                                                      color: Color(0xFF949494),
-                                                                      size: 15,
-                                                                    ),
-                                                                    SizedBox(width: 5,),
-                                                                    Text(
-                                                                        '${chatDocs[index]['viewerUid'].length.toString()}',
-                                                                       style: TextStyle(
-                                                                            fontSize: 13,
-                                                                            color: Color(0xFF949494),
-                                                                            fontWeight: FontWeight.normal)
-                                                                    )
-                                                                  ],
+                                                                Padding(
+                                                                  padding: const EdgeInsets.only(bottom: 2),
+                                                                  child: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      Icon(
+                                                                        Icons.remove_red_eye_rounded,
+                                                                        color: Color(0xFFc8c8c8),
+                                                                        size: 15,
+                                                                      ),
+                                                                      SizedBox(width: 4,),
+                                                                      Text(
+                                                                          '${chatDocs[index]['viewerUid'].length.toString()}',
+                                                                         style: TextStyle(
+                                                                              fontSize: 13,
+                                                                              color: Color(0xFF949494),
+                                                                              fontWeight: FontWeight.normal)
+                                                                      )
+                                                                    ],
+                                                                  ),
                                                                 )
                                                               ],
                                                             ),

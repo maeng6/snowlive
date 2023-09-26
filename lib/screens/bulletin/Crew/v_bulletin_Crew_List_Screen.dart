@@ -662,13 +662,14 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                           ),
                                                           SizedBox(width: 10,),
                                                           Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
                                                             children: [
                                                               Icon(
-                                                                Icons.remove_red_eye_outlined,
-                                                                color: Color(0xFF949494),
+                                                                Icons.remove_red_eye_rounded,
+                                                                color: Color(0xFFc8c8c8),
                                                                 size: 15,
                                                               ),
-                                                              SizedBox(width: 5,),
+                                                              SizedBox(width: 4,),
                                                               Text(
                                                                   '${chatDocs[index]['viewerUid'].length.toString()}',
                                                                   style: TextStyle(
@@ -677,7 +678,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                                       fontWeight: FontWeight.normal)
                                                               )
                                                             ],
-                                                          )
+                                                          ),
                                                         ],
                                                       ),
                                                     ],

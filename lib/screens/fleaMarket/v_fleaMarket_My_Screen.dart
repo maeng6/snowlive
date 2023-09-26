@@ -224,7 +224,7 @@ class _FleaMarket_My_ScreenState
                                             Padding(
                                               padding: const EdgeInsets.symmetric(vertical: 6),
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Container(
@@ -243,12 +243,40 @@ class _FleaMarket_My_ScreenState
                                                               0xFF555555)),
                                                     ),
                                                   ),
-                                                  Text(
-                                                    '$_time',
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Color(0xFF949494),
-                                                        fontWeight: FontWeight.normal),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        '$_time',
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            color: Color(0xFF949494),
+                                                            fontWeight: FontWeight.normal),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(bottom: 2),
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Icon(
+                                                              Icons.remove_red_eye_rounded,
+                                                              color: Color(0xFFc8c8c8),
+                                                              size: 15,
+                                                            ),
+                                                            SizedBox(width: 4,),
+                                                            Text(
+                                                                '${chatDocs[index]['viewerUid'].length.toString()}',
+                                                                style: TextStyle(
+                                                                    fontSize: 13,
+                                                                    color: Color(0xFF949494),
+                                                                    fontWeight: FontWeight.normal)
+                                                            )
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ],
                                                   ),
                                                   SizedBox(
                                                     height: 2,
@@ -271,23 +299,6 @@ class _FleaMarket_My_ScreenState
                                                         ),
                                                       ),
                                                       SizedBox(width: 10,),
-                                                      Row(
-                                                        children: [
-                                                          Icon(
-                                                            Icons.remove_red_eye_outlined,
-                                                            color: Color(0xFF949494),
-                                                            size: 15,
-                                                          ),
-                                                          SizedBox(width: 5,),
-                                                          Text(
-                                                              '${chatDocs[index]['viewerUid'].length.toString()}',
-                                                              style: TextStyle(
-                                                                  fontSize: 13,
-                                                                  color: Color(0xFF949494),
-                                                                  fontWeight: FontWeight.normal)
-                                                          )
-                                                        ],
-                                                      )
                                                     ],
                                                   ),
                                                   SizedBox(
