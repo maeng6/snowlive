@@ -97,6 +97,13 @@ class BulletinCrewModelController extends GetxController {
     await getCurrentBulletinCrew(uid: uid, bulletinCrewCount: bulletinCrewCount);
   }
 
+  Future<void> updateViewerUid() async {
+    final  userMe = auth.currentUser!.uid;
+    await ref.collection('bulletinCrew').doc('$uid#$bulletinCrewCount').update({
+      'viewerUid': FieldValue.arrayUnion([userMe])
+    });
+  }
+
   Future<void> uploadBulletinCrew(
       {required displayName,
         required uid,

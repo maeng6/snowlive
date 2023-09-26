@@ -104,6 +104,7 @@ class FleaModel {
       'resortNickname': resortNickname,
       'kakaoUrl': kakaoUrl,
       'soldOut': false,
+      'viewerUid': false,
     });
   }
 

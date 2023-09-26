@@ -100,6 +100,13 @@ class BulletinRoomModelController extends GetxController {
     await getCurrentBulletinRoom(uid: uid, bulletinRoomCount: bulletinRoomCount);
   }
 
+  Future<void> updateViewerUid() async {
+    final  userMe = auth.currentUser!.uid;
+    await ref.collection('bulletinRoom').doc('$uid#$bulletinRoomCount').update({
+      'viewerUid': FieldValue.arrayUnion([userMe])
+    });
+  }
+
   Future<void> uploadBulletinRoom(
       {required displayName,
         required uid,

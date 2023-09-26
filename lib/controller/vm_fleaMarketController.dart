@@ -112,6 +112,14 @@ class FleaModelController extends GetxController {
     await getCurrentFleaItem(uid: uid, fleaCount: fleaCount);
   }
 
+
+  Future<void> updateViewerUid() async {
+    final  userMe = auth.currentUser!.uid;
+    await ref.collection('fleaMarket').doc('$uid#$fleaCount').update({
+      'viewerUid': FieldValue.arrayUnion([userMe])
+    });
+  }
+
   Future<void> uploadFleaItem(
       {required displayName,
         required uid,

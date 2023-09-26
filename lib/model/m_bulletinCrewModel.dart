@@ -88,6 +88,7 @@ class BulletinCrewModel {
       'bulletinCrewReplyCount': 0,
       'resortNickname': resortNickname,
       'soldOut': false,
+      'viewerUid': [],
     });
   }
 
@@ -116,6 +117,7 @@ class BulletinCrewModel {
       'timeStamp': Timestamp.now(),
       'resortNickname': resortNickname,
       'soldOut': false,
+      'viewerUid': [],
     });
   }
 

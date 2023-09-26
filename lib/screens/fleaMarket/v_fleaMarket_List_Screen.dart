@@ -586,6 +586,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                     uid: chatDocs[index].get('uid'),
                                     fleaCount:
                                         chatDocs[index].get('fleaCount'));
+                                await _fleaModelController.updateViewerUid();
                                 CustomFullScreenDialog.cancelDialog();
                                 print(_fleaModelController.itemImagesUrls);
                                 Get.to(() => FleaMarket_List_Detail());
@@ -730,6 +731,24 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                                           FontWeight
                                                                               .normal),
                                                                 ),
+                                                                SizedBox(width: 10,),
+                                                                Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons.remove_red_eye_outlined,
+                                                                      color: Color(0xFF949494),
+                                                                      size: 15,
+                                                                    ),
+                                                                    SizedBox(width: 5,),
+                                                                    Text(
+                                                                        '${chatDocs[index]['viewerUid'].length.toString()}',
+                                                                       style: TextStyle(
+                                                                            fontSize: 13,
+                                                                            color: Color(0xFF949494),
+                                                                            fontWeight: FontWeight.normal)
+                                                                    )
+                                                                  ],
+                                                                )
                                                               ],
                                                             ),
                                                             SizedBox(

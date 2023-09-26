@@ -541,6 +541,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                 uid: chatDocs[index].get('uid'),
                                 bulletinCrewCount:
                                 chatDocs[index].get('bulletinCrewCount'));
+                            await _bulletinCrewModelController.updateViewerUid();
                             CustomFullScreenDialog.cancelDialog();
                             Get.to(() => Bulletin_Crew_List_Detail());
                           },
@@ -659,6 +660,24 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                                 color: Color(0xFF949494),
                                                                 fontWeight: FontWeight.normal),
                                                           ),
+                                                          SizedBox(width: 10,),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons.remove_red_eye_outlined,
+                                                                color: Color(0xFF949494),
+                                                                size: 15,
+                                                              ),
+                                                              SizedBox(width: 5,),
+                                                              Text(
+                                                                  '${chatDocs[index]['viewerUid'].length.toString()}',
+                                                                  style: TextStyle(
+                                                                      fontSize: 13,
+                                                                      color: Color(0xFF949494),
+                                                                      fontWeight: FontWeight.normal)
+                                                              )
+                                                            ],
+                                                          )
                                                         ],
                                                       ),
                                                     ],
