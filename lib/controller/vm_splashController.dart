@@ -18,10 +18,12 @@ class SplashController extends GetxController{
   }
 
   Future<void> getSplashUrl() async{
-    SplashModel splashModel = await SplashModel().getSplashImage();
-    this._url = splashModel.modelUrl;
-    await FlutterSecureStorage().write(key: 'splashUrl', value: '${splashModel.modelUrl}');
-
+    try {
+      SplashModel splashModel = await SplashModel().getSplashImage();
+      this._url = splashModel.modelUrl;
+    }catch(e){
+      this._url = 'https://i.esdrop.com/d/f/yytYSNBROy/spAvUnyvK6.png';
+    }
   }
 
 }
