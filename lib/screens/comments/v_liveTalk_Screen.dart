@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:com.snowlive/controller/vm_resortModelController.dart';
+import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
   UserModelController _userModelController = Get.find<UserModelController>();
   CommentModelController _commentModelController = Get.find<CommentModelController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
+  SeasonController _seasonController = Get.find<SeasonController>();
   //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -102,7 +104,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
         .where('displayName', isEqualTo: (_selectedValue2 == '전체') ? _alluser : 'SNOWLIVE')
         .where('resortNickname', isEqualTo: (_selectedValue == '필터') ? _allCategories : '$_selectedValue')
         .orderBy('timeStamp', descending: true)
-        .limit(500)
+        .limit(_seasonController.liveTalkLimit!)
         .snapshots();
   }
 
@@ -379,6 +381,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
   Widget build(BuildContext context) {
     Get.put(ImageController(), permanent: true);
     ImageController _imageController = Get.find<ImageController>();
+
+    _seasonController.getLiveTalkLimit();
 
     Size _size = MediaQuery.of(context).size;
 
