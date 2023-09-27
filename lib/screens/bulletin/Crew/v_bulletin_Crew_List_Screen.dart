@@ -564,13 +564,14 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(vertical: 12),
                                           child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
                                                 '운영자에 의해 차단된 게시글입니다.',
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.normal,
-                                                    fontSize: 12,
-                                                    color: Color(0xffc8c8c8)),
+                                                    fontSize: 13,
+                                                    color: Color(0xff949494)),
                                               ),
                                               if(_userModelController.displayName == 'SNOWLIVE')
                                                 GestureDetector(
@@ -697,7 +698,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                             );
                                                           }),
                                                   child: Icon(Icons.more_horiz,
-                                                    color: Color(0xFFdedede),
+                                                    color: Color(0xFFEF0069),
                                                     size: 20,
                                                   ),
                                                 )
