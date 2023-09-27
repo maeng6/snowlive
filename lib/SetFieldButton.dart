@@ -61,3 +61,22 @@ Future<void> transferUIDs() async {
   }
   CustomFullScreenDialog.cancelDialog();
 }
+
+Future<void> updateFieldsForLiveTalk() async {
+  // Get a reference to the Firestore collection
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  CollectionReference collection = firestore.collection('liveTalk');
+
+  // Get all the documents in the collection
+  QuerySnapshot querySnapshot = await collection.get();
+  List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+
+  // Update the fields for each document
+  documents.forEach((document) async {
+    CustomFullScreenDialog.showDialog();
+    await document.reference.set({
+      'lock': false,
+    }, SetOptions(merge: true));
+    CustomFullScreenDialog.cancelDialog();
+  });
+}

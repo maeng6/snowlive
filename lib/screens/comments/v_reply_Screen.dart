@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -49,6 +50,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
   Get.find<CommentModelController>();
   ReplyModelController _replyModelController =
   Get.find<ReplyModelController>();
+  SeasonController _seasonController = Get.find<SeasonController>();
 
 //TODO: Dependency Injection**************************************************
 
@@ -76,13 +78,16 @@ class _ReplyScreenState extends State<ReplyScreen> {
         .doc('${widget.replyUid}${widget.replyCount}')
         .collection('reply')
         .orderBy('timeStamp', descending: false)
-        .limit(500)
+        .limit(_seasonController.liveTalkReplyLimit!)
         .snapshots();
   }
 
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+
+    _seasonController.getLiveTalkReplyLimit();
+
     return GestureDetector(
       onTap: (){
         FocusScope.of(context).unfocus();

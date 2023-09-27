@@ -13,13 +13,19 @@ class SeasonController extends GetxController{
   final auth = FirebaseAuth.instance;
 
   RxString? _currentSeason = ''.obs;
+  RxInt? _liveTalkLimit = 0.obs;
+  RxInt? _liveTalkReplyLimit = 0.obs;
 
   String? get currentSeason => _currentSeason!.value;
+  int? get liveTalkLimit => _liveTalkLimit!.value;
+  int? get liveTalkReplyLimit => _liveTalkReplyLimit!.value;
 
 
   @override
   void onInit()  async{
     await getCurrentSeason();
+    await getLiveTalkLimit();
+    await getLiveTalkReplyLimit();
     // TODO: implement onInit
     super.onInit();
   }
@@ -34,5 +40,27 @@ class SeasonController extends GetxController{
     this._currentSeason!.value = currentSeason;
     print(currentSeason);
   }
+
+  Future<void> getLiveTalkLimit() async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('liveTalkLimit').doc('1');
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    int liveTalkLimit = documentSnapshot.get('limit');
+    this._liveTalkLimit!.value = liveTalkLimit;
+    print(liveTalkLimit);
+  }
+
+  Future<void> getLiveTalkReplyLimit() async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('liveTalkReplyLimit').doc('1');
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    int liveTalkReplyLimit = documentSnapshot.get('limit');
+    this._liveTalkReplyLimit!.value = liveTalkReplyLimit;
+    print(liveTalkReplyLimit);
+  }
+
+
 }
 
