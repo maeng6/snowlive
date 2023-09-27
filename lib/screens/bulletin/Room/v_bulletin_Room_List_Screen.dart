@@ -728,14 +728,17 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                                                               maxWidth: _size.width - 164),
                                                                           child: Row(
                                                                             children: [
-                                                                              Text(
-                                                                                chatDocs[index].get('title'),
-                                                                                maxLines: 2,
-                                                                                overflow:  TextOverflow.ellipsis,
-                                                                                style: TextStyle(
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                    fontSize: 15,
-                                                                                    color: Color(0xFF111111)),
+                                                                              Container(
+                                                                                width: _size.width - 100,
+                                                                                child: Text(
+                                                                                  chatDocs[index].get('title'),
+                                                                                  maxLines: 2,
+                                                                                  overflow:  TextOverflow.ellipsis,
+                                                                                  style: TextStyle(
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      fontSize: 15,
+                                                                                      color: Color(0xFF111111)),
+                                                                                ),
                                                                               ),
                                                                               if(_userModelController.displayName == 'SNOWLIVE')
                                                                                 GestureDetector(
@@ -862,7 +865,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                                                                             );
                                                                                           }),
                                                                                   child: Icon(Icons.more_horiz,
-                                                                                    color: Color(0xFFdedede),
+                                                                                    color: Color(0xFFEF0069),
                                                                                     size: 20,
                                                                                   ),
                                                                                 ),

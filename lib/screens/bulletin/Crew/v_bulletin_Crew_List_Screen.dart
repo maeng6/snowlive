@@ -752,17 +752,20 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                                 Expanded(
                                                                   child: Container(
                                                                     constraints: BoxConstraints(
-                                                                        maxWidth: _size.width - 164),
+                                                                        maxWidth: _size.width - 168),
                                                                     child: Row(
                                                                       children: [
-                                                                        Text(
-                                                                          chatDocs[index].get('title'),
-                                                                          maxLines: 2,
-                                                                          overflow: TextOverflow.ellipsis,
-                                                                          style: TextStyle(
-                                                                              fontWeight: FontWeight.bold,
-                                                                              fontSize: 15,
-                                                                              color: Color(0xFF111111)),
+                                                                        Container(
+                                                                          width: _size.width - 100,
+                                                                          child: Text(
+                                                                            chatDocs[index].get('title'),
+                                                                            maxLines: 2,
+                                                                            overflow: TextOverflow.ellipsis,
+                                                                            style: TextStyle(
+                                                                                fontWeight: FontWeight.bold,
+                                                                                fontSize: 15,
+                                                                                color: Color(0xFF111111)),
+                                                                          ),
                                                                         ),
                                                                         if(_userModelController.displayName == 'SNOWLIVE')
                                                                           GestureDetector(
@@ -889,7 +892,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                                                       );
                                                                                     }),
                                                                             child: Icon(Icons.more_horiz,
-                                                                              color: Color(0xFFdedede),
+                                                                              color: Color(0xFFEF0069),
                                                                               size: 20,
                                                                             ),
                                                                           ),

@@ -973,7 +973,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                                             );
                                                                           }),
                                                                   child: Icon(Icons.more_horiz,
-                                                                    color: Color(0xFFdedede),
+                                                                    color: Color(0xFFEF0069),
                                                                     size: 20,
                                                                   ),
                                                                 ),
