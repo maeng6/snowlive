@@ -89,6 +89,7 @@ class BulletinCrewModel {
       'resortNickname': resortNickname,
       'soldOut': false,
       'viewerUid': [],
+      'lock': false,
     });
   }
 

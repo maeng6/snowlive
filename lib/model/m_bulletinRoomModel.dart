@@ -88,6 +88,7 @@ class BulletinRoomModel {
       'resortNickname': resortNickname,
       'soldOut': false,
       'viewerUid': [],
+      'lock': false,
     });
   }
 

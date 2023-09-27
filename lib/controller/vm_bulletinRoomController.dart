@@ -107,6 +107,31 @@ class BulletinRoomModelController extends GetxController {
     });
   }
 
+  Future<void> lock(uid) async {
+    try {
+
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('bulletinRoom').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      bool isLock = documentSnapshot.get('lock');
+
+      if(isLock == false) {
+        await ref.collection('bulletinRoom').doc(uid).update({
+          'lock': true,
+        });
+      }else {
+        await ref.collection('bulletinRoom').doc(uid).update({
+          'lock': false,
+        });
+      }
+    } catch (e) {
+      print('탈퇴한 회원');
+    }
+  }
+
   Future<void> uploadBulletinRoom(
       {required displayName,
         required uid,

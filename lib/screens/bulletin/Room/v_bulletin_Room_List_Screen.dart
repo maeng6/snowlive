@@ -504,18 +504,22 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                             .yyyymmddFormat(chatDocs[index].get('timeStamp'));
                         return GestureDetector(
                           onTap: () async {
-                            if (_userModelController.repoUidList!
-                                .contains(chatDocs[index].get('uid'))) {
-                              return;
-                            }
-                            CustomFullScreenDialog.showDialog();
-                            await _bulletinRoomModelController.getCurrentBulletinRoom(
-                                uid: chatDocs[index].get('uid'),
-                                bulletinRoomCount:
-                                    chatDocs[index].get('bulletinRoomCount'));
-                            await _bulletinRoomModelController.updateViewerUid();
-                            CustomFullScreenDialog.cancelDialog();
-                            Get.to(() => Bulletin_Room_List_Detail());
+                            if(chatDocs[index].get('lock') == false) {
+                              if (_userModelController.repoUidList!
+                                  .contains(chatDocs[index].get('uid'))) {
+                                return;
+                              }
+                              CustomFullScreenDialog.showDialog();
+                              await _bulletinRoomModelController
+                                  .getCurrentBulletinRoom(
+                                  uid: chatDocs[index].get('uid'),
+                                  bulletinRoomCount:
+                                  chatDocs[index].get('bulletinRoomCount'));
+                              await _bulletinRoomModelController
+                                  .updateViewerUid();
+                              CustomFullScreenDialog.cancelDialog();
+                              Get.to(() => Bulletin_Room_List_Detail());
+                            }else{}
                           },
                           child: Obx(() => Column(
                                 children: [
@@ -527,6 +531,153 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
+                                          ( chatDocs[index].get('lock') == true)
+                                              ? Center(
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: 12),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    '운영자에 의해 차단된 게시글입니다.',
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.normal,
+                                                        fontSize: 12,
+                                                        color: Color(0xffc8c8c8)),
+                                                  ),
+                                                  if(_userModelController.displayName == 'SNOWLIVE')
+                                                    GestureDetector(
+                                                      onTap: () =>
+                                                          showModalBottomSheet(
+                                                              enableDrag: false,
+                                                              context: context,
+                                                              builder: (context) {
+                                                                return Container(
+                                                                  height: 100,
+                                                                  child:Padding(
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal: 20.0,
+                                                                        vertical: 14),
+                                                                    child: Column(
+                                                                      children: [
+                                                                        GestureDetector(
+                                                                          child: ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Center(
+                                                                              child: Text(
+                                                                                (chatDocs[index].get('lock') == false)
+                                                                                    ? '게시글 잠금' : '게시글 잠금 해제',
+                                                                                style: TextStyle(
+                                                                                    fontSize: 15,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    color: Color(0xFFD63636)
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            //selected: _isSelected[index]!,
+                                                                            onTap: () async {
+                                                                              Navigator.pop(context);
+                                                                              showModalBottomSheet(
+                                                                                  context: context,
+                                                                                  builder: (context) {
+                                                                                    return Container(
+                                                                                      color: Colors.white,
+                                                                                      height: 180,
+                                                                                      child: Padding(
+                                                                                        padding: const EdgeInsets.symmetric(
+                                                                                            horizontal: 20.0),
+                                                                                        child: Column(
+                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                                                          children: [
+                                                                                            SizedBox(
+                                                                                              height: 30,
+                                                                                            ),
+                                                                                            Text(
+                                                                                              (chatDocs[index].get('lock') == false)
+                                                                                                  ? '이 게시글을 잠그시겠습니까?' : '이 게시글의 잠금을 해제하시겠습니까?',
+                                                                                              style: TextStyle(
+                                                                                                  fontSize: 20,
+                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                  color: Color(0xFF111111)),
+                                                                                            ),
+                                                                                            SizedBox(
+                                                                                              height: 30,
+                                                                                            ),
+                                                                                            Row(
+                                                                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                              children: [
+                                                                                                Expanded(
+                                                                                                  child: ElevatedButton(
+                                                                                                    onPressed: () {
+                                                                                                      Navigator.pop(context);
+                                                                                                    },
+                                                                                                    child: Text(
+                                                                                                      '취소',
+                                                                                                      style: TextStyle(
+                                                                                                          color: Colors.white,
+                                                                                                          fontSize: 15,
+                                                                                                          fontWeight: FontWeight.bold),
+                                                                                                    ),
+                                                                                                    style: TextButton.styleFrom(
+                                                                                                        splashFactory: InkRipple.splashFactory,
+                                                                                                        elevation: 0,
+                                                                                                        minimumSize: Size(100, 56),
+                                                                                                        backgroundColor: Color(0xff555555),
+                                                                                                        padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                  ),
+                                                                                                ),
+                                                                                                SizedBox(
+                                                                                                  width: 10,
+                                                                                                ),
+                                                                                                Expanded(
+                                                                                                  child: ElevatedButton(
+                                                                                                    onPressed: () async {
+                                                                                                      CustomFullScreenDialog.showDialog();
+                                                                                                      await _bulletinRoomModelController.lock('${chatDocs[index]['uid']}#${chatDocs[index]['bulletinRoomCount']}');
+                                                                                                      Navigator.pop(context);
+                                                                                                      CustomFullScreenDialog.cancelDialog();
+                                                                                                    },
+                                                                                                    child: Text('확인',
+                                                                                                      style: TextStyle(
+                                                                                                          color: Colors.white,
+                                                                                                          fontSize: 15,
+                                                                                                          fontWeight: FontWeight.bold),
+                                                                                                    ),
+                                                                                                    style: TextButton.styleFrom(
+                                                                                                        splashFactory: InkRipple.splashFactory,
+                                                                                                        elevation: 0,
+                                                                                                        minimumSize: Size(100, 56),
+                                                                                                        backgroundColor: Color(0xff2C97FB),
+                                                                                                        padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ],
+                                                                                            )
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                    );
+                                                                                  });
+                                                                            },
+                                                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              }),
+                                                      child: Icon(Icons.more_horiz,
+                                                        color: Color(0xFFdedede),
+                                                        size: 20,
+                                                      ),
+                                                    )
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                              :
                                           (_userModelController.repoUidList!
                                                   .contains(chatDocs[index]
                                                       .get('uid')))
@@ -575,14 +726,147 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                                                         child: Container(
                                                                           constraints: BoxConstraints(
                                                                               maxWidth: _size.width - 164),
-                                                                          child: Text(
-                                                                            chatDocs[index].get('title'),
-                                                                            maxLines: 2,
-                                                                            overflow:  TextOverflow.ellipsis,
-                                                                            style: TextStyle(
-                                                                                fontWeight: FontWeight.bold,
-                                                                                fontSize: 15,
-                                                                                color: Color(0xFF111111)),
+                                                                          child: Row(
+                                                                            children: [
+                                                                              Text(
+                                                                                chatDocs[index].get('title'),
+                                                                                maxLines: 2,
+                                                                                overflow:  TextOverflow.ellipsis,
+                                                                                style: TextStyle(
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    fontSize: 15,
+                                                                                    color: Color(0xFF111111)),
+                                                                              ),
+                                                                              if(_userModelController.displayName == 'SNOWLIVE')
+                                                                                GestureDetector(
+                                                                                  onTap: () =>
+                                                                                      showModalBottomSheet(
+                                                                                          enableDrag: false,
+                                                                                          context: context,
+                                                                                          builder: (context) {
+                                                                                            return Container(
+                                                                                              height: 100,
+                                                                                              child:Padding(
+                                                                                                padding: const EdgeInsets
+                                                                                                    .symmetric(
+                                                                                                    horizontal: 20.0,
+                                                                                                    vertical: 14),
+                                                                                                child: Column(
+                                                                                                  children: [
+                                                                                                    GestureDetector(
+                                                                                                      child: ListTile(
+                                                                                                        contentPadding: EdgeInsets.zero,
+                                                                                                        title: Center(
+                                                                                                          child: Text(
+                                                                                                            (chatDocs[index].get('lock') == false)
+                                                                                                                ? '게시글 잠금' : '게시글 잠금 해제',
+                                                                                                            style: TextStyle(
+                                                                                                                fontSize: 15,
+                                                                                                                fontWeight: FontWeight.bold,
+                                                                                                                color: Color(0xFFD63636)
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                        //selected: _isSelected[index]!,
+                                                                                                        onTap: () async {
+                                                                                                          Navigator.pop(context);
+                                                                                                          showModalBottomSheet(
+                                                                                                              context: context,
+                                                                                                              builder: (context) {
+                                                                                                                return Container(
+                                                                                                                  color: Colors.white,
+                                                                                                                  height: 180,
+                                                                                                                  child: Padding(
+                                                                                                                    padding: const EdgeInsets.symmetric(
+                                                                                                                        horizontal: 20.0),
+                                                                                                                    child: Column(
+                                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                                                                      children: [
+                                                                                                                        SizedBox(
+                                                                                                                          height: 30,
+                                                                                                                        ),
+                                                                                                                        Text(
+                                                                                                                          (chatDocs[index].get('lock') == false)
+                                                                                                                              ? '이 게시글을 잠그시겠습니까?' : '이 게시글의 잠금을 해제하시겠습니까?',
+                                                                                                                          style: TextStyle(
+                                                                                                                              fontSize: 20,
+                                                                                                                              fontWeight: FontWeight.bold,
+                                                                                                                              color: Color(0xFF111111)),
+                                                                                                                        ),
+                                                                                                                        SizedBox(
+                                                                                                                          height: 30,
+                                                                                                                        ),
+                                                                                                                        Row(
+                                                                                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                                                          children: [
+                                                                                                                            Expanded(
+                                                                                                                              child: ElevatedButton(
+                                                                                                                                onPressed: () {
+                                                                                                                                  Navigator.pop(context);
+                                                                                                                                },
+                                                                                                                                child: Text(
+                                                                                                                                  '취소',
+                                                                                                                                  style: TextStyle(
+                                                                                                                                      color: Colors.white,
+                                                                                                                                      fontSize: 15,
+                                                                                                                                      fontWeight: FontWeight.bold),
+                                                                                                                                ),
+                                                                                                                                style: TextButton.styleFrom(
+                                                                                                                                    splashFactory: InkRipple.splashFactory,
+                                                                                                                                    elevation: 0,
+                                                                                                                                    minimumSize: Size(100, 56),
+                                                                                                                                    backgroundColor: Color(0xff555555),
+                                                                                                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                                              ),
+                                                                                                                            ),
+                                                                                                                            SizedBox(
+                                                                                                                              width: 10,
+                                                                                                                            ),
+                                                                                                                            Expanded(
+                                                                                                                              child: ElevatedButton(
+                                                                                                                                onPressed: () async {
+                                                                                                                                  CustomFullScreenDialog.showDialog();
+                                                                                                                                  await _bulletinRoomModelController.lock('${chatDocs[index]['uid']}#${chatDocs[index]['bulletinRoomCount']}');
+                                                                                                                                  Navigator.pop(context);
+                                                                                                                                  CustomFullScreenDialog.cancelDialog();
+                                                                                                                                },
+                                                                                                                                child: Text('확인',
+                                                                                                                                  style: TextStyle(
+                                                                                                                                      color: Colors.white,
+                                                                                                                                      fontSize: 15,
+                                                                                                                                      fontWeight: FontWeight.bold),
+                                                                                                                                ),
+                                                                                                                                style: TextButton.styleFrom(
+                                                                                                                                    splashFactory: InkRipple.splashFactory,
+                                                                                                                                    elevation: 0,
+                                                                                                                                    minimumSize: Size(100, 56),
+                                                                                                                                    backgroundColor: Color(0xff2C97FB),
+                                                                                                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                                              ),
+                                                                                                                            ),
+                                                                                                                          ],
+                                                                                                                        )
+                                                                                                                      ],
+                                                                                                                    ),
+                                                                                                                  ),
+                                                                                                                );
+                                                                                                              });
+                                                                                                        },
+                                                                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                            );
+                                                                                          }),
+                                                                                  child: Icon(Icons.more_horiz,
+                                                                                    color: Color(0xFFdedede),
+                                                                                    size: 20,
+                                                                                  ),
+                                                                                ),
+                                                                            ],
                                                                           ),
                                                                         ),
                                                                       ),

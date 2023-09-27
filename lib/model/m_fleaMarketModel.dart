@@ -105,6 +105,7 @@ class FleaModel {
       'kakaoUrl': kakaoUrl,
       'soldOut': false,
       'viewerUid': [],
+      'lock': false,
     });
   }
 
