@@ -76,6 +76,7 @@ class CommentModel {
       'likeCount' : likeCount,
       'replyCount' : replyCount,
       'livetalkImageUrl' : livetalkImageUrl,
+      'lock' : false,
     });
   }
 
