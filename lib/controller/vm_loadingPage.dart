@@ -1,4 +1,5 @@
 import 'package:com.snowlive/controller/vm_urlLauncherController.dart';
+import 'package:com.snowlive/controller/vm_versionController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_friendsCommentController.dart';
@@ -38,6 +39,8 @@ class _LoadingPageState extends State<LoadingPage> {
     Get.put(LiveCrewModelController(), permanent: true);
     Get.put(SeasonController(), permanent: true);
     Get.put(UrlLauncherController(), permanent: true);
+
+    checkForUpdate();
 
     LoginController _logInController = Get.put(LoginController());
 

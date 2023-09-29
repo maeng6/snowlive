@@ -65,7 +65,7 @@ dependencies:
   flutter_chat_bubble: ^2.0.0
   lottie: ^2.2.0
   platform: ^3.1.0
-  package_info_plus: ^3.0.3
+  package_info_plus: ^4.1.0
   flutter_local_notifications: ^13.0.0
   firebase_messaging: ^14.4.0
   firebase_analytics: ^10.2.0
