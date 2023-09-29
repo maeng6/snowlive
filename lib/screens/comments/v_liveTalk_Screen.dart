@@ -682,16 +682,22 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                 children: [
                                                   ( chatDocs[index].get('lock') == true)
                                                       ? Center(
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          borderRadius: BorderRadius
+                                                              .circular(8)
+                                                      ),
+                                                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                                                       child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
                                                           Text(
                                                             '운영자에 의해 차단된 게시글입니다.',
                                                             style: TextStyle(
                                                                 fontWeight: FontWeight.normal,
-                                                                fontSize: 12,
-                                                                color: Color(0xffc8c8c8)),
+                                                                fontSize: 13,
+                                                                color: Color(0xff949494)),
                                                           ),
                                                           if(_userModelController.displayName == 'SNOWLIVE')
                                                             GestureDetector(
