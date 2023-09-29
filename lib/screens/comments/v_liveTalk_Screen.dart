@@ -73,6 +73,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
     _updateMethodComment();
     // TODO: implement initState
     super.initState();
+    _seasonController.getLiveTalkLimit();
     _stream = newStream();
     _scrollController.addListener(() {
       setState(() {

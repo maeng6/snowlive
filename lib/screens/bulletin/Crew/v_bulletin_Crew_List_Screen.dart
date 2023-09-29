@@ -1,3 +1,4 @@
+import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,8 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
   UserModelController _userModelController = Get.find<UserModelController>();
   BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
+  SeasonController _seasonController = Get.find<SeasonController>();
+
 //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -45,6 +48,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _seasonController.getBulletinCrewLimit();
     _stream = newStream();
 
     // Add a listener to the ScrollController
@@ -64,7 +68,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                 (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
         .where('location', isEqualTo: (_selectedValue2 == '지역') ? _allCategories : '$_selectedValue2')
         .orderBy('timeStamp', descending: true)
-        .limit(500)
+        .limit(_seasonController.bulletinCrewLimit!)
         .snapshots();
   }
 
@@ -323,6 +327,8 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+
+    _seasonController.getBulletinCrewLimit();
 
     return GestureDetector(
       onTap: () {

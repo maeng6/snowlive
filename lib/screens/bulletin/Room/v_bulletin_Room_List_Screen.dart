@@ -1,3 +1,4 @@
+import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
   UserModelController _userModelController = Get.find<UserModelController>();
   BulletinRoomModelController _bulletinRoomModelController = Get.find<BulletinRoomModelController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
+  SeasonController _seasonController = Get.find<SeasonController>();
 //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -44,6 +46,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _seasonController.getBulletinRoomLimit();
     _stream = newStream();
 
     // Add a listener to the ScrollController
@@ -63,7 +66,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                 (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
         .where('location', isEqualTo: (_selectedValue2 == '스키장') ? _allCategories : '$_selectedValue2')
         .orderBy('timeStamp', descending: true)
-        .limit(500)
+        .limit(_seasonController.bulletinRoomLimit!)
         .snapshots();
   }
 
@@ -294,6 +297,9 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+
+    _seasonController.getBulletinRoomLimit();
+
 
     return GestureDetector(
       onTap: () {
