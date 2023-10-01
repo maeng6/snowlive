@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:com.snowlive/screens/more/v_eventPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +86,7 @@ class _MoreTabState extends State<MoreTab> {
               Obx(
                 () => GestureDetector(
                   onTap: (){
-                    Get.to(FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort));
+                    Get.to(SnowliveDetailPage());
                   },
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
