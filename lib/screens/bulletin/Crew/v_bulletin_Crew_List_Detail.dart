@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,7 +25,8 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
-//TODO: Dependency Injection**************************************************
+  SeasonController _seasonController = Get.find<SeasonController>();
+  //TODO: Dependency Injection**************************************************
 
   final _controller = TextEditingController();
   var _newReply = '';
@@ -45,6 +47,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
     _updateMethod();
     // TODO: implement initState
     super.initState();
+    _seasonController.getBulletinCrewReplyLimit();
     _replyStream = replyNewStream();
   }
 
@@ -58,7 +61,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
         .doc('${_bulletinCrewModelController.uid}#${_bulletinCrewModelController.bulletinCrewCount}')
         .collection('reply')
         .orderBy('timeStamp', descending: true)
-        .limit(500)
+        .limit(_seasonController.bulletinCrewReplyLimit!)
         .snapshots();
   }
 
@@ -72,6 +75,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
     BulletinCrewReplyModelController _bulletinCrewReplyModelController = Get.find<BulletinCrewReplyModelController>();
     //TODO : ****************************************************************
 
+    _seasonController.getBulletinCrewReplyLimit();
 
     String _time =
     _bulletinCrewModelController.getAgoTime(_bulletinCrewModelController.timeStamp);

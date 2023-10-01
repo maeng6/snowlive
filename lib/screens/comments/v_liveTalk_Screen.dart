@@ -73,6 +73,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
     _updateMethodComment();
     // TODO: implement initState
     super.initState();
+    _seasonController.getLiveTalkLimit();
     _stream = newStream();
     _scrollController.addListener(() {
       setState(() {
@@ -668,6 +669,13 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                     reverse: true,
                                     itemCount: chatDocs.length,
                                     itemBuilder: (context, index) {
+
+                                      Map<String, dynamic>? data = chatDocs[index].data() as Map<String, dynamic>?;
+
+                                      // 필드가 없을 경우 기본값 설정
+                                      bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
+
+
                                       String _time = _commentModelController
                                           .getAgoTime(chatDocs[index].get('timeStamp'));
                                       return Padding(
@@ -680,7 +688,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                 crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                                 children: [
-                                                  ( chatDocs[index].get('lock') == true)
+                                                  (isLocked ==true)
                                                       ? Center(
                                                     child: Container(
                                                       decoration: BoxDecoration(
@@ -720,7 +728,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                     contentPadding: EdgeInsets.zero,
                                                                                     title: Center(
                                                                                       child: Text(
-                                                                                        (chatDocs[index].get('lock') == false)
+                                                                                        (isLocked == false)
                                                                                             ? '게시글 잠금' : '게시글 잠금 해제',
                                                                                         style: TextStyle(
                                                                                             fontSize: 15,
@@ -749,7 +757,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                       height: 30,
                                                                                                     ),
                                                                                                     Text(
-                                                                                                      (chatDocs[index].get('lock') == false)
+                                                                                                      (isLocked==false)
                                                                                                           ? '이 게시글을 잠그시겠습니까?' : '이 게시글의 잠금을 해제하시겠습니까?',
                                                                                                       style: TextStyle(
                                                                                                           fontSize: 20,
@@ -788,6 +796,9 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                         Expanded(
                                                                                                           child: ElevatedButton(
                                                                                                             onPressed: () async {
+                                                                                                              if (data?.containsKey('lock') == false) {
+                                                                                                                await chatDocs[index].reference.update({'lock': false});
+                                                                                                              }
                                                                                                               CustomFullScreenDialog.showDialog();
                                                                                                               await _commentModelController.lock('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}');
                                                                                                               Navigator.pop(context);
@@ -1144,7 +1155,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                 contentPadding: EdgeInsets.zero,
                                                                                                 title: Center(
                                                                                                   child: Text(
-                                                                                                    (chatDocs[index]['lock'] == false)
+                                                                                                    (isLocked ==false)
                                                                                                     ? '게시글 잠금' : '게시글 잠금 해제',
                                                                                                     style: TextStyle(
                                                                                                       fontSize: 15,
@@ -1164,7 +1175,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                             borderRadius: BorderRadius.circular(10.0)),
                                                                                                         buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                                                                                                         content: Text(
-                                                                                                          (chatDocs[index]['lock'] == false)
+                                                                                                          (isLocked ==false)
                                                                                                           ? '이 게시글을 잠그시겠습니까?' : '게시글 잠금을 해제하시겠습니까?',
                                                                                                           style: TextStyle(
                                                                                                               fontWeight: FontWeight.w600,
@@ -1187,6 +1198,9 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                                   )),
                                                                                                               TextButton(
                                                                                                                   onPressed: () async{
+                                                                                                                    if (data?.containsKey('lock') == false) {
+                                                                                                                      await chatDocs[index].reference.update({'lock': false});
+                                                                                                                    }
                                                                                                                     await _commentModelController.lock('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}');
                                                                                                                     Navigator.pop(context);
                                                                                                                     Navigator.pop(context);

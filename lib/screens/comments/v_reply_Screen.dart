@@ -65,6 +65,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
     _updateMethod();
     // TODO: implement initState
     super.initState();
+    _seasonController.getLiveTalkReplyLimit();
     _replyStream = replyNewStream();
   }
 

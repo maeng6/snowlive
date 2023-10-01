@@ -1,3 +1,4 @@
+import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
   UserModelController _userModelController = Get.find<UserModelController>();
   BulletinRoomModelController _bulletinRoomModelController = Get.find<BulletinRoomModelController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
+  SeasonController _seasonController = Get.find<SeasonController>();
 //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -44,6 +46,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _seasonController.getBulletinRoomLimit();
     _stream = newStream();
 
     // Add a listener to the ScrollController
@@ -63,7 +66,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                 (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
         .where('location', isEqualTo: (_selectedValue2 == '스키장') ? _allCategories : '$_selectedValue2')
         .orderBy('timeStamp', descending: true)
-        .limit(500)
+        .limit(_seasonController.bulletinRoomLimit!)
         .snapshots();
   }
 
@@ -295,6 +298,9 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
+    _seasonController.getBulletinRoomLimit();
+
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -500,11 +506,15 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                       controller: _scrollController, // ScrollController 연결
                       itemCount: chatDocs.length,
                       itemBuilder: (context, index) {
+                        Map<String, dynamic>? data = chatDocs[index].data() as Map<String, dynamic>?;
+
+                        // 필드가 없을 경우 기본값 설정
+                        bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
                         String _time = _timeStampController
                             .yyyymmddFormat(chatDocs[index].get('timeStamp'));
                         return GestureDetector(
                           onTap: () async {
-                            if(chatDocs[index].get('lock') == false) {
+                            if(isLocked == false) {
                               if (_userModelController.repoUidList!
                                   .contains(chatDocs[index].get('uid'))) {
                                 return;
@@ -531,7 +541,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          ( chatDocs[index].get('lock') == true)
+                                          (isLocked == true)
                                               ? Center(
                                             child: Padding(
                                               padding: const EdgeInsets.symmetric(vertical: 12),
@@ -566,7 +576,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                                                             contentPadding: EdgeInsets.zero,
                                                                             title: Center(
                                                                               child: Text(
-                                                                                (chatDocs[index].get('lock') == false)
+                                                                                (isLocked == false)
                                                                                     ? '게시글 잠금' : '게시글 잠금 해제',
                                                                                 style: TextStyle(
                                                                                     fontSize: 15,
@@ -595,7 +605,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                                                                               height: 30,
                                                                                             ),
                                                                                             Text(
-                                                                                              (chatDocs[index].get('lock') == false)
+                                                                                              (isLocked == false)
                                                                                                   ? '이 게시글을 잠그시겠습니까?' : '이 게시글의 잠금을 해제하시겠습니까?',
                                                                                               style: TextStyle(
                                                                                                   fontSize: 20,
@@ -634,6 +644,9 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                                                                                 Expanded(
                                                                                                   child: ElevatedButton(
                                                                                                     onPressed: () async {
+                                                                                                      if (data?.containsKey('lock') == false) {
+                                                                                                        await chatDocs[index].reference.update({'lock': false});
+                                                                                                      }
                                                                                                       CustomFullScreenDialog.showDialog();
                                                                                                       await _bulletinRoomModelController.lock('${chatDocs[index]['uid']}#${chatDocs[index]['bulletinRoomCount']}');
                                                                                                       Navigator.pop(context);
@@ -762,7 +775,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                                                                                         contentPadding: EdgeInsets.zero,
                                                                                                         title: Center(
                                                                                                           child: Text(
-                                                                                                            (chatDocs[index].get('lock') == false)
+                                                                                                            (isLocked == false)
                                                                                                                 ? '게시글 잠금' : '게시글 잠금 해제',
                                                                                                             style: TextStyle(
                                                                                                                 fontSize: 15,
@@ -791,7 +804,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                                                                                                           height: 30,
                                                                                                                         ),
                                                                                                                         Text(
-                                                                                                                          (chatDocs[index].get('lock') == false)
+                                                                                                                          (isLocked == false)
                                                                                                                               ? '이 게시글을 잠그시겠습니까?' : '이 게시글의 잠금을 해제하시겠습니까?',
                                                                                                                           style: TextStyle(
                                                                                                                               fontSize: 20,
@@ -830,6 +843,9 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                                                                                                             Expanded(
                                                                                                                               child: ElevatedButton(
                                                                                                                                 onPressed: () async {
+                                                                                                                                  if (data?.containsKey('lock') == false) {
+                                                                                                                                    await chatDocs[index].reference.update({'lock': false});
+                                                                                                                                  }
                                                                                                                                   CustomFullScreenDialog.showDialog();
                                                                                                                                   await _bulletinRoomModelController.lock('${chatDocs[index]['uid']}#${chatDocs[index]['bulletinRoomCount']}');
                                                                                                                                   Navigator.pop(context);

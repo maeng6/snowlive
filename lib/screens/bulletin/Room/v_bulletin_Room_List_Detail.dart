@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -26,7 +27,8 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   BulletinRoomModelController _bulletinRoomModelController = Get.find<BulletinRoomModelController>();
-//TODO: Dependency Injection**************************************************
+  SeasonController _seasonController = Get.find<SeasonController>();
+  //TODO: Dependency Injection**************************************************
 
   final _controller = TextEditingController();
   var _newReply = '';
@@ -48,6 +50,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
     _updateMethod();
     // TODO: implement initState
     super.initState();
+    _seasonController.getBulletinRoomReplyLimit();
     _replyStream = replyNewStream();
   }
 
@@ -61,7 +64,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
         .doc('${_bulletinRoomModelController.uid}#${_bulletinRoomModelController.bulletinRoomCount}')
         .collection('reply')
         .orderBy('timeStamp', descending: true)
-        .limit(500)
+        .limit(_seasonController.bulletinRoomReplyLimit!)
         .snapshots();
   }
 
@@ -74,6 +77,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
     BulletinRoomReplyModelController _bulletinRoomReplyModelController = Get.find<BulletinRoomReplyModelController>();
     //TODO : ****************************************************************
 
+    _seasonController.getBulletinRoomReplyLimit();
 
 
     String _time =
