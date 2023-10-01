@@ -145,7 +145,7 @@ class SnowliveDetailPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 24,
+                        width: 28,
                       ),
                       GestureDetector(
                         onTap: (){
