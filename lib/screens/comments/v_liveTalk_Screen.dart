@@ -688,7 +688,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                 crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                                 children: [
-                                                  isLocked
+                                                  (isLocked ==true)
                                                       ? Center(
                                                     child: Container(
                                                       decoration: BoxDecoration(
@@ -728,8 +728,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                     contentPadding: EdgeInsets.zero,
                                                                                     title: Center(
                                                                                       child: Text(
-                                                                                        isLocked
-                                                                                            ? '게시글 잠금 해제' : '게시글 잠금',
+                                                                                        (isLocked == false)
+                                                                                            ? '게시글 잠금' : '게시글 잠금 해제',
                                                                                         style: TextStyle(
                                                                                             fontSize: 15,
                                                                                             fontWeight: FontWeight.bold,
@@ -757,8 +757,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                       height: 30,
                                                                                                     ),
                                                                                                     Text(
-                                                                                                      isLocked
-                                                                                                          ? '이 게시글의 잠금을 해제하시겠습니까?' : '이 게시글을 잠그시겠습니까?',
+                                                                                                      (isLocked==false)
+                                                                                                          ? '이 게시글을 잠그시겠습니까?' : '이 게시글의 잠금을 해제하시겠습니까?',
                                                                                                       style: TextStyle(
                                                                                                           fontSize: 20,
                                                                                                           fontWeight: FontWeight.bold,
@@ -1155,8 +1155,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                 contentPadding: EdgeInsets.zero,
                                                                                                 title: Center(
                                                                                                   child: Text(
-                                                                                                    isLocked
-                                                                                                    ? '게시글 잠금 해제' : '게시글 잠금',
+                                                                                                    (isLocked ==false)
+                                                                                                    ? '게시글 잠금' : '게시글 잠금 해제',
                                                                                                     style: TextStyle(
                                                                                                       fontSize: 15,
                                                                                                       fontWeight: FontWeight
@@ -1175,8 +1175,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                             borderRadius: BorderRadius.circular(10.0)),
                                                                                                         buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                                                                                                         content: Text(
-                                                                                                          isLocked
-                                                                                                          ? '게시글 잠금을 해제하시겠습니까?' : '이 게시글을 잠그시겠습니까?',
+                                                                                                          (isLocked ==false)
+                                                                                                          ? '이 게시글을 잠그시겠습니까?' : '게시글 잠금을 해제하시겠습니까?',
                                                                                                           style: TextStyle(
                                                                                                               fontWeight: FontWeight.w600,
                                                                                                               fontSize: 15),
