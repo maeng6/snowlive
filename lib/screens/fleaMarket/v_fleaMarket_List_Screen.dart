@@ -581,6 +581,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
 
                           // 필드가 없을 경우 기본값 설정
                           bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
+                          List viewerUid = data?.containsKey('viewerUid') == true ? data!['viewerUid'] : [];
                             String _time = _fleaModelController
                                 .getAgoTime(chatDocs[index].get('timeStamp'));
                             return GestureDetector(
@@ -595,6 +596,9 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                       uid: chatDocs[index].get('uid'),
                                       fleaCount:
                                       chatDocs[index].get('fleaCount'));
+                                  if (data?.containsKey('lock') == false) {
+                                    await chatDocs[index].reference.update({'viewerUid': []});
+                                  }
                                   await _fleaModelController.updateViewerUid();
                                   CustomFullScreenDialog.cancelDialog();
                                   print(_fleaModelController.itemImagesUrls);
@@ -1022,7 +1026,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                                       ),
                                                                       SizedBox(width: 4,),
                                                                       Text(
-                                                                          '${chatDocs[index]['viewerUid'].length.toString()}',
+                                                                          '${viewerUid.length.toString()}',
                                                                          style: TextStyle(
                                                                               fontSize: 13,
                                                                               color: Color(0xFF949494),

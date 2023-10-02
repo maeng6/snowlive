@@ -539,6 +539,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
 
                         // 필드가 없을 경우 기본값 설정
                         bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
+                        List viewerUid = data?.containsKey('viewerUid') == true ? data!['viewerUid'] : [];
                         String _time = _timeStampController.yyyymmddFormat(chatDocs[index].get('timeStamp'));
                         return GestureDetector(
                           onTap: () async {
@@ -553,6 +554,9 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                   uid: chatDocs[index].get('uid'),
                                   bulletinCrewCount:
                                   chatDocs[index].get('bulletinCrewCount'));
+                              if (data?.containsKey('lock') == false) {
+                                await chatDocs[index].reference.update({'viewerUid': []});
+                              }
                               await _bulletinCrewModelController
                                   .updateViewerUid();
                               CustomFullScreenDialog.cancelDialog();
@@ -973,7 +977,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                               ),
                                                               SizedBox(width: 4,),
                                                               Text(
-                                                                  '${chatDocs[index]['viewerUid'].length.toString()}',
+                                                                  '${viewerUid.length.toString()}',
                                                                   style: TextStyle(
                                                                       fontSize: 13,
                                                                       color: Color(0xFF949494),

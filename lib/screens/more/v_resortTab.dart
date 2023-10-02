@@ -1,3 +1,4 @@
+import 'package:com.snowlive/controller/vm_urlLauncherController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +7,10 @@ import 'package:com.snowlive/screens/v_webPage.dart';
 
 class ResortTab extends StatelessWidget {
   ResortTab({Key? key}) : super(key: key);
+
+  //TODO: Dependency Injection**************************************************
+  UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
+  //TODO: Dependency Injection**************************************************
 
   @override
   Widget build(BuildContext context) {
@@ -126,11 +131,8 @@ class ResortTab extends StatelessWidget {
                         OutlinedButton(
                           onPressed: () {
                             if (webcamUrlList[index]!.isNotEmpty) {
-                              Get.to(
-                                () => WebPage(
-                                  url: '${webcamUrlList[index]}',
-                                ),
-                              );
+                              _urlLauncherController.otherShare(contents: '${webcamUrlList[index]}');
+
                             } else {
                               null;
                             }

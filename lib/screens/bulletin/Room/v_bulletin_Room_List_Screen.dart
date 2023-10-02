@@ -510,6 +510,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
 
                         // 필드가 없을 경우 기본값 설정
                         bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
+                        List viewerUid = data?.containsKey('viewerUid') == true ? data!['viewerUid'] : [];
                         String _time = _timeStampController
                             .yyyymmddFormat(chatDocs[index].get('timeStamp'));
                         return GestureDetector(
@@ -525,6 +526,9 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                   uid: chatDocs[index].get('uid'),
                                   bulletinRoomCount:
                                   chatDocs[index].get('bulletinRoomCount'));
+                              if (data?.containsKey('lock') == false) {
+                                await chatDocs[index].reference.update({'viewerUid': []});
+                              }
                               await _bulletinRoomModelController
                                   .updateViewerUid();
                               CustomFullScreenDialog.cancelDialog();
@@ -946,7 +950,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                                                     ),
                                                                     SizedBox(width: 4,),
                                                                     Text(
-                                                                        '${chatDocs[index]['viewerUid'].length.toString()}',
+                                                                        '${viewerUid.length.toString()}',
                                                                         style: TextStyle(
                                                                             fontSize: 13,
                                                                             color: Color(0xFF949494),
