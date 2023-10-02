@@ -101,11 +101,7 @@ class ResortTab extends StatelessWidget {
                   ),
                   OutlinedButton(
                     onPressed: () {
-                      Get.to(
-                            () => WebPage(
-                          url: '${naverUrlList[index]}',
-                        ),
-                      );
+                      _urlLauncherController.otherShare(contents: '${naverUrlList[index]}');
                     },
                     child: Text(
                       '네이버 날씨',
@@ -170,11 +166,7 @@ class ResortTab extends StatelessWidget {
                         OutlinedButton(
                           onPressed: () {
                             if (slopeUrlList[index]!.isNotEmpty) {
-                              Get.to(
-                                () => WebPage(
-                                  url: '${slopeUrlList[index]}',
-                                ),
-                              );
+                              _urlLauncherController.otherShare(contents: '${slopeUrlList[index]}');
                             } else {
                               null;
                             }
