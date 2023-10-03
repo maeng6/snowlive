@@ -32,7 +32,7 @@ Future<void> checkForUpdate() async {
                 borderRadius: BorderRadius.circular(16)),
             actionsPadding: EdgeInsets.only(top: 0, right: 20, left: 20, bottom: 20),
             content: Container(
-              height: 316,
+              height: 330,
               child: Column(
                 children: [
                   ExtendedImage.asset(
