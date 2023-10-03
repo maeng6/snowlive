@@ -1,3 +1,4 @@
+import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -351,9 +352,14 @@ class _FriendListPageState extends State<FriendListPage> {
                                         (myDoc.get('profileImageUrl').isNotEmpty)
                                             ? GestureDetector(
                                               onTap: () {
-                                                Get.to(() => FriendDetailPage(
+                                                if(_userModelController.displayName == 'SNOWLIVE'){
+                                                  Get.to(()=>SnowliveDetailPage());
+                                                }else if(_userModelController.displayName != 'SNOWLIVE'){
+                                                  Get.to(() => FriendDetailPage(
                                                     uid: _userModelController.uid,
-                                                  favoriteResort: _userModelController.favoriteResort,));
+                                                    favoriteResort: _userModelController.favoriteResort,));
+                                                }
+
                                               },
                                               child: Container(
                                                 width: 70,
@@ -389,9 +395,13 @@ class _FriendListPageState extends State<FriendListPage> {
                                             )
                                             : GestureDetector(
                                               onTap: () {
-                                                Get.to(() => FriendDetailPage(
+                                                if(_userModelController.displayName == 'SNOWLIVE'){
+                                                  Get.to(()=>SnowliveDetailPage());
+                                                }else if(_userModelController.displayName != 'SNOWLIVE'){
+                                                  Get.to(() => FriendDetailPage(
                                                     uid: _userModelController.uid,
-                                                  favoriteResort: _userModelController.favoriteResort,));
+                                                    favoriteResort: _userModelController.favoriteResort,));
+                                                }
                                               },
                                               child: Container(
                                                 width: 70,
