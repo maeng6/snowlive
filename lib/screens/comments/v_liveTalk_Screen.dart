@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:com.snowlive/controller/vm_resortModelController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -898,7 +899,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                                       children: [
-                                                                        if (chatDocs[index]['profileImageUrl'] != "" && chatDocs[index]['profileImageUrl'] != "anony")
+                                                                        if (chatDocs[index]['profileImageUrl'] != "" && chatDocs[index]['profileImageUrl'] != "anony" && chatDocs[index].get('displayName') != 'SNOWLIVE')
                                                                           GestureDetector(
                                                                             onTap: () async {
                                                                               QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
@@ -927,7 +928,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               fit: BoxFit.cover,
                                                                             ),
                                                                           ),
-                                                                        if (chatDocs[index]['profileImageUrl'] == "")
+                                                                        if (chatDocs[index]['profileImageUrl'] == "" && chatDocs[index].get('displayName') != 'SNOWLIVE')
                                                                           GestureDetector(
                                                                             onTap: () async {
                                                                               QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
@@ -946,8 +947,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                 Get.to(()=>NoUserScreen());
                                                                               }
                                                                             },
-                                                                            child: ExtendedImage
-                                                                                .asset(
+                                                                            child: ExtendedImage.asset(
                                                                               'assets/imgs/profile/img_profile_default_circle.png',
                                                                               shape: BoxShape.circle,
                                                                               borderRadius: BorderRadius.circular(20),
@@ -956,7 +956,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               fit: BoxFit.cover,
                                                                             ),
                                                                           ),
-                                                                        if (chatDocs[index]['profileImageUrl'] == "anony")
+                                                                        if (chatDocs[index]['profileImageUrl'] == "anony" && chatDocs[index].get('displayName') != 'SNOWLIVE')
                                                                           GestureDetector(
                                                                             onTap: () async {},
                                                                             child: ExtendedImage.asset(
@@ -968,7 +968,20 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               fit: BoxFit.cover,
                                                                             ),
                                                                           ),
-
+                                                                        if (chatDocs[index]['profileImageUrl'] == "" && chatDocs[index]['profileImageUrl'] != "anony" && chatDocs[index].get('displayName') == 'SNOWLIVE')
+                                                                          GestureDetector(
+                                                                            onTap: () async {
+                                                                              Get.to(()=>SnowliveDetailPage());
+                                                                            },
+                                                                            child: ExtendedImage.network(
+                                                                              'https://firebasestorage.googleapis.com/v0/b/snowlive-cf446.appspot.com/o/images%2Fprofile%2FAqSKlypjKzLGqAswSn6mJYydAc33.jpg?alt=media&token=301e2c0f-8559-4ffe-80f7-9451a703c278',
+                                                                              shape: BoxShape.circle,
+                                                                              borderRadius: BorderRadius.circular(20),
+                                                                              width: 24,
+                                                                              height: 24,
+                                                                              fit: BoxFit.cover,
+                                                                            ),
+                                                                          ),
                                                                         SizedBox(width: 8),
                                                                         Padding(
                                                                             padding: EdgeInsets.only(bottom: 1),
@@ -983,9 +996,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                       color: Color(0xFF111111)),
                                                                                 ),
                                                                                 if(chatDocs[index].get('displayName') == 'SNOWLIVE')
-
                                                                                   Padding(
-                                                                                    padding: const EdgeInsets.only(left : 2.0),
+                                                                                    padding: const EdgeInsets.only(left : 2.0, bottom: 1),
                                                                                     child: Image.asset(
                                                                                       'assets/imgs/icons/icon_snowlive_operator.png',
                                                                                       scale: 5.5,

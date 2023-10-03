@@ -86,7 +86,9 @@ class _MoreTabState extends State<MoreTab> {
               Obx(
                 () => GestureDetector(
                   onTap: (){
-                    Get.to(SnowliveDetailPage());
+                    (_userModelController.displayName == 'SNOWLIVE')
+                    ? Get.to(SnowliveDetailPage())
+                    : Get.to(FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort));
                   },
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),

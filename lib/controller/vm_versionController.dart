@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_urlLauncherController.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -25,36 +26,83 @@ Future<void> checkForUpdate() async {
     if ((currentVersion != latestVersion) && (useUpdatePopup == true) ) {
       Get.dialog(
           AlertDialog(
-            contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+            contentPadding: EdgeInsets.zero,
             elevation: 0,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
-            buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-            content: Text(
-              '최신 버전 앱으로 업데이트를 위해 스토어로 이동합니다.',
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15),
+                borderRadius: BorderRadius.circular(16)),
+            actionsPadding: EdgeInsets.only(top: 0, right: 20, left: 20, bottom: 20),
+            content: Container(
+              height: 310,
+              child: Column(
+                children: [
+                  ExtendedImage.asset(
+                    'assets/imgs/imgs/img_app_update.png',
+                      scale: 4,
+                      fit: BoxFit.fitHeight
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 24),
+                    child: Column(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '새로운 버전이 업데이트 되었습니다',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF111111),
+                                  fontSize: 18),
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            Text(
+                              '최신 버전 앱으로 업데이트를 위해 스토어로 이동합니다.',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  color: Color(0xFF949494),
+                                  fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             actions: [
-              TextButton(
-                  onPressed: () async{
-
-                    if(Platform.isAndroid){
+              Container(
+                width: MediaQuery.of(Get.context!).size.width,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (Platform.isAndroid) {
                       final url = 'https://play.google.com/store/apps/details?id=com.snowlive';
                       _urlLauncherController.otherShare(contents: url);
-                    }else if(Platform.isIOS){
+                    } else if (Platform.isIOS) {
                       final url = 'https://apps.apple.com/us/app/apple-store/id6444235991';
                       _urlLauncherController.otherShare(contents: url);
                     }
                   },
-                  child: Text('확인',
+                  child: Text(
+                    '업데이트',
                     style: TextStyle(
                       fontSize: 15,
-                      color: Color(0xFF949494),
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
-                  )),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF3D83ED),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
       barrierDismissible: false
