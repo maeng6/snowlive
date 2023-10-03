@@ -53,7 +53,6 @@ class SeasonController extends GetxController{
     await documentReference.get();
     String currentSeason = documentSnapshot.get('season');
     this._currentSeason!.value = currentSeason;
-    print(currentSeason);
   }
 
   Future<void> getLiveTalkLimit() async {
@@ -63,7 +62,6 @@ class SeasonController extends GetxController{
     await documentReference.get();
     int liveTalkLimit = documentSnapshot.get('limit');
     this._liveTalkLimit!.value = liveTalkLimit;
-    print(liveTalkLimit);
   }
 
   Future<void> getLiveTalkReplyLimit() async {
@@ -73,7 +71,6 @@ class SeasonController extends GetxController{
     await documentReference.get();
     int liveTalkReplyLimit = documentSnapshot.get('limit');
     this._liveTalkReplyLimit!.value = liveTalkReplyLimit;
-    print(liveTalkReplyLimit);
   }
 
   Future<void> getFleaMarketLimit() async {
@@ -83,7 +80,6 @@ class SeasonController extends GetxController{
     await documentReference.get();
     int fleaMarketLimit = documentSnapshot.get('limit');
     this._fleaMarketLimit!.value = fleaMarketLimit;
-    print(fleaMarketLimit);
   }
 
   Future<void> getBulletinRoomLimit() async {
@@ -93,7 +89,6 @@ class SeasonController extends GetxController{
     await documentReference.get();
     int bulletinRoomLimit = documentSnapshot.get('limit');
     this._bulletinRoomLimit!.value = bulletinRoomLimit;
-    print(bulletinRoomLimit);
   }
 
   Future<void> getBulletinCrewLimit() async {
@@ -103,7 +98,6 @@ class SeasonController extends GetxController{
     await documentReference.get();
     int bulletinCrewLimit = documentSnapshot.get('limit');
     this._bulletinCrewLimit!.value = bulletinCrewLimit;
-    print(bulletinCrewLimit);
   }
 
   Future<void> getBulletinCrewReplyLimit() async {
@@ -113,7 +107,6 @@ class SeasonController extends GetxController{
     await documentReference.get();
     int bulletinCrewReplyLimit = documentSnapshot.get('limit');
     this._bulletinCrewReplyLimit!.value = bulletinCrewReplyLimit;
-    print(bulletinCrewReplyLimit);
   }
 
   Future<void> getBulletinRoomReplyLimit() async {
@@ -123,7 +116,6 @@ class SeasonController extends GetxController{
     await documentReference.get();
     int bulletinRoomReplyLimit = documentSnapshot.get('limit');
     this._bulletinRoomReplyLimit!.value = bulletinRoomReplyLimit;
-    print(bulletinRoomReplyLimit);
   }
 
 

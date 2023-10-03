@@ -17,10 +17,12 @@ Future<void> checkForUpdate() async {
   try {
     final currentVersion = await getCurrentAppVersion();
     final latestVersion = await getLatestAppVersion();
-    print(currentVersion);
-    print(latestVersion);
+    final useUpdatePopup = await getUseUpdatePopup();
+    print('로컬버전 : ${currentVersion}');
+    print('서버버전 : ${latestVersion}');
+    print('강제업데이트 사용 : ${useUpdatePopup}');
 
-    if (currentVersion != latestVersion) {
+    if ((currentVersion != latestVersion) && (useUpdatePopup == true) ) {
       Get.dialog(
           AlertDialog(
             contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
@@ -80,4 +82,13 @@ Future<String> getLatestAppVersion() async {
   await documentReference.get();
   String latestAppVersion = documentSnapshot.get('version');
   return latestAppVersion;
+}
+
+Future<bool> getUseUpdatePopup() async {
+  DocumentReference<Map<String, dynamic>> documentReference =
+  ref.collection('version').doc('1');
+  final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+  await documentReference.get();
+  bool useUpdatePopup = documentSnapshot.get('useUpdatePopup');
+  return useUpdatePopup;
 }

@@ -26,6 +26,7 @@ import 'package:com.snowlive/controller/vm_resortModelController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../controller/vm_commentController.dart';
+import '../../controller/vm_urlLauncherController.dart';
 import '../comments/v_liveTalk_Screen.dart';
 import '../fleaMarket/v_fleaMarket_List_Screen_home.dart';
 import 'package:lottie/lottie.dart';
@@ -48,6 +49,7 @@ class _ResortHomeState extends State<ResortHome>
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   GetDateTimeController _getDateTimeController = Get.find<GetDateTimeController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
+  UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   //TODO: Dependency Injection**************************************************
 
 
@@ -1128,10 +1130,7 @@ class _ResortHomeState extends State<ResortHome>
                                                   children: [
                                                     GestureDetector(
                                                       onTap: () {
-                                                        Get.to(
-                                                            Obx(() => WebPage(url: '${_resortModelController.naverUrl}',
-                                                          ),
-                                                        ));
+                                                        _urlLauncherController.otherShare(contents: '${_resortModelController.naverUrl}');
                                                       },
                                                       child: Column(
                                                         children: [
@@ -1158,16 +1157,11 @@ class _ResortHomeState extends State<ResortHome>
                                                     ),
                                                     GestureDetector(
                                                       onTap: () {
-                                                        Get.to((_resortModelController
-                                                            .webcamUrl !=
-                                                            '')
-                                                            ? Obx(
-                                                              () => WebPage(
-                                                            url:
-                                                            '${_resortModelController.webcamUrl}',
-                                                          ),
-                                                        )
-                                                            : null);
+                                                        if (_resortModelController.webcamUrl != '') {
+                                                        _urlLauncherController.otherShare(contents: '${_resortModelController.webcamUrl}');
+                                                      } else {
+                                                        null;
+                                                      }
                                                       },
                                                       child: Column(
                                                         children: [
@@ -1207,16 +1201,11 @@ class _ResortHomeState extends State<ResortHome>
                                                     ),
                                                     GestureDetector(
                                                       onTap: () {
-                                                        Get.to((_resortModelController
-                                                            .slopeUrl !=
-                                                            '')
-                                                            ? Obx(
-                                                              () => WebPage(
-                                                            url:
-                                                            '${_resortModelController.slopeUrl}',
-                                                          ),
-                                                        )
-                                                            : null);
+                                                        if (_resortModelController.slopeUrl != '') {
+                                                          _urlLauncherController.otherShare(contents: '${_resortModelController.slopeUrl}');
+                                                        } else {
+                                                          null;
+                                                        }
                                                       },
                                                       child: Column(
                                                         children: [
@@ -2436,12 +2425,7 @@ class _ResortHomeState extends State<ResortHome>
                                                 children: [
                                                   GestureDetector(
                                                     onTap: () {
-                                                      Get.to(Obx(
-                                                            () => WebPage(
-                                                          url:
-                                                          '${_resortModelController.naverUrl}',
-                                                        ),
-                                                      ));
+                                                      _urlLauncherController.otherShare(contents: '${_resortModelController.naverUrl}');
                                                     },
                                                     child: Column(
                                                       children: [
@@ -2468,22 +2452,15 @@ class _ResortHomeState extends State<ResortHome>
                                                   ),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      Get.to((_resortModelController
-                                                          .webcamUrl !=
-                                                          '')
-                                                          ? Obx(
-                                                            () => WebPage(
-                                                          url:
-                                                          '${_resortModelController.webcamUrl}',
-                                                        ),
-                                                      )
-                                                          : null);
+                                                      if (_resortModelController.webcamUrl != '') {
+                                                        _urlLauncherController.otherShare(contents: '${_resortModelController.webcamUrl}');
+                                                      } else {
+                                                        null;
+                                                      }
                                                     },
                                                     child: Column(
                                                       children: [
-                                                        (_resortModelController
-                                                            .webcamUrl !=
-                                                            '')
+                                                        (_resortModelController.webcamUrl != '')
                                                             ? Image.asset(
                                                           'assets/imgs/icons/icon_home_livecam.png',
                                                           width: 40,
@@ -2500,34 +2477,22 @@ class _ResortHomeState extends State<ResortHome>
                                                         Text(
                                                           '실시간 웹캠',
                                                           style: TextStyle(
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w400,
+                                                              fontWeight: FontWeight.w400,
                                                               fontSize: 12,
-                                                              color: (_resortModelController
-                                                                  .webcamUrl !=
-                                                                  '')
-                                                                  ? Color(
-                                                                  0xFF111111)
-                                                                  : Color(
-                                                                  0xFFC8C8C8)),
+                                                              color: (_resortModelController.webcamUrl != '')
+                                                                  ? Color(0xFF111111)
+                                                                  : Color(0xFFC8C8C8)),
                                                         ),
                                                       ],
                                                     ),
                                                   ),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      Get.to(
-                                                          (_resortModelController
-                                                              .slopeUrl !=
-                                                              '')
-                                                              ? Obx(
-                                                                () => WebPage(
-                                                              url:
-                                                              '${_resortModelController.slopeUrl}',
-                                                            ),
-                                                          )
-                                                              : null);
+                                                      if (_resortModelController.slopeUrl != '') {
+                                                        _urlLauncherController.otherShare(contents: '${_resortModelController.slopeUrl}');
+                                                      } else {
+                                                        null;
+                                                      }
                                                     },
                                                     child: Column(
                                                       children: [
