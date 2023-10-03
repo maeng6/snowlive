@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
+import '../../../controller/vm_urlLauncherController.dart';
 import '../../discover/v_discover_Resort_Banner.dart';
 import '../../v_webPage.dart';
 
@@ -13,6 +14,7 @@ class SnowliveDetailPage extends StatelessWidget {
 
   //TODO: Dependency Injection**************************************************
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+  UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -80,7 +82,7 @@ class SnowliveDetailPage extends StatelessWidget {
                     width: 140,
                     height: 140,
                     child: ExtendedImage.asset(
-                      'assets/imgs/profile/img_profile_default_circle.png',
+                      'assets/imgs/profile/img_profile_snowliveOperator.png',
                       enableMemoryCache: true,
                       shape: BoxShape.circle,
                       borderRadius: BorderRadius.circular(8),
@@ -108,7 +110,7 @@ class SnowliveDetailPage extends StatelessWidget {
                   SizedBox(
                     height: 16,
                   ),
-                  Text('스노우라이브 공식계정입니다.\n문의는 카카오톡 오픈채팅을 통해\n실시간 상담을 할 수 있습니다.',
+                  Text('스노우라이브 공식계정입니다.\n카카오톡 오픈채팅을 통해\n실시간 문의가 가능합니다.',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xFF949494)),),
                   SizedBox(
@@ -119,7 +121,7 @@ class SnowliveDetailPage extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: (){
-                          Get.to(() => WebPage(url: 'https://snowlive.kr/'));
+                          _urlLauncherController.otherShare(contents: 'https://snowlive.kr/');
                         },
                         child: Column(
                           children: [
@@ -149,7 +151,7 @@ class SnowliveDetailPage extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: (){
-                          Get.to(() => WebPage(url: 'https://instagram.com/snowlive.134?igshid=YTQwZjQ0NmI0OA=='));
+                          _urlLauncherController.otherShare(contents: 'https://instagram.com/snowlive.134?igshid=YTQwZjQ0NmI0OA==');
                         },
                         child: Column(
                           children: [
