@@ -32,13 +32,14 @@ Future<void> checkForUpdate() async {
                 borderRadius: BorderRadius.circular(16)),
             actionsPadding: EdgeInsets.only(top: 0, right: 20, left: 20, bottom: 20),
             content: Container(
-              height: 310,
+              height: 316,
               child: Column(
                 children: [
                   ExtendedImage.asset(
                     'assets/imgs/imgs/img_app_update.png',
                       scale: 4,
-                      fit: BoxFit.fitHeight
+                      fit: BoxFit.fitHeight,
+                    width: MediaQuery.of(Get.context!).size.width,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 24),
