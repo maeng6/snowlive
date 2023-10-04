@@ -847,7 +847,7 @@ class _MoreTabState extends State<MoreTab> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
                 onTap: () {
-                  Get.to(() => ContactUsPage());
+                  Get.to(() => SnowliveDetailPage());
                 },
                 title: Text(
                   'SNOWLIVE',
