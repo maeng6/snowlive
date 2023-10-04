@@ -453,58 +453,58 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(right: 12),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 2),
-                              child: Container(
-                                height: 40,
-                                child: ElevatedButton(
-                                  child: Text(
-                                    '보드샵 9',
-                                    style: TextStyle(
-                                      color: (isBrand)
-                                          ? Color(0xFFC8C8C8)
-                                          : Color(0xFF111111),
-                                      fontSize: 16,
-                                      fontWeight: (isBrand)
-                                          ? FontWeight.normal
-                                          : FontWeight.bold,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    HapticFeedback.lightImpact();
-                                    print('샵페이지로 전환');
-                                    setState(() {
-                                      isBrand = false;
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.only(top: 0),
-                                    minimumSize: Size(40, 10),
-                                    backgroundColor: (isBrand)
-                                        ? Color(0xFFFFFFFF)
-                                        : Color(0xFFFFFFFF),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(6)),
-                                    elevation: 0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 72,
-                              height: 3,
-                              color: (isBrand)
-                                  ? Colors.transparent
-                                  : Color(0xFF111111),
-                            )
-                          ],
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: EdgeInsets.only(right: 12),
+                      //   child: Column(
+                      //     children: [
+                      //       Padding(
+                      //         padding: EdgeInsets.only(bottom: 2),
+                      //         child: Container(
+                      //           height: 40,
+                      //           child: ElevatedButton(
+                      //             child: Text(
+                      //               '보드샵 9',
+                      //               style: TextStyle(
+                      //                 color: (isBrand)
+                      //                     ? Color(0xFFC8C8C8)
+                      //                     : Color(0xFF111111),
+                      //                 fontSize: 16,
+                      //                 fontWeight: (isBrand)
+                      //                     ? FontWeight.normal
+                      //                     : FontWeight.bold,
+                      //               ),
+                      //             ),
+                      //             onPressed: () {
+                      //               HapticFeedback.lightImpact();
+                      //               print('샵페이지로 전환');
+                      //               setState(() {
+                      //                 isBrand = false;
+                      //               });
+                      //             },
+                      //             style: ElevatedButton.styleFrom(
+                      //               padding: EdgeInsets.only(top: 0),
+                      //               minimumSize: Size(40, 10),
+                      //               backgroundColor: (isBrand)
+                      //                   ? Color(0xFFFFFFFF)
+                      //                   : Color(0xFFFFFFFF),
+                      //               shape: RoundedRectangleBorder(
+                      //                   borderRadius:
+                      //                   BorderRadius.circular(6)),
+                      //               elevation: 0,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       Container(
+                      //         width: 72,
+                      //         height: 3,
+                      //         color: (isBrand)
+                      //             ? Colors.transparent
+                      //             : Color(0xFF111111),
+                      //       )
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -512,8 +512,8 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
             ),
             if (isBrand == true)
               Expanded(child: clothWebGridView(context)),
-            if (isBrand == false)
-              Expanded(child: shopWebGridView(context)),
+            // if (isBrand == false)
+            //   Expanded(child: shopWebGridView(context)),
           ],
         ),
       ),
@@ -737,93 +737,93 @@ Widget clothWebGridView(BuildContext context) {
   );
 }
 
-Widget shopWebGridView(BuildContext context) {
-  final double _statusBarSize = MediaQuery
-      .of(context)
-      .padding
-      .top;
-  final Size _size = MediaQuery
-      .of(context)
-      .size;
-  return Padding(
-    padding: EdgeInsets.only(left: 16, right: 16),
-    child: GridView.builder(
-        padding: EdgeInsets.only(top: 12, bottom: 16),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1, mainAxisSpacing: 10, childAspectRatio: 5),
-        itemCount: shopNameList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    HapticFeedback.lightImpact();
-                    Get.to(() => WebPage(url: '${shopHomeUrlList[index]}'));
-                    },
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 4),
-                    child: Container(
-                        width: _size.width,
-                        height: 64,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(12),
-                          color: Color(0xFFF0F1F2),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 48,
-                                    height: 48,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.white,
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(6),
-                                      child: ExtendedImage.asset(
-                                        '${shopImageAssetList[index]}',
-                                        width: 30,
-                                        height: 30,
-                                        scale: 4,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 18,
-                                  ),
-                                  Text(
-                                    '${shopNameList[index]}',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        color: Color(0xFF111111)),
-                                  ),
-                                ],
-                              ),
-                              Image.asset(
-                                'assets/imgs/icons/icon_arrow_g.png',
-                                height: 24,
-                                width: 24,
-                                opacity: AlwaysStoppedAnimation(.4),
-                              ),
-                            ],
-                          ),
-                        )),
-                  ),
-                ),
-              ),
-            ],
-          );
-        }),
-  );
-}
+// Widget shopWebGridView(BuildContext context) {
+//   final double _statusBarSize = MediaQuery
+//       .of(context)
+//       .padding
+//       .top;
+//   final Size _size = MediaQuery
+//       .of(context)
+//       .size;
+//   return Padding(
+//     padding: EdgeInsets.only(left: 16, right: 16),
+//     child: GridView.builder(
+//         padding: EdgeInsets.only(top: 12, bottom: 16),
+//         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//             crossAxisCount: 1, mainAxisSpacing: 10, childAspectRatio: 5),
+//         itemCount: shopNameList.length,
+//         itemBuilder: (BuildContext context, int index) {
+//           return Column(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             crossAxisAlignment: CrossAxisAlignment.center,
+//             children: [
+//               Expanded(
+//                 child: GestureDetector(
+//                   onTap: () {
+//                     HapticFeedback.lightImpact();
+//                     Get.to(() => WebPage(url: '${shopHomeUrlList[index]}'));
+//                     },
+//                   child: Padding(
+//                     padding: EdgeInsets.only(top: 4),
+//                     child: Container(
+//                         width: _size.width,
+//                         height: 64,
+//                         decoration: BoxDecoration(
+//                           shape: BoxShape.rectangle,
+//                           borderRadius: BorderRadius.circular(12),
+//                           color: Color(0xFFF0F1F2),
+//                         ),
+//                         child: Padding(
+//                           padding: EdgeInsets.symmetric(horizontal: 20),
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                             children: [
+//                               Row(
+//                                 mainAxisAlignment: MainAxisAlignment.start,
+//                                 children: [
+//                                   Container(
+//                                     width: 48,
+//                                     height: 48,
+//                                     decoration: BoxDecoration(
+//                                       shape: BoxShape.circle,
+//                                       color: Colors.white,
+//                                     ),
+//                                     child: Padding(
+//                                       padding: EdgeInsets.all(6),
+//                                       child: ExtendedImage.asset(
+//                                         '${shopImageAssetList[index]}',
+//                                         width: 30,
+//                                         height: 30,
+//                                         scale: 4,
+//                                       ),
+//                                     ),
+//                                   ),
+//                                   SizedBox(
+//                                     width: 18,
+//                                   ),
+//                                   Text(
+//                                     '${shopNameList[index]}',
+//                                     style: TextStyle(
+//                                         fontWeight: FontWeight.bold,
+//                                         fontSize: 15,
+//                                         color: Color(0xFF111111)),
+//                                   ),
+//                                 ],
+//                               ),
+//                               Image.asset(
+//                                 'assets/imgs/icons/icon_arrow_g.png',
+//                                 height: 24,
+//                                 width: 24,
+//                                 opacity: AlwaysStoppedAnimation(.4),
+//                               ),
+//                             ],
+//                           ),
+//                         )),
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           );
+//         }),
+//   );
+// }
