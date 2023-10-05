@@ -1,4 +1,5 @@
 import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/screens/Ranking/v_Ranking_Tutorial_Screen.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -153,49 +154,83 @@ class _RankingHomeState extends State<RankingHome> {
                   ),
                 ),
                 Expanded(child: SizedBox()),
-                Padding(
-                  padding: EdgeInsets.only(top: 10, right: 16),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 2),
-                        child: Container(
-                          padding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 12), // 텍스트와 테두리 간의 패딩
-                          decoration: BoxDecoration(
-                            color: Color(0xFF3D83ED),
-                            borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
-                          ),
-                          child: GestureDetector(
-                            onTap: (){
-                              Get.to(()=>MyRankingDetailPage());
-                            },
-                            child: Row(
-                              children: [
-                                ExtendedImage.asset(
-                                  'assets/imgs/icons/icon_crown_circle.png',
-                                  enableMemoryCache: true,
-                                  shape: BoxShape.circle,
-                                  borderRadius: BorderRadius.circular(8),
-                                  width: 15,
-                                  height: 15,
-                                  fit: BoxFit.cover,
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 10, right: 8),
+                      child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: Container(
+                                padding: EdgeInsets.only(top: 8, bottom: 8, left: 12, right: 12), // 텍스트와 테두리 간의 패딩
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFCBE0FF),
+                                  borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
                                 ),
-                                SizedBox(width: 3 ,),
-                                Text(
-                                  '내 점수',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFFFFFFFF)
+                                child: GestureDetector(
+                                  onTap: (){
+                                    Get.to(()=>RankingTutorialPage());
+                                  },
+                                  child: Text(
+                                    '튜토리얼',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF3D83ED)
+                                    ),
                                   ),
                                 ),
-                              ],
+                              ),
+                            )
+                          ]
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10, right: 16),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 2),
+                            child: Container(
+                              padding: EdgeInsets.only(top: 8, bottom: 8, left: 10, right: 12), // 텍스트와 테두리 간의 패딩
+                              decoration: BoxDecoration(
+                                color: Color(0xFF3D83ED),
+                                borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
+                              ),
+                              child: GestureDetector(
+                                onTap: (){
+                                  Get.to(()=>MyRankingDetailPage());
+                                },
+                                child: Row(
+                                  children: [
+                                    ExtendedImage.asset(
+                                      'assets/imgs/icons/icon_crown_circle.png',
+                                      enableMemoryCache: true,
+                                      shape: BoxShape.circle,
+                                      borderRadius: BorderRadius.circular(8),
+                                      width: 15,
+                                      height: 15,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    SizedBox(width: 3 ,),
+                                    Text(
+                                      '내 점수',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFFFFFFFF)
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      )
-                    ]
-                  ),
+                          )
+                        ]
+                      ),
+                    ),
+                  ],
                 ),
 
               ],
