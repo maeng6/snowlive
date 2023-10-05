@@ -7,6 +7,7 @@ import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_Crew_All_Screen.dart';
 import '../../controller/vm_liveMapController.dart';
+import '../../controller/vm_resortModelController.dart';
 import '../../model/m_crewLogoModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
 import '../LiveCrew/v_crewDetailPage_screen.dart';
@@ -25,6 +26,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
   SeasonController _seasonController = Get.find<SeasonController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
+  ResortModelController _resortModelController = Get.find<ResortModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -179,7 +181,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('상위 TOP 3 크루',
+                                    Text('${_resortModelController.resortName} 상위 TOP 3 크루',
                                       style: TextStyle(
                                           color: Color(0xFF949494),
                                           fontSize: 12
@@ -527,10 +529,9 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                     ),
                                     SizedBox(height: 40,),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('크루 랭킹 TOP 20',
+                                        Text('${_resortModelController.resortName} 크루 랭킹 TOP 20',
                                           style: TextStyle(
                                               color: Color(0xFF111111),
                                               fontSize: 16,

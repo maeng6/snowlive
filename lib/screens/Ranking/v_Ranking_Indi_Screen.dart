@@ -8,6 +8,7 @@ import 'package:com.snowlive/controller/vm_liveMapController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_indi_All_Screen.dart';
+import '../../controller/vm_resortModelController.dart';
 import '../../model/m_rankingTierModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
@@ -25,6 +26,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   SeasonController _seasonController = Get.find<SeasonController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
+  ResortModelController _resortModelController = Get.find<ResortModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -141,7 +143,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text('상위 TOP 3 유저',
+                                          Text('${_resortModelController.resortName} 상위 TOP 3 유저',
                                             style: TextStyle(
                                                 color: Color(0xFF949494),
                                                 fontSize: 12
@@ -414,7 +416,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text('개인 랭킹 TOP 100',
+                                              Text('${_resortModelController.resortName} 개인 랭킹 TOP 100',
                                                 style: TextStyle(
                                                     color: Color(0xFF111111),
                                                     fontSize: 16,
@@ -515,37 +517,45 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                       color: Color(0xFF111111)
                                                                   ),
                                                                 ),
-                                                                StreamBuilder<QuerySnapshot>(
-                                                                  stream: FirebaseFirestore.instance
-                                                                      .collection('liveCrew')
-                                                                      .where('crewID', isEqualTo: userData['liveCrew'])
-                                                                      .snapshots(),
-                                                                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                                                    if (snapshot.hasError) {
-                                                                      return Text("오류가 발생했습니다");
-                                                                    }
-
-                                                                    if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                      return CircularProgressIndicator();
-                                                                    }
-
-                                                                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                                                                      return SizedBox();
-                                                                    }
-
-                                                                    var crewData = snapshot.data!.docs.first.data() as Map<String, dynamic>?;
-
-                                                                    // 크루명 가져오기
-                                                                    String crewName = crewData?['crewName'] ?? '';
-
-                                                                    return Text(crewName,
-                                                                      style: TextStyle(
-                                                                          fontSize: 12,
-                                                                          color: Color(0xFF949494)
-                                                                      ),
-                                                                    );
-                                                                  },
-                                                                ),
+                                                                if(userData['stateMsg'] != '')
+                                                                Text(userData['stateMsg'],
+                                                                  maxLines: 1,
+                                                                  overflow: TextOverflow.ellipsis,
+                                                                  style: TextStyle(
+                                                                      fontSize: 12,
+                                                                      color: Color(0xFF949494)
+                                                                  ),)
+                                                                // StreamBuilder<QuerySnapshot>(
+                                                                //   stream: FirebaseFirestore.instance
+                                                                //       .collection('liveCrew')
+                                                                //       .where('crewID', isEqualTo: userData['liveCrew'])
+                                                                //       .snapshots(),
+                                                                //   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                                                //     if (snapshot.hasError) {
+                                                                //       return Text("오류가 발생했습니다");
+                                                                //     }
+                                                                //
+                                                                //     if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                //       return CircularProgressIndicator();
+                                                                //     }
+                                                                //
+                                                                //     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                                                //       return SizedBox();
+                                                                //     }
+                                                                //
+                                                                //     var crewData = snapshot.data!.docs.first.data() as Map<String, dynamic>?;
+                                                                //
+                                                                //     // 크루명 가져오기
+                                                                //     String crewName = crewData?['crewName'] ?? '';
+                                                                //
+                                                                //     return Text(crewName,
+                                                                //       style: TextStyle(
+                                                                //           fontSize: 12,
+                                                                //           color: Color(0xFF949494)
+                                                                //       ),
+                                                                //     );
+                                                                //   },
+                                                                // ),
                                                               ],
                                                             ),
                                                           ),
@@ -765,38 +775,46 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           ),
                                         ),
                                         SizedBox(height: 2,),
-                                        StreamBuilder<QuerySnapshot>(
-                                          stream: FirebaseFirestore.instance
-                                              .collection('liveCrew')
-                                              .where('crewID', isEqualTo: _userModelController.liveCrew)
-                                              .snapshots(),
-                                          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                            if (snapshot.hasError) {
-                                              return Text("오류가 발생했습니다");
-                                            }
-
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return CircularProgressIndicator();
-                                            }
-
-                                            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                                              return SizedBox();
-                                            }
-
-                                            var crewData = snapshot.data!.docs.first.data() as Map<String, dynamic>?;
-
-                                            // 크루명 가져오기
-                                            String crewName = crewData?['crewName'] ?? '';
-
-                                            return  Text(crewName,
-                                              style: TextStyle(
-                                                  color: Color(0xFFffffff).withOpacity(0.6),
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.normal
-                                              ),
-                                            );
-                                          },
-                                        ),
+                                        if(_userModelController.stateMsg != '')
+                                        Text('${_userModelController.stateMsg}',
+                                          style: TextStyle(
+                                              color: Color(0xFFffffff).withOpacity(0.6),
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.normal
+                                                  ),
+                                        )
+                                        // StreamBuilder<QuerySnapshot>(
+                                        //   stream: FirebaseFirestore.instance
+                                        //       .collection('liveCrew')
+                                        //       .where('crewID', isEqualTo: _userModelController.liveCrew)
+                                        //       .snapshots(),
+                                        //   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                        //     if (snapshot.hasError) {
+                                        //       return Text("오류가 발생했습니다");
+                                        //     }
+                                        //
+                                        //     if (snapshot.connectionState == ConnectionState.waiting) {
+                                        //       return CircularProgressIndicator();
+                                        //     }
+                                        //
+                                        //     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                        //       return SizedBox();
+                                        //     }
+                                        //
+                                        //     var crewData = snapshot.data!.docs.first.data() as Map<String, dynamic>?;
+                                        //
+                                        //     // 크루명 가져오기
+                                        //     String crewName = crewData?['crewName'] ?? '';
+                                        //
+                                        //     return  Text(crewName,
+                                        //       style: TextStyle(
+                                        //           color: Color(0xFFffffff).withOpacity(0.6),
+                                        //           fontSize: 12,
+                                        //           fontWeight: FontWeight.normal
+                                        //       ),
+                                        //     );
+                                        //   },
+                                        // ),
                                       ],
                                     ),
                                     Expanded(child: SizedBox()),
