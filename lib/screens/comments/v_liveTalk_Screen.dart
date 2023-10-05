@@ -968,13 +968,13 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               fit: BoxFit.cover,
                                                                             ),
                                                                           ),
-                                                                        if (chatDocs[index]['profileImageUrl'] == "" && chatDocs[index]['profileImageUrl'] != "anony" && chatDocs[index].get('displayName') == 'SNOWLIVE')
+                                                                        if (chatDocs[index]['profileImageUrl'] != "anony" && chatDocs[index].get('displayName') == 'SNOWLIVE')
                                                                           GestureDetector(
                                                                             onTap: () async {
                                                                               Get.to(()=>SnowliveDetailPage());
                                                                             },
                                                                             child: ExtendedImage.network(
-                                                                              'https://firebasestorage.googleapis.com/v0/b/snowlive-cf446.appspot.com/o/images%2Fprofile%2FAqSKlypjKzLGqAswSn6mJYydAc33.jpg?alt=media&token=301e2c0f-8559-4ffe-80f7-9451a703c278',
+                                                                              chatDocs[index]['profileImageUrl'],
                                                                               shape: BoxShape.circle,
                                                                               borderRadius: BorderRadius.circular(20),
                                                                               width: 24,

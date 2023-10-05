@@ -607,7 +607,7 @@ class _MoreTabState extends State<MoreTab> {
                                   Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 40),
                                   Positioned(
                                     // draw a red marble
-                                      top: 2,
+                                      top: 0,
                                       right: 0.0,
                                       child:
                                       StreamBuilder(
@@ -623,11 +623,28 @@ class _MoreTabState extends State<MoreTab> {
                                           }
                                           else if (snapshot.data!.docs.isNotEmpty) {
                                             final alarmDocs = snapshot.data!.docs;
-                                            return new Icon(Icons.brightness_1,
-                                                size: 7.0,
-                                                color: (alarmDocs[0]['newInvited_crew'] == true)
-                                                    ? Color(0xFFD32F2F)
-                                                    : Colors.white);
+                                            return
+                                              (alarmDocs[0]['newInvited_crew'] == true)
+                                              ? Container(
+                                              padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: Color(0xFFD6382B),
+                                                borderRadius: BorderRadius.circular(6),
+                                              ),
+                                              child: Text('NEW',
+                                                style: TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color(0xFFFFFFFF)
+                                                ),
+                                              ),
+                                            )
+                                               : Container();
+                                              // new Icon(Icons.brightness_1,
+                                              //   size: 7.0,
+                                              //   color: (alarmDocs[0]['newInvited_crew'] == true)
+                                              //       ? Color(0xFFD32F2F)
+                                              //       : Colors.white);
                                           }
                                           else if (snapshot.connectionState == ConnectionState.waiting) {
                                             return new Icon(Icons.brightness_1,
@@ -847,7 +864,7 @@ class _MoreTabState extends State<MoreTab> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
                 onTap: () {
-                  Get.to(() => ContactUsPage());
+                  Get.to(() => SnowliveDetailPage());
                 },
                 title: Text(
                   'SNOWLIVE',
