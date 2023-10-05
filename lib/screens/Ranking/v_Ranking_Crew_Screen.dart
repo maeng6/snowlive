@@ -181,7 +181,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('상위 TOP 3 크루',
+                                    Text('${_resortModelController.resortName} 상위 TOP 3 크루',
                                       style: TextStyle(
                                           color: Color(0xFF949494),
                                           fontSize: 12
@@ -531,7 +531,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('${_resortModelController.getResortName(crewDocs[0]['baseResortNickName'])} 크루 랭킹 TOP 20',
+                                        Text('${_resortModelController.resortName} 크루 랭킹 TOP 20',
                                           style: TextStyle(
                                               color: Color(0xFF111111),
                                               fontSize: 16,

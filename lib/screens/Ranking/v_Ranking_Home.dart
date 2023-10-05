@@ -157,13 +157,13 @@ class _RankingHomeState extends State<RankingHome> {
                 Row(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(top: 10, right: 8),
+                      padding: EdgeInsets.only(top: 5, right: 8),
                       child: Column(
                           children: [
                             Padding(
                               padding: EdgeInsets.only(bottom: 2),
                               child: Container(
-                                padding: EdgeInsets.only(top: 8, bottom: 8, left: 12, right: 12), // 텍스트와 테두리 간의 패딩
+                                padding: EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10), // 텍스트와 테두리 간의 패딩
                                 decoration: BoxDecoration(
                                   color: Color(0xFFCBE0FF),
                                   borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
@@ -175,7 +175,7 @@ class _RankingHomeState extends State<RankingHome> {
                                   child: Text(
                                     '튜토리얼',
                                     style: TextStyle(
-                                        fontSize: 13,
+                                        fontSize: 12,
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF3D83ED)
                                     ),
@@ -187,13 +187,13 @@ class _RankingHomeState extends State<RankingHome> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: 10, right: 16),
+                      padding: EdgeInsets.only(top: 5, right: 16),
                       child: Column(
                         children: [
                           Padding(
                             padding: EdgeInsets.only(bottom: 2),
                             child: Container(
-                              padding: EdgeInsets.only(top: 8, bottom: 8, left: 10, right: 12), // 텍스트와 테두리 간의 패딩
+                              padding: EdgeInsets.only(top: 6, bottom: 6, left: 8, right: 10), // 텍스트와 테두리 간의 패딩
                               decoration: BoxDecoration(
                                 color: Color(0xFF3D83ED),
                                 borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
@@ -209,15 +209,15 @@ class _RankingHomeState extends State<RankingHome> {
                                       enableMemoryCache: true,
                                       shape: BoxShape.circle,
                                       borderRadius: BorderRadius.circular(8),
-                                      width: 15,
-                                      height: 15,
+                                      width: 12,
+                                      height: 12,
                                       fit: BoxFit.cover,
                                     ),
                                     SizedBox(width: 3 ,),
                                     Text(
                                       '내 점수',
                                       style: TextStyle(
-                                          fontSize: 13,
+                                          fontSize: 12,
                                           fontWeight: FontWeight.bold,
                                           color: Color(0xFFFFFFFF)
                                       ),

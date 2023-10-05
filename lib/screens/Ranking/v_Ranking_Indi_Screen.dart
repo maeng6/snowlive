@@ -8,6 +8,7 @@ import 'package:com.snowlive/controller/vm_liveMapController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_indi_All_Screen.dart';
+import '../../controller/vm_resortModelController.dart';
 import '../../model/m_rankingTierModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
@@ -25,6 +26,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   SeasonController _seasonController = Get.find<SeasonController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
+  ResortModelController _resortModelController = Get.find<ResortModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -141,7 +143,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text('상위 TOP 3 유저',
+                                          Text('${_resortModelController.resortName} 상위 TOP 3 유저',
                                             style: TextStyle(
                                                 color: Color(0xFF949494),
                                                 fontSize: 12
@@ -414,7 +416,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text('개인 랭킹 TOP 100',
+                                              Text('${_resortModelController.resortName} 개인 랭킹 TOP 100',
                                                 style: TextStyle(
                                                     color: Color(0xFF111111),
                                                     fontSize: 16,
