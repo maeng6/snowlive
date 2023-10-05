@@ -53,6 +53,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
     false,
     false
   ];
+  List checkUidList = [];
 
 
   //TODO: Dependency Injection**************************************************
@@ -63,6 +64,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
   //TODO: Dependency Injection**************************************************
 
   var _stream;
+  var _noticeAlarmStream;
   bool _isVisible = false;
 
   ScrollController _scrollController = ScrollController();
@@ -76,6 +78,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
     super.initState();
     _seasonController.getLiveTalkLimit();
     _stream = newStream();
+    _noticeAlarmStream = newAlarm_liveTalk_notice_stream();
     _scrollController.addListener(() {
       setState(() {
         if (_scrollController.position.userScrollDirection ==
@@ -107,6 +110,12 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
         .where('resortNickname', isEqualTo: (_selectedValue == '필터') ? _allCategories : '$_selectedValue')
         .orderBy('timeStamp', descending: true)
         .limit(_seasonController.liveTalkLimit!)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> newAlarm_liveTalk_notice_stream() {
+    return FirebaseFirestore.instance
+        .collection('newAlarm_liveTalk_notice')
         .snapshots();
   }
 
@@ -501,7 +510,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                 ),
                                 SizedBox(width: 6),
                                 GestureDetector(
-                                  onTap: (){
+                                  onTap: () async{
+
                                     setState(() {
                                       HapticFeedback.lightImpact();
                                       isTap[0] = false;
@@ -515,47 +525,109 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                       _isVisible = false;
                                       _stream = newStream();
                                     });
+                                    await _commentModelController.addCheckUid(_userModelController.uid);
                                     print(_selectedValue2);
                                   },
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                          decoration: BoxDecoration(
-                                            color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                            borderRadius: BorderRadius.circular(30.0),
-                                            border: Border.all(
-                                                color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                          ),
-                                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                          height: 32,
-                                          child: Text('# 소식',
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                            ),)
-                                      ),
-                                      Positioned(
-                                        top: 0,
-                                        right: 0,
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFD6382B),
-                                            borderRadius: BorderRadius.circular(20),
-                                          ),
-                                          child: Text('N',
-                                            style: TextStyle(
-                                                fontSize: 9,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFFFFFFFF)
-                                            ),
+                                  child:
+                                  StreamBuilder<QuerySnapshot>(
+                                      stream: _noticeAlarmStream,
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return Container(
+                                              decoration: BoxDecoration(
+                                                color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                                borderRadius: BorderRadius.circular(30.0),
+                                                border: Border.all(
+                                                    color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                              ),
+                                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                              height: 32,
+                                              child: Text('# 소식',
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                                ),)
+                                          );
+                                        }
+                                        else if (snapshot.connectionState == ConnectionState.waiting) {
+                                          return Container(
+                                              decoration: BoxDecoration(
+                                                color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                                borderRadius: BorderRadius.circular(30.0),
+                                                border: Border.all(
+                                                    color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                              ),
+                                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                              height: 32,
+                                              child: Text('# 소식',
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                                ),)
+                                          );
+                                        }
+                                        else if (snapshot.data!.docs.isEmpty){
+                                          return Container(
+                                              decoration: BoxDecoration(
+                                                color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                                borderRadius: BorderRadius.circular(30.0),
+                                                border: Border.all(
+                                                    color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                              ),
+                                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                              height: 32,
+                                              child: Text('# 소식',
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                                ),)
+                                          );
+                                        }
+                                        checkUidList = snapshot.data!.docs[0]['checkUidList'];
+                                        return Stack(
+                                            children: [
+                                              Container(
+                                                  decoration: BoxDecoration(
+                                                    color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                                    borderRadius: BorderRadius.circular(30.0),
+                                                    border: Border.all(
+                                                        color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                                  ),
+                                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                  height: 32,
+                                                  child: Text('# 소식',
+                                                    style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                                    ),)
+                                              ),
+                                              if(checkUidList.contains(_userModelController.uid)==false)
+                                              Positioned(
+                                                top: 0,
+                                                right: 0,
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xFFD6382B),
+                                                    borderRadius: BorderRadius.circular(20),
+                                                  ),
+                                                  child: Text('N',
+                                                    style: TextStyle(
+                                                        fontSize: 9,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Color(0xFFFFFFFF)
+                                                    ),
 
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          );
+                                      })
                                 ),
                                 SizedBox(width: 6),
                                 GestureDetector(

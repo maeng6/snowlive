@@ -68,20 +68,10 @@ class CommentModelController extends GetxController {
 
     if(displayName =='SNOWLIVE'){
       await ref
-          .collection('newAlarm_liveTalk_Notice')
-          .doc('$uid$commentCount')
+          .collection('newAlarm_liveTalk_notice')
+          .doc('newAlarmUidListDoc')
           .set({
-        'comment': [],
-        'displayName': displayName,
-        'profileImageUrl': profileImageUrl,
-        'timeStamp': timeStamp,
-        'uid': uid,
-        'commentCount' : commentCount,
-        'resortNickname' : resortNickname,
-        'likeCount' : likeCount,
-        'replyCount' : replyCount,
-        'livetalkImageUrl' : livetalkImageUrl,
-        'lock' : false,
+        'checkUidList': [],
       });
     }else{}
 
@@ -100,6 +90,13 @@ class CommentModelController extends GetxController {
     this._livetalkImageUrl!.value = commentModel.livetalkImageUrl!;
   }
 
+  Future<void> addCheckUid(uid) async {
+    try {
+      await ref.collection('newAlarm_liveTalk_notice').doc('newAlarmUidListDoc').update({
+        'checkUidList':  FieldValue.arrayUnion([uid])
+      });
+    } catch (e) {}
+  }
 
 
   Future<void> likeUpdate(uid) async {
