@@ -535,7 +535,25 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                 color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
                                             ),)
                                       ),
+                                      Positioned(
+                                        top: 0,
+                                        right: 0,
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFD6382B),
+                                            borderRadius: BorderRadius.circular(20),
+                                          ),
+                                          child: Text('N',
+                                            style: TextStyle(
+                                                fontSize: 9,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFFFFFFFF)
+                                            ),
 
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),
