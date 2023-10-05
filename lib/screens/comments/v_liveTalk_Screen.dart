@@ -517,21 +517,26 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                     });
                                     print(_selectedValue2);
                                   },
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                        borderRadius: BorderRadius.circular(30.0),
-                                        border: Border.all(
-                                            color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                          decoration: BoxDecoration(
+                                            color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                            borderRadius: BorderRadius.circular(30.0),
+                                            border: Border.all(
+                                                color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                          ),
+                                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                          height: 32,
+                                          child: Text('# 소식',
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                            ),)
                                       ),
-                                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                      height: 32,
-                                      child: Text('# 소식',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                        ),)
+
+                                    ],
                                   ),
                                 ),
                                 SizedBox(width: 6),
