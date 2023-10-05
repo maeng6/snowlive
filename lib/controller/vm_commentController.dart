@@ -65,6 +65,26 @@ class CommentModelController extends GetxController {
       replyCount: replyCount,
       livetalkImageUrl: livetalkImageUrl,
     );
+
+    if(displayName =='SNOWLIVE'){
+      await ref
+          .collection('newAlarm_liveTalk_Notice')
+          .doc('$uid$commentCount')
+          .set({
+        'comment': [],
+        'displayName': displayName,
+        'profileImageUrl': profileImageUrl,
+        'timeStamp': timeStamp,
+        'uid': uid,
+        'commentCount' : commentCount,
+        'resortNickname' : resortNickname,
+        'likeCount' : likeCount,
+        'replyCount' : replyCount,
+        'livetalkImageUrl' : livetalkImageUrl,
+        'lock' : false,
+      });
+    }else{}
+
     print("sendMessage 함수에서의 livetalkImageUrl 값: $livetalkImageUrl"); // 로그 추가
     CommentModel commentModel =
         await CommentModel().getCommentModel(uid, commentCount);
@@ -79,6 +99,8 @@ class CommentModelController extends GetxController {
     this._replyCount!.value = commentModel.replyCount!;
     this._livetalkImageUrl!.value = commentModel.livetalkImageUrl!;
   }
+
+
 
   Future<void> likeUpdate(uid) async {
     try {
