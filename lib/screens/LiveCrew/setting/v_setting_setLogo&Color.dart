@@ -831,12 +831,12 @@ class _SetCrewLogoColor_settingState extends State<SetCrewLogoColor_setting> {
                                             await _liveCrewModelController.updateCrewColor(crewColor: currentColor, crewID: _liveCrewModelController.crewID);
                                             CustomFullScreenDialog.cancelDialog();
                                             Navigator.pop(context);
-                                            Get.snackbar('로고 이미지', '기본 이미지로 수정이 완료되었습니다.',
-                                                margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                                snackPosition: SnackPosition.BOTTOM,
-                                                backgroundColor: Colors.black87,
-                                                colorText: Colors.white,
-                                                duration: Duration(milliseconds: 3000));
+                                            // Get.snackbar('로고 이미지', '기본 이미지로 수정이 완료되었습니다.',
+                                            //     margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                            //     snackPosition: SnackPosition.BOTTOM,
+                                            //     backgroundColor: Colors.black87,
+                                            //     colorText: Colors.white,
+                                            //     duration: Duration(milliseconds: 1000));
                                             Navigator.pop(context);
                                           },
                                           child: Text(
@@ -892,23 +892,23 @@ class _SetCrewLogoColor_settingState extends State<SetCrewLogoColor_setting> {
                           await _liveCrewModelController.updateCrewColor(crewColor: currentColor, crewID: _liveCrewModelController.crewID);
                           CustomFullScreenDialog.cancelDialog();
                           Navigator.pop(context);
-                          Get.snackbar('로고 이미지', '선택한 이미지로 변경이 완료되었습니다.',
-                              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                              snackPosition: SnackPosition.BOTTOM,
-                              backgroundColor: Colors.black87,
-                              colorText: Colors.white,
-                              duration: Duration(milliseconds: 3000));
+                          // Get.snackbar('로고 이미지', '선택한 이미지로 변경이 완료되었습니다.',
+                          //     margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                          //     snackPosition: SnackPosition.BOTTOM,
+                          //     backgroundColor: Colors.black87,
+                          //     colorText: Colors.white,
+                          //     duration: Duration(milliseconds: 1000));
                         } else {
                           CustomFullScreenDialog.showDialog();
                           await _liveCrewModelController.updateCrewColor(crewColor: currentColor, crewID: _liveCrewModelController.crewID);
                           CustomFullScreenDialog.cancelDialog();
                           Navigator.pop(context);
-                          Get.snackbar('크루 컬러', '선택한 컬러로 변경이 완료되었습니다.',
-                              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                              snackPosition: SnackPosition.BOTTOM,
-                              backgroundColor: Colors.black87,
-                              colorText: Colors.white,
-                              duration: Duration(milliseconds: 3000));
+                          // Get.snackbar('크루 컬러', '선택한 컬러로 변경이 완료되었습니다.',
+                          //     margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                          //     snackPosition: SnackPosition.BOTTOM,
+                          //     backgroundColor: Colors.black87,
+                          //     colorText: Colors.white,
+                          //     duration: Duration(milliseconds: 1000));
                         }
                       },
                       child: Text(
