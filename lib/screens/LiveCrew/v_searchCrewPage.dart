@@ -457,7 +457,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                   padding: EdgeInsets.only(top: 16, bottom: MediaQuery.of(context).viewInsets.bottom + 16, right: 5),
                                   child: TextButton(
                                       onPressed: () async{
-                                        if(foundCrewID != null && foundCrewID != '') {
+                                        if(isFound && foundCrewID != null && foundCrewID != '') {
                                           CustomFullScreenDialog.showDialog();
                                           await _liveCrewModelController
                                               .getCurrnetCrew(foundCrewID);
@@ -488,7 +488,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 16, left: 5, top: 16),
                                 child: TextButton(
                                     onPressed: () async {
-                                      if(foundCrewID != null && foundCrewID != '') {
+                                      if(isFound && foundCrewID != null && foundCrewID != '') {
                                         Get.dialog(AlertDialog(
                                           contentPadding: EdgeInsets.only(
                                               bottom: 0,
