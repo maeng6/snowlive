@@ -23,7 +23,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
   UserModelController _userModelController = Get.find<UserModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   LiveCrewModelController _liveCrewModelController =
-      Get.find<LiveCrewModelController>();
+  Get.find<LiveCrewModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
 
   //TODO: Dependency Injection**************************************************
@@ -34,7 +34,6 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
 
   GlobalKey myItemKey = GlobalKey();
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -42,9 +41,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
 
     // GlobalKey for my item (logged-in user)
     myItemKey = GlobalKey();
-
   }
-
 
   Map? userRankingMap;
 
@@ -58,8 +55,6 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
       print('My ranking: $myRanking');
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -147,12 +142,13 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.only(right: 16),
-                    child: Text('My 랭킹',
+                    child: Text(
+                      'My 랭킹',
                       style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF3D83ED)
-                      ),),
+                          color: Color(0xFF3D83ED)),
+                    ),
                   ),
                 ),
               ),
@@ -182,17 +178,9 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Container(
-              height: _size.height,
-              width: _size.width,
-              child: ListView.builder(
-                shrinkWrap: true,
-                controller: _scrollController,
-                itemCount: documents.length,
-                itemBuilder: (context, index) {
-                  final document = documents[index];
-
-                  // Assign myItemKey for the logged-in user's ListTile
+            child: SingleChildScrollView(
+              child: Column(
+                children: documents.map((document) {
                   final itemKey = document.get('uid') == _userModelController.uid
                       ? myItemKey
                       : GlobalKey();
@@ -204,7 +192,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                         .snapshots(),
                     builder: (context,
                         AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                            snapshot) {
+                        snapshot) {
                       if (!snapshot.hasData || snapshot.data == null) {
                         return ListTile(
                           title: Text(''),
@@ -242,23 +230,23 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                 height: 48,
                                 child: userData['profileImageUrl'].isNotEmpty
                                     ? ExtendedImage.network(
-                                        userData['profileImageUrl'],
-                                        enableMemoryCache: true,
-                                        shape: BoxShape.circle,
-                                        borderRadius: BorderRadius.circular(8),
-                                        width: 48,
-                                        height: 48,
-                                        fit: BoxFit.cover,
-                                      )
+                                  userData['profileImageUrl'],
+                                  enableMemoryCache: true,
+                                  shape: BoxShape.circle,
+                                  borderRadius: BorderRadius.circular(8),
+                                  width: 48,
+                                  height: 48,
+                                  fit: BoxFit.cover,
+                                )
                                     : ExtendedImage.asset(
-                                        'assets/imgs/profile/img_profile_default_circle.png',
-                                        enableMemoryCache: true,
-                                        shape: BoxShape.circle,
-                                        borderRadius: BorderRadius.circular(8),
-                                        width: 48,
-                                        height: 48,
-                                        fit: BoxFit.cover,
-                                      ),
+                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                  enableMemoryCache: true,
+                                  shape: BoxShape.circle,
+                                  borderRadius: BorderRadius.circular(8),
+                                  width: 48,
+                                  height: 48,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                             SizedBox(width: 14),
@@ -276,7 +264,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                     stream: FirebaseFirestore.instance
                                         .collection('liveCrew')
                                         .where('crewID',
-                                            isEqualTo: userData['liveCrew'])
+                                        isEqualTo: userData['liveCrew'])
                                         .snapshots(),
                                     builder: (context,
                                         AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -326,7 +314,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                       );
                     },
                   );
-                },
+                }).toList(),
               ),
             ),
           ),
