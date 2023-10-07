@@ -51,7 +51,8 @@ class _RankingTutorialPageState extends State<RankingTutorialPage> {
       body: SingleChildScrollView(
         child: Container(
           child:
-          Image.asset('assets/imgs/imgs/img_ranking_tutorial.png',
+          ExtendedImage.asset('assets/imgs/imgs/img_ranking_tutorial.png',
+            enableMemoryCache: true,
             scale: 4,
             width: _size.width,
           )
