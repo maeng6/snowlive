@@ -700,6 +700,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                               return GestureDetector(
                                 onTap: () async {
                                   CustomFullScreenDialog.showDialog();
+                                  await _userModelController.getCurrentUser_crew(_userModelController.uid);
                                   await _liveCrewModelController.getCurrnetCrew(crewDoc['crewID']);
                                   CustomFullScreenDialog.cancelDialog();
                                   Get.to(()=>CrewDetailPage_screen());
@@ -1002,6 +1003,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                             GestureDetector(
                               onTap:() async{
                                 CustomFullScreenDialog.showDialog();
+                                await _userModelController.getCurrentUser_crew(_userModelController.uid);
                                 await _liveCrewModelController.getCurrnetCrew(crewDocs[0]['crewID']);
                                 CustomFullScreenDialog.cancelDialog();
                                 Get.to(()=>CrewDetailPage_screen());
@@ -1089,6 +1091,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                             GestureDetector(
                               onTap:() async{
                                 CustomFullScreenDialog.showDialog();
+                                await _userModelController.getCurrentUser_crew(_userModelController.uid);
                                 await _liveCrewModelController.getCurrnetCrew(crewDocs[1]['crewID']);
                                 CustomFullScreenDialog.cancelDialog();
                                 Get.to(()=>CrewDetailPage_screen());
@@ -1176,6 +1179,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                             GestureDetector(
                               onTap:() async{
                                 CustomFullScreenDialog.showDialog();
+                                await _userModelController.getCurrentUser_crew(_userModelController.uid);
                                 await _liveCrewModelController.getCurrnetCrew(crewDocs[2]['crewID']);
                                 CustomFullScreenDialog.cancelDialog();
                                 Get.to(()=>CrewDetailPage_screen());
@@ -1380,6 +1384,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                         return GestureDetector(
                                         onTap: () async {
                                           CustomFullScreenDialog.showDialog();
+                                          await _userModelController.getCurrentUser_crew(_userModelController.uid);
                                           await _liveCrewModelController.getCurrnetCrew(doc['crewID']);
                                           CustomFullScreenDialog.cancelDialog();
                                           Get.to(() => CrewDetailPage_screen());

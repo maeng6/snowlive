@@ -1288,11 +1288,13 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                         }
                                                         return GestureDetector(
                                                             onTap: () async {
-                                                              CustomFullScreenDialog.showDialog();
-                                                              await _liveCrewModelController.getCurrnetCrew(friendDocs[0]['liveCrew']);
-                                                              CustomFullScreenDialog.cancelDialog();
-                                                              setState(() {edit=false;});
-                                                              Get.to(()=>CrewDetailPage_screen());
+                                                              if(friendDocs[0]['liveCrew'] != '' && friendDocs[0]['liveCrew'] != null){
+                                                                CustomFullScreenDialog.showDialog();
+                                                                await _liveCrewModelController.getCurrnetCrew(friendDocs[0]['liveCrew']);
+                                                                CustomFullScreenDialog.cancelDialog();
+                                                                setState(() {edit=false;});
+                                                                Get.to(()=>CrewDetailPage_screen());
+                                                              }
                                                             },
                                                             child: Container(
                                                               width: _size.width / 2 - 25,

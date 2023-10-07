@@ -114,6 +114,7 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
                     return GestureDetector(
                       onTap: () async {
                         CustomFullScreenDialog.showDialog();
+                        await _userModelController.getCurrentUser_crew(_userModelController.uid);
                         await _liveCrewModelController.getCurrnetCrew(doc['crewID']);
                         CustomFullScreenDialog.cancelDialog();
                         Get.to(() => CrewDetailPage_screen());

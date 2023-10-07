@@ -193,13 +193,10 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                         if(crewDocs.length > 0)
                                           GestureDetector(
                                             onTap: () async {
-                                              CustomFullScreenDialog
-                                                  .showDialog();
-                                              await _liveCrewModelController
-                                                  .getCurrnetCrew(
-                                                  crewDocs[0]['crewID']);
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
+                                              CustomFullScreenDialog.showDialog();
+                                              await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                                              await _liveCrewModelController.getCurrnetCrew(crewDocs[0]['crewID']);
+                                              CustomFullScreenDialog.cancelDialog();
                                               Get.to(() =>
                                                   CrewDetailPage_screen());
                                             },
@@ -305,15 +302,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                         if(crewDocs.length > 1)
                                           GestureDetector(
                                             onTap: () async {
-                                              CustomFullScreenDialog
-                                                  .showDialog();
-                                              await _liveCrewModelController
-                                                  .getCurrnetCrew(
-                                                  crewDocs[1]['crewID']);
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                              Get.to(() =>
-                                                  CrewDetailPage_screen());
+                                              CustomFullScreenDialog.showDialog();
+                                              await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                                              await _liveCrewModelController.getCurrnetCrew(crewDocs[1]['crewID']);
+                                              CustomFullScreenDialog.cancelDialog();
+                                              Get.to(() => CrewDetailPage_screen());
                                             },
                                             child: Container(
                                               decoration: BoxDecoration(
@@ -417,15 +410,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                         if(crewDocs.length > 2)
                                           GestureDetector(
                                             onTap: () async {
-                                              CustomFullScreenDialog
-                                                  .showDialog();
-                                              await _liveCrewModelController
-                                                  .getCurrnetCrew(
-                                                  crewDocs[2]['crewID']);
-                                              CustomFullScreenDialog
-                                                  .cancelDialog();
-                                              Get.to(() =>
-                                                  CrewDetailPage_screen());
+                                              CustomFullScreenDialog.showDialog();
+                                              await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                                              await _liveCrewModelController.getCurrnetCrew(crewDocs[2]['crewID']);
+                                              CustomFullScreenDialog.cancelDialog();
+                                              Get.to(() => CrewDetailPage_screen());
                                             },
                                             child: Container(
                                               decoration: BoxDecoration(
@@ -582,15 +571,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                     SizedBox(width: 14),
                                                     GestureDetector(
                                                       onTap: () async {
-                                                        CustomFullScreenDialog
-                                                            .showDialog();
-                                                        await _liveCrewModelController
-                                                            .getCurrnetCrew(
-                                                            crewDocs[index]['crewID']);
-                                                        CustomFullScreenDialog
-                                                            .cancelDialog();
-                                                        Get.to(() =>
-                                                            CrewDetailPage_screen());
+                                                        CustomFullScreenDialog.showDialog();
+                                                        await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                                                        await _liveCrewModelController.getCurrnetCrew(crewDocs[index]['crewID']);
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                        Get.to(() => CrewDetailPage_screen());
                                                       },
                                                       child: Container(
                                                         width: 48,
@@ -752,9 +737,8 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                           GestureDetector(
                                             onTap: () async {
                                               CustomFullScreenDialog.showDialog();
-                                              await _liveCrewModelController
-                                                  .getCurrnetCrew(
-                                                  myCrewDocs[0]['crewID']);
+                                              await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                                              await _liveCrewModelController.getCurrnetCrew(myCrewDocs[0]['crewID']);
                                               CustomFullScreenDialog.cancelDialog();
                                               Get.to(() => CrewDetailPage_screen());
                                             },

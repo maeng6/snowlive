@@ -261,8 +261,8 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                         GestureDetector(
                           onTap: () async {
                             CustomFullScreenDialog.showDialog();
-                            await _liveCrewModelController
-                                .getCurrnetCrew(document['crewID']);
+                            await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                            await _liveCrewModelController.getCurrnetCrew(document['crewID']);
                             CustomFullScreenDialog.cancelDialog();
                             Get.to(() => CrewDetailPage_screen());
                           },

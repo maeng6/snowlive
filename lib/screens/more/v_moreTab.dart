@@ -589,13 +589,13 @@ class _MoreTabState extends State<MoreTab> {
                         GestureDetector(
                           onTap: () async{
                             CustomFullScreenDialog.showDialog();
+                            await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                            await _liveCrewModelController.deleteInvitationAlarm_crew(leaderUid: _userModelController.uid);
                             if(_userModelController.liveCrew!.isEmpty){
                               CustomFullScreenDialog.cancelDialog();
                               Get.to(()=>FirstPage_createCrew());
                             }
                             else{
-                              await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                              await _liveCrewModelController.deleteInvitationAlarm_crew(leaderUid: _userModelController.uid);
                               CustomFullScreenDialog.cancelDialog();
                               Get.to(()=>LiveCrewHome());
                             }
