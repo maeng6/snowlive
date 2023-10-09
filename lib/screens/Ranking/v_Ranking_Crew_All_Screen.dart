@@ -184,6 +184,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
             _liveMapController.calculateRankCrewAll2(crewDocs: crewDocs);
 
         return Scaffold(
+          backgroundColor: Colors.white,
           appBar: AppBar(
             actions: <Widget>[
               GestureDetector(
