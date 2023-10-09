@@ -241,7 +241,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                               ),
                                             ),
                                           ),
-                                        if (widget.replyImage == "" && widget.replyImage != "anony" && widget.replyDisplayName == 'SNOWLIVE')
+                                        if (widget.replyImage != "" && widget.replyImage != "anony" && widget.replyDisplayName == 'SNOWLIVE')
                                           Padding(
                                             padding: EdgeInsets.only(top: 5),
                                             child: GestureDetector(
@@ -249,7 +249,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                 Get.to(()=>SnowliveDetailPage());
                                               },
                                               child: ExtendedImage.network(
-                                                'https://firebasestorage.googleapis.com/v0/b/snowlive-cf446.appspot.com/o/images%2Fprofile%2FAqSKlypjKzLGqAswSn6mJYydAc33.jpg?alt=media&token=301e2c0f-8559-4ffe-80f7-9451a703c278',
+                                                widget.replyImage,
                                                 shape: BoxShape.circle,
                                                 borderRadius:
                                                 BorderRadius.circular(
@@ -466,7 +466,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                               ),
                                                             ),
                                                           ),
-                                                        if (replyDocs[index]['profileImageUrl'] == "" && replyDocs[index]['profileImageUrl'] != 'anony' && replyDocs[index]['displayName'] == 'SNOWLIVE')
+                                                        if (replyDocs[index]['profileImageUrl'] != "" && replyDocs[index]['profileImageUrl'] != 'anony' && replyDocs[index]['displayName'] == 'SNOWLIVE')
                                                           Padding(
                                                             padding: EdgeInsets.only(top:4),
                                                             child: GestureDetector(
@@ -474,7 +474,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                 Get.to(()=>SnowliveDetailPage());
                                                               },
                                                               child: ExtendedImage.network(
-                                                                'https://firebasestorage.googleapis.com/v0/b/snowlive-cf446.appspot.com/o/images%2Fprofile%2FAqSKlypjKzLGqAswSn6mJYydAc33.jpg?alt=media&token=301e2c0f-8559-4ffe-80f7-9451a703c278',
+                                                                replyDocs[index]['profileImageUrl'],
                                                                 shape: BoxShape.circle,
                                                                 borderRadius: BorderRadius.circular(20),
                                                                 width: 26,
