@@ -25,11 +25,17 @@ Future<void> checkForUpdate() async {
 
     if ((currentVersion != latestVersion) && (useUpdatePopup == true) ) {
       Get.dialog(
-          AlertDialog(
+        WillPopScope(
+          onWillPop: () async {
+            // 뒤로가기 버튼을 눌러도 팝업이 닫히지 않게 하려면 true를 반환합니다.
+            return false;
+          },
+          child: AlertDialog(
             contentPadding: EdgeInsets.zero,
             elevation: 0,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16)),
+              borderRadius: BorderRadius.circular(16),
+            ),
             actionsPadding: EdgeInsets.only(top: 0, right: 20, left: 20, bottom: 20),
             content: Container(
               height: 330,
@@ -37,12 +43,17 @@ Future<void> checkForUpdate() async {
                 children: [
                   ExtendedImage.asset(
                     'assets/imgs/imgs/img_app_update.png',
-                      scale: 4,
-                      fit: BoxFit.fitHeight,
+                    scale: 4,
+                    fit: BoxFit.fitHeight,
                     width: MediaQuery.of(Get.context!).size.width,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 24),
+                    padding: const EdgeInsets.only(
+                      top: 20,
+                      right: 20,
+                      left: 20,
+                      bottom: 24,
+                    ),
                     child: Column(
                       children: [
                         Column(
@@ -51,9 +62,10 @@ Future<void> checkForUpdate() async {
                             Text(
                               '새로운 버전이 업데이트 되었습니다',
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF111111),
-                                  fontSize: 18),
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF111111),
+                                fontSize: 18,
+                              ),
                             ),
                             SizedBox(
                               height: 6,
@@ -61,9 +73,10 @@ Future<void> checkForUpdate() async {
                             Text(
                               '최신 버전 앱으로 업데이트를 위해 스토어로 이동합니다.',
                               style: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  color: Color(0xFF949494),
-                                  fontSize: 15),
+                                fontWeight: FontWeight.normal,
+                                color: Color(0xFF949494),
+                                fontSize: 15,
+                              ),
                             ),
                           ],
                         ),
@@ -106,8 +119,10 @@ Future<void> checkForUpdate() async {
               ),
             ],
           ),
-      barrierDismissible: false
+        ),
+        barrierDismissible: false, // 외부 영역 터치로 팝업 닫기 금지
       );
+
     }
   } catch (e) {
     print('업데이트 확인 중 오류 발생: $e');
