@@ -463,7 +463,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                               ),
                                                             ),
                                                           ),
-                                                        if (profileUrl == "" && replyDocs[index]['displayName'] != 'SNOWLIVE')
+                                                        if (profileUrl == "" && replyDocs[index]['profileImageUrl'] != "anony" && replyDocs[index]['displayName'] != 'SNOWLIVE')
                                                           Padding(
                                                             padding: EdgeInsets.only(top:4),
                                                             child: GestureDetector(
