@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -292,6 +293,25 @@ class _ResortHomeState extends State<ResortHome>
                                                                 width: 36,
                                                                 height: 36,
                                                                 fit: BoxFit.cover,
+                                                                      loadStateChanged: (ExtendedImageState state) {
+                                                                        switch (state.extendedImageLoadState) {
+                                                                          case LoadState.loading:
+                                                                            return SizedBox.shrink();
+                                                                          case LoadState.completed:
+                                                                            return state.completedWidget;
+                                                                          case LoadState.failed:
+                                                                            return ExtendedImage.asset(
+                                                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                                                              shape: BoxShape.circle,
+                                                                              borderRadius: BorderRadius.circular(8),
+                                                                              width: 36,
+                                                                              height: 36,
+                                                                              fit: BoxFit.cover,
+                                                                            ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                          default:
+                                                                            return null;
+                                                                        }
+                                                                      },
                                                               ),
                                                                   )
                                                                   : GestureDetector(
@@ -523,8 +543,16 @@ class _ResortHomeState extends State<ResortHome>
                                                           if (_userModelController.withinBoundary == true) {
                                                             await _userModelController.updateIsOnLiveOn();
                                                             try{
+                                                              await FirebaseAnalytics.instance.logEvent(
+                                                                name: 'live_on_button_pressed_Success',
+                                                                parameters: <String, dynamic>{
+                                                                  'user_id': _userModelController.uid,
+                                                                  'user_name': _userModelController.displayName,
+                                                                  'user_resort': _userModelController.favoriteResort
+                                                                },
+                                                              );
                                                             }catch(e, stackTrace){
-                                                              print('백그라운드 서비스 오류: $e');
+                                                              print('GA 업데이트 오류: $e');
                                                               print('Stack trace: $stackTrace');
                                                             }
                                                             await _userModelController.getCurrentUser(_userModelController.uid);
@@ -1782,8 +1810,16 @@ class _ResortHomeState extends State<ResortHome>
                                                         if (_userModelController.withinBoundary == true) {
                                                           await _userModelController.updateIsOnLiveOn();
                                                           try{
+                                                            await FirebaseAnalytics.instance.logEvent(
+                                                              name: 'live_on_button_pressed_Success',
+                                                              parameters: <String, dynamic>{
+                                                                'user_id': _userModelController.uid,
+                                                                'user_name': _userModelController.displayName,
+                                                                'user_resort': _userModelController.favoriteResort
+                                                              },
+                                                            );
                                                           }catch(e, stackTrace){
-                                                            print('백그라운드 서비스 오류: $e');
+                                                            print('GA 업데이트 오류: $e');
                                                             print('Stack trace: $stackTrace');
                                                           }
                                                           await _userModelController.getCurrentUser(_userModelController.uid);

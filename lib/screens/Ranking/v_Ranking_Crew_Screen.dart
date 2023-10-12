@@ -241,6 +241,25 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                       width: 100,
                                                       height: 100,
                                                       fit: BoxFit.cover,
+                                                      loadStateChanged: (ExtendedImageState state) {
+                                                        switch (state.extendedImageLoadState) {
+                                                          case LoadState.loading:
+                                                            return SizedBox.shrink();
+                                                          case LoadState.completed:
+                                                            return state.completedWidget;
+                                                          case LoadState.failed:
+                                                            return ExtendedImage.asset(
+                                                              assetTop1,
+                                                              shape: BoxShape.circle,
+                                                              borderRadius: BorderRadius.circular(20),
+                                                              width: 24,
+                                                              height: 24,
+                                                              fit: BoxFit.cover,
+                                                            ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                          default:
+                                                            return null;
+                                                        }
+                                                      },
                                                     ),
                                                   )
                                                       : Container(
@@ -349,6 +368,25 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                       width: 100,
                                                       height: 100,
                                                       fit: BoxFit.cover,
+                                                      loadStateChanged: (ExtendedImageState state) {
+                                                        switch (state.extendedImageLoadState) {
+                                                          case LoadState.loading:
+                                                            return SizedBox.shrink();
+                                                          case LoadState.completed:
+                                                            return state.completedWidget;
+                                                          case LoadState.failed:
+                                                            return ExtendedImage.asset(
+                                                              assetTop2,
+                                                              shape: BoxShape.circle,
+                                                              borderRadius: BorderRadius.circular(20),
+                                                              width: 24,
+                                                              height: 24,
+                                                              fit: BoxFit.cover,
+                                                            ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                          default:
+                                                            return null;
+                                                        }
+                                                      },
                                                     ),
                                                   )
                                                       : Container(
@@ -457,6 +495,25 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                       width: 100,
                                                       height: 100,
                                                       fit: BoxFit.cover,
+                                                      loadStateChanged: (ExtendedImageState state) {
+                                                        switch (state.extendedImageLoadState) {
+                                                          case LoadState.loading:
+                                                            return SizedBox.shrink();
+                                                          case LoadState.completed:
+                                                            return state.completedWidget;
+                                                          case LoadState.failed:
+                                                            return ExtendedImage.asset(
+                                                              assetTop3,
+                                                              shape: BoxShape.circle,
+                                                              borderRadius: BorderRadius.circular(20),
+                                                              width: 24,
+                                                              height: 24,
+                                                              fit: BoxFit.cover,
+                                                            ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                          default:
+                                                            return null;
+                                                        }
+                                                      },
                                                     ),
                                                   )
                                                       : Container(
@@ -601,6 +658,39 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                               borderRadius: BorderRadius
                                                                   .circular(6),
                                                               fit: BoxFit.cover,
+                                                              loadStateChanged: (ExtendedImageState state) {
+                                                                switch (state.extendedImageLoadState) {
+                                                                  case LoadState.loading:
+                                                                    return SizedBox.shrink();
+                                                                  case LoadState.completed:
+                                                                    return state.completedWidget;
+                                                                  case LoadState.failed:
+                                                                    return Container(
+                                                                      decoration: BoxDecoration(
+                                                                          color: Color(
+                                                                              crewDocs[index]['crewColor']),
+                                                                          borderRadius: BorderRadius
+                                                                              .circular(8)
+                                                                      ),
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .all(2.0),
+                                                                        child: ExtendedImage
+                                                                            .asset(
+                                                                          crewLogo.crewLogoAsset,
+                                                                          enableMemoryCache: true,
+                                                                          shape: BoxShape
+                                                                              .rectangle,
+                                                                          borderRadius: BorderRadius
+                                                                              .circular(6),
+                                                                          fit: BoxFit.cover,
+                                                                        ),
+                                                                      ),
+                                                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                  default:
+                                                                    return null;
+                                                                }
+                                                              },
                                                             ))
                                                             : Container(
                                                           width: 46,
@@ -760,6 +850,25 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   borderRadius: BorderRadius
                                                       .circular(6),
                                                   fit: BoxFit.cover,
+                                                  loadStateChanged: (ExtendedImageState state) {
+                                                    switch (state.extendedImageLoadState) {
+                                                      case LoadState.loading:
+                                                        return SizedBox.shrink();
+                                                      case LoadState.completed:
+                                                        return state.completedWidget;
+                                                      case LoadState.failed:
+                                                        return ExtendedImage.asset(
+                                                          crewLogo.crewLogoAsset,
+                                                          enableMemoryCache: true,
+                                                          shape: BoxShape.rectangle,
+                                                          borderRadius: BorderRadius
+                                                              .circular(6),
+                                                          fit: BoxFit.cover,
+                                                        ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                      default:
+                                                        return null;
+                                                    }
+                                                  },
                                                 ))
                                                 : Container(
                                               width: 48,

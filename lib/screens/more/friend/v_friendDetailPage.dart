@@ -1201,6 +1201,25 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                             width: 110,
                                                             height: 110,
                                                             fit: BoxFit.cover,
+                                                            loadStateChanged: (ExtendedImageState state) {
+                                                              switch (state.extendedImageLoadState) {
+                                                                case LoadState.loading:
+                                                                  return SizedBox.shrink();
+                                                                case LoadState.completed:
+                                                                  return state.completedWidget;
+                                                                case LoadState.failed:
+                                                                  return ExtendedImage.asset(
+                                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                                    shape: BoxShape.circle,
+                                                                    borderRadius: BorderRadius.circular(8),
+                                                                    width: 110,
+                                                                    height: 110,
+                                                                    fit: BoxFit.cover,
+                                                                  ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                default:
+                                                                  return null;
+                                                              }
+                                                            },
                                                           )),
                                                     )
                                                         :  GestureDetector(
@@ -1326,6 +1345,24 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                             shape: BoxShape.rectangle,
                                                                             borderRadius: BorderRadius.circular(6),
                                                                             fit: BoxFit.cover,
+                                                                            loadStateChanged: (ExtendedImageState state) {
+                                                                              switch (state.extendedImageLoadState) {
+                                                                                case LoadState.loading:
+                                                                                  return SizedBox.shrink();
+                                                                                case LoadState.completed:
+                                                                                  return state.completedWidget;
+                                                                                case LoadState.failed:
+                                                                                  return ExtendedImage.asset(
+                                                                                    myCrewAsset,
+                                                                                    enableMemoryCache: true,
+                                                                                    shape: BoxShape.rectangle,
+                                                                                    borderRadius: BorderRadius.circular(6),
+                                                                                    fit: BoxFit.cover,
+                                                                                  ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                                default:
+                                                                                  return null;
+                                                                              }
+                                                                            },
                                                                           ))
                                                                           : Container(
                                                                         width: 50,
@@ -1951,6 +1988,25 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                         width: 40,
                                                                         height: 40,
                                                                         fit: BoxFit.cover,
+                                                                        loadStateChanged: (ExtendedImageState state) {
+                                                                          switch (state.extendedImageLoadState) {
+                                                                            case LoadState.loading:
+                                                                              return SizedBox.shrink();
+                                                                            case LoadState.completed:
+                                                                              return state.completedWidget;
+                                                                            case LoadState.failed:
+                                                                              return ExtendedImage.asset(
+                                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                shape: BoxShape.circle,
+                                                                                borderRadius: BorderRadius.circular(20),
+                                                                                width: 40,
+                                                                                height: 40,
+                                                                                fit: BoxFit.cover,
+                                                                              ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                            default:
+                                                                              return null;
+                                                                          }
+                                                                        },
                                                                       ),
                                                                     ),
                                                                   if (userData['profileImageUrl'] == "")

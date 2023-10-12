@@ -124,6 +124,34 @@ class _MoreTabState extends State<MoreTab> {
                                                 width: _size.width/5,
                                                 height: _size.width/5,
                                                 fit: BoxFit.cover,
+                                                loadStateChanged: (ExtendedImageState state) {
+                                                  switch (state.extendedImageLoadState) {
+                                                    case LoadState.loading:
+                                                      return SizedBox.shrink();
+                                                    case LoadState.completed:
+                                                      return state.completedWidget;
+                                                    case LoadState.failed:
+                                                      return Container(
+                                                        width: 52,
+                                                        height: 52,
+                                                        child: Container(
+                                                          width: 120,
+                                                          height: 120,
+                                                          child: ExtendedImage.asset(
+                                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                                            enableMemoryCache: true,
+                                                            shape: BoxShape.circle,
+                                                            borderRadius: BorderRadius.circular(8),
+                                                            width: 120,
+                                                            height: 120,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
+                                                      );// 예시로 에러 아이콘을 반환하고 있습니다.
+                                                    default:
+                                                      return null;
+                                                  }
+                                                },
                                               )),
                                         ),
                                       ],

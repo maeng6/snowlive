@@ -280,6 +280,33 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                 shape: BoxShape.rectangle,
                                 borderRadius: BorderRadius.circular(6),
                                 fit: BoxFit.cover,
+                                loadStateChanged: (ExtendedImageState state) {
+                                  switch (state.extendedImageLoadState) {
+                                    case LoadState.loading:
+                                      return SizedBox.shrink();
+                                    case LoadState.completed:
+                                      return state.completedWidget;
+                                    case LoadState.failed:
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          color: Color(document['crewColor']),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: ExtendedImage.asset(
+                                            assetBases,
+                                            enableMemoryCache: true,
+                                            shape: BoxShape.rectangle,
+                                            borderRadius: BorderRadius.circular(6),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                    default:
+                                      return null;
+                                  }
+                                },
                               ),
                             )
                                 : Container(
