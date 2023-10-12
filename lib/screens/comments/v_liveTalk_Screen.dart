@@ -697,7 +697,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.only(right: 4),
-                                        child: ExtendedImage.asset(
+                                        child:  ExtendedImage.asset(
                                           'assets/imgs/icons/icon_livetalk_filter.png',
                                           enableMemoryCache: true,
                                           shape: BoxShape.rectangle,
@@ -1048,7 +1048,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                             ),
 
                                                                           ),
-                                                                        if (profileUrl == "" && chatDocs[index]['displayName'] != 'SNOWLIVE')
+                                                                        if (profileUrl == "" && chatDocs[index]['profileImageUrl'] != "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
                                                                           GestureDetector(
                                                                             onTap: () async {
                                                                               QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
@@ -1088,7 +1088,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               fit: BoxFit.cover,
                                                                             ),
                                                                           ),
-                                                                        if (chatDocs[index]['profileImageUrl']  != "anony" && chatDocs[index]['displayName'] == 'SNOWLIVE')
+                                                                        if (chatDocs[index]['profileImageUrl']!= '' && chatDocs[index]['profileImageUrl']  != "anony" && chatDocs[index]['displayName'] == 'SNOWLIVE')
                                                                           GestureDetector(
                                                                             onTap: () async {
                                                                               Get.to(()=>SnowliveDetailPage());
