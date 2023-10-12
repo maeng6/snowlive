@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:com.snowlive/controller/vm_resortModelController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/v_MainHome.dart';
+import '../../controller/vm_bottomTabBarController.dart';
 import '../../model/m_resortModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
@@ -25,6 +26,7 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
   //TODO: Dependency Injection**************************************************
   UserModelController userModelController = Get.find<UserModelController>();
   ResortModelController resortModelController = Get.find<ResortModelController>();
+  BottomTabBarController _bottomTabBarController = Get.find<BottomTabBarController>();
   //TODO: Dependency Injection**************************************************
 
 
@@ -181,8 +183,8 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
                   await userModelController.updateWithinBoundaryOff();
                   await userModelController.updateIsOnLiveOff();
                   CustomFullScreenDialog.cancelDialog();
-                  await Get.offAll(
-                          () => MainHome(uid: userModelController.uid, initialPage: 0,));
+                  Navigator.pop(context);
+                  await _bottomTabBarController..changePage(4)..onItemTapped(4);
                 }
                     : null, // isSelected가 false일 경우 버튼 클릭 이벤트 비활성화
                 child: Text(

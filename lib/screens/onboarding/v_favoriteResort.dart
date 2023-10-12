@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:com.snowlive/controller/vm_resortModelController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/v_MainHome.dart';
+import '../../controller/vm_bottomTabBarController.dart';
 import '../../controller/vm_loginController.dart';
 import '../../model/m_resortModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
@@ -29,6 +30,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
   UserModelController userModelController = Get.find<UserModelController>();
   ResortModelController resortModelController = Get.find<ResortModelController>();
   LoginController _loginController = Get.find<LoginController>();
+  BottomTabBarController _bottomTabBarController = Get.find<BottomTabBarController>();
   //TODO: Dependency Injection********************************************
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -173,7 +175,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
                       await resortModelController.getSelectedResort(
                           userModelController.favoriteResort!);
                       CustomFullScreenDialog.cancelDialog();
-                      Get.offAll(() => MainHome(uid: userModelController.uid, initialPage: 0,));
+                      Get.offAll(() => MainHome(uid: userModelController.uid));
 
                   }: null,
                   child: Text(

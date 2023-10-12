@@ -15,6 +15,7 @@ import 'package:com.snowlive/screens/comments/v_noUserScreen.dart';
 import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
 import 'package:com.snowlive/screens/comments/v_reply_Screen.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
+import '../../controller/vm_allUserDocsController.dart';
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
@@ -61,6 +62,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
   CommentModelController _commentModelController = Get.find<CommentModelController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
+  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -774,6 +776,9 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
 
                                       String _time = _commentModelController
                                           .getAgoTime(chatDocs[index].get('timeStamp'));
+
+                                      String? profileUrl = _allUserDocsController.findProfileUrl(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
+                                      String? displayName = _allUserDocsController.findDisplayName(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
                                       return Padding(
                                         padding:
                                         const EdgeInsets.only(
@@ -994,7 +999,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                                       children: [
-                                                                        if (chatDocs[index]['profileImageUrl'] != "" && chatDocs[index]['profileImageUrl'] != "anony" && chatDocs[index].get('displayName') != 'SNOWLIVE')
+                                                                        if (profileUrl != "" && chatDocs[index]['profileImageUrl']  != "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
                                                                           GestureDetector(
                                                                             onTap: () async {
                                                                               QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
@@ -1014,7 +1019,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               }
                                                                             },
                                                                             child: ExtendedImage.network(
-                                                                              chatDocs[index]['profileImageUrl'],
+                                                                              profileUrl,
                                                                               cache: true,
                                                                               shape: BoxShape.circle,
                                                                               borderRadius: BorderRadius.circular(20),
@@ -1043,7 +1048,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                             ),
 
                                                                           ),
-                                                                        if (chatDocs[index]['profileImageUrl'] == "" && chatDocs[index].get('displayName') != 'SNOWLIVE')
+                                                                        if (profileUrl == "" && chatDocs[index]['displayName'] != 'SNOWLIVE')
                                                                           GestureDetector(
                                                                             onTap: () async {
                                                                               QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
@@ -1071,7 +1076,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               fit: BoxFit.cover,
                                                                             ),
                                                                           ),
-                                                                        if (chatDocs[index]['profileImageUrl'] == "anony" && chatDocs[index].get('displayName') != 'SNOWLIVE')
+                                                                        if (chatDocs[index]['profileImageUrl'] == "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
                                                                           GestureDetector(
                                                                             onTap: () async {},
                                                                             child: ExtendedImage.asset(
@@ -1083,13 +1088,13 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               fit: BoxFit.cover,
                                                                             ),
                                                                           ),
-                                                                        if (chatDocs[index]['profileImageUrl'] != "anony" && chatDocs[index].get('displayName') == 'SNOWLIVE')
+                                                                        if (chatDocs[index]['profileImageUrl']  != "anony" && chatDocs[index]['displayName'] == 'SNOWLIVE')
                                                                           GestureDetector(
                                                                             onTap: () async {
                                                                               Get.to(()=>SnowliveDetailPage());
                                                                             },
                                                                             child: ExtendedImage.network(
-                                                                              chatDocs[index]['profileImageUrl'],
+                                                                              profileUrl,
                                                                               cache: true,
                                                                               shape: BoxShape.circle,
                                                                               borderRadius: BorderRadius.circular(20),
@@ -1124,13 +1129,15 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                             Row(
                                                                               children: [
                                                                                 Text(
-                                                                                  chatDocs[index].get('displayName'),
+                                                                                  (chatDocs[index]['displayName'] != "익명")
+                                                                                      ? displayName
+                                                                                      : chatDocs[index]['displayName'],
                                                                                   style: TextStyle(
                                                                                       fontWeight: FontWeight.bold,
                                                                                       fontSize: 12,
                                                                                       color: Color(0xFF111111)),
                                                                                 ),
-                                                                                if(chatDocs[index].get('displayName') == 'SNOWLIVE')
+                                                                                if(chatDocs[index]['displayName'] == 'SNOWLIVE')
                                                                                   Padding(
                                                                                     padding: const EdgeInsets.only(left : 2.0, bottom: 1),
                                                                                     child: Image.asset(
@@ -1713,8 +1720,14 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               ReplyScreen(
                                                                                 replyUid: chatDocs[index]['uid'],
                                                                                 replyCount: chatDocs[index]['commentCount'],
-                                                                                replyImage: chatDocs[index]['profileImageUrl'],
-                                                                                replyDisplayName: chatDocs[index]['displayName'],
+                                                                                replyImage:
+                                                                                (chatDocs[index]['profileImageUrl'] != 'anony')
+                                                                                ? profileUrl
+                                                                                : chatDocs[index]['profileImageUrl'],
+                                                                                replyDisplayName:
+                                                                                (chatDocs[index]['displayName'] != '익명')
+                                                                                ? displayName
+                                                                                : chatDocs[index]['displayName'],
                                                                                 replyResortNickname: chatDocs[index]['resortNickname'],
                                                                                 comment: chatDocs[index]['comment'],
                                                                                 commentTime: chatDocs[index]['timeStamp'],
@@ -1743,8 +1756,14 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                           ReplyScreen(
                                                                                             replyUid: chatDocs[index]['uid'],
                                                                                             replyCount: chatDocs[index]['commentCount'],
-                                                                                            replyImage: chatDocs[index]['profileImageUrl'],
-                                                                                            replyDisplayName: chatDocs[index]['displayName'],
+                                                                                            replyImage:
+                                                                                            (chatDocs[index]['profileImageUrl'] != 'anony')
+                                                                                                ? profileUrl
+                                                                                                : chatDocs[index]['profileImageUrl'],
+                                                                                            replyDisplayName:
+                                                                                            (chatDocs[index]['displayName'] != '익명')
+                                                                                                ? displayName
+                                                                                                : chatDocs[index]['displayName'],
                                                                                             replyResortNickname: chatDocs[index]['resortNickname'],
                                                                                             comment: chatDocs[index]['comment'],
                                                                                             commentTime: chatDocs[index]['timeStamp'],

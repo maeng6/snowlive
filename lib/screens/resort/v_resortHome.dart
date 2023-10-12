@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_refreshController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -19,16 +20,13 @@ import 'package:com.snowlive/screens/discover/v_discover_Calendar_Detail.dart';
 import 'package:com.snowlive/screens/discover/v_discover_Resort_Banner.dart';
 import 'package:com.snowlive/screens/discover/v_discover_calendar.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
-import 'package:com.snowlive/screens/more/v_noticeListPage.dart';
-import 'package:com.snowlive/screens/more/v_noticeTile_resortHome.dart';
-import 'package:com.snowlive/screens/v_MainHome.dart';
 import 'package:com.snowlive/screens/v_webPage.dart';
 import 'package:com.snowlive/controller/vm_resortModelController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import '../../controller/vm_bottomTabBarController.dart';
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_urlLauncherController.dart';
-import '../comments/v_liveTalk_Screen.dart';
 import '../fleaMarket/v_fleaMarket_List_Screen_home.dart';
 import 'package:lottie/lottie.dart';
 
@@ -37,13 +35,12 @@ class ResortHome extends StatefulWidget {
   State<ResortHome> createState() => _ResortHomeState();
 }
 
-class _ResortHomeState extends State<ResortHome>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
+class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMixin {
 
+  bool get wantKeepAlive => true;
   int lengthOfLivefriends = 0;
   bool isSnackbarShown = false;
+  List<bool?> _isSelected = List<bool?>.filled(13, false);
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
@@ -51,16 +48,13 @@ class _ResortHomeState extends State<ResortHome>
   GetDateTimeController _getDateTimeController = Get.find<GetDateTimeController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
+  RefreshController _refreshController = Get.find<RefreshController>();
   //TODO: Dependency Injection**************************************************
-
-
-  List<bool?> _isSelected = List<bool?>.filled(13, false);
 
   ListTile buildResortListTile(int index) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       title: Text('${resortNameList[index]}'),
-      //selected: _isSelected[index]!,
       onTap: () async {
         HapticFeedback.lightImpact();
         Navigator.pop(context);
@@ -75,12 +69,6 @@ class _ResortHomeState extends State<ResortHome>
     );
   }
 
-  Future<void> _onRefresh() async {
-    await _userModelController
-        .updateInstantResort(_userModelController.favoriteResort);
-    if (mounted) setState(() {});
-  }
-
   @override
   void initState() {
     // TODO: implement initState
@@ -88,10 +76,13 @@ class _ResortHomeState extends State<ResortHome>
     _userModelController.updateIsOnLiveOff();
   }
 
-
   @override
   Widget build(BuildContext context) {
+
+    final Size _size = MediaQuery.of(context).size;
+    final double _statusBarSize = MediaQuery.of(context).padding.top;
     super.build(context);
+
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
       overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
@@ -110,18 +101,13 @@ class _ResortHomeState extends State<ResortHome>
     Get.put(FleaModelController(), permanent: true);
     Get.put(FleaChatModelController(), permanent: true);
     DialogController _dialogController = Get.put(DialogController(), permanent: true);
+    BottomTabBarController _bottomTabBarController = Get.find<BottomTabBarController>();
     //TODO: Dependency Injection**************************************************
-
-
-
-    final Size _size = MediaQuery.of(context).size;
-    final double _statusBarSize = MediaQuery.of(context).padding.top;
 
     return FutureBuilder(
         future: _userModelController.getLocalSave(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          _resortModelController
-              .getSelectedResort(_userModelController.instantResort!);
+          _resortModelController.getSelectedResort(_userModelController.instantResort!);
           return WillPopScope(
               onWillPop: () {
                 return Future(() => false);
@@ -724,7 +710,7 @@ class _ResortHomeState extends State<ResortHome>
                       body: RefreshIndicator(
                         strokeWidth: 2,
                         edgeOffset: 40,
-                        onRefresh: _onRefresh,
+                        onRefresh: _refreshController.onRefresh_resortHome,
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
@@ -1289,7 +1275,7 @@ class _ResortHomeState extends State<ResortHome>
                                             ),
                                             GestureDetector(
                                               onTap: (){
-                                                Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 3));
+                                                _bottomTabBarController..changePage(3)..onItemTapped(3);
                                               },
                                               child: Container(
                                                   padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 22),
@@ -1983,7 +1969,7 @@ class _ResortHomeState extends State<ResortHome>
                     body: RefreshIndicator(
                       strokeWidth: 2,
                       edgeOffset: 40,
-                      onRefresh: _onRefresh,
+                      onRefresh: _refreshController.onRefresh_resortHome,
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
@@ -2631,7 +2617,7 @@ class _ResortHomeState extends State<ResortHome>
                                           ),
                                           GestureDetector(
                                             onTap: (){
-                                              Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 3));
+                                              _bottomTabBarController..changePage(3)..onItemTapped(3);
                                             },
                                             child: Container(
                                                 padding: EdgeInsets.only(

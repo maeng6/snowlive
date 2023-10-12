@@ -13,6 +13,7 @@ import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
+import '../../controller/vm_allUserDocsController.dart';
 import '../more/friend/v_snowliveDetailPage.dart';
 
 class ReplyScreen extends StatefulWidget {
@@ -53,7 +54,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
   ReplyModelController _replyModelController =
   Get.find<ReplyModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
-
+  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
 //TODO: Dependency Injection**************************************************
 
   var _replyStream;
@@ -374,6 +375,8 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                         String _time = _replyModelController
                                             .getAgoTime(replyDocs[index]
                                             .get('timeStamp'));
+                                        String? profileUrl = _allUserDocsController.findProfileUrl(replyDocs[index]['uid'], _allUserDocsController.allUserDocs);
+                                        String? displayName = _allUserDocsController.findDisplayName(replyDocs[index]['uid'], _allUserDocsController.allUserDocs);
                                         return Padding(
                                           padding: const EdgeInsets.only(
                                               left: 42, top: 24),
@@ -411,7 +414,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                     Row(
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        if (replyDocs[index]['profileImageUrl'] != "" && replyDocs[index]['profileImageUrl'] != 'anony' && replyDocs[index]['displayName'] != 'SNOWLIVE')
+                                                        if (profileUrl != "" && replyDocs[index]['profileImageUrl'] != 'anony' && replyDocs[index]['displayName'] != 'SNOWLIVE')
                                                           Padding(
                                                             padding: EdgeInsets.only(top: 4),
                                                             child: GestureDetector(
@@ -431,7 +434,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                 }
                                                               },
                                                               child: ExtendedImage.network(
-                                                                replyDocs[index]['profileImageUrl'],
+                                                                profileUrl,
                                                                 cache: true,
                                                                 shape: BoxShape.circle,
                                                                 borderRadius: BorderRadius.circular(20),
@@ -460,7 +463,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                               ),
                                                             ),
                                                           ),
-                                                        if (replyDocs[index]['profileImageUrl'] == "" && replyDocs[index]['displayName'] != 'SNOWLIVE')
+                                                        if (profileUrl == "" && replyDocs[index]['displayName'] != 'SNOWLIVE')
                                                           Padding(
                                                             padding: EdgeInsets.only(top:4),
                                                             child: GestureDetector(
@@ -549,7 +552,9 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                             Row(
                                                               children: [
                                                                 Text(
-                                                                  replyDocs[index]['displayName'],
+                                                                  (replyDocs[index]['displayName'] != "익명" )
+                                                                      ? displayName
+                                                                      : replyDocs[index]['displayName'],
                                                                   style: TextStyle(
                                                                       fontWeight: FontWeight.bold,
                                                                       fontSize: 14,
@@ -690,7 +695,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                                         ),
                                                                       ),
-                                                                      if(replyDocs[index]['displayName'] != '익명')
+                                                                      if(displayName != '익명')
                                                                       GestureDetector(
                                                                         child: ListTile(
                                                                           contentPadding: EdgeInsets.zero,

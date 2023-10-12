@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:extended_image/extended_image.dart';
+import 'package:com.snowlive/controller/vm_bottomTabBarController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_liveMapController.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_Home.dart';
-import 'package:com.snowlive/screens/Ranking/v_MyRanking_Detail_Screen.dart';
 import 'package:com.snowlive/screens/comments/v_liveTalk_Screen.dart';
 import 'package:com.snowlive/screens/resort/v_resortHome.dart';
 import '../controller/vm_noticeController.dart';
@@ -15,49 +14,33 @@ import 'more/v_moreTab.dart';
 
 class MainHome extends StatefulWidget {
 
-  MainHome({Key? key,required this.uid, required this.initialPage}) : super(key: key);
+  MainHome({Key? key,required this.uid}) : super(key: key);
   String? uid;
-  final int initialPage; // 초기 페이지 인덱스 (기본값은 0)
 
   @override
   State<MainHome> createState() => _MainHomeState();
 }
 
 class _MainHomeState extends State<MainHome> {
-  int _currentPage = 0;
-  bool? wait;
-
-  PageController _pageController = PageController();
-
-  void _onItemTapped(int index) {
-    _pageController.jumpToPage(index);
-  }
-
-  void changePage(int index) {
-    setState(() {
-      _currentPage = index;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    _currentPage = widget.initialPage;
-    _pageController = PageController(initialPage: widget.initialPage); // 초기 페이지 설정
   }
-//123456789
 
   @override
   Widget build(BuildContext context) {
+
     //TODO: Dependency Injection************************************************
     Get.put(RankingTierModelController(), permanent: true);
     Get.put(NoticeController(), permanent: true);
     Get.put(LiveMapController(), permanent: true);
-    NoticeController _noticeController = Get.find<NoticeController>();
+    Get.put(BottomTabBarController(),permanent: true);
+    NoticeController _noticeController = Get.find<NoticeController>()..getIsNewNotice();
     UserModelController _userModelController = Get.find<UserModelController>();
+    BottomTabBarController _bottomTabBarController = Get.find<BottomTabBarController>();
+    PageControllerManager _pageControllerManager = Get.find<PageControllerManager>();
     //TODO: Dependency Injection************************************************
-
-    _noticeController.getIsNewNotice();
 
     return Obx(()=>Scaffold(
         bottomNavigationBar: BottomNavigationBar(
@@ -66,8 +49,8 @@ class _MainHomeState extends State<MainHome> {
           backgroundColor: Colors.white,
           elevation: 10,
           type: BottomNavigationBarType.fixed,
-          currentIndex: _currentPage,
-          onTap: _onItemTapped,
+          currentIndex: _bottomTabBarController.currentPage!,
+          onTap: _bottomTabBarController.onItemTapped,
           items: [
             BottomNavigationBarItem(
               icon: ImageIcon(
@@ -233,8 +216,8 @@ class _MainHomeState extends State<MainHome> {
           ),
         ),
         body: PageView(
-          controller: _pageController,
-          onPageChanged: changePage,
+          controller: _pageControllerManager.pageController,
+          onPageChanged: _bottomTabBarController.changePage,
           physics: NeverScrollableScrollPhysics(),
           children: [
             ResortHome(),
