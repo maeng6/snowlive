@@ -14,6 +14,7 @@ import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_timeStampController.dart';
 import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
 import 'package:com.snowlive/screens/v_MainHome.dart';
+import '../../../controller/vm_allUserDocsController.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../../model/m_crewLogoModel.dart';
@@ -144,6 +145,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
+  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -217,6 +219,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                     await _userModelController.getCurrentUser(_userModelController.uid);
                     _stateMsgController.clear();
                     _displayNameController.clear();
+                    await _allUserDocsController.getAllUserDocs;
                   } catch (e) {
                     CustomFullScreenDialog.cancelDialog();
                   }
