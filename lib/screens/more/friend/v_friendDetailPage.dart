@@ -219,7 +219,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                     await _userModelController.getCurrentUser(_userModelController.uid);
                     _stateMsgController.clear();
                     _displayNameController.clear();
-                    await _allUserDocsController.getAllUserDocs;
+                  await _allUserDocsController.getAllUserDocs();
                   } catch (e) {
                     CustomFullScreenDialog.cancelDialog();
                   }

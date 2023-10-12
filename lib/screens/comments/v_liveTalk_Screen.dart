@@ -2158,69 +2158,69 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                       textInputAction: TextInputAction.newline,
                                       decoration: InputDecoration(
                                           suffixIcon: IconButton(
-                                            splashColor: Colors.transparent,
-                                            onPressed: () async {
-                                              if (_controller.text.trim().isEmpty) {
-                                                return;
-                                              }
-                                              try{
-                                                CustomFullScreenDialog.showDialog();
-                                                await _userModelController.getCurrentUser(_userModelController.uid);
-                                                await _userModelController.updateCommentCount(_userModelController.commentCount);
-                                                await _userModelController.getCurrentUser(_userModelController.uid);
-
-                                                String? livetalkImageUrl = "";
-                                                if (_imageFile != null) {
-                                                  livetalkImageUrl = await _imageController.setNewImage_livetalk(_imageFile!, _userModelController.commentCount);
-                                                  await _commentModelController.updateLivetalkImageUrl(livetalkImageUrl);
-
-                                                  setState(() {
-                                                    _imageFile = null;
-                                                    livetalkImage = false;
-                                                  });
+                                              splashColor: Colors.transparent,
+                                              onPressed: () async {
+                                                if (_controller.text.trim().isEmpty) {
+                                                  return;
                                                 }
-                                                _controller.clear();
-                                                _scrollController.jumpTo(0);
-                                                try {
-                                                  await _commentModelController.sendMessage(
-                                                      displayName:
-                                                      (anony == false)
-                                                          ? _userModelController.displayName
-                                                          : "익명",
-                                                      uid: _userModelController.uid,
-                                                      profileImageUrl:
-                                                      (anony == false)
-                                                          ? _userModelController.profileImageUrl
-                                                          : 'anony',
-                                                      comment: _newComment,
-                                                      commentCount: _userModelController.commentCount,
-                                                      resortNickname: _userModelController.resortNickname,
-                                                      likeCount: _commentModelController.likeCount,
-                                                      replyCount: _commentModelController.replyCount,
-                                                      livetalkImageUrl: livetalkImageUrl);
-                                                  FocusScope.of(context).unfocus();
+                                                try{
+                                                  CustomFullScreenDialog.showDialog();
+                                                  await _userModelController.getCurrentUser(_userModelController.uid);
+                                                  await _userModelController.updateCommentCount(_userModelController.commentCount);
+                                                  await _userModelController.getCurrentUser(_userModelController.uid);
+
+                                                  String? livetalkImageUrl = "";
+                                                  if (_imageFile != null) {
+                                                    livetalkImageUrl = await _imageController.setNewImage_livetalk(_imageFile!, _userModelController.commentCount);
+                                                    await _commentModelController.updateLivetalkImageUrl(livetalkImageUrl);
+
+                                                    setState(() {
+                                                      _imageFile = null;
+                                                      livetalkImage = false;
+                                                    });
+                                                  }
                                                   _controller.clear();
-                                                  setState(() {});
-                                                } catch (e) {
+                                                  _scrollController.jumpTo(0);
+                                                  try {
+                                                    await _commentModelController.sendMessage(
+                                                        displayName:
+                                                        (anony == false)
+                                                            ? _userModelController.displayName
+                                                            : "익명",
+                                                        uid: _userModelController.uid,
+                                                        profileImageUrl:
+                                                        (anony == false)
+                                                            ? _userModelController.profileImageUrl
+                                                            : 'anony',
+                                                        comment: _newComment,
+                                                        commentCount: _userModelController.commentCount,
+                                                        resortNickname: _userModelController.resortNickname,
+                                                        likeCount: _commentModelController.likeCount,
+                                                        replyCount: _commentModelController.replyCount,
+                                                        livetalkImageUrl: livetalkImageUrl);
+                                                    FocusScope.of(context).unfocus();
+                                                    _controller.clear();
+                                                    setState(() {});
+                                                  } catch (e) {
+                                                    CustomFullScreenDialog.cancelDialog();
+                                                  }
+                                                  CustomFullScreenDialog.cancelDialog();
+                                                } catch(e){
                                                   CustomFullScreenDialog.cancelDialog();
                                                 }
-                                                CustomFullScreenDialog.cancelDialog();
-                                              } catch(e){
-                                                CustomFullScreenDialog.cancelDialog();
-                                              }
-                                            },
-                                            icon: (_controller.text.trim().isEmpty)
-                                                ? Image.asset(
-                                              'assets/imgs/icons/icon_livetalk_send_g.png',
-                                              width: 27,
-                                              height: 27,
-                                            )
-                                                : Image.asset(
-                                              'assets/imgs/icons/icon_livetalk_send.png',
-                                              width: 27,
-                                              height: 27,
+                                              },
+                                              icon: (_controller.text.trim().isEmpty)
+                                                  ? Image.asset(
+                                                'assets/imgs/icons/icon_livetalk_send_g.png',
+                                                width: 27,
+                                                height: 27,
+                                              )
+                                                  : Image.asset(
+                                                'assets/imgs/icons/icon_livetalk_send.png',
+                                                width: 27,
+                                                height: 27,
+                                              ),
                                             ),
-                                          ),
                                           errorStyle: TextStyle(
                                             fontSize: 12,
                                           ),
