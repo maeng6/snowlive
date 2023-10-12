@@ -266,6 +266,25 @@ class _RankingIndiScreenDetailState extends State<RankingIndiScreenDetail> {
                                                         width: 100,
                                                         height: 100,
                                                         fit: BoxFit.cover,
+                                                        loadStateChanged: (ExtendedImageState state) {
+                                                          switch (state.extendedImageLoadState) {
+                                                            case LoadState.loading:
+                                                              return SizedBox.shrink();
+                                                            case LoadState.completed:
+                                                              return state.completedWidget;
+                                                            case LoadState.failed:
+                                                              return ExtendedImage.asset(
+                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                shape: BoxShape.circle,
+                                                                borderRadius: BorderRadius.circular(20),
+                                                                width: 24,
+                                                                height: 24,
+                                                                fit: BoxFit.cover,
+                                                              ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                            default:
+                                                              return null;
+                                                          }
+                                                        },
                                                       ),
                                                     )
                                                         : ExtendedImage.asset(
@@ -351,6 +370,25 @@ class _RankingIndiScreenDetailState extends State<RankingIndiScreenDetail> {
                                                         width: 100,
                                                         height: 100,
                                                         fit: BoxFit.cover,
+                                                        loadStateChanged: (ExtendedImageState state) {
+                                                          switch (state.extendedImageLoadState) {
+                                                            case LoadState.loading:
+                                                              return SizedBox.shrink();
+                                                            case LoadState.completed:
+                                                              return state.completedWidget;
+                                                            case LoadState.failed:
+                                                              return ExtendedImage.asset(
+                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                shape: BoxShape.circle,
+                                                                borderRadius: BorderRadius.circular(20),
+                                                                width: 24,
+                                                                height: 24,
+                                                                fit: BoxFit.cover,
+                                                              ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                            default:
+                                                              return null;
+                                                          }
+                                                        },
                                                       ),
                                                     )
                                                         : ExtendedImage.asset(
@@ -437,6 +475,25 @@ class _RankingIndiScreenDetailState extends State<RankingIndiScreenDetail> {
                                                         width: 100,
                                                         height: 100,
                                                         fit: BoxFit.cover,
+                                                        loadStateChanged: (ExtendedImageState state) {
+                                                          switch (state.extendedImageLoadState) {
+                                                            case LoadState.loading:
+                                                              return SizedBox.shrink();
+                                                            case LoadState.completed:
+                                                              return state.completedWidget;
+                                                            case LoadState.failed:
+                                                              return ExtendedImage.asset(
+                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                shape: BoxShape.circle,
+                                                                borderRadius: BorderRadius.circular(20),
+                                                                width: 24,
+                                                                height: 24,
+                                                                fit: BoxFit.cover,
+                                                              ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                            default:
+                                                              return null;
+                                                          }
+                                                        },
                                                       ),
                                                     )
                                                         : ExtendedImage.asset(
@@ -567,6 +624,25 @@ class _RankingIndiScreenDetailState extends State<RankingIndiScreenDetail> {
                                                       width: 48,
                                                       height: 48,
                                                       fit: BoxFit.cover,
+                                                      loadStateChanged: (ExtendedImageState state) {
+                                                        switch (state.extendedImageLoadState) {
+                                                          case LoadState.loading:
+                                                            return SizedBox.shrink();
+                                                          case LoadState.completed:
+                                                            return state.completedWidget;
+                                                          case LoadState.failed:
+                                                            return ExtendedImage.asset(
+                                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                                              shape: BoxShape.circle,
+                                                              borderRadius: BorderRadius.circular(20),
+                                                              width: 24,
+                                                              height: 24,
+                                                              fit: BoxFit.cover,
+                                                            ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                          default:
+                                                            return null;
+                                                        }
+                                                      },
                                                     )
                                                         : ExtendedImage.asset(
                                                       'assets/imgs/profile/img_profile_default_circle.png',
@@ -704,6 +780,25 @@ class _RankingIndiScreenDetailState extends State<RankingIndiScreenDetail> {
                                           width: 48,
                                           height: 48,
                                           fit: BoxFit.cover,
+                                          loadStateChanged: (ExtendedImageState state) {
+                                            switch (state.extendedImageLoadState) {
+                                              case LoadState.loading:
+                                                return SizedBox.shrink();
+                                              case LoadState.completed:
+                                                return state.completedWidget;
+                                              case LoadState.failed:
+                                                return ExtendedImage.asset(
+                                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                                  shape: BoxShape.circle,
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  width: 24,
+                                                  height: 24,
+                                                  fit: BoxFit.cover,
+                                                ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                              default:
+                                                return null;
+                                            }
+                                          },
                                         )
                                             : ExtendedImage.asset(
                                           'assets/imgs/profile/img_profile_default_circle.png',
@@ -792,6 +887,25 @@ class _RankingIndiScreenDetailState extends State<RankingIndiScreenDetail> {
                                       width: 48,
                                       height: 48,
                                       fit: BoxFit.cover,
+                                      loadStateChanged: (ExtendedImageState state) {
+                                        switch (state.extendedImageLoadState) {
+                                          case LoadState.loading:
+                                            return SizedBox.shrink();
+                                          case LoadState.completed:
+                                            return state.completedWidget;
+                                          case LoadState.failed:
+                                            return ExtendedImage.asset(
+                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                              shape: BoxShape.circle,
+                                              borderRadius: BorderRadius.circular(20),
+                                              width: 24,
+                                              height: 24,
+                                              fit: BoxFit.cover,
+                                            ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                          default:
+                                            return null;
+                                        }
+                                      },
                                     )
                                         : ExtendedImage.asset(
                                       'assets/imgs/profile/img_profile_default_circle.png',

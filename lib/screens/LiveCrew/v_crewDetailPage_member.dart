@@ -96,6 +96,25 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                     width: 50,
                                     height: 50,
                                     fit: BoxFit.cover,
+                                    loadStateChanged: (ExtendedImageState state) {
+                                      switch (state.extendedImageLoadState) {
+                                        case LoadState.loading:
+                                          return SizedBox.shrink();
+                                        case LoadState.completed:
+                                          return state.completedWidget;
+                                        case LoadState.failed:
+                                          return ExtendedImage.asset(
+                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                            shape: BoxShape.circle,
+                                            borderRadius: BorderRadius.circular(20),
+                                            width: 24,
+                                            height: 24,
+                                            fit: BoxFit.cover,
+                                          ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                        default:
+                                          return null;
+                                      }
+                                    },
                                   )),
                             )
                                 : GestureDetector(
@@ -314,6 +333,25 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                 width: 50,
                                                 height: 50,
                                                 fit: BoxFit.cover,
+                                                loadStateChanged: (ExtendedImageState state) {
+                                                  switch (state.extendedImageLoadState) {
+                                                    case LoadState.loading:
+                                                      return SizedBox.shrink();
+                                                    case LoadState.completed:
+                                                      return state.completedWidget;
+                                                    case LoadState.failed:
+                                                      return ExtendedImage.asset(
+                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                        shape: BoxShape.circle,
+                                                        borderRadius: BorderRadius.circular(20),
+                                                        width: 24,
+                                                        height: 24,
+                                                        fit: BoxFit.cover,
+                                                      ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                    default:
+                                                      return null;
+                                                  }
+                                                },
                                               )),
                                         )
                                             : GestureDetector(
