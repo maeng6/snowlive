@@ -33,7 +33,6 @@ class LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //TODO: Dependency Injection************************************************
-    Get.put(LoginController());
     LoginController _loginController = Get.find<LoginController>();
     //TODO: Dependency Injection************************************************
 

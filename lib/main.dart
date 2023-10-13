@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:com.snowlive/controller/vm_loginController.dart';
 import 'package:com.snowlive/controller/vm_splashController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -46,6 +47,8 @@ void main() async {
   Get.put(UrlLauncherController(), permanent: true);
   Get.put(RefreshController(),permanent: true);
   Get.put(AllUserDocsController(),permanent: true);
+  Get.put(LoginController(),permanent: true);
+
 
 
   runApp(MyApp());
