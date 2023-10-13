@@ -673,8 +673,8 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                       'assets/imgs/profile/img_profile_default_circle.png',
                                                                       shape: BoxShape.circle,
                                                                       borderRadius: BorderRadius.circular(20),
-                                                                      width: 24,
-                                                                      height: 24,
+                                                                      width: 20,
+                                                                      height: 20,
                                                                       fit: BoxFit.cover,
                                                                     ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                                   default:
@@ -949,8 +949,8 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                                   'assets/imgs/profile/img_profile_default_circle.png',
                                                                                                                   shape: BoxShape.circle,
                                                                                                                   borderRadius: BorderRadius.circular(20),
-                                                                                                                  width: 24,
-                                                                                                                  height: 24,
+                                                                                                                  width: 26,
+                                                                                                                  height: 26,
                                                                                                                   fit: BoxFit.cover,
                                                                                                                 ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                                                                               default:

@@ -106,9 +106,9 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                           return ExtendedImage.asset(
                                             'assets/imgs/profile/img_profile_default_circle.png',
                                             shape: BoxShape.circle,
-                                            borderRadius: BorderRadius.circular(20),
-                                            width: 24,
-                                            height: 24,
+                                            borderRadius: BorderRadius.circular(8),
+                                            width: 50,
+                                            height: 50,
                                             fit: BoxFit.cover,
                                           ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                         default:
@@ -343,9 +343,9 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                       return ExtendedImage.asset(
                                                         'assets/imgs/profile/img_profile_default_circle.png',
                                                         shape: BoxShape.circle,
-                                                        borderRadius: BorderRadius.circular(20),
-                                                        width: 24,
-                                                        height: 24,
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        width: 50,
+                                                        height: 50,
                                                         fit: BoxFit.cover,
                                                       ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                     default:
