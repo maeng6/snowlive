@@ -200,11 +200,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                         return state.completedWidget;
                                                                       case LoadState.failed:
                                                                         return ExtendedImage.asset(
-                                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                                          'assets/imgs/profile/img_profile_default_.png',
+                                                                          enableMemoryCache: true,
                                                                           shape: BoxShape.circle,
-                                                                          borderRadius: BorderRadius.circular(20),
-                                                                          width: 24,
-                                                                          height: 24,
+                                                                          width: 58,
+                                                                          height: 58,
                                                                           fit: BoxFit.cover,
                                                                         ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                                       default:
@@ -304,11 +304,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                         return state.completedWidget;
                                                                       case LoadState.failed:
                                                                         return ExtendedImage.asset(
-                                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                                          'assets/imgs/profile/img_profile_default_.png',
+                                                                          enableMemoryCache: true,
                                                                           shape: BoxShape.circle,
-                                                                          borderRadius: BorderRadius.circular(20),
-                                                                          width: 24,
-                                                                          height: 24,
+                                                                          width: 58,
+                                                                          height: 58,
                                                                           fit: BoxFit.cover,
                                                                         ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                                       default:
@@ -409,11 +409,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                         return state.completedWidget;
                                                                       case LoadState.failed:
                                                                         return ExtendedImage.asset(
-                                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                                          'assets/imgs/profile/img_profile_default_.png',
+                                                                          enableMemoryCache: true,
                                                                           shape: BoxShape.circle,
-                                                                          borderRadius: BorderRadius.circular(20),
-                                                                          width: 24,
-                                                                          height: 24,
+                                                                          width: 58,
+                                                                          height: 58,
                                                                           fit: BoxFit.cover,
                                                                         ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                                       default:
@@ -559,10 +559,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                     case LoadState.failed:
                                                                       return ExtendedImage.asset(
                                                                         'assets/imgs/profile/img_profile_default_circle.png',
+                                                                        enableMemoryCache: true,
                                                                         shape: BoxShape.circle,
-                                                                        borderRadius: BorderRadius.circular(20),
-                                                                        width: 24,
-                                                                        height: 24,
+                                                                        borderRadius: BorderRadius.circular(8),
+                                                                        width: 48,
+                                                                        height: 48,
                                                                         fit: BoxFit.cover,
                                                                       ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                                     default:
@@ -723,10 +724,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                   case LoadState.failed:
                                                     return ExtendedImage.asset(
                                                       'assets/imgs/profile/img_profile_default_circle.png',
+                                                      enableMemoryCache: true,
                                                       shape: BoxShape.circle,
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      width: 24,
-                                                      height: 24,
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      width: 48,
+                                                      height: 48,
                                                       fit: BoxFit.cover,
                                                     ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                   default:
@@ -853,10 +855,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               case LoadState.failed:
                                                 return ExtendedImage.asset(
                                                   'assets/imgs/profile/img_profile_default_circle.png',
+                                                  enableMemoryCache: true,
                                                   shape: BoxShape.circle,
-                                                  borderRadius: BorderRadius.circular(20),
-                                                  width: 24,
-                                                  height: 24,
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  width: 48,
+                                                  height: 48,
                                                   fit: BoxFit.cover,
                                                 ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                               default:
