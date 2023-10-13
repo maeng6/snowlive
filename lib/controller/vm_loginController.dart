@@ -256,6 +256,7 @@ class LoginController extends GetxController {
         CollectionReference users = FirebaseFirestore.instance.collection('user');
         await users.doc(uid).delete();
         print('유저독 삭제');
+        _userModelController.resetProfileImage();
         User user = FirebaseAuth.instance.currentUser!;
         await user.delete();
         print('어센 삭제');

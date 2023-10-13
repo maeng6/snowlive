@@ -185,6 +185,10 @@ class UserModelController extends GetxController{
     }
   }
 
+   void resetProfileImage() {
+     this._profileImageUrl!.value = 'https://firebasestorage.googleapis.com/v0/b/snowlive-cf446.appspot.com/o/images%2Fprofile%2Fdefault%2Fimg_profile_default_circle.png?alt=media&token=4ecf29ae-08ad-4c75-99de-f1a73e8edd41';
+  } //디폴트이미지로 변경
+
   Future<void> getCurrentUserLocationInfo(uid) async{
     if(FirebaseAuth.instance.currentUser != null) {
       if(uid!=null) {
