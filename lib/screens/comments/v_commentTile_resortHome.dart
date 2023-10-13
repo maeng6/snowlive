@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
+import '../../controller/vm_allUserDocsController.dart';
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_userModelController.dart';
 
@@ -44,6 +45,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
     Get.put(CommentModelController(), permanent: true);
     CommentModelController _commentModelController =
         Get.find<CommentModelController>();
+    AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
 //TODO: Dependency Injection**************************************************
 
     return StreamBuilder(
@@ -78,6 +80,8 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
           itemBuilder: (context, index, pageViewIndex) {
             String _time = _commentModelController
                 .getAgoTime(chatDocs[index].get('timeStamp'));
+            String? profileUrl = _allUserDocsController.findProfileUrl(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
+            String? displayName = _allUserDocsController.findDisplayName(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
             return Container(
               width: MediaQuery.of(context).size.width,
               height: 44,
@@ -104,7 +108,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                               : Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    if (chatDocs[index]['profileImageUrl'] != "" && chatDocs[index]['profileImageUrl'] != "anony")
+                                    if (profileUrl != "" && chatDocs[index]['profileImageUrl']  != "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
                                       Transform.translate(
                                         offset: Offset(0, 2),
                                         child: GestureDetector(
@@ -112,7 +116,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
 
                                           },
                                           child: ExtendedImage.network(
-                                            chatDocs[index]['profileImageUrl'],
+                                            profileUrl,
                                             cache: true,
                                             shape: BoxShape.circle,
                                             borderRadius:
@@ -142,7 +146,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                           ),
                                         ),
                                       ),
-                                    if (chatDocs[index]['profileImageUrl'] == "")
+                                    if (profileUrl == "" && chatDocs[index]['profileImageUrl'] != "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
                                       Transform.translate(
                                         offset: Offset(0, 2),
                                         child: GestureDetector(
@@ -160,7 +164,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                           ),
                                         ),
                                       ),
-                                    if (chatDocs[index]['profileImageUrl'] == "anony")
+                                    if (chatDocs[index]['profileImageUrl'] == "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
                                       Transform.translate(
                                         offset: Offset(0, 2),
                                         child: GestureDetector(
@@ -178,6 +182,44 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                           ),
                                         ),
                                       ),
+                                    if (chatDocs[index]['profileImageUrl']!= '' && chatDocs[index]['profileImageUrl']  != "anony" && chatDocs[index]['displayName'] == 'SNOWLIVE')
+                                      Transform.translate(
+                                        offset: Offset(0, 2),
+                                        child: GestureDetector(
+                                          onTap: (){
+
+                                          },
+                                          child: ExtendedImage.network(
+                                            profileUrl,
+                                            cache: true,
+                                            shape: BoxShape.circle,
+                                            borderRadius:
+                                            BorderRadius.circular(20),
+                                            width: 32,
+                                            height: 32,
+                                            fit: BoxFit.cover,
+                                            loadStateChanged: (ExtendedImageState state) {
+                                              switch (state.extendedImageLoadState) {
+                                                case LoadState.loading:
+                                                  return SizedBox.shrink();
+                                                case LoadState.completed:
+                                                  return state.completedWidget;
+                                                case LoadState.failed:
+                                                  return ExtendedImage.asset(
+                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                    shape: BoxShape.circle,
+                                                    borderRadius: BorderRadius.circular(20),
+                                                    width: 24,
+                                                    height: 24,
+                                                    fit: BoxFit.cover,
+                                                  ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                default:
+                                                  return null;
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ),
                                     SizedBox(width: 12),
                                     Column(
                                       mainAxisAlignment: MainAxisAlignment.start,
@@ -188,11 +230,14 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                             Row(
                                               children: [
                                                 Text(
-                                                  chatDocs[index].get('displayName'),
+                                                  (chatDocs[index]['displayName'] != "익명")
+                                                      ? displayName
+                                                      : chatDocs[index]['displayName'],
                                                   style: TextStyle(
                                                       fontWeight: FontWeight.bold,
                                                       fontSize: 14,
-                                                      color: Color(0xFF111111)),
+                                                      color:
+                                                      (displayName == '탈퇴한회원')? Color(0xFFDEDEDE): Color(0xFF111111)),
                                                 ),
                                                 if(chatDocs[index].get('displayName') == 'SNOWLIVE')
                                                   Padding(
