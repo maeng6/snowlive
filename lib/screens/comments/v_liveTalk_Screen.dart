@@ -1136,7 +1136,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                       fontWeight: FontWeight.bold,
                                                                                       fontSize: 12,
                                                                                       color:
-                                                                                      (displayName == '탈퇴한회원')? Color(0xFFDEDEDE): Color(0xFF111111)),
+                                                                                      (displayName == '탈퇴한회원')? Color(0xFFb7b7b7): Color(0xFF111111)),
                                                                                 ),
                                                                                 if(chatDocs[index]['displayName'] == 'SNOWLIVE')
                                                                                   Padding(

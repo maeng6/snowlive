@@ -306,8 +306,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                       FontWeight
                                                           .bold,
                                                       fontSize: 14,
-                                                      color: Color(
-                                                          0xFF111111)),
+                                                      color: (widget.replyDisplayName == '탈퇴한회원')? Color(0xFFb7b7b7): Color(0xFF111111)),
                                                 ),
                                                 if(widget.replyDisplayName == 'SNOWLIVE')
                                                   Padding(
@@ -570,7 +569,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                   style: TextStyle(
                                                                       fontWeight: FontWeight.bold,
                                                                       fontSize: 14,
-                                                                      color: Color(0xFF111111)),
+                                                                      color: (displayName == '탈퇴한회원')? Color(0xFFb7b7b7): Color(0xFF111111)),
                                                                 ),
                                                                 if(replyDocs[index]['displayName'] == 'SNOWLIVE')
                                                                   Padding(
