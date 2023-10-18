@@ -36,4 +36,15 @@ class AllUserDocsController extends GetxController {
     return userDoc['displayName'] ?? '탈퇴한회원';
   }
 
+  String findStateMsg(String chatDocUid, List<Map<String, dynamic>> userDocs) {
+    // userDocs 리스트에서 uid가 chatDocUid와 일치하는 첫 번째 항목을 찾습니다.
+    Map<String, dynamic>? userDoc = userDocs.firstWhere(
+          (userDoc) => userDoc['uid'] == chatDocUid,
+      orElse: () => {},  // 일치하는 항목이 없을 경우 빈 Map 반환
+    );
+
+    // 찾은 문서에서 profileUrl 값을 반환합니다. 값이 없으면 기본값인 ''을 반환합니다.
+    return userDoc['stateMsg'] ?? '';
+  }
+
 }

@@ -8,6 +8,7 @@ import 'package:com.snowlive/controller/vm_liveMapController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_indi_All_Screen.dart';
+import '../../controller/vm_allUserDocsController.dart';
 import '../../model/m_rankingTierModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
@@ -25,7 +26,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
   LiveCrewModelController _liveCrewModelController =
   Get.find<LiveCrewModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
-
+  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   //TODO: Dependency Injection**************************************************
 
   ScrollController _scrollController = ScrollController();
@@ -33,6 +34,9 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
   Map<String, GlobalKey> itemKeys = {};
 
   GlobalKey myItemKey = GlobalKey();
+  String? profileUrl;
+  String? displayName;
+  String? stateMsg;
 
   @override
   void initState() {
@@ -193,152 +197,162 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                     builder: (context,
                         AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
                         snapshot) {
+
                       if (!snapshot.hasData || snapshot.data == null) {
-                        return ListTile(
-                          title: Text(''),
-                        );
+                        return SizedBox.shrink();
                       }
                       final userDoc = snapshot.data!.docs;
-                      final userData = userDoc.isNotEmpty ? userDoc[0] : null;
 
-                      if (userData == null) {
-                        return ListTile(
-                          title: Text('User not found'),
-                        );
+                      try {
+                        profileUrl = _allUserDocsController.findProfileUrl(userDoc[0]['uid'], _allUserDocsController.allUserDocs);
+                        displayName = _allUserDocsController.findDisplayName(userDoc[0]['uid'], _allUserDocsController.allUserDocs);
+                        stateMsg = _allUserDocsController.findStateMsg(userDoc[0]['uid'], _allUserDocsController.allUserDocs);
+                      }catch(e){
+                        profileUrl = '';
+                        displayName ='';
+                        stateMsg ='';
                       }
 
-                      return Padding(
-                        key: itemKey, // Apply the key here
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Row(
-                          children: [
-                            Text(
-                              '${userRankingMap!['${userDoc[0]['uid']}']}',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  color: Color(0xFF111111)),
-                            ),
-                            SizedBox(width: 14),
-                            GestureDetector(
-                              onTap: () {
-                                Get.to(() =>
-                                    FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                              },
-                              child: Container(
-                                width: 48,
-                                height: 48,
-                                child: userData['profileImageUrl'].isNotEmpty
-                                    ? ExtendedImage.network(
-                                  userData['profileImageUrl'],
-                                  enableMemoryCache: true,
-                                  shape: BoxShape.circle,
-                                  borderRadius: BorderRadius.circular(8),
+                      if(displayName!='') {
+                        return Padding(
+                          key: itemKey, // Apply the key here
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Row(
+                            children: [
+                              Text(
+                                '${userRankingMap!['${userDoc[0]['uid']}']}',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                    color: Color(0xFF111111)),
+                              ),
+                              SizedBox(width: 14),
+                              GestureDetector(
+                                onTap: () {
+                                  Get.to(() =>
+                                      FriendDetailPage(uid: userDoc[0]['uid'],
+                                        favoriteResort: userDoc[0]['favoriteResort'],));
+                                },
+                                child: Container(
                                   width: 48,
                                   height: 48,
-                                  fit: BoxFit.cover,
-                                  loadStateChanged: (ExtendedImageState state) {
-                                    switch (state.extendedImageLoadState) {
-                                      case LoadState.loading:
-                                        return SizedBox.shrink();
-                                      case LoadState.completed:
-                                        return state.completedWidget;
-                                      case LoadState.failed:
-                                        return ExtendedImage.asset(
-                                          'assets/imgs/profile/img_profile_default_circle.png',
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                        ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                      default:
-                                        return null;
-                                    }
-                                  },
-                                )
-                                    : ExtendedImage.asset(
-                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                  enableMemoryCache: true,
-                                  shape: BoxShape.circle,
-                                  borderRadius: BorderRadius.circular(8),
-                                  width: 48,
-                                  height: 48,
-                                  fit: BoxFit.cover,
+                                  child: profileUrl!.isNotEmpty
+                                      ? ExtendedImage.network(
+                                    profileUrl!,
+                                    enableMemoryCache: true,
+                                    shape: BoxShape.circle,
+                                    borderRadius: BorderRadius.circular(8),
+                                    width: 48,
+                                    height: 48,
+                                    fit: BoxFit.cover,
+                                    loadStateChanged: (
+                                        ExtendedImageState state) {
+                                      switch (state.extendedImageLoadState) {
+                                        case LoadState.loading:
+                                          return SizedBox.shrink();
+                                        case LoadState.completed:
+                                          return state.completedWidget;
+                                        case LoadState.failed:
+                                          return ExtendedImage.asset(
+                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                            shape: BoxShape.circle,
+                                            borderRadius: BorderRadius.circular(
+                                                8),
+                                            width: 48,
+                                            height: 48,
+                                            fit: BoxFit.cover,
+                                          ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                        default:
+                                          return null;
+                                      }
+                                    },
+                                  )
+                                      : ExtendedImage.asset(
+                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                    enableMemoryCache: true,
+                                    shape: BoxShape.circle,
+                                    borderRadius: BorderRadius.circular(8),
+                                    width: 48,
+                                    height: 48,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(width: 14),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 3),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    userData['displayName'],
-                                    style: TextStyle(
-                                        fontSize: 15, color: Color(0xFF111111)),
-                                  ),
-                                  if(userData['stateMsg'] != '')
-                                    Text(userData['stateMsg'],
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+                              SizedBox(width: 14),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 3),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      displayName!,
                                       style: TextStyle(
-                                          fontSize: 12,
-                                          color: Color(0xFF949494)
-                                      ),)
-                                  // StreamBuilder<QuerySnapshot>(
-                                  //   stream: FirebaseFirestore.instance
-                                  //       .collection('liveCrew')
-                                  //       .where('crewID',
-                                  //       isEqualTo: userData['liveCrew'])
-                                  //       .snapshots(),
-                                  //   builder: (context,
-                                  //       AsyncSnapshot<QuerySnapshot> snapshot) {
-                                  //     if (snapshot.hasError) {
-                                  //       return Text("오류가 발생했습니다");
-                                  //     }
-                                  //
-                                  //     if (snapshot.connectionState ==
-                                  //         ConnectionState.waiting) {
-                                  //       return CircularProgressIndicator();
-                                  //     }
-                                  //
-                                  //     if (!snapshot.hasData ||
-                                  //         snapshot.data!.docs.isEmpty) {
-                                  //       return SizedBox();
-                                  //     }
-                                  //
-                                  //     var crewData = snapshot.data!.docs.first
-                                  //         .data() as Map<String, dynamic>?;
-                                  //
-                                  //     // 크루명 가져오기
-                                  //     String crewName =
-                                  //         crewData?['crewName'] ?? '';
-                                  //
-                                  //     return Text(
-                                  //       crewName,
-                                  //       style: TextStyle(
-                                  //           fontSize: 12,
-                                  //           color: Color(0xFF949494)),
-                                  //     );
-                                  //   },
-                                  // ),
-                                ],
+                                          fontSize: 15,
+                                          color: Color(0xFF111111)),
+                                    ),
+                                    if(stateMsg!.isNotEmpty)
+                                      Text(stateMsg!,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xFF949494)
+                                        ),)
+                                    // StreamBuilder<QuerySnapshot>(
+                                    //   stream: FirebaseFirestore.instance
+                                    //       .collection('liveCrew')
+                                    //       .where('crewID',
+                                    //       isEqualTo: userData['liveCrew'])
+                                    //       .snapshots(),
+                                    //   builder: (context,
+                                    //       AsyncSnapshot<QuerySnapshot> snapshot) {
+                                    //     if (snapshot.hasError) {
+                                    //       return Text("오류가 발생했습니다");
+                                    //     }
+                                    //
+                                    //     if (snapshot.connectionState ==
+                                    //         ConnectionState.waiting) {
+                                    //       return CircularProgressIndicator();
+                                    //     }
+                                    //
+                                    //     if (!snapshot.hasData ||
+                                    //         snapshot.data!.docs.isEmpty) {
+                                    //       return SizedBox();
+                                    //     }
+                                    //
+                                    //     var crewData = snapshot.data!.docs.first
+                                    //         .data() as Map<String, dynamic>?;
+                                    //
+                                    //     // 크루명 가져오기
+                                    //     String crewName =
+                                    //         crewData?['crewName'] ?? '';
+                                    //
+                                    //     return Text(
+                                    //       crewName,
+                                    //       style: TextStyle(
+                                    //           fontSize: 12,
+                                    //           color: Color(0xFF949494)),
+                                    //     );
+                                    //   },
+                                    // ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            Expanded(child: SizedBox()),
-                            Text(
-                              '${document.get('totalScore').toString()}점',
-                              style: TextStyle(
-                                color: Color(0xFF111111),
-                                fontWeight: FontWeight.normal,
-                                fontSize: 18,
+                              Expanded(child: SizedBox()),
+                              Text(
+                                '${document.get('totalScore').toString()}점',
+                                style: TextStyle(
+                                  color: Color(0xFF111111),
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 18,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
+                            ],
+                          ),
+                        );
+                      }else {
+                        return SizedBox.shrink();
+                      }
                     },
                   );
                 }).toList(),

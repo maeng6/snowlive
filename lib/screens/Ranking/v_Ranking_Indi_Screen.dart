@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import 'package:com.snowlive/controller/vm_liveMapController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_indi_All_Screen.dart';
+import '../../controller/vm_allUserDocsController.dart';
 import '../../controller/vm_resortModelController.dart';
 import '../../model/m_rankingTierModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
@@ -27,6 +29,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
+  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -481,7 +484,10 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 ),
                                               ),
                                               GestureDetector(
-                                                onTap: (){
+                                                onTap: () async{
+                                                  CustomFullScreenDialog.showDialog();
+                                                  await _allUserDocsController.getAllUserDocs();
+                                                  CustomFullScreenDialog.cancelDialog();
                                                   Get.to(()=> RankingIndiAllScreen());
                                                 },
                                                 child: Text('전체 보기',
