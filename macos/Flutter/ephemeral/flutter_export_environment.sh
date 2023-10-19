@@ -1,11 +1,11 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/maeng_6/Developer/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/maeng_6/project/snowlive"
+export "FLUTTER_ROOT=/Users/luis/flutter"
+export "FLUTTER_APPLICATION_PATH=/Users/luis/StudioProjects/snowlive"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
-export "FLUTTER_BUILD_NAME=3.1.5"
-export "FLUTTER_BUILD_NUMBER=43"
+export "FLUTTER_BUILD_NAME=3.1.9"
+export "FLUTTER_BUILD_NUMBER=47"
 export "DART_OBFUSCATION=false"
 export "TRACK_WIDGET_CREATION=true"
 export "TREE_SHAKE_ICONS=false"
