@@ -277,6 +277,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                               child: ExtendedImage.network(
                                 document['profileImageUrl'],
                                 enableMemoryCache: true,
+                                cacheHeight: 200,
                                 shape: BoxShape.rectangle,
                                 borderRadius: BorderRadius.circular(6),
                                 fit: BoxFit.cover,

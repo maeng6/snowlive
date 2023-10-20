@@ -236,6 +236,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                       enableMemoryCache: true,
                                                       shape: BoxShape
                                                           .rectangle,
+                                                      cacheHeight: 200,
                                                       borderRadius: BorderRadius
                                                           .circular(7),
                                                       width: 100,
@@ -361,6 +362,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                         .network(
                                                       crewDocs[1]['profileImageUrl'],
                                                       enableMemoryCache: true,
+                                                      cacheHeight: 200,
                                                       shape: BoxShape
                                                           .rectangle,
                                                       borderRadius: BorderRadius
@@ -488,6 +490,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                         .network(
                                                       crewDocs[2]['profileImageUrl'],
                                                       enableMemoryCache: true,
+                                                      cacheHeight: 200,
                                                       shape: BoxShape
                                                           .rectangle,
                                                       borderRadius: BorderRadius
@@ -653,6 +656,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                                 .network(
                                                               crewDocs[index]['profileImageUrl'],
                                                               enableMemoryCache: true,
+                                                              cacheHeight: 200,
                                                               shape: BoxShape
                                                                   .rectangle,
                                                               borderRadius: BorderRadius

@@ -485,9 +485,6 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               ),
                                               GestureDetector(
                                                 onTap: () async{
-                                                  CustomFullScreenDialog.showDialog();
-                                                  await _allUserDocsController.getAllUserDocs();
-                                                  CustomFullScreenDialog.cancelDialog();
                                                   Get.to(()=> RankingIndiAllScreen());
                                                 },
                                                 child: Text('전체 보기',
@@ -516,15 +513,13 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                       .snapshots(),
                                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                     if (!snapshot.hasData || snapshot.data == null) {
-                                                      return ListTile(
-                                                        title: Text(''),
-                                                      );
+                                                      return SizedBox.shrink();
                                                     }
                                                     final userDoc = snapshot.data!.docs;
                                                     final userData = userDoc.isNotEmpty ? userDoc[0] : null;
 
                                                     if (userData == null) {
-                                                      return SizedBox();
+                                                      return SizedBox.shrink();
                                                     }
 
                                                     return Padding(
@@ -551,6 +546,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                   ? ExtendedImage.network(
                                                                 userData['profileImageUrl'],
                                                                 enableMemoryCache: true,
+                                                                cacheHeight: 200,
                                                                 shape: BoxShape.circle,
                                                                 borderRadius: BorderRadius.circular(8),
                                                                 width: 48,

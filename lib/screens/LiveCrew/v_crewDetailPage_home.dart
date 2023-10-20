@@ -1431,6 +1431,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                       },
                                       child: ExtendedImage.network(
                                         imageUrl,
+                                        cacheHeight: 300,
                                         fit: BoxFit.cover,
                                         cache: true,
                                         loadStateChanged: (ExtendedImageState state) {

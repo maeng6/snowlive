@@ -34,9 +34,6 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
   Map<String, GlobalKey> itemKeys = {};
 
   GlobalKey myItemKey = GlobalKey();
-  String? profileUrl;
-  String? displayName;
-  String? stateMsg;
 
   @override
   void initState() {
@@ -202,19 +199,13 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                         return SizedBox.shrink();
                       }
                       final userDoc = snapshot.data!.docs;
+                      final userData = userDoc.isNotEmpty ? userDoc[0] : null;
 
-                      try {
-                        profileUrl = _allUserDocsController.findProfileUrl(userDoc[0]['uid'], _allUserDocsController.allUserDocs);
-                        displayName = _allUserDocsController.findDisplayName(userDoc[0]['uid'], _allUserDocsController.allUserDocs);
-                        stateMsg = _allUserDocsController.findStateMsg(userDoc[0]['uid'], _allUserDocsController.allUserDocs);
-                      }catch(e){
-                        profileUrl = '';
-                        displayName ='';
-                        stateMsg ='';
+                      if (userData == null) {
+                        return SizedBox.shrink();
                       }
 
-                      if(displayName!='') {
-                        return Padding(
+                      return Padding(
                           key: itemKey, // Apply the key here
                           padding: const EdgeInsets.only(bottom: 12),
                           child: Row(
@@ -236,10 +227,11 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                 child: Container(
                                   width: 48,
                                   height: 48,
-                                  child: profileUrl!.isNotEmpty
+                                  child: userData['profileImageUrl'].isNotEmpty
                                       ? ExtendedImage.network(
-                                    profileUrl!,
+                                    userData['profileImageUrl'],
                                     enableMemoryCache: true,
+                                    cacheHeight: 100,
                                     shape: BoxShape.circle,
                                     borderRadius: BorderRadius.circular(8),
                                     width: 48,
@@ -285,13 +277,13 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      displayName!,
+                                      userData['displayName'],
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: Color(0xFF111111)),
                                     ),
-                                    if(stateMsg!.isNotEmpty)
-                                      Text(stateMsg!,
+                                    if(userData['stateMsg'].isNotEmpty)
+                                      Text(userData['stateMsg'],
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -350,9 +342,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                             ],
                           ),
                         );
-                      }else {
-                        return SizedBox.shrink();
-                      }
+
                     },
                   );
                 }).toList(),
