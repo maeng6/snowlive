@@ -18,6 +18,7 @@ import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../model/m_crewLogoModel.dart';
+import '../Ranking/v_Ranking_MyCrew_Screen.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
 class CrewDetailPage_home extends StatefulWidget {
@@ -592,13 +593,30 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          '크루원 랭킹 TOP 3',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Color(0xFF111111),
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              '크루원 랭킹 TOP 3',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Color(0xFF111111),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () async{
+                                                Get.to(()=> RankingMyCrewScreen());
+                                              },
+                                              child: Text('전체 보기',
+                                                style: TextStyle(
+                                                    color: Color(0xFF949494),
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                         SizedBox(height: 10),
                                         StreamBuilder(

@@ -35,15 +35,17 @@ void main() async {
 
   // Dependency Injection
   Get.put(PageControllerManager(),permanent: true);
+  Get.put(NotificationController(),permanent: true);
   Get.put(BottomTabBarController(),permanent: true);
-  Get.put(ResortModelController(), permanent: true);
+  Get.put(SeasonController(), permanent: true);
   Get.put(UserModelController(), permanent: true);
+  Get.put(LoginController(),permanent: true);
+  Get.put(ResortModelController(), permanent: true);
   Get.put(GetDateTimeController(), permanent: true);
   Get.put(TimeStampController(), permanent: true);
   Get.put(FriendsCommentModelController(), permanent: true);
   Get.put(MainHomeController(), permanent: true);
   Get.put(LiveCrewModelController(), permanent: true);
-  Get.put(SeasonController(), permanent: true);
   Get.put(UrlLauncherController(), permanent: true);
   Get.put(RefreshController(),permanent: true);
   Get.put(AllUserDocsController(),permanent: true);
@@ -87,7 +89,6 @@ class _MyAppState extends State<MyApp> {
 
 
     return GetMaterialApp(
-      initialBinding: BindingsBuilder.put(() => NotificationController(),permanent: true),
       debugShowCheckedModeBanner: false,
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)

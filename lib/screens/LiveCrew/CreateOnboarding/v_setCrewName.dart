@@ -182,8 +182,6 @@ class _SetCrewNameState extends State<SetCrewName> {
                 padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                 child: ElevatedButton(
                   onPressed: () async {
-                    await FlutterSecureStorage()
-                        .write(key: 'uid', value: auth.currentUser!.uid);
                     setState(() {
                       isLoading = true;
                     });

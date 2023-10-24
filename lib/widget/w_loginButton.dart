@@ -59,10 +59,10 @@ class LoginButton extends StatelessWidget {
             await _loginController.signInWithApple();
             if(auth.currentUser != null){
               try {
-                CustomFullScreenDialog.cancelDialog();
-                print(auth.currentUser!.providerData[0].providerId);
-                print('Apple 로그인');
-                Get.offAll(() => FirstPage());
+                User? currentUser = auth.currentUser;
+                if (currentUser != null) {
+                  await _loginController.getExistUserDoc(uid: currentUser.uid);
+                }
               }catch(e){
               }}
             else {

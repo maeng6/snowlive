@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +12,7 @@ import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/v_MainHome.dart';
 import '../../controller/vm_bottomTabBarController.dart';
 import '../../controller/vm_loginController.dart';
+import '../../controller/vm_notificationController.dart';
 import '../../model/m_resortModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
@@ -31,6 +33,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
   ResortModelController resortModelController = Get.find<ResortModelController>();
   LoginController _loginController = Get.find<LoginController>();
   BottomTabBarController _bottomTabBarController = Get.find<BottomTabBarController>();
+  NotificationController _notificationController = Get.find<NotificationController>();
   //TODO: Dependency Injection********************************************
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -160,7 +163,9 @@ class _FavoriteResortState extends State<FavoriteResort> {
               child: ElevatedButton(
                   onPressed: isSelected ? () async {
                       CustomFullScreenDialog.showDialog();
-                      await _loginController.createUserDoc(0);
+                      await _loginController.createUserDoc(index: 0, token: _notificationController.deviceToken);
+                      await FlutterSecureStorage()
+                          .write(key: 'uid', value: auth.currentUser!.uid);
                       await userModelController
                           .updateNickname(widget.getNickname);
                       await userModelController

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_bottomTabBarController.dart';
+import 'package:com.snowlive/controller/vm_loginController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_liveMapController.dart';
@@ -26,6 +27,7 @@ class _MainHomeState extends State<MainHome> {
   @override
   void initState() {
     super.initState();
+
   }
 
   @override
@@ -40,7 +42,9 @@ class _MainHomeState extends State<MainHome> {
     UserModelController _userModelController = Get.find<UserModelController>();
     BottomTabBarController _bottomTabBarController = Get.find<BottomTabBarController>();
     PageControllerManager _pageControllerManager = Get.find<PageControllerManager>();
+    LoginController _loginController = Get.find<LoginController>();
     //TODO: Dependency Injection************************************************
+     _loginController.deviceIdentificate(uid: _userModelController.uid);
 
     return Obx(()=>Scaffold(
         bottomNavigationBar: BottomNavigationBar(

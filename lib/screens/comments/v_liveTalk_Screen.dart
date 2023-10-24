@@ -1067,8 +1067,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                 Get.to(()=>NoUserScreen());
                                                                               }
                                                                             },
-                                                                            child: ExtendedImage.asset(
-                                                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                                                            child: ExtendedImage.network(
+                                                                              'https://i.esdrop.com/d/f/yytYSNBROy/NIlGn0N46O.png',
                                                                               shape: BoxShape.circle,
                                                                               borderRadius: BorderRadius.circular(20),
                                                                               width: 24,

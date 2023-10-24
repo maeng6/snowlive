@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_loginController.dart';
+import 'package:com.snowlive/controller/vm_notificationController.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
@@ -8,6 +10,10 @@ import 'package:com.snowlive/screens/login/v_loginpage.dart';
 import '../model/m_resortModel.dart';
 
 class UserModelController extends GetxController{
+
+  //TODO: Dependency Injection**************************************************
+  NotificationController _notificationController = Get.find<NotificationController>();
+  //TODO: Dependency Injection**************************************************
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
@@ -47,6 +53,7 @@ class UserModelController extends GetxController{
   RxBool? _withinBoundary = false.obs;
   RxList? _applyCrewList = [].obs;
   RxMap? _totalScores = <String, dynamic>{}.obs;
+  RxString? _deviceToken =''.obs;
 
 
   String? get uid => _uid!.value;
@@ -84,6 +91,7 @@ class UserModelController extends GetxController{
   bool? get withinBoundary => _withinBoundary!.value;
   List? get applyCrewList => _applyCrewList;
   Map? get totalScores => _totalScores;
+  String? get deviceToken => _deviceToken!.value;
 
   @override
   void onInit()  async{
@@ -91,16 +99,16 @@ class UserModelController extends GetxController{
     String? loginUid = await FlutterSecureStorage().read(key: 'uid');
     if(loginUid != null) {
       getCurrentUser(loginUid).catchError((e) {
-        setNewField2();
-        getCurrentUser(loginUid).catchError((e){
-          setNewField();
-          getCurrentUser(loginUid);
+        setNewField3(token: _notificationController.deviceToken);
+        getCurrentUser(loginUid).catchError((e) {
+          setNewField2();
+          getCurrentUser(loginUid).catchError((e) {
+            setNewField();
+            getCurrentUser(loginUid);
+          });
         });
-      }).catchError(() {
-        print('로그인 전');
       });
     }else{
-      Get.to(()=>LoginPage());
     }
     super.onInit();
   }
@@ -148,6 +156,7 @@ class UserModelController extends GetxController{
           this._applyCrewList!.value = userModel.applyCrewList!;
           this._totalScores!.value = userModel.totalScores!;
           this._liveCrew!.value = userModel.liveCrew!;
+          this._deviceToken!.value = userModel.deviceToken!;
           try {
             this._fleaChatUidList!.value = userModel.fleaChatUidList!;
           }catch(e){};
@@ -269,6 +278,24 @@ class UserModelController extends GetxController{
       'uid': uid,
       'newInvited_friend': false,
       'newInvited_crew': false,
+    });
+    await getCurrentUser(auth.currentUser!.uid);
+  }
+
+  Future<void> setNewField3({required token}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'deviceToken': token,
+    });
+    await getCurrentUser(auth.currentUser!.uid);
+  }
+
+  Future<void> updateDeviceToken({required token}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'deviceToken': token,
     });
     await getCurrentUser(auth.currentUser!.uid);
   }

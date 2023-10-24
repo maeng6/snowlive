@@ -407,8 +407,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                       }
                                                     },
                                                       )
-                                                      : ExtendedImage.asset(
-                                                        'assets/imgs/profile/img_profile_default_.png',
+                                                      : ExtendedImage.network(
+                                                        'https://i.esdrop.com/d/f/yytYSNBROy/6rPYflzCCZ.png',
                                                         enableMemoryCache: true,
                                                         borderRadius: BorderRadius.circular(8),
                                                         fit: BoxFit.cover,
