@@ -19,7 +19,7 @@ class _LoadingPageState extends State<LoadingPage> {
 
     checkForUpdate();
 
-    LoginController _logInController = Get.put(LoginController());
+    LoginController _logInController = Get.find<LoginController>();
 
     // 로그인 관련 작업
     _logInController.loginAgain().then((_) {

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_notificationController.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:com.snowlive/screens/login/v_loginpage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 import '../screens/onboarding/v_FirstPage.dart';
+import '../screens/v_MainHome.dart';
 
 class LoginController extends GetxController {
   final auth = FirebaseAuth.instance;
@@ -25,8 +27,151 @@ class LoginController extends GetxController {
 //TODO: Dependency Injection**************************************************
   SeasonController _seasonController = Get.find<SeasonController>();
   UserModelController _userModelController = Get.find<UserModelController>();
+  NotificationController _notificationController = Get.find<NotificationController>();
   //TODO: Dependency Injection**************************************************
 
+  Future<void> getExistUserDoc({required uid}) async{
+
+    final userDoc = await FirebaseFirestore.instance
+        .collection('user')
+        .doc('$uid');
+    final userDocSnapshot = await userDoc.get();
+    if (userDocSnapshot.exists ) {
+      if(userDocSnapshot['deviceToken'] == _notificationController.deviceToken) {
+        CustomFullScreenDialog.cancelDialog();
+        await FlutterSecureStorage()
+            .write(key: 'uid', value: auth.currentUser!.uid);
+        Get.offAll(() => MainHome(uid: uid));
+      }else {
+        Get.dialog(
+          AlertDialog(
+            contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+            elevation: 0,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+            buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+            content: Text(
+              '기존 기기에서 로그아웃됩니다.',
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+            ),
+            actions: [
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      CustomFullScreenDialog.cancelDialog();
+                      Get.back();
+                    },
+                    child: const Text(
+                      '취소',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Color(0xFF949494),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      try {
+                        await _userModelController.updateDeviceToken(token: _notificationController.deviceToken);
+                        await FlutterSecureStorage().write(key: 'uid', value: auth.currentUser!.uid);
+                        CustomFullScreenDialog.cancelDialog();
+                        Get.offAll(() => MainHome(uid: uid));
+                      } catch (e) {
+                        Get.back();
+                      }
+                    },
+                    child: Text(
+                      '확인',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Color(0xFF3D83ED),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+                mainAxisAlignment: MainAxisAlignment.end,
+              ),
+            ],
+          ),
+          barrierDismissible: false,
+        );
+      }
+    } else {
+      print('Document does not exist on the database');
+      CustomFullScreenDialog.cancelDialog();
+      Get.offAll(() => FirstPage());
+    }
+  }
+
+  Future<void> deviceIdentificate({required uid}) async{
+
+    final userDoc = await FirebaseFirestore.instance
+        .collection('user')
+        .doc('$uid');
+    final userDocSnapshot = await userDoc.get();
+    if (userDocSnapshot.exists ) {
+      if(userDocSnapshot['deviceToken'] == _notificationController.deviceToken) {
+
+      }else {
+        Get.dialog(AlertDialog(
+          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+          content: Text(
+            '다른 기기에서 로그인하여, 로그아웃됩니다.',
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+          ),
+          actions: [
+            Center(
+              child: TextButton(
+                  onPressed: () async {
+                    try{
+                      await signOutFromAll;
+                      await FlutterSecureStorage().delete(key: 'uid');
+                      Get.offAll(() => LoginPage());
+                    }catch(e){
+                      Get.back();
+                    }
+                  },
+                  child: Text(
+                    '확인',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Color(0xFF3D83ED),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
+            )
+          ],
+        ),
+            barrierDismissible: false
+        );
+      }
+    } else {
+      print('Document does not exist on the database');
+      CustomFullScreenDialog.cancelDialog();
+      Get.offAll(() => FirstPage());
+    }
+  }
+
+  Future<void> signOutFromAll() async {
+    try {
+      // Firebase에서 로그아웃
+      await FirebaseAuth.instance.signOut();
+
+      // Google Sign-In에서 로그아웃
+      await GoogleSignIn().signOut();
+
+      // Facebook 로그아웃
+      await FacebookAuth.instance.logOut();
+
+    } catch (error) {
+      print("로그아웃 중 오류 발생: $error");
+    }
+  }
 
   Future<void> signInWithGoogle() async {
     GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
@@ -39,8 +184,11 @@ class LoginController extends GetxController {
           accessToken: googleSignInAuthentication.accessToken,
           idToken: googleSignInAuthentication.idToken);
       await auth.signInWithCredential(oAuthCredential);
-      CustomFullScreenDialog.cancelDialog();
-      Get.offAll(() => FirstPage());
+
+      User? currentUser = auth.currentUser;
+      if (currentUser != null) {
+        await getExistUserDoc(uid: currentUser.uid);
+      }
     }
   }
 
@@ -52,8 +200,10 @@ class LoginController extends GetxController {
       OAuthCredential facebookAuthCredential =
           FacebookAuthProvider.credential(loginResult.accessToken!.token);
       await auth.signInWithCredential(facebookAuthCredential);
-      CustomFullScreenDialog.cancelDialog();
-      Get.offAll(() => FirstPage());
+      User? currentUser = auth.currentUser;
+      if (currentUser != null) {
+        await getExistUserDoc(uid: currentUser.uid);
+      }
     }
   }
 
@@ -270,7 +420,7 @@ class LoginController extends GetxController {
     Get.offAll(()=>LoginPage());
   }
 
-  Future<void> createUserDoc(index) async {
+  Future<void> createUserDoc({required index,required token}) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
     final email = user.providerData[0].email;
@@ -312,6 +462,7 @@ class LoginController extends GetxController {
       'liveCrew':'',
       'applyCrewList':[],
       'totalScores':<String, dynamic>{},
+      'deviceToken': token,
     });
     await ref.collection('newAlarm')
         .doc(uid)

@@ -1211,8 +1211,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                 case LoadState.completed:
                                                                   return state.completedWidget;
                                                                 case LoadState.failed:
-                                                                  return ExtendedImage.asset(
-                                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                                  return ExtendedImage.network(
+                                                                    'https://i.esdrop.com/d/f/yytYSNBROy/NIlGn0N46O.png',
                                                                     shape: BoxShape.circle,
                                                                     borderRadius: BorderRadius.circular(8),
                                                                     width: 110,
@@ -1234,8 +1234,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       child: Container(
                                                         width: 110,
                                                         height: 110,
-                                                        child: ExtendedImage.asset(
-                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                        child: ExtendedImage.network(
+                                                          'https://i.esdrop.com/d/f/yytYSNBROy/NIlGn0N46O.png',
                                                           enableMemoryCache: true,
                                                           shape: BoxShape.circle,
                                                           borderRadius: BorderRadius.circular(8),

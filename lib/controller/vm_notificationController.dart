@@ -4,6 +4,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class NotificationController extends GetxController {
   // 메시징 서비스 기본 객체 생성
   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  RxString? _deviceToken = ''.obs;
+
+  String? get deviceToken => _deviceToken!.value;
 
   @override
   void onInit() async{
@@ -31,6 +34,7 @@ class NotificationController extends GetxController {
   /// //ㅇㅇ
   void _getToken() async{
     String? token= await messaging.getToken();
+    this._deviceToken!.value = token!;
     try{
       print(token);
     } catch(e) {}
