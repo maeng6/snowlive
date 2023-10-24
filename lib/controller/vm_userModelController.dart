@@ -54,6 +54,7 @@ class UserModelController extends GetxController{
   RxList? _applyCrewList = [].obs;
   RxMap? _totalScores = <String, dynamic>{}.obs;
   RxString? _deviceToken =''.obs;
+  RxList? _liveTalkHideList=[].obs;
 
 
   String? get uid => _uid!.value;
@@ -92,6 +93,7 @@ class UserModelController extends GetxController{
   List? get applyCrewList => _applyCrewList;
   Map? get totalScores => _totalScores;
   String? get deviceToken => _deviceToken!.value;
+  List? get liveTalkHideList =>_liveTalkHideList;
 
   @override
   void onInit()  async{
@@ -157,6 +159,7 @@ class UserModelController extends GetxController{
           this._totalScores!.value = userModel.totalScores!;
           this._liveCrew!.value = userModel.liveCrew!;
           this._deviceToken!.value = userModel.deviceToken!;
+          this._liveTalkHideList!.value = userModel.liveTalkHideList!;
           try {
             this._fleaChatUidList!.value = userModel.fleaChatUidList!;
           }catch(e){};
@@ -287,6 +290,7 @@ class UserModelController extends GetxController{
     final uid = user!.uid;
     await ref.collection('user').doc(uid).update({
       'deviceToken': token,
+      'liveTalkHideList':[],
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -454,6 +458,19 @@ class UserModelController extends GetxController{
     });
     await ref.collection('user').doc(uid).update({
       'whoRepoMe': FieldValue.arrayUnion([userMe])
+    });
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('user').doc(userMe);
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    List repoUidList = documentSnapshot.get('repoUidList');
+    this._repoUidList!.value = repoUidList;
+  }
+
+  Future<void> updateHideList(uid) async {
+    final  userMe = auth.currentUser!.uid;
+    await ref.collection('user').doc(userMe).update({
+      'liveTalkHideList': FieldValue.arrayUnion([uid])
     });
     DocumentReference<Map<String, dynamic>> documentReference =
     ref.collection('user').doc(userMe);

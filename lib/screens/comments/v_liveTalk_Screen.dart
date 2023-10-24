@@ -944,7 +944,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                       ),
                                                     ),
                                                   )
-                                                      : (_userModelController.repoUidList!.contains(chatDocs[index].get('uid')))
+                                                      : ( (_userModelController.repoUidList!.contains(chatDocs[index].get('uid')) )
+                                                  || _userModelController.liveTalkHideList!.contains('${chatDocs[index].get('uid')}${chatDocs[index].get('commentCount')}'))
                                                       ? Container(
                                                     padding: EdgeInsets.symmetric(
                                                         horizontal: 16, vertical: 14),
@@ -1079,8 +1080,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                         if (chatDocs[index]['profileImageUrl'] == "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
                                                                           GestureDetector(
                                                                             onTap: () async {},
-                                                                            child: ExtendedImage.asset(
-                                                                              'assets/imgs/icons/img_profile_default_anony_circle.png',
+                                                                            child: ExtendedImage.network(
+                                                                              'https://i.esdrop.com/d/f/yytYSNBROy/JgMO4cLHTW.png',
                                                                               shape: BoxShape.circle,
                                                                               borderRadius: BorderRadius.circular(20),
                                                                               width: 24,
@@ -1163,7 +1164,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                     height:
                                                                                     (_userModelController.displayName == 'SNOWLIVE')
                                                                                         ? 200
-                                                                                        : (chatDocs[index]['displayName'] == '익명') ? 90 : 140,
+                                                                                        : 140,
                                                                                     child: Padding(
                                                                                       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
                                                                                       child: Column(
@@ -1284,6 +1285,76 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                                   onPressed: () {
                                                                                                                     var repoUid = chatDocs[index].get('uid');
                                                                                                                     _userModelController.updateRepoUid(repoUid);
+                                                                                                                    Navigator.pop(context);
+                                                                                                                    Navigator.pop(context);
+                                                                                                                  },
+                                                                                                                  child: Text('확인',
+                                                                                                                    style: TextStyle(
+                                                                                                                      fontSize: 15,
+                                                                                                                      color: Color(0xFF3D83ED),
+                                                                                                                      fontWeight: FontWeight.bold,
+                                                                                                                    ),
+                                                                                                                  ))
+                                                                                                            ],
+                                                                                                            mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                          )
+                                                                                                        ],
+                                                                                                      ));
+                                                                                                },
+                                                                                                shape: RoundedRectangleBorder(
+                                                                                                    borderRadius: BorderRadius.circular(10)),
+                                                                                              ),
+                                                                                            ),
+                                                                                          if(chatDocs[index]['displayName'] == '익명')
+                                                                                            GestureDetector(
+                                                                                              child: ListTile(
+                                                                                                contentPadding: EdgeInsets.zero,
+                                                                                                title: Center(
+                                                                                                  child: Text(
+                                                                                                    '이 글 숨기기',
+                                                                                                    style: TextStyle(
+                                                                                                      fontSize: 15,
+                                                                                                      fontWeight: FontWeight
+                                                                                                          .bold,
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ),
+                                                                                                //selected: _isSelected[index]!,
+                                                                                                onTap: () async {
+                                                                                                  Get.dialog(
+                                                                                                      AlertDialog(
+                                                                                                        contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                        elevation: 0,
+                                                                                                        shape: RoundedRectangleBorder(
+                                                                                                            borderRadius: BorderRadius.circular(10.0)),
+                                                                                                        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                        content: Text(
+                                                                                                          '이 글을 숨기시겠습니까?\n이 동작은 취소할 수 없습니다.',
+                                                                                                          style: TextStyle(
+                                                                                                              fontWeight: FontWeight.w600,
+                                                                                                              fontSize: 15),
+                                                                                                        ),
+                                                                                                        actions: [
+                                                                                                          Row(
+                                                                                                            children: [
+                                                                                                              TextButton(
+                                                                                                                  onPressed: () {
+                                                                                                                    Navigator.pop(context);
+                                                                                                                  },
+                                                                                                                  child: Text(
+                                                                                                                    '취소',
+                                                                                                                    style: TextStyle(
+                                                                                                                      fontSize: 15,
+                                                                                                                      color: Color(0xFF949494),
+                                                                                                                      fontWeight: FontWeight.bold,
+                                                                                                                    ),
+                                                                                                                  )),
+                                                                                                              TextButton(
+                                                                                                                  onPressed: () async{
+                                                                                                                    var repoUid = chatDocs[index].get('uid');
+                                                                                                                    var commentCount = chatDocs[index].get('commentCount');
+                                                                                                                    await _userModelController.updateHideList('${repoUid}${commentCount}');
+                                                                                                                    await _userModelController.getCurrentUser(_userModelController.uid);
                                                                                                                     Navigator.pop(context);
                                                                                                                     Navigator.pop(context);
                                                                                                                   },

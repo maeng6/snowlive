@@ -35,7 +35,8 @@ class UserModel {
     this.liveCrew,
     this.applyCrewList,
     this.totalScores,
-    this.deviceToken
+    this.deviceToken,
+    this.liveTalkHideList
   });
 
   final auth = FirebaseAuth.instance;
@@ -74,6 +75,7 @@ class UserModel {
   List? applyCrewList;
   Map? totalScores;
   String? deviceToken;
+  List? liveTalkHideList;
 
   UserModel.fromJson(dynamic json, this.reference) {
       uid = json['uid'];
@@ -109,6 +111,7 @@ class UserModel {
       applyCrewList = json['applyCrewList'];
       totalScores = json['totalScores'];
       deviceToken = json['deviceToken'];
+      liveTalkHideList = json['liveTalkHideList'];
 
 
   }
