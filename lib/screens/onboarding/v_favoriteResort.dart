@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:com.snowlive/controller/vm_resortModelController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/v_MainHome.dart';
+import '../../controller/vm_allUserDocsController.dart';
 import '../../controller/vm_bottomTabBarController.dart';
 import '../../controller/vm_loginController.dart';
 import '../../controller/vm_notificationController.dart';
@@ -34,6 +35,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
   LoginController _loginController = Get.find<LoginController>();
   BottomTabBarController _bottomTabBarController = Get.find<BottomTabBarController>();
   NotificationController _notificationController = Get.find<NotificationController>();
+  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   //TODO: Dependency Injection********************************************
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -179,6 +181,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
                       print('즐겨찾는 리조트 업뎃완료');
                       await resortModelController.getSelectedResort(
                           userModelController.favoriteResort!);
+                      await _allUserDocsController.getAllUserDocs();
                       CustomFullScreenDialog.cancelDialog();
                       Get.offAll(() => MainHome(uid: userModelController.uid));
 
