@@ -964,7 +964,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                   if(rankingDocs[0]['tier'] == rankingTier.tierName)
                                                     return Transform.translate(
                                                       offset: Offset(6, 2),
-                                                      child: ExtendedImage.asset(
+                                                      child: ExtendedImage.network(
                                                         rankingTier.badgeAsset,
                                                         enableMemoryCache: true,
                                                         fit: BoxFit.cover,
