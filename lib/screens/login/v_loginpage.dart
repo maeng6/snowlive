@@ -126,17 +126,17 @@ class LoginPage extends StatelessWidget {
                     SizedBox(
                       height: 40,
                     ),
-                    GestureDetector(
-                      onTap: (){
-                        Get.to(()=>EmailLoginPage());
-                      },
-                      child: Text('이메일로 로그인하기',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF949494),
-                          fontWeight: FontWeight.normal,
-                        ),),
-                    ),
+                    // GestureDetector(
+                    //   onTap: (){
+                    //     Get.to(()=>EmailLoginPage());
+                    //   },
+                    //   child: Text('이메일로 로그인하기',
+                    //     style: TextStyle(
+                    //       fontSize: 14,
+                    //       color: Color(0xFF949494),
+                    //       fontWeight: FontWeight.normal,
+                    //     ),),
+                    // ),
                     SizedBox(
                       height: (Platform.isIOS)
                           ? 64

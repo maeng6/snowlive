@@ -463,6 +463,7 @@ class LoginController extends GetxController {
       'applyCrewList':[],
       'totalScores':<String, dynamic>{},
       'deviceToken': token,
+      'liveTalkHideList':[]
     });
     await ref.collection('newAlarm')
         .doc(uid)

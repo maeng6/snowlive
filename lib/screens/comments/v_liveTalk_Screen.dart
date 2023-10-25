@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:com.snowlive/controller/vm_resortModelController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -764,7 +765,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                   final chatDocs = snapshot.data!.docs;
                                   return ListView.builder(
                                     controller: _scrollController,
-                                    reverse: true,
+                                    reverse: false,
                                     itemCount: chatDocs.length,
                                     itemBuilder: (context, index) {
 
@@ -782,7 +783,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                       return Padding(
                                         padding:
                                         const EdgeInsets.only(
-                                            left: 12, right: 12, bottom: 10),
+                                           top:12, left: 12, right: 12),
                                         child: Obx(() =>
                                             Container(
                                               child: Column(
@@ -1034,8 +1035,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                   case LoadState.completed:
                                                                                     return state.completedWidget;
                                                                                   case LoadState.failed:
-                                                                                    return ExtendedImage.asset(
-                                                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                    return ExtendedImage.network(
+                                                                                      '${profileImgUrlList[0].default_round}',
                                                                                       shape: BoxShape.circle,
                                                                                       borderRadius: BorderRadius.circular(20),
                                                                                       width: 24,
@@ -1069,7 +1070,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               }
                                                                             },
                                                                             child: ExtendedImage.network(
-                                                                              'https://i.esdrop.com/d/f/yytYSNBROy/NIlGn0N46O.png',
+                                                                              '${profileImgUrlList[0].default_round}',
                                                                               shape: BoxShape.circle,
                                                                               borderRadius: BorderRadius.circular(20),
                                                                               width: 24,
@@ -1081,7 +1082,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                           GestureDetector(
                                                                             onTap: () async {},
                                                                             child: ExtendedImage.network(
-                                                                              'https://i.esdrop.com/d/f/yytYSNBROy/JgMO4cLHTW.png',
+                                                                              '${profileImgUrlList[0].anony_round}',
                                                                               shape: BoxShape.circle,
                                                                               borderRadius: BorderRadius.circular(20),
                                                                               width: 24,
@@ -1109,8 +1110,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                   case LoadState.completed:
                                                                                     return state.completedWidget;
                                                                                   case LoadState.failed:
-                                                                                    return ExtendedImage.asset(
-                                                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                    return ExtendedImage.network(
+                                                                                      '${profileImgUrlList[0].default_round}',
                                                                                       shape: BoxShape.circle,
                                                                                       borderRadius: BorderRadius.circular(20),
                                                                                       width: 24,
@@ -1146,7 +1147,17 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                       'assets/imgs/icons/icon_snowlive_operator.png',
                                                                                       scale: 5.5,
                                                                                     ),
-                                                                                  )
+                                                                                  ),
+                                                                                SizedBox(
+                                                                                    width: 8),
+                                                                                Text(
+                                                                                  chatDocs[index].get('resortNickname'),
+                                                                                  style: TextStyle(
+                                                                                      fontWeight: FontWeight.w300,
+                                                                                      fontSize: 12,
+                                                                                      color: Color(0xFF949494)),
+                                                                                ),
+
                                                                               ],
                                                                             )
                                                                         ),
@@ -1654,24 +1665,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                   SizedBox(
                                                                     height: 4,
                                                                   ),
-                                                                  Row(
-                                                                    children: [
-                                                                      Text(
-                                                                        chatDocs[index].get('resortNickname'),
-                                                                        style: TextStyle(
-                                                                            fontWeight: FontWeight.w300,
-                                                                            fontSize: 12,
-                                                                            color: Color(0xFF949494)),
-                                                                      ),
-                                                                      SizedBox(
-                                                                          width: 1),
-                                                                      Text(' $_time',
-                                                                        style: TextStyle(
-                                                                            fontSize: 12,
-                                                                            color: Color(0xFF949494),
-                                                                            fontWeight: FontWeight.w300),
-                                                                      ),
-                                                                    ],
+                                                                  Text('$_time',
+                                                                    style: TextStyle(
+                                                                        fontSize: 12,
+                                                                        color: Color(0xFF949494),
+                                                                        fontWeight: FontWeight.w300),
                                                                   ),
                                                                   SizedBox(
                                                                     height: 16,
@@ -2402,7 +2400,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Icon(Icons.arrow_downward_rounded,
+                            Icon(Icons.arrow_upward_rounded,
                                 color: Color(0xFFffffff),
                                 size: 16),
                             Padding(
