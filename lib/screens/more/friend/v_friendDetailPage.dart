@@ -2260,11 +2260,29 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                                       shape: RoundedRectangleBorder(
                                                                                                                           borderRadius: BorderRadius.circular(10.0)),
                                                                                                                       buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                                      content: Text(
-                                                                                                                        '이 회원의 게시물을 모두 숨길까요?\n이 동작은 취소할 수 없습니다.',
-                                                                                                                        style: TextStyle(
-                                                                                                                            fontWeight: FontWeight.w600,
-                                                                                                                            fontSize: 15),
+                                                                                                                      content:  Container(
+                                                                                                                        height: _size.width*0.15,
+                                                                                                                        child: Column(
+                                                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                          children: [
+                                                                                                                            Text(
+                                                                                                                              '이 회원의 게시물을 모두 숨길까요?',
+                                                                                                                              style: TextStyle(
+                                                                                                                                  fontWeight: FontWeight.w600,
+                                                                                                                                  fontSize: 15),
+                                                                                                                            ),
+                                                                                                                            SizedBox(
+                                                                                                                              height: 10,
+                                                                                                                            ),
+                                                                                                                            Text(
+                                                                                                                              '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서\n하실 수 있습니다.',
+                                                                                                                              style: TextStyle(
+                                                                                                                                  fontWeight: FontWeight.w600,
+                                                                                                                                  fontSize: 12,
+                                                                                                                                  color: Color(0xFF555555)),
+                                                                                                                            ),
+                                                                                                                          ],
+                                                                                                                        ),
                                                                                                                       ),
                                                                                                                       actions: [
                                                                                                                         Row(
