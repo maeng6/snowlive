@@ -727,7 +727,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                                                                               buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                                                                               content:  Container(
-                                                                                height: _size.width*0.15,
+                                                                                height: _size.width*0.17,
                                                                                 child: Column(
                                                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                                                   children: [
