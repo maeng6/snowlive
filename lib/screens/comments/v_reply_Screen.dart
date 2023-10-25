@@ -14,6 +14,7 @@ import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 import '../../controller/vm_allUserDocsController.dart';
+import '../../data/imgaUrls/Data_url_image.dart';
 import '../more/friend/v_snowliveDetailPage.dart';
 
 class ReplyScreen extends StatefulWidget {
@@ -459,8 +460,8 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                     case LoadState.completed:
                                                                       return state.completedWidget;
                                                                     case LoadState.failed:
-                                                                      return ExtendedImage.asset(
-                                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                                      return ExtendedImage.network(
+                                                                        '${profileImgUrlList[0].default_round}',
                                                                         shape: BoxShape.circle,
                                                                         borderRadius: BorderRadius.circular(20),
                                                                         width: 24,
@@ -493,8 +494,8 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                   Get.to(()=>NoUserScreen());
                                                                 }
                                                               },
-                                                              child: ExtendedImage.asset(
-                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                              child: ExtendedImage.network(
+                                                                '${profileImgUrlList[0].default_round}',
                                                                 shape: BoxShape.circle,
                                                                 borderRadius: BorderRadius.circular(20),
                                                                 width: 26,
@@ -508,8 +509,8 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                             padding: EdgeInsets.only(top:4),
                                                             child: GestureDetector(
                                                               onTap: () async{},
-                                                              child: ExtendedImage.asset(
-                                                                'assets/imgs/icons/img_profile_default_anony_circle.png',
+                                                              child: ExtendedImage.network(
+                                                                '${profileImgUrlList[0].anony_round}',
                                                                 shape: BoxShape.circle,
                                                                 borderRadius: BorderRadius.circular(20),
                                                                 width: 26,
@@ -539,8 +540,8 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                     case LoadState.completed:
                                                                       return state.completedWidget;
                                                                     case LoadState.failed:
-                                                                      return ExtendedImage.asset(
-                                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                                      return ExtendedImage.network(
+                                                                        '${profileImgUrlList[0].default_round}',
                                                                         shape: BoxShape.circle,
                                                                         borderRadius: BorderRadius.circular(20),
                                                                         width: 24,

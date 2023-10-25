@@ -17,6 +17,7 @@ import 'package:com.snowlive/screens/v_MainHome.dart';
 import '../../../controller/vm_allUserDocsController.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
 import '../../../controller/vm_userModelController.dart';
+import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_crewLogoModel.dart';
 import '../../../model/m_rankingTierModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
@@ -1508,7 +1509,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                               children: [
                                                                                 Transform.translate(
                                                                                   offset: Offset(-10,-10),
-                                                                                  child: ExtendedImage.asset(
+                                                                                  child: ExtendedImage.network(
                                                                                     rankingTier.badgeAsset,
                                                                                     enableMemoryCache: true,
                                                                                     fit: BoxFit.cover,
@@ -1998,8 +1999,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                             case LoadState.completed:
                                                                               return state.completedWidget;
                                                                             case LoadState.failed:
-                                                                              return ExtendedImage.asset(
-                                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                              return ExtendedImage.network(
+                                                                                '${profileImgUrlList[0].default_round}',
                                                                                 shape: BoxShape.circle,
                                                                                 borderRadius: BorderRadius.circular(20),
                                                                                 width: 40,
@@ -2019,8 +2020,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                         setState(() {edit=false;});
                                                                         Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
                                                                       },
-                                                                      child: ExtendedImage.asset(
-                                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                                      child: ExtendedImage.network(
+                                                                        '${profileImgUrlList[0].default_round}',
                                                                         shape: BoxShape.circle,
                                                                         borderRadius:
                                                                         BorderRadius.circular(20),
