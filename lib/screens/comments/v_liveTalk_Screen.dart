@@ -95,7 +95,17 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
         }
       });
     });
+    _allUserDocsController.startListening().then((result){
+      setState(() {});
+    });
   }
+
+  @override
+  void dispose() {
+    _allUserDocsController.stopListening();
+    super.dispose();
+  }
+
 
   _updateMethod() async {
     await _userModelController.updateRepoUidList();

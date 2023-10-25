@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+
+StreamSubscription? _subscription;
 
 class AllUserDocsController extends GetxController {
   RxList<Map<String, dynamic>> _allUserDocs = <Map<String, dynamic>>[].obs;
@@ -12,6 +16,17 @@ class AllUserDocsController extends GetxController {
         .where((data) => data != null)
         .map((data) => data! as Map<String, dynamic>)
         .toList();
+  }
+
+  Future<void> startListening() async {
+    _subscription = await FirebaseFirestore.instance.collection('user').snapshots().listen((snapshot) async {
+      await getAllUserDocs();
+    });
+  }
+
+
+  void stopListening() {
+    _subscription?.cancel();
   }
 
   String findProfileUrl(String chatDocUid, List<Map<String, dynamic>> userDocs) {
