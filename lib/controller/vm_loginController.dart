@@ -44,56 +44,59 @@ class LoginController extends GetxController {
         Get.offAll(() => MainHome(uid: uid));
       }else {
         Get.dialog(
-          AlertDialog(
-            contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-            elevation: 0,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-            buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-            content: Text(
-              '기존 기기에서 로그아웃됩니다.',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-            ),
-            actions: [
-              Row(
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      CustomFullScreenDialog.cancelDialog();
-                      Get.back();
-                    },
-                    child: const Text(
-                      '취소',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Color(0xFF949494),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      try {
-                        await _userModelController.updateDeviceToken(token: _notificationController.deviceToken);
-                        await FlutterSecureStorage().write(key: 'uid', value: auth.currentUser!.uid);
-                        CustomFullScreenDialog.cancelDialog();
-                        Get.offAll(() => MainHome(uid: uid));
-                      } catch (e) {
-                        Get.back();
-                      }
-                    },
-                    child: Text(
-                      '확인',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Color(0xFF3D83ED),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-                mainAxisAlignment: MainAxisAlignment.end,
+          WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+              elevation: 0,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              content: Text(
+                '기존 기기에서 로그아웃됩니다.',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
               ),
-            ],
+              actions: [
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        CustomFullScreenDialog.cancelDialog();
+                        Get.back();
+                      },
+                      child: const Text(
+                        '취소',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Color(0xFF949494),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        try {
+                          await _userModelController.updateDeviceToken(token: _notificationController.deviceToken);
+                          await FlutterSecureStorage().write(key: 'uid', value: auth.currentUser!.uid);
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.offAll(() => MainHome(uid: uid));
+                        } catch (e) {
+                          Get.back();
+                        }
+                      },
+                      child: Text(
+                        '확인',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Color(0xFF3D83ED),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.end,
+                ),
+              ],
+            ),
           ),
           barrierDismissible: false,
         );
