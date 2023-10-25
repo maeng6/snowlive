@@ -215,7 +215,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                       return state.completedWidget;
                                                     case LoadState.failed:
                                                       return ExtendedImage.asset(
-                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                        '${profileImgUrlList[0].default_round}',
                                                         shape: BoxShape.circle,
                                                         borderRadius: BorderRadius.circular(20),
                                                         width: 24,
@@ -242,7 +242,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                 }
                                               },
                                               child: ExtendedImage.asset(
-                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                '${profileImgUrlList[0].default_round}',
                                                 shape: BoxShape.circle,
                                                 borderRadius:
                                                 BorderRadius.circular(
@@ -259,7 +259,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                             child: GestureDetector(
                                               onTap: () {},
                                               child: ExtendedImage.asset(
-                                                'assets/imgs/icons/img_profile_default_anony_circle.png',
+                                                '${profileImgUrlList[0].anony_round}',
                                                 shape: BoxShape.circle,
                                                 borderRadius:
                                                 BorderRadius.circular(
