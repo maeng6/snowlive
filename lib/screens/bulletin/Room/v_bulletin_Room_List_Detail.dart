@@ -218,7 +218,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                           horizontal: 20,
                                                           vertical: 0),
                                                   content:  Container(
-                                                    height: _size.width*0.15,
+                                                    height: _size.width*0.17,
                                                     child: Column(
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
@@ -1134,7 +1134,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                                                                                                         buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                                                                                                         content:  Container(
-                                                                                                          height: _size.width*0.15,
+                                                                                                          height: _size.width*0.17,
                                                                                                           child: Column(
                                                                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                             children: [

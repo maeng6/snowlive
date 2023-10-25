@@ -213,7 +213,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                     horizontal: 20,
                                                     vertical: 0),
                                                 content:  Container(
-                                                  height: _size.width*0.15,
+                                                  height: _size.width*0.17,
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
