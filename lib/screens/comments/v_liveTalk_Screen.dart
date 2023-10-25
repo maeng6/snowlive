@@ -945,7 +945,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                       ),
                                                     ),
                                                   )
-                                                      : ( (_userModelController.repoUidList!.contains(chatDocs[index].get('uid')) )
+                                                      : ( (_userModelController.repoUidList!.contains(chatDocs[index].get('uid')) && chatDocs[index].get('displayName') !='익명' )
                                                   || _userModelController.liveTalkHideList!.contains('${chatDocs[index].get('uid')}${chatDocs[index].get('commentCount')}'))
                                                       ? Container(
                                                     padding: EdgeInsets.symmetric(

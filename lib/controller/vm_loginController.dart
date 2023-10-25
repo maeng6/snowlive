@@ -115,37 +115,40 @@ class LoginController extends GetxController {
       if(userDocSnapshot['deviceToken'] == _notificationController.deviceToken) {
 
       }else {
-        Get.dialog(AlertDialog(
-          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-          elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-          buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-          content: Text(
-            '다른 기기에서 로그인하여, 로그아웃됩니다.',
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+        Get.dialog(WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+            elevation: 0,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+            buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+            content: Text(
+              '다른 기기에서 로그인하여, 로그아웃됩니다.',
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+            ),
+            actions: [
+              Center(
+                child: TextButton(
+                    onPressed: () async {
+                      try{
+                        await signOutFromAll;
+                        await FlutterSecureStorage().delete(key: 'uid');
+                        Get.offAll(() => LoginPage());
+                      }catch(e){
+                        Get.back();
+                      }
+                    },
+                    child: Text(
+                      '확인',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Color(0xFF3D83ED),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
+              )
+            ],
           ),
-          actions: [
-            Center(
-              child: TextButton(
-                  onPressed: () async {
-                    try{
-                      await signOutFromAll;
-                      await FlutterSecureStorage().delete(key: 'uid');
-                      Get.offAll(() => LoginPage());
-                    }catch(e){
-                      Get.back();
-                    }
-                  },
-                  child: Text(
-                    '확인',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Color(0xFF3D83ED),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
-            )
-          ],
         ),
             barrierDismissible: false
         );
