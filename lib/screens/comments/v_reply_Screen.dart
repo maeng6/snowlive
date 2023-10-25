@@ -71,7 +71,17 @@ class _ReplyScreenState extends State<ReplyScreen> {
     super.initState();
     _seasonController.getLiveTalkReplyLimit();
     _replyStream = replyNewStream();
+    _allUserDocsController.startListening().then((result){
+      setState(() {});
+    });
   }
+
+  @override
+  void dispose() {
+    _allUserDocsController.stopListening();
+    super.dispose();
+  }
+
 
   _updateMethod() async {
     await _userModelController.updateRepoUidList();
