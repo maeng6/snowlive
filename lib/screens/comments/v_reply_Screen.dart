@@ -398,8 +398,8 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                               crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                               children: [
-                                                (_userModelController.repoUidList!.contains(
-                                                    replyDocs[index].get('uid')))
+                                                ( ( _userModelController.repoUidList!.contains(replyDocs[index].get('uid'))&& replyDocs[index].get('displayName') !='익명' )
+                                                    || _userModelController.liveTalkHideList!.contains('${replyDocs[index].get('uid')}${replyDocs[index].get('commentCount')}'))
                                                     ? Center(
                                                   child: Padding(
                                                     padding:
@@ -638,8 +638,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                           builder: (context) {
                                                             return SafeArea(
                                                               child: Container(
-                                                                height:
-                                                                (replyDocs[index]['displayName'] == '익명') ? 90 : 140,
+                                                                height: 140,
                                                                 child:
                                                                 Padding(
                                                                   padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
@@ -707,7 +706,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                                         ),
                                                                       ),
-                                                                      if(displayName != '익명')
+                                                                      if(replyDocs[index]['displayName'] != '익명')
                                                                       GestureDetector(
                                                                         child: ListTile(
                                                                           contentPadding: EdgeInsets.zero,
@@ -769,7 +768,77 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                           },
                                                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                                         ),
-                                                                      )
+                                                                      ),
+                                                                      if(replyDocs[index]['displayName'] == '익명')
+                                                                        GestureDetector(
+                                                                          child: ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Center(
+                                                                              child: Text(
+                                                                                '이 글 숨기기',
+                                                                                style: TextStyle(
+                                                                                  fontSize: 15,
+                                                                                  fontWeight: FontWeight
+                                                                                      .bold,
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            //selected: _isSelected[index]!,
+                                                                            onTap: () async {
+                                                                              Get.dialog(
+                                                                                  AlertDialog(
+                                                                                    contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                    elevation: 0,
+                                                                                    shape: RoundedRectangleBorder(
+                                                                                        borderRadius: BorderRadius.circular(10.0)),
+                                                                                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                    content: Text(
+                                                                                      '이 글을 숨기시겠습니까?\n이 동작은 취소할 수 없습니다.',
+                                                                                      style: TextStyle(
+                                                                                          fontWeight: FontWeight.w600,
+                                                                                          fontSize: 15),
+                                                                                    ),
+                                                                                    actions: [
+                                                                                      Row(
+                                                                                        children: [
+                                                                                          TextButton(
+                                                                                              onPressed: () {
+                                                                                                Navigator.pop(context);
+                                                                                              },
+                                                                                              child: Text(
+                                                                                                '취소',
+                                                                                                style: TextStyle(
+                                                                                                  fontSize: 15,
+                                                                                                  color: Color(0xFF949494),
+                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                ),
+                                                                                              )),
+                                                                                          TextButton(
+                                                                                              onPressed: () async{
+                                                                                                var repoUid = replyDocs[index].get('uid');
+                                                                                                var commentCount = replyDocs[index].get('commentCount');
+                                                                                                await _userModelController.updateHideList('${repoUid}${commentCount}');
+                                                                                                await _userModelController.getCurrentUser(_userModelController.uid);
+                                                                                                Navigator.pop(context);
+                                                                                                Navigator.pop(context);
+                                                                                              },
+                                                                                              child: Text('확인',
+                                                                                                style: TextStyle(
+                                                                                                  fontSize: 15,
+                                                                                                  color: Color(0xFF3D83ED),
+                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                ),
+                                                                                              ))
+                                                                                        ],
+                                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                                      )
+                                                                                    ],
+                                                                                  ));
+                                                                            },
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.circular(10)),
+                                                                          ),
+                                                                        ),
                                                                     ],
                                                                   ),
                                                                 ),
