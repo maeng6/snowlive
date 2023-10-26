@@ -13,6 +13,7 @@ import 'package:com.snowlive/screens/v_MainHome.dart';
 import '../../controller/vm_allUserDocsController.dart';
 import '../../controller/vm_bottomTabBarController.dart';
 import '../../controller/vm_loginController.dart';
+import '../../controller/vm_myRankingController.dart';
 import '../../controller/vm_notificationController.dart';
 import '../../model/m_resortModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
@@ -36,6 +37,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
   BottomTabBarController _bottomTabBarController = Get.find<BottomTabBarController>();
   NotificationController _notificationController = Get.find<NotificationController>();
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
+  MyRankingController _myRankingController = Get.find<MyRankingController>();
   //TODO: Dependency Injection********************************************
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -182,6 +184,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
                       await resortModelController.getSelectedResort(
                           userModelController.favoriteResort!);
                       await _allUserDocsController.getAllUserDocs();
+                      _myRankingController.resetMyRankingData();
                       CustomFullScreenDialog.cancelDialog();
                       Get.offAll(() => MainHome(uid: userModelController.uid));
 
