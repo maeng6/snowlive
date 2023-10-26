@@ -978,7 +978,7 @@ class LiveMapController extends GetxController {
     return crewRankingMap;
   }
 
-  String calculateMaxValue(Map<String, dynamic>? value) {
+  String calculateMaxValue(Map<dynamic, dynamic>? value) {
     if (value == null || value.isEmpty) {
       return ''; // 데이터가 없을 경우 빈 문자열 반환
     }
@@ -990,12 +990,12 @@ class LiveMapController extends GetxController {
     return calculateMaxValue;
   }
 
-  List<Map<String, dynamic>> calculateBarDataSlopeScore(Map<String, dynamic>? slopeScoresData) {
+  List<Map<dynamic, dynamic>> calculateBarDataSlopeScore(Map<dynamic, dynamic>? slopeScoresData) {
     if (slopeScoresData == null || slopeScoresData.isEmpty) {
       return []; // 데이터가 없을 경우 빈 리스트 반환
     }
 
-    List<MapEntry<String, dynamic>> sortedEntries = slopeScoresData.entries.toList()
+    List<MapEntry<dynamic, dynamic>> sortedEntries = slopeScoresData.entries.toList()
       ..sort((a, b) {
         int scoreA = slopeScoresData[a.key] ?? 0;
         int scoreB = slopeScoresData[b.key] ?? 0;
