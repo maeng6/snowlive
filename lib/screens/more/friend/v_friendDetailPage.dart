@@ -562,13 +562,24 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                             crossAxisAlignment: CrossAxisAlignment.center,
                                                             children: [
                                                               (edit ==true)
-                                                                  ? Text(_initStateMsg, style: TextStyle(
-                                                                  fontSize: 14,
-                                                                  color: Color(0xFF111111)),)
-                                                                  : Text('${friendDocs[0]['stateMsg']}', style: TextStyle(
-                                                                  fontSize: 14,
-                                                                  color: Color(0xFF111111)),
+                                                                  ? Container(
+                                                                    child: Text(_initStateMsg, style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    color: Color(0xFF111111)),
+                                                                      maxLines: 2,
+                                                                      overflow: TextOverflow.ellipsis,
                                                               ),
+                                                                width: _size.width*0.5,
+                                                                  )
+                                                                  : Container(
+                                                                    child: Text('${friendDocs[0]['stateMsg']}', style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    color: Color(0xFF111111)),
+                                                                maxLines: 2,
+                                                                overflow: TextOverflow.ellipsis,
+                                                              ),
+                                                                  width: _size.width*0.5
+                                                                  ),
                                                               if(edit == true)
                                                                 GestureDetector(
                                                                     onTap: () {

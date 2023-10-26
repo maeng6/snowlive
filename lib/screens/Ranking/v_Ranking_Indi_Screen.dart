@@ -150,428 +150,66 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                 child: SafeArea(
                   top: false,
                   bottom: true,
-                  child: RefreshIndicator(
-                    strokeWidth: 2,
-                    onRefresh:  _refreshController.onRefresh_ranking_indi,
-                    child: Stack(
-                      children: [
-                        SingleChildScrollView(
-                          physics: AlwaysScrollableScrollPhysics(),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text('${_resortModelController.resortName} 상위 TOP 3 유저',
-                                              style: TextStyle(
-                                                  color: Color(0xFF949494),
-                                                  fontSize: 12
-                                              ),
+                  child: Stack(
+                    children: [
+                      SingleChildScrollView(
+                        physics: AlwaysScrollableScrollPhysics(),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('${_resortModelController.resortName} 상위 TOP 3 유저',
+                                            style: TextStyle(
+                                                color: Color(0xFF949494),
+                                                fontSize: 12
                                             ),
-                                            SizedBox(height: 12),
-                                            Row(
-                                              children: [
-                                                if(documents.length > 0)
-                                                  StreamBuilder(
-                                                    stream: FirebaseFirestore.instance
-                                                        .collection('user')
-                                                        .where('uid', isEqualTo: documents[0].get('uid'))
-                                                        .snapshots(),
-                                                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                      if (!snapshot.hasData || snapshot.data == null) {
-                                                        return  Container(
-                                                          height: 154,
-                                                          width: (_size.width - 40) / 3,
-                                                        );
-                                                      }
-                                                      else if (snapshot.data!.docs.isNotEmpty) {
-                                                        final userDoc = snapshot.data!.docs;
-                                                        return GestureDetector(
-                                                          onTap: (){
-                                                            Get.to(() => FriendDetailPage(uid: userDoc[0]['uid'], favoriteResort: userDoc[0]['favoriteResort'],));
-                                                          },
-                                                          child: Container(
-                                                            decoration: BoxDecoration(
-                                                              color: Color(0xFFDBE9FF),
-                                                              borderRadius: BorderRadius.circular(8),
-                                                            ),
-                                                            height: 154,
-                                                            width: (_size.width - 48) / 3,
-                                                            child: Column(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                (userDoc[0]['profileImageUrl'].isNotEmpty)
-                                                                    ? Container(
-                                                                  width: 58,
-                                                                  height: 58,
-                                                                  child: ExtendedImage.network(
-                                                                    userDoc[0]['profileImageUrl'],
-                                                                    enableMemoryCache: true,
-                                                                    shape: BoxShape.circle,
-                                                                    width: 100,
-                                                                    height: 100,
-                                                                    fit: BoxFit.cover,
-                                                                    loadStateChanged: (ExtendedImageState state) {
-                                                                      switch (state.extendedImageLoadState) {
-                                                                        case LoadState.loading:
-                                                                          return SizedBox.shrink();
-                                                                        case LoadState.completed:
-                                                                          return state.completedWidget;
-                                                                        case LoadState.failed:
-                                                                          return ExtendedImage.asset(
-                                                                            'assets/imgs/profile/img_profile_default_.png',
-                                                                            enableMemoryCache: true,
-                                                                            shape: BoxShape.circle,
-                                                                            width: 58,
-                                                                            height: 58,
-                                                                            fit: BoxFit.cover,
-                                                                          ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                        default:
-                                                                          return null;
-                                                                      }
-                                                                    },
-                                                                  ),
-                                                                )
-                                                                    : ExtendedImage.asset(
-                                                                  'assets/imgs/profile/img_profile_default_.png',
-                                                                  enableMemoryCache: true,
-                                                                  shape: BoxShape.circle,
-                                                                  width: 58,
-                                                                  height: 58,
-                                                                  fit: BoxFit.cover,
-                                                                ),
-                                                                SizedBox(height: 14,),
-                                                                ExtendedImage.asset(
-                                                                  'assets/imgs/icons/icon_crown_1.png',
-                                                                  width: 28,
-                                                                  height: 28,
-                                                                  fit: BoxFit.cover,
-                                                                ),
-                                                                Padding(
-                                                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                                                  child: Text(
-                                                                    userDoc[0]['displayName'],
-                                                                    style: TextStyle(
-                                                                      color: Color(0xFF111111),
-                                                                      fontWeight: FontWeight.bold,
-                                                                      fontSize: 13,
-                                                                    ),
-                                                                    overflow: TextOverflow.ellipsis,
-                                                                    maxLines: 1,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }
-                                                      else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                        return Container(
-                                                          height: 154,
-                                                          width: (_size.width - 48) / 3,
-                                                        );
-                                                      } else {
-                                                        return Container(
-                                                          height: 154,
-                                                          width: (_size.width - 48) / 3,
-                                                        );
-                                                      }
-                                                    },
-                                                  ),
-                                                SizedBox(width: 8,),
-                                                if(documents.length > 1)
-
-                                                  StreamBuilder(
-                                                    stream: FirebaseFirestore.instance
-                                                        .collection('user')
-                                                        .where('uid', isEqualTo: documents[1].get('uid'))
-                                                        .snapshots(),
-                                                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                      if (!snapshot.hasData || snapshot.data == null) {
-                                                        return Center();
-                                                      } else if (snapshot.data!.docs.isNotEmpty) {
-                                                        final userDoc = snapshot.data!.docs;
-                                                        return GestureDetector(
-                                                          onTap: (){
-                                                            Get.to(() => FriendDetailPage(uid: userDoc[0]['uid'], favoriteResort: userDoc[0]['favoriteResort'],));
-                                                          },
-                                                          child: Container(
-                                                            decoration: BoxDecoration(
-                                                              color: Color(0xFFDBE9FF),
-                                                              borderRadius: BorderRadius.circular(8),
-                                                            ),
-                                                            height: 154,
-                                                            child: Column(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                (userDoc[0]['profileImageUrl'].isNotEmpty)
-                                                                    ? Container(
-                                                                  width: 58,
-                                                                  height: 58,
-                                                                  child: ExtendedImage.network(
-                                                                    userDoc[0]['profileImageUrl'],
-                                                                    enableMemoryCache: true,
-                                                                    shape: BoxShape.circle,
-                                                                    width: 100,
-                                                                    height: 100,
-                                                                    fit: BoxFit.cover,
-                                                                    loadStateChanged: (ExtendedImageState state) {
-                                                                      switch (state.extendedImageLoadState) {
-                                                                        case LoadState.loading:
-                                                                          return SizedBox.shrink();
-                                                                        case LoadState.completed:
-                                                                          return state.completedWidget;
-                                                                        case LoadState.failed:
-                                                                          return ExtendedImage.asset(
-                                                                            'assets/imgs/profile/img_profile_default_.png',
-                                                                            enableMemoryCache: true,
-                                                                            shape: BoxShape.circle,
-                                                                            width: 58,
-                                                                            height: 58,
-                                                                            fit: BoxFit.cover,
-                                                                          ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                        default:
-                                                                          return null;
-                                                                      }
-                                                                    },
-                                                                  ),
-                                                                )
-                                                                    : ExtendedImage.asset(
-                                                                  'assets/imgs/profile/img_profile_default_.png',
-                                                                  enableMemoryCache: true,
-                                                                  shape: BoxShape.circle,
-                                                                  width: 58,
-                                                                  height: 58,
-                                                                  fit: BoxFit.cover,
-                                                                ),
-                                                                SizedBox(height: 14,),
-                                                                ExtendedImage.asset(
-                                                                  'assets/imgs/icons/icon_crown_2.png',
-                                                                  width: 28,
-                                                                  height: 28,
-                                                                  fit: BoxFit.cover,
-                                                                ),
-                                                                Padding(
-                                                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                                                  child: Text(
-                                                                    userDoc[0]['displayName'],
-                                                                    style: TextStyle(
-                                                                      color: Color(0xFF111111),
-                                                                      fontWeight: FontWeight.bold,
-                                                                      fontSize: 13,
-                                                                    ),
-                                                                    overflow: TextOverflow.ellipsis,
-                                                                    maxLines: 1,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            width: (_size.width - 48) / 3,
-                                                          ),
-                                                        );
-                                                      } else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                        return Container(
-                                                          height: 154,
-                                                          width: (_size.width - 48) / 3,
-                                                        );
-                                                      } else {
-                                                        return Container(
-                                                          height: 154,
-                                                          width: (_size.width - 48) / 3,
-                                                        );
-                                                      }
-                                                    },
-                                                  ),
-                                                SizedBox(width: 8,),
-                                                if(documents.length > 2)
-
-                                                  StreamBuilder(
-                                                    stream: FirebaseFirestore.instance
-                                                        .collection('user')
-                                                        .where('uid', isEqualTo: documents[2].get('uid'))
-                                                        .snapshots(),
-                                                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                      if (!snapshot.hasData || snapshot.data == null) {
-                                                        return Center();
-                                                      } else if (snapshot.data!.docs.isNotEmpty) {
-                                                        final userDoc = snapshot.data!.docs;
-                                                        return GestureDetector(
-                                                          onTap: (){
-                                                            Get.to(() => FriendDetailPage(uid: userDoc[0]['uid'], favoriteResort: userDoc[0]['favoriteResort'],));
-                                                          },
-                                                          child: Container(
-                                                            decoration: BoxDecoration(
-                                                              color: Color(0xFFDBE9FF),
-                                                              borderRadius: BorderRadius.circular(8),
-                                                            ),
-                                                            height: 154,
-                                                            width: (_size.width - 48) / 3,
-                                                            child: Column(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                (userDoc[0]['profileImageUrl'].isNotEmpty)
-                                                                    ? Container(
-                                                                  width: 58,
-                                                                  height: 58,
-                                                                  child: ExtendedImage.network(
-                                                                    userDoc[0]['profileImageUrl'],
-                                                                    enableMemoryCache: true,
-                                                                    shape: BoxShape.circle,
-                                                                    width: 100,
-                                                                    height: 100,
-                                                                    fit: BoxFit.cover,
-                                                                    loadStateChanged: (ExtendedImageState state) {
-                                                                      switch (state.extendedImageLoadState) {
-                                                                        case LoadState.loading:
-                                                                          return SizedBox.shrink();
-                                                                        case LoadState.completed:
-                                                                          return state.completedWidget;
-                                                                        case LoadState.failed:
-                                                                          return ExtendedImage.asset(
-                                                                            'assets/imgs/profile/img_profile_default_.png',
-                                                                            enableMemoryCache: true,
-                                                                            shape: BoxShape.circle,
-                                                                            width: 58,
-                                                                            height: 58,
-                                                                            fit: BoxFit.cover,
-                                                                          ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                        default:
-                                                                          return null;
-                                                                      }
-                                                                    },
-                                                                  ),
-                                                                )
-                                                                    : ExtendedImage.asset(
-                                                                  'assets/imgs/profile/img_profile_default_.png',
-                                                                  enableMemoryCache: true,
-                                                                  shape: BoxShape.circle,
-                                                                  width: 58,
-                                                                  height: 58,
-                                                                  fit: BoxFit.cover,
-                                                                ),
-                                                                SizedBox(height: 14,),
-                                                                ExtendedImage.asset(
-                                                                  'assets/imgs/icons/icon_crown_3.png',
-                                                                  width: 28,
-                                                                  height: 28,
-                                                                  fit: BoxFit.cover,
-                                                                ),
-                                                                Padding(
-                                                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                                                  child: Text(
-                                                                    userDoc[0]['displayName'],
-                                                                    style: TextStyle(
-                                                                      color: Color(0xFF111111),
-                                                                      fontWeight: FontWeight.bold,
-                                                                      fontSize: 13,
-                                                                    ),
-                                                                    overflow: TextOverflow.ellipsis,
-                                                                    maxLines: 1,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        );
-                                                      } else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                        return Container(
-                                                          height: 154,
-                                                          width: (_size.width - 48) / 3,
-                                                        );
-                                                      } else {
-                                                        return Container(
-                                                          height: 154,
-                                                          width: (_size.width - 48) / 3,
-                                                        );
-                                                      }
-                                                    },
-                                                  ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 40,),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text('${_resortModelController.resortName} 개인 랭킹 TOP 100',
-                                                  style: TextStyle(
-                                                      color: Color(0xFF111111),
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.bold
-                                                  ),
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () async{
-                                                    Get.to(()=> RankingIndiAllScreen());
-                                                  },
-                                                  child: Text('전체 보기',
-                                                    style: TextStyle(
-                                                        color: Color(0xFF949494),
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.bold
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 18,),
-                                            Container(
-                                              height: documents.length * 64,
-                                              child: ListView.builder(
-                                                physics: NeverScrollableScrollPhysics(),
-                                                shrinkWrap: true,
-                                                itemCount: documents.length < 100 ? documents.length : 100,
-                                                itemBuilder: (context, index) {
-                                                  final document = documents[index];
-
-                                                  print('${userRankingMap?['${_userModelController.uid}']}');
-                                                  return StreamBuilder(
-                                                    stream: FirebaseFirestore.instance
-                                                        .collection('user')
-                                                        .where('uid', isEqualTo: document.get('uid'))
-                                                        .snapshots(),
-                                                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                      if (!snapshot.hasData || snapshot.data == null) {
-                                                        return SizedBox.shrink();
-                                                      }
+                                          ),
+                                          SizedBox(height: 12),
+                                          Row(
+                                            children: [
+                                              if(documents.length > 0)
+                                                StreamBuilder(
+                                                  stream: FirebaseFirestore.instance
+                                                      .collection('user')
+                                                      .where('uid', isEqualTo: documents[0].get('uid'))
+                                                      .snapshots(),
+                                                  builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                    if (!snapshot.hasData || snapshot.data == null) {
+                                                      return  Container(
+                                                        height: 154,
+                                                        width: (_size.width - 40) / 3,
+                                                      );
+                                                    }
+                                                    else if (snapshot.data!.docs.isNotEmpty) {
                                                       final userDoc = snapshot.data!.docs;
-                                                      final userData = userDoc.isNotEmpty ? userDoc[0] : null;
-
-                                                      if (userData == null) {
-                                                        return SizedBox.shrink();
-                                                      }
-
-                                                      return Padding(
-                                                        padding: const EdgeInsets.only(bottom: 12),
-                                                        child: Row(
-                                                          children: [
-                                                            Text(
-                                                              '${userRankingMap!['${userDoc[0]['uid']}']}',
-                                                              style: TextStyle(
-                                                                  fontWeight: FontWeight.bold,
-                                                                  fontSize: 15,
-                                                                  color: Color(0xFF111111)
-                                                              ),
-                                                            ),
-                                                            SizedBox(width: 14),
-                                                            GestureDetector(
-                                                              onTap: () {
-                                                                Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                                              },
-                                                              child: Container(
-                                                                width: 48,
-                                                                height: 48,
-                                                                child: userData['profileImageUrl'].isNotEmpty
-                                                                    ? ExtendedImage.network(
-                                                                  userData['profileImageUrl'],
+                                                      return GestureDetector(
+                                                        onTap: (){
+                                                          Get.to(() => FriendDetailPage(uid: userDoc[0]['uid'], favoriteResort: userDoc[0]['favoriteResort'],));
+                                                        },
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                            color: Color(0xFFDBE9FF),
+                                                            borderRadius: BorderRadius.circular(8),
+                                                          ),
+                                                          height: 154,
+                                                          width: (_size.width - 48) / 3,
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              (userDoc[0]['profileImageUrl'].isNotEmpty)
+                                                                  ? Container(
+                                                                width: 58,
+                                                                height: 58,
+                                                                child: ExtendedImage.network(
+                                                                  userDoc[0]['profileImageUrl'],
                                                                   enableMemoryCache: true,
-                                                                  cacheHeight: 200,
                                                                   shape: BoxShape.circle,
-                                                                  borderRadius: BorderRadius.circular(8),
-                                                                  width: 48,
-                                                                  height: 48,
+                                                                  width: 100,
+                                                                  height: 100,
                                                                   fit: BoxFit.cover,
                                                                   loadStateChanged: (ExtendedImageState state) {
                                                                     switch (state.extendedImageLoadState) {
@@ -581,33 +219,394 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                         return state.completedWidget;
                                                                       case LoadState.failed:
                                                                         return ExtendedImage.asset(
-                                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                                          'assets/imgs/profile/img_profile_default_.png',
                                                                           enableMemoryCache: true,
                                                                           shape: BoxShape.circle,
-                                                                          borderRadius: BorderRadius.circular(8),
-                                                                          width: 48,
-                                                                          height: 48,
+                                                                          width: 58,
+                                                                          height: 58,
                                                                           fit: BoxFit.cover,
                                                                         ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                                       default:
                                                                         return null;
                                                                     }
                                                                   },
-                                                                )
-                                                                    : ExtendedImage.asset(
-                                                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                                                  enableMemoryCache: true,
-                                                                  shape: BoxShape.circle,
-                                                                  borderRadius: BorderRadius.circular(8),
-                                                                  width: 48,
-                                                                  height: 48,
-                                                                  fit: BoxFit.cover,
+                                                                ),
+                                                              )
+                                                                  : ExtendedImage.asset(
+                                                                'assets/imgs/profile/img_profile_default_.png',
+                                                                enableMemoryCache: true,
+                                                                shape: BoxShape.circle,
+                                                                width: 58,
+                                                                height: 58,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                              SizedBox(height: 14,),
+                                                              ExtendedImage.asset(
+                                                                'assets/imgs/icons/icon_crown_1.png',
+                                                                width: 28,
+                                                                height: 28,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                              Padding(
+                                                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                                                child: Text(
+                                                                  userDoc[0]['displayName'],
+                                                                  style: TextStyle(
+                                                                    color: Color(0xFF111111),
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize: 13,
+                                                                  ),
+                                                                  overflow: TextOverflow.ellipsis,
+                                                                  maxLines: 1,
                                                                 ),
                                                               ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }
+                                                    else if (snapshot.connectionState == ConnectionState.waiting) {
+                                                      return Container(
+                                                        height: 154,
+                                                        width: (_size.width - 48) / 3,
+                                                      );
+                                                    } else {
+                                                      return Container(
+                                                        height: 154,
+                                                        width: (_size.width - 48) / 3,
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              SizedBox(width: 8,),
+                                              if(documents.length > 1)
+
+                                                StreamBuilder(
+                                                  stream: FirebaseFirestore.instance
+                                                      .collection('user')
+                                                      .where('uid', isEqualTo: documents[1].get('uid'))
+                                                      .snapshots(),
+                                                  builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                    if (!snapshot.hasData || snapshot.data == null) {
+                                                      return Center();
+                                                    } else if (snapshot.data!.docs.isNotEmpty) {
+                                                      final userDoc = snapshot.data!.docs;
+                                                      return GestureDetector(
+                                                        onTap: (){
+                                                          Get.to(() => FriendDetailPage(uid: userDoc[0]['uid'], favoriteResort: userDoc[0]['favoriteResort'],));
+                                                        },
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                            color: Color(0xFFDBE9FF),
+                                                            borderRadius: BorderRadius.circular(8),
+                                                          ),
+                                                          height: 154,
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              (userDoc[0]['profileImageUrl'].isNotEmpty)
+                                                                  ? Container(
+                                                                width: 58,
+                                                                height: 58,
+                                                                child: ExtendedImage.network(
+                                                                  userDoc[0]['profileImageUrl'],
+                                                                  enableMemoryCache: true,
+                                                                  shape: BoxShape.circle,
+                                                                  width: 100,
+                                                                  height: 100,
+                                                                  fit: BoxFit.cover,
+                                                                  loadStateChanged: (ExtendedImageState state) {
+                                                                    switch (state.extendedImageLoadState) {
+                                                                      case LoadState.loading:
+                                                                        return SizedBox.shrink();
+                                                                      case LoadState.completed:
+                                                                        return state.completedWidget;
+                                                                      case LoadState.failed:
+                                                                        return ExtendedImage.asset(
+                                                                          'assets/imgs/profile/img_profile_default_.png',
+                                                                          enableMemoryCache: true,
+                                                                          shape: BoxShape.circle,
+                                                                          width: 58,
+                                                                          height: 58,
+                                                                          fit: BoxFit.cover,
+                                                                        ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                      default:
+                                                                        return null;
+                                                                    }
+                                                                  },
+                                                                ),
+                                                              )
+                                                                  : ExtendedImage.asset(
+                                                                'assets/imgs/profile/img_profile_default_.png',
+                                                                enableMemoryCache: true,
+                                                                shape: BoxShape.circle,
+                                                                width: 58,
+                                                                height: 58,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                              SizedBox(height: 14,),
+                                                              ExtendedImage.asset(
+                                                                'assets/imgs/icons/icon_crown_2.png',
+                                                                width: 28,
+                                                                height: 28,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                              Padding(
+                                                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                                                child: Text(
+                                                                  userDoc[0]['displayName'],
+                                                                  style: TextStyle(
+                                                                    color: Color(0xFF111111),
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize: 13,
+                                                                  ),
+                                                                  overflow: TextOverflow.ellipsis,
+                                                                  maxLines: 1,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          width: (_size.width - 48) / 3,
+                                                        ),
+                                                      );
+                                                    } else if (snapshot.connectionState == ConnectionState.waiting) {
+                                                      return Container(
+                                                        height: 154,
+                                                        width: (_size.width - 48) / 3,
+                                                      );
+                                                    } else {
+                                                      return Container(
+                                                        height: 154,
+                                                        width: (_size.width - 48) / 3,
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              SizedBox(width: 8,),
+                                              if(documents.length > 2)
+
+                                                StreamBuilder(
+                                                  stream: FirebaseFirestore.instance
+                                                      .collection('user')
+                                                      .where('uid', isEqualTo: documents[2].get('uid'))
+                                                      .snapshots(),
+                                                  builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                    if (!snapshot.hasData || snapshot.data == null) {
+                                                      return Center();
+                                                    } else if (snapshot.data!.docs.isNotEmpty) {
+                                                      final userDoc = snapshot.data!.docs;
+                                                      return GestureDetector(
+                                                        onTap: (){
+                                                          Get.to(() => FriendDetailPage(uid: userDoc[0]['uid'], favoriteResort: userDoc[0]['favoriteResort'],));
+                                                        },
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                            color: Color(0xFFDBE9FF),
+                                                            borderRadius: BorderRadius.circular(8),
+                                                          ),
+                                                          height: 154,
+                                                          width: (_size.width - 48) / 3,
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              (userDoc[0]['profileImageUrl'].isNotEmpty)
+                                                                  ? Container(
+                                                                width: 58,
+                                                                height: 58,
+                                                                child: ExtendedImage.network(
+                                                                  userDoc[0]['profileImageUrl'],
+                                                                  enableMemoryCache: true,
+                                                                  shape: BoxShape.circle,
+                                                                  width: 100,
+                                                                  height: 100,
+                                                                  fit: BoxFit.cover,
+                                                                  loadStateChanged: (ExtendedImageState state) {
+                                                                    switch (state.extendedImageLoadState) {
+                                                                      case LoadState.loading:
+                                                                        return SizedBox.shrink();
+                                                                      case LoadState.completed:
+                                                                        return state.completedWidget;
+                                                                      case LoadState.failed:
+                                                                        return ExtendedImage.asset(
+                                                                          'assets/imgs/profile/img_profile_default_.png',
+                                                                          enableMemoryCache: true,
+                                                                          shape: BoxShape.circle,
+                                                                          width: 58,
+                                                                          height: 58,
+                                                                          fit: BoxFit.cover,
+                                                                        ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                      default:
+                                                                        return null;
+                                                                    }
+                                                                  },
+                                                                ),
+                                                              )
+                                                                  : ExtendedImage.asset(
+                                                                'assets/imgs/profile/img_profile_default_.png',
+                                                                enableMemoryCache: true,
+                                                                shape: BoxShape.circle,
+                                                                width: 58,
+                                                                height: 58,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                              SizedBox(height: 14,),
+                                                              ExtendedImage.asset(
+                                                                'assets/imgs/icons/icon_crown_3.png',
+                                                                width: 28,
+                                                                height: 28,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                              Padding(
+                                                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                                                child: Text(
+                                                                  userDoc[0]['displayName'],
+                                                                  style: TextStyle(
+                                                                    color: Color(0xFF111111),
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize: 13,
+                                                                  ),
+                                                                  overflow: TextOverflow.ellipsis,
+                                                                  maxLines: 1,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    } else if (snapshot.connectionState == ConnectionState.waiting) {
+                                                      return Container(
+                                                        height: 154,
+                                                        width: (_size.width - 48) / 3,
+                                                      );
+                                                    } else {
+                                                      return Container(
+                                                        height: 154,
+                                                        width: (_size.width - 48) / 3,
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 40,),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text('${_resortModelController.resortName} 개인 랭킹 TOP 100',
+                                                style: TextStyle(
+                                                    color: Color(0xFF111111),
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () async{
+                                                  Get.to(()=> RankingIndiAllScreen());
+                                                },
+                                                child: Text('전체 보기',
+                                                  style: TextStyle(
+                                                      color: Color(0xFF949494),
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.bold
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 18,),
+                                          Container(
+                                            height: documents.length * 71,
+                                            child: ListView.builder(
+                                              physics: NeverScrollableScrollPhysics(),
+                                              shrinkWrap: true,
+                                              itemCount: documents.length < 100 ? documents.length : 100,
+                                              itemBuilder: (context, index) {
+                                                final document = documents[index];
+                                                return StreamBuilder(
+                                                  stream: FirebaseFirestore.instance
+                                                      .collection('user')
+                                                      .where('uid', isEqualTo: document.get('uid'))
+                                                      .snapshots(),
+                                                  builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                    if (!snapshot.hasData || snapshot.data == null) {
+                                                      return ListTile(
+                                                        title: Text(''),
+                                                      );
+                                                    }
+                                                    final userDoc = snapshot.data!.docs;
+                                                    final userData = userDoc.isNotEmpty ? userDoc[0] : null;
+
+                                                    if (userData == null) {
+                                                      return SizedBox();
+                                                    }
+
+                                                    return Padding(
+                                                      padding: const EdgeInsets.only(bottom: 12),
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            '${userRankingMap!['${userDoc[0]['uid']}']}',
+                                                            style: TextStyle(
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 15,
+                                                                color: Color(0xFF111111)
                                                             ),
-                                                            SizedBox(width: 14),
-                                                            Padding(
-                                                              padding: const EdgeInsets.only(bottom: 3),
+                                                          ),
+                                                          SizedBox(width: 14),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                                                            },
+                                                            child: Container(
+                                                              width: 48,
+                                                              height: 48,
+                                                              child: userData['profileImageUrl'].isNotEmpty
+                                                                  ? ExtendedImage.network(
+                                                                userData['profileImageUrl'],
+                                                                enableMemoryCache: true,
+                                                                cacheHeight: 200,
+                                                                shape: BoxShape.circle,
+                                                                borderRadius: BorderRadius.circular(8),
+                                                                width: 48,
+                                                                height: 48,
+                                                                fit: BoxFit.cover,
+                                                                loadStateChanged: (ExtendedImageState state) {
+                                                                  switch (state.extendedImageLoadState) {
+                                                                    case LoadState.loading:
+                                                                      return SizedBox.shrink();
+                                                                    case LoadState.completed:
+                                                                      return state.completedWidget;
+                                                                    case LoadState.failed:
+                                                                      return ExtendedImage.asset(
+                                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                                        enableMemoryCache: true,
+                                                                        shape: BoxShape.circle,
+                                                                        borderRadius: BorderRadius.circular(8),
+                                                                        width: 48,
+                                                                        height: 48,
+                                                                        fit: BoxFit.cover,
+                                                                      ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                    default:
+                                                                      return null;
+                                                                  }
+                                                                },
+                                                              )
+                                                                  : ExtendedImage.asset(
+                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                enableMemoryCache: true,
+                                                                shape: BoxShape.circle,
+                                                                borderRadius: BorderRadius.circular(8),
+                                                                width: 48,
+                                                                height: 48,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 14),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(bottom: 3),
+                                                            child: Container(
+                                                              width: _size.width*0.42,
                                                               child: Column(
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                 children: [
@@ -659,132 +658,135 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                 ],
                                                               ),
                                                             ),
-                                                            Expanded(child: SizedBox()),
-                                                            Row(
-                                                              children: [
-                                                                Text(
-                                                                  '${document.get('totalScore').toString()}점',
-                                                                  style: TextStyle(
-                                                                    color: Color(0xFF111111),
-                                                                    fontWeight: FontWeight.normal,
-                                                                    fontSize: 18,
-                                                                  ),
+                                                          ),
+                                                          Expanded(child: SizedBox()),
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                '${document.get('totalScore').toString()}점',
+                                                                style: TextStyle(
+                                                                  color: Color(0xFF111111),
+                                                                  fontWeight: FontWeight.normal,
+                                                                  fontSize: 18,
                                                                 ),
-                                                                for(var rankingTier in rankingTierList)
-                                                                  if(document.get('tier') == rankingTier.tierName)
-                                                                    Transform.translate(
-                                                                      offset: Offset(6, 2),
-                                                                      child: ExtendedImage.network(
-                                                                        rankingTier.badgeAsset,
-                                                                        enableMemoryCache: true,
-                                                                        fit: BoxFit.cover,
-                                                                        width: 52,
-                                                                      ),
-                                                                    )
-                                                              ],
-                                                            ),
+                                                              ),
+                                                              for(var rankingTier in rankingTierList)
+                                                                if(document.get('tier') == rankingTier.tierName)
+                                                                  Transform.translate(
+                                                                    offset: Offset(6, 2),
+                                                                    child: ExtendedImage.network(
+                                                                      rankingTier.badgeAsset,
+                                                                      enableMemoryCache: true,
+                                                                      fit: BoxFit.cover,
+                                                                      width: 40,
+                                                                    ),
+                                                                  )
+                                                            ],
+                                                          ),
 
+                                                        ],
+                                                      ),
+                                                    );
 
-                                                          ],
-                                                        ),
-                                                      );
+                                                  },
+                                                );
 
-                                                    },
-                                                  );
-                                                },
-                                              ),
+                                              },
                                             ),
-                                            SizedBox(height: 64,),
-                                          ],
-                                        ),
+                                          ),
+                                          SizedBox(height: 64,),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          left: 0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  spreadRadius: 0,
-                                  blurRadius: 6,
-                                  offset: Offset(0, 0), // changes position of shadow
-                                ),],
-                              color: Color(0xFF3D83ED),
                             ),
-                            height: 80,
-                            child:  Obx(() => Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  child:
-                                  (userRankingMap?['${_userModelController.uid}'] != null )
-                                      ? Obx(() => Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${userRankingMap?['${_userModelController.uid}']}',
-                                        style: TextStyle(
-                                          color: Color(0xFFffffff),
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        left: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                spreadRadius: 0,
+                                blurRadius: 6,
+                                offset: Offset(0, 0), // changes position of shadow
+                              ),],
+                            color: Color(0xFF3D83ED),
+                          ),
+                          height: 80,
+                          child:  Obx(() => Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child:
+                                (userRankingMap?['${_userModelController.uid}'] != null )
+                                    ? Obx(() => Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${userRankingMap?['${_userModelController.uid}']}',
+                                      style: TextStyle(
+                                        color: Color(0xFFffffff),
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      SizedBox(width: 14),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
-                                        },
-                                        child: Container(
+                                    ),
+                                    SizedBox(width: 14),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
+                                      },
+                                      child: Container(
+                                        width: 48,
+                                        height: 48,
+                                        child: _userModelController.profileImageUrl!.isNotEmpty
+                                            ? ExtendedImage.network(
+                                          _userModelController.profileImageUrl!,
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.circle,
+                                          borderRadius: BorderRadius.circular(8),
                                           width: 48,
                                           height: 48,
-                                          child: _userModelController.profileImageUrl!.isNotEmpty
-                                              ? ExtendedImage.network(
-                                            _userModelController.profileImageUrl!,
-                                            enableMemoryCache: true,
-                                            shape: BoxShape.circle,
-                                            borderRadius: BorderRadius.circular(8),
-                                            width: 48,
-                                            height: 48,
-                                            fit: BoxFit.cover,
-                                            loadStateChanged: (ExtendedImageState state) {
-                                              switch (state.extendedImageLoadState) {
-                                                case LoadState.loading:
-                                                  return SizedBox.shrink();
-                                                case LoadState.completed:
-                                                  return state.completedWidget;
-                                                case LoadState.failed:
-                                                  return ExtendedImage.network(
-                                                    '${profileImgUrlList[0].default_round}',
-                                                    enableMemoryCache: true,
-                                                    shape: BoxShape.circle,
-                                                    borderRadius: BorderRadius.circular(8),
-                                                    width: 48,
-                                                    height: 48,
-                                                    fit: BoxFit.cover,
-                                                  ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                default:
-                                                  return null;
-                                              }
-                                            },
-                                          )
-                                              : ExtendedImage.network(
-                                            '${profileImgUrlList[0].default_round}',
-                                            enableMemoryCache: true,
-                                            shape: BoxShape.circle,
-                                            borderRadius: BorderRadius.circular(8),
-                                            width: 48,
-                                            height: 48,
-                                            fit: BoxFit.cover,
-                                          ),
+                                          fit: BoxFit.cover,
+                                          loadStateChanged: (ExtendedImageState state) {
+                                            switch (state.extendedImageLoadState) {
+                                              case LoadState.loading:
+                                                return SizedBox.shrink();
+                                              case LoadState.completed:
+                                                return state.completedWidget;
+                                              case LoadState.failed:
+                                                return ExtendedImage.network(
+                                                  '${profileImgUrlList[0].default_round}',
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape.circle,
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  width: 48,
+                                                  height: 48,
+                                                  fit: BoxFit.cover,
+                                                ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                              default:
+                                                return null;
+                                            }
+                                          },
+                                        )
+                                            : ExtendedImage.network(
+                                          '${profileImgUrlList[0].default_round}',
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.circle,
+                                          borderRadius: BorderRadius.circular(8),
+                                          width: 48,
+                                          height: 48,
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
-                                      SizedBox(width: 14),
-                                      Column(
+                                    ),
+                                    SizedBox(width: 14),
+                                    Container(
+                                      width: _size.width*0.42,
+                                      child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
@@ -804,126 +806,17 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.normal
                                                     ),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
                                           )
                                         ],
                                       ),
-                                      Expanded(child: SizedBox()),
-                                      Obx(()=>Row(
-                                          children: [
-                                            Text(
-                                              '${_myRankingController.totalScore}점',
-                                              style: TextStyle(
-                                                color: Color(0xFFffffff),
-                                                fontWeight: FontWeight.normal,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            for(var rankingTier in rankingTierList)
-                                              if(_myRankingController.tier == rankingTier.tierName)
-                                                Transform.translate(
-                                                  offset: Offset(6, 2),
-                                                  child: ExtendedImage.network(
-                                                    rankingTier.badgeAsset,
-                                                    enableMemoryCache: true,
-                                                    fit: BoxFit.cover,
-                                                    width: 52,
-                                                  ),
-                                                )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ))
-                                      : Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '',
-                                        style: TextStyle(
-                                          color: Color(0xFFffffff),
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SizedBox(width: 14),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
-                                        },
-                                        child: Container(
-                                          width: 48,
-                                          height: 48,
-                                          child: _userModelController.profileImageUrl!.isNotEmpty
-                                              ? ExtendedImage.network(
-                                            _userModelController.profileImageUrl!,
-                                            enableMemoryCache: true,
-                                            shape: BoxShape.circle,
-                                            borderRadius: BorderRadius.circular(8),
-                                            width: 48,
-                                            height: 48,
-                                            fit: BoxFit.cover,
-                                            loadStateChanged: (ExtendedImageState state) {
-                                              switch (state.extendedImageLoadState) {
-                                                case LoadState.loading:
-                                                  return SizedBox.shrink();
-                                                case LoadState.completed:
-                                                  return state.completedWidget;
-                                                case LoadState.failed:
-                                                  return ExtendedImage.network(
-                                                    '${profileImgUrlList[0].default_round}',
-                                                    enableMemoryCache: true,
-                                                    shape: BoxShape.circle,
-                                                    borderRadius: BorderRadius.circular(8),
-                                                    width: 48,
-                                                    height: 48,
-                                                    fit: BoxFit.cover,
-                                                  ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                default:
-                                                  return null;
-                                              }
-                                            },
-                                          )
-                                              : ExtendedImage.network(
-                                            '${profileImgUrlList[0].default_round}',
-                                            enableMemoryCache: true,
-                                            shape: BoxShape.circle,
-                                            borderRadius: BorderRadius.circular(8),
-                                            width: 48,
-                                            height: 48,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: 14),
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                    ),
+                                    Expanded(child: SizedBox()),
+                                    Obx(()=>Row(
                                         children: [
                                           Text(
-                                            '${_userModelController.displayName}',
-                                            style: TextStyle(
-                                              color: Color(0xFFffffff),
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 2,),
-                                          if(_userModelController.stateMsg != '')
-                                            Text('${_userModelController.stateMsg}',
-                                              style: TextStyle(
-                                                  color: Color(0xFFffffff).withOpacity(0.6),
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.normal
-                                              ),
-                                            )
-                                        ],
-                                      ),
-                                      Expanded(child: SizedBox()),
-                                      Obx(()=>Row(
-                                        children: [
-                                          Text(
-                                            '점수가 없습니다.',
+                                            '${_myRankingController.totalScore}점',
                                             style: TextStyle(
                                               color: Color(0xFFffffff),
                                               fontWeight: FontWeight.normal,
@@ -934,18 +827,129 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                             if(_myRankingController.tier == rankingTier.tierName)
                                               Transform.translate(
                                                 offset: Offset(6, 2),
-                                                child: SizedBox()
+                                                child: ExtendedImage.network(
+                                                  rankingTier.badgeAsset,
+                                                  enableMemoryCache: true,
+                                                  fit: BoxFit.cover,
+                                                  width: 52,
+                                                ),
                                               )
                                         ],
                                       ),
-                                      ),
-                                    ],
-                                  )
+                                    ),
+                                  ],
                                 ))
-                          ),
-                        )
-                      ],
-                    ),
+                                    : Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '',
+                                      style: TextStyle(
+                                        color: Color(0xFFffffff),
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(width: 14),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
+                                      },
+                                      child: Container(
+                                        width: 48,
+                                        height: 48,
+                                        child: _userModelController.profileImageUrl!.isNotEmpty
+                                            ? ExtendedImage.network(
+                                          _userModelController.profileImageUrl!,
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.circle,
+                                          borderRadius: BorderRadius.circular(8),
+                                          width: 48,
+                                          height: 48,
+                                          fit: BoxFit.cover,
+                                          loadStateChanged: (ExtendedImageState state) {
+                                            switch (state.extendedImageLoadState) {
+                                              case LoadState.loading:
+                                                return SizedBox.shrink();
+                                              case LoadState.completed:
+                                                return state.completedWidget;
+                                              case LoadState.failed:
+                                                return ExtendedImage.network(
+                                                  '${profileImgUrlList[0].default_round}',
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape.circle,
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  width: 48,
+                                                  height: 48,
+                                                  fit: BoxFit.cover,
+                                                ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                              default:
+                                                return null;
+                                            }
+                                          },
+                                        )
+                                            : ExtendedImage.network(
+                                          '${profileImgUrlList[0].default_round}',
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.circle,
+                                          borderRadius: BorderRadius.circular(8),
+                                          width: 48,
+                                          height: 48,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 14),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${_userModelController.displayName}',
+                                          style: TextStyle(
+                                            color: Color(0xFFffffff),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 2,),
+                                        if(_userModelController.stateMsg != '')
+                                          Text('${_userModelController.stateMsg}',
+                                            style: TextStyle(
+                                                color: Color(0xFFffffff).withOpacity(0.6),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.normal
+                                            ),
+                                          )
+                                      ],
+                                    ),
+                                    Expanded(child: SizedBox()),
+                                    Obx(()=>Row(
+                                      children: [
+                                        Text(
+                                          '점수가 없습니다.',
+                                          style: TextStyle(
+                                            color: Color(0xFFffffff),
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        for(var rankingTier in rankingTierList)
+                                          if(_myRankingController.tier == rankingTier.tierName)
+                                            Transform.translate(
+                                              offset: Offset(6, 2),
+                                              child: SizedBox()
+                                            )
+                                      ],
+                                    ),
+                                    ),
+                                  ],
+                                )
+                              ))
+                        ),
+                      )
+                    ],
                   ),
                 ),
               );

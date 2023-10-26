@@ -12,6 +12,7 @@ import 'package:com.snowlive/model/m_rankingTierModel.dart';
 import 'package:com.snowlive/model/m_slopeScoreModel.dart';
 import 'package:com.snowlive/screens/v_MainHome.dart';
 
+import '../../controller/vm_myRankingController.dart';
 import '../resort/v_resortHome.dart';
 
 class MyRankingDetailPage extends StatefulWidget {
@@ -27,6 +28,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
   SeasonController _seasonController = Get.find<SeasonController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
+  MyRankingController _myRankingController = Get.find<MyRankingController>();
   // TODO: Dependency Injection**************************************************
 
   Map? userRankingMap;
@@ -35,261 +37,117 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
-    return Container(
-      color: Color(0xFF3D83ED),
-      child: SafeArea(
-        top: false,
-        bottom: true,
-        child: Scaffold(
-          backgroundColor: Color(0xFF3D83ED),
-          appBar: AppBar(
-            backgroundColor: Color(0xFF3D83ED),
-            leading: GestureDetector(
-              child: Image.asset(
-                'assets/imgs/icons/icon_snowLive_back.png',
-                scale: 4,
-                width: 26,
-                height: 26,
-                color: Color(0xFFFFFFFF),
+
+    return FutureBuilder(
+      future: _myRankingController.getMyRankingData(_userModelController.uid),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        return Container(
+          color: Color(0xFF3D83ED),
+          child: SafeArea(
+            top: false,
+            bottom: true,
+            child: Scaffold(
+              backgroundColor: Color(0xFF3D83ED),
+              appBar: AppBar(
+                backgroundColor: Color(0xFF3D83ED),
+                leading: GestureDetector(
+                  child: Image.asset(
+                    'assets/imgs/icons/icon_snowLive_back.png',
+                    scale: 4,
+                    width: 26,
+                    height: 26,
+                    color: Color(0xFFFFFFFF),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                elevation: 0.0,
               ),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            elevation: 0.0,
-          ),
-          body: SingleChildScrollView(
-            child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('Ranking')
-                    .doc('${_seasonController.currentSeason}')
-                    .collection('${_userModelController.favoriteResort}')
-                    .orderBy('totalScore', descending: true)
-                    .snapshots(),
-                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (!snapshot.hasData || snapshot.data == null){
-                    return Center(
-                      child: Container(
-                        width: _size.width,
-                        height: _size.height-200,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 80,
-                              height: 94,
-                              child: ExtendedImage.asset(
-                                'assets/imgs/ranking/icon_ranking_nodata.png',
-                                enableMemoryCache: true,
-                                scale: 4,
-                              ),
+              body: SingleChildScrollView(
+                child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('Ranking')
+                        .doc('${_seasonController.currentSeason}')
+                        .collection('${_userModelController.favoriteResort}')
+                        .orderBy('totalScore', descending: true)
+                        .snapshots(),
+                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData || snapshot.data == null){
+                        return Center(
+                          child: Container(
+                            width: _size.width,
+                            height: _size.height-200,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 80,
+                                  height: 94,
+                                  child: ExtendedImage.asset(
+                                    'assets/imgs/ranking/icon_ranking_nodata.png',
+                                    enableMemoryCache: true,
+                                    scale: 4,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 16,
+                                ),
+                                Center(
+                                  child: Text('아직 랭킹 정보가 없어요!',
+                                    style: TextStyle(
+                                        color: Color(0xFFFFFFFF),
+                                        fontSize: 15
+                                    ),),
+                                ),
+                                // SizedBox(
+                                //   height: 20,
+                                // ),
+                                // // Padding(
+                                // //     padding: EdgeInsets.only(left: 16, right: 12, bottom: 20),
+                                // //     child: Column(
+                                // //         children: [
+                                // //           Container(
+                                // //             height: 40,
+                                // //             child: ElevatedButton(
+                                // //               child: Text(
+                                // //                 '라이브온 하러 가기',
+                                // //                 style: TextStyle(
+                                // //                     color: Color(0xFFffffff),
+                                // //                     fontWeight: FontWeight.bold,
+                                // //                     fontSize: 14),
+                                // //               ),
+                                // //               onPressed: () async{
+                                // //                 Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
+                                // //               },
+                                // //               style: ElevatedButton.styleFrom(
+                                // //                 padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                                // //                 minimumSize: Size(40, 10),
+                                // //                 backgroundColor: Color(0xFF073985),
+                                // //                 shape: RoundedRectangleBorder(
+                                // //                     borderRadius: BorderRadius.circular(8)),
+                                // //                 elevation: 0,
+                                // //               ),
+                                // //             ),
+                                // //           ),
+                                // //         ]
+                                // //     )
+                                // // )
+                              ],
                             ),
-                            SizedBox(
-                              height: 16,
-                            ),
-                            Center(
-                              child: Text('아직 랭킹 정보가 없어요!',
-                                style: TextStyle(
-                                    color: Color(0xFFFFFFFF),
-                                    fontSize: 15
-                                ),),
-                            ),
-                            // SizedBox(
-                            //   height: 20,
-                            // ),
-                            // // Padding(
-                            // //     padding: EdgeInsets.only(left: 16, right: 12, bottom: 20),
-                            // //     child: Column(
-                            // //         children: [
-                            // //           Container(
-                            // //             height: 40,
-                            // //             child: ElevatedButton(
-                            // //               child: Text(
-                            // //                 '라이브온 하러 가기',
-                            // //                 style: TextStyle(
-                            // //                     color: Color(0xFFffffff),
-                            // //                     fontWeight: FontWeight.bold,
-                            // //                     fontSize: 14),
-                            // //               ),
-                            // //               onPressed: () async{
-                            // //                 Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
-                            // //               },
-                            // //               style: ElevatedButton.styleFrom(
-                            // //                 padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-                            // //                 minimumSize: Size(40, 10),
-                            // //                 backgroundColor: Color(0xFF073985),
-                            // //                 shape: RoundedRectangleBorder(
-                            // //                     borderRadius: BorderRadius.circular(8)),
-                            // //                 elevation: 0,
-                            // //               ),
-                            // //             ),
-                            // //           ),
-                            // //         ]
-                            // //     )
-                            // // )
-
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  else if(snapshot.connectionState == ConnectionState.waiting) {
-                    return SizedBox.shrink();
-                  }
-                  else if (snapshot.data!.docs.isNotEmpty) {
-                    final rankingDocs_total = snapshot.data!.docs;
-                    return StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('Ranking')
-                          .doc('${_seasonController.currentSeason}')
-                          .collection('${_userModelController.favoriteResort}')
-                          .where('uid', isEqualTo: _userModelController.uid )
-                          .snapshots(),
-                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (!snapshot.hasData || snapshot.data == null || snapshot.data!.docs.isEmpty){
-                          return Center(
-                            child: Container(
-                              width: _size.width,
-                              height: _size.height-200,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 80,
-                                    height: 94,
-                                    child: ExtendedImage.asset(
-                                      'assets/imgs/ranking/icon_ranking_nodata.png',
-                                      enableMemoryCache: true,
-                                      scale: 4,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 16,
-                                  ),
-                                  Center(
-                                    child: Text('아직 랭킹 정보가 없어요!',
-                                      style: TextStyle(
-                                          color: Color(0xFFFFFFFF),
-                                          fontSize: 15
-                                      ),),
-                                  ),
-                                  // SizedBox(
-                                  //   height: 20,
-                                  // ),
-                                  // Padding(
-                                  //     padding: EdgeInsets.only(left: 16, right: 12, bottom: 20),
-                                  //     child: Column(
-                                  //         children: [
-                                  //           Container(
-                                  //             height: 40,
-                                  //             child: ElevatedButton(
-                                  //               child: Text(
-                                  //                 '라이브온 하러 가기',
-                                  //                 style: TextStyle(
-                                  //                     color: Color(0xFFffffff),
-                                  //                     fontWeight: FontWeight.bold,
-                                  //                     fontSize: 14),
-                                  //               ),
-                                  //               onPressed: () async{
-                                  //                 Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
-                                  //               },
-                                  //               style: ElevatedButton.styleFrom(
-                                  //                 padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-                                  //                 minimumSize: Size(40, 10),
-                                  //                 backgroundColor: Color(0xFF073985),
-                                  //                 shape: RoundedRectangleBorder(
-                                  //                     borderRadius: BorderRadius.circular(8)),
-                                  //                 elevation: 0,
-                                  //               ),
-                                  //             ),
-                                  //           ),
-                                  //         ]
-                                  //     )
-                                  // )
-
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                        else if (snapshot.connectionState == ConnectionState.waiting) {
-                          return SizedBox.shrink();
-                        }
-                        else if (snapshot.hasError) {
-                          return Center(
-                            child: Container(
-                              width: _size.width,
-                              height: _size.height-200,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 80,
-                                    height: 94,
-                                    child: ExtendedImage.asset(
-                                      'assets/imgs/ranking/icon_ranking_nodata.png',
-                                      enableMemoryCache: true,
-                                      scale: 4,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 16,
-                                  ),
-                                  Center(
-                                    child: Text('아직 랭킹 정보가 없어요!',
-                                      style: TextStyle(
-                                          color: Color(0xFFFFFFFF),
-                                          fontSize: 15
-                                      ),),
-                                  ),
-                                  // SizedBox(
-                                  //   height: 20,
-                                  // ),
-                                  // Padding(
-                                  //     padding: EdgeInsets.only(left: 16, right: 12, bottom: 20),
-                                  //     child: Column(
-                                  //         children: [
-                                  //           Container(
-                                  //             height: 40,
-                                  //             child: ElevatedButton(
-                                  //               child: Text(
-                                  //                 '라이브온 하러 가기',
-                                  //                 style: TextStyle(
-                                  //                     color: Color(0xFFffffff),
-                                  //                     fontWeight: FontWeight.bold,
-                                  //                     fontSize: 14),
-                                  //               ),
-                                  //               onPressed: () async{
-                                  //                 Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
-                                  //               },
-                                  //               style: ElevatedButton.styleFrom(
-                                  //                 padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-                                  //                 minimumSize: Size(40, 10),
-                                  //                 backgroundColor: Color(0xFF073985),
-                                  //                 shape: RoundedRectangleBorder(
-                                  //                     borderRadius: BorderRadius.circular(8)),
-                                  //                 elevation: 0,
-                                  //               ),
-                                  //             ),
-                                  //           ),
-                                  //         ]
-                                  //     )
-                                  // )
-
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                        final rankingDocs = snapshot.data!.docs;
-                        int totalScore = rankingDocs[0]['totalScore'];
-                        Map<String, dynamic>? passCountData = rankingDocs[0]['passCountData'];
-                        Map<String, dynamic>? slopeScoresData = rankingDocs[0]['slopeScores'];
+                          ),
+                        );
+                      }
+                      else if(snapshot.connectionState == ConnectionState.waiting) {
+                        return SizedBox.shrink();
+                      }
+                      else if (snapshot.data!.docs.isNotEmpty) {
+                        final rankingDocs_total = snapshot.data!.docs;
+                        Map<dynamic, dynamic> passCountData = _myRankingController.passCountData;
+                        Map<dynamic, dynamic>? slopeScoresData = _myRankingController.slopeScores;
                         String maxPassCountSlope = _liveMapController.calculateMaxValue(passCountData);
-                        List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataSlopeScore(slopeScoresData);
+                        List<Map<dynamic, dynamic>> barData = _liveMapController.calculateBarDataSlopeScore(slopeScoresData);
                         userRankingMap =  _liveMapController.calculateRankIndiAll2(userRankingDocs: rankingDocs_total);
                         return Column(
                           children: [
@@ -319,17 +177,17 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                             children: [
                                               Text(
                                                 '${userRankingMap!['${_userModelController.uid}']}등',
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Color(0xFF444444),
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Color(0xFF444444),
+                                                    fontWeight: FontWeight.bold),
+                                              ),
                                             ],
                                           ),
                                         ),
                                         for(var rankingTier in rankingTierList)
-                                          if(rankingDocs[0]['tier'] == rankingTier.tierName)
-                                            ExtendedImage.asset(
+                                          if(_myRankingController.tier == rankingTier.tierName)
+                                            ExtendedImage.network(
                                               enableMemoryCache:true,
                                               rankingTier.badgeAsset,
                                               scale: 4,
@@ -346,12 +204,12 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                         Container(
                                           height: 120,
                                           child: Text(
-                                            '$totalScore',
+                                            '${_myRankingController.totalScore}',
                                             style: GoogleFonts.bebasNeue(
-                                                fontSize: 120,
-                                                fontWeight: FontWeight.normal,
-                                                color: Color(0xFF3D83ED),
-                                                ),
+                                              fontSize: 120,
+                                              fontWeight: FontWeight.normal,
+                                              color: Color(0xFF3D83ED),
+                                            ),
                                           ),
                                         ),
                                         Text(
@@ -388,8 +246,8 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                             SizedBox(height: 12),
                             Container(
                               decoration: BoxDecoration(
-                                  color: Color(0xFF1357BC),
-                                  borderRadius: BorderRadius.circular(20),
+                                color: Color(0xFF1357BC),
+                                borderRadius: BorderRadius.circular(20),
                               ),
                               margin: EdgeInsets.symmetric(horizontal: 16),
                               child: Container(
@@ -431,27 +289,27 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                                         width: 43,
                                                         height: 32,
                                                       ),
-                                                SizedBox(height: 12,),
-                                              Text('데이터가 없습니다.',
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.normal
-                                                ),),
-                                                  SizedBox(
-                                                    height: 36,
-                                                  )
-                                                ],
-                                              ))
+                                                      SizedBox(height: 12,),
+                                                      Text('데이터가 없습니다.',
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.normal
+                                                        ),),
+                                                      SizedBox(
+                                                        height: 36,
+                                                      )
+                                                    ],
+                                                  ))
                                                   : SingleChildScrollView(
                                                 scrollDirection: Axis.horizontal,
-                                                    child: Container(
-                                                      child: Row(
-                                                mainAxisAlignment:
-                                                barData.length < 2
-                                                    ? MainAxisAlignment.center
-                                                    : MainAxisAlignment.spaceBetween,
-                                                children: barData.map((data) {
+                                                child: Container(
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                    barData.length < 2
+                                                        ? MainAxisAlignment.center
+                                                        : MainAxisAlignment.spaceBetween,
+                                                    children: barData.map((data) {
                                                       String slopeName = data['slopeName'];
                                                       int scoreForSlope = data['scoreForSlope'];
                                                       double barHeightRatio = data['barHeightRatio'];
@@ -495,10 +353,10 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                                           ],
                                                         ),
                                                       );
-                                                }).toList(),
-                                              ),
-                                                    ),
+                                                    }).toList(),
                                                   ),
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -513,20 +371,20 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                             SizedBox(height: 30,),
                           ],
                         );
-                      },
-                    );
-                  }
-                  else if (snapshot.connectionState == ConnectionState.waiting) {
-                    return SizedBox.shrink();
-                  }
-                  return SizedBox.shrink();
-                }),
+                      }
+                      else if (snapshot.connectionState == ConnectionState.waiting) {
+                        return SizedBox.shrink();
+                      }
+                      return SizedBox.shrink();
+                    }),
+              ),
+
+
+
+            ),
           ),
-
-
-
-        ),
-      ),
+        );
+      },
     );
   }
 }
