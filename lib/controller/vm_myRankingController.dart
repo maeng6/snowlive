@@ -28,6 +28,7 @@ class MyRankingController extends GetxController {
   RxInt? _totalPassCount = 0.obs;
   RxInt? _totalScore = 0.obs;
   RxString? _uid = ''.obs;
+  RxBool? _exist=true.obs;
 
   Timestamp get lastPassTime => _lastPassTime!;
   Map<String, dynamic> get passCountData => _passCountData!.value as Map<String, dynamic>;
@@ -37,6 +38,7 @@ class MyRankingController extends GetxController {
   int get totalPassCount => _totalPassCount!.value;
   int get totalScore => _totalScore!.value;
   String get uid => _uid!.value;
+  bool? get exist => _exist!.value;
 
   @override
   void onInit() async {
@@ -58,17 +60,9 @@ class MyRankingController extends GetxController {
           this._totalPassCount!.value = myRankingModel.totalPassCount!;
           this._totalScore!.value = myRankingModel.totalScore!;
           this._uid!.value = myRankingModel.uid!;
-        } else {
-          this._lastPassTime = null;
-          this._passCountData!.value = {};
-          this._passCountTimeData!.value = {};
-          this._slopeScores!.value = {};
-          this._tier!.value = '';
-          this._totalPassCount!.value = 0;
-          this._totalScore!.value = 0;
-          this._uid!.value = '';
-
-        }
+          this._exist!.value = myRankingModel.exist!;
+          print('${exist}');
+        } else {}
       } else {
         Get.to(() => LoginPage());
         // handle the case where the userModel is null

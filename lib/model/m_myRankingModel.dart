@@ -21,6 +21,7 @@ class MyRankingModel {
     this.totalPassCount,
     this.totalScore,
     this.uid,
+    this.exist
   });
 
   final auth = FirebaseAuth.instance;
@@ -35,6 +36,7 @@ class MyRankingModel {
   int? totalPassCount;
   int? totalScore;
   String? uid;
+  bool? exist;
 
   MyRankingModel.fromJson(dynamic json, this.reference) {
     lastPassTime = json['lastPassTime'];
@@ -45,6 +47,7 @@ class MyRankingModel {
     totalPassCount = json['totalPassCount'];
     totalScore = json['totalScore'];
     uid = json['uid'];
+    exist = true;
     print('점수 가져오기 성공');
   }
 
@@ -65,8 +68,9 @@ class MyRankingModel {
         await documentReference.get();
         if (documentSnapshot.exists) {
           MyRankingModel myRankingModel = MyRankingModel.fromSnapShot(documentSnapshot);
-
           return myRankingModel;
+        } else{
+          exist = false;
         }
       }catch(e){
 

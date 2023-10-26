@@ -515,7 +515,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           ),
                                           SizedBox(height: 18,),
                                           Container(
-                                            height: documents.length * 71,
+                                            height: documents.length * 61,
                                             child: ListView.builder(
                                               physics: NeverScrollableScrollPhysics(),
                                               shrinkWrap: true,
@@ -529,15 +529,13 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                       .snapshots(),
                                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                     if (!snapshot.hasData || snapshot.data == null) {
-                                                      return ListTile(
-                                                        title: Text(''),
-                                                      );
+                                                      return SizedBox.shrink();
                                                     }
                                                     final userDoc = snapshot.data!.docs;
                                                     final userData = userDoc.isNotEmpty ? userDoc[0] : null;
 
                                                     if (userData == null) {
-                                                      return SizedBox();
+                                                      return SizedBox.shrink();
                                                     }
 
                                                     return Padding(
@@ -606,7 +604,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                           Padding(
                                                             padding: const EdgeInsets.only(bottom: 3),
                                                             child: Container(
-                                                              width: _size.width*0.42,
+                                                              width: _size.width*0.40,
                                                               child: Column(
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                 children: [
@@ -918,12 +916,17 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                         ),
                                         SizedBox(height: 2,),
                                         if(_userModelController.stateMsg != '')
-                                          Text('${_userModelController.stateMsg}',
-                                            style: TextStyle(
-                                                color: Color(0xFFffffff).withOpacity(0.6),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.normal
+                                          Container(
+                                            child: Text('${_userModelController.stateMsg}',
+                                              style: TextStyle(
+                                                  color: Color(0xFFffffff).withOpacity(0.6),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.normal
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
                                             ),
+                                            width: _size.width*0.3,
                                           )
                                       ],
                                     ),
