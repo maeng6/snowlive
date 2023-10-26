@@ -16,6 +16,7 @@ import 'controller/vm_friendsCommentController.dart';
 import 'controller/vm_getDateTimeController.dart';
 import 'controller/vm_liveCrewModelController.dart';
 import 'controller/vm_mainHomeController.dart';
+import 'controller/vm_myRankingController.dart';
 import 'controller/vm_refreshController.dart';
 import 'controller/vm_resortModelController.dart';
 import 'controller/vm_seasonController.dart';
@@ -47,6 +48,7 @@ void main() async {
   Get.put(MainHomeController(), permanent: true);
   Get.put(LiveCrewModelController(), permanent: true);
   Get.put(UrlLauncherController(), permanent: true);
+  Get.put(MyRankingController(),permanent: true);
   Get.put(RefreshController(),permanent: true);
   Get.put(AllUserDocsController(),permanent: true);
   Get.put(LoginController(),permanent: true);

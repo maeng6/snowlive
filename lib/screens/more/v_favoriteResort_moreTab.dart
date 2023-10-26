@@ -11,6 +11,7 @@ import 'package:com.snowlive/controller/vm_resortModelController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/v_MainHome.dart';
 import '../../controller/vm_bottomTabBarController.dart';
+import '../../controller/vm_myRankingController.dart';
 import '../../model/m_resortModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
@@ -27,6 +28,7 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
   UserModelController userModelController = Get.find<UserModelController>();
   ResortModelController resortModelController = Get.find<ResortModelController>();
   BottomTabBarController _bottomTabBarController = Get.find<BottomTabBarController>();
+  MyRankingController _myRankingController = Get.find<MyRankingController>();
   //TODO: Dependency Injection**************************************************
 
 
@@ -182,6 +184,7 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
                       value: auth.currentUser!.displayName);
                   await userModelController.updateWithinBoundaryOff();
                   await userModelController.updateIsOnLiveOff();
+                  await _myRankingController.getMyRankingData(userModelController.uid);
                   CustomFullScreenDialog.cancelDialog();
                   Navigator.pop(context);
                   await _bottomTabBarController..changePage(4)..onItemTapped(4);
