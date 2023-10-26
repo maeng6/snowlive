@@ -30,9 +30,9 @@ class MyRankingController extends GetxController {
   RxString? _uid = ''.obs;
 
   Timestamp get lastPassTime => _lastPassTime!;
-  Map get passCountData => _passCountData!;
-  Map get passCountTimeData => _passCountTimeData!;
-  Map get slopeScores => _slopeScores!;
+  Map<String, dynamic> get passCountData => _passCountData!.value as Map<String, dynamic>;
+  Map<String, dynamic> get passCountTimeData => _passCountTimeData!.value as Map<String, dynamic>;
+  Map<String, dynamic> get slopeScores => _slopeScores!.value as Map<String, dynamic>;
   String get tier => _tier!.value;
   int get totalPassCount => _totalPassCount!.value;
   int get totalScore => _totalScore!.value;
@@ -59,6 +59,15 @@ class MyRankingController extends GetxController {
           this._totalScore!.value = myRankingModel.totalScore!;
           this._uid!.value = myRankingModel.uid!;
         } else {
+          this._lastPassTime = null;
+          this._passCountData!.value = {};
+          this._passCountTimeData!.value = {};
+          this._slopeScores!.value = {};
+          this._tier!.value = '';
+          this._totalPassCount!.value = 0;
+          this._totalScore!.value = 0;
+          this._uid!.value = '';
+
         }
       } else {
         Get.to(() => LoginPage());

@@ -800,14 +800,17 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           ),
                                           SizedBox(height: 2,),
                                           if(_userModelController.stateMsg != '')
-                                          Text('${_userModelController.stateMsg}',
-                                            style: TextStyle(
-                                                color: Color(0xFFffffff).withOpacity(0.6),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.normal
-                                                    ),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
+                                          Container(
+                                            child: Text('${_userModelController.stateMsg}',
+                                              style: TextStyle(
+                                                  color: Color(0xFFffffff).withOpacity(0.6),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.normal
+                                                      ),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                            ),
+                                            width: _size.width*0.35,
                                           )
                                         ],
                                       ),
