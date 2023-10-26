@@ -28,7 +28,6 @@ class MyRankingController extends GetxController {
   RxInt? _totalPassCount = 0.obs;
   RxInt? _totalScore = 0.obs;
   RxString? _uid = ''.obs;
-  RxBool? _exsist = false.obs;
 
   Timestamp get lastPassTime => _lastPassTime!;
   Map get passCountData => _passCountData!;
@@ -38,7 +37,6 @@ class MyRankingController extends GetxController {
   int get totalPassCount => _totalPassCount!.value;
   int get totalScore => _totalScore!.value;
   String get uid => _uid!.value;
-  bool get exsist => _exsist!.value;
 
   @override
   void onInit() async {
@@ -60,9 +58,7 @@ class MyRankingController extends GetxController {
           this._totalPassCount!.value = myRankingModel.totalPassCount!;
           this._totalScore!.value = myRankingModel.totalScore!;
           this._uid!.value = myRankingModel.uid!;
-          this._exsist!.value = true;
         } else {
-          this._exsist!.value = false;
         }
       } else {
         Get.to(() => LoginPage());

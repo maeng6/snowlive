@@ -45,6 +45,7 @@ class MyRankingModel {
     totalPassCount = json['totalPassCount'];
     totalScore = json['totalScore'];
     uid = json['uid'];
+    print('점수 가져오기 성공');
   }
 
   MyRankingModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -64,6 +65,7 @@ class MyRankingModel {
         await documentReference.get();
         if (documentSnapshot.exists) {
           MyRankingModel myRankingModel = MyRankingModel.fromSnapShot(documentSnapshot);
+
           return myRankingModel;
         }
       }catch(e){

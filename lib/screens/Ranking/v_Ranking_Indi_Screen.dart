@@ -57,6 +57,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+    _myRankingController.getMyRankingData(_userModelController.uid);
 
     if(_userModelController.liveCrew != '' && _userModelController.liveCrew != null) {
       _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
@@ -149,12 +150,12 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                 child: SafeArea(
                   top: false,
                   bottom: true,
-                  child: Stack(
-                    children: [
-                      RefreshIndicator(
-                        strokeWidth: 2,
-                        onRefresh: _refreshController.onRefresh_ranking_indi,
-                        child: SingleChildScrollView(
+                  child: RefreshIndicator(
+                    strokeWidth: 2,
+                    onRefresh:  _refreshController.onRefresh_ranking_indi,
+                    child: Stack(
+                      children: [
+                        SingleChildScrollView(
                           physics: AlwaysScrollableScrollPhysics(),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -524,6 +525,8 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 itemCount: documents.length < 100 ? documents.length : 100,
                                                 itemBuilder: (context, index) {
                                                   final document = documents[index];
+
+                                                  print('${userRankingMap?['${_userModelController.uid}']}');
                                                   return StreamBuilder(
                                                     stream: FirebaseFirestore.instance
                                                         .collection('user')
@@ -657,14 +660,30 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                               ),
                                                             ),
                                                             Expanded(child: SizedBox()),
-                                                            Text(
-                                                              '${document.get('totalScore').toString()}점',
-                                                              style: TextStyle(
-                                                                color: Color(0xFF111111),
-                                                                fontWeight: FontWeight.normal,
-                                                                fontSize: 18,
-                                                              ),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  '${document.get('totalScore').toString()}점',
+                                                                  style: TextStyle(
+                                                                    color: Color(0xFF111111),
+                                                                    fontWeight: FontWeight.normal,
+                                                                    fontSize: 18,
+                                                                  ),
+                                                                ),
+                                                                for(var rankingTier in rankingTierList)
+                                                                  if(document.get('tier') == rankingTier.tierName)
+                                                                    Transform.translate(
+                                                                      offset: Offset(6, 2),
+                                                                      child: ExtendedImage.network(
+                                                                        rankingTier.badgeAsset,
+                                                                        enableMemoryCache: true,
+                                                                        fit: BoxFit.cover,
+                                                                        width: 52,
+                                                                      ),
+                                                                    )
+                                                              ],
                                                             ),
+
 
                                                           ],
                                                         ),
@@ -683,236 +702,228 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                   ),
                                 ),
                               ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        left: 0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                spreadRadius: 0,
-                                blurRadius: 6,
-                                offset: Offset(0, 0), // changes position of shadow
-                              ),],
-                            color: Color(0xFF3D83ED),
-                          ),
-                          height: 80,
-                          child: (_myRankingController.exsist == false)
-                              ? Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
-                                    },
-                                    child: Container(
-                                      width: 48,
-                                      height: 48,
-                                      child: _userModelController.profileImageUrl!.isNotEmpty
-                                          ? ExtendedImage.network(
-                                        _userModelController.profileImageUrl!,
-                                        enableMemoryCache: true,
-                                        shape: BoxShape.circle,
-                                        borderRadius: BorderRadius.circular(8),
-                                        width: 48,
-                                        height: 48,
-                                        fit: BoxFit.cover,
-                                        loadStateChanged: (ExtendedImageState state) {
-                                          switch (state.extendedImageLoadState) {
-                                            case LoadState.loading:
-                                              return SizedBox.shrink();
-                                            case LoadState.completed:
-                                              return state.completedWidget;
-                                            case LoadState.failed:
-                                              return ExtendedImage.network(
-                                                '${profileImgUrlList[0].default_round}',
-                                                enableMemoryCache: true,
-                                                shape: BoxShape.circle,
-                                                borderRadius: BorderRadius.circular(8),
-                                                width: 48,
-                                                height: 48,
-                                                fit: BoxFit.cover,
-                                              ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                            default:
-                                              return null;
-                                          }
-                                        },
-                                      )
-                                          : ExtendedImage.network(
-                                        '${profileImgUrlList[0].default_round}',
-                                        enableMemoryCache: true,
-                                        shape: BoxShape.circle,
-                                        borderRadius: BorderRadius.circular(8),
-                                        width: 48,
-                                        height: 48,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 14),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          left: 0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  spreadRadius: 0,
+                                  blurRadius: 6,
+                                  offset: Offset(0, 0), // changes position of shadow
+                                ),],
+                              color: Color(0xFF3D83ED),
+                            ),
+                            height: 80,
+                            child:  Obx(() => Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                                  child:
+                                  (userRankingMap?['${_userModelController.uid}'] != null )
+                                      ? Obx(() => Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '${_userModelController.displayName}',
+                                        '${userRankingMap?['${_userModelController.uid}']}',
                                         style: TextStyle(
-                                          color: Color(0xFFFFFFFF),
-                                          fontSize: 16,
+                                          color: Color(0xFFffffff),
+                                          fontSize: 15,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      SizedBox(height: 2,),
-                                      StreamBuilder<QuerySnapshot>(
-                                        stream: FirebaseFirestore.instance
-                                            .collection('liveCrew')
-                                            .where('crewID', isEqualTo: _userModelController.liveCrew)
-                                            .snapshots(),
-                                        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                          if (snapshot.hasError) {
-                                            return Text("오류가 발생했습니다");
-                                          }
-
-                                          if (snapshot.connectionState == ConnectionState.waiting) {
-                                            return CircularProgressIndicator();
-                                          }
-
-                                          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                                            return SizedBox();
-                                          }
-
-                                          var crewData = snapshot.data!.docs.first.data() as Map<String, dynamic>?;
-
-                                          // 크루명 가져오기
-                                          String crewName = crewData?['crewName'] ?? '';
-
-                                          return  Text(crewName,
+                                      SizedBox(width: 14),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
+                                        },
+                                        child: Container(
+                                          width: 48,
+                                          height: 48,
+                                          child: _userModelController.profileImageUrl!.isNotEmpty
+                                              ? ExtendedImage.network(
+                                            _userModelController.profileImageUrl!,
+                                            enableMemoryCache: true,
+                                            shape: BoxShape.circle,
+                                            borderRadius: BorderRadius.circular(8),
+                                            width: 48,
+                                            height: 48,
+                                            fit: BoxFit.cover,
+                                            loadStateChanged: (ExtendedImageState state) {
+                                              switch (state.extendedImageLoadState) {
+                                                case LoadState.loading:
+                                                  return SizedBox.shrink();
+                                                case LoadState.completed:
+                                                  return state.completedWidget;
+                                                case LoadState.failed:
+                                                  return ExtendedImage.network(
+                                                    '${profileImgUrlList[0].default_round}',
+                                                    enableMemoryCache: true,
+                                                    shape: BoxShape.circle,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                    width: 48,
+                                                    height: 48,
+                                                    fit: BoxFit.cover,
+                                                  ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                default:
+                                                  return null;
+                                              }
+                                            },
+                                          )
+                                              : ExtendedImage.network(
+                                            '${profileImgUrlList[0].default_round}',
+                                            enableMemoryCache: true,
+                                            shape: BoxShape.circle,
+                                            borderRadius: BorderRadius.circular(8),
+                                            width: 48,
+                                            height: 48,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 14),
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${_userModelController.displayName}',
+                                            style: TextStyle(
+                                              color: Color(0xFFffffff),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(height: 2,),
+                                          if(_userModelController.stateMsg != '')
+                                          Text('${_userModelController.stateMsg}',
                                             style: TextStyle(
                                                 color: Color(0xFFffffff).withOpacity(0.6),
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.normal
+                                                    ),
+                                          )
+                                        ],
+                                      ),
+                                      Expanded(child: SizedBox()),
+                                      Obx(()=>Row(
+                                          children: [
+                                            Text(
+                                              '${_myRankingController.totalScore}점',
+                                              style: TextStyle(
+                                                color: Color(0xFFffffff),
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 18,
+                                              ),
                                             ),
-                                          );
-                                        },
+                                            for(var rankingTier in rankingTierList)
+                                              if(_myRankingController.tier == rankingTier.tierName)
+                                                Transform.translate(
+                                                  offset: Offset(6, 2),
+                                                  child: ExtendedImage.network(
+                                                    rankingTier.badgeAsset,
+                                                    enableMemoryCache: true,
+                                                    fit: BoxFit.cover,
+                                                    width: 52,
+                                                  ),
+                                                )
+                                          ],
+                                        ),
                                       ),
                                     ],
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                  Row(
+                                  ))
+                                      : Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '점수가 없습니다',
+                                        '',
                                         style: TextStyle(
-                                          color: Color(0xFFFFFFFF),
-                                          fontWeight: FontWeight.normal,
-                                          fontSize: 16,
+                                          color: Color(0xFFffffff),
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              )
-                          )
-                              :  Obx(() => Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
-                                child:
-                                (userRankingMap?['${_userModelController.uid}'] != null)
-                                    ? Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${userRankingMap?['${_userModelController.uid}']}',
-                                      style: TextStyle(
-                                        color: Color(0xFFffffff),
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(width: 14),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
-                                      },
-                                      child: Container(
-                                        width: 48,
-                                        height: 48,
-                                        child: _userModelController.profileImageUrl!.isNotEmpty
-                                            ? ExtendedImage.network(
-                                          _userModelController.profileImageUrl!,
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
+                                      SizedBox(width: 14),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
+                                        },
+                                        child: Container(
                                           width: 48,
                                           height: 48,
-                                          fit: BoxFit.cover,
-                                          loadStateChanged: (ExtendedImageState state) {
-                                            switch (state.extendedImageLoadState) {
-                                              case LoadState.loading:
-                                                return SizedBox.shrink();
-                                              case LoadState.completed:
-                                                return state.completedWidget;
-                                              case LoadState.failed:
-                                                return ExtendedImage.network(
-                                                  '${profileImgUrlList[0].default_round}',
-                                                  enableMemoryCache: true,
-                                                  shape: BoxShape.circle,
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  width: 48,
-                                                  height: 48,
-                                                  fit: BoxFit.cover,
-                                                ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                              default:
-                                                return null;
-                                            }
-                                          },
-                                        )
-                                            : ExtendedImage.network(
-                                          '${profileImgUrlList[0].default_round}',
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 14),
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '${_userModelController.displayName}',
-                                          style: TextStyle(
-                                            color: Color(0xFFffffff),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
+                                          child: _userModelController.profileImageUrl!.isNotEmpty
+                                              ? ExtendedImage.network(
+                                            _userModelController.profileImageUrl!,
+                                            enableMemoryCache: true,
+                                            shape: BoxShape.circle,
+                                            borderRadius: BorderRadius.circular(8),
+                                            width: 48,
+                                            height: 48,
+                                            fit: BoxFit.cover,
+                                            loadStateChanged: (ExtendedImageState state) {
+                                              switch (state.extendedImageLoadState) {
+                                                case LoadState.loading:
+                                                  return SizedBox.shrink();
+                                                case LoadState.completed:
+                                                  return state.completedWidget;
+                                                case LoadState.failed:
+                                                  return ExtendedImage.network(
+                                                    '${profileImgUrlList[0].default_round}',
+                                                    enableMemoryCache: true,
+                                                    shape: BoxShape.circle,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                    width: 48,
+                                                    height: 48,
+                                                    fit: BoxFit.cover,
+                                                  ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                default:
+                                                  return null;
+                                              }
+                                            },
+                                          )
+                                              : ExtendedImage.network(
+                                            '${profileImgUrlList[0].default_round}',
+                                            enableMemoryCache: true,
+                                            shape: BoxShape.circle,
+                                            borderRadius: BorderRadius.circular(8),
+                                            width: 48,
+                                            height: 48,
+                                            fit: BoxFit.cover,
                                           ),
                                         ),
-                                        SizedBox(height: 2,),
-                                        if(_userModelController.stateMsg != '')
-                                        Text('${_userModelController.stateMsg}',
-                                          style: TextStyle(
-                                              color: Color(0xFFffffff).withOpacity(0.6),
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.normal
-                                                  ),
-                                        )
-                                      ],
-                                    ),
-                                    Expanded(child: SizedBox()),
-                                    Obx(()=>Row(
+                                      ),
+                                      SizedBox(width: 14),
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            '${_myRankingController.totalScore}점',
+                                            '${_userModelController.displayName}',
+                                            style: TextStyle(
+                                              color: Color(0xFFffffff),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(height: 2,),
+                                          if(_userModelController.stateMsg != '')
+                                            Text('${_userModelController.stateMsg}',
+                                              style: TextStyle(
+                                                  color: Color(0xFFffffff).withOpacity(0.6),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.normal
+                                              ),
+                                            )
+                                        ],
+                                      ),
+                                      Expanded(child: SizedBox()),
+                                      Obx(()=>Row(
+                                        children: [
+                                          Text(
+                                            '점수가 없습니다.',
                                             style: TextStyle(
                                               color: Color(0xFFffffff),
                                               fontWeight: FontWeight.normal,
@@ -923,129 +934,18 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                             if(_myRankingController.tier == rankingTier.tierName)
                                               Transform.translate(
                                                 offset: Offset(6, 2),
-                                                child: ExtendedImage.network(
-                                                  rankingTier.badgeAsset,
-                                                  enableMemoryCache: true,
-                                                  fit: BoxFit.cover,
-                                                  width: 52,
-                                                ),
+                                                child: SizedBox()
                                               )
                                         ],
                                       ),
-                                    ),
-                                  ],
-                                )
-                                    : Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '',
-                                      style: TextStyle(
-                                        color: Color(0xFFffffff),
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
                                       ),
-                                    ),
-                                    SizedBox(width: 14),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
-                                      },
-                                      child: Container(
-                                        width: 48,
-                                        height: 48,
-                                        child: _userModelController.profileImageUrl!.isNotEmpty
-                                            ? ExtendedImage.network(
-                                          _userModelController.profileImageUrl!,
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                          loadStateChanged: (ExtendedImageState state) {
-                                            switch (state.extendedImageLoadState) {
-                                              case LoadState.loading:
-                                                return SizedBox.shrink();
-                                              case LoadState.completed:
-                                                return state.completedWidget;
-                                              case LoadState.failed:
-                                                return ExtendedImage.network(
-                                                  '${profileImgUrlList[0].default_round}',
-                                                  enableMemoryCache: true,
-                                                  shape: BoxShape.circle,
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  width: 48,
-                                                  height: 48,
-                                                  fit: BoxFit.cover,
-                                                ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                              default:
-                                                return null;
-                                            }
-                                          },
-                                        )
-                                            : ExtendedImage.network(
-                                          '${profileImgUrlList[0].default_round}',
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 14),
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '${_userModelController.displayName}',
-                                          style: TextStyle(
-                                            color: Color(0xFFffffff),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 2,),
-                                        if(_userModelController.stateMsg != '')
-                                          Text('${_userModelController.stateMsg}',
-                                            style: TextStyle(
-                                                color: Color(0xFFffffff).withOpacity(0.6),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.normal
-                                            ),
-                                          )
-                                      ],
-                                    ),
-                                    Expanded(child: SizedBox()),
-                                    Obx(()=>Row(
-                                      children: [
-                                        Text(
-                                          '점수가 없습니다.',
-                                          style: TextStyle(
-                                            color: Color(0xFFffffff),
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                        for(var rankingTier in rankingTierList)
-                                          if(_myRankingController.tier == rankingTier.tierName)
-                                            Transform.translate(
-                                              offset: Offset(6, 2),
-                                              child: SizedBox()
-                                            )
-                                      ],
-                                    ),
-                                    ),
-                                  ],
-                                )
-                              ))
-                        ),
-                      )
-                    ],
+                                    ],
+                                  )
+                                ))
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               );
