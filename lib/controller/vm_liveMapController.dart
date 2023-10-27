@@ -460,7 +460,7 @@ class LiveMapController extends GetxController {
                   await docRef.set(data, SetOptions(merge: true));
 
                   // 날짜 기반 문서 이름 생성
-                  String todayDocName = DateFormat('yyyy-MM-dd').format(DateTime.now());
+                  String todayDocName = DateFormat('yyyyMMdd').format(DateTime.now());
                   DocumentReference dateDocRef = docRef.collection('calendar').doc(todayDocName);
 
                   try {
