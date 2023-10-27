@@ -184,6 +184,8 @@ class _FavoriteResort_moreTabState extends State<FavoriteResort_moreTab> {
                       value: auth.currentUser!.displayName);
                   await userModelController.updateWithinBoundaryOff();
                   await userModelController.updateIsOnLiveOff();
+                  await userModelController.getCurrentUser(userModelController.uid);
+                  _myRankingController.resetMyRankingData();
                   await _myRankingController.getMyRankingData(userModelController.uid);
                   CustomFullScreenDialog.cancelDialog();
                   Navigator.pop(context);

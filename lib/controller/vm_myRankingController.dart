@@ -28,7 +28,7 @@ class MyRankingController extends GetxController {
   RxInt? _totalPassCount = 0.obs;
   RxInt? _totalScore = 0.obs;
   RxString? _uid = ''.obs;
-  RxBool? _exist=true.obs;
+  RxBool? _exist= false.obs;
 
   Timestamp get lastPassTime => _lastPassTime!;
   Map<String, dynamic> get passCountData => _passCountData!.value as Map<String, dynamic>;
@@ -76,6 +76,7 @@ class MyRankingController extends GetxController {
   void resetMyRankingData() async {
     this._tier!.value = '';
     this._totalScore!.value = 0;
+    this._exist!.value = false;
   }
 
 }
