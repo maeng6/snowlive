@@ -76,6 +76,7 @@ class MyRankingController extends GetxController {
   void resetMyRankingData() async {
     this._tier!.value = '';
     this._totalScore!.value = 0;
+    this._exist!.value = false;
   }
 
 }

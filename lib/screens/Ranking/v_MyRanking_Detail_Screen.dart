@@ -41,6 +41,193 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
     return FutureBuilder(
       future: _myRankingController.getMyRankingData(_userModelController.uid),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container(
+            color: Color(0xFF3D83ED),
+            child: SafeArea(
+              top: false,
+              bottom: true,
+              child: Scaffold(
+                backgroundColor: Color(0xFF3D83ED),
+                appBar: AppBar(
+                  backgroundColor: Color(0xFF3D83ED),
+                  leading: GestureDetector(
+                    child: Image.asset(
+                      'assets/imgs/icons/icon_snowLive_back.png',
+                      scale: 4,
+                      width: 26,
+                      height: 26,
+                      color: Color(0xFFFFFFFF),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  elevation: 0.0,
+                ),
+                body: Column(
+                  children: [
+                    Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: ExtendedImage.asset(
+                            'assets/imgs/icons/image_background_myscore.png',
+                            enableMemoryCache: true,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Positioned(
+                            top: 16,
+                            right: 28,
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFFFFFFF),
+                                    border: Border.all(color: Color(0xFFD9D9D9), width: 1),
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        '',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xFF444444),
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
+                        ),
+                        Positioned.fill(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height: 120,
+                                  child: Text(
+                                    '',
+                                    style: GoogleFonts.bebasNeue(
+                                      fontSize: 120,
+                                      fontWeight: FontWeight.normal,
+                                      color: Color(0xFF3D83ED),
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  'POINTS',
+                                  style: GoogleFonts.bebasNeue(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.normal,
+                                    color: Color(0xFF000000),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 16,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              '${_seasonController.currentSeason} 시즌 '
+                                  '${_resortModelController.getResortName(_userModelController.resortNickname!)} 포인트',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFF1357BC),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      child: Container(
+                        width: _size.width,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 14),
+                                child: Text(
+                                  '포인트 상세',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold
+                                  ),
+                                ),
+
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal:  40 ),
+                              height: 240,
+                              width: _size.width,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                        child: Center(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Image.asset(
+                                                  'assets/imgs/icons/icon_ranking_nodata_1.png',
+                                                  scale: 4,
+                                                  width: 43,
+                                                  height: 32,
+                                                ),
+                                                SizedBox(height: 12,),
+                                                Text('',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.normal
+                                                  ),),
+                                                SizedBox(
+                                                  height: 36,
+                                                )
+                                              ],
+                                            ))
+
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+
+
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 30,),
+                  ],
+                )
+              ),
+            ),
+          );
+        }
         return Container(
           color: Color(0xFF3D83ED),
           child: SafeArea(
@@ -94,39 +281,6 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                 fontSize: 15
                             ),),
                         ),
-                        // SizedBox(
-                        //   height: 20,
-                        // ),
-                        // // Padding(
-                        // //     padding: EdgeInsets.only(left: 16, right: 12, bottom: 20),
-                        // //     child: Column(
-                        // //         children: [
-                        // //           Container(
-                        // //             height: 40,
-                        // //             child: ElevatedButton(
-                        // //               child: Text(
-                        // //                 '라이브온 하러 가기',
-                        // //                 style: TextStyle(
-                        // //                     color: Color(0xFFffffff),
-                        // //                     fontWeight: FontWeight.bold,
-                        // //                     fontSize: 14),
-                        // //               ),
-                        // //               onPressed: () async{
-                        // //                 Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
-                        // //               },
-                        // //               style: ElevatedButton.styleFrom(
-                        // //                 padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-                        // //                 minimumSize: Size(40, 10),
-                        // //                 backgroundColor: Color(0xFF073985),
-                        // //                 shape: RoundedRectangleBorder(
-                        // //                     borderRadius: BorderRadius.circular(8)),
-                        // //                 elevation: 0,
-                        // //               ),
-                        // //             ),
-                        // //           ),
-                        // //         ]
-                        // //     )
-                        // // )
                       ],
                     ),
                   ),
@@ -140,73 +294,326 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                         .snapshots(),
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (!snapshot.hasData || snapshot.data == null){
-                        return Center(
-                          child: Container(
-                            width: _size.width,
-                            height: _size.height-200,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
+                        return Column(
+                          children: [
+                            Stack(
                               children: [
-                                Container(
-                                  width: 80,
-                                  height: 94,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16),
                                   child: ExtendedImage.asset(
-                                    'assets/imgs/ranking/icon_ranking_nodata.png',
+                                    'assets/imgs/icons/image_background_myscore.png',
                                     enableMemoryCache: true,
-                                    scale: 4,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 16,
+                                Positioned(
+                                    top: 16,
+                                    right: 28,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFFFFFFF),
+                                            border: Border.all(color: Color(0xFFD9D9D9), width: 1),
+                                            borderRadius: BorderRadius.circular(30.0),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                '',
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Color(0xFF444444),
+                                                    fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    )
                                 ),
-                                Center(
-                                  child: Text('아직 랭킹 정보가 없어요!',
-                                    style: TextStyle(
-                                        color: Color(0xFFFFFFFF),
-                                        fontSize: 15
-                                    ),),
+                                Positioned.fill(
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          height: 120,
+                                          child: Text(
+                                            '',
+                                            style: GoogleFonts.bebasNeue(
+                                              fontSize: 120,
+                                              fontWeight: FontWeight.normal,
+                                              color: Color(0xFF3D83ED),
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          'POINTS',
+                                          style: GoogleFonts.bebasNeue(
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.normal,
+                                            color: Color(0xFF000000),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                                // SizedBox(
-                                //   height: 20,
-                                // ),
-                                // // Padding(
-                                // //     padding: EdgeInsets.only(left: 16, right: 12, bottom: 20),
-                                // //     child: Column(
-                                // //         children: [
-                                // //           Container(
-                                // //             height: 40,
-                                // //             child: ElevatedButton(
-                                // //               child: Text(
-                                // //                 '라이브온 하러 가기',
-                                // //                 style: TextStyle(
-                                // //                     color: Color(0xFFffffff),
-                                // //                     fontWeight: FontWeight.bold,
-                                // //                     fontSize: 14),
-                                // //               ),
-                                // //               onPressed: () async{
-                                // //                 Get.offAll(()=>MainHome(uid: _userModelController.uid, initialPage: 0,));
-                                // //               },
-                                // //               style: ElevatedButton.styleFrom(
-                                // //                 padding: EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-                                // //                 minimumSize: Size(40, 10),
-                                // //                 backgroundColor: Color(0xFF073985),
-                                // //                 shape: RoundedRectangleBorder(
-                                // //                     borderRadius: BorderRadius.circular(8)),
-                                // //                 elevation: 0,
-                                // //               ),
-                                // //             ),
-                                // //           ),
-                                // //         ]
-                                // //     )
-                                // // )
+                                Positioned(
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 16,
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      '${_seasonController.currentSeason} 시즌 '
+                                          '${_resortModelController.getResortName(_userModelController.resortNickname!)} 포인트',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
-                          ),
+                            SizedBox(height: 12),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Color(0xFF1357BC),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              margin: EdgeInsets.symmetric(horizontal: 16),
+                              child: Container(
+                                width: _size.width,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 14),
+                                        child: Text(
+                                          '포인트 상세',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold
+                                          ),
+                                        ),
+
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(horizontal:  40 ),
+                                      height: 240,
+                                      width: _size.width,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              child: Center(
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Image.asset(
+                                                        'assets/imgs/icons/icon_ranking_nodata_1.png',
+                                                        scale: 4,
+                                                        width: 43,
+                                                        height: 32,
+                                                      ),
+                                                      SizedBox(height: 12,),
+                                                      Text('',
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.normal
+                                                        ),),
+                                                      SizedBox(
+                                                        height: 36,
+                                                      )
+                                                    ],
+                                                  ))
+
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+
+
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 30,),
+                          ],
                         );
                       }
-                      else if(snapshot.connectionState == ConnectionState.waiting) {
-                        return SizedBox.shrink();
+                      else if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Column(
+                          children: [
+                            Stack(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                                  child: ExtendedImage.asset(
+                                    'assets/imgs/icons/image_background_myscore.png',
+                                    enableMemoryCache: true,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Positioned(
+                                    top: 16,
+                                    right: 28,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFFFFFFF),
+                                            border: Border.all(color: Color(0xFFD9D9D9), width: 1),
+                                            borderRadius: BorderRadius.circular(30.0),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                '',
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Color(0xFF444444),
+                                                    fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                Positioned.fill(
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          height: 120,
+                                          child: Text(
+                                            '',
+                                            style: GoogleFonts.bebasNeue(
+                                              fontSize: 120,
+                                              fontWeight: FontWeight.normal,
+                                              color: Color(0xFF3D83ED),
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          'POINTS',
+                                          style: GoogleFonts.bebasNeue(
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.normal,
+                                            color: Color(0xFF000000),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 16,
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      '${_seasonController.currentSeason} 시즌 '
+                                          '${_resortModelController.getResortName(_userModelController.resortNickname!)} 포인트',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 12),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Color(0xFF1357BC),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              margin: EdgeInsets.symmetric(horizontal: 16),
+                              child: Container(
+                                width: _size.width,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 14),
+                                        child: Text(
+                                          '포인트 상세',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold
+                                          ),
+                                        ),
+
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(horizontal:  40 ),
+                                      height: 240,
+                                      width: _size.width,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                                child: Center(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Image.asset(
+                                                          'assets/imgs/icons/icon_ranking_nodata_1.png',
+                                                          scale: 4,
+                                                          width: 43,
+                                                          height: 32,
+                                                        ),
+                                                        SizedBox(height: 12,),
+                                                        Text('',
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors.white,
+                                                              fontWeight: FontWeight.normal
+                                                          ),),
+                                                        SizedBox(
+                                                          height: 36,
+                                                        )
+                                                      ],
+                                                    ))
+
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+
+
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 30,),
+                          ],
+                        );
                       }
                       else if (snapshot.data!.docs.isNotEmpty) {
                         final rankingDocs_total = snapshot.data!.docs;
@@ -438,10 +845,165 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                           ],
                         );
                       }
-                      else if (snapshot.connectionState == ConnectionState.waiting) {
-                        return SizedBox.shrink();
-                      }
-                      return SizedBox.shrink();
+                      return Column(
+                        children: [
+                          Stack(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: ExtendedImage.asset(
+                                  'assets/imgs/icons/image_background_myscore.png',
+                                  enableMemoryCache: true,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Positioned(
+                                  top: 16,
+                                  right: 28,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFFFFFFF),
+                                          border: Border.all(color: Color(0xFFD9D9D9), width: 1),
+                                          borderRadius: BorderRadius.circular(30.0),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              '',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Color(0xFF444444),
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                              ),
+                              Positioned.fill(
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 120,
+                                        child: Text(
+                                          '',
+                                          style: GoogleFonts.bebasNeue(
+                                            fontSize: 120,
+                                            fontWeight: FontWeight.normal,
+                                            color: Color(0xFF3D83ED),
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        'POINTS',
+                                        style: GoogleFonts.bebasNeue(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.normal,
+                                          color: Color(0xFF000000),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                left: 0,
+                                right: 0,
+                                bottom: 16,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    '${_seasonController.currentSeason} 시즌 '
+                                        '${_resortModelController.getResortName(_userModelController.resortNickname!)} 포인트',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 12),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Color(0xFF1357BC),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            margin: EdgeInsets.symmetric(horizontal: 16),
+                            child: Container(
+                              width: _size.width,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 14),
+                                      child: Text(
+                                        '포인트 상세',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal:  40 ),
+                                    height: 240,
+                                    width: _size.width,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                              child: Center(
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Image.asset(
+                                                        'assets/imgs/icons/icon_ranking_nodata_1.png',
+                                                        scale: 4,
+                                                        width: 43,
+                                                        height: 32,
+                                                      ),
+                                                      SizedBox(height: 12,),
+                                                      Text('',
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.normal
+                                                        ),),
+                                                      SizedBox(
+                                                        height: 36,
+                                                      )
+                                                    ],
+                                                  ))
+
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+
+
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 30,),
+                        ],
+                      );
                     }),
               ),
 
