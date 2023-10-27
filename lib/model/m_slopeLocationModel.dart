@@ -135,8 +135,8 @@ List<LocationModel> phoenix = [
   LocationModel(
     name: '키위',
     coordinates: [
-      LatLng(37.572216, 128.322321),
-      LatLng(37.575255, 128.321956)
+      LatLng(37.575211, 128.322084),
+      LatLng(37.575200, 128.322262)
     ],
     type: 'slope',
     resort: 12,
