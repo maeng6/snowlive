@@ -424,7 +424,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                               children: [
                                                 Text("스노우라이브 랭킹전에 참여해 보세요",
                                                   style: TextStyle(
-                                                      fontSize: 16,
+                                                      fontSize: 18,
                                                       fontWeight: FontWeight.bold,
                                                       color: Color(0xFF111111)
                                                   ),
@@ -432,11 +432,33 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 SizedBox(
                                                   height: 8,
                                                 ),
-                                                Text("위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요. 이 앱은 항상 허용을 하면 앱이 사용 중이 아닐 때도 위치 데이터를 수집하여 라이브 서비스 기능을 지원합니다.",
+                                                Text("위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요.",
                                                   style: TextStyle(
-                                                      fontSize: 14,
+                                                      fontSize: 15,
                                                       fontWeight: FontWeight.normal,
-                                                      color: Color(0xFF949494)
+                                                      color: Color(0xFF666666)
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 16,
+                                                ),
+                                                Text("랭킹전 유의사항",
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      height: 1.4,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Color(0xFF3D83ED)
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 4,
+                                                ),
+                                                Text("1. 와이파이 끄고 데이터 사용\n2. 위치 추적 항상 허용으로 설정",
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      height: 1.4,
+                                                      fontWeight: FontWeight.normal,
+                                                      color: Color(0xFF111111)
                                                   ),
                                                 ),
                                                 SizedBox(height: 24),
@@ -629,7 +651,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                   style: TextStyle(
                                       fontSize: 14,
                                       letterSpacing: -0.1,
-                                      color: Color(0xFF949494),
+                                      color: Color(0xFF444444),
                                       fontWeight: FontWeight.w900,
                                       overflow: TextOverflow.ellipsis),
                                 ),
@@ -1691,7 +1713,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                             children: [
                                               Text("스노우라이브 랭킹전에 참여해 보세요",
                                                 style: TextStyle(
-                                                    fontSize: 16,
+                                                    fontSize: 18,
                                                     fontWeight: FontWeight.bold,
                                                     color: Color(0xFF111111)
                                                 ),
@@ -1699,11 +1721,33 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                               SizedBox(
                                                 height: 8,
                                               ),
-                                              Text("위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요. 이 앱은 항상 허용을 하면 앱이 사용 중이 아닐 때도 위치 데이터를 수집하여 라이브 서비스 기능을 지원합니다.",
+                                              Text("위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요.",
                                                 style: TextStyle(
-                                                    fontSize: 14,
+                                                    fontSize: 15,
                                                     fontWeight: FontWeight.normal,
-                                                    color: Color(0xFF949494)
+                                                    color: Color(0xFF666666)
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 16,
+                                              ),
+                                              Text("랭킹전 유의사항",
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    height: 1.4,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color(0xFF3D83ED)
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 4,
+                                              ),
+                                              Text("1. 와이파이 끄고 데이터 사용\n2. 위치 추적 항상 허용으로 설정",
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    height: 1.4,
+                                                    fontWeight: FontWeight.normal,
+                                                    color: Color(0xFF111111)
                                                 ),
                                               ),
                                               SizedBox(height: 24),
@@ -1896,7 +1940,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                               style: TextStyle(
                                   fontSize: 14,
                                   letterSpacing: -0.1,
-                                  color: Color(0xFF949494),
+                                  color: Color(0xFF444444),
                                   fontWeight: FontWeight.w900,
                                   overflow: TextOverflow.ellipsis),
                             ),

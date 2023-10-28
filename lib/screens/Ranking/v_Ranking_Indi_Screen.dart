@@ -558,6 +558,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                             child: Container(
                                                               width: 48,
                                                               height: 48,
+                                                              decoration: BoxDecoration(
+                                                                  color: Color(0xFFDFECFF),
+                                                                  borderRadius: BorderRadius
+                                                                      .circular(50)
+                                                              ),
                                                               child: userData['profileImageUrl'].isNotEmpty
                                                                   ? ExtendedImage.network(
                                                                 userData['profileImageUrl'],

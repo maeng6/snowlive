@@ -51,9 +51,27 @@ class LoginController extends GetxController {
               elevation: 0,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-              content: Text(
-                '기존 기기에서 로그아웃됩니다.',
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+              content:
+              Container(
+                height: 148,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/imgs/icons/icon_popup_notice.png',
+                      width: 48,
+                      fit: BoxFit.cover,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 28),
+                      child: Text(
+                        '해당 기기에서 로그인하면,\n기존에 로그인 되어있던 다른 기기에서\n로그아웃됩니다',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, height: 1.4),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               actions: [
                 Row(
@@ -66,11 +84,14 @@ class LoginController extends GetxController {
                       child: const Text(
                         '취소',
                         style: TextStyle(
-                          fontSize: 15,
+                          fontSize: 16,
                           color: Color(0xFF949494),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                    ),
+                    SizedBox(
+                      width: 30,
                     ),
                     TextButton(
                       onPressed: () async {
@@ -86,14 +107,14 @@ class LoginController extends GetxController {
                       child: Text(
                         '확인',
                         style: TextStyle(
-                          fontSize: 15,
+                          fontSize: 16,
                           color: Color(0xFF3D83ED),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ],
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                 ),
               ],
             ),
@@ -110,6 +131,7 @@ class LoginController extends GetxController {
 
   Future<void> deviceIdentificate({required uid}) async{
 
+
     final userDoc = await FirebaseFirestore.instance
         .collection('user')
         .doc('$uid');
@@ -125,9 +147,27 @@ class LoginController extends GetxController {
             elevation: 0,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
             buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-            content: Text(
-              '다른 기기에서 로그인하여, 로그아웃됩니다.',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+            content: Container(
+              height: 120,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/imgs/icons/icon_popup_notice.png',
+                    width: 48,
+                    fit: BoxFit.cover,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 28),
+                    child: Text(
+                      '다른 기기에서 로그인하여\n해당 기기에서 로그아웃됩니다',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, height: 1.4),
+                      textAlign: TextAlign.center,
+
+                    ),
+                  ),
+                ],
+              ),
             ),
             actions: [
               Center(
@@ -144,7 +184,7 @@ class LoginController extends GetxController {
                     child: Text(
                       '확인',
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 16,
                         color: Color(0xFF3D83ED),
                         fontWeight: FontWeight.bold,
                       ),
