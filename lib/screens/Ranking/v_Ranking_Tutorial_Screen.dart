@@ -53,7 +53,7 @@ class _RankingTutorialPageState extends State<RankingTutorialPage> {
           child:
           ExtendedImage.asset('assets/imgs/imgs/img_ranking_tutorial.png',
             enableMemoryCache: true,
-            scale: 4,
+            scale: 1,
             width: _size.width,
           )
         ),

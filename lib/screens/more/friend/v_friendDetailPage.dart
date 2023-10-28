@@ -1290,7 +1290,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                         ),
                                       ),
                                       SizedBox(
-                                        height: 48,
+                                        height: 36,
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -1343,73 +1343,74 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                                     children: [
-                                                                      Text('가입한 크루',
+                                                                      Text('라이브크루',
                                                                         style: TextStyle(
                                                                             fontWeight: FontWeight.normal,
                                                                             fontSize: 13,
                                                                             color: Color(0xFFFFFFFF).withOpacity(0.6)
                                                                         ),),
-                                                                      SizedBox(height: 12),
-                                                                      (crewDocs[0]['profileImageUrl'].isNotEmpty)
-                                                                          ? Container(
-                                                                          width: 50,
-                                                                          height: 50,
-                                                                          child: ExtendedImage.network(
-                                                                            crewDocs[0]['profileImageUrl'],
-                                                                            enableMemoryCache: true,
-                                                                            shape: BoxShape.rectangle,
-                                                                            borderRadius: BorderRadius.circular(6),
-                                                                            fit: BoxFit.cover,
-                                                                            loadStateChanged: (ExtendedImageState state) {
-                                                                              switch (state.extendedImageLoadState) {
-                                                                                case LoadState.loading:
-                                                                                  return SizedBox.shrink();
-                                                                                case LoadState.completed:
-                                                                                  return state.completedWidget;
-                                                                                case LoadState.failed:
-                                                                                  return ExtendedImage.asset(
-                                                                                    myCrewAsset,
-                                                                                    enableMemoryCache: true,
-                                                                                    shape: BoxShape.rectangle,
-                                                                                    borderRadius: BorderRadius.circular(6),
-                                                                                    fit: BoxFit.cover,
-                                                                                  ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                                default:
-                                                                                  return null;
-                                                                              }
-                                                                            },
-                                                                          ))
-                                                                          : Container(
-                                                                        width: 50,
-                                                                        height: 50,
-                                                                        child: ExtendedImage.asset(
-                                                                          myCrewAsset,
-                                                                          enableMemoryCache: true,
-                                                                          shape: BoxShape.rectangle,
-                                                                          borderRadius: BorderRadius.circular(6),
-                                                                          fit: BoxFit.cover,
-                                                                        ),
-                                                                      ),
                                                                       SizedBox(
-                                                                        height: 35,
+                                                                        height: 16,
                                                                       ),
-                                                                      Container(
-                                                                        width: _size.width / 2 - 57,
-                                                                        child: Align(
-                                                                          alignment: Alignment.centerLeft,
-                                                                          child: Text('${crewDocs[0]['crewName']}',
-                                                                            style: TextStyle(
-                                                                              fontWeight: FontWeight.bold,
-                                                                              fontSize: 16,
-                                                                              color: Color(0xFFFFFFFF),
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          Container(
+                                                                            width: _size.width / 2 - 100,
+                                                                            child: Text('${crewDocs[0]['crewName']}',
+                                                                              style: TextStyle(
+                                                                                fontWeight: FontWeight.bold,
+                                                                                fontSize: 16,
+                                                                                color: Color(0xFFFFFFFF),
+                                                                              ),
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                              maxLines: 2,
                                                                             ),
-                                                                            overflow: TextOverflow.ellipsis,
-                                                                            maxLines: 1,
                                                                           ),
-                                                                        ),
+                                                                          (crewDocs[0]['profileImageUrl'].isNotEmpty)
+                                                                              ? Container(
+                                                                              width: 42,
+                                                                              height: 42,
+                                                                              child: ExtendedImage.network(
+                                                                                crewDocs[0]['profileImageUrl'],
+                                                                                enableMemoryCache: true,
+                                                                                shape: BoxShape.rectangle,
+                                                                                borderRadius: BorderRadius.circular(6),
+                                                                                fit: BoxFit.cover,
+                                                                                loadStateChanged: (ExtendedImageState state) {
+                                                                                  switch (state.extendedImageLoadState) {
+                                                                                    case LoadState.loading:
+                                                                                      return SizedBox.shrink();
+                                                                                    case LoadState.completed:
+                                                                                      return state.completedWidget;
+                                                                                    case LoadState.failed:
+                                                                                      return ExtendedImage.asset(
+                                                                                        myCrewAsset,
+                                                                                        enableMemoryCache: true,
+                                                                                        shape: BoxShape.rectangle,
+                                                                                        borderRadius: BorderRadius.circular(6),
+                                                                                        fit: BoxFit.cover,
+                                                                                      ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                                    default:
+                                                                                      return null;
+                                                                                  }
+                                                                                },
+                                                                              ))
+                                                                              : Container(
+                                                                            width: 42,
+                                                                            height: 42,
+                                                                            child: ExtendedImage.asset(
+                                                                              myCrewAsset,
+                                                                              enableMemoryCache: true,
+                                                                              shape: BoxShape.rectangle,
+                                                                              borderRadius: BorderRadius.circular(6),
+                                                                              fit: BoxFit.cover,
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                       SizedBox(
-                                                                        height: 19,
+                                                                        height: 6,
                                                                       ),
                                                                     ],
                                                                   ),
@@ -1431,13 +1432,13 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                                 children: [
-                                                                  Text('가입한 크루',
+                                                                  Text('라이브크루',
                                                                     style: TextStyle(
                                                                         fontWeight: FontWeight.normal,
                                                                         fontSize: 13,
                                                                         color: Color(0xFF444444).withOpacity(0.8)
                                                                     ),),
-                                                                  SizedBox(height: 97),
+                                                                  SizedBox(height: 25),
                                                                   Text('미가입',
                                                                     style: TextStyle(
                                                                         fontWeight: FontWeight.bold,
@@ -1508,43 +1509,51 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                                           mainAxisAlignment: MainAxisAlignment.start,
                                                                           children: [
-                                                                            Text('개인랭킹',
+                                                                            Text('개인 랭킹',
                                                                               style: TextStyle(
                                                                                   fontWeight: FontWeight.normal,
                                                                                   fontSize: 13,
                                                                                   color: Color(0xFFFFFFFF).withOpacity(0.6)
                                                                               ),),
-                                                                            SizedBox(height: 10),
-                                                                            Column(
+                                                                            SizedBox(height: 16),
+                                                                            Row(
                                                                               crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                               children: [
+                                                                                Container(
+                                                                                  width: _size.width / 2 - 105,
+                                                                                  child: Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children: [
+                                                                                      Text('${rankingDocs[0]['totalScore']}점',
+                                                                                        style: TextStyle(
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                            fontSize: 16,
+                                                                                            color: Color(0xFFFFFFFF)
+                                                                                        ),
+                                                                                        overflow: TextOverflow.ellipsis,
+                                                                                        maxLines: 2,
+                                                                                      ),
+                                                                                      SizedBox(
+                                                                                        height: 2,
+                                                                                      ),
+                                                                                      Text(
+                                                                                        '${userRankingMap!['${rankingDocs[0]['uid']}']}등',
+                                                                                        style: TextStyle(
+                                                                                            fontSize: 13,
+                                                                                            color: Color(0xFFFFFFFF)
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
                                                                                 Transform.translate(
-                                                                                  offset: Offset(-10,-10),
+                                                                                  offset: Offset(5,-4),
                                                                                   child: ExtendedImage.network(
                                                                                     rankingTier.badgeAsset,
                                                                                     enableMemoryCache: true,
                                                                                     fit: BoxFit.cover,
-                                                                                    width: 64,
-                                                                                  ),
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  height: 15,
-                                                                                ),
-                                                                                Text('${rankingDocs[0]['totalScore']}점',
-                                                                                  style: TextStyle(
-                                                                                      fontWeight: FontWeight.bold,
-                                                                                      fontSize: 16,
-                                                                                      color: Color(0xFFFFFFFF)
-                                                                                  ),
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  height: 3,
-                                                                                ),
-                                                                                Text(
-                                                                                  '${userRankingMap!['${rankingDocs[0]['uid']}']}등',
-                                                                                  style: TextStyle(
-                                                                                      fontSize: 13,
-                                                                                      color: Color(0xFFFFFFFF)
+                                                                                    width: 43,
                                                                                   ),
                                                                                 ),
                                                                               ],
@@ -1573,13 +1582,13 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                           mainAxisAlignment: MainAxisAlignment.start,
                                                           children: [
-                                                            Text('개인랭킹',
+                                                            Text('개인 랭킹',
                                                               style: TextStyle(
                                                                   fontWeight: FontWeight.normal,
                                                                   fontSize: 13,
                                                                   color: Color(0xFF444444).withOpacity(0.8)
                                                               ),),
-                                                            SizedBox(height: 97),
+                                                            SizedBox(height: 25),
                                                             Text('미참여',
                                                               style: TextStyle(
                                                                   fontWeight: FontWeight.bold,
@@ -1638,7 +1647,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                   ? Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  SizedBox(height: 48,),
+                                                  SizedBox(height: 36,),
                                                   Padding(
                                                       padding: EdgeInsets.symmetric(horizontal: 20),
                                                       child: Text('라이딩 횟수',
@@ -1695,8 +1704,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                       Color barColor = data['barColor'];
                                                                       return Container(
                                                                         padding: EdgeInsets.only(bottom: 10),
-                                                                        margin: EdgeInsets.symmetric(horizontal: 5),
-                                                                        width: barData.length < 5 ? _size.width / 5 - 25 : _size.width / 5 - 28,
+                                                                        margin: EdgeInsets.symmetric(horizontal: 10),
+                                                                        width: barData.length < 5 ? _size.width / 5 - 48 : _size.width / 5 - 48,
                                                                         height: 195,
                                                                         child: Column(
                                                                           mainAxisAlignment: MainAxisAlignment.end,

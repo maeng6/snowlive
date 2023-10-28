@@ -227,6 +227,11 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                 child: Container(
                                   width: 48,
                                   height: 48,
+                                  decoration: BoxDecoration(
+                                      color: Color(0xFFDFECFF),
+                                      borderRadius: BorderRadius
+                                          .circular(50)
+                                  ),
                                   child: userData['profileImageUrl'].isNotEmpty
                                       ? ExtendedImage.network(
                                     userData['profileImageUrl'],
@@ -270,64 +275,67 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 14),
+                              SizedBox(width: 12),
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 3),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      userData['displayName'],
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: Color(0xFF111111)),
-                                    ),
-                                    if(userData['stateMsg'].isNotEmpty)
-                                      Text(userData['stateMsg'],
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                child: Container(
+                                  width: _size.width - 172,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        userData['displayName'],
                                         style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0xFF949494)
-                                        ),)
-                                    // StreamBuilder<QuerySnapshot>(
-                                    //   stream: FirebaseFirestore.instance
-                                    //       .collection('liveCrew')
-                                    //       .where('crewID',
-                                    //       isEqualTo: userData['liveCrew'])
-                                    //       .snapshots(),
-                                    //   builder: (context,
-                                    //       AsyncSnapshot<QuerySnapshot> snapshot) {
-                                    //     if (snapshot.hasError) {
-                                    //       return Text("오류가 발생했습니다");
-                                    //     }
-                                    //
-                                    //     if (snapshot.connectionState ==
-                                    //         ConnectionState.waiting) {
-                                    //       return CircularProgressIndicator();
-                                    //     }
-                                    //
-                                    //     if (!snapshot.hasData ||
-                                    //         snapshot.data!.docs.isEmpty) {
-                                    //       return SizedBox();
-                                    //     }
-                                    //
-                                    //     var crewData = snapshot.data!.docs.first
-                                    //         .data() as Map<String, dynamic>?;
-                                    //
-                                    //     // 크루명 가져오기
-                                    //     String crewName =
-                                    //         crewData?['crewName'] ?? '';
-                                    //
-                                    //     return Text(
-                                    //       crewName,
-                                    //       style: TextStyle(
-                                    //           fontSize: 12,
-                                    //           color: Color(0xFF949494)),
-                                    //     );
-                                    //   },
-                                    // ),
-                                  ],
+                                            fontSize: 15,
+                                            color: Color(0xFF111111)),
+                                      ),
+                                      if(userData['stateMsg'].isNotEmpty)
+                                        Text(userData['stateMsg'],
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Color(0xFF949494)
+                                          ),)
+                                      // StreamBuilder<QuerySnapshot>(
+                                      //   stream: FirebaseFirestore.instance
+                                      //       .collection('liveCrew')
+                                      //       .where('crewID',
+                                      //       isEqualTo: userData['liveCrew'])
+                                      //       .snapshots(),
+                                      //   builder: (context,
+                                      //       AsyncSnapshot<QuerySnapshot> snapshot) {
+                                      //     if (snapshot.hasError) {
+                                      //       return Text("오류가 발생했습니다");
+                                      //     }
+                                      //
+                                      //     if (snapshot.connectionState ==
+                                      //         ConnectionState.waiting) {
+                                      //       return CircularProgressIndicator();
+                                      //     }
+                                      //
+                                      //     if (!snapshot.hasData ||
+                                      //         snapshot.data!.docs.isEmpty) {
+                                      //       return SizedBox();
+                                      //     }
+                                      //
+                                      //     var crewData = snapshot.data!.docs.first
+                                      //         .data() as Map<String, dynamic>?;
+                                      //
+                                      //     // 크루명 가져오기
+                                      //     String crewName =
+                                      //         crewData?['crewName'] ?? '';
+                                      //
+                                      //     return Text(
+                                      //       crewName,
+                                      //       style: TextStyle(
+                                      //           fontSize: 12,
+                                      //           color: Color(0xFF949494)),
+                                      //     );
+                                      //   },
+                                      // ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               Expanded(child: SizedBox()),

@@ -646,12 +646,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                             ? Container(
                                                             width: 46,
                                                             height: 46,
-                                                            // decoration: BoxDecoration(
-                                                            //     color: Color(
-                                                            //         crewDocs[index]['crewColor']),
-                                                            //     borderRadius: BorderRadius
-                                                            //         .circular(8)
-                                                            // ),
+                                                            decoration: BoxDecoration(
+                                                                color: Color(0xFFDFECFF),
+                                                                borderRadius: BorderRadius
+                                                                    .circular(8)
+                                                            ),
                                                             child: ExtendedImage
                                                                 .network(
                                                               crewDocs[index]['profileImageUrl'],
