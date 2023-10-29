@@ -63,6 +63,12 @@ class _InviteListPage_friendState extends State<InviteListPage_friend> {
                                         fit: StackFit.loose,
                                         children: [
                                           Container(
+                                            width: 40,
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                                color: Color(0xFFDFECFF),
+                                                borderRadius: BorderRadius.circular(50)
+                                            ),
                                             alignment: Alignment.centerLeft,                                            child: ExtendedImage.network(
                                               inviDocs[index]['profileImageUrl'],
                                               enableMemoryCache: true,
@@ -114,7 +120,8 @@ class _InviteListPage_friendState extends State<InviteListPage_friend> {
                                       fit: StackFit.loose,
                                       children: [
                                         Container(
-                                          alignment: Alignment.centerLeft,                                          child: ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
+                                          alignment: Alignment.centerLeft,
+                                          child: ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
                                             enableMemoryCache:
                                             true,
                                             shape: BoxShape.circle,
@@ -143,12 +150,15 @@ class _InviteListPage_friendState extends State<InviteListPage_friend> {
                             ),
                             title: Transform.translate(
                               offset: Offset(-20, 0),
-                              child: Text(
-                                inviDocs[index]['displayName'],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 16,
-                                  color: Color(0xFF111111),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Text(
+                                  inviDocs[index]['displayName'],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                    color: Color(0xFF111111),
+                                  ),
                                 ),
                               ),
                             ),
