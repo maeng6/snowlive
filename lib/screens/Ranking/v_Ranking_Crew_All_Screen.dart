@@ -66,7 +66,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
 
     if (_userModelController.liveCrew != '' &&
         _userModelController.liveCrew != null) {
-      _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
+      _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
     } else {}
 
     return StreamBuilder<QuerySnapshot>(
@@ -263,7 +263,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                           onTap: () async {
                             CustomFullScreenDialog.showDialog();
                             await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                            await _liveCrewModelController.getCurrnetCrew(document['crewID']);
+                            await _liveCrewModelController.getCurrrentCrew(document['crewID']);
                             CustomFullScreenDialog.cancelDialog();
                             Get.to(() => CrewDetailPage_screen());
                           },

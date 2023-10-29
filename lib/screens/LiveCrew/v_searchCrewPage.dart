@@ -321,7 +321,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                             ? GestureDetector(
                           onTap: () async{
                             CustomFullScreenDialog.showDialog();
-                            await _liveCrewModelController.getCurrnetCrew(foundCrewID);
+                            await _liveCrewModelController.getCurrrentCrew(foundCrewID);
                             CustomFullScreenDialog.cancelDialog();
                             Get.to(()=> CrewDetailPage_screen());
                           },
@@ -460,7 +460,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                         if(isFound && foundCrewID != null && foundCrewID != '') {
                                           CustomFullScreenDialog.showDialog();
                                           await _liveCrewModelController
-                                              .getCurrnetCrew(foundCrewID);
+                                              .getCurrrentCrew(foundCrewID);
                                           CustomFullScreenDialog.cancelDialog();
                                           Get.to(() => CrewDetailPage_screen());
                                         }else {}

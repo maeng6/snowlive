@@ -69,7 +69,7 @@ class _SetSNSlink_crewDetailState extends State<SetSNSlink_crewDetail> {
                       if(isValid){
                         CustomFullScreenDialog.showDialog();
                         await _liveCrewModelController.updateSNS(snsLink: _crewDescribTextEditingController.text, crewID: _liveCrewModelController.crewID);
-                        await _liveCrewModelController.getCurrnetCrew(_liveCrewModelController.crewID);
+                        await _liveCrewModelController.getCurrrentCrew(_liveCrewModelController.crewID);
                         CustomFullScreenDialog.cancelDialog();
                         Navigator.pop(context);
                       }

@@ -1483,8 +1483,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                           children: [
                             if(memberUidList.contains(_userModelController.uid) == false)
                               Expanded(
-                                child:
-                                Padding(
+                                child:  Padding(
                                   padding: const EdgeInsets.only(right: 10.0),
                                   child: ElevatedButton(
                                     onPressed:
@@ -1621,11 +1620,12 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                         backgroundColor: Color(crewDocs[0]['crewColor']).withOpacity(0.2),
                                         padding: EdgeInsets.symmetric(horizontal: 0)),
                                   ),
-                                ),
+                                )
+
                               ),
+                            if (_liveCrewModelController.sns!.isNotEmpty && _liveCrewModelController.sns != '')
                             Expanded(
-                              child:
-                              ElevatedButton(
+                              child:ElevatedButton(
                                 onPressed:
                                     () {
                                   if(_liveCrewModelController.sns!.isNotEmpty && _liveCrewModelController.sns != '' ) {
@@ -1687,7 +1687,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                     minimumSize: Size(100, 56),
                                     backgroundColor: Color(crewDocs[0]['crewColor']),
                                     padding: EdgeInsets.symmetric(horizontal: 0)),
-                              ),
+                              )
                             ),
                           ],
                         ),

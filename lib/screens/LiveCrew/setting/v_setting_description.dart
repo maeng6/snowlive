@@ -67,7 +67,7 @@ class _SetModifyDescription_crewDetailState extends State<SetModifyDescription_c
                       if(isValid){
                         CustomFullScreenDialog.showDialog();
                         await _liveCrewModelController.updateDescription(desc: _crewDescribTextEditingController.text, crewID: _liveCrewModelController.crewID);
-                        await _liveCrewModelController.getCurrnetCrew(_liveCrewModelController.crewID);
+                        await _liveCrewModelController.getCurrrentCrew(_liveCrewModelController.crewID);
                         CustomFullScreenDialog.cancelDialog();
                         Navigator.pop(context);
                       }

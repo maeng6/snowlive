@@ -408,7 +408,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                                               Navigator.pop(context);
                                                                               CustomFullScreenDialog.showDialog();
                                                                               await _liveCrewModelController.deleteInvitation_crew(crewID: _userModelController.liveCrew, applyUid: applyDocs[index]['uid']);
-                                                                              await _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
+                                                                              await _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
                                                                               CustomFullScreenDialog.cancelDialog();
                                                                             }catch(e){
                                                                               Navigator.pop(context);
@@ -516,7 +516,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                                                 CustomFullScreenDialog.showDialog();
                                                                                 await _liveCrewModelController.updateCrewMember(applyUid: applyDocs[index]['uid'], crewID: _userModelController.liveCrew);
                                                                                 await _liveCrewModelController.deleteInvitation_crew(crewID: _userModelController.liveCrew, applyUid: applyDocs[index]['uid']);
-                                                                                await _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
+                                                                                await _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
                                                                                 CustomFullScreenDialog.cancelDialog();
                                                                               }else{
                                                                                 Get.dialog(AlertDialog(
@@ -720,7 +720,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                 onTap: () async {
                                   CustomFullScreenDialog.showDialog();
                                   await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                  await _liveCrewModelController.getCurrnetCrew(crewDoc['crewID']);
+                                  await _liveCrewModelController.getCurrrentCrew(crewDoc['crewID']);
                                   CustomFullScreenDialog.cancelDialog();
                                   Get.to(()=>CrewDetailPage_screen());
                                 },
@@ -1023,7 +1023,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                               onTap:() async{
                                 CustomFullScreenDialog.showDialog();
                                 await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                await _liveCrewModelController.getCurrnetCrew(crewDocs[0]['crewID']);
+                                await _liveCrewModelController.getCurrrentCrew(crewDocs[0]['crewID']);
                                 CustomFullScreenDialog.cancelDialog();
                                 Get.to(()=>CrewDetailPage_screen());
                               },
@@ -1111,7 +1111,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                               onTap:() async{
                                 CustomFullScreenDialog.showDialog();
                                 await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                await _liveCrewModelController.getCurrnetCrew(crewDocs[1]['crewID']);
+                                await _liveCrewModelController.getCurrrentCrew(crewDocs[1]['crewID']);
                                 CustomFullScreenDialog.cancelDialog();
                                 Get.to(()=>CrewDetailPage_screen());
                               },
@@ -1199,7 +1199,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                               onTap:() async{
                                 CustomFullScreenDialog.showDialog();
                                 await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                await _liveCrewModelController.getCurrnetCrew(crewDocs[2]['crewID']);
+                                await _liveCrewModelController.getCurrrentCrew(crewDocs[2]['crewID']);
                                 CustomFullScreenDialog.cancelDialog();
                                 Get.to(()=>CrewDetailPage_screen());
                               },
@@ -1404,7 +1404,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                         onTap: () async {
                                           CustomFullScreenDialog.showDialog();
                                           await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                          await _liveCrewModelController.getCurrnetCrew(doc['crewID']);
+                                          await _liveCrewModelController.getCurrrentCrew(doc['crewID']);
                                           CustomFullScreenDialog.cancelDialog();
                                           Get.to(() => CrewDetailPage_screen());
                                         },
