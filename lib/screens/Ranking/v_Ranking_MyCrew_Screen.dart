@@ -63,7 +63,7 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
 
     if (_userModelController.liveCrew != '' &&
         _userModelController.liveCrew != null) {
-      _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
+      _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
     } else {}
     return StreamBuilder(
         stream: FirebaseFirestore.instance

@@ -241,7 +241,7 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
                         await _userModelController.updateResortNickname(baseResort);
                         await _userModelController.updateLiveCrew(crewID);
                         await _userModelController.getCurrentUser(_userModelController.uid);
-                        await _liveCrewModelController.getCurrnetCrew(crewID);
+                        await _liveCrewModelController.getCurrrentCrew(crewID);
                         print('크루 생성 완료');
                         CustomFullScreenDialog.cancelDialog();
                         for(int i=0; i<5; i++){

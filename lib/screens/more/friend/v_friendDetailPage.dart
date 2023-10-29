@@ -1324,7 +1324,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                             onTap: () async {
                                                               if(friendDocs[0]['liveCrew'] != '' && friendDocs[0]['liveCrew'] != null){
                                                                 CustomFullScreenDialog.showDialog();
-                                                                await _liveCrewModelController.getCurrnetCrew(friendDocs[0]['liveCrew']);
+                                                                await _liveCrewModelController.getCurrrentCrew(friendDocs[0]['liveCrew']);
                                                                 CustomFullScreenDialog.cancelDialog();
                                                                 setState(() {edit=false;});
                                                                 Get.to(()=>CrewDetailPage_screen());

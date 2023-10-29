@@ -62,7 +62,6 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                 int leaderFavoriteResort = leaderDoc.data()!['favoriteResort'];
 
                 _userModelController.getCurrentUser(_userModelController.uid);
-                print(_userModelController.friendUidList);
 
                 return Padding(
                   padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 30),
@@ -916,6 +915,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                   child: CircularProgressIndicator(),
                 );
               }
+
               return Container();
             },
           )
