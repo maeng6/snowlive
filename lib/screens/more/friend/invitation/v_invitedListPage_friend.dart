@@ -66,6 +66,12 @@ class _InvitedListPage_friendState extends State<InvitedListPage_friend> {
                                         fit: StackFit.loose,
                                         children: [
                                           Container(
+                                            width: 40,
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                                color: Color(0xFFDFECFF),
+                                                borderRadius: BorderRadius.circular(50)
+                                            ),
                                             alignment: Alignment.centerLeft,
                                             child: ExtendedImage.network(
                                               inviDocs[index]['profileImageUrl'],

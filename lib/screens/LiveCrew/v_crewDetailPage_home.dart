@@ -705,6 +705,10 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                     child: Container(
                                                                                         width: _size.width * 0.15,
                                                                                         height: _size.width * 0.15,
+                                                                                        decoration: BoxDecoration(
+                                                                                            color: Color(0xFFDFECFF),
+                                                                                            borderRadius: BorderRadius.circular(50)
+                                                                                        ),
                                                                                         child: ExtendedImage.network(
                                                                                           memberUserDocs[0]['profileImageUrl'],
                                                                                           enableMemoryCache: true,
@@ -825,6 +829,10 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                     child: Container(
                                                                                         width: _size.width * 0.15,
                                                                                         height: _size.width * 0.15,
+                                                                                        decoration: BoxDecoration(
+                                                                                            color: Color(0xFFDFECFF),
+                                                                                            borderRadius: BorderRadius.circular(50)
+                                                                                        ),
                                                                                         child: ExtendedImage.network(
                                                                                           memberUserDocs[0]['profileImageUrl'],
                                                                                           enableMemoryCache: true,
@@ -944,6 +952,10 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                     child: Container(
                                                                                         width: _size.width * 0.15,
                                                                                         height: _size.width * 0.15,
+                                                                                        decoration: BoxDecoration(
+                                                                                            color: Color(0xFFDFECFF),
+                                                                                            borderRadius: BorderRadius.circular(50)
+                                                                                        ),
                                                                                         child: ExtendedImage.network(
                                                                                           memberUserDocs[0]['profileImageUrl'],
                                                                                           enableMemoryCache: true,

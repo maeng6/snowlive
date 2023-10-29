@@ -70,41 +70,38 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                     Get.to(()=>CrewDetailPage_screen());
                                   },
                                   child: Container(
-                                      width: 48,
-                                      height: 48,
+                                      width: 46,
+                                      height: 46,
                                       decoration: BoxDecoration(
-                                        color: Color(inviDocs[index]['crewColor']),
+                                          color: Color(0xFFDFECFF),
                                         borderRadius: BorderRadius.circular(8)
                                       ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2),
-                                        child: ExtendedImage.network(
-                                          inviDocs[index]['profileImageUrl'],
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.rectangle,
-                                          borderRadius:
-                                          BorderRadius.circular(6),
-                                          fit: BoxFit.cover,
-                                          loadStateChanged: (ExtendedImageState state) {
-                                            switch (state.extendedImageLoadState) {
-                                              case LoadState.loading:
-                                                return SizedBox.shrink();
-                                              case LoadState.completed:
-                                                return state.completedWidget;
-                                              case LoadState.failed:
-                                                return ExtendedImage.asset(
-                                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                                  shape: BoxShape.circle,
-                                                  borderRadius: BorderRadius.circular(20),
-                                                  width: 24,
-                                                  height: 24,
-                                                  fit: BoxFit.cover,
-                                                ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                              default:
-                                                return null;
-                                            }
-                                          },
-                                        ),
+                                      child: ExtendedImage.network(
+                                        inviDocs[index]['profileImageUrl'],
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius:
+                                        BorderRadius.circular(6),
+                                        fit: BoxFit.cover,
+                                        loadStateChanged: (ExtendedImageState state) {
+                                          switch (state.extendedImageLoadState) {
+                                            case LoadState.loading:
+                                              return SizedBox.shrink();
+                                            case LoadState.completed:
+                                              return state.completedWidget;
+                                            case LoadState.failed:
+                                              return ExtendedImage.asset(
+                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                shape: BoxShape.circle,
+                                                borderRadius: BorderRadius.circular(20),
+                                                width: 24,
+                                                height: 24,
+                                                fit: BoxFit.cover,
+                                              ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                            default:
+                                              return null;
+                                          }
+                                        },
                                       )),
                                 )
                                     : GestureDetector(

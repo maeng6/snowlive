@@ -2008,34 +2008,42 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                         setState(() {edit=false;});
                                                                         Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
                                                                       },
-                                                                      child: ExtendedImage.network(
-                                                                        userData['profileImageUrl'],
-                                                                        cache: true,
-                                                                        shape: BoxShape.circle,
-                                                                        borderRadius:
-                                                                        BorderRadius.circular(20),
+                                                                      child: Container(
                                                                         width: 40,
                                                                         height: 40,
-                                                                        fit: BoxFit.cover,
-                                                                        loadStateChanged: (ExtendedImageState state) {
-                                                                          switch (state.extendedImageLoadState) {
-                                                                            case LoadState.loading:
-                                                                              return SizedBox.shrink();
-                                                                            case LoadState.completed:
-                                                                              return state.completedWidget;
-                                                                            case LoadState.failed:
-                                                                              return ExtendedImage.network(
-                                                                                '${profileImgUrlList[0].default_round}',
-                                                                                shape: BoxShape.circle,
-                                                                                borderRadius: BorderRadius.circular(20),
-                                                                                width: 40,
-                                                                                height: 40,
-                                                                                fit: BoxFit.cover,
-                                                                              ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                            default:
-                                                                              return null;
-                                                                          }
-                                                                        },
+                                                                        decoration: BoxDecoration(
+                                                                            color: Color(0xFFDFECFF),
+                                                                            borderRadius: BorderRadius.circular(50)
+                                                                        ),
+                                                                        child: ExtendedImage.network(
+                                                                          userData['profileImageUrl'],
+                                                                          cache: true,
+                                                                          shape: BoxShape.circle,
+                                                                          borderRadius:
+                                                                          BorderRadius.circular(20),
+                                                                          width: 40,
+                                                                          height: 40,
+                                                                          fit: BoxFit.cover,
+                                                                          loadStateChanged: (ExtendedImageState state) {
+                                                                            switch (state.extendedImageLoadState) {
+                                                                              case LoadState.loading:
+                                                                                return SizedBox.shrink();
+                                                                              case LoadState.completed:
+                                                                                return state.completedWidget;
+                                                                              case LoadState.failed:
+                                                                                return ExtendedImage.network(
+                                                                                  '${profileImgUrlList[0].default_round}',
+                                                                                  shape: BoxShape.circle,
+                                                                                  borderRadius: BorderRadius.circular(20),
+                                                                                  width: 40,
+                                                                                  height: 40,
+                                                                                  fit: BoxFit.cover,
+                                                                                ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                              default:
+                                                                                return null;
+                                                                            }
+                                                                          },
+                                                                        ),
                                                                       ),
                                                                     ),
                                                                   if (userData['profileImageUrl'] == "")
