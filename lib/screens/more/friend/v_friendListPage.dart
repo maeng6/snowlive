@@ -370,6 +370,10 @@ class _FriendListPageState extends State<FriendListPage> {
                                                         Container(
                                                             width: 56,
                                                             height: 56,
+                                                            decoration: BoxDecoration(
+                                                                color: Color(0xFFDFECFF),
+                                                                borderRadius: BorderRadius.circular(50)
+                                                            ),
                                                             child: ExtendedImage.network(_userModelController.profileImageUrl!,
                                                               enableMemoryCache: true,
                                                               shape: BoxShape.circle,
@@ -679,32 +683,40 @@ class _FriendListPageState extends State<FriendListPage> {
                                                                         alignment: Alignment.center,
                                                                         child:
                                                                         BFdoc.get('profileImageUrl').isNotEmpty?
-                                                                        ExtendedImage.network(BFdoc.get('profileImageUrl'),
-                                                                          enableMemoryCache: true,
-                                                                          shape: BoxShape.circle,
-                                                                          borderRadius: BorderRadius.circular(8),
+                                                                        Container(
                                                                           width: 48,
                                                                           height: 48,
-                                                                          fit: BoxFit.cover,
-                                                                          loadStateChanged: (ExtendedImageState state) {
-                                                                            switch (state.extendedImageLoadState) {
-                                                                              case LoadState.loading:
-                                                                                return SizedBox.shrink();
-                                                                              case LoadState.completed:
-                                                                                return state.completedWidget;
-                                                                              case LoadState.failed:
-                                                                                return ExtendedImage.asset(
-                                                                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                                                                  shape: BoxShape.circle,
-                                                                                  borderRadius: BorderRadius.circular(8),
-                                                                                  width: 48,
-                                                                                  height: 48,
-                                                                                  fit: BoxFit.cover,
-                                                                                ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                              default:
-                                                                                return null;
-                                                                            }
-                                                                          },
+                                                                          decoration: BoxDecoration(
+                                                                              color: Color(0xFFDFECFF),
+                                                                              borderRadius: BorderRadius.circular(50)
+                                                                          ),
+                                                                          child: ExtendedImage.network(BFdoc.get('profileImageUrl'),
+                                                                            enableMemoryCache: true,
+                                                                            shape: BoxShape.circle,
+                                                                            borderRadius: BorderRadius.circular(8),
+                                                                            width: 48,
+                                                                            height: 48,
+                                                                            fit: BoxFit.cover,
+                                                                            loadStateChanged: (ExtendedImageState state) {
+                                                                              switch (state.extendedImageLoadState) {
+                                                                                case LoadState.loading:
+                                                                                  return SizedBox.shrink();
+                                                                                case LoadState.completed:
+                                                                                  return state.completedWidget;
+                                                                                case LoadState.failed:
+                                                                                  return ExtendedImage.asset(
+                                                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                    shape: BoxShape.circle,
+                                                                                    borderRadius: BorderRadius.circular(8),
+                                                                                    width: 48,
+                                                                                    height: 48,
+                                                                                    fit: BoxFit.cover,
+                                                                                  ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                                default:
+                                                                                  return null;
+                                                                              }
+                                                                            },
+                                                                          ),
                                                                         )
                                                                         :ExtendedImage.asset(
                                                                           'assets/imgs/profile/img_profile_default_circle.png',
@@ -898,6 +910,12 @@ class _FriendListPageState extends State<FriendListPage> {
                                                   fit: StackFit.loose,
                                                   children: [
                                                     Container(
+                                                      width: 48,
+                                                      height: 48,
+                                                      decoration: BoxDecoration(
+                                                          color: Color(0xFFDFECFF),
+                                                          borderRadius: BorderRadius.circular(50)
+                                                      ),
                                                       alignment: Alignment.center,
                                                       child: ExtendedImage.network(
                                                         doc.get('profileImageUrl'),

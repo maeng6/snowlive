@@ -1208,6 +1208,11 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       child: Container(
                                                           width: 110,
                                                           height: 110,
+                                                          decoration: BoxDecoration(
+                                                              color: Color(0xFFDFECFF),
+                                                              borderRadius: BorderRadius
+                                                                  .circular(80)
+                                                          ),
                                                           child: ExtendedImage.network(
                                                             friendDocs[0]['profileImageUrl'],
                                                             enableMemoryCache: true,

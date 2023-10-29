@@ -515,7 +515,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           ),
                                           SizedBox(height: 18,),
                                           Container(
-                                            height: documents.length * 61,
+                                            height: documents.length * 60,
                                             child: ListView.builder(
                                               physics: NeverScrollableScrollPhysics(),
                                               shrinkWrap: true,
@@ -697,7 +697,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               },
                                             ),
                                           ),
-                                          SizedBox(height: 64,),
+                                          SizedBox(height: 90),
                                         ],
                                       ),
                                     ),

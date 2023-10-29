@@ -595,7 +595,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                     ),
                                     SizedBox(height: 18),
                                     Container(
-                                      height: crewDocs.length * 64,
+                                      height: crewDocs.length * 54,
                                       child: ListView.builder(
                                         physics: NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
@@ -761,7 +761,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                         },
                                       ),
                                     ),
-                                    SizedBox(height: 64,),
+                                    SizedBox(height: 36),
                                   ],
                                 ),
                               ),

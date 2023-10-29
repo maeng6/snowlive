@@ -229,7 +229,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
             ),
           ),
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 60),
             child: SingleChildScrollView(
               child: Column(
                 children: crewDocs.map((document) {
