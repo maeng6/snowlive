@@ -60,7 +60,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
     _myRankingController.getMyRankingData(_userModelController.uid);
 
     if(_userModelController.liveCrew != '' && _userModelController.liveCrew != null) {
-      _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
+      _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
     }else{}
     return StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
@@ -515,7 +515,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           ),
                                           SizedBox(height: 18,),
                                           Container(
-                                            height: documents.length * 61,
+                                            height: documents.length * 60,
                                             child: ListView.builder(
                                               physics: NeverScrollableScrollPhysics(),
                                               shrinkWrap: true,
@@ -697,7 +697,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               },
                                             ),
                                           ),
-                                          SizedBox(height: 64,),
+                                          SizedBox(height: 90),
                                         ],
                                       ),
                                     ),

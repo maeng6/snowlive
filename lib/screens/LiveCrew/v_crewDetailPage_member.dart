@@ -62,7 +62,6 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                 int leaderFavoriteResort = leaderDoc.data()!['favoriteResort'];
 
                 _userModelController.getCurrentUser(_userModelController.uid);
-                print(_userModelController.friendUidList);
 
                 return Padding(
                   padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 30),
@@ -88,6 +87,10 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                               child: Container(
                                   width: 50,
                                   height: 50,
+                                  decoration: BoxDecoration(
+                                      color: Color(0xFFDFECFF),
+                                      borderRadius: BorderRadius.circular(50)
+                                  ),
                                   child: ExtendedImage.network(
                                     leaderProfileImage,
                                     enableMemoryCache: true,
@@ -136,23 +139,30 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                               ),
                             ),
                             SizedBox(width: 15,),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(leaderName,
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Color(0xFF111111)
-                                ),
-                                ),
-                                if(leaderMsg.isNotEmpty)
-                                Text(leaderMsg,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Color(0xFF949494)
-                                ),
-                                )
-                              ],
+                            Container(
+                              width: _size.width - 180,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(leaderName,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Color(0xFF111111)
+                                  ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                  if(leaderMsg.isNotEmpty)
+                                  Text(leaderMsg,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Color(0xFF949494)
+                                  ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  )
+                                ],
+                              ),
                             ),
                             Expanded(child: SizedBox()),
                             if(_userModelController.uid != leaderUid && !_userModelController.friendUidList!.contains(leaderUid))
@@ -325,6 +335,10 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                           child: Container(
                                               width: 50,
                                               height: 50,
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xFFDFECFF),
+                                                  borderRadius: BorderRadius.circular(50)
+                                              ),
                                               child: ExtendedImage.network(
                                                 crewMemberDocs[index]['profileImageUrl'],
                                                 enableMemoryCache: true,
@@ -916,6 +930,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                   child: CircularProgressIndicator(),
                 );
               }
+
               return Container();
             },
           )

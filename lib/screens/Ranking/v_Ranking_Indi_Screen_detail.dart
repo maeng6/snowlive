@@ -41,7 +41,7 @@ class _RankingIndiScreenDetailState extends State<RankingIndiScreenDetail> {
     Size _size = MediaQuery.of(context).size;
 
     if(_userModelController.liveCrew != '' && _userModelController.liveCrew != null) {
-      _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
+      _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
     }else{}
     return Scaffold(
       appBar:AppBar(

@@ -1208,6 +1208,11 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                       child: Container(
                                                           width: 110,
                                                           height: 110,
+                                                          decoration: BoxDecoration(
+                                                              color: Color(0xFFDFECFF),
+                                                              borderRadius: BorderRadius
+                                                                  .circular(80)
+                                                          ),
                                                           child: ExtendedImage.network(
                                                             friendDocs[0]['profileImageUrl'],
                                                             enableMemoryCache: true,
@@ -1324,7 +1329,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                             onTap: () async {
                                                               if(friendDocs[0]['liveCrew'] != '' && friendDocs[0]['liveCrew'] != null){
                                                                 CustomFullScreenDialog.showDialog();
-                                                                await _liveCrewModelController.getCurrnetCrew(friendDocs[0]['liveCrew']);
+                                                                await _liveCrewModelController.getCurrrentCrew(friendDocs[0]['liveCrew']);
                                                                 CustomFullScreenDialog.cancelDialog();
                                                                 setState(() {edit=false;});
                                                                 Get.to(()=>CrewDetailPage_screen());

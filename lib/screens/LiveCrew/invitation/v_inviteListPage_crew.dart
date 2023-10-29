@@ -65,7 +65,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                     ? GestureDetector(
                                   onTap: () async{
                                     CustomFullScreenDialog.showDialog();
-                                    await _liveCrewModelController.getCurrnetCrew(inviDocs[index]['crewID']);
+                                    await _liveCrewModelController.getCurrrentCrew(inviDocs[index]['crewID']);
                                     CustomFullScreenDialog.cancelDialog();
                                     Get.to(()=>CrewDetailPage_screen());
                                   },
@@ -110,7 +110,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                     : GestureDetector(
                                   onTap: () async{
                                     CustomFullScreenDialog.showDialog();
-                                    await _liveCrewModelController.getCurrnetCrew(inviDocs[index]['crewID']);
+                                    await _liveCrewModelController.getCurrrentCrew(inviDocs[index]['crewID']);
                                     CustomFullScreenDialog.cancelDialog();
                                     Get.to(()=>CrewDetailPage_screen());
                                   },
@@ -217,7 +217,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                                           Navigator.pop(context);
                                                           CustomFullScreenDialog.showDialog();
                                                           await _liveCrewModelController.deleteInvitation_crew(crewID: inviDocs[index]['crewID'], applyUid: _userModelController.uid);
-                                                          await _liveCrewModelController.getCurrnetCrew(inviDocs[index]['crewID']);
+                                                          await _liveCrewModelController.getCurrrentCrew(inviDocs[index]['crewID']);
                                                           await _userModelController.getCurrentUser(_userModelController.uid);
                                                           CustomFullScreenDialog.cancelDialog();
                                                         }catch(e){

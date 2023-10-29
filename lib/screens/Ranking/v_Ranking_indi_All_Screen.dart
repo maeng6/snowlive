@@ -63,7 +63,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
 
     if (_userModelController.liveCrew != '' &&
         _userModelController.liveCrew != null) {
-      _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
+      _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
     } else {}
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
@@ -178,7 +178,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
             ),
           ),
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 60),
             child: SingleChildScrollView(
               child: Column(
                 children: documents.map((document) {

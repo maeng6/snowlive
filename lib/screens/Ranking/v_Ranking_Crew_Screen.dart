@@ -47,10 +47,6 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
-    if(_userModelController.liveCrew != '' && _userModelController.liveCrew != null) {
-      _liveCrewModelController.getCurrnetCrew(_userModelController.liveCrew);
-    }else{}
-
     return  StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('liveCrew')
@@ -160,11 +156,6 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
             }
           }
 
-          print(assetTop1);
-          print(assetTop2);
-          print(assetTop3);
-
-
               return  Container(
                 color: Colors.white,
                 child: SafeArea(
@@ -195,7 +186,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                             onTap: () async {
                                               CustomFullScreenDialog.showDialog();
                                               await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                              await _liveCrewModelController.getCurrnetCrew(crewDocs[0]['crewID']);
+                                              await _liveCrewModelController.getCurrrentCrew(crewDocs[0]['crewID']);
                                               CustomFullScreenDialog.cancelDialog();
                                               Get.to(() =>
                                                   CrewDetailPage_screen());
@@ -324,7 +315,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                             onTap: () async {
                                               CustomFullScreenDialog.showDialog();
                                               await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                              await _liveCrewModelController.getCurrnetCrew(crewDocs[1]['crewID']);
+                                              await _liveCrewModelController.getCurrrentCrew(crewDocs[1]['crewID']);
                                               CustomFullScreenDialog.cancelDialog();
                                               Get.to(() => CrewDetailPage_screen());
                                             },
@@ -452,7 +443,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                             onTap: () async {
                                               CustomFullScreenDialog.showDialog();
                                               await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                              await _liveCrewModelController.getCurrnetCrew(crewDocs[2]['crewID']);
+                                              await _liveCrewModelController.getCurrrentCrew(crewDocs[2]['crewID']);
                                               CustomFullScreenDialog.cancelDialog();
                                               Get.to(() => CrewDetailPage_screen());
                                             },
@@ -604,7 +595,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                     ),
                                     SizedBox(height: 18),
                                     Container(
-                                      height: crewDocs.length * 64,
+                                      height: crewDocs.length * 54,
                                       child: ListView.builder(
                                         physics: NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
@@ -633,7 +624,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                       onTap: () async {
                                                         CustomFullScreenDialog.showDialog();
                                                         await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                                        await _liveCrewModelController.getCurrnetCrew(crewDocs[index]['crewID']);
+                                                        await _liveCrewModelController.getCurrrentCrew(crewDocs[index]['crewID']);
                                                         CustomFullScreenDialog.cancelDialog();
                                                         Get.to(() => CrewDetailPage_screen());
                                                       },
@@ -770,7 +761,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                         },
                                       ),
                                     ),
-                                    SizedBox(height: 64,),
+                                    SizedBox(height: 36),
                                   ],
                                 ),
                               ),
@@ -831,7 +822,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                             onTap: () async {
                                               CustomFullScreenDialog.showDialog();
                                               await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                              await _liveCrewModelController.getCurrnetCrew(myCrewDocs[0]['crewID']);
+                                              await _liveCrewModelController.getCurrrentCrew(myCrewDocs[0]['crewID']);
                                               CustomFullScreenDialog.cancelDialog();
                                               Get.to(() => CrewDetailPage_screen());
                                             },

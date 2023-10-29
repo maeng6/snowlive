@@ -55,7 +55,7 @@ class LiveCrewModelController extends GetxController {
   int? get totalPassCount => _totalPassCount!.value;
 
 
-  Future<void> getCurrnetCrew(crewID) async {
+  Future<void> getCurrrentCrew(crewID) async {
     if (crewID != null) {
       LiveCrewModel? crewModel = await LiveCrewModel().getCrewModel(crewID);
       this._crewID!.value = crewModel!.crewID!;
@@ -78,6 +78,7 @@ class LiveCrewModelController extends GetxController {
       this._totalPassCount!.value = crewModel.totalPassCount!;
       this._lastPassTime = crewModel.lastPassTime!;
       this._resistDate = crewModel.resistDate!;
+      print('haha');
     }
   }
 
@@ -171,7 +172,7 @@ class LiveCrewModelController extends GetxController {
     }catch(e){
       print('삭제 에러');
     }
-    getCurrnetCrew(crewID);
+    getCurrrentCrew(crewID);
   }
 
   Future<dynamic> searchCrewByCrewName(String crewName) async {
@@ -282,7 +283,7 @@ class LiveCrewModelController extends GetxController {
       'crewLeader': memberDisplayName,
     });
 
-    await getCurrnetCrew(crewID);
+    await getCurrrentCrew(crewID);
 
   }
 
@@ -290,7 +291,7 @@ class LiveCrewModelController extends GetxController {
     await ref.collection('liveCrew').doc(crewID).update({
       'profileImageUrl': url,
     });
-    await getCurrnetCrew(crewID);
+    await getCurrrentCrew(crewID);
   }
 
 
@@ -298,28 +299,28 @@ class LiveCrewModelController extends GetxController {
     await ref.collection('liveCrew').doc(crewID).update({
       'profileImageUrl': '',
     });
-    await getCurrnetCrew(crewID);
+    await getCurrrentCrew(crewID);
   }
 
   Future<void> updateDescription({required desc, required crewID}) async {
     await ref.collection('liveCrew').doc(crewID).update({
       'description': desc,
     });
-    await getCurrnetCrew(crewID);
+    await getCurrrentCrew(crewID);
   }
 
   Future<void> updateNotice({required notice, required crewID}) async {
     await ref.collection('liveCrew').doc(crewID).update({
       'notice': notice,
     });
-    await getCurrnetCrew(crewID);
+    await getCurrrentCrew(crewID);
   }
 
   Future<void> updateSNS({required snsLink, required crewID}) async {
     await ref.collection('liveCrew').doc(crewID).update({
       'sns': snsLink,
     });
-    await getCurrnetCrew(crewID);
+    await getCurrrentCrew(crewID);
   }
 
   Future<void> updateCrewColor({required crewColor, required crewID}) async {
@@ -327,7 +328,7 @@ class LiveCrewModelController extends GetxController {
     await ref.collection('liveCrew').doc(crewID).update({
       'crewColor': colorValue,
     });
-    await getCurrnetCrew(crewID);
+    await getCurrrentCrew(crewID);
   }
 
   void otherShare({required String contents}) async{
