@@ -127,7 +127,7 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
                               child: ExtendedImage.network(
                                 doc['profileImageUrl'],
                                 enableMemoryCache: true,
-                                cacheHeight: 100,
+                                cacheHeight: 150,
                                 shape: BoxShape.rectangle,
                                 borderRadius:
                                 BorderRadius.circular(6),

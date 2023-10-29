@@ -839,6 +839,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                   child: ExtendedImage.network(
                                                     crewDoc['profileImageUrl'],
                                                     enableMemoryCache: true,
+                                                    cacheHeight: 200,
                                                     shape: BoxShape.rectangle,
                                                     borderRadius: BorderRadius.circular(12),
                                                     width: 100,
@@ -1054,6 +1055,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                         child: ExtendedImage.network(
                                           crewDocs[0]['profileImageUrl'],
                                           enableMemoryCache: true,
+                                          cacheHeight: 200,
                                           shape: BoxShape.rectangle,
                                           borderRadius: BorderRadius.circular(7),
                                           width: 100,
@@ -1426,6 +1428,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                   child: ExtendedImage.network(
                                                     doc['profileImageUrl'],
                                                     enableMemoryCache: true,
+                                                    cacheHeight: 150,
                                                     shape: BoxShape.rectangle,
                                                     borderRadius: BorderRadius.circular(6),
                                                     fit: BoxFit.cover,
