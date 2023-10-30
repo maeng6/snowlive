@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:com.snowlive/controller/vm_resortModelController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
+import 'package:com.snowlive/screens/comments/v_modify_liveTalk.dart';
 import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -1192,7 +1193,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                   child: Container(
                                                                                     height:
                                                                                     (_userModelController.displayName == 'SNOWLIVE')
-                                                                                        ? 200
+                                                                                        ? 260
                                                                                         : 140,
                                                                                     child: Padding(
                                                                                       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
@@ -1422,77 +1423,148 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                               ),
                                                                                             ),
                                                                                           if(_userModelController.displayName == 'SNOWLIVE')
-                                                                                            GestureDetector(
-                                                                                              child: ListTile(
-                                                                                                contentPadding: EdgeInsets.zero,
-                                                                                                title: Center(
-                                                                                                  child: Text(
-                                                                                                    (isLocked ==false)
-                                                                                                    ? '게시글 잠금' : '게시글 잠금 해제',
-                                                                                                    style: TextStyle(
-                                                                                                      fontSize: 15,
-                                                                                                      fontWeight: FontWeight
-                                                                                                          .bold,
+                                                                                            Column(
+                                                                                              children: [
+                                                                                                GestureDetector(
+                                                                                                  child: ListTile(
+                                                                                                    contentPadding: EdgeInsets.zero,
+                                                                                                    title: Center(
+                                                                                                      child: Text(
+                                                                                                        (isLocked ==false)
+                                                                                                        ? '게시글 잠금' : '게시글 잠금 해제',
+                                                                                                        style: TextStyle(
+                                                                                                          fontSize: 15,
+                                                                                                          fontWeight: FontWeight
+                                                                                                              .bold,
+                                                                                                        ),
+                                                                                                      ),
                                                                                                     ),
+                                                                                                    //selected: _isSelected[index]!,
+                                                                                                    onTap: () async {
+                                                                                                      Get
+                                                                                                          .dialog(
+                                                                                                          AlertDialog(
+                                                                                                            contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                            elevation: 0,
+                                                                                                            shape: RoundedRectangleBorder(
+                                                                                                                borderRadius: BorderRadius.circular(10.0)),
+                                                                                                            buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                            content: Text(
+                                                                                                              (isLocked ==false)
+                                                                                                              ? '이 게시글을 잠그시겠습니까?' : '게시글 잠금을 해제하시겠습니까?',
+                                                                                                              style: TextStyle(
+                                                                                                                  fontWeight: FontWeight.w600,
+                                                                                                                  fontSize: 15),
+                                                                                                            ),
+                                                                                                            actions: [
+                                                                                                              Row(
+                                                                                                                children: [
+                                                                                                                  TextButton(
+                                                                                                                      onPressed: () {
+                                                                                                                        Navigator.pop(context);
+                                                                                                                      },
+                                                                                                                      child: Text(
+                                                                                                                        '취소',
+                                                                                                                        style: TextStyle(
+                                                                                                                          fontSize: 15,
+                                                                                                                          color: Color(0xFF949494),
+                                                                                                                          fontWeight: FontWeight.bold,
+                                                                                                                        ),
+                                                                                                                      )),
+                                                                                                                  TextButton(
+                                                                                                                      onPressed: () async{
+                                                                                                                        if (data?.containsKey('lock') == false) {
+                                                                                                                          await chatDocs[index].reference.update({'lock': false});
+                                                                                                                        }
+                                                                                                                        await _commentModelController.lock('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}');
+                                                                                                                        Navigator.pop(context);
+                                                                                                                        Navigator.pop(context);
+                                                                                                                      },
+                                                                                                                      child: Text('확인',
+                                                                                                                        style: TextStyle(
+                                                                                                                          fontSize: 15,
+                                                                                                                          color: Color(0xFF3D83ED),
+                                                                                                                          fontWeight: FontWeight.bold,
+                                                                                                                        ),
+                                                                                                                      ))
+                                                                                                                ],
+                                                                                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                              )
+                                                                                                            ],
+                                                                                                          ));
+                                                                                                    },
+                                                                                                    shape: RoundedRectangleBorder(
+                                                                                                        borderRadius: BorderRadius.circular(10)),
                                                                                                   ),
                                                                                                 ),
-                                                                                                //selected: _isSelected[index]!,
-                                                                                                onTap: () async {
-                                                                                                  Get
-                                                                                                      .dialog(
-                                                                                                      AlertDialog(
-                                                                                                        contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                                        elevation: 0,
-                                                                                                        shape: RoundedRectangleBorder(
-                                                                                                            borderRadius: BorderRadius.circular(10.0)),
-                                                                                                        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                        content: Text(
-                                                                                                          (isLocked ==false)
-                                                                                                          ? '이 게시글을 잠그시겠습니까?' : '게시글 잠금을 해제하시겠습니까?',
-                                                                                                          style: TextStyle(
-                                                                                                              fontWeight: FontWeight.w600,
-                                                                                                              fontSize: 15),
+                                                                                                GestureDetector(
+                                                                                                  child: ListTile(
+                                                                                                    contentPadding: EdgeInsets.zero,
+                                                                                                    title: Center(
+                                                                                                      child: Text(
+                                                                                                        '게시글 수정',
+                                                                                                        style: TextStyle(
+                                                                                                          fontSize: 15,
+                                                                                                          fontWeight: FontWeight
+                                                                                                              .bold,
                                                                                                         ),
-                                                                                                        actions: [
-                                                                                                          Row(
-                                                                                                            children: [
-                                                                                                              TextButton(
-                                                                                                                  onPressed: () {
-                                                                                                                    Navigator.pop(context);
-                                                                                                                  },
-                                                                                                                  child: Text(
-                                                                                                                    '취소',
-                                                                                                                    style: TextStyle(
-                                                                                                                      fontSize: 15,
-                                                                                                                      color: Color(0xFF949494),
-                                                                                                                      fontWeight: FontWeight.bold,
-                                                                                                                    ),
-                                                                                                                  )),
-                                                                                                              TextButton(
-                                                                                                                  onPressed: () async{
-                                                                                                                    if (data?.containsKey('lock') == false) {
-                                                                                                                      await chatDocs[index].reference.update({'lock': false});
-                                                                                                                    }
-                                                                                                                    await _commentModelController.lock('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}');
-                                                                                                                    Navigator.pop(context);
-                                                                                                                    Navigator.pop(context);
-                                                                                                                  },
-                                                                                                                  child: Text('확인',
-                                                                                                                    style: TextStyle(
-                                                                                                                      fontSize: 15,
-                                                                                                                      color: Color(0xFF3D83ED),
-                                                                                                                      fontWeight: FontWeight.bold,
-                                                                                                                    ),
-                                                                                                                  ))
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                    //selected: _isSelected[index]!,
+                                                                                                    onTap: () async {
+                                                                                                      Get.dialog(
+                                                                                                          AlertDialog(
+                                                                                                            contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                            elevation: 0,
+                                                                                                            shape: RoundedRectangleBorder(
+                                                                                                                borderRadius: BorderRadius.circular(10.0)),
+                                                                                                            buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                            content: Text(
+                                                                                                              '이 게시글을 수정하시겠습니까?',
+                                                                                                              style: TextStyle(
+                                                                                                                  fontWeight: FontWeight.w600,
+                                                                                                                  fontSize: 15),
+                                                                                                            ),
+                                                                                                            actions: [
+                                                                                                              Row(
+                                                                                                                children: [
+                                                                                                                  TextButton(
+                                                                                                                      onPressed: () {
+                                                                                                                        Navigator.pop(context);
+                                                                                                                      },
+                                                                                                                      child: Text(
+                                                                                                                        '취소',
+                                                                                                                        style: TextStyle(
+                                                                                                                          fontSize: 15,
+                                                                                                                          color: Color(0xFF949494),
+                                                                                                                          fontWeight: FontWeight.bold,
+                                                                                                                        ),
+                                                                                                                      )),
+                                                                                                                  TextButton(
+                                                                                                                      onPressed: () async{
+                                                                                                                        await _commentModelController.getCurrentLiveTalk(uid: chatDocs[index]['uid'],commentCount: chatDocs[index]['commentCount'],);
+                                                                                                                        Navigator.pop(context);
+                                                                                                                        Navigator.pop(context);
+                                                                                                                        Get.to(()=>Modify_liveTalk());
+                                                                                                                      },
+                                                                                                                      child: Text('확인',
+                                                                                                                        style: TextStyle(
+                                                                                                                          fontSize: 15,
+                                                                                                                          color: Color(0xFF3D83ED),
+                                                                                                                          fontWeight: FontWeight.bold,
+                                                                                                                        ),
+                                                                                                                      ))
+                                                                                                                ],
+                                                                                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                              )
                                                                                                             ],
-                                                                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                          )
-                                                                                                        ],
-                                                                                                      ));
-                                                                                                },
-                                                                                                shape: RoundedRectangleBorder(
-                                                                                                    borderRadius: BorderRadius.circular(10)),
-                                                                                              ),
+                                                                                                          ));
+                                                                                                    },
+                                                                                                    shape: RoundedRectangleBorder(
+                                                                                                        borderRadius: BorderRadius.circular(10)),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ],
                                                                                             )
                                                                                         ],
                                                                                       ),
@@ -1515,7 +1587,9 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               builder: (
                                                                                   context) {
                                                                                 return Container(
-                                                                                  height: 100,
+                                                                                  height: (_userModelController.displayName == 'SNOWLIVE')
+                                                                                      ? 260
+                                                                                      : 100,
                                                                                   child:
                                                                                   Padding(
                                                                                     padding: const EdgeInsets
@@ -1524,6 +1598,148 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                         vertical: 14),
                                                                                     child: Column(
                                                                                       children: [
+                                                                                        if(_userModelController.displayName == 'SNOWLIVE')
+                                                                                          Column(
+                                                                                            children: [
+                                                                                              GestureDetector(
+                                                                                                child: ListTile(
+                                                                                                  contentPadding: EdgeInsets.zero,
+                                                                                                  title: Center(
+                                                                                                    child: Text(
+                                                                                                      (isLocked ==false)
+                                                                                                          ? '게시글 잠금' : '게시글 잠금 해제',
+                                                                                                      style: TextStyle(
+                                                                                                        fontSize: 15,
+                                                                                                        fontWeight: FontWeight
+                                                                                                            .bold,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                  //selected: _isSelected[index]!,
+                                                                                                  onTap: () async {
+                                                                                                    Get
+                                                                                                        .dialog(
+                                                                                                        AlertDialog(
+                                                                                                          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                          elevation: 0,
+                                                                                                          shape: RoundedRectangleBorder(
+                                                                                                              borderRadius: BorderRadius.circular(10.0)),
+                                                                                                          buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                          content: Text(
+                                                                                                            (isLocked ==false)
+                                                                                                                ? '이 게시글을 잠그시겠습니까?' : '게시글 잠금을 해제하시겠습니까?',
+                                                                                                            style: TextStyle(
+                                                                                                                fontWeight: FontWeight.w600,
+                                                                                                                fontSize: 15),
+                                                                                                          ),
+                                                                                                          actions: [
+                                                                                                            Row(
+                                                                                                              children: [
+                                                                                                                TextButton(
+                                                                                                                    onPressed: () {
+                                                                                                                      Navigator.pop(context);
+                                                                                                                    },
+                                                                                                                    child: Text(
+                                                                                                                      '취소',
+                                                                                                                      style: TextStyle(
+                                                                                                                        fontSize: 15,
+                                                                                                                        color: Color(0xFF949494),
+                                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                                      ),
+                                                                                                                    )),
+                                                                                                                TextButton(
+                                                                                                                    onPressed: () async{
+                                                                                                                      if (data?.containsKey('lock') == false) {
+                                                                                                                        await chatDocs[index].reference.update({'lock': false});
+                                                                                                                      }
+                                                                                                                      await _commentModelController.lock('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}');
+                                                                                                                      Navigator.pop(context);
+                                                                                                                      Navigator.pop(context);
+                                                                                                                    },
+                                                                                                                    child: Text('확인',
+                                                                                                                      style: TextStyle(
+                                                                                                                        fontSize: 15,
+                                                                                                                        color: Color(0xFF3D83ED),
+                                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                                      ),
+                                                                                                                    ))
+                                                                                                              ],
+                                                                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                            )
+                                                                                                          ],
+                                                                                                        ));
+                                                                                                  },
+                                                                                                  shape: RoundedRectangleBorder(
+                                                                                                      borderRadius: BorderRadius.circular(10)),
+                                                                                                ),
+                                                                                              ),
+                                                                                              GestureDetector(
+                                                                                                child: ListTile(
+                                                                                                  contentPadding: EdgeInsets.zero,
+                                                                                                  title: Center(
+                                                                                                    child: Text(
+                                                                                                      '게시글 수정',
+                                                                                                      style: TextStyle(
+                                                                                                        fontSize: 15,
+                                                                                                        fontWeight: FontWeight
+                                                                                                            .bold,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                  //selected: _isSelected[index]!,
+                                                                                                  onTap: () async {
+                                                                                                    Get.dialog(
+                                                                                                        AlertDialog(
+                                                                                                          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                          elevation: 0,
+                                                                                                          shape: RoundedRectangleBorder(
+                                                                                                              borderRadius: BorderRadius.circular(10.0)),
+                                                                                                          buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                          content: Text(
+                                                                                                            '이 게시글을 수정하시겠습니까?',
+                                                                                                            style: TextStyle(
+                                                                                                                fontWeight: FontWeight.w600,
+                                                                                                                fontSize: 15),
+                                                                                                          ),
+                                                                                                          actions: [
+                                                                                                            Row(
+                                                                                                              children: [
+                                                                                                                TextButton(
+                                                                                                                    onPressed: () {
+                                                                                                                      Navigator.pop(context);
+                                                                                                                    },
+                                                                                                                    child: Text(
+                                                                                                                      '취소',
+                                                                                                                      style: TextStyle(
+                                                                                                                        fontSize: 15,
+                                                                                                                        color: Color(0xFF949494),
+                                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                                      ),
+                                                                                                                    )),
+                                                                                                                TextButton(
+                                                                                                                    onPressed: () async{
+                                                                                                                      await _commentModelController.getCurrentLiveTalk(uid: chatDocs[index]['uid'],commentCount: chatDocs[index]['commentCount'],);
+                                                                                                                      Get.to(()=>Modify_liveTalk());
+                                                                                                                    },
+                                                                                                                    child: Text('확인',
+                                                                                                                      style: TextStyle(
+                                                                                                                        fontSize: 15,
+                                                                                                                        color: Color(0xFF3D83ED),
+                                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                                      ),
+                                                                                                                    ))
+                                                                                                              ],
+                                                                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                            )
+                                                                                                          ],
+                                                                                                        ));
+                                                                                                  },
+                                                                                                  shape: RoundedRectangleBorder(
+                                                                                                      borderRadius: BorderRadius.circular(10)),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
                                                                                         GestureDetector(
                                                                                           child: ListTile(
                                                                                             contentPadding: EdgeInsets.zero,
