@@ -167,7 +167,7 @@ class _FavoriteResortState extends State<FavoriteResort> {
               child: ElevatedButton(
                   onPressed: isSelected ? () async {
                       CustomFullScreenDialog.showDialog();
-                      await _loginController.createUserDoc(index: 0, token: _notificationController.deviceToken);
+                      await _loginController.createUserDoc(index: 0, token: _notificationController.deviceToken,deviceID: _notificationController.deviceID);
                       await FlutterSecureStorage()
                           .write(key: 'uid', value: auth.currentUser!.uid);
                       await userModelController

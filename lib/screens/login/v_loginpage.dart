@@ -8,11 +8,23 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:com.snowlive/screens/login/v_email_login.dart';
 import 'package:com.snowlive/widget/w_loginButton.dart';
 
+import '../../controller/vm_loginController.dart';
+
 final auth = FirebaseAuth.instance;
 final ref = FirebaseFirestore.instance;
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+
+  //TODO: Dependency Injection************************************************
+  LoginController _loginController = Get.find<LoginController>();
+  //TODO: Dependency Injection************************************************
 
   @override
   Widget build(BuildContext context) {
@@ -88,38 +100,56 @@ class LoginPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        LoginButton(
-                          buttonText: 'Google로 로그인하기',
-                          logoAddress: 'assets/imgs/logos/logos_google.png',
-                          signInMethod: SignInMethod.google,
-                          buttonColor: Color(0xffFFFFFF),
-                          borderColor: Colors.transparent,
-                          textColor: Colors.black,
+                        Column(
+                          children: [
+                            LoginButton(
+                              buttonText: 'Google로 로그인하기',
+                              logoAddress: 'assets/imgs/logos/logos_google.png',
+                              signInMethod: SignInMethod.google,
+                              buttonColor: Color(0xffFFFFFF),
+                              borderColor: Colors.transparent,
+                              textColor: Colors.black,
 
+                            ),
+                            if(_loginController.signInMethod == 'google')
+                              Text('마지막 로그인')
+                          ],
                         ),
                         SizedBox(
                           width: 12,
                         ),
-                        LoginButton(
-                          buttonText: 'Facebook으로 로그인하기',
-                          logoAddress: 'assets/imgs/logos/logos_facebook.png',
-                          signInMethod: SignInMethod.facebook,
-                          buttonColor: Color(0xff1877F2),
-                          borderColor: Colors.transparent,
-                          textColor: Colors.white,
+                        Column(
+                          children: [
+                            LoginButton(
+                              buttonText: 'Facebook으로 로그인하기',
+                              logoAddress: 'assets/imgs/logos/logos_facebook.png',
+                              signInMethod: SignInMethod.facebook,
+                              buttonColor: Color(0xff1877F2),
+                              borderColor: Colors.transparent,
+                              textColor: Colors.white,
+                            ),
+                            if(_loginController.signInMethod == 'facebook')
+                              Text('마지막 로그인')
+                          ],
                         ),
                         SizedBox(
                           width: 12,
                         ),
                         (Platform.isIOS)
-                            ?LoginButton(
+                            ?Column(
+                              children: [
+                                LoginButton(
                           buttonText: 'Apple로 로그인하기',
                           logoAddress: 'assets/imgs/logos/logos_apple.png',
                           signInMethod: SignInMethod.apple,
                           buttonColor: Color(0xff111111),
                           borderColor: Colors.transparent,
                           textColor: Colors.white,
-                        )
+                        ),
+                                if(_loginController.signInMethod == 'apple')
+                                  Text('마지막 로그인')
+                              ],
+                            )
                             :SizedBox(width: 0,),
                       ],
                     ),

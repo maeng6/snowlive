@@ -53,8 +53,6 @@ void main() async {
   Get.put(AllUserDocsController(),permanent: true);
   Get.put(LoginController(),permanent: true);
 
-
-
   runApp(MyApp());
 
 }

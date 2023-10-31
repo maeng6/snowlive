@@ -7,6 +7,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:com.snowlive/controller/vm_loadingPage.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
@@ -23,12 +24,54 @@ class LoginController extends GetxController {
   late FacebookAuth facebookAuth = FacebookAuth.instance;
   late GoogleSignIn googleSignIn = GoogleSignIn();
   String? loginUid;
+  RxString? _signInMethod=''.obs;
+
+  String? get signInMethod => _signInMethod!.value;
+
+  @override
+  void onInit() async{
+    // TODO: implement onInit
+    super.onInit();
+    await getLocalSignInMethod();
+    if(_signInMethod!.value == ''){
+      this._signInMethod!.value = getCurrentUserSignInMethod();
+      await FlutterSecureStorage().write(key: 'signInMethod', value: this._signInMethod!.value);
+      print('기존 로그인 이용자의 로그인방법 저장 성공');
+    }
+    print('마지막 로그인 방법 : $_signInMethod');
+  }
 
 //TODO: Dependency Injection**************************************************
   SeasonController _seasonController = Get.find<SeasonController>();
   UserModelController _userModelController = Get.find<UserModelController>();
   NotificationController _notificationController = Get.find<NotificationController>();
   //TODO: Dependency Injection**************************************************
+
+  String getCurrentUserSignInMethod() {
+    final user = auth.currentUser;
+
+    if (user != null) {
+      for (final info in user.providerData) {
+        final providerId = info.providerId;
+
+        if (providerId == 'password') {
+          return 'Email/Password';
+        } else if (providerId == 'google.com') {
+          return 'google';
+        } else if (providerId == 'facebook.com') {
+          return 'facebook';
+        } else if (providerId == 'apple.com') {
+          return 'apple';
+        }
+      }
+    }
+    return '';  // 로그인하지 않은 경우 null 반환
+  }
+
+  Future<void> getLocalSignInMethod() async {
+    final signInMethod = await FlutterSecureStorage().read(key: 'signInMethod');
+    this._signInMethod!.value = signInMethod ?? '';  // null이면 빈 문자열을 반환합니다.
+  }
 
   Future<void> getExistUserDoc({required uid}) async{
 
@@ -37,10 +80,9 @@ class LoginController extends GetxController {
         .doc('$uid');
     final userDocSnapshot = await userDoc.get();
     if (userDocSnapshot.exists ) {
-      if(userDocSnapshot['deviceToken'] == _notificationController.deviceToken) {
+      if(userDocSnapshot['deviceID'] == _notificationController.deviceID) {
         CustomFullScreenDialog.cancelDialog();
-        await FlutterSecureStorage()
-            .write(key: 'uid', value: auth.currentUser!.uid);
+        await FlutterSecureStorage().write(key: 'uid', value: auth.currentUser!.uid);
         Get.offAll(() => MainHome(uid: uid));
       }else {
         Get.dialog(
@@ -65,7 +107,7 @@ class LoginController extends GetxController {
                     Padding(
                       padding: const EdgeInsets.only(top: 28),
                       child: Text(
-                        '해당 기기에서 로그인하면,\n기존에 로그인 되어있던 다른 기기에서\n로그아웃됩니다',
+                        '해당 기기에서 로그인하면\n다른 기기에서는 모두 로그아웃됩니다.',
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, height: 1.4),
                         textAlign: TextAlign.center,
                       ),
@@ -96,7 +138,7 @@ class LoginController extends GetxController {
                     TextButton(
                       onPressed: () async {
                         try {
-                          await _userModelController.updateDeviceToken(token: _notificationController.deviceToken);
+                          await _userModelController.updateDeviceID(deviceID: _notificationController.deviceID);
                           await FlutterSecureStorage().write(key: 'uid', value: auth.currentUser!.uid);
                           CustomFullScreenDialog.cancelDialog();
                           Get.offAll(() => MainHome(uid: uid));
@@ -131,13 +173,12 @@ class LoginController extends GetxController {
 
   Future<void> deviceIdentificate({required uid}) async{
 
-
     final userDoc = await FirebaseFirestore.instance
         .collection('user')
         .doc('$uid');
     final userDocSnapshot = await userDoc.get();
     if (userDocSnapshot.exists ) {
-      if(userDocSnapshot['deviceToken'] == _notificationController.deviceToken) {
+      if(userDocSnapshot['deviceID'] == _notificationController.deviceID) {
 
       }else {
         Get.dialog(WillPopScope(
@@ -160,7 +201,7 @@ class LoginController extends GetxController {
                   Padding(
                     padding: const EdgeInsets.only(top: 28),
                     child: Text(
-                      '다른 기기에서 로그인하여\n해당 기기에서 로그아웃됩니다',
+                      '기존 계정으로 다시 로그인해주세요.',
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, height: 1.4),
                       textAlign: TextAlign.center,
 
@@ -176,6 +217,7 @@ class LoginController extends GetxController {
                       try{
                         await signOutFromAll;
                         await FlutterSecureStorage().delete(key: 'uid');
+                        await getLocalSignInMethod();
                         Get.offAll(() => LoginPage());
                       }catch(e){
                         Get.back();
@@ -234,6 +276,7 @@ class LoginController extends GetxController {
       User? currentUser = auth.currentUser;
       if (currentUser != null) {
         await getExistUserDoc(uid: currentUser.uid);
+        await FlutterSecureStorage().write(key: 'signInMethod', value: 'google');
       }
     }
   }
@@ -249,6 +292,7 @@ class LoginController extends GetxController {
       User? currentUser = auth.currentUser;
       if (currentUser != null) {
         await getExistUserDoc(uid: currentUser.uid);
+        await FlutterSecureStorage().write(key: 'signInMethod', value: 'facebook');
       }
     }
   }
@@ -281,6 +325,7 @@ class LoginController extends GetxController {
     await FlutterSecureStorage()
         .write(key: 'login', value: 'false');
     await FlutterSecureStorage().delete(key: 'uid');
+    await FlutterSecureStorage().delete(key: 'signInMethod');
   }
 
   Future<void> getLoginAgainUser() async{
@@ -290,6 +335,7 @@ class LoginController extends GetxController {
   Future<void> signOut_welcome() async {
     User user = FirebaseAuth.instance.currentUser!;
     await user.delete();
+    await FlutterSecureStorage().delete(key: 'signInMethod');
     Get.offAll(() => LoginPage());
   }
 
@@ -449,6 +495,9 @@ class LoginController extends GetxController {
       try{
         await FlutterSecureStorage().delete(key: 'uid');
         print('자동로그인 삭제');
+        await FlutterSecureStorage().delete(key: 'signInMethod');
+        this._signInMethod!.value = '';
+        print('마지막 로그인 정보 삭제');
         CollectionReference users = FirebaseFirestore.instance.collection('user');
         await users.doc(uid).delete();
         print('유저독 삭제');
@@ -461,12 +510,13 @@ class LoginController extends GetxController {
         Get.offAll(()=>LoginPage());
       }
     }
+    this._signInMethod!.value = '';
 
     CustomFullScreenDialog.cancelDialog();
     Get.offAll(()=>LoginPage());
   }
 
-  Future<void> createUserDoc({required index,required token}) async {
+  Future<void> createUserDoc({required index,required token,required deviceID}) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
     final email = user.providerData[0].email;
@@ -509,7 +559,8 @@ class LoginController extends GetxController {
       'applyCrewList':[],
       'totalScores':<String, dynamic>{},
       'deviceToken': token,
-      'liveTalkHideList':[]
+      'liveTalkHideList':[],
+      'deviceID': deviceID,
     });
     await ref.collection('newAlarm')
         .doc(uid)

@@ -1,12 +1,18 @@
 import 'package:get/get.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:platform_device_id/platform_device_id.dart';
+
+
+
 class NotificationController extends GetxController {
   // 메시징 서비스 기본 객체 생성
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   RxString? _deviceToken = ''.obs;
+  RxString? _deviceID = ''.obs;
 
   String? get deviceToken => _deviceToken!.value;
+  String? get deviceID => _deviceID!.value;
 
   @override
   void onInit() async{
@@ -33,12 +39,18 @@ class NotificationController extends GetxController {
   /// 이는 파이어베이스 콘솔에서 손쉽게 디바이스에 테스팅을 할 때 쓰인다.
   /// //ㅇㅇ
   void _getToken() async{
-    String? token= await messaging.getToken();
-    this._deviceToken!.value = token!;
+    String? deviceToken= await messaging.getToken();
+    String? deviceId = await PlatformDeviceId.getDeviceId;
+    this._deviceToken!.value = deviceToken!;
+    this._deviceID!.value = deviceId!;
+
     try{
-      print(token);
+      print('deviceToken : $_deviceToken');
+      print('deviceID : $_deviceID');
     } catch(e) {}
   }
+
+
   /// ----------------------------------------------------------------------------
 
   /// * 안드로이드에서 foreground 알림 위한 flutter_local_notification 라이브러리 *
