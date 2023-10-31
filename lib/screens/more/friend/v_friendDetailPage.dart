@@ -1254,15 +1254,15 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                         }
                                                       },
                                                       child: Container(
-                                                        width: 100,
-                                                        height: 100,
+                                                        width: 110,
+                                                        height: 110,
                                                         child: ExtendedImage.network(
                                                           'https://i.esdrop.com/d/f/yytYSNBROy/NIlGn0N46O.png',
                                                           enableMemoryCache: true,
                                                           shape: BoxShape.circle,
                                                           borderRadius: BorderRadius.circular(8),
-                                                          width: 100,
-                                                          height: 100,
+                                                          width: 110,
+                                                          height: 110,
                                                           fit: BoxFit.cover,
                                                         ),
                                                       ),
