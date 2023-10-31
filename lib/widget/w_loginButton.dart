@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_loginController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
@@ -61,6 +62,7 @@ class LoginButton extends StatelessWidget {
               try {
                 User? currentUser = auth.currentUser;
                 if (currentUser != null) {
+                  await FlutterSecureStorage().write(key: 'signInMethod', value: 'apple');
                   await _loginController.getExistUserDoc(uid: currentUser.uid);
                 }
               }catch(e){

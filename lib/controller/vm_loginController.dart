@@ -7,6 +7,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:com.snowlive/controller/vm_loadingPage.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
@@ -23,12 +24,28 @@ class LoginController extends GetxController {
   late FacebookAuth facebookAuth = FacebookAuth.instance;
   late GoogleSignIn googleSignIn = GoogleSignIn();
   String? loginUid;
+  RxString? _signInMethod=''.obs;
+
+  String? get signInMethod => _signInMethod!.value;
+
+  @override
+  void onInit() async{
+    // TODO: implement onInit
+    super.onInit();
+    await getLocalSignInMethod();
+    print('마지막 로그인 방법 : $_signInMethod');
+  }
 
 //TODO: Dependency Injection**************************************************
   SeasonController _seasonController = Get.find<SeasonController>();
   UserModelController _userModelController = Get.find<UserModelController>();
   NotificationController _notificationController = Get.find<NotificationController>();
   //TODO: Dependency Injection**************************************************
+
+  Future<void> getLocalSignInMethod() async {
+    final signInMethod = await FlutterSecureStorage().read(key: 'signInMethod');
+    this._signInMethod!.value = signInMethod ?? '';  // null이면 빈 문자열을 반환합니다.
+  }
 
   Future<void> getExistUserDoc({required uid}) async{
 
@@ -64,7 +81,7 @@ class LoginController extends GetxController {
                     Padding(
                       padding: const EdgeInsets.only(top: 28),
                       child: Text(
-                        '해당 기기에서 로그인하면,\n기존에 로그인 되어있던 다른 기기에서\n로그아웃됩니다',
+                        '해당 기기에서 로그인하면\n다른 기기에서는 모두 로그아웃됩니다.',
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, height: 1.4),
                         textAlign: TextAlign.center,
                       ),
@@ -130,7 +147,6 @@ class LoginController extends GetxController {
 
   Future<void> deviceIdentificate({required uid}) async{
 
-
     final userDoc = await FirebaseFirestore.instance
         .collection('user')
         .doc('$uid');
@@ -159,7 +175,7 @@ class LoginController extends GetxController {
                   Padding(
                     padding: const EdgeInsets.only(top: 28),
                     child: Text(
-                      '다른 기기에서 로그인하여\n해당 기기에서 로그아웃됩니다',
+                      '기존 계정으로 다시 로그인해주세요.',
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, height: 1.4),
                       textAlign: TextAlign.center,
 
@@ -233,6 +249,7 @@ class LoginController extends GetxController {
       User? currentUser = auth.currentUser;
       if (currentUser != null) {
         await getExistUserDoc(uid: currentUser.uid);
+        await FlutterSecureStorage().write(key: 'signInMethod', value: 'google');
       }
     }
   }
@@ -248,6 +265,7 @@ class LoginController extends GetxController {
       User? currentUser = auth.currentUser;
       if (currentUser != null) {
         await getExistUserDoc(uid: currentUser.uid);
+        await FlutterSecureStorage().write(key: 'signInMethod', value: 'facebook');
       }
     }
   }
@@ -280,6 +298,7 @@ class LoginController extends GetxController {
     await FlutterSecureStorage()
         .write(key: 'login', value: 'false');
     await FlutterSecureStorage().delete(key: 'uid');
+    await FlutterSecureStorage().delete(key: 'signInMethod');
   }
 
   Future<void> getLoginAgainUser() async{
@@ -289,6 +308,7 @@ class LoginController extends GetxController {
   Future<void> signOut_welcome() async {
     User user = FirebaseAuth.instance.currentUser!;
     await user.delete();
+    await FlutterSecureStorage().delete(key: 'signInMethod');
     Get.offAll(() => LoginPage());
   }
 
@@ -448,6 +468,9 @@ class LoginController extends GetxController {
       try{
         await FlutterSecureStorage().delete(key: 'uid');
         print('자동로그인 삭제');
+        await FlutterSecureStorage().delete(key: 'signInMethod');
+        this._signInMethod!.value = '';
+        print('마지막 로그인 정보 삭제');
         CollectionReference users = FirebaseFirestore.instance.collection('user');
         await users.doc(uid).delete();
         print('유저독 삭제');
@@ -460,6 +483,7 @@ class LoginController extends GetxController {
         Get.offAll(()=>LoginPage());
       }
     }
+    this._signInMethod!.value = '';
 
     CustomFullScreenDialog.cancelDialog();
     Get.offAll(()=>LoginPage());
