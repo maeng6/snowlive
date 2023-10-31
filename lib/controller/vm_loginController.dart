@@ -33,6 +33,11 @@ class LoginController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     await getLocalSignInMethod();
+    if(_signInMethod!.value == ''){
+      this._signInMethod!.value = getCurrentUserSignInMethod();
+      await FlutterSecureStorage().write(key: 'signInMethod', value: this._signInMethod!.value);
+      print('기존 로그인 이용자의 로그인방법 저장 성공');
+    }
     print('마지막 로그인 방법 : $_signInMethod');
   }
 
@@ -41,6 +46,27 @@ class LoginController extends GetxController {
   UserModelController _userModelController = Get.find<UserModelController>();
   NotificationController _notificationController = Get.find<NotificationController>();
   //TODO: Dependency Injection**************************************************
+
+  String getCurrentUserSignInMethod() {
+    final user = auth.currentUser;
+
+    if (user != null) {
+      for (final info in user.providerData) {
+        final providerId = info.providerId;
+
+        if (providerId == 'password') {
+          return 'Email/Password';
+        } else if (providerId == 'google.com') {
+          return 'google';
+        } else if (providerId == 'facebook.com') {
+          return 'facebook';
+        } else if (providerId == 'apple.com') {
+          return 'apple';
+        }
+      }
+    }
+    return '';  // 로그인하지 않은 경우 null 반환
+  }
 
   Future<void> getLocalSignInMethod() async {
     final signInMethod = await FlutterSecureStorage().read(key: 'signInMethod');
@@ -191,6 +217,7 @@ class LoginController extends GetxController {
                       try{
                         await signOutFromAll;
                         await FlutterSecureStorage().delete(key: 'uid');
+                        await getLocalSignInMethod();
                         Get.offAll(() => LoginPage());
                       }catch(e){
                         Get.back();
@@ -249,7 +276,7 @@ class LoginController extends GetxController {
       User? currentUser = auth.currentUser;
       if (currentUser != null) {
         await getExistUserDoc(uid: currentUser.uid);
-        await FlutterSecureStorage().write(key: 'signInMethod', value: 'google');
+       // await FlutterSecureStorage().write(key: 'signInMethod', value: 'google');
       }
     }
   }

@@ -123,6 +123,8 @@ class UserModelController extends GetxController{
     this._favoriteSaved = localFavorite;
   }
 
+
+
   Future<void> getCurrentUser(uid) async{
     if(FirebaseAuth.instance.currentUser != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
