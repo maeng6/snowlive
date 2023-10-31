@@ -99,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Column(
                           children: [
@@ -112,7 +113,21 @@ class _LoginPageState extends State<LoginPage> {
 
                             ),
                             if(_loginController.signInMethod == 'google')
-                              Text('마지막 로그인')
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF111111).withOpacity(0.8),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                    child: Text('마지막\n로그인',
+                                    style: TextStyle(
+                                      color: Color(0xFFFFFFFF),
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.normal
+                                    ),)),
+                              )
                           ],
                         ),
                         SizedBox(
@@ -129,7 +144,21 @@ class _LoginPageState extends State<LoginPage> {
                               textColor: Colors.white,
                             ),
                             if(_loginController.signInMethod == 'facebook')
-                              Text('마지막 로그인')
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFF111111).withOpacity(0.8),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                    child: Text('마지막\n로그인',
+                                      style: TextStyle(
+                                          color: Color(0xFFFFFFFF),
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.normal
+                                      ),)),
+                              )
                           ],
                         ),
                         SizedBox(
@@ -147,7 +176,21 @@ class _LoginPageState extends State<LoginPage> {
                           textColor: Colors.white,
                         ),
                                 if(_loginController.signInMethod == 'apple')
-                                  Text('마지막 로그인')
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFF111111).withOpacity(0.8),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                        child: Text('마지막\n로그인',
+                                          style: TextStyle(
+                                              color: Color(0xFFFFFFFF),
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.normal
+                                          ),)),
+                                  )
                               ],
                             )
                             :SizedBox(width: 0,),

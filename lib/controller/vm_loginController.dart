@@ -95,7 +95,7 @@ class LoginController extends GetxController {
               buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
               content:
               Container(
-                height: 148,
+                height: 128,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -189,7 +189,7 @@ class LoginController extends GetxController {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
             buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
             content: Container(
-              height: 120,
+              height: 100,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
