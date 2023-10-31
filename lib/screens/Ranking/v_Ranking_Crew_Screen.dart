@@ -760,7 +760,9 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                         },
                                       ),
                                     ),
-                                    SizedBox(height: 20),
+                                    (_userModelController.liveCrew == "")
+                                        ? SizedBox(height: 20)
+                                        : SizedBox(height: 90)
                                   ],
                                 ),
                               ),
