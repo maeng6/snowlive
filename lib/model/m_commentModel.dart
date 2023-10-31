@@ -38,6 +38,7 @@ class CommentModel {
     displayName = json['displayName'];
     profileImageUrl = json['profileImageUrl'];
     timeStamp = json['timeStamp'];
+    agoTime = getAgo(timeStamp!);
     uid = json['uid'];
     resortNickname = json['resortNickname'];
     likeCount = json['likeCount'];

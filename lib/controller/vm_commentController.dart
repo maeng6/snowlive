@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/model/m_commentModel.dart';
+import '../screens/login/v_loginpage.dart';
 
 class CommentModelController extends GetxController {
   RxString? _uid = ''.obs;
@@ -41,6 +42,35 @@ class CommentModelController extends GetxController {
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
+
+  Future<void> getCurrentLiveTalk({required uid,required commentCount}) async{
+    if(FirebaseAuth.instance.currentUser != null) {
+      if(uid!=null) {
+        CommentModel? commentModel = await CommentModel().getCommentModel(uid,commentCount);
+        if (commentModel != null) {
+          this._uid!.value = commentModel.uid!;
+          this._displayName!.value = commentModel.displayName!;
+          this._commentCount!.value = commentModel.commentCount!;
+          this._profileImageUrl!.value = commentModel.profileImageUrl!;
+          this._comment!.value = commentModel.comment!;
+          this._timeStamp = commentModel.timeStamp!;
+          this._agoTime!.value = commentModel.agoTime!;
+          this._resortNickname!.value = commentModel.resortNickname!;
+          this._likeCount!.value = commentModel.likeCount!;
+          this._replyCount!.value = commentModel.replyCount!;
+          this._livetalkImageUrl!.value = commentModel.livetalkImageUrl!;
+        }else {
+          // handle the case where the userModel is null
+        }} else {
+        Get.to(()=>LoginPage());
+        // handle the case where the userModel is null
+      }
+    } else {
+      Get.to(()=>LoginPage());
+    }
+  }
+
+
 
   Future<void> sendMessage(
       {required displayName,
@@ -88,6 +118,18 @@ class CommentModelController extends GetxController {
     this._likeCount!.value = commentModel.likeCount!;
     this._replyCount!.value = commentModel.replyCount!;
     this._livetalkImageUrl!.value = commentModel.livetalkImageUrl!;
+  }
+
+  Future<void> updateLiveTalk({required uid, required commentCount,required comment}) async {
+    try {
+      final User? user = auth.currentUser;
+      final uid = user!.uid;
+      await ref.collection('liveTalk').doc('$uid$commentCount').update({
+        'comment': comment,
+      });
+    }catch(e){
+
+    }
   }
 
   Future<void> addCheckUid(uid) async {
