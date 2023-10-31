@@ -55,6 +55,7 @@ class UserModelController extends GetxController{
   RxMap? _totalScores = <String, dynamic>{}.obs;
   RxString? _deviceToken =''.obs;
   RxList? _liveTalkHideList=[].obs;
+  RxString? _deviceID =''.obs;
 
 
   String? get uid => _uid!.value;
@@ -94,6 +95,7 @@ class UserModelController extends GetxController{
   Map? get totalScores => _totalScores;
   String? get deviceToken => _deviceToken!.value;
   List? get liveTalkHideList =>_liveTalkHideList;
+  String? get deviceID => _deviceID!.value;
 
   @override
   void onInit()  async{
@@ -101,7 +103,7 @@ class UserModelController extends GetxController{
     String? loginUid = await FlutterSecureStorage().read(key: 'uid');
     if(loginUid != null) {
       getCurrentUser(loginUid).catchError((e) {
-        setNewField3(token: _notificationController.deviceToken);
+        setNewField3(token: _notificationController.deviceToken, deviceID: _notificationController.deviceID);
         getCurrentUser(loginUid).catchError((e) {
           setNewField2();
           getCurrentUser(loginUid).catchError((e) {
@@ -160,6 +162,7 @@ class UserModelController extends GetxController{
           this._liveCrew!.value = userModel.liveCrew!;
           this._deviceToken!.value = userModel.deviceToken!;
           this._liveTalkHideList!.value = userModel.liveTalkHideList!;
+          this._deviceID!.value = userModel.deviceID!;
           try {
             this._fleaChatUidList!.value = userModel.fleaChatUidList!;
           }catch(e){};
@@ -285,21 +288,22 @@ class UserModelController extends GetxController{
     await getCurrentUser(auth.currentUser!.uid);
   }
 
-  Future<void> setNewField3({required token}) async {
+  Future<void> setNewField3({required token, required deviceID}) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
     await ref.collection('user').doc(uid).update({
       'deviceToken': token,
+      'deviceID': deviceID,
       'liveTalkHideList':[],
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
 
-  Future<void> updateDeviceToken({required token}) async {
+  Future<void> updateDeviceID({required deviceID}) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
     await ref.collection('user').doc(uid).update({
-      'deviceToken': token,
+      'deviceID': deviceID,
     });
     await getCurrentUser(auth.currentUser!.uid);
   }

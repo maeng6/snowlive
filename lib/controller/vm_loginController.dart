@@ -37,10 +37,9 @@ class LoginController extends GetxController {
         .doc('$uid');
     final userDocSnapshot = await userDoc.get();
     if (userDocSnapshot.exists ) {
-      if(userDocSnapshot['deviceToken'] == _notificationController.deviceToken) {
+      if(userDocSnapshot['deviceID'] == _notificationController.deviceID) {
         CustomFullScreenDialog.cancelDialog();
-        await FlutterSecureStorage()
-            .write(key: 'uid', value: auth.currentUser!.uid);
+        await FlutterSecureStorage().write(key: 'uid', value: auth.currentUser!.uid);
         Get.offAll(() => MainHome(uid: uid));
       }else {
         Get.dialog(
@@ -96,7 +95,7 @@ class LoginController extends GetxController {
                     TextButton(
                       onPressed: () async {
                         try {
-                          await _userModelController.updateDeviceToken(token: _notificationController.deviceToken);
+                          await _userModelController.updateDeviceID(deviceID: _notificationController.deviceID);
                           await FlutterSecureStorage().write(key: 'uid', value: auth.currentUser!.uid);
                           CustomFullScreenDialog.cancelDialog();
                           Get.offAll(() => MainHome(uid: uid));
@@ -137,7 +136,7 @@ class LoginController extends GetxController {
         .doc('$uid');
     final userDocSnapshot = await userDoc.get();
     if (userDocSnapshot.exists ) {
-      if(userDocSnapshot['deviceToken'] == _notificationController.deviceToken) {
+      if(userDocSnapshot['deviceID'] == _notificationController.deviceID) {
 
       }else {
         Get.dialog(WillPopScope(
@@ -466,7 +465,7 @@ class LoginController extends GetxController {
     Get.offAll(()=>LoginPage());
   }
 
-  Future<void> createUserDoc({required index,required token}) async {
+  Future<void> createUserDoc({required index,required token,required deviceID}) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
     final email = user.providerData[0].email;
@@ -509,7 +508,8 @@ class LoginController extends GetxController {
       'applyCrewList':[],
       'totalScores':<String, dynamic>{},
       'deviceToken': token,
-      'liveTalkHideList':[]
+      'liveTalkHideList':[],
+      'deviceID': deviceID,
     });
     await ref.collection('newAlarm')
         .doc(uid)
