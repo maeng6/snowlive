@@ -276,7 +276,7 @@ class LoginController extends GetxController {
       User? currentUser = auth.currentUser;
       if (currentUser != null) {
         await getExistUserDoc(uid: currentUser.uid);
-       // await FlutterSecureStorage().write(key: 'signInMethod', value: 'google');
+        await FlutterSecureStorage().write(key: 'signInMethod', value: 'google');
       }
     }
   }
