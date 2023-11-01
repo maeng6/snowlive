@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_noticeController.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -28,6 +29,11 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    //TODO: Dependency Injection************************************************
+    Get.put(NoticeController(), permanent: true);
+    NoticeController _noticeController = Get.find<NoticeController>();
+    //TODO: Dependency Injection************************************************
 
     final Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
@@ -95,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   ],
                 ),
-                Column(
+                Obx(()=>Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -116,17 +122,17 @@ class _LoginPageState extends State<LoginPage> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 10),
                                 child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFF111111).withOpacity(0.8),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFF111111).withOpacity(0.8),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                                     child: Text('마지막\n로그인',
-                                    style: TextStyle(
-                                      color: Color(0xFFFFFFFF),
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.normal
-                                    ),)),
+                                      style: TextStyle(
+                                          color: Color(0xFFFFFFFF),
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.normal
+                                      ),)),
                               )
                           ],
                         ),
@@ -166,57 +172,58 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         (Platform.isIOS)
                             ?Column(
-                              children: [
-                                LoginButton(
-                          buttonText: 'Apple로 로그인하기',
-                          logoAddress: 'assets/imgs/logos/logos_apple.png',
-                          signInMethod: SignInMethod.apple,
-                          buttonColor: Color(0xff111111),
-                          borderColor: Colors.transparent,
-                          textColor: Colors.white,
-                        ),
-                                if(_loginController.signInMethod == 'apple')
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFF111111).withOpacity(0.8),
-                                          borderRadius: BorderRadius.circular(4),
-                                        ),
-                                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                        child: Text('마지막\n로그인',
-                                          style: TextStyle(
-                                              color: Color(0xFFFFFFFF),
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.normal
-                                          ),)),
-                                  )
-                              ],
-                            )
+                          children: [
+                            LoginButton(
+                              buttonText: 'Apple로 로그인하기',
+                              logoAddress: 'assets/imgs/logos/logos_apple.png',
+                              signInMethod: SignInMethod.apple,
+                              buttonColor: Color(0xff111111),
+                              borderColor: Colors.transparent,
+                              textColor: Colors.white,
+                            ),
+                            if(_loginController.signInMethod == 'apple')
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFF111111).withOpacity(0.8),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                    child: Text('마지막\n로그인',
+                                      style: TextStyle(
+                                          color: Color(0xFFFFFFFF),
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.normal
+                                      ),)),
+                              )
+                          ],
+                        )
                             :SizedBox(width: 0,),
                       ],
                     ),
                     SizedBox(
                       height: 40,
                     ),
-                    // GestureDetector(
-                    //   onTap: (){
-                    //     Get.to(()=>EmailLoginPage());
-                    //   },
-                    //   child: Text('이메일로 로그인하기',
-                    //     style: TextStyle(
-                    //       fontSize: 14,
-                    //       color: Color(0xFF949494),
-                    //       fontWeight: FontWeight.normal,
-                    //     ),),
-                    // ),
+                    if(Platform.isAndroid && _noticeController.isAndroidEmailLogIn == true)
+                      GestureDetector(
+                        onTap: (){
+                          Get.to(()=>EmailLoginPage());
+                        },
+                        child: Text('이메일로 로그인하기',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF949494),
+                            fontWeight: FontWeight.normal,
+                          ),),
+                      ),
                     SizedBox(
                       height: (Platform.isIOS)
                           ? 64
                           : 40,
                     )
                   ],
-                ),
+                )),
               ],
             ),
           ),
