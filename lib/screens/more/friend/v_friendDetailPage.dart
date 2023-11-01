@@ -23,7 +23,6 @@ import '../../../model/m_rankingTierModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 import '../../LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
 import '../../LiveCrew/v_crewDetailPage_screen.dart';
-import '../../Ranking/v_Ranking_Indi_Screen_detail.dart';
 import '../v_setProfileImage_moreTab.dart';
 
 class FriendDetailPage extends StatefulWidget {

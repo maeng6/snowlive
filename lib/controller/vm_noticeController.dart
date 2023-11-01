@@ -14,11 +14,14 @@ class NoticeController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     await getIsNewNotice();
+    await getIsAndroidEmailLogIn();
   }
 
   RxBool? _isNewNotice = false.obs;
+  RxBool? _isAndroidEmailLogIn = false.obs;
 
   bool? get isNewNotice => _isNewNotice!.value;
+  bool? get isAndroidEmailLogIn => _isAndroidEmailLogIn!.value;
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
@@ -32,5 +35,15 @@ class NoticeController extends GetxController {
     bool isNewNotice = documentSnapshot.get('new');
     this._isNewNotice!.value = isNewNotice;
   }
+
+  Future<void> getIsAndroidEmailLogIn() async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('emailLogIn').doc('1');
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    bool isAndroidEmailLogIn = documentSnapshot.get('visible');
+    this._isAndroidEmailLogIn!.value = isAndroidEmailLogIn;
+  }
+
 
 }

@@ -37,13 +37,18 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   RefreshController _refreshController = Get.find<RefreshController>();
   //TODO: Dependency Injection**************************************************
 
+
+  bool _isKusbf = false;
+
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
   }
 
-    Map? userRankingMap;
+  Map? userRankingMap;
+
 
   Stream<QuerySnapshot> myRankingDocStream() {
     return FirebaseFirestore.instance
@@ -57,117 +62,204 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+    _userModelController.getCurrentUser_crew(_userModelController.uid);
     _myRankingController.getMyRankingData(_userModelController.uid);
 
     if(_userModelController.liveCrew != '' && _userModelController.liveCrew != null) {
       _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
     }else{}
-    return StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('Ranking')
-                .doc('${_seasonController.currentSeason}')
-                .collection('${_userModelController.favoriteResort}')
-                .orderBy('totalScore', descending: true)
-                .snapshots(),
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError) {
-                return Container(
-                  color: Colors.white,
-                  child: SafeArea(
-                    top: false,
-                    bottom: true,
-                    child: Scaffold(
-                        backgroundColor: Colors.white,
-                        body: Text("오류가 발생했습니다")),
-                  ),
-                );
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Container(
-                  color: Colors.white,
-                  child: SafeArea(
-                    top: false,
-                    bottom: true,
-                    child: Scaffold(
-                        backgroundColor: Colors.white,
-                        body: Text("")),
-                  ),
-                );
-              }
-              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Container(
-                  color: Colors.white,
-                  child: SafeArea(
-                    top: false,
-                    bottom: true,
-                    child: Scaffold(
-                      backgroundColor: Colors.white,
-                      body: Container(
-                        height: _size.height - 200,
-                        child: Center(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ExtendedImage.asset(
-                                'assets/imgs/icons/icon_rankin_indi_nodata.png',
-                                enableMemoryCache: true,
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(7),
-                                width: 80,
-                                fit: BoxFit.cover,
-                              ),
-                              Text("데이터가 없습니다"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }
-              final documents = snapshot.data!.docs;
-              // 동점자인 경우 lastPassTime을 기준으로 최신 순으로 정렬
-              documents.sort((a, b) {
-                final aTotalScore = a['totalScore'] as int;
-                final bTotalScore = b['totalScore'] as int;
-                final aLastPassTime = a['lastPassTime'] as Timestamp?;
-                final bLastPassTime = b['lastPassTime'] as Timestamp?;
+    return StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('kusbf')
+            .doc('1')
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
 
-                if (aTotalScore == bTotalScore) {
-                  if (aLastPassTime != null && bLastPassTime != null) {
-                    return bLastPassTime.compareTo(aLastPassTime);
-                  }
+          if (snapshot.hasError) {
+            return SizedBox.shrink();
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return SizedBox.shrink();
+          }
+
+          if (!snapshot.hasData || !snapshot.data!.exists) {
+            return SizedBox.shrink();
+          }
+
+          List<dynamic> _kusbfList = [];
+          _kusbfList = snapshot.data!.get('kusbf') as List<dynamic>;
+
+
+          return StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('liveCrew')
+                  .where('kusbf', isEqualTo: true)
+                  .snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+
+                if (snapshot.hasError) {
+                  return SizedBox.shrink();
                 }
 
-                return bTotalScore.compareTo(aTotalScore);
-              });
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SizedBox.shrink();
+                }
 
-              userRankingMap =  _liveMapController.calculateRankIndiAll2(userRankingDocs: documents);
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return SizedBox.shrink();
+                }
 
-              return Container(
-                color: Colors.white,
-                child: SafeArea(
-                  top: false,
-                  bottom: true,
-                  child: Stack(
-                    children: [
-                      SingleChildScrollView(
-                        physics: AlwaysScrollableScrollPhysics(),
+                // 'liveCrew' 컬렉션의 모든 문서에서 'memberUidList' 필드를 가져와서 합칩니다.
+                List<dynamic> allMemberUidList = [];
+                for (var doc in snapshot.data!.docs) {
+                  List<dynamic> memberUidList = doc['memberUidList'];
+                  allMemberUidList.addAll(memberUidList);
+                }
+                print(allMemberUidList.length);
+
+                return StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('Ranking')
+                      .doc('${_seasonController.currentSeason}')
+                      .collection('${_userModelController.favoriteResort}')
+                      .orderBy('totalScore', descending: true)
+                      .snapshots(),
+                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      return Container(
+                        color: Colors.white,
+                        child: SafeArea(
+                          top: false,
+                          bottom: true,
+                          child: Scaffold(
+                              backgroundColor: Colors.white,
+                              body: Text("오류가 발생했습니다")),
+                        ),
+                      );
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Container(
+                        color: Colors.white,
+                        child: SafeArea(
+                          top: false,
+                          bottom: true,
+                          child: Scaffold(
+                              backgroundColor: Colors.white,
+                              body: Text("")),
+                        ),
+                      );
+                    }
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return Container(
+                        color: Colors.white,
+                        child: SafeArea(
+                          top: false,
+                          bottom: true,
+                          child: Scaffold(
+                            backgroundColor: Colors.white,
+                            body: Container(
+                              height: _size.height - 200,
+                              child: Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ExtendedImage.asset(
+                                      'assets/imgs/icons/icon_rankin_indi_nodata.png',
+                                      enableMemoryCache: true,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(7),
+                                      width: 80,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    Text("데이터가 없습니다"),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    final document = snapshot.data!.docs;
+                    // 동점자인 경우 lastPassTime을 기준으로 최신 순으로 정렬
+                    final filteredDocuments = document.where((doc) {
+                      final uid = doc['uid'];
+                      return allMemberUidList.contains(uid);
+                    }).toList();
+                    print(filteredDocuments.length);
+
+                    final documents = _isKusbf == true ? filteredDocuments : document;
+
+                    documents.sort((a, b) {
+                      final aTotalScore = a['totalScore'] as int;
+                      final bTotalScore = b['totalScore'] as int;
+                      final aLastPassTime = a['lastPassTime'] as Timestamp?;
+                      final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+                      if (aTotalScore == bTotalScore) {
+                        if (aLastPassTime != null && bLastPassTime != null) {
+                          return bLastPassTime.compareTo(aLastPassTime);
+                        }
+                      }
+
+                      return bTotalScore.compareTo(aTotalScore);
+                    });
+
+                    userRankingMap =  _liveMapController.calculateRankIndiAll2(userRankingDocs: documents);
+
+                    return Container(
+                      color: Colors.white,
+                      child: SafeArea(
+                        top: false,
+                        bottom: true,
+                        child: Stack(
+                          children: [
+                            SingleChildScrollView(
+                              physics: AlwaysScrollableScrollPhysics(),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16),
                                 child: Column(
                                   children: [
+                                    if(_kusbfList.contains(_userModelController.liveCrew))
+                                      Container(
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text('KUSBF'),
+                                            Switch(
+                                              value: _isKusbf,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _isKusbf = value;
+                                                  // 여기에서 토글 상태 변경에 따른 추가 작업을 수행할 수 있습니다.
+                                                });
+                                              },
+                                              activeTrackColor: Colors.lightBlueAccent,
+                                              activeColor: Colors.blueAccent,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     Container(
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text('${_resortModelController.resortName} 상위 TOP 3 유저',
-                                            style: TextStyle(
-                                                color: Color(0xFF949494),
-                                                fontSize: 12
+                                          if(_isKusbf == true)
+                                            Text('KUSBF 상위 TOP 3 유저',
+                                              style: TextStyle(
+                                                  color: Color(0xFF949494),
+                                                  fontSize: 12
+                                              ),
                                             ),
-                                          ),
+                                          if(_isKusbf == false)
+                                            Text('${_resortModelController.resortName} 상위 TOP 3 유저',
+                                              style: TextStyle(
+                                                  color: Color(0xFF949494),
+                                                  fontSize: 12
+                                              ),
+                                            ),
                                           SizedBox(height: 12),
                                           Row(
                                             children: [
@@ -492,16 +584,25 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text('${_resortModelController.resortName} 개인 랭킹 TOP 100',
-                                                style: TextStyle(
-                                                    color: Color(0xFF111111),
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold
+                                              if(_isKusbf == true)
+                                                Text('KUSBF 개인 랭킹 TOP 100',
+                                                  style: TextStyle(
+                                                      color: Color(0xFF111111),
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold
+                                                  ),
                                                 ),
-                                              ),
+                                              if(_isKusbf == false)
+                                                Text('${_resortModelController.resortName} 개인 랭킹 TOP 100',
+                                                  style: TextStyle(
+                                                      color: Color(0xFF111111),
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold
+                                                  ),
+                                                ),
                                               GestureDetector(
                                                 onTap: () async{
-                                                  Get.to(()=> RankingIndiAllScreen());
+                                                  Get.to(()=> RankingIndiAllScreen(isKusbf: _isKusbf,));
                                                 },
                                                 child: Text('전체 보기',
                                                   style: TextStyle(
@@ -619,13 +720,13 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                     ),
                                                                   ),
                                                                   if(userData['stateMsg'] != '')
-                                                                  Text(userData['stateMsg'],
-                                                                    maxLines: 1,
-                                                                    overflow: TextOverflow.ellipsis,
-                                                                    style: TextStyle(
-                                                                        fontSize: 12,
-                                                                        color: Color(0xFF949494)
-                                                                    ),)
+                                                                    Text(userData['stateMsg'],
+                                                                      maxLines: 1,
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                      style: TextStyle(
+                                                                          fontSize: 12,
+                                                                          color: Color(0xFF949494)
+                                                                      ),)
                                                                   // StreamBuilder<QuerySnapshot>(
                                                                   //   stream: FirebaseFirestore.instance
                                                                   //       .collection('liveCrew')
@@ -704,266 +805,270 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                 ),
                               ),
                             ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        left: 0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                spreadRadius: 0,
-                                blurRadius: 6,
-                                offset: Offset(0, 0), // changes position of shadow
-                              ),],
-                            color: Color(0xFF3D83ED),
-                          ),
-                          height: 80,
-                          child:  Obx(() => Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
-                                child:
-                                (userRankingMap?['${_userModelController.uid}'] != null )
-                                    ? Obx(() => Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${userRankingMap?['${_userModelController.uid}']}',
-                                      style: TextStyle(
-                                        color: Color(0xFFffffff),
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(width: 14),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
-                                      },
-                                      child: Container(
-                                        width: 48,
-                                        height: 48,
-                                        child: _userModelController.profileImageUrl!.isNotEmpty
-                                            ? ExtendedImage.network(
-                                          _userModelController.profileImageUrl!,
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                          loadStateChanged: (ExtendedImageState state) {
-                                            switch (state.extendedImageLoadState) {
-                                              case LoadState.loading:
-                                                return SizedBox.shrink();
-                                              case LoadState.completed:
-                                                return state.completedWidget;
-                                              case LoadState.failed:
-                                                return ExtendedImage.network(
-                                                  '${profileImgUrlList[0].default_round}',
-                                                  enableMemoryCache: true,
-                                                  shape: BoxShape.circle,
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  width: 48,
-                                                  height: 48,
-                                                  fit: BoxFit.cover,
-                                                ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                              default:
-                                                return null;
-                                            }
-                                          },
-                                        )
-                                            : ExtendedImage.network(
-                                          '${profileImgUrlList[0].default_round}',
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 14),
-                                    Container(
-                                      width: _size.width*0.42,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              left: 0,
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        spreadRadius: 0,
+                                        blurRadius: 6,
+                                        offset: Offset(0, 0), // changes position of shadow
+                                      ),],
+                                    color: Color(0xFF3D83ED),
+                                  ),
+                                  height: 80,
+                                  child:  Obx(() => Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                      child:
+                                      (userRankingMap?['${_userModelController.uid}'] != null )
+                                          ? Obx(() => Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           Text(
-                                            '${_userModelController.displayName}',
+                                            '${userRankingMap?['${_userModelController.uid}']}',
                                             style: TextStyle(
                                               color: Color(0xFFffffff),
-                                              fontSize: 16,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          SizedBox(height: 2,),
-                                          if(_userModelController.stateMsg != '')
-                                          Container(
-                                            child: Text('${_userModelController.stateMsg}',
-                                              style: TextStyle(
-                                                  color: Color(0xFFffffff).withOpacity(0.6),
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.normal
-                                                      ),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
+                                          SizedBox(width: 14),
+                                          GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
+                                            },
+                                            child: Container(
+                                              width: 48,
+                                              height: 48,
+                                              child: _userModelController.profileImageUrl!.isNotEmpty
+                                                  ? ExtendedImage.network(
+                                                _userModelController.profileImageUrl!,
+                                                enableMemoryCache: true,
+                                                shape: BoxShape.circle,
+                                                borderRadius: BorderRadius.circular(8),
+                                                width: 48,
+                                                height: 48,
+                                                fit: BoxFit.cover,
+                                                loadStateChanged: (ExtendedImageState state) {
+                                                  switch (state.extendedImageLoadState) {
+                                                    case LoadState.loading:
+                                                      return SizedBox.shrink();
+                                                    case LoadState.completed:
+                                                      return state.completedWidget;
+                                                    case LoadState.failed:
+                                                      return ExtendedImage.network(
+                                                        '${profileImgUrlList[0].default_round}',
+                                                        enableMemoryCache: true,
+                                                        shape: BoxShape.circle,
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        width: 48,
+                                                        height: 48,
+                                                        fit: BoxFit.cover,
+                                                      ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                    default:
+                                                      return null;
+                                                  }
+                                                },
+                                              )
+                                                  : ExtendedImage.network(
+                                                '${profileImgUrlList[0].default_round}',
+                                                enableMemoryCache: true,
+                                                shape: BoxShape.circle,
+                                                borderRadius: BorderRadius.circular(8),
+                                                width: 48,
+                                                height: 48,
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
-                                            width: _size.width*0.35,
-                                          )
+                                          ),
+                                          SizedBox(width: 14),
+                                          Container(
+                                            width: _size.width*0.42,
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '${_userModelController.displayName}',
+                                                  style: TextStyle(
+                                                    color: Color(0xFFffffff),
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 2,),
+                                                if(_userModelController.stateMsg != '')
+                                                  Container(
+                                                    child: Text('${_userModelController.stateMsg}',
+                                                      style: TextStyle(
+                                                          color: Color(0xFFffffff).withOpacity(0.6),
+                                                          fontSize: 12,
+                                                          fontWeight: FontWeight.normal
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                    ),
+                                                    width: _size.width*0.35,
+                                                  )
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(child: SizedBox()),
+                                          Obx(()=>Row(
+                                            children: [
+                                              Text(
+                                                '${_myRankingController.totalScore}점',
+                                                style: TextStyle(
+                                                  color: Color(0xFFffffff),
+                                                  fontWeight: FontWeight.normal,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                              for(var rankingTier in rankingTierList)
+                                                if(_myRankingController.tier == rankingTier.tierName)
+                                                  Transform.translate(
+                                                    offset: Offset(6, 2),
+                                                    child: ExtendedImage.network(
+                                                      rankingTier.badgeAsset,
+                                                      enableMemoryCache: true,
+                                                      fit: BoxFit.cover,
+                                                      width: 52,
+                                                    ),
+                                                  )
+                                            ],
+                                          ),
+                                          ),
                                         ],
-                                      ),
-                                    ),
-                                    Expanded(child: SizedBox()),
-                                    Obx(()=>Row(
+                                      ))
+                                          : Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           Text(
-                                            '${_myRankingController.totalScore}점',
+                                            '',
                                             style: TextStyle(
                                               color: Color(0xFFffffff),
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 18,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          for(var rankingTier in rankingTierList)
-                                            if(_myRankingController.tier == rankingTier.tierName)
-                                              Transform.translate(
-                                                offset: Offset(6, 2),
-                                                child: ExtendedImage.network(
-                                                  rankingTier.badgeAsset,
-                                                  enableMemoryCache: true,
-                                                  fit: BoxFit.cover,
-                                                  width: 52,
-                                                ),
+                                          SizedBox(width: 14),
+                                          GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
+                                            },
+                                            child: Container(
+                                              width: 48,
+                                              height: 48,
+                                              child: _userModelController.profileImageUrl!.isNotEmpty
+                                                  ? ExtendedImage.network(
+                                                _userModelController.profileImageUrl!,
+                                                enableMemoryCache: true,
+                                                shape: BoxShape.circle,
+                                                borderRadius: BorderRadius.circular(8),
+                                                width: 48,
+                                                height: 48,
+                                                fit: BoxFit.cover,
+                                                loadStateChanged: (ExtendedImageState state) {
+                                                  switch (state.extendedImageLoadState) {
+                                                    case LoadState.loading:
+                                                      return SizedBox.shrink();
+                                                    case LoadState.completed:
+                                                      return state.completedWidget;
+                                                    case LoadState.failed:
+                                                      return ExtendedImage.network(
+                                                        '${profileImgUrlList[0].default_round}',
+                                                        enableMemoryCache: true,
+                                                        shape: BoxShape.circle,
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        width: 48,
+                                                        height: 48,
+                                                        fit: BoxFit.cover,
+                                                      ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                    default:
+                                                      return null;
+                                                  }
+                                                },
                                               )
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ))
-                                    : Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '',
-                                      style: TextStyle(
-                                        color: Color(0xFFffffff),
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(width: 14),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Get.to(() => FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort,));
-                                      },
-                                      child: Container(
-                                        width: 48,
-                                        height: 48,
-                                        child: _userModelController.profileImageUrl!.isNotEmpty
-                                            ? ExtendedImage.network(
-                                          _userModelController.profileImageUrl!,
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                          loadStateChanged: (ExtendedImageState state) {
-                                            switch (state.extendedImageLoadState) {
-                                              case LoadState.loading:
-                                                return SizedBox.shrink();
-                                              case LoadState.completed:
-                                                return state.completedWidget;
-                                              case LoadState.failed:
-                                                return ExtendedImage.network(
-                                                  '${profileImgUrlList[0].default_round}',
-                                                  enableMemoryCache: true,
-                                                  shape: BoxShape.circle,
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  width: 48,
-                                                  height: 48,
-                                                  fit: BoxFit.cover,
-                                                ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                              default:
-                                                return null;
-                                            }
-                                          },
-                                        )
-                                            : ExtendedImage.network(
-                                          '${profileImgUrlList[0].default_round}',
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 14),
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '${_userModelController.displayName}',
-                                          style: TextStyle(
-                                            color: Color(0xFFffffff),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 2,),
-                                        if(_userModelController.stateMsg != '')
-                                          Container(
-                                            child: Text('${_userModelController.stateMsg}',
-                                              style: TextStyle(
-                                                  color: Color(0xFFffffff).withOpacity(0.6),
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.normal
+                                                  : ExtendedImage.network(
+                                                '${profileImgUrlList[0].default_round}',
+                                                enableMemoryCache: true,
+                                                shape: BoxShape.circle,
+                                                borderRadius: BorderRadius.circular(8),
+                                                width: 48,
+                                                height: 48,
+                                                fit: BoxFit.cover,
                                               ),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
                                             ),
-                                            width: _size.width*0.3,
-                                          )
-                                      ],
-                                    ),
-                                    Expanded(child: SizedBox()),
-                                    Obx(()=>Row(
-                                      children: [
-                                        Text(
-                                          '점수가 없습니다.',
-                                          style: TextStyle(
-                                            color: Color(0xFFffffff),
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 18,
                                           ),
-                                        ),
-                                        for(var rankingTier in rankingTierList)
-                                          if(_myRankingController.tier == rankingTier.tierName)
-                                            Transform.translate(
-                                              offset: Offset(6, 2),
-                                              child: SizedBox()
-                                            )
-                                      ],
-                                    ),
-                                    ),
-                                  ],
-                                )
-                              ))
+                                          SizedBox(width: 14),
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '${_userModelController.displayName}',
+                                                style: TextStyle(
+                                                  color: Color(0xFFffffff),
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              SizedBox(height: 2,),
+                                              if(_userModelController.stateMsg != '')
+                                                Container(
+                                                  child: Text('${_userModelController.stateMsg}',
+                                                    style: TextStyle(
+                                                        color: Color(0xFFffffff).withOpacity(0.6),
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.normal
+                                                    ),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                  ),
+                                                  width: _size.width*0.3,
+                                                )
+                                            ],
+                                          ),
+                                          Expanded(child: SizedBox()),
+                                          Obx(()=>Row(
+                                            children: [
+                                              Text(
+                                                '점수가 없습니다.',
+                                                style: TextStyle(
+                                                  color: Color(0xFFffffff),
+                                                  fontWeight: FontWeight.normal,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                              for(var rankingTier in rankingTierList)
+                                                if(_myRankingController.tier == rankingTier.tierName)
+                                                  Transform.translate(
+                                                      offset: Offset(6, 2),
+                                                      child: SizedBox()
+                                                  )
+                                            ],
+                                          ),
+                                          ),
+                                        ],
+                                      )
+                                  ))
+                              ),
+                            )
+                          ],
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            },
+                      ),
+                    );
+                  },
+                );
+              }
           );
+        }
+    );
   }
 }
