@@ -56,6 +56,7 @@ class UserModelController extends GetxController{
   RxString? _deviceToken =''.obs;
   RxList? _liveTalkHideList=[].obs;
   RxString? _deviceID =''.obs;
+  RxBool? _kusbf = false.obs;
 
 
   String? get uid => _uid!.value;
@@ -96,6 +97,7 @@ class UserModelController extends GetxController{
   String? get deviceToken => _deviceToken!.value;
   List? get liveTalkHideList =>_liveTalkHideList;
   String? get deviceID => _deviceID!.value;
+  bool? get kusbf => _kusbf!.value;
 
   @override
   void onInit()  async{
@@ -114,6 +116,8 @@ class UserModelController extends GetxController{
       });
     }else{
     }
+    kusbfListener();
+    updateKUSBF_auto();
     super.onInit();
   }
 
@@ -165,6 +169,7 @@ class UserModelController extends GetxController{
           this._deviceToken!.value = userModel.deviceToken!;
           this._liveTalkHideList!.value = userModel.liveTalkHideList!;
           this._deviceID!.value = userModel.deviceID!;
+          this._kusbf!.value = userModel.kusbf!;
           try {
             this._fleaChatUidList!.value = userModel.fleaChatUidList!;
           }catch(e){};
@@ -190,6 +195,24 @@ class UserModelController extends GetxController{
         if (userModel != null) {
           this._applyCrewList!.value = userModel.applyCrewList!;
           this._liveCrew!.value = userModel.liveCrew!;
+        }else {
+          Get.to(()=>LoginPage());
+          // handle the case where the userModel is null
+        }} else {
+        Get.to(()=>LoginPage());
+        // handle the case where the userModel is null
+      }
+    } else {
+      Get.to(()=>LoginPage());
+    }
+  }
+
+  Future<void> getCurrentUser_kusbf(uid) async{
+    if(FirebaseAuth.instance.currentUser != null) {
+      if(uid!=null) {
+        UserModel? userModel = await UserModel().getUserModel_kusbf(uid);
+        if (userModel != null) {
+          this._kusbf!.value = userModel.kusbf!;
         }else {
           Get.to(()=>LoginPage());
           // handle the case where the userModel is null
@@ -297,15 +320,81 @@ class UserModelController extends GetxController{
       'deviceToken': token,
       'deviceID': deviceID,
       'liveTalkHideList':[],
+      'kusbf':false,
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
+
+  void kusbfListener() {
+    final DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('kusbf').doc('1');
+
+    documentReference.snapshots().listen((DocumentSnapshot<Map<String, dynamic>> snapshot) {
+      if (snapshot.exists) {
+        updateKUSBF_auto();
+        print('kusbf 업데이트완료');
+      } else {
+        print('Document does not exist on the database');
+      }
+    }, onError: (error) => print('Listen failed: $error'));
+  }
+
+  Future<void> updateKUSBF_auto() async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('kusbf').doc('1');
+
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+
+    List<dynamic> _kusbfList = [];
+    _kusbfList = documentSnapshot.get('kusbf') as List<dynamic>;
+
+    if(_kusbfList.contains(liveCrew)) {
+      await ref.collection('user').doc(uid).update({
+        'kusbf': true,
+      });
+    }else{
+      await ref.collection('user').doc(uid).update({
+        'kusbf': false,
+      });
+    }
+    await getCurrentUser_kusbf(auth.currentUser!.uid);
+  }
+
+  Future<void> updateKUSBF_true_manual({required uid}) async {
+
+      await ref.collection('user').doc(uid).update({
+        'kusbf': true,
+      });
+
+  }
+
+  Future<void> updateKUSBF_false_manual({required uid}) async {
+
+      await ref.collection('user').doc(uid).update({
+        'kusbf': false,
+      });
+
+  }
+
 
   Future<void> updateDeviceID({required deviceID}) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
     await ref.collection('user').doc(uid).update({
       'deviceID': deviceID,
+    });
+    await getCurrentUser(auth.currentUser!.uid);
+  }
+
+  Future<void> updateDeviceToken({required deviceToken}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'deviceToken': deviceToken,
     });
     await getCurrentUser(auth.currentUser!.uid);
   }

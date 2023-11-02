@@ -139,6 +139,7 @@ class LoginController extends GetxController {
                       onPressed: () async {
                         try {
                           await _userModelController.updateDeviceID(deviceID: _notificationController.deviceID);
+                          await _userModelController.updateDeviceToken(deviceToken: _notificationController.deviceToken);
                           await FlutterSecureStorage().write(key: 'uid', value: auth.currentUser!.uid);
                           CustomFullScreenDialog.cancelDialog();
                           Get.offAll(() => MainHome(uid: uid));
@@ -561,6 +562,7 @@ class LoginController extends GetxController {
       'deviceToken': token,
       'liveTalkHideList':[],
       'deviceID': deviceID,
+      'kusbf': false,
     });
     await ref.collection('newAlarm')
         .doc(uid)

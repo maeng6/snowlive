@@ -79,7 +79,7 @@ class ImageController extends GetxController {
   }
 
   Future<String> setNewImage(XFile newImage) async {
-    String? uid = await FlutterSecureStorage().read(key: 'uid');
+    String? uid = auth.currentUser!.uid;
     var metaData = SettableMetadata(contentType: 'image/jpeg');
     String downloadUrl = '';
     if (newImage != null) {

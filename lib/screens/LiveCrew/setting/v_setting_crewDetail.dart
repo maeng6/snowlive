@@ -322,8 +322,7 @@ class Setting_crewDetail extends StatelessWidget {
                                             Navigator.pop(context);
                                             CustomFullScreenDialog.showDialog();
                                             await _imageController.deleteAllCrewGalleryImages('${_liveCrewModelController.crewID}');
-                                            await _liveCrewModelController
-                                                .deleteCrew(crewID: _liveCrewModelController.crewID);
+                                            await _liveCrewModelController.deleteCrew(crewID: _liveCrewModelController.crewID);
                                             await _userModelController.getCurrentUser_crew(_userModelController.uid);
                                             CustomFullScreenDialog.cancelDialog();
                                             for(int i=0; i<2; i++){
@@ -501,6 +500,7 @@ class Setting_crewDetail extends StatelessWidget {
                                           Navigator.pop(context);
                                           CustomFullScreenDialog.showDialog();
                                           await _liveCrewModelController.deleteCrewMember(crewID: _liveCrewModelController.crewID, memberUid: _userModelController.uid);
+                                          await _userModelController.updateKUSBF_false_manual(uid: _userModelController.uid);
                                           await _userModelController.getCurrentUser(_userModelController.uid);
                                           CustomFullScreenDialog.cancelDialog();
                                           for(int i=0; i<2; i++){

@@ -69,11 +69,6 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
-    if (_userModelController.liveCrew != '' &&
-        _userModelController.liveCrew != null) {
-      _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
-    } else {}
-
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('kusbf')

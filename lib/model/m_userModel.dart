@@ -78,6 +78,7 @@ class UserModel {
   String? deviceToken;
   List? liveTalkHideList;
   String? deviceID;
+  bool? kusbf;
 
   UserModel.fromJson(dynamic json, this.reference) {
       uid = json['uid'];
@@ -115,6 +116,7 @@ class UserModel {
       deviceToken = json['deviceToken'];
       liveTalkHideList = json['liveTalkHideList'];
       deviceID = json['deviceID'];
+      kusbf = json['kusbf'];
 
 
   }
@@ -152,6 +154,27 @@ class UserModel {
       await documentReference.get();
       if (documentSnapshot.exists) {
         UserModel userModel = UserModel.fromSnapShot_crew(documentSnapshot);
+        return userModel;
+      }
+    }
+    return null;
+  }
+
+  UserModel.fromJson_kusbf(dynamic json, this.reference) {
+    kusbf = json['kusbf'];
+  }
+
+  UserModel.fromSnapShot_kusbf(DocumentSnapshot<Map<String, dynamic>> snapshot)
+      :this.fromJson_kusbf(snapshot.data(), snapshot.reference);
+
+  Future<UserModel?> getUserModel_kusbf(String uid) async {
+    if (uid != null) {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+      if (documentSnapshot.exists) {
+        UserModel userModel = UserModel.fromSnapShot_kusbf(documentSnapshot);
         return userModel;
       }
     }

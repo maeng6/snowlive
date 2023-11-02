@@ -32,30 +32,39 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
   bool isFirstSentClick = false;
   var _phoneNumber;
   var _veriNumber;
+  bool _isVerificationValid = false;
 
   Timer? countdownTimer;
   Duration myDuration = Duration(minutes: 2);
 
   void startTimer() {
-    countdownTimer =
-        Timer.periodic(Duration(seconds: 1), (_) => setCountDown());
+    countdownTimer = Timer.periodic(Duration(seconds: 1), (_) {
+      if (mounted) {
+        setCountDown();
+      } else {
+        countdownTimer?.cancel();
+      }
+    });
   }
 
   void setCountDown() {
     final reduceSecondsBy = 1;
-    setState(() {
-      final seconds = myDuration.inSeconds - reduceSecondsBy;
-      if (seconds < 0) {
-        countdownTimer!.cancel();
-        buttonColorActive = true;
-        isFirstSent = false;
-        requestedAuth = false;
-        myDuration = Duration(minutes: 2);
-      } else {
-        myDuration = Duration(seconds: seconds);
-      }
-    });
+    if (mounted) {
+      setState(() {
+        final seconds = myDuration.inSeconds - reduceSecondsBy;
+        if (seconds < 0) {
+          countdownTimer!.cancel();
+          buttonColorActive = true;
+          isFirstSent = false;
+          requestedAuth = false;
+          myDuration = Duration(minutes: 2);
+        } else {
+          myDuration = Duration(seconds: seconds);
+        }
+      });
+    }
   }
+
 
 
   String? verificationId;
@@ -67,13 +76,17 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
     final credential = phoneAuthCredential;
 
     try {
+      CustomFullScreenDialog.showDialog();
+
       final userCredential = await FirebaseAuth.instance.currentUser
           ?.linkWithCredential(credential);
 
       await FirebaseFirestore.instance.collection('user')
           .doc(_userModelController.uid).update({'phoneAuth': true});
 
-      Navigator.pop(context);
+      CustomFullScreenDialog.cancelDialog();
+
+      Get.back();
 
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -87,6 +100,8 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
           setState(() {
             buttonColorActive2=true;
           });
+          CustomFullScreenDialog.cancelDialog();
+
           Get.snackbar('인증번호 오류','유효한 인증번호를 입력해 주세요.',
               margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
               snackPosition: SnackPosition.BOTTOM,
@@ -100,6 +115,8 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
           setState(() {
             buttonColorActive2=true;
           });
+          CustomFullScreenDialog.cancelDialog();
+
           Get.snackbar('인증번호 오류','유효한 인증번호를 입력해 주세요.',
               margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
               snackPosition: SnackPosition.BOTTOM,
@@ -113,6 +130,8 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
           setState(() {
             buttonColorActive2=true;
           });
+          CustomFullScreenDialog.cancelDialog();
+
           Get.snackbar('인증번호 오류','유효한 인증번호를 입력해 주세요.',
               margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
               snackPosition: SnackPosition.BOTTOM,
@@ -121,6 +140,8 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
               duration: Duration(milliseconds: 3000));
       }
     }
+    CustomFullScreenDialog.cancelDialog();
+
   }
 
   @override
@@ -296,73 +317,71 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                             Positioned(
                               right: 8,
                               child: Padding(
-                                padding: EdgeInsets.only(top: 6),
-                                child: Center(
-                                  child: ElevatedButton(onPressed: () async {
-                                    setState(() {
-                                      requestedAuth=true;
-                                      isFirstSentClick=true;
-                                      isFirstSent=true;
-                                    });
-                                    if(_textEditingController.text.trim().isEmpty
-                                        || !_formKey.currentState!.validate() || buttonColorActive == false)
-                                    {return ;}
-                                    CustomFullScreenDialog.showDialog();
-                                    FocusScope.of(context).unfocus();
-                                    try{
-                                      await _auth.verifyPhoneNumber(
-                                        timeout: const Duration(seconds: 90),
-                                        codeAutoRetrievalTimeout: (String verificationId) {
-                                          // Auto-resolution timed out...
-                                        },
-                                        phoneNumber: "+82"+_phoneNumber.trim(),
-                                        verificationCompleted: (phoneAuthCredential) async {
-                                          print("otp 문자옴");
-                                        },
-                                        verificationFailed: (verificationFailed) async {
-                                          print(verificationFailed.code);
+                                  padding: EdgeInsets.only(top: 6),
+                                  child: Center(
+                                    child: ElevatedButton(onPressed: () async {
+                                      if(_textEditingController.text.trim().isEmpty
+                                          || !_formKey.currentState!.validate() || buttonColorActive == false)
+                                      {return ;}
+                                      CustomFullScreenDialog.showDialog();
+                                      FocusScope.of(context).unfocus();
+                                      try{
+                                        await _auth.verifyPhoneNumber(
+                                          timeout: const Duration(seconds: 90),
+                                          codeAutoRetrievalTimeout: (String verificationId) {
+                                            // Auto-resolution timed out...
+                                          },
+                                          phoneNumber: "+82"+_phoneNumber.trim(),
+                                          verificationCompleted: (phoneAuthCredential) async {
+                                            print("otp 문자옴");
+                                          },
+                                          verificationFailed: (verificationFailed) async {
+                                            print(verificationFailed.code);
 
-                                          print("코드발송실패");
+                                            print("코드발송실패");
 
-                                        },
-                                        codeSent: (verificationId, resendingToken) async {
-                                          print("코드보냄");
+                                          },
+                                          codeSent: (verificationId, resendingToken) async {
+                                            print("코드보냄");
 
-                                          setState(() {
-                                            buttonColorActive=false;
-                                            this.verificationId = verificationId;
-                                          });
-                                        },
-                                      );
-                                      startTimer();
-                                    }catch(e){print('에러');}
-                                    CustomFullScreenDialog.cancelDialog();
-                                  },
-                                    child:
-                                    (isFirstSent == true)
-                                    ? Text(
-                                      '인증번호 발송',
-                                      style: TextStyle(
-                                          color: isFirstSentClick ? Color(0xFF949494) : Color(0xFF377EEA),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15),
-                                    )
-                                    : Text(
-                                      '인증번호 재발송',
-                                      style: TextStyle(
-                                          color: Color(0xFF377EEA),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15),
+                                            setState(() {
+                                              requestedAuth=true;
+                                              isFirstSentClick=true;
+                                              isFirstSent=true;
+                                              buttonColorActive=false;
+                                              this.verificationId = verificationId;
+                                            });
+                                          },
+                                        );
+                                        startTimer();
+                                      }catch(e){print('에러');}
+                                      CustomFullScreenDialog.cancelDialog();
+                                    },
+                                      child:
+                                      (isFirstSent == true)
+                                          ? Text(
+                                        '인증번호 발송',
+                                        style: TextStyle(
+                                            color: isFirstSentClick ? Color(0xFF949494) : Color(0xFF377EEA),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15),
+                                      )
+                                          : Text(
+                                        '인증번호 재발송',
+                                        style: TextStyle(
+                                            color: Color(0xFF377EEA),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15),
+                                      ),
+                                      style: TextButton.styleFrom(
+                                          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 13),
+                                          shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(Radius.circular(6))),
+                                          elevation: 0,
+                                          splashFactory: InkRipple.splashFactory,
+                                          backgroundColor: Colors.transparent),
                                     ),
-                                    style: TextButton.styleFrom(
-                                      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 13),
-                                        shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(6))),
-                                        elevation: 0,
-                                        splashFactory: InkRipple.splashFactory,
-                                        backgroundColor: Colors.transparent),
-                                  ),
-                                )
+                                  )
 
                               ),
                             ),
@@ -425,7 +444,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                 },
                                 onChanged: (value2){
                                   setState(() {
-                                    _veriNumber = value2;
+                                    _isVerificationValid = value2.length == 6;
                                   });
                                 },
                               ),
@@ -434,10 +453,10 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                 child: Padding(
                                     padding: EdgeInsets.symmetric(vertical: 23, horizontal: 14),
                                     child: Text('유효시간 $minutes:$seconds',
-                                    style: TextStyle(
-                                      color: Color(0xFFD32F2F),
-                                      fontSize: 13
-                                    ),
+                                      style: TextStyle(
+                                          color: Color(0xFFD32F2F),
+                                          fontSize: 13
+                                      ),
                                     )
 
                                 ),
@@ -460,9 +479,8 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                   child: ElevatedButton(
                     onPressed: () async{
                       if(_textEditingController2.text.trim().isEmpty
-                      || buttonColorActive2 == false)
+                          || buttonColorActive2 == false || _isVerificationValid == false)
                       {return ;}
-                      CustomFullScreenDialog.showDialog();
                       FocusScope.of(context).unfocus();
                       buttonColorActive2 = false;
                       try{
@@ -474,9 +492,9 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                               verificationId: verificationId!, smsCode: _textEditingController2.text);
 
                           signInWithPhoneAuthCredential(phoneAuthCredential);
+
                         }
                       }catch(e){print('에러');}
-                      CustomFullScreenDialog.cancelDialog();
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 4),
@@ -496,7 +514,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                         minimumSize: Size(1000, 56),
                         backgroundColor:
                         (_textEditingController2.text.length != 6
-                        || buttonColorActive2 == false)
+                            || buttonColorActive2 == false)
                             ? Color(0xffDEDEDE)
                             : Color(0xff377EEA)),
                   ),

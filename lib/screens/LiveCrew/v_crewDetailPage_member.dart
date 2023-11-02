@@ -711,6 +711,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                                               crewID: _liveCrewModelController.crewID,
                                                                               memberUid: crewMemberDocs[index]['uid']
                                                                           );
+                                                                          await _userModelController.updateKUSBF_false_manual(uid: crewMemberDocs[index]['uid']);
                                                                           CustomFullScreenDialog.cancelDialog();
                                                                         }catch(e){
                                                                           Navigator.pop(context);
