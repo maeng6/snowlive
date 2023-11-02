@@ -235,7 +235,6 @@ class _RankingHomeState extends State<RankingHome> {
 
               ],
             ),
-            SizedBox(height: 20,),
             if (isTap[0] == true)
               Expanded(child: RankingCrewScreen()),
             if (isTap[1] == true)
