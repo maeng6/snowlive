@@ -310,6 +310,15 @@ class UserModelController extends GetxController{
     await getCurrentUser(auth.currentUser!.uid);
   }
 
+  Future<void> updateDeviceToken({required deviceToken}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'deviceToken': deviceToken,
+    });
+    await getCurrentUser(auth.currentUser!.uid);
+  }
+
   Future<void> updateNewChatRead() async {
     final User? user = auth.currentUser;
     final uid = user!.uid;

@@ -168,21 +168,14 @@ class _FavoriteResortState extends State<FavoriteResort> {
                   onPressed: isSelected ? () async {
                       CustomFullScreenDialog.showDialog();
                       await _loginController.createUserDoc(index: 0, token: _notificationController.deviceToken,deviceID: _notificationController.deviceID);
-                      await FlutterSecureStorage()
-                          .write(key: 'uid', value: auth.currentUser!.uid);
-                      await userModelController
-                          .updateNickname(widget.getNickname);
-                      await userModelController
-                          .updateProfileImageUrl(widget.getProfileImageUrl);
-                      await userModelController.updateFavoriteResort(
-                          favoriteResort);
-                      await userModelController.updateInstantResort(
-                          favoriteResort);
-                      await userModelController.updateResortNickname(
-                          favoriteResort);
+                      await FlutterSecureStorage().write(key: 'uid', value: auth.currentUser!.uid);
+                      await userModelController.updateNickname(widget.getNickname);
+                      await userModelController.updateProfileImageUrl(widget.getProfileImageUrl);
+                      await userModelController.updateFavoriteResort(favoriteResort);
+                      await userModelController.updateInstantResort(favoriteResort);
+                      await userModelController.updateResortNickname(favoriteResort);
                       print('즐겨찾는 리조트 업뎃완료');
-                      await resortModelController.getSelectedResort(
-                          userModelController.favoriteResort!);
+                      await resortModelController.getSelectedResort(userModelController.favoriteResort!);
                       await _allUserDocsController.getAllUserDocs();
                       _myRankingController.resetMyRankingData();
                       CustomFullScreenDialog.cancelDialog();
