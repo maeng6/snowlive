@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
@@ -183,7 +184,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                     }
                   }
 
-                  return  Container(
+                  return Container(
                     color: Colors.white,
                     child: SafeArea(
                       top: false,
@@ -192,33 +193,53 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                         children: [
                           SingleChildScrollView(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
                               child: Column(
                                 children: [
                                   if(_kusbfList.contains(_userModelController.liveCrew))
-                                    Container(
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Text('KUSBF'),
-                                          Switch(
-                                            value: _isKusbf,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _isKusbf = value;
-                                                // 여기에서 토글 상태 변경에 따른 추가 작업을 수행할 수 있습니다.
-                                              });
-                                            },
-                                            activeTrackColor: Colors.lightBlueAccent,
-                                            activeColor: Colors.blueAccent,
+                                    Column(
+                                      children: [
+                                        Container(
+                                          width: _size.width,
+                                          height: 60,
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              Text('KUSBF 랭킹',
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xFF666666),
+                                                  fontWeight: FontWeight.normal,
+                                                ),
+                                              ),
+                                              Transform.scale(
+                                                scale: 0.8,
+                                                child: CupertinoSwitch(
+                                                  value: _isKusbf,
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      _isKusbf = value;
+                                                      // 여기에서 토글 상태 변경에 따른 추가 작업을 수행할 수 있습니다.
+                                                    });
+                                                  },
+                                                  activeColor: Color(0xFF3D83ED),
+                                                  trackColor: Color(0xFFD8E7FD),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                        SizedBox(
+                                          height: 0,
+                                        ),
+                                      ],
                                     ),
                                   Container(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
+                                        SizedBox(height: 10),
                                         if(_isKusbf == true)
                                           Text('KUSBF 상위 TOP 3 크루',
                                             style: TextStyle(
@@ -276,8 +297,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                         ),
                                                         width: 58,
                                                         height: 58,
-                                                        child: ExtendedImage
-                                                            .network(
+                                                        child: ExtendedImage.network(
                                                           crewDocs[0]['profileImageUrl'],
                                                           enableMemoryCache: true,
                                                           shape: BoxShape
