@@ -517,6 +517,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                                                                 await _liveCrewModelController.updateCrewMember(applyUid: applyDocs[index]['uid'], crewID: _userModelController.liveCrew);
                                                                                                 await _liveCrewModelController.deleteInvitation_crew(crewID: _userModelController.liveCrew, applyUid: applyDocs[index]['uid']);
                                                                                                 await _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
+                                                                                                await _userModelController.updateKUSBF_true_manual(uid: applyDocs[index]['uid']);
                                                                                                 CustomFullScreenDialog.cancelDialog();
                                                                                               }else{
                                                                                                 Get.dialog(AlertDialog(

@@ -154,6 +154,10 @@ class LiveCrewModelController extends GetxController {
         'liveCrew': ''
       });
 
+      await ref.collection('kusbf').doc('1').update({
+        'kusbf': FieldValue.arrayRemove([crewID])
+      });
+
     }catch(e){
       print('삭제 에러');
     }
@@ -262,6 +266,25 @@ class LiveCrewModelController extends GetxController {
     await ref.collection('user').doc(applyUid).update({
       'liveCrew': crewID
     });
+      DocumentReference<Map<String, dynamic>> documentReference_kusbf =
+      ref.collection('kusbf').doc('1');
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_kusbf =
+      await documentReference_kusbf.get();
+
+      List<dynamic> _kusbfList = [];
+      _kusbfList = documentSnapshot_kusbf.get('kusbf') as List<dynamic>;
+
+      if(_kusbfList.contains(crewID)) {
+        await ref.collection('user').doc(applyUid).update({
+          'kusbf': true,
+        });
+      }else{
+        await ref.collection('user').doc(applyUid).update({
+          'kusbf': false,
+        });
+      }
+
     await ref.collection('liveCrew').doc(crewID).update({
       'memberUidList': FieldValue.arrayUnion([applyUid])
     });

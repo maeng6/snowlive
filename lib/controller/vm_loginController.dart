@@ -562,6 +562,7 @@ class LoginController extends GetxController {
       'deviceToken': token,
       'liveTalkHideList':[],
       'deviceID': deviceID,
+      'kusbf': false,
     });
     await ref.collection('newAlarm')
         .doc(uid)
