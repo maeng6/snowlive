@@ -185,12 +185,12 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Text('KUSBF 랭킹',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            color: Color(0xFF666666),
-                                            fontWeight: FontWeight.normal,
-                                          ),
+                                        ExtendedImage.asset(
+                                          'assets/imgs/icons/icon_kusbf.png',
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.rectangle,
+                                          width: 56,
+                                          fit: BoxFit.cover,
                                         ),
                                         Transform.scale(
                                           scale: 0.8,
@@ -209,16 +209,14 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                       ],
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: 0,
-                                  ),
                                 ],
                               ),
                             Container(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(height: 16),
+                                  (_userModelController.kusbf == false)
+                                      ? SizedBox(height: 20) : SizedBox(height: 0),
                                   Text(
                                     (_isKusbf == false)
                                         ? '${_resortModelController.resortName} 상위 TOP 3 크루' :'KUSBF 상위 TOP 3 크루',
