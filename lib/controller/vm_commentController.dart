@@ -16,6 +16,8 @@ class CommentModelController extends GetxController {
   RxInt? _likeCount = 0.obs;
   RxInt? _replyCount = 0.obs;
   RxString? _livetalkImageUrl = ''.obs;
+  RxBool? _kusbf = false.obs;
+  RxString? _liveCrew = ''.obs;
 
   String? get uid => _uid!.value;
 
@@ -39,6 +41,10 @@ class CommentModelController extends GetxController {
 
   String? get livetalkImageUrl => _livetalkImageUrl!.value;
 
+  bool? get kusbf => _kusbf!.value;
+
+  String? get liveCrew => _liveCrew!.value;
+
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
@@ -59,6 +65,8 @@ class CommentModelController extends GetxController {
           this._likeCount!.value = commentModel.likeCount!;
           this._replyCount!.value = commentModel.replyCount!;
           this._livetalkImageUrl!.value = commentModel.livetalkImageUrl!;
+          this._kusbf!.value = commentModel.kusbf!;
+          this._liveCrew!.value = commentModel.liveCrew!;
         }else {
           // handle the case where the userModel is null
         }} else {
@@ -74,14 +82,16 @@ class CommentModelController extends GetxController {
 
   Future<void> sendMessage(
       {required displayName,
-      required uid,
-      required profileImageUrl,
-      required comment,
-      required commentCount,
-      required resortNickname,
-      required likeCount,
-      required replyCount,
+        required uid,
+        required profileImageUrl,
+        required comment,
+        required commentCount,
+        required resortNickname,
+        required likeCount,
+        required replyCount,
         required livetalkImageUrl,
+        required kusbf,
+        required liveCrew,
       }) async {
     await CommentModel().uploadComment(
       comment: comment,
@@ -94,6 +104,8 @@ class CommentModelController extends GetxController {
       likeCount: likeCount,
       replyCount: replyCount,
       livetalkImageUrl: livetalkImageUrl,
+      kusbf: kusbf,
+      liveCrew: liveCrew,
     );
 
     if(displayName =='SNOWLIVE'){
@@ -107,7 +119,7 @@ class CommentModelController extends GetxController {
 
     print("sendMessage 함수에서의 livetalkImageUrl 값: $livetalkImageUrl"); // 로그 추가
     CommentModel commentModel =
-        await CommentModel().getCommentModel(uid, commentCount);
+    await CommentModel().getCommentModel(uid, commentCount);
     this._uid!.value = commentModel.uid!;
     this._displayName!.value = commentModel.displayName!;
     this._profileImageUrl!.value = commentModel.profileImageUrl!;
@@ -118,6 +130,8 @@ class CommentModelController extends GetxController {
     this._likeCount!.value = commentModel.likeCount!;
     this._replyCount!.value = commentModel.replyCount!;
     this._livetalkImageUrl!.value = commentModel.livetalkImageUrl!;
+    this._kusbf!.value = commentModel.kusbf!;
+    this._liveCrew!.value = commentModel.liveCrew!;
   }
 
   Future<void> updateLiveTalk({required uid, required commentCount,required comment}) async {
@@ -144,10 +158,10 @@ class CommentModelController extends GetxController {
   Future<void> likeUpdate(uid) async {
     try {
       DocumentReference<Map<String, dynamic>> documentReference =
-          ref.collection('liveTalk').doc(uid);
+      ref.collection('liveTalk').doc(uid);
 
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await documentReference.get();
+      await documentReference.get();
 
       int likeCount = documentSnapshot.get('likeCount');
       int likeCountPlus = likeCount + 1;
@@ -189,10 +203,10 @@ class CommentModelController extends GetxController {
   Future<void> likeDelete(uid) async {
     try {
       DocumentReference<Map<String, dynamic>> documentReference =
-          ref.collection('liveTalk').doc(uid);
+      ref.collection('liveTalk').doc(uid);
 
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await documentReference.get();
+      await documentReference.get();
 
       int likeCount = documentSnapshot.get('likeCount');
       int likeCountMinus = likeCount - 1;
@@ -208,10 +222,10 @@ class CommentModelController extends GetxController {
   Future<void> replyCountUpdate(uid) async {
     try {
       DocumentReference<Map<String, dynamic>> documentReference =
-          ref.collection('liveTalk').doc(uid);
+      ref.collection('liveTalk').doc(uid);
 
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await documentReference.get();
+      await documentReference.get();
 
       int replyCount = documentSnapshot.get('replyCount');
       int replyCountPlus = replyCount + 1;
@@ -227,10 +241,10 @@ class CommentModelController extends GetxController {
   Future<void> replyCountDelete(uid) async {
     try {
       DocumentReference<Map<String, dynamic>> documentReference =
-          ref.collection('liveTalk').doc(uid);
+      ref.collection('liveTalk').doc(uid);
 
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await documentReference.get();
+      await documentReference.get();
 
       int replyCount = documentSnapshot.get('replyCount');
       int replyCountMinus = replyCount - 1;

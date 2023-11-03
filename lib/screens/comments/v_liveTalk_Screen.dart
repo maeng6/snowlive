@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:com.snowlive/controller/vm_resortModelController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
+import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/model/m_resortModel.dart';
 import 'package:com.snowlive/screens/comments/v_modify_liveTalk.dart';
 import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:extended_image/extended_image.dart';
@@ -47,6 +49,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
   var _selectedValue3 = '전체';
   var _allCategories;
   var _alluser;
+  var _selectedKusbfName = '필터';
 
   int counter = 0;
   List<bool> isTap = [
@@ -70,6 +73,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
   var _stream;
   var _noticeAlarmStream;
   bool _isVisible = false;
+  bool _isTabKusbf = false;
+
 
   ScrollController _scrollController = ScrollController();
 
@@ -121,7 +126,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
         .collection('liveTalk')
         .where('uid', isEqualTo: (_selectedValue3 == '전체') ? _alluser : _userModelController.uid)
         .where('displayName', isEqualTo: (_selectedValue2 == '전체') ? _alluser : 'SNOWLIVE')
-        .where('resortNickname', isEqualTo: (_selectedValue == '필터') ? _allCategories : '$_selectedValue')
+        .where(_isTabKusbf == false ? 'resortNickname' : 'liveCrew', isEqualTo: (_selectedValue == '필터') ? _allCategories : '$_selectedValue')
+        .where('kusbf', isEqualTo: (_isTabKusbf == true) ? true : false)
         .orderBy('timeStamp', descending: true)
         .limit(_seasonController.liveTalkLimit!)
         .snapshots();
@@ -134,273 +140,144 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
   }
 
   _showCupertinoPicker() async {
+    List resortList = nicknameList; // 리조트 리스트 가져오기
+
     await showCupertinoModalPopup(
-        context: context,
-        builder: (_) {
-          return Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: Container(
-                height: 520,
-                padding: EdgeInsets.only(left: 16, right: 16),
-                child: CupertinoActionSheet(
-                  actions: [
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            isTap[0] = true;
-                            isTap[1] = false;
-                            isTap[2] = false;
-                            isTap[3] = false;
-                            isTap[4] = false;
-                            _selectedValue = '필터';
-                            _selectedValue2 = '전체';
-                            _selectedValue3 = '전체';
-                            _isVisible = false;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          '전체',
-                        )),
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            isTap[0] = false;
-                            isTap[1] = false;
-                            isTap[2] = false;
-                            isTap[3] = false;
-                            isTap[4] = true;
-                            _selectedValue = '곤지암';
-                            _selectedValue2 = '전체';
-                            _selectedValue3 = '전체';
-                            _isVisible = false;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('곤지암리조트')),
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            isTap[0] = false;
-                            isTap[1] = false;
-                            isTap[2] = false;
-                            isTap[3] = false;
-                            isTap[4] = true;
-                            _selectedValue = '무주';
-                            _selectedValue2 = '전체';
-                            _selectedValue3 = '전체';
-                            _isVisible = false;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('무주덕유산리조트')),
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            isTap[0] = false;
-                            isTap[1] = false;
-                            isTap[2] = false;
-                            isTap[3] = false;
-                            isTap[4] = true;
-                            _selectedValue = '비발디';
-                            _selectedValue2 = '전체';
-                            _selectedValue3 = '전체';
-                            _isVisible = false;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('비발디파크')),
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            isTap[0] = false;
-                            isTap[1] = false;
-                            isTap[2] = false;
-                            isTap[3] = false;
-                            isTap[4] = true;
-                            _selectedValue = '알펜시아';
-                            _selectedValue2 = '전체';
-                            _selectedValue3 = '전체';
-                            _isVisible = false;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('알펜시아')),
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            isTap[0] = false;
-                            isTap[1] = false;
-                            isTap[2] = false;
-                            isTap[3] = false;
-                            isTap[4] = true;
-                            _selectedValue = '에덴밸리';
-                            _selectedValue2 = '전체';
-                            _selectedValue3 = '전체';
-                            _isVisible = false;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('에덴밸리리조트')),
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            isTap[0] = false;
-                            isTap[1] = false;
-                            isTap[2] = false;
-                            isTap[3] = false;
-                            isTap[4] = true;
-                            _selectedValue = '강촌';
-                            _selectedValue2 = '전체';
-                            _selectedValue3 = '전체';
-                            _isVisible = false;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('엘리시안강촌')),
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            isTap[0] = false;
-                            isTap[1] = false;
-                            isTap[2] = false;
-                            isTap[3] = false;
-                            isTap[4] = true;
-                            _selectedValue = '오크밸리';
-                            _selectedValue2 = '전체';
-                            _selectedValue3 = '전체';
-                            _isVisible = false;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('오크밸리리조트')),
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            isTap[0] = false;
-                            isTap[1] = false;
-                            isTap[2] = false;
-                            isTap[3] = false;
-                            isTap[4] = true;
-                            _selectedValue = '오투';
-                            _selectedValue2 = '전체';
-                            _selectedValue3 = '전체';
-                            _isVisible = false;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('오투리조트')),
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            isTap[0] = false;
-                            isTap[1] = false;
-                            isTap[2] = false;
-                            isTap[3] = false;
-                            isTap[4] = true;
-                            _selectedValue = '용평';
-                            _selectedValue2 = '전체';
-                            _selectedValue3 = '전체';
-                            _isVisible = false;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('용평리조트')),
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            isTap[0] = false;
-                            isTap[1] = false;
-                            isTap[2] = false;
-                            isTap[3] = false;
-                            isTap[4] = true;
-                            _selectedValue = '웰리힐리';
-                            _selectedValue2 = '전체';
-                            _selectedValue3 = '전체';
-                            _isVisible = false;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('웰리힐리파크')),
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            isTap[0] = false;
-                            isTap[1] = false;
-                            isTap[2] = false;
-                            isTap[3] = false;
-                            isTap[4] = true;
-                            _selectedValue = '지산';
-                            _selectedValue2 = '전체';
-                            _selectedValue3 = '전체';
-                            _isVisible = false;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('지산리조트')),
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            isTap[0] = false;
-                            isTap[1] = false;
-                            isTap[2] = false;
-                            isTap[3] = false;
-                            isTap[4] = true;
-                            _selectedValue = '하이원';
-                            _selectedValue2 = '전체';
-                            _selectedValue3 = '전체';
-                            _isVisible = false;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('하이원리조트')),
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            isTap[0] = false;
-                            isTap[1] = false;
-                            isTap[2] = false;
-                            isTap[3] = false;
-                            isTap[4] = true;
-                            _selectedValue = '휘닉스';
-                            _selectedValue2 = '전체';
-                            _selectedValue3 = '전체';
-                            _isVisible = false;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('휘닉스평창')),
-                  ],
-                  cancelButton: CupertinoActionSheetAction(
-                    child: Text('닫기'),
+      context: context,
+      builder: (_) {
+        return Padding(
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Container(
+            height: 520,
+            padding: EdgeInsets.only(left: 16, right: 16),
+            child: CupertinoActionSheet(
+              actions: [
+                CupertinoActionSheetAction(
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    setState(() {
+                      for (int i = 0; i < isTap.length; i++) {
+                        isTap[i] = false;
+                      }
+                      isTap[0] = true;
+                      _selectedValue = '필터';
+                      _selectedValue2 = '전체';
+                      _selectedValue3 = '전체';
+                      _isVisible = false;
+                    });
+                    Navigator.pop(context);
+                  },
+                  child: Text('전체'),
+                ),
+                for (String resortName in resortList)
+                  CupertinoActionSheetAction(
                     onPressed: () {
-                      HapticFeedback.mediumImpact();
+                      HapticFeedback.lightImpact();
+                      setState(() {
+                        for (int i = 0; i < isTap.length; i++) {
+                          isTap[i] = false;
+                        }
+                        isTap[4] = true; // 또는 다른 인덱스로 선택
+                        _selectedValue = resortName;
+                        _selectedValue2 = '전체';
+                        _selectedValue3 = '전체';
+                        _isVisible = false;
+                      });
                       Navigator.pop(context);
                     },
+                    child: Text(resortName),
                   ),
-                )
+              ],
+              cancelButton: CupertinoActionSheetAction(
+                child: Text('닫기'),
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  Navigator.pop(context);
+                },
+              ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
+
     setState(() {
       _stream = newStream();
     });
   }
+
+  _showCupertinoPickerKusbf() async {
+    List kusbfList = _userModelController.kusbfArray;
+    Map<String, dynamic> kusbfName = _userModelController.kusbfNameMap;
+
+    await showCupertinoModalPopup(
+      context: context,
+      builder: (_) {
+        return Padding(
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Container(
+            height: 520,
+            padding: EdgeInsets.only(left: 16, right: 16),
+            child: CupertinoActionSheet(
+              actions: [
+                CupertinoActionSheetAction(
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    setState(() {
+                      for (int i = 0; i < isTap.length; i++) {
+                        isTap[i] = false;
+                      }
+                      isTap[0] = true;
+                      _selectedValue = '필터';
+                      _selectedValue2 = '전체';
+                      _selectedValue3 = '전체';
+                      _isVisible = false;
+                      _selectedKusbfName = '필터';
+                    });
+                    Navigator.pop(context);
+                  },
+                  child: Text('전체'),
+                ),
+                for (String kusbfID in kusbfList)
+                  CupertinoActionSheetAction(
+                    onPressed: () async{
+                      HapticFeedback.lightImpact();
+                      setState(() {
+                        for (int i = 0; i < isTap.length; i++) {
+                          isTap[i] = false;
+                        }
+                        isTap[4] = true; // 또는 다른 인덱스로 선택
+                        _selectedValue = kusbfID;
+                        _selectedValue2 = '전체';
+                        _selectedValue3 = '전체';
+                        _isVisible = false;
+                        _selectedKusbfName = kusbfName[kusbfID];
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Text(kusbfName[kusbfID] ?? ''),
+                  ),
+              ],
+              cancelButton: CupertinoActionSheetAction(
+                child: Text('닫기'),
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    setState(() {
+      _stream = newStream();
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -430,12 +307,72 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                 titleSpacing: 0,
                 title: Padding(
                   padding: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    '라이브톡',
-                    style: TextStyle(
-                        color: Color(0xFF111111),
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: (){
+                          print('전체톡으로 전환');
+                          setState(() {
+                            _isTabKusbf = false;
+                            _stream = newStream();
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            isTap[2] = false;
+                            isTap[3] = false;
+                            isTap[4] = false;
+                            _selectedValue = '필터';
+                            _selectedValue2 = '전체';
+                            _selectedValue3 = '전체';
+                            _isVisible = false;
+                          });
+                        },
+                        child: Text(
+                          '라이브톡',
+                          style: TextStyle(
+                              fontFamily: 'Spoqa Han Sans Neo',
+                              color: (_isTabKusbf == false)
+                                  ? Color(0xFF111111)
+                                  : Color(0xFFC8C8C8),
+                              fontWeight: (_isTabKusbf == false)
+                                  ? FontWeight.bold
+                                  : FontWeight.bold,
+                              fontSize: 20),
+                        ),
+                      ),
+                      SizedBox(width: 15,),
+                      if(_userModelController.kusbf == true)
+                        GestureDetector(
+                          onTap: (){
+                            print('KUSBF톡으로 전환');
+                            setState(() {
+                              _isTabKusbf = true;
+                              isTap[0] = true;
+                              isTap[1] = false;
+                              isTap[2] = false;
+                              isTap[3] = false;
+                              isTap[4] = false;
+                              _selectedValue = '필터';
+                              _selectedValue2 = '전체';
+                              _selectedValue3 = '전체';
+                              _isVisible = false;
+                            });
+                              _stream = newStream();
+                          },
+                          child: Opacity(
+                            opacity: (_isTabKusbf ==true)?1.0:0.2,
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 6),
+                              child: ExtendedImage.asset(
+                                'assets/imgs/icons/icon_kusbf.png',
+                                enableMemoryCache: true,
+                                shape: BoxShape.rectangle,
+                                width: 66,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
                 backgroundColor: Colors.white,
@@ -489,7 +426,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                   ),
                                 ),
                                 SizedBox(width: 6),
-                                GestureDetector(
+                                (_isTabKusbf == false)
+                                    ? GestureDetector(
                                   onTap: (){
                                     HapticFeedback.lightImpact();
                                     setState(() {
@@ -521,87 +459,120 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                             color: (isTap[1] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
                                         ),)
                                   ),
-                                ),
-                                SizedBox(width: 6),
-                                GestureDetector(
-                                  onTap: () async{
-
+                                )
+                                    : GestureDetector(
+                                  onTap: (){
+                                    HapticFeedback.lightImpact();
                                     setState(() {
-                                      HapticFeedback.lightImpact();
                                       isTap[0] = false;
-                                      isTap[1] = false;
-                                      isTap[2] = true;
+                                      isTap[1] = true;
+                                      isTap[2] = false;
                                       isTap[3] = false;
                                       isTap[4] = false;
-                                      _selectedValue = '필터';
-                                      _selectedValue2 = 'SNOWLIVE';
+                                      _selectedValue = '${_userModelController.liveCrew}';
+                                      _selectedValue2 = '전체';
                                       _selectedValue3 = '전체';
                                       _isVisible = false;
                                       _stream = newStream();
                                     });
-                                    await _commentModelController.addCheckUid(_userModelController.uid);
-                                    print(_selectedValue2);
                                   },
-                                  child:
-                                  StreamBuilder<QuerySnapshot>(
-                                      stream: _noticeAlarmStream,
-                                      builder: (context, snapshot) {
-                                        if (!snapshot.hasData) {
-                                          return Container(
-                                              decoration: BoxDecoration(
-                                                color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                                borderRadius: BorderRadius.circular(30.0),
-                                                border: Border.all(
-                                                    color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                              ),
-                                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                              height: 32,
-                                              child: Text('# 소식',
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                                ),)
-                                          );
-                                        }
-                                        else if (snapshot.connectionState == ConnectionState.waiting) {
-                                          return Container(
-                                              decoration: BoxDecoration(
-                                                color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                                borderRadius: BorderRadius.circular(30.0),
-                                                border: Border.all(
-                                                    color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                              ),
-                                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                              height: 32,
-                                              child: Text('# 소식',
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                                ),)
-                                          );
-                                        }
-                                        else if (snapshot.data!.docs.isEmpty){
-                                          return Container(
-                                              decoration: BoxDecoration(
-                                                color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                                borderRadius: BorderRadius.circular(30.0),
-                                                border: Border.all(
-                                                    color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                              ),
-                                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                              height: 32,
-                                              child: Text('# 소식',
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
-                                                ),)
-                                          );
-                                        }
-                                        checkUidList = snapshot.data!.docs[0]['checkUidList'];
-                                        return Stack(
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                        borderRadius: BorderRadius.circular(30.0),
+                                        border: Border.all(
+                                            color: (isTap[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                      ),
+                                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                      height: 32,
+                                      child: Text('# 내크루',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: (isTap[1] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                        ),)
+                                  ),
+                                ),
+                                SizedBox(width: 6),
+                                GestureDetector(
+                                    onTap: () async{
+
+                                      setState(() {
+                                        HapticFeedback.lightImpact();
+                                        isTap[0] = false;
+                                        isTap[1] = false;
+                                        isTap[2] = true;
+                                        isTap[3] = false;
+                                        isTap[4] = false;
+                                        _selectedValue = '필터';
+                                        _selectedValue2 = 'SNOWLIVE';
+                                        _selectedValue3 = '전체';
+                                        _isVisible = false;
+                                        _stream = newStream();
+                                      });
+                                      await _commentModelController.addCheckUid(_userModelController.uid);
+                                      print(_selectedValue2);
+                                    },
+                                    child:
+                                    StreamBuilder<QuerySnapshot>(
+                                        stream: _noticeAlarmStream,
+                                        builder: (context, snapshot) {
+                                          if (!snapshot.hasData) {
+                                            return Container(
+                                                decoration: BoxDecoration(
+                                                  color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                                  borderRadius: BorderRadius.circular(30.0),
+                                                  border: Border.all(
+                                                      color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                                ),
+                                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                height: 32,
+                                                child: Text('# 소식',
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                                  ),)
+                                            );
+                                          }
+                                          else if (snapshot.connectionState == ConnectionState.waiting) {
+                                            return Container(
+                                                decoration: BoxDecoration(
+                                                  color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                                  borderRadius: BorderRadius.circular(30.0),
+                                                  border: Border.all(
+                                                      color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                                ),
+                                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                height: 32,
+                                                child: Text('# 소식',
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                                  ),)
+                                            );
+                                          }
+                                          else if (snapshot.data!.docs.isEmpty){
+                                            return Container(
+                                                decoration: BoxDecoration(
+                                                  color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                                  borderRadius: BorderRadius.circular(30.0),
+                                                  border: Border.all(
+                                                      color: (isTap[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                                ),
+                                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                height: 32,
+                                                child: Text('# 소식',
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: (isTap[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                                  ),)
+                                            );
+                                          }
+                                          checkUidList = snapshot.data!.docs[0]['checkUidList'];
+                                          return Stack(
                                             children: [
                                               Container(
                                                   decoration: BoxDecoration(
@@ -620,28 +591,28 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                     ),)
                                               ),
                                               if(checkUidList.contains(_userModelController.uid)==false)
-                                              Positioned(
-                                                top: 0,
-                                                right: 0,
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                                                  decoration: BoxDecoration(
-                                                    color: Color(0xFFD6382B),
-                                                    borderRadius: BorderRadius.circular(20),
-                                                  ),
-                                                  child: Text('N',
-                                                    style: TextStyle(
-                                                        fontSize: 9,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Color(0xFFFFFFFF)
+                                                Positioned(
+                                                  top: 0,
+                                                  right: 0,
+                                                  child: Container(
+                                                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                                    decoration: BoxDecoration(
+                                                      color: Color(0xFFD6382B),
+                                                      borderRadius: BorderRadius.circular(20),
                                                     ),
+                                                    child: Text('N',
+                                                      style: TextStyle(
+                                                          fontSize: 9,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Color(0xFFFFFFFF)
+                                                      ),
 
+                                                    ),
                                                   ),
-                                                ),
-                                              )
+                                                )
                                             ],
                                           );
-                                      })
+                                        })
                                 ),
                                 SizedBox(width: 6),
                                 GestureDetector(
@@ -682,7 +653,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             ),
                           ),
                         ),
-                        GestureDetector(
+                        (_isTabKusbf == false)
+                            ?GestureDetector(
                           onTap: () async{
                             await _showCupertinoPicker();
                           },
@@ -701,6 +673,53 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                   height: 32,
                                   child:(isTap[4] == true)
                                       ? Text(_selectedValue,
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: (isTap[4] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)))
+                                      : Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 4),
+                                        child:  ExtendedImage.asset(
+                                          'assets/imgs/icons/icon_livetalk_filter.png',
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.rectangle,
+                                          width: 12,
+                                        ),
+                                      ),
+                                      Text('필터',
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF777777)))
+                                    ],
+                                  )
+
+                              ),
+                            ),
+                          ),
+
+                        )
+                            :GestureDetector(
+                          onTap: () async{
+                            await _showCupertinoPickerKusbf();
+                          },
+                          child: Container(
+                            color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    color: (isTap[4] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                        color: (isTap[4] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  height: 32,
+                                  child:(isTap[4] == true)
+                                      ? Text(_selectedKusbfName,
                                       style: TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,
@@ -794,7 +813,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                       return Padding(
                                         padding:
                                         const EdgeInsets.only(
-                                           top:12, left: 12, right: 12),
+                                            top:12, left: 12, right: 12),
                                         child: Obx(() =>
                                             Container(
                                               child: Column(
@@ -957,7 +976,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                     ),
                                                   )
                                                       : ( (_userModelController.repoUidList!.contains(chatDocs[index].get('uid')) && chatDocs[index].get('displayName') !='익명' )
-                                                  || _userModelController.liveTalkHideList!.contains('${chatDocs[index].get('uid')}${chatDocs[index].get('commentCount')}'))
+                                                      || _userModelController.liveTalkHideList!.contains('${chatDocs[index].get('uid')}${chatDocs[index].get('commentCount')}'))
                                                       ? Container(
                                                     padding: EdgeInsets.symmetric(
                                                         horizontal: 16, vertical: 14),
@@ -1169,8 +1188,9 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                   ),
                                                                                 SizedBox(
                                                                                     width: 8),
-                                                                                Text(
-                                                                                  chatDocs[index].get('resortNickname'),
+                                                                                Text(_isTabKusbf == true
+                                                                                    ? '${_userModelController.kusbfNameMap[chatDocs[index].get('liveCrew')]}'
+                                                                                    : chatDocs[index].get('resortNickname'),
                                                                                   style: TextStyle(
                                                                                       fontWeight: FontWeight.w300,
                                                                                       fontSize: 12,
@@ -1308,7 +1328,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                                 style: TextStyle(
                                                                                                                     fontWeight: FontWeight.w600,
                                                                                                                     fontSize: 12,
-                                                                                                                color: Color(0xFF555555)),
+                                                                                                                    color: Color(0xFF555555)),
                                                                                                               ),
                                                                                                             ],
                                                                                                           ),
@@ -1431,7 +1451,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                     title: Center(
                                                                                                       child: Text(
                                                                                                         (isLocked ==false)
-                                                                                                        ? '게시글 잠금' : '게시글 잠금 해제',
+                                                                                                            ? '게시글 잠금' : '게시글 잠금 해제',
                                                                                                         style: TextStyle(
                                                                                                           fontSize: 15,
                                                                                                           fontWeight: FontWeight
@@ -1451,7 +1471,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                             buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                                                                                                             content: Text(
                                                                                                               (isLocked ==false)
-                                                                                                              ? '이 게시글을 잠그시겠습니까?' : '게시글 잠금을 해제하시겠습니까?',
+                                                                                                                  ? '이 게시글을 잠그시겠습니까?' : '게시글 잠금을 해제하시겠습니까?',
                                                                                                               style: TextStyle(
                                                                                                                   fontWeight: FontWeight.w600,
                                                                                                                   fontSize: 15),
@@ -2043,12 +2063,12 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                 replyCount: chatDocs[index]['commentCount'],
                                                                                 replyImage:
                                                                                 (chatDocs[index]['profileImageUrl'] != 'anony')
-                                                                                ? profileUrl
-                                                                                : chatDocs[index]['profileImageUrl'],
+                                                                                    ? profileUrl
+                                                                                    : chatDocs[index]['profileImageUrl'],
                                                                                 replyDisplayName:
                                                                                 (chatDocs[index]['displayName'] != '익명')
-                                                                                ? displayName
-                                                                                : chatDocs[index]['displayName'],
+                                                                                    ? displayName
+                                                                                    : chatDocs[index]['displayName'],
                                                                                 replyResortNickname: chatDocs[index]['resortNickname'],
                                                                                 comment: chatDocs[index]['comment'],
                                                                                 commentTime: chatDocs[index]['timeStamp'],
@@ -2410,59 +2430,60 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                   SizedBox(
                                     width: 8,
                                   ),
-                                  GestureDetector(
-                                    onTap: (){
-                                      setState(() {
-                                        if(anony == true){
-                                          setState(() {
-                                            anony = false;
-                                          });
-                                        }else{
-                                          setState(() {
-                                            anony = true;
-                                          });
-                                        }
-                                      });
-                                    },
-                                    child:Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color:
-                                        (anony == true)
-                                            ? Color(0xFFCBE0FF)
-                                            : Color(0xFFECECEC),
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      child: Row(
-                                        children: [
+                                  if(_isTabKusbf == false)
+                                    GestureDetector(
+                                      onTap: (){
+                                        setState(() {
+                                          if(anony == true){
+                                            setState(() {
+                                              anony = false;
+                                            });
+                                          }else{
+                                            setState(() {
+                                              anony = true;
+                                            });
+                                          }
+                                        });
+                                      },
+                                      child:Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color:
                                           (anony == true)
-                                              ? Image.asset(
-                                            'assets/imgs/icons/icon_livetalk_check.png',
-                                            scale: 4,
-                                            width: 10,
-                                            height: 10,
-                                          )
-                                              :  Image.asset(
-                                            'assets/imgs/icons/icon_livetalk_check_off.png',
-                                            scale: 4,
-                                            width: 10,
-                                            height: 10,
-                                          ),
-                                          SizedBox(width: 2,),
-                                          Text('익명',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 12,
-                                                color:
-                                                (anony == true)
-                                                    ? Color(0xFF3D83ED)
-                                                    :Color(0xFF949494)
+                                              ? Color(0xFFCBE0FF)
+                                              : Color(0xFFECECEC),
+                                          borderRadius: BorderRadius.circular(30),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            (anony == true)
+                                                ? Image.asset(
+                                              'assets/imgs/icons/icon_livetalk_check.png',
+                                              scale: 4,
+                                              width: 10,
+                                              height: 10,
+                                            )
+                                                :  Image.asset(
+                                              'assets/imgs/icons/icon_livetalk_check_off.png',
+                                              scale: 4,
+                                              width: 10,
+                                              height: 10,
                                             ),
-                                          ),
-                                        ],
+                                            SizedBox(width: 2,),
+                                            Text('익명',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12,
+                                                  color:
+                                                  (anony == true)
+                                                      ? Color(0xFF3D83ED)
+                                                      :Color(0xFF949494)
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
                                   SizedBox(
                                     width: 14,
                                   ),
@@ -2479,69 +2500,72 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                       textInputAction: TextInputAction.newline,
                                       decoration: InputDecoration(
                                           suffixIcon: IconButton(
-                                              splashColor: Colors.transparent,
-                                              onPressed: () async {
-                                                if (_controller.text.trim().isEmpty) {
-                                                  return;
+                                            splashColor: Colors.transparent,
+                                            onPressed: () async {
+                                              if (_controller.text.trim().isEmpty) {
+                                                return;
+                                              }
+                                              try{
+                                                CustomFullScreenDialog.showDialog();
+                                                await _userModelController.getCurrentUser(_userModelController.uid);
+                                                await _userModelController.updateCommentCount(_userModelController.commentCount);
+                                                await _userModelController.getCurrentUser(_userModelController.uid);
+
+                                                String? livetalkImageUrl = "";
+                                                if (_imageFile != null) {
+                                                  livetalkImageUrl = await _imageController.setNewImage_livetalk(_imageFile!, _userModelController.commentCount);
+                                                  await _commentModelController.updateLivetalkImageUrl(livetalkImageUrl);
+
+                                                  setState(() {
+                                                    _imageFile = null;
+                                                    livetalkImage = false;
+                                                  });
                                                 }
-                                                try{
-                                                  CustomFullScreenDialog.showDialog();
-                                                  await _userModelController.getCurrentUser(_userModelController.uid);
-                                                  await _userModelController.updateCommentCount(_userModelController.commentCount);
-                                                  await _userModelController.getCurrentUser(_userModelController.uid);
-
-                                                  String? livetalkImageUrl = "";
-                                                  if (_imageFile != null) {
-                                                    livetalkImageUrl = await _imageController.setNewImage_livetalk(_imageFile!, _userModelController.commentCount);
-                                                    await _commentModelController.updateLivetalkImageUrl(livetalkImageUrl);
-
-                                                    setState(() {
-                                                      _imageFile = null;
-                                                      livetalkImage = false;
-                                                    });
-                                                  }
+                                                _controller.clear();
+                                                _scrollController.jumpTo(0);
+                                                try {
+                                                  await _commentModelController.sendMessage(
+                                                    displayName:
+                                                    (anony == false)
+                                                        ? _userModelController.displayName
+                                                        : "익명",
+                                                    uid: _userModelController.uid,
+                                                    profileImageUrl:
+                                                    (anony == false)
+                                                        ? _userModelController.profileImageUrl
+                                                        : 'anony',
+                                                    comment: _newComment,
+                                                    commentCount: _userModelController.commentCount,
+                                                    resortNickname: _userModelController.resortNickname,
+                                                    likeCount: _commentModelController.likeCount,
+                                                    replyCount: _commentModelController.replyCount,
+                                                    livetalkImageUrl: livetalkImageUrl,
+                                                    kusbf: _userModelController.kusbf == true && _isTabKusbf == true ? true : false,
+                                                    liveCrew: _userModelController.liveCrew,
+                                                  );
+                                                  FocusScope.of(context).unfocus();
                                                   _controller.clear();
-                                                  _scrollController.jumpTo(0);
-                                                  try {
-                                                    await _commentModelController.sendMessage(
-                                                        displayName:
-                                                        (anony == false)
-                                                            ? _userModelController.displayName
-                                                            : "익명",
-                                                        uid: _userModelController.uid,
-                                                        profileImageUrl:
-                                                        (anony == false)
-                                                            ? _userModelController.profileImageUrl
-                                                            : 'anony',
-                                                        comment: _newComment,
-                                                        commentCount: _userModelController.commentCount,
-                                                        resortNickname: _userModelController.resortNickname,
-                                                        likeCount: _commentModelController.likeCount,
-                                                        replyCount: _commentModelController.replyCount,
-                                                        livetalkImageUrl: livetalkImageUrl);
-                                                    FocusScope.of(context).unfocus();
-                                                    _controller.clear();
-                                                    setState(() {});
-                                                  } catch (e) {
-                                                    CustomFullScreenDialog.cancelDialog();
-                                                  }
-                                                  CustomFullScreenDialog.cancelDialog();
-                                                } catch(e){
+                                                  setState(() {});
+                                                } catch (e) {
                                                   CustomFullScreenDialog.cancelDialog();
                                                 }
-                                              },
-                                              icon: (_controller.text.trim().isEmpty)
-                                                  ? Image.asset(
-                                                'assets/imgs/icons/icon_livetalk_send_g.png',
-                                                width: 27,
-                                                height: 27,
-                                              )
-                                                  : Image.asset(
-                                                'assets/imgs/icons/icon_livetalk_send.png',
-                                                width: 27,
-                                                height: 27,
-                                              ),
+                                                CustomFullScreenDialog.cancelDialog();
+                                              } catch(e){
+                                                CustomFullScreenDialog.cancelDialog();
+                                              }
+                                            },
+                                            icon: (_controller.text.trim().isEmpty)
+                                                ? Image.asset(
+                                              'assets/imgs/icons/icon_livetalk_send_g.png',
+                                              width: 27,
+                                              height: 27,
+                                            )
+                                                : Image.asset(
+                                              'assets/imgs/icons/icon_livetalk_send.png',
+                                              width: 27,
+                                              height: 27,
                                             ),
+                                          ),
                                           errorStyle: TextStyle(
                                             fontSize: 12,
                                           ),

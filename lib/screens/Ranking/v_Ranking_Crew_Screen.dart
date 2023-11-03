@@ -175,7 +175,6 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Column(
                           children: [
-                            if(_userModelController.kusbf == true)
                               Column(
                                 children: [
                                   Container(

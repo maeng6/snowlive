@@ -4,15 +4,18 @@ import 'package:jiffy/jiffy.dart';
 class CommentModel {
   CommentModel(
       {this.displayName,
-      this.uid,
-      this.profileImageUrl,
-      this.comment,
-      this.timeStamp,
-      this.commentCount,
-      this.resortNickname,
-      this.likeCount,
-      this.replyCount,
-      this.livetalkImageUrl});
+        this.uid,
+        this.profileImageUrl,
+        this.comment,
+        this.timeStamp,
+        this.commentCount,
+        this.resortNickname,
+        this.likeCount,
+        this.replyCount,
+        this.livetalkImageUrl,
+        this.kusbf,
+        this.liveCrew,
+      });
 
   String? displayName;
   String? uid;
@@ -26,6 +29,8 @@ class CommentModel {
   int? likeCount;
   int? replyCount;
   String? livetalkImageUrl;
+  bool? kusbf;
+  String? liveCrew;
 
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseFirestore.instance;
@@ -44,6 +49,8 @@ class CommentModel {
     likeCount = json['likeCount'];
     replyCount = json['replyCount'];
     livetalkImageUrl = json['livetalkImageUrl'];
+    kusbf = json['kusbf'];
+    liveCrew = json['liveCrew'];
   }
 
   CommentModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -54,14 +61,14 @@ class CommentModel {
         .collection('liveTalk')
         .doc('$uid$commentCount');
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-        await documentReference.get();
+    await documentReference.get();
 
     CommentModel commentModel = await CommentModel.fromSnapShot(documentSnapshot);
     return commentModel;
   }
 
   Future<void> uploadComment(
-      {displayName, uid, profileImageUrl, comment, timeStamp,commentCount, resortNickname, likeCount, replyCount,livetalkImageUrl}) async{
+      {displayName, uid, profileImageUrl, comment, timeStamp,commentCount, resortNickname, likeCount, replyCount,livetalkImageUrl, kusbf, liveCrew}) async{
 
     await ref
         .collection('liveTalk')
@@ -73,11 +80,13 @@ class CommentModel {
       'timeStamp': timeStamp,
       'uid': uid,
       'commentCount' : commentCount,
-    'resortNickname' : resortNickname,
+      'resortNickname' : resortNickname,
       'likeCount' : likeCount,
       'replyCount' : replyCount,
       'livetalkImageUrl' : livetalkImageUrl,
       'lock' : false,
+      'kusbf' : kusbf,
+      'liveCrew' : liveCrew
     });
   }
 
