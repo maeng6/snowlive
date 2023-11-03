@@ -58,6 +58,9 @@ class UserModelController extends GetxController{
   RxString? _deviceID =''.obs;
   RxBool? _kusbf = false.obs;
 
+  List<dynamic> kusbfArray = [];
+  Map<String, dynamic> kusbfNameMap = {};
+
 
   String? get uid => _uid!.value;
   String? get displayName => _displayName!.value;
@@ -225,8 +228,8 @@ class UserModelController extends GetxController{
     }
   }
 
-   void resetProfileImage() {
-     this._profileImageUrl!.value = 'https://firebasestorage.googleapis.com/v0/b/snowlive-cf446.appspot.com/o/images%2Fprofile%2Fdefault%2Fimg_profile_default_circle.png?alt=media&token=4ecf29ae-08ad-4c75-99de-f1a73e8edd41';
+  void resetProfileImage() {
+    this._profileImageUrl!.value = 'https://firebasestorage.googleapis.com/v0/b/snowlive-cf446.appspot.com/o/images%2Fprofile%2Fdefault%2Fimg_profile_default_circle.png?alt=media&token=4ecf29ae-08ad-4c75-99de-f1a73e8edd41';
   } //디폴트이미지로 변경
 
   Future<void> getCurrentUserLocationInfo(uid) async{
@@ -331,6 +334,9 @@ class UserModelController extends GetxController{
 
     documentReference.snapshots().listen((DocumentSnapshot<Map<String, dynamic>> snapshot) {
       if (snapshot.exists) {
+        final data = snapshot.data();
+        kusbfArray = data!['kusbf'] as List<dynamic>;
+        kusbfNameMap = data['kusbfName'] as Map<String, dynamic>;
         updateKUSBF_auto();
         print('kusbf 업데이트완료');
       } else {
@@ -366,17 +372,17 @@ class UserModelController extends GetxController{
 
   Future<void> updateKUSBF_true_manual({required uid}) async {
 
-      await ref.collection('user').doc(uid).update({
-        'kusbf': true,
-      });
+    await ref.collection('user').doc(uid).update({
+      'kusbf': true,
+    });
 
   }
 
   Future<void> updateKUSBF_false_manual({required uid}) async {
 
-      await ref.collection('user').doc(uid).update({
-        'kusbf': false,
-      });
+    await ref.collection('user').doc(uid).update({
+      'kusbf': false,
+    });
 
   }
 
@@ -714,31 +720,31 @@ class UserModelController extends GetxController{
 
   Future<UserModel?> getFoundUser(uid) async{
     UserModel? foundUserModel= UserModel();
-      if(uid!=null) {
-         foundUserModel = await UserModel().getUserModel(uid);
-        if (foundUserModel != null) {
-          foundUserModel.uid = foundUserModel.uid!;
-          foundUserModel.displayName = foundUserModel.displayName!;
-          foundUserModel.userEmail = foundUserModel.userEmail!;
-          foundUserModel.favoriteResort = foundUserModel.favoriteResort!;
-          foundUserModel.instantResort = foundUserModel.instantResort!;
-          foundUserModel.commentCount = foundUserModel.commentCount!;
-          foundUserModel.fleaCount = foundUserModel.fleaCount!;
-          foundUserModel.bulletinRoomCount = foundUserModel.bulletinRoomCount!;
-          foundUserModel.profileImageUrl = foundUserModel.profileImageUrl!;
-          foundUserModel.resortNickname = foundUserModel.resortNickname!;
-          foundUserModel.phoneNum = foundUserModel.phoneNum!;
-          foundUserModel.phoneAuth = foundUserModel.phoneAuth!;
-          foundUserModel.likeUidList = foundUserModel.likeUidList!;
-          foundUserModel.resistDate = foundUserModel.resistDate!;
-          foundUserModel.newChat = foundUserModel.newChat!;
-        } else {
-          // handle the case where the userModel is null
-        }
-      } else{
+    if(uid!=null) {
+      foundUserModel = await UserModel().getUserModel(uid);
+      if (foundUserModel != null) {
+        foundUserModel.uid = foundUserModel.uid!;
+        foundUserModel.displayName = foundUserModel.displayName!;
+        foundUserModel.userEmail = foundUserModel.userEmail!;
+        foundUserModel.favoriteResort = foundUserModel.favoriteResort!;
+        foundUserModel.instantResort = foundUserModel.instantResort!;
+        foundUserModel.commentCount = foundUserModel.commentCount!;
+        foundUserModel.fleaCount = foundUserModel.fleaCount!;
+        foundUserModel.bulletinRoomCount = foundUserModel.bulletinRoomCount!;
+        foundUserModel.profileImageUrl = foundUserModel.profileImageUrl!;
+        foundUserModel.resortNickname = foundUserModel.resortNickname!;
+        foundUserModel.phoneNum = foundUserModel.phoneNum!;
+        foundUserModel.phoneAuth = foundUserModel.phoneAuth!;
+        foundUserModel.likeUidList = foundUserModel.likeUidList!;
+        foundUserModel.resistDate = foundUserModel.resistDate!;
+        foundUserModel.newChat = foundUserModel.newChat!;
+      } else {
+        // handle the case where the userModel is null
       }
+    } else{
+    }
     return foundUserModel;
-      }
+  }
 
   Future<void> updateFriendUid(uid) async {
     final  userMe = auth.currentUser!.uid;

@@ -200,7 +200,6 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Column(
                             children: [
-                              if(_userModelController.kusbf == true)
                                 Column(
                                   children: [
                                     Container(

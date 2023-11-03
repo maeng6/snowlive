@@ -1,15 +1,19 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:get/get.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:platform_device_id/platform_device_id.dart';
+import 'package:http/http.dart' as http;
+
 
 
 
 class NotificationController extends GetxController {
   // 메시징 서비스 기본 객체 생성
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  RxString? _deviceToken = ''.obs;
-  RxString? _deviceID = ''.obs;
+  RxString? _deviceToken=''.obs;
+  RxString? _deviceID=''.obs;
 
   String? get deviceToken => _deviceToken!.value;
   String? get deviceID => _deviceID!.value;
@@ -31,14 +35,14 @@ class NotificationController extends GetxController {
     );
     // 한번 이걸 프린트해서 콘솔에서 확인해봐도 된다.
     print(settings.authorizationStatus);
-    _getToken();
-    _onMessage();
+    await _getToken();
+    await _onMessage();
     super.onInit();
   }
   /// 디바이스 고유 토큰을 얻기 위한 메소드, 처음 한번만 사용해서 토큰을 확보하자.
   /// 이는 파이어베이스 콘솔에서 손쉽게 디바이스에 테스팅을 할 때 쓰인다.
-  /// //ㅇㅇ
-  void _getToken() async{
+
+  Future<void> _getToken() async{
     String? deviceToken= await messaging.getToken();
     String? deviceId = await PlatformDeviceId.getDeviceId;
     this._deviceToken!.value = deviceToken!;
@@ -69,7 +73,55 @@ class NotificationController extends GetxController {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
-  void _onMessage() async{
+  Future<String?> postMessage({required fcmToken}) async {
+    try {
+      String _accessToken = 'ya29.a0AfB_byC_VaasuGr9pwkd8lHCo9NzlbDrk3tV95GvSGaJXmnVvrbC1KlorDBJ5zL4kQvzw5-Lqdf7o8AqgHvGASv2ETCi8LBypWydOOQYcpy5XyXy-vSC4PHnKNPqOkdx11hX2ZekxopGMV0Re9l72kspZ8t7ee0P3F_yaCgYKAWASARESFQGOcNnCiZkfwlDzNsnKxy2tu5yhNQ0171';
+      http.Response _response = await http.post(
+          Uri.parse(
+            "https://fcm.googleapis.com/v1/projects/{your_project_id}/messages:send",
+          ),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $_accessToken',
+          },
+          body: json.encode({
+            "message": {
+              "token": fcmToken,
+              // "topic": "user_uid",
+
+              "notification": {
+                "title": "FCM Test Title",
+                "body": "FCM Test Body",
+              },
+              "data": {
+                "click_action": "FCM Test Click Action",
+              },
+              "android": {
+                "notification": {
+                  "click_action": "Android Click Action",
+                }
+              },
+              "apns": {
+                "payload": {
+                  "aps": {
+                    "category": "Message Category",
+                    "content-available": 1
+                  }
+                }
+              }
+            }
+          }));
+      if (_response.statusCode == 200) {
+        return null;
+      } else {
+        return "Faliure";
+      }
+    } on HttpException catch (error) {
+      return error.message;
+    }
+  }
+
+  Future<void> _onMessage() async{
     /// * local_notification 관련한 플러그인 활용 *
     ///
     /// 1. 위에서 생성한 channel 을 플러그인 통해 메인 채널로 설정한다.
@@ -120,6 +172,30 @@ class NotificationController extends GetxController {
         print('Message also contained a notification: ${message.notification!.body}');
       }
     });
+
+
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? message) {
+      if (message != null) {
+        if (message.notification != null) {
+
+        }
+      }
+    });
+
+
+    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+      if (message != null) {
+        if (message.notification != null) {
+
+        }
+      }
+    });
+
+
+
+
+
   }
 
 }
