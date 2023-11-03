@@ -346,7 +346,6 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             print('KUSBF톡으로 전환');
                             setState(() {
                               _isTabKusbf = true;
-                              _stream = newStream();
                               isTap[0] = true;
                               isTap[1] = false;
                               isTap[2] = false;
@@ -357,15 +356,19 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                               _selectedValue3 = '전체';
                               _isVisible = false;
                             });
+                              _stream = newStream();
                           },
                           child: Opacity(
                             opacity: (_isTabKusbf ==true)?1.0:0.2,
-                            child: ExtendedImage.asset(
-                              'assets/imgs/icons/icon_kusbf.png',
-                              enableMemoryCache: true,
-                              shape: BoxShape.rectangle,
-                              width: 56,
-                              fit: BoxFit.cover,
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 6),
+                              child: ExtendedImage.asset(
+                                'assets/imgs/icons/icon_kusbf.png',
+                                enableMemoryCache: true,
+                                shape: BoxShape.rectangle,
+                                width: 66,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),
