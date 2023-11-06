@@ -10,8 +10,10 @@ import 'package:com.snowlive/screens/bulletin/Room/v_bulletinRoomImageScreen.dar
 import 'package:com.snowlive/screens/bulletin/Room/v_bulletin_Room_ModifyPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
+import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_bulletinRoomReplyController.dart';
 import '../../../controller/vm_bulletinRoomController.dart';
+import '../../../model/m_alarmCenterModel.dart';
 import '../../comments/v_profileImageScreen.dart';
 import '../../more/friend/v_friendDetailPage.dart';
 
@@ -28,6 +30,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
   UserModelController _userModelController = Get.find<UserModelController>();
   BulletinRoomModelController _bulletinRoomModelController = Get.find<BulletinRoomModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
+  AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   //TODO: Dependency Injection**************************************************
 
   final _controller = TextEditingController();
@@ -1310,6 +1313,12 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                                                                                     .collection('reply')
                                                                                                                                     .doc('${_userModelController.uid}${replyDocs[index]['commentCount']}')
                                                                                                                                     .delete();
+                                                                                                                                String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_room];
+                                                                                                                                await _alarmCenterController.deleteAlarm(
+                                                                                                                                    receiverUid: _bulletinRoomModelController.uid,
+                                                                                                                                    senderUid: _userModelController.uid ,
+                                                                                                                                    category: alarmCategory
+                                                                                                                                );
                                                                                                                                 await _bulletinRoomModelController.reduceBulletinRoomReplyCount(
                                                                                                                                     bullUid: _bulletinRoomModelController.uid,
                                                                                                                                     bullCount: _bulletinRoomModelController.bulletinRoomCount);
@@ -1412,7 +1421,8 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                           FocusScope.of(context).unfocus();
                                           _controller.clear();
                                           CustomFullScreenDialog.showDialog();
-                                          try{
+
+                                          // try{
                                             await _userModelController.updateCommentCount(_userModelController.commentCount);
                                             await _bulletinRoomModelController.updateBulletinRoomReplyCount(
                                                 bullUid: _bulletinRoomModelController.uid,
@@ -1426,9 +1436,33 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                 reply: _newReply,
                                                 replyLocationUidCount: _bulletinRoomModelController.bulletinRoomCount,
                                                 commentCount: _userModelController.commentCount);
+                                            String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_room];
+                                          await _alarmCenterController.sendAlarm(
+                                              receiverUid: _bulletinRoomModelController.uid,
+                                              senderUid: _userModelController.uid,
+                                              senderDisplayName: _userModelController.displayName,
+                                              timeStamp: Timestamp.now(),
+                                              category: alarmCategory,
+                                              msg: '${_userModelController.displayName}님이 $alarmCategory에 댓글을 남겼습니다.',
+                                              content: _newReply,
+                                              docName: '${_bulletinRoomModelController.uid}#${_bulletinRoomModelController.bulletinRoomCount}',
+                                              liveTalk_replyUid : '',
+                                              liveTalk_replyCount : '',
+                                              liveTalk_replyImage : '',
+                                              liveTalk_replyDisplayName : '',
+                                              liveTalk_replyResortNickname : '',
+                                              liveTalk_comment : '',
+                                              liveTalk_commentTime : '',
+                                              bulletinRoomUid : _bulletinRoomModelController.uid,
+                                              bulletinRoomCount : _bulletinRoomModelController.bulletinRoomCount,
+                                              bulletinCrewUid : '',
+                                              bulletinCrewCount : ''
+
+                                          );
                                             CustomFullScreenDialog.cancelDialog();
                                             setState(() {
-                                            });}catch(e){}
+                                            });
+                                          //   }catch(e){}
                                           _scrollController
                                               .jumpTo(
                                               (_replyReverse == true) ? _scrollController.position.maxScrollExtent

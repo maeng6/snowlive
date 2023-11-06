@@ -33,13 +33,11 @@ class ReplyModel {
 
   ReplyModel.fromJson(dynamic json, this.reference) {
     reply = json['reply'];
-    replyLocationUidCount = json['replyLocationUidCount'];
     displayName = json['displayName'];
     profileImageUrl = json['profileImageUrl'];
     timeStamp = json['timeStamp'];
     uid = json['uid'];
     commentCount = json['commentCount'];
-    replyLocationUid = json['replyLocationUid'];
     replyResortNickname = json['replyResortNickname'];
   }
 
@@ -47,15 +45,16 @@ class ReplyModel {
       : this.fromJson(snapshot.data(), snapshot.reference);
 
   Future<ReplyModel> getReplyModel(String uid, String replyLocationUid, commentCount, replyLocationUidCount, replyResortNickname) async {
+
     DocumentReference<Map<String, dynamic>> documentReference = ref
         .collection('liveTalk')
-        .doc('$replyLocationUid$replyLocationUidCount')
+        .doc('$replyLocationUid$commentCount')
         .collection('reply')
-        .doc('$uid$commentCount');
+        .doc('$uid$replyLocationUidCount');
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
     await documentReference.get();
 
-    ReplyModel commentModel = await ReplyModel.fromSnapShot(documentSnapshot);
+    ReplyModel commentModel = ReplyModel.fromSnapShot(documentSnapshot);
     return commentModel;
   }
 

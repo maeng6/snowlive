@@ -30,6 +30,15 @@ class RankingTierUrl {
 
 }
 
+class KusbfAssetUrl {
+  final String mainLogo;
+
+  KusbfAssetUrl({
+    required this.mainLogo,
+  });
+
+}
+
 
 List<ProfileImgUrl> profileImgUrlList = [
   ProfileImgUrl(
@@ -47,5 +56,11 @@ List<RankingTierUrl> rankingTierUrlList = [
     tierB: 'https://i.esdrop.com/d/f/yytYSNBROy/00dk3Ku3r1.png',
     tierA : 'https://i.esdrop.com/d/f/yytYSNBROy/l64DLQ5f3u.png',
     tierS : 'https://i.esdrop.com/d/f/yytYSNBROy/uxsqBeErnC.png',
+  ),
+];
+
+List<KusbfAssetUrl> KusbfAssetUrlList = [
+  KusbfAssetUrl(
+    mainLogo: 'https://i.esdrop.com/d/f/yytYSNBROy/aYg5y9C2Wa.png',
   ),
 ];

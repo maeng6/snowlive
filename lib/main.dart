@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:com.snowlive/controller/vm_alarmCenterController.dart';
 import 'package:com.snowlive/controller/vm_loginController.dart';
 import 'package:com.snowlive/controller/vm_splashController.dart';
 import 'package:extended_image/extended_image.dart';
@@ -52,6 +53,7 @@ void main() async {
   Get.put(RefreshController(),permanent: true);
   Get.put(AllUserDocsController(),permanent: true);
   Get.put(LoginController(),permanent: true);
+  Get.put(AlarmCenterController(),permanent: true);
 
   runApp(MyApp());
 

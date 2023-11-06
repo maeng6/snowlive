@@ -52,16 +52,14 @@ class BulletinCrewReplyModelController extends GetxController {
       commentCount: commentCount,
       uid: uid,
     );
-    BulletinCrewReplyModel replyModel = await BulletinCrewReplyModel().getReplyModel(uid,replyLocationUid,replyLocationUidCount, commentCount, replyResortNickname);
+    BulletinCrewReplyModel replyModel = await BulletinCrewReplyModel().getReplyModel(uid,replyLocationUid,commentCount, replyLocationUidCount, replyResortNickname);
     this._uid!.value = replyModel.uid!;
     this._commentCount!.value = replyModel.commentCount!;
-    this._replyLocationUid!.value = replyModel.replyLocationUid!;
     this._displayName!.value = replyModel.displayName!;
     this._replyResortNickname!.value = replyModel.replyResortNickname!;
     this._profileImageUrl!.value = replyModel.profileImageUrl!;
     this._reply!.value = replyModel.reply!;
     this._timeStamp = replyModel.timeStamp!;
-    this._replyLocationUidCount!.value = replyModel.replyLocationUidCount!;
   }
 
   String getAgoTime(timestamp){

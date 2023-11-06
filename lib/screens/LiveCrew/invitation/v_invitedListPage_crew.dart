@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
 import '../../../controller/vm_userModelController.dart';
 
@@ -17,6 +18,7 @@ class _InvitedListPage_crewState extends State<InvitedListPage_crew> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+  AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   //TODO: Dependency Injection**************************************************
 
   @override

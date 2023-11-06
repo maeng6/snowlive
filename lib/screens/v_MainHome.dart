@@ -23,12 +23,21 @@ class MainHome extends StatefulWidget {
 }
 
 class _MainHomeState extends State<MainHome> {
+  late LoginController _loginController;
+  late UserModelController _userModelController;
 
   @override
   void initState() {
+    _loginController = Get.find<LoginController>();
+    _userModelController = Get.find<UserModelController>();
+    deviceIdendtificate();
     super.initState();
 
   }
+
+  Future<void> deviceIdendtificate() async{
+    await _loginController.deviceIdentificate(uid: _userModelController.uid);
+}
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +53,7 @@ class _MainHomeState extends State<MainHome> {
     PageControllerManager _pageControllerManager = Get.find<PageControllerManager>();
     LoginController _loginController = Get.find<LoginController>();
     //TODO: Dependency Injection************************************************
-     _loginController.deviceIdentificate(uid: _userModelController.uid);
+
 
     return Obx(()=>Scaffold(
         bottomNavigationBar: BottomNavigationBar(

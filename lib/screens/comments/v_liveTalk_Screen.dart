@@ -19,9 +19,11 @@ import 'package:com.snowlive/screens/comments/v_noUserScreen.dart';
 import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
 import 'package:com.snowlive/screens/comments/v_reply_Screen.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
+import '../../controller/vm_alarmCenterController.dart';
 import '../../controller/vm_allUserDocsController.dart';
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_userModelController.dart';
+import '../../model/m_alarmCenterModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/controller/vm_imageController.dart';
 
@@ -68,6 +70,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
+  AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -314,7 +317,6 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                           print('전체톡으로 전환');
                           setState(() {
                             _isTabKusbf = false;
-                            _stream = newStream();
                             isTap[0] = true;
                             isTap[1] = false;
                             isTap[2] = false;
@@ -325,6 +327,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue3 = '전체';
                             _isVisible = false;
                           });
+                          _stream = newStream();
                         },
                         child: Text(
                           '라이브톡',
@@ -356,7 +359,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                               _selectedValue3 = '전체';
                               _isVisible = false;
                             });
-                              _stream = newStream();
+                            _stream = newStream();
                           },
                           child: Opacity(
                             opacity: (_isTabKusbf ==true)?1.0:0.2,
@@ -1972,6 +1975,12 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                       if (_firstPress) {
                                                                                         _firstPress = false;
                                                                                         await _userModelController.deleteLikeUid(likeUid);
+                                                                                        String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.liveTalkLikeKey];
+                                                                                        await _alarmCenterController.deleteAlarm(
+                                                                                            receiverUid: chatDocs[index]['uid'],
+                                                                                            senderUid: _userModelController.uid,
+                                                                                            category: alarmCategory
+                                                                                        );
                                                                                         await _commentModelController.likeDelete(likeUid);
                                                                                         _firstPress =
                                                                                         true;
@@ -1998,6 +2007,34 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                         _firstPress = false;
                                                                                         await _userModelController.updateLikeUid(likeUid);
                                                                                         await _commentModelController.likeUpdate(likeUid);
+                                                                                        String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.liveTalkLikeKey];
+                                                                                        await _alarmCenterController.sendAlarm(
+                                                                                            receiverUid: chatDocs[index]['uid'],
+                                                                                            senderUid: _userModelController.uid,
+                                                                                            senderDisplayName: _userModelController.displayName,
+                                                                                            timeStamp: Timestamp.now(),
+                                                                                            category: alarmCategory,
+                                                                                            msg: '${_userModelController.displayName}님이 회원님의 라이브톡을 좋아합니다.',
+                                                                                            content: '',
+                                                                                            docName: '',
+                                                                                            liveTalk_replyUid :  chatDocs[index]['uid'],
+                                                                                            liveTalk_replyCount : chatDocs[index]['commentCount'],
+                                                                                            liveTalk_replyImage :
+                                                                                            (chatDocs[index]['profileImageUrl'] != 'anony')
+                                                                                                ? profileUrl
+                                                                                                : chatDocs[index]['profileImageUrl'],
+                                                                                            liveTalk_replyDisplayName :
+                                                                                            (chatDocs[index]['displayName'] != '익명')
+                                                                                                ? displayName
+                                                                                                : chatDocs[index]['displayName'],
+                                                                                            liveTalk_replyResortNickname : chatDocs[index]['resortNickname'],
+                                                                                            liveTalk_comment : chatDocs[index]['comment'],
+                                                                                            liveTalk_commentTime : chatDocs[index]['timeStamp'],
+                                                                                            bulletinRoomUid :'',
+                                                                                            bulletinRoomCount :'',
+                                                                                            bulletinCrewUid : '',
+                                                                                            bulletinCrewCount : ''
+                                                                                        );
                                                                                         _firstPress = true;
                                                                                       }
                                                                                     },
@@ -2034,9 +2071,14 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                             if (_firstPress) {
                                                                               _firstPress = false;
                                                                               await _userModelController.deleteLikeUid(likeUid);
+                                                                              String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.liveTalkLikeKey];
+                                                                              await _alarmCenterController.deleteAlarm(
+                                                                                  receiverUid: chatDocs[index]['uid'],
+                                                                                  senderUid: _userModelController.uid,
+                                                                                  category: alarmCategory
+                                                                              );
                                                                               await _commentModelController.likeDelete(likeUid);
-                                                                              _firstPress =
-                                                                              true;
+                                                                              _firstPress = true;
                                                                             }
                                                                           } else{
                                                                             var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
@@ -2045,6 +2087,34 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                             if (_firstPress) {
                                                                               _firstPress = false;
                                                                               await _userModelController.updateLikeUid(likeUid);
+                                                                              String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.liveTalkLikeKey];
+                                                                              await _alarmCenterController.sendAlarm(
+                                                                                  receiverUid: chatDocs[index]['uid'],
+                                                                                  senderUid: _userModelController.uid,
+                                                                                  senderDisplayName: _userModelController.displayName,
+                                                                                  timeStamp: Timestamp.now(),
+                                                                                  category: alarmCategory,
+                                                                                  msg: '${_userModelController.displayName}님이 회원님의 라이브톡을 좋아합니다.',
+                                                                                  content: '',
+                                                                                  docName: '',
+                                                                                  liveTalk_replyUid :  chatDocs[index]['uid'],
+                                                                                  liveTalk_replyCount : chatDocs[index]['commentCount'],
+                                                                                  liveTalk_replyImage :
+                                                                                  (chatDocs[index]['profileImageUrl'] != 'anony')
+                                                                                      ? profileUrl
+                                                                                      : chatDocs[index]['profileImageUrl'],
+                                                                                  liveTalk_replyDisplayName :
+                                                                                  (chatDocs[index]['displayName'] != '익명')
+                                                                                      ? displayName
+                                                                                      : chatDocs[index]['displayName'],
+                                                                                  liveTalk_replyResortNickname : chatDocs[index]['resortNickname'],
+                                                                                  liveTalk_comment : chatDocs[index]['comment'],
+                                                                                  liveTalk_commentTime : chatDocs[index]['timeStamp'],
+                                                                                  bulletinRoomUid :'',
+                                                                                  bulletinRoomCount :'',
+                                                                                  bulletinCrewUid : '',
+                                                                                  bulletinCrewCount : ''
+                                                                              );
                                                                               await _commentModelController.likeUpdate(likeUid);
                                                                               _firstPress = true;
                                                                             }
