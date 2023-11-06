@@ -8,8 +8,10 @@ import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/bulletin/Crew/v_bulletinCrewImageScreen.dart';
 import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_ModifyPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_bulletinCrewController.dart';
 import '../../../controller/vm_bulletinCrewReplyController.dart';
+import '../../../model/m_alarmCenterModel.dart';
 import '../../comments/v_profileImageScreen.dart';
 import '../../more/friend/v_friendDetailPage.dart';
 
@@ -26,6 +28,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
   UserModelController _userModelController = Get.find<UserModelController>();
   BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
+  AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   //TODO: Dependency Injection**************************************************
 
   final _controller = TextEditingController();
@@ -1362,6 +1365,12 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                                                       .collection('reply')
                                                                                                                                       .doc('${_userModelController.uid}${replyDocs[index]['commentCount']}')
                                                                                                                                       .delete();
+                                                                                                                                  String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_crew];
+                                                                                                                                  await _alarmCenterController.deleteAlarm(
+                                                                                                                                      receiverUid: _bulletinCrewModelController.uid,
+                                                                                                                                      senderUid: _userModelController.uid ,
+                                                                                                                                      category: alarmCategory
+                                                                                                                                  );
                                                                                                                                   await _bulletinCrewModelController.reduceBulletinCrewReplyCount(
                                                                                                                                       bullUid: _bulletinCrewModelController.uid,
                                                                                                                                       bullCount: _bulletinCrewModelController.bulletinCrewCount);
@@ -1466,7 +1475,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                         FocusScope.of(context).unfocus();
                                         _controller.clear();
                                         CustomFullScreenDialog.showDialog();
-                                        try{
+                                        // try{
                                           await _userModelController.updateCommentCount(_userModelController.commentCount);
                                           await _bulletinCrewModelController.updateBulletinCrewReplyCount(
                                               bullUid: _bulletinCrewModelController.uid,
@@ -1480,9 +1489,31 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                               reply: _newReply,
                                               replyLocationUidCount: _bulletinCrewModelController.bulletinCrewCount,
                                               commentCount: _userModelController.commentCount);
+                                          String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_crew];
+                                          await _alarmCenterController.sendAlarm(
+                                              receiverUid: _bulletinCrewModelController.uid,
+                                              senderUid: _userModelController.uid,
+                                              senderDisplayName: _userModelController.displayName,
+                                              timeStamp: Timestamp.now(),
+                                              category: alarmCategory,
+                                              msg: '${_userModelController.displayName}님이 $alarmCategory에 댓글을 남겼습니다.',
+                                              content: _newReply,
+                                              docName: '${_bulletinCrewModelController.uid}#${_bulletinCrewModelController.bulletinCrewCount}',
+                                              liveTalk_replyUid : '',
+                                              liveTalk_replyCount : '',
+                                              liveTalk_replyImage : '',
+                                              liveTalk_replyDisplayName : '',
+                                              liveTalk_replyResortNickname : '',
+                                              liveTalk_comment : '',
+                                              liveTalk_commentTime : '',
+                                              bulletinRoomUid :'',
+                                              bulletinRoomCount :'',
+                                              bulletinCrewUid : _bulletinCrewModelController.uid,
+                                              bulletinCrewCount : _bulletinCrewModelController.bulletinCrewCount
+                                          );
                                           CustomFullScreenDialog.cancelDialog();
-                                          setState(() {
-                                          });}catch(e){}
+                                          setState(() {});
+                                        //   }catch(e){}
                                         _scrollController
                                             .jumpTo(
                                             (_replyReverse == true) ? _scrollController.position.maxScrollExtent

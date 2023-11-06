@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_alarmCenterController.dart';
+import 'package:com.snowlive/model/m_timeStampModel.dart';
 import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +10,7 @@ import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 import '../../../controller/vm_searchUserController.dart';
 import '../../../controller/vm_userModelController.dart';
+import '../../../model/m_alarmCenterModel.dart';
 import '../../../model/m_rankingTierModel.dart';
 import '../../../model/m_userModel.dart';
 
@@ -40,6 +44,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
     Get.put(SearchUserController(), permanent: true );
     SearchUserController _searchUserController = Get.find<SearchUserController>();
     UserModelController _userModelController = Get.find<UserModelController>();
+    AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
     //TODO: Dependency Injection**************************************************
     return GestureDetector(
       onTap: (){
@@ -662,6 +667,28 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                           CustomFullScreenDialog.showDialog();
                                                           await _userModelController.updateInvitation(friendUid: foundUserModel!.uid);
                                                           await _userModelController.updateInvitationAlarm(friendUid: foundUserModel!.uid);
+                                                          String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendRequestKey];
+                                                          await _alarmCenterController.sendAlarm(
+                                                              receiverUid: foundUserModel!.uid,
+                                                              senderUid: _userModelController.uid,
+                                                              senderDisplayName: _userModelController.displayName,
+                                                              timeStamp: Timestamp.now(),
+                                                              category: alarmCategory,
+                                                              msg: '${_userModelController.displayName}님으로부터 $alarmCategory이 도착했습니다.',
+                                                              content: '',
+                                                              docName: '',
+                                                            liveTalk_replyUid : '',
+                                                            liveTalk_replyCount : '',
+                                                            liveTalk_replyImage : '',
+                                                            liveTalk_replyDisplayName : '',
+                                                            liveTalk_replyResortNickname : '',
+                                                            liveTalk_comment : '',
+                                                            liveTalk_commentTime : '',
+                                                            bulletinRoomUid :'',
+                                                            bulletinRoomCount :'',
+                                                              bulletinCrewUid : '',
+                                                              bulletinCrewCount : ''
+                                                          );
                                                           await _userModelController.getCurrentUser(_userModelController.uid);
                                                           Navigator.pop(context);
                                                           CustomFullScreenDialog.cancelDialog();
@@ -837,6 +864,28 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                             CustomFullScreenDialog.showDialog();
                                                             await _userModelController.updateInvitation(friendUid: foundUserModel!.uid);
                                                             await _userModelController.updateInvitationAlarm(friendUid: foundUserModel!.uid);
+                                                            String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendRequestKey];
+                                                            await _alarmCenterController.sendAlarm(
+                                                                receiverUid: foundUserModel!.uid,
+                                                                senderUid: _userModelController.uid,
+                                                                senderDisplayName: _userModelController.displayName,
+                                                                timeStamp: Timestamp.now(),
+                                                                category: alarmCategory,
+                                                                msg: '${_userModelController.displayName}님으로부터 $alarmCategory이 도착했습니다.',
+                                                                content: '',
+                                                                docName: '',
+                                                                liveTalk_replyUid : '',
+                                                                liveTalk_replyCount : '',
+                                                                liveTalk_replyImage : '',
+                                                                liveTalk_replyDisplayName : '',
+                                                                liveTalk_replyResortNickname : '',
+                                                                liveTalk_comment : '',
+                                                                liveTalk_commentTime : '',
+                                                                bulletinRoomUid :'',
+                                                                bulletinRoomCount :'',
+                                                                bulletinCrewUid : '',
+                                                                bulletinCrewCount : ''
+                                                            );
                                                             await _userModelController.getCurrentUser(_userModelController.uid);
                                                             Navigator.pop(context);
                                                             CustomFullScreenDialog.cancelDialog();

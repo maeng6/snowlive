@@ -17,6 +17,8 @@ import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
+import '../../controller/vm_alarmCenterController.dart';
+import '../../model/m_alarmCenterModel.dart';
 import '../../model/m_crewLogoModel.dart';
 import '../Ranking/v_Ranking_MyCrew_Screen.dart';
 import '../more/friend/v_friendDetailPage.dart';
@@ -36,6 +38,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
+  AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   //TODO: Dependency Injection**************************************************
 
   var assetCrew;
@@ -1565,6 +1568,28 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                         CustomFullScreenDialog.showDialog();
                                                         await _liveCrewModelController.updateInvitation_crew(crewID: _liveCrewModelController.crewID);
                                                         await _liveCrewModelController.updateInvitationAlarm_crew(leaderUid: _liveCrewModelController.leaderUid);
+                                                        String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.crewApplyKey];
+                                                        await _alarmCenterController.sendAlarm(
+                                                            receiverUid: _liveCrewModelController.leaderUid,
+                                                            senderUid: _userModelController.uid,
+                                                            senderDisplayName: _userModelController.displayName,
+                                                            timeStamp: Timestamp.now(),
+                                                            category: alarmCategory,
+                                                            msg: '${_userModelController.displayName}님으로부터 $alarmCategory이 도착했습니다.',
+                                                            content: '',
+                                                            docName: '',
+                                                            liveTalk_replyUid : '',
+                                                            liveTalk_replyCount : '',
+                                                            liveTalk_replyImage : '',
+                                                            liveTalk_replyDisplayName : '',
+                                                            liveTalk_replyResortNickname : '',
+                                                            liveTalk_comment : '',
+                                                            liveTalk_commentTime : '',
+                                                            bulletinRoomUid :'',
+                                                            bulletinRoomCount :'',
+                                                            bulletinCrewUid : '',
+                                                            bulletinCrewCount : ''
+                                                        );
                                                         await _userModelController.getCurrentUser(_userModelController.uid);
                                                         CustomFullScreenDialog.cancelDialog();
                                                         Navigator.pop(context);

@@ -179,6 +179,9 @@ class LoginController extends GetxController {
         .doc('$uid');
     final userDocSnapshot = await userDoc.get();
     if (userDocSnapshot.exists ) {
+      print(userDocSnapshot['deviceID']);
+      print(_notificationController.deviceID);
+
       if(userDocSnapshot['deviceID'] == _notificationController.deviceID) {
 
       }else {

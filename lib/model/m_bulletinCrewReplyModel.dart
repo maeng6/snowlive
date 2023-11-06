@@ -33,13 +33,11 @@ class BulletinCrewReplyModel {
 
   BulletinCrewReplyModel.fromJson(dynamic json, this.reference) {
     reply = json['reply'];
-    replyLocationUidCount = json['replyLocationUidCount'];
     displayName = json['displayName'];
     profileImageUrl = json['profileImageUrl'];
     timeStamp = json['timeStamp'];
     uid = json['uid'];
     commentCount = json['commentCount'];
-    replyLocationUid = json['replyLocationUid'];
     replyResortNickname = json['replyResortNickname'];
   }
 
