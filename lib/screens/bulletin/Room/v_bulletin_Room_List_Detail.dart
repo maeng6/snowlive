@@ -1453,6 +1453,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                               liveTalk_replyResortNickname : '',
                                               liveTalk_comment : '',
                                               liveTalk_commentTime : '',
+                                              liveTalk_kusbf: '',
                                               bulletinRoomUid : _bulletinRoomModelController.uid,
                                               bulletinRoomCount : _bulletinRoomModelController.bulletinRoomCount,
                                               bulletinCrewUid : '',

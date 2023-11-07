@@ -365,12 +365,20 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             opacity: (_isTabKusbf ==true)?1.0:0.2,
                             child: Padding(
                               padding: EdgeInsets.only(bottom: 6),
-                              child: ExtendedImage.asset(
-                                'assets/imgs/icons/icon_kusbf.png',
+                              child: ExtendedImage.network(
+                                '${KusbfAssetUrlList[0].mainLogo}',
                                 enableMemoryCache: true,
                                 shape: BoxShape.rectangle,
                                 width: 66,
                                 fit: BoxFit.cover,
+                                loadStateChanged: (ExtendedImageState state) {
+                                  switch (state.extendedImageLoadState) {
+                                    case LoadState.loading:
+                                      return SizedBox.shrink();
+                                    default:
+                                      return null;
+                                  }
+                                },
                               ),
                             ),
                           ),
@@ -684,11 +692,19 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.only(right: 4),
-                                        child:  ExtendedImage.asset(
-                                          'assets/imgs/icons/icon_livetalk_filter.png',
+                                        child:  ExtendedImage.network(
+                                          '${IconAssetUrlList[0].filter}',
                                           enableMemoryCache: true,
                                           shape: BoxShape.rectangle,
                                           width: 12,
+                                          loadStateChanged: (ExtendedImageState state) {
+                                            switch (state.extendedImageLoadState) {
+                                              case LoadState.loading:
+                                                return SizedBox.shrink();
+                                              default:
+                                                return null;
+                                            }
+                                          },
                                         ),
                                       ),
                                       Text('필터',
@@ -731,11 +747,19 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.only(right: 4),
-                                        child:  ExtendedImage.asset(
-                                          'assets/imgs/icons/icon_livetalk_filter.png',
+                                        child:  ExtendedImage.network(
+                                          '${IconAssetUrlList[0].filter}',
                                           enableMemoryCache: true,
                                           shape: BoxShape.rectangle,
                                           width: 12,
+                                          loadStateChanged: (ExtendedImageState state) {
+                                            switch (state.extendedImageLoadState) {
+                                              case LoadState.loading:
+                                                return SizedBox.shrink();
+                                              default:
+                                                return null;
+                                            }
+                                          },
                                         ),
                                       ),
                                       Text('필터',
@@ -2030,6 +2054,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                             liveTalk_replyResortNickname : chatDocs[index]['resortNickname'],
                                                                                             liveTalk_comment : chatDocs[index]['comment'],
                                                                                             liveTalk_commentTime : chatDocs[index]['timeStamp'],
+                                                                                            liveTalk_kusbf: chatDocs[index]['kusbf'],
                                                                                             bulletinRoomUid :'',
                                                                                             bulletinRoomCount :'',
                                                                                             bulletinCrewUid : '',
@@ -2110,6 +2135,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                   liveTalk_replyResortNickname : chatDocs[index]['resortNickname'],
                                                                                   liveTalk_comment : chatDocs[index]['comment'],
                                                                                   liveTalk_commentTime : chatDocs[index]['timeStamp'],
+                                                                                  liveTalk_kusbf: chatDocs[index]['kusbf'],
                                                                                   bulletinRoomUid :'',
                                                                                   bulletinRoomCount :'',
                                                                                   bulletinCrewUid : '',
@@ -2142,6 +2168,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                 replyResortNickname: chatDocs[index]['resortNickname'],
                                                                                 comment: chatDocs[index]['comment'],
                                                                                 commentTime: chatDocs[index]['timeStamp'],
+                                                                                kusbf: _isTabKusbf == true ? true : false,
                                                                               ));
                                                                         },
                                                                         child: Container(
@@ -2178,6 +2205,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                             replyResortNickname: chatDocs[index]['resortNickname'],
                                                                                             comment: chatDocs[index]['comment'],
                                                                                             commentTime: chatDocs[index]['timeStamp'],
+                                                                                            kusbf: _isTabKusbf == true ? true : false,
                                                                                           ));
                                                                                     },
                                                                                     icon: Icon(

@@ -27,7 +27,9 @@ class ReplyScreen extends StatefulWidget {
     required this.replyDisplayName,
     required this.replyResortNickname,
     required this.comment,
-    required this.commentTime}) : super(key: key);
+    required this.commentTime,
+    required this.kusbf
+  }) : super(key: key);
 
   var replyUid;
   var replyCount;
@@ -37,6 +39,7 @@ class ReplyScreen extends StatefulWidget {
   var replyFavoriteResort;
   var comment;
   var commentTime;
+  var kusbf;
 
 
   @override
@@ -1004,12 +1007,12 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                                                         .collection('reply')
                                                                                                         .doc('${_userModelController.uid}${replyDocs[index]['commentCount']}')
                                                                                                         .delete();
-                                                                                                  String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.liveTalkReplyKey];
-                                                                                                  await _alarmCenterController.deleteAlarm(
-                                                                                                  receiverUid: widget.replyUid,
-                                                                                                  senderUid: _userModelController.uid,
-                                                                                                  category: alarmCategory
-                                                                                                  );
+                                                                                                    String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.liveTalkReplyKey];
+                                                                                                    await _alarmCenterController.deleteAlarm(
+                                                                                                        receiverUid: widget.replyUid,
+                                                                                                        senderUid: _userModelController.uid,
+                                                                                                        category: alarmCategory
+                                                                                                    );
                                                                                                   } catch (e) {}
                                                                                                   print('댓글 삭제 완료');
                                                                                                   Navigator.pop(context);
@@ -1078,57 +1081,60 @@ class _ReplyScreenState extends State<ReplyScreen> {
                             child: Row(
                               children: [
                                 GestureDetector(
-                                  onTap: (){
-                                    setState(() {
-                                      if(anony == true){
-                                        setState(() {
-                                          anony = false;
-                                        });
-                                      }else{
-                                        setState(() {
-                                          anony = true;
-                                        });
-                                      }
-                                    });
-                                  },
-                                  child:Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color:
-                                      (anony == true)
-                                          ? Color(0xFFCBE0FF)
-                                          : Color(0xFFECECEC),
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    child: Row(
-                                      children: [
+                                    onTap: (){
+                                      setState(() {
+                                        if(anony == true){
+                                          setState(() {
+                                            anony = false;
+                                          });
+                                        }else{
+                                          setState(() {
+                                            anony = true;
+                                          });
+                                        }
+                                      });
+                                    },
+                                    child:
+                                    (widget.kusbf == false)
+                                        ? Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color:
                                         (anony == true)
-                                            ? Image.asset(
-                                          'assets/imgs/icons/icon_livetalk_check.png',
-                                          scale: 4,
-                                          width: 10,
-                                          height: 10,
-                                        )
-                                            :  Image.asset(
-                                          'assets/imgs/icons/icon_livetalk_check_off.png',
-                                          scale: 4,
-                                          width: 10,
-                                          height: 10,
-                                        ),
-                                        SizedBox(width: 2,),
-                                        Text('익명',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12,
-                                              color:
-                                              (anony == true)
-                                                  ? Color(0xFF3D83ED)
-                                                  :Color(0xFF949494)
+                                            ? Color(0xFFCBE0FF)
+                                            : Color(0xFFECECEC),
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          (anony == true)
+                                              ? Image.asset(
+                                            'assets/imgs/icons/icon_livetalk_check.png',
+                                            scale: 4,
+                                            width: 10,
+                                            height: 10,
+                                          )
+                                              :  Image.asset(
+                                            'assets/imgs/icons/icon_livetalk_check_off.png',
+                                            scale: 4,
+                                            width: 10,
+                                            height: 10,
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                          SizedBox(width: 2,),
+                                          Text('익명',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                                color:
+                                                (anony == true)
+                                                    ? Color(0xFF3D83ED)
+                                                    :Color(0xFF949494)
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                        : SizedBox.shrink()
                                 ),
                                 SizedBox(
                                   width: 14,
@@ -1179,12 +1185,12 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                   timeStamp: Timestamp.now(),
                                                   category:
                                                   (anony == false)
-                                                  ? alarmCategory
-                                                  : '라이브톡익명',
+                                                      ? alarmCategory
+                                                      : '라이브톡익명',
                                                   msg:
                                                   (anony == false)
-                                                  ? '${_userModelController.displayName}님이 $alarmCategory에 댓글을 남겼습니다.'
-                                                  : '익명의 회원님이 라이브톡에 댓글을 남겼습니다.',
+                                                      ? '${_userModelController.displayName}님이 $alarmCategory에 댓글을 남겼습니다.'
+                                                      : '익명의 회원님이 라이브톡에 댓글을 남겼습니다.',
                                                   content: _newReply,
                                                   docName: '',
                                                   liveTalk_replyUid : widget.replyUid,
@@ -1194,6 +1200,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                   liveTalk_replyResortNickname : widget.replyResortNickname,
                                                   liveTalk_comment : widget.comment,
                                                   liveTalk_commentTime : widget.commentTime,
+                                                  liveTalk_kusbf: widget.kusbf,
                                                   bulletinRoomUid :'',
                                                   bulletinRoomCount :'',
                                                   bulletinCrewUid : '',

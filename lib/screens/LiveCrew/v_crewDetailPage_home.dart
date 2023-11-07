@@ -1585,6 +1585,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                             liveTalk_replyResortNickname : '',
                                                             liveTalk_comment : '',
                                                             liveTalk_commentTime : '',
+                                                            liveTalk_kusbf: '',
                                                             bulletinRoomUid :'',
                                                             bulletinRoomCount :'',
                                                             bulletinCrewUid : '',

@@ -29,6 +29,7 @@ class AlarmCenterController extends GetxController {
     required liveTalk_replyResortNickname,
     required liveTalk_comment,
     required liveTalk_commentTime,
+    required liveTalk_kusbf,
     required bulletinRoomUid,
     required bulletinRoomCount,
     required bulletinCrewUid,
@@ -56,11 +57,15 @@ class AlarmCenterController extends GetxController {
         'liveTalk_replyResortNickname' : liveTalk_replyResortNickname,
         'liveTalk_comment' : liveTalk_comment,
         'liveTalk_commentTime' : liveTalk_commentTime,
+        'liveTalk_kusbf' : liveTalk_kusbf,
         'bulletinRoomUid' : bulletinRoomUid,
         'bulletinRoomCount' : bulletinRoomCount,
         'bulletinCrewUid' : bulletinCrewUid,
         'bulletinCrewCount' : bulletinCrewCount,
       });
+
+      await alarmCenterOn(receiverUid: receiverUid);
+
   }
 
   Future<void> deleteAlarm({
@@ -76,11 +81,45 @@ class AlarmCenterController extends GetxController {
         .doc('$senderUid$category')
         .delete();
 
+    await alarmCenterOff(receiverUid: receiverUid);
+
+  }
+
+  Future<void> deleteAlarm_All({required receiverUid,}) async {
+    final collectionRef = FirebaseFirestore.instance
+        .collection('alarmCenter')
+        .doc(receiverUid)
+        .collection('alarmCenter');
+
+    final snapshot = await collectionRef.get();
+
+    // 개별 문서를 순회하면서 삭제합니다.
+    for (var doc in snapshot.docs) {
+      await doc.reference.delete();
+    }
   }
 
 
 
+  Future<void> alarmCenterOn({required receiverUid}) async{
 
+    await ref.collection('newAlarm')
+        .doc('$receiverUid')
+        .update({
+      'alarmCenter': true,
+    });
+
+  }
+
+  Future<void> alarmCenterOff({required receiverUid}) async{
+
+    await ref.collection('newAlarm')
+        .doc('$receiverUid')
+        .update({
+      'alarmCenter': false,
+    });
+
+  }
 
 
 

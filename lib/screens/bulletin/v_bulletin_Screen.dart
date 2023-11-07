@@ -39,12 +39,6 @@ class _BulletinScreenState extends State<BulletinScreen> {
   @override
   Widget build(BuildContext context) {
 
-    //TODO : ****************************************************************
-    Get.put(BulletinRoomModelController(), permanent: true);
-    Get.put(BulletinCrewModelController(), permanent: true);
-    Get.put(FleaChatModelController(), permanent: true);
-    //TODO : ****************************************************************
-
     Size _size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,

@@ -39,13 +39,22 @@ class KusbfAssetUrl {
 
 }
 
+class IconAssetUrl {
+  final String filter;
+
+  IconAssetUrl({
+    required this.filter,
+  });
+
+}
+
 
 List<ProfileImgUrl> profileImgUrlList = [
   ProfileImgUrl(
-      default_round: 'https://i.esdrop.com/d/f/yytYSNBROy/NIlGn0N46O.png',
-      default_suqare: 'https://i.esdrop.com/d/f/yytYSNBROy/6rPYflzCCZ.png',
-      anony_round: 'https://i.esdrop.com/d/f/yytYSNBROy/JgMO4cLHTW.png',
-      snowlive_official : 'https://i.esdrop.com/d/f/yytYSNBROy/0e1CZIxevJ.jpg',
+    default_round: 'https://i.esdrop.com/d/f/yytYSNBROy/NIlGn0N46O.png',
+    default_suqare: 'https://i.esdrop.com/d/f/yytYSNBROy/6rPYflzCCZ.png',
+    anony_round: 'https://i.esdrop.com/d/f/yytYSNBROy/JgMO4cLHTW.png',
+    snowlive_official : 'https://i.esdrop.com/d/f/yytYSNBROy/0e1CZIxevJ.jpg',
   ),
 ];
 
@@ -64,3 +73,10 @@ List<KusbfAssetUrl> KusbfAssetUrlList = [
     mainLogo: 'https://i.esdrop.com/d/f/yytYSNBROy/aYg5y9C2Wa.png',
   ),
 ];
+
+List<IconAssetUrl> IconAssetUrlList = [
+  IconAssetUrl(
+    filter: 'https://i.esdrop.com/d/f/yytYSNBROy/WD1ovQIAOq.png',
+  ),
+];
+
