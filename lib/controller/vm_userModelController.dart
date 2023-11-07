@@ -907,6 +907,14 @@ class UserModelController extends GetxController{
       'newInvited_friend': false
     });
   }
+
+  Future<void> deleteAlarmCenterNoti({required uid}) async {
+    await ref.collection('newAlarm')
+        .doc(uid)
+        .update({
+      'alarmCenter': false
+    });
+  }
   Future<void> updateFriend({required friendUid}) async {
     final  userMe = auth.currentUser!.uid;
 

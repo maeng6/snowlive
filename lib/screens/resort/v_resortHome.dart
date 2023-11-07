@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_refreshController.dart';
+import 'package:com.snowlive/screens/resort/v_alarmCenter.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
   int lengthOfLivefriends = 0;
   bool isSnackbarShown = false;
   List<bool?> _isSelected = List<bool?>.filled(13, false);
+  var _alarmStream;
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
@@ -69,11 +71,19 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
     );
   }
 
+  Stream<QuerySnapshot> alarmStream() {
+    return FirebaseFirestore.instance
+        .collection('newAlarm')
+        .where('uid', isEqualTo: _userModelController.uid!)
+        .snapshots();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _userModelController.updateIsOnLiveOff();
+    _alarmStream = alarmStream();
   }
 
   @override
@@ -672,6 +682,166 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                           children: [
                             AppBar(
                               actions: [
+                                StreamBuilder(
+                                  stream: _alarmStream,
+                                  builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                    if (!snapshot.hasData || snapshot.data == null) {
+                                      return  Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: Stack(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () async{
+                                                CustomFullScreenDialog.showDialog();
+                                                try {
+                                                  await _userModelController.deleteInvitationAlarm_friend(uid: _userModelController.uid);
+                                                  await _userModelController.deleteAlarmCenterNoti(uid: _userModelController.uid);
+                                                }catch(e){}
+
+                                                CustomFullScreenDialog.cancelDialog();
+                                                Get.to(()=>AlarmCenter());
+                                              },
+                                              icon: Image.asset(
+                                                'assets/imgs/icons/icon_noti_off.png',
+                                                scale: 4,
+                                                width: 26,
+                                                height: 26,
+                                              ),
+                                            ),
+                                            Positioned(  // draw a red marble
+                                              top: 10,
+                                              left: 32,
+                                              child: new Icon(Icons.brightness_1, size: 6.0,
+                                                  color:Colors.white),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                    else if (snapshot.data!.docs.isNotEmpty) {
+                                      final alarmDocs = snapshot.data!.docs;
+                                      bool alarmIsActive;
+                                      try {
+                                         alarmIsActive = (alarmDocs[0]['alarmCenter'] ?? false) == true;
+                                      }catch(e){
+                                         alarmIsActive = false;
+                                      }
+                                      return  Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: Stack(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () async{
+                                                CustomFullScreenDialog.showDialog();
+                                                try {
+                                                  await _userModelController.deleteInvitationAlarm_friend(uid: _userModelController.uid);
+                                                  await _userModelController.deleteAlarmCenterNoti(uid: _userModelController.uid);
+                                                }catch(e){}
+                                                CustomFullScreenDialog.cancelDialog();
+                                                Get.to(()=>AlarmCenter());
+                                              },
+                                              icon: Image.asset(
+                                                'assets/imgs/icons/icon_noti_off.png',
+                                                scale: 4,
+                                                width: 26,
+                                                height: 26,
+                                              ),
+                                            ),
+                                            Positioned(  // draw a red marble
+                                                top: 6,
+                                                right: 0,
+                                                child:
+                                                (alarmIsActive)
+                                                    ? Container(
+                                                  padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xFFD6382B),
+                                                    borderRadius: BorderRadius.circular(6),
+                                                  ),
+                                                  child: Text('NEW',
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Color(0xFFFFFFFF)
+                                                    ),
+
+                                                  ),
+                                                )
+                                                    :
+                                                Container()
+                                              // new Icon(Icons.brightness_1, size: 6.0,
+                                              //     color:
+                                              //     (alarmDocs[0]['newInvited_friend'] == true)
+                                              //         ?Color(0xFFD32F2F):Colors.white),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                    else if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return  Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: Stack(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () async{
+                                                CustomFullScreenDialog.showDialog();
+                                                try {
+                                                  await _userModelController.deleteInvitationAlarm_friend(uid: _userModelController.uid);
+                                                  await _userModelController.deleteAlarmCenterNoti(uid: _userModelController.uid);
+                                                }catch(e){}
+                                                CustomFullScreenDialog.cancelDialog();
+                                                Get.to(()=>AlarmCenter());
+                                              },
+                                              icon: Image.asset(
+                                                'assets/imgs/icons/icon_noti_off.png',
+                                                scale: 4,
+                                                width: 26,
+                                                height: 26,
+                                              ),
+                                            ),
+                                            Positioned(  // draw a red marble
+                                              top: 10,
+                                              left: 32,
+                                              child: new Icon(Icons.brightness_1, size: 6.0,
+                                                  color:Colors.white),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                    return  Padding(
+                                      padding: const EdgeInsets.only(top: 4),
+                                      child: Stack(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () async{
+                                              CustomFullScreenDialog.showDialog();
+                                              try {
+                                                await _userModelController.deleteInvitationAlarm_friend(uid: _userModelController.uid);
+                                                await _userModelController.deleteAlarmCenterNoti(uid: _userModelController.uid);
+                                              }catch(e){}
+                                              CustomFullScreenDialog.cancelDialog();
+                                              Get.to(()=>AlarmCenter());
+                                            },
+                                            icon: Image.asset(
+                                              'assets/imgs/icons/icon_noti_off.png',
+                                              scale: 4,
+                                              width: 26,
+                                              height: 26,
+                                            ),
+                                          ),
+                                          Positioned(  // draw a red marble
+                                            top: 10,
+                                            left: 32,
+                                            child: new Icon(Icons.brightness_1, size: 6.0,
+                                                color:Colors.white),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
                                 Padding(
                                   padding: const EdgeInsets.only(right: 14),
                                   child: Builder(

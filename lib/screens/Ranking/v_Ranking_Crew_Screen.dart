@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -175,50 +176,58 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Column(
                           children: [
-                              Column(
-                                children: [
-                                  Container(
-                                    width: _size.width,
-                                    height: 60,
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        ExtendedImage.asset(
-                                          'assets/imgs/icons/icon_kusbf.png',
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.rectangle,
-                                          width: 56,
-                                          fit: BoxFit.cover,
+                            (_userModelController.favoriteResort == 12)
+                                ?Column(
+                              children: [
+                                Container(
+                                  width: _size.width,
+                                  height: 60,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      ExtendedImage.network(
+                                        '${KusbfAssetUrlList[0].mainLogo}',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        width: 56,
+                                        fit: BoxFit.cover,
+                                        loadStateChanged: (ExtendedImageState state) {
+                                          switch (state.extendedImageLoadState) {
+                                            case LoadState.loading:
+                                              return SizedBox.shrink();
+                                            default:
+                                              return null;
+                                          }
+                                        },
+                                      ),
+                                      Transform.scale(
+                                        scale: 0.8,
+                                        child: CupertinoSwitch(
+                                          value: _isKusbf,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _isKusbf = value;
+                                              // 여기에서 토글 상태 변경에 따른 추가 작업을 수행할 수 있습니다.
+                                            });
+                                          },
+                                          activeColor: Color(0xFF3D83ED),
+                                          trackColor: Color(0xFFD8E7FD),
                                         ),
-                                        Transform.scale(
-                                          scale: 0.8,
-                                          child: CupertinoSwitch(
-                                            value: _isKusbf,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _isKusbf = value;
-                                                // 여기에서 토글 상태 변경에 따른 추가 작업을 수행할 수 있습니다.
-                                              });
-                                            },
-                                            activeColor: Color(0xFF3D83ED),
-                                            trackColor: Color(0xFFD8E7FD),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
+                            )
+                                :SizedBox(height: 20,),
                             Container(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  (_userModelController.kusbf == false)
-                                      ? SizedBox(height: 20) : SizedBox(height: 0),
                                   Text(
                                     (_isKusbf == false)
-                                        ? '${_resortModelController.resortName} 상위 TOP 3 크루' :'KUSBF 상위 TOP 3 크루',
+                                        ? '${_userModelController.resortNickname} 상위 TOP 3 크루' :'KUSBF 상위 TOP 3 크루',
                                     style: TextStyle(
                                         color: Color(0xFF949494),
                                         fontSize: 12
@@ -625,7 +634,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                           ),
                                         ),
                                       if(_isKusbf == false)
-                                        Text('${_resortModelController.resortName} 크루 랭킹 TOP 20',
+                                        Text('${_userModelController.resortNickname} 크루 랭킹 TOP 20',
                                           style: TextStyle(
                                               color: Color(0xFF111111),
                                               fontSize: 16,

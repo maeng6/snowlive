@@ -1506,6 +1506,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                               liveTalk_replyResortNickname : '',
                                               liveTalk_comment : '',
                                               liveTalk_commentTime : '',
+                                              liveTalk_kusbf: '',
                                               bulletinRoomUid :'',
                                               bulletinRoomCount :'',
                                               bulletinCrewUid : _bulletinCrewModelController.uid,
