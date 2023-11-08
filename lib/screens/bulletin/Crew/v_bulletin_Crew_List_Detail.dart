@@ -1507,10 +1507,11 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                               liveTalk_comment : '',
                                               liveTalk_commentTime : '',
                                               liveTalk_kusbf: '',
+                                              liveTalk_livetalkImageUrl: '',
                                               bulletinRoomUid :'',
                                               bulletinRoomCount :'',
                                               bulletinCrewUid : _bulletinCrewModelController.uid,
-                                              bulletinCrewCount : _bulletinCrewModelController.bulletinCrewCount
+                                              bulletinCrewCount : _bulletinCrewModelController.bulletinCrewCount,
                                           );
                                           CustomFullScreenDialog.cancelDialog();
                                           setState(() {});
