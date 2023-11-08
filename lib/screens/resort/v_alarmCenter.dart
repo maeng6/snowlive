@@ -217,7 +217,11 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                 commentTime: alarmCenterDocs[index].get(
                                     'liveTalk_commentTime'),
                                 kusbf: alarmCenterDocs[index].get(
-                                    'liveTalk_kusbf')));
+                                    'liveTalk_kusbf'),
+                              replyLiveTalkImageUrl: alarmCenterDocs[index].get(
+                                  'livetalkImageUrl'),
+
+                            ));
                       }
                       if (alarmCenterDocs[index].get('category') == '크루 가입신청') {
                         Get.to(() => LiveCrewHome());

@@ -2055,6 +2055,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                             liveTalk_comment : chatDocs[index]['comment'],
                                                                                             liveTalk_commentTime : chatDocs[index]['timeStamp'],
                                                                                             liveTalk_kusbf: chatDocs[index]['kusbf'],
+                                                                                            liveTalk_livetalkImageUrl: chatDocs[index]['livetalkImageUrl'],
                                                                                             bulletinRoomUid :'',
                                                                                             bulletinRoomCount :'',
                                                                                             bulletinCrewUid : '',
@@ -2136,6 +2137,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                   liveTalk_comment : chatDocs[index]['comment'],
                                                                                   liveTalk_commentTime : chatDocs[index]['timeStamp'],
                                                                                   liveTalk_kusbf: chatDocs[index]['kusbf'],
+                                                                                  liveTalk_livetalkImageUrl: chatDocs[index]['livetalkImageUrl'],
                                                                                   bulletinRoomUid :'',
                                                                                   bulletinRoomCount :'',
                                                                                   bulletinCrewUid : '',
@@ -2169,6 +2171,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                 comment: chatDocs[index]['comment'],
                                                                                 commentTime: chatDocs[index]['timeStamp'],
                                                                                 kusbf: _isTabKusbf == true ? true : false,
+                                                                                replyLiveTalkImageUrl: chatDocs[index]['livetalkImageUrl'],
                                                                               ));
                                                                         },
                                                                         child: Container(
@@ -2206,6 +2209,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                             comment: chatDocs[index]['comment'],
                                                                                             commentTime: chatDocs[index]['timeStamp'],
                                                                                             kusbf: _isTabKusbf == true ? true : false,
+                                                                                            replyLiveTalkImageUrl: chatDocs[index]['livetalkImageUrl'],
                                                                                           ));
                                                                                     },
                                                                                     icon: Icon(

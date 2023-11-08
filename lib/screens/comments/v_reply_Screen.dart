@@ -26,6 +26,7 @@ class ReplyScreen extends StatefulWidget {
     required this.replyImage,
     required this.replyDisplayName,
     required this.replyResortNickname,
+    required this.replyLiveTalkImageUrl,
     required this.comment,
     required this.commentTime,
     required this.kusbf
@@ -37,6 +38,7 @@ class ReplyScreen extends StatefulWidget {
   var replyDisplayName;
   var replyResortNickname;
   var replyFavoriteResort;
+  var replyLiveTalkImageUrl;
   var comment;
   var commentTime;
   var kusbf;
@@ -200,7 +202,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           if (widget.replyImage != "" && widget.replyImage != 'anony' && widget.replyDisplayName != 'SNOWLIVE')
                                             Padding(
@@ -280,7 +282,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                               padding: EdgeInsets.only(top: 5),
                                               child: GestureDetector(
                                                 onTap: () {},
-                                                child: ExtendedImage.asset(
+                                                child: ExtendedImage.network(
                                                   '${profileImgUrlList[0].anony_round}',
                                                   shape: BoxShape.circle,
                                                   borderRadius:
@@ -324,77 +326,104 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                               ),
                                             ),
                                           SizedBox(width: 10),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                          Row(
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    widget.replyDisplayName,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold,
-                                                        fontSize: 14,
-                                                        color: (widget.replyDisplayName == '탈퇴한회원')? Color(0xFFb7b7b7): Color(0xFF111111)),
-                                                  ),
-                                                  if(widget.replyDisplayName == 'SNOWLIVE')
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(left : 2.0),
-                                                      child: Image.asset(
-                                                        'assets/imgs/icons/icon_snowlive_operator.png',
-                                                        scale: 5.5,
-                                                      ),
-                                                    ),
-                                                  SizedBox(width: 6),
-                                                  Text(
-                                                    widget.replyResortNickname,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .w300,
-                                                        fontSize: 13,
-                                                        color: Color(
-                                                            0xFF949494)),
-                                                  ),
-                                                  SizedBox(width: 1),
-                                                  Text(
-                                                    '· $_commentTimeStamp',
-                                                    style: TextStyle(
-                                                        fontSize: 13,
-                                                        color: Color(
-                                                            0xFF949494),
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .w300),
-                                                  ),
-                                                ],
+                                              Text(
+                                                widget.replyDisplayName,
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                    FontWeight
+                                                        .bold,
+                                                    fontSize: 14,
+                                                    color: (widget.replyDisplayName == '탈퇴한회원')? Color(0xFFb7b7b7): Color(0xFF111111)),
                                               ),
-                                              SizedBox(
-                                                height: 2,
-                                              ),
-                                              Container(
-                                                constraints:
-                                                BoxConstraints(
-                                                    maxWidth:
-                                                    _size.width - 80),
-                                                child: Text(
-                                                  widget.comment,
-                                                  maxLines: 1000,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      color: Color(0xFF111111),
-                                                      fontWeight: FontWeight.normal,
-                                                      fontSize: 13),
+                                              if(widget.replyDisplayName == 'SNOWLIVE')
+                                                Padding(
+                                                  padding: const EdgeInsets.only(left : 2.0),
+                                                  child: Image.asset(
+                                                    'assets/imgs/icons/icon_snowlive_operator.png',
+                                                    scale: 5.5,
+                                                  ),
                                                 ),
+                                              SizedBox(width: 6),
+                                              Text(
+                                                widget.replyResortNickname,
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                    FontWeight
+                                                        .w300,
+                                                    fontSize: 13,
+                                                    color: Color(
+                                                        0xFF949494)),
                                               ),
-                                              SizedBox(
-                                                height: 8,
+                                              SizedBox(width: 1),
+                                              Text(
+                                                '· $_commentTimeStamp',
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Color(
+                                                        0xFF949494),
+                                                    fontWeight:
+                                                    FontWeight
+                                                        .w300),
                                               ),
                                             ],
                                           ),
                                         ],
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+
+                                      SizedBox(
+                                        height: 2,
+                                      ),
+                                      Column(
+                                        children: [
+                                          if (widget.replyLiveTalkImageUrl != "")
+                                            Padding(
+                                              padding: EdgeInsets.only(top: 14, bottom: 6),
+                                              child: GestureDetector(
+                                                onTap: () {Get.to(() =>
+                                                    ProfileImagePage(
+                                                      CommentProfileUrl: widget.replyLiveTalkImageUrl,
+                                                    ));
+                                                },
+                                                child: ExtendedImage.network(
+                                                  widget.replyLiveTalkImageUrl,
+                                                  cache: true,
+                                                  width: _size.width - 24,
+                                                  height: _size.width - 24,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                          if (widget.replyLiveTalkImageUrl == "")
+                                            Container(
+                                              height: 0,
+                                            )
+                                        ],
+                                      ),
+                                      Container(
+                                        constraints:
+                                        BoxConstraints(
+                                            maxWidth:
+                                            _size.width - 80),
+                                        child: Text(
+                                          widget.comment,
+                                          maxLines: 1000,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              color: Color(0xFF111111),
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 13),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 8,
                                       ),
                                     ],
                                   ),
@@ -421,7 +450,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                         String? displayName = _allUserDocsController.findDisplayName(replyDocs[index]['uid'], _allUserDocsController.allUserDocs);
                                         return Padding(
                                           padding: const EdgeInsets.only(
-                                              left: 42, top: 24),
+                                              left: 15, top: 24),
                                           child: Obx(() => Container(
                                             color: Colors.white,
                                             child: Column(
@@ -1201,6 +1230,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                   liveTalk_comment : widget.comment,
                                                   liveTalk_commentTime : widget.commentTime,
                                                   liveTalk_kusbf: widget.kusbf,
+                                                  liveTalk_livetalkImageUrl: widget.replyLiveTalkImageUrl,
                                                   bulletinRoomUid :'',
                                                   bulletinRoomCount :'',
                                                   bulletinCrewUid : '',

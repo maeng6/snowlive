@@ -119,20 +119,20 @@ class LiveMapController extends GetxController {
 
   Future<void> startBackgroundLocationService() async {
     await bg.BackgroundGeolocation.ready(bg.Config(
-        desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
-        preventSuspend: true,
-        heartbeatInterval: 5,
-        stopOnStationary: false,
-        distanceFilter: 0,
-        isMoving: true,
-        disableElasticity: true,
-        stopOnTerminate: true,
-        startOnBoot: false,
-        stationaryRadius: 25,
-        logLevel: bg.Config.LOG_LEVEL_VERBOSE,
-        locationUpdateInterval: 5000,
-        disableLocationAuthorizationAlert: true,
-        showsBackgroundLocationIndicator: true,
+      desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
+      preventSuspend: true,
+      heartbeatInterval: 5,
+      stopOnStationary: false,
+      distanceFilter: 0,
+      isMoving: true,
+      disableElasticity: true,
+      stopOnTerminate: true,
+      startOnBoot: false,
+      stationaryRadius: 25,
+      logLevel: bg.Config.LOG_LEVEL_VERBOSE,
+      locationUpdateInterval: 5000,
+      disableLocationAuthorizationAlert: true,
+      showsBackgroundLocationIndicator: true,
       backgroundPermissionRationale: PermissionRationale(
         title: "{applicationName}가 종료되거나 사용하지 않을 때 위치에 접근하도록 허용하시겠습니까?",
         message: "위치 서비스를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있습니다. 이 앱은 항상 허용을 하면 앱이 사용 중이 아닐 때도 위치 데이터를 수집하여 라이브 서비스 기능을 지원합니다.",
@@ -292,6 +292,9 @@ class LiveMapController extends GetxController {
             break;
           case 2:
             radius = 20;
+            break;
+          case 11:
+            radius = 10;
             break;
           case 12:
             radius = 20;
