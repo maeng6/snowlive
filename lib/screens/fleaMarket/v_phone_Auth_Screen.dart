@@ -325,6 +325,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                       {return ;}
                                       CustomFullScreenDialog.showDialog();
                                       FocusScope.of(context).unfocus();
+                                      setState(() {requestedAuth=true;});
                                       try{
                                         await _auth.verifyPhoneNumber(
                                           timeout: const Duration(seconds: 90),
@@ -345,7 +346,6 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                                             print("코드보냄");
 
                                             setState(() {
-                                              requestedAuth=true;
                                               isFirstSentClick=true;
                                               isFirstSent=true;
                                               buttonColorActive=false;
