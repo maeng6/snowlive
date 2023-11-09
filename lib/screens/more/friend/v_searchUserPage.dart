@@ -669,6 +669,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                           await _userModelController.updateInvitationAlarm(friendUid: foundUserModel!.uid);
                                                           String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendRequestKey];
                                                           await _alarmCenterController.sendAlarm(
+                                                              alarmCount: 'friend',
                                                               receiverUid: foundUserModel!.uid,
                                                               senderUid: _userModelController.uid,
                                                               senderDisplayName: _userModelController.displayName,
@@ -861,6 +862,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                             await _userModelController.updateInvitationAlarm(friendUid: foundUserModel!.uid);
                                                             String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendRequestKey];
                                                             await _alarmCenterController.sendAlarm(
+                                                                alarmCount: 'friend',
                                                                 receiverUid: foundUserModel!.uid,
                                                                 senderUid: _userModelController.uid,
                                                                 senderDisplayName: _userModelController.displayName,

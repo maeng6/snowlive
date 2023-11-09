@@ -8,6 +8,7 @@ class AlarmCenterController extends GetxController {
 
   Future<void> sendAlarm({
     required receiverUid,
+    required alarmCount,
     required senderUid,
     required senderDisplayName,
     required timeStamp,
@@ -27,7 +28,7 @@ class AlarmCenterController extends GetxController {
       await ref.collection('alarmCenter')
           .doc('$receiverUid')
           .collection('alarmCenter')
-          .doc('$senderUid$category')
+          .doc('${senderUid}#${category}#${alarmCount}')
           .set({
         'receiverUid': receiverUid,
         'senderUid': senderUid,

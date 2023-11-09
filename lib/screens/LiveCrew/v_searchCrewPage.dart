@@ -657,6 +657,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                                                         await _liveCrewModelController.updateInvitationAlarm_crew(leaderUid: foundCrewModel!.leaderUid);
                                                                         String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.crewApplyKey];
                                                                         await _alarmCenterController.sendAlarm(
+                                                                            alarmCount: 'crew',
                                                                             receiverUid: foundCrewModel!.leaderUid,
                                                                             senderUid: _userModelController.uid,
                                                                             senderDisplayName: _userModelController.displayName,

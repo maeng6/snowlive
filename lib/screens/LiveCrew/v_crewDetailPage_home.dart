@@ -1572,6 +1572,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                     await _liveCrewModelController.updateInvitationAlarm_crew(leaderUid: _liveCrewModelController.leaderUid);
                                                                     String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.crewApplyKey];
                                                                     await _alarmCenterController.sendAlarm(
+                                                                        alarmCount: 'crew',
                                                                         receiverUid: _liveCrewModelController.leaderUid,
                                                                         senderUid: _userModelController.uid,
                                                                         senderDisplayName: _userModelController.displayName,

@@ -266,6 +266,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                   await _userModelController.updateInvitation(friendUid: leaderUid);
                                                   String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendRequestKey];
                                                   await _alarmCenterController.sendAlarm(
+                                                      alarmCount: 'friend',
                                                       receiverUid: leaderUid,
                                                       senderUid: _userModelController.uid,
                                                       senderDisplayName: _userModelController.displayName,
@@ -633,6 +634,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                                   await _userModelController.updateInvitationAlarm(friendUid:crewMemberDocs[index]['uid']);
                                                                   String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendRequestKey];
                                                                   await _alarmCenterController.sendAlarm(
+                                                                      alarmCount: 'friend',
                                                                       receiverUid: crewMemberDocs[index]['uid'],
                                                                       senderUid: _userModelController.uid,
                                                                       senderDisplayName: _userModelController.displayName,
@@ -891,6 +893,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                               await _userModelController.updateInvitation(friendUid: crewMemberDocs[index]['uid']);
                                                               String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendRequestKey];
                                                               await _alarmCenterController.sendAlarm(
+                                                                  alarmCount: 'friend',
                                                                   receiverUid: crewMemberDocs[index]['uid'],
                                                                   senderUid: _userModelController.uid,
                                                                   senderDisplayName: _userModelController.displayName,

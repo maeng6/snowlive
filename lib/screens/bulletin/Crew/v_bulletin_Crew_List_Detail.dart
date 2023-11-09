@@ -1491,6 +1491,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                               commentCount: _userModelController.commentCount);
                                           String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_crew];
                                           await _alarmCenterController.sendAlarm(
+                                              alarmCount: _bulletinCrewModelController.bulletinCrewCount,
                                               receiverUid: _bulletinCrewModelController.uid,
                                               senderUid: _userModelController.uid,
                                               senderDisplayName: _userModelController.displayName,
