@@ -988,7 +988,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                           bulletinRoomUid :'',
                                                                                           bulletinRoomCount :'',
                                                                                           bulletinCrewUid : '',
-                                                                                          bulletinCrewCount : ''
+                                                                                          bulletinCrewCount : '',
+                                                                                          originContent: 'friend'
                                                                                       );
                                                                                       await _userModelController.getCurrentUser(_userModelController.uid);
                                                                                       Navigator.pop(context);
@@ -2778,7 +2779,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                     bulletinRoomUid :'',
                                                                     bulletinRoomCount :'',
                                                                     bulletinCrewUid : '',
-                                                                    bulletinCrewCount : ''
+                                                                    bulletinCrewCount : '',
+                                                                    originContent: 'friend'
                                                                 );
                                                                 await _userModelController.getCurrentUser(
                                                                     _userModelController.uid);
@@ -2814,7 +2816,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                     bulletinRoomUid :'',
                                                                     bulletinRoomCount :'',
                                                                     bulletinCrewUid : '',
-                                                                    bulletinCrewCount : ''
+                                                                    bulletinCrewCount : '',
+                                                                    originContent: 'friend'
                                                                 );
                                                                 _friendTalkController.clear();
                                                                 Navigator.pop(context);
@@ -2864,7 +2867,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                 bulletinRoomUid :'',
                                                 bulletinRoomCount :'',
                                                 bulletinCrewUid : '',
-                                                bulletinCrewCount : ''
+                                                bulletinCrewCount : '',
+                                                originContent: 'friend'
                                             );
                                             FocusScope.of(context).unfocus();
                                             _friendTalkController.clear();
