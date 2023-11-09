@@ -1036,11 +1036,15 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                                                         .collection('reply')
                                                                                                         .doc('${_userModelController.uid}${replyDocs[index]['commentCount']}')
                                                                                                         .delete();
-                                                                                                    String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.liveTalkReplyKey];
+
+                                                                                                      String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.liveTalkReplyKey];
                                                                                                     await _alarmCenterController.deleteAlarm(
                                                                                                         receiverUid: widget.replyUid,
                                                                                                         senderUid: _userModelController.uid,
-                                                                                                        category: alarmCategory,
+                                                                                                        category:
+                                                                                                        (replyDocs[index]['displayName'] == '익명')
+                                                                                                        ? '라이브톡익명'
+                                                                                                        : alarmCategory,
                                                                                                         alarmCount: widget.replyCount
                                                                                                     );
                                                                                                   } catch (e) {}
