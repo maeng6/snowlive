@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_urlLauncherController.dart';
 import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:com.snowlive/screens/more/v_eventPage.dart';
 import 'package:extended_image/extended_image.dart';
@@ -40,6 +41,7 @@ class _MoreTabState extends State<MoreTab> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+  UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -84,11 +86,11 @@ class _MoreTabState extends State<MoreTab> {
                 height: 24,
               ),
               Obx(
-                () => GestureDetector(
+                    () => GestureDetector(
                   onTap: (){
                     (_userModelController.displayName == 'SNOWLIVE')
-                    ? Get.to(SnowliveDetailPage())
-                    : Get.to(FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort));
+                        ? Get.to(SnowliveDetailPage())
+                        : Get.to(FriendDetailPage(uid: _userModelController.uid, favoriteResort: _userModelController.favoriteResort));
                   },
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
@@ -100,7 +102,7 @@ class _MoreTabState extends State<MoreTab> {
                       width: _size.width - 32,
                       child: Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -109,74 +111,74 @@ class _MoreTabState extends State<MoreTab> {
                               children: [
                                 (_userModelController.profileImageUrl!.isNotEmpty)
                                     ? Stack(
-                                      children: [
-                                        Container(
-                                          width: 52,
-                                          height: 52,
-                                          child: Container(
-                                              width: _size.width/5,
-                                              height: _size.width/5,
-                                              child: ExtendedImage.network(
-                                                '${_userModelController.profileImageUrl}',
-                                                enableMemoryCache: true,
-                                                shape: BoxShape.circle,
-                                                borderRadius: BorderRadius.circular(8),
-                                                width: _size.width/5,
-                                                height: _size.width/5,
-                                                fit: BoxFit.cover,
-                                                loadStateChanged: (ExtendedImageState state) {
-                                                  switch (state.extendedImageLoadState) {
-                                                    case LoadState.loading:
-                                                      return SizedBox.shrink();
-                                                    case LoadState.completed:
-                                                      return state.completedWidget;
-                                                    case LoadState.failed:
-                                                      return Container(
-                                                        width: 52,
-                                                        height: 52,
-                                                        child: Container(
-                                                          width: 120,
-                                                          height: 120,
-                                                          child: ExtendedImage.asset(
-                                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                                            enableMemoryCache: true,
-                                                            shape: BoxShape.circle,
-                                                            borderRadius: BorderRadius.circular(8),
-                                                            width: 120,
-                                                            height: 120,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                      );// 예시로 에러 아이콘을 반환하고 있습니다.
-                                                    default:
-                                                      return null;
-                                                  }
-                                                },
-                                              )),
-                                        ),
-                                      ],
-                                    )
-                                    : Stack(
-                                      children: [
-                                        Container(
-                                          width: 52,
-                                          height: 52,
-                                          child: Container(
-                                            width: 120,
-                                            height: 120,
-                                            child: ExtendedImage.asset(
-                                              'assets/imgs/profile/img_profile_default_circle.png',
-                                              enableMemoryCache: true,
-                                              shape: BoxShape.circle,
-                                              borderRadius: BorderRadius.circular(8),
-                                              width: 120,
-                                              height: 120,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                  children: [
+                                    Container(
+                                      width: 52,
+                                      height: 52,
+                                      child: Container(
+                                          width: _size.width/5,
+                                          height: _size.width/5,
+                                          child: ExtendedImage.network(
+                                            '${_userModelController.profileImageUrl}',
+                                            enableMemoryCache: true,
+                                            shape: BoxShape.circle,
+                                            borderRadius: BorderRadius.circular(8),
+                                            width: _size.width/5,
+                                            height: _size.width/5,
+                                            fit: BoxFit.cover,
+                                            loadStateChanged: (ExtendedImageState state) {
+                                              switch (state.extendedImageLoadState) {
+                                                case LoadState.loading:
+                                                  return SizedBox.shrink();
+                                                case LoadState.completed:
+                                                  return state.completedWidget;
+                                                case LoadState.failed:
+                                                  return Container(
+                                                    width: 52,
+                                                    height: 52,
+                                                    child: Container(
+                                                      width: 120,
+                                                      height: 120,
+                                                      child: ExtendedImage.asset(
+                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                        enableMemoryCache: true,
+                                                        shape: BoxShape.circle,
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        width: 120,
+                                                        height: 120,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  );// 예시로 에러 아이콘을 반환하고 있습니다.
+                                                default:
+                                                  return null;
+                                              }
+                                            },
+                                          )),
                                     ),
+                                  ],
+                                )
+                                    : Stack(
+                                  children: [
+                                    Container(
+                                      width: 52,
+                                      height: 52,
+                                      child: Container(
+                                        width: 120,
+                                        height: 120,
+                                        child: ExtendedImage.asset(
+                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.circle,
+                                          borderRadius: BorderRadius.circular(8),
+                                          width: 120,
+                                          height: 120,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                             SizedBox(
@@ -565,24 +567,24 @@ class _MoreTabState extends State<MoreTab> {
                                             final alarmDocs = snapshot.data!.docs;
                                             return
                                               (alarmDocs[0]['newInvited_friend'] == true)
-                                          ? Container(
-                                          padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-                                          decoration: BoxDecoration(
-                                          color: Color(0xFFD6382B),
-                                          borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          child: Text('NEW',
-                                          style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFFFFFFFF)
-                                          ),
+                                                  ? Container(
+                                                padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFFD6382B),
+                                                  borderRadius: BorderRadius.circular(6),
+                                                ),
+                                                child: Text('NEW',
+                                                  style: TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Color(0xFFFFFFFF)
+                                                  ),
 
-                                          ),
-                                          )
-                                              :
-                                          Container();
-                                              new Icon(Icons.brightness_1,
+                                                ),
+                                              )
+                                                  :
+                                              Container();
+                                            new Icon(Icons.brightness_1,
                                                 size: 7.0,
                                                 color: (alarmDocs[0]['newInvited_friend'] == true)
                                                     ? Color(0xFFD32F2F)
@@ -603,7 +605,7 @@ class _MoreTabState extends State<MoreTab> {
                               ),
                               SizedBox(height: 6),
                               Text('친구',style: TextStyle(
-                                fontSize: 14,
+                                  fontSize: 14,
                                   color: Color(0xFF555555)
                               ),)
                             ],
@@ -653,26 +655,26 @@ class _MoreTabState extends State<MoreTab> {
                                             final alarmDocs = snapshot.data!.docs;
                                             return
                                               (alarmDocs[0]['newInvited_crew'] == true)
-                                              ? Container(
-                                              padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-                                              decoration: BoxDecoration(
-                                                color: Color(0xFFD6382B),
-                                                borderRadius: BorderRadius.circular(6),
-                                              ),
-                                              child: Text('NEW',
-                                                style: TextStyle(
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Color(0xFFFFFFFF)
+                                                  ? Container(
+                                                padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFFD6382B),
+                                                  borderRadius: BorderRadius.circular(6),
                                                 ),
-                                              ),
-                                            )
-                                               : Container();
-                                              // new Icon(Icons.brightness_1,
-                                              //   size: 7.0,
-                                              //   color: (alarmDocs[0]['newInvited_crew'] == true)
-                                              //       ? Color(0xFFD32F2F)
-                                              //       : Colors.white);
+                                                child: Text('NEW',
+                                                  style: TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Color(0xFFFFFFFF)
+                                                  ),
+                                                ),
+                                              )
+                                                  : Container();
+                                            // new Icon(Icons.brightness_1,
+                                            //   size: 7.0,
+                                            //   color: (alarmDocs[0]['newInvited_crew'] == true)
+                                            //       ? Color(0xFFD32F2F)
+                                            //       : Colors.white);
                                           }
                                           else if (snapshot.connectionState == ConnectionState.waiting) {
                                             return new Icon(Icons.brightness_1,
@@ -857,7 +859,7 @@ class _MoreTabState extends State<MoreTab> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
                 onTap: () {
-                  _liveCrewModelController.otherShare(contents: 'http://pf.kakao.com/_LxnDdG/chat');
+                  _urlLauncherController.otherShare(contents: 'http://pf.kakao.com/_LxnDdG/chat');
                 },
                 title: Stack(
                   children: [

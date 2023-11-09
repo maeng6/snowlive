@@ -1,8 +1,12 @@
 import 'package:com.snowlive/controller/vm_bulletinRoomController.dart';
+import 'package:com.snowlive/controller/vm_commentController.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_liveCrewHome.dart';
+import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_List_Detail.dart';
 import 'package:com.snowlive/screens/bulletin/Room/v_bulletin_Room_List_Detail.dart';
+import 'package:com.snowlive/screens/comments/v_noUserScreen.dart';
 import 'package:com.snowlive/screens/comments/v_reply_Screen.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
+import 'package:com.snowlive/screens/resort/v_noPageScreen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +40,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
   BulletinRoomModelController _bulletinRoomModelController = Get.find<BulletinRoomModelController>();
   BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
+  CommentModelController _commentModelController = Get.find<CommentModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -196,65 +201,67 @@ class _AlarmCenterState extends State<AlarmCenter> {
                       if (alarmCenterDocs[index].get('category') == '친구요청') {
                         Get.to(() => InvitationScreen_friend());
                       }
-                      if (alarmCenterDocs[index].get('category') == '라이브톡 좋아요'
-                          || alarmCenterDocs[index].get('category') == '라이브톡'
-                          ||
-                          alarmCenterDocs[index].get('category') == '라이브톡익명') {
-                        Get.to(() =>
-                            ReplyScreen(
-                                replyUid: alarmCenterDocs[index].get(
-                                    'liveTalk_replyUid'),
-                                replyCount: alarmCenterDocs[index].get(
-                                    'liveTalk_replyCount'),
-                                replyImage: alarmCenterDocs[index].get(
-                                    'liveTalk_replyImage'),
-                                replyDisplayName: alarmCenterDocs[index].get(
-                                    'liveTalk_replyDisplayName'),
-                                replyResortNickname: alarmCenterDocs[index].get(
-                                    'liveTalk_replyResortNickname'),
-                                comment: alarmCenterDocs[index].get(
-                                    'liveTalk_comment'),
-                                commentTime: alarmCenterDocs[index].get(
-                                    'liveTalk_commentTime'),
-                                kusbf: alarmCenterDocs[index].get(
-                                    'liveTalk_kusbf'),
-                              replyLiveTalkImageUrl: alarmCenterDocs[index].get(
-                                  'livetalkImageUrl'),
+                      if ( alarmCenterDocs[index].get('category') == '라이브톡'
+                          || alarmCenterDocs[index].get('category') == '라이브톡익명') {
 
-                            ));
+                        try {
+                          CustomFullScreenDialog.showDialog();
+                          await _commentModelController.getCurrentLiveTalk(
+                              uid: alarmCenterDocs[index].get('liveTalk_uid'),
+                              commentCount: alarmCenterDocs[index].get('liveTalk_commentCount'));
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.to(() =>
+                              ReplyScreen(
+                                replyUid: _commentModelController.uid,
+                                replyCount: _commentModelController.commentCount,
+                                replyImage: _commentModelController.profileImageUrl,
+                                replyDisplayName: _commentModelController.displayName,
+                                replyResortNickname: _commentModelController.resortNickname,
+                                comment: _commentModelController.comment,
+                                commentTime: _commentModelController.timeStamp,
+                                kusbf: _commentModelController.kusbf,
+                                replyLiveTalkImageUrl: _commentModelController.livetalkImageUrl,
+                              ));
+                        }catch(e){
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.to(() => NoPageScreen());
+                        }
                       }
                       if (alarmCenterDocs[index].get('category') == '크루 가입신청') {
                         Get.to(() => LiveCrewHome());
                       }
                       if (alarmCenterDocs[index].get('category') == '시즌방 게시글') {
-                        CustomFullScreenDialog.showDialog();
-                        await _bulletinRoomModelController
-                            .getCurrentBulletinRoom(
-                            uid: alarmCenterDocs[index].get('bulletinRoomUid'),
-                            bulletinRoomCount: alarmCenterDocs[index].get(
-                                'bulletinRoomCount')
-                        );
-                        CustomFullScreenDialog.cancelDialog();
-                        Get.to(() => Bulletin_Room_List_Detail());
+                        try {
+                          CustomFullScreenDialog.showDialog();
+                          await _bulletinRoomModelController.getCurrentBulletinRoom(
+                              uid: alarmCenterDocs[index].get('bulletinRoomUid'),
+                              bulletinRoomCount: alarmCenterDocs[index].get('bulletinRoomCount')
+                          );
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.to(() => Bulletin_Room_List_Detail());
+                        }catch(e){
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.to(() => NoPageScreen());
+                        }
                       }
-                      if (alarmCenterDocs[index].get('category') ==
-                          '단톡방·동호회 글') {
-                        CustomFullScreenDialog.showDialog();
-                        await _bulletinCrewModelController
-                            .getCurrentBulletinCrew(
-                            uid: alarmCenterDocs[index].get('bulletinCrewUid'),
-                            bulletinCrewCount: alarmCenterDocs[index].get(
-                                'bulletinCrewCount')
-                        );
-                        CustomFullScreenDialog.cancelDialog();
-                        Get.to(() => Bulletin_Room_List_Detail());
+                      if (alarmCenterDocs[index].get('category') == '단톡방·동호회 글') {
+                        try {
+                          CustomFullScreenDialog.showDialog();
+                          await _bulletinCrewModelController.getCurrentBulletinCrew(
+                              uid: alarmCenterDocs[index].get('bulletinCrewUid'),
+                              bulletinCrewCount: alarmCenterDocs[index].get('bulletinCrewCount')
+                          );
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.to(() => Bulletin_Crew_List_Detail());
+                        }catch(e){
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.to(() => NoPageScreen());
+                        }
                       }
                       if (alarmCenterDocs[index].get('category') == '친구톡') {
-                        Get.to(() =>
-                            FriendDetailPage(
+                        Get.to(() => FriendDetailPage(
                                 uid: _userModelController.uid,
-                                favoriteResort: _userModelController
-                                    .favoriteResort
+                                favoriteResort: _userModelController.favoriteResort
                             ));
                       }
                     } else {

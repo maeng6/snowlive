@@ -1999,12 +1999,6 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                       if (_firstPress) {
                                                                                         _firstPress = false;
                                                                                         await _userModelController.deleteLikeUid(likeUid);
-                                                                                        String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.liveTalkLikeKey];
-                                                                                        await _alarmCenterController.deleteAlarm(
-                                                                                            receiverUid: chatDocs[index]['uid'],
-                                                                                            senderUid: _userModelController.uid,
-                                                                                            category: alarmCategory
-                                                                                        );
                                                                                         await _commentModelController.likeDelete(likeUid);
                                                                                         _firstPress =
                                                                                         true;
@@ -2031,36 +2025,6 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                         _firstPress = false;
                                                                                         await _userModelController.updateLikeUid(likeUid);
                                                                                         await _commentModelController.likeUpdate(likeUid);
-                                                                                        String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.liveTalkLikeKey];
-                                                                                        await _alarmCenterController.sendAlarm(
-                                                                                            receiverUid: chatDocs[index]['uid'],
-                                                                                            senderUid: _userModelController.uid,
-                                                                                            senderDisplayName: _userModelController.displayName,
-                                                                                            timeStamp: Timestamp.now(),
-                                                                                            category: alarmCategory,
-                                                                                            msg: '${_userModelController.displayName}님이 회원님의 라이브톡을 좋아합니다.',
-                                                                                            content: '',
-                                                                                            docName: '',
-                                                                                            liveTalk_replyUid :  chatDocs[index]['uid'],
-                                                                                            liveTalk_replyCount : chatDocs[index]['commentCount'],
-                                                                                            liveTalk_replyImage :
-                                                                                            (chatDocs[index]['profileImageUrl'] != 'anony')
-                                                                                                ? profileUrl
-                                                                                                : chatDocs[index]['profileImageUrl'],
-                                                                                            liveTalk_replyDisplayName :
-                                                                                            (chatDocs[index]['displayName'] != '익명')
-                                                                                                ? displayName
-                                                                                                : chatDocs[index]['displayName'],
-                                                                                            liveTalk_replyResortNickname : chatDocs[index]['resortNickname'],
-                                                                                            liveTalk_comment : chatDocs[index]['comment'],
-                                                                                            liveTalk_commentTime : chatDocs[index]['timeStamp'],
-                                                                                            liveTalk_kusbf: chatDocs[index]['kusbf'],
-                                                                                            liveTalk_livetalkImageUrl: chatDocs[index]['livetalkImageUrl'],
-                                                                                            bulletinRoomUid :'',
-                                                                                            bulletinRoomCount :'',
-                                                                                            bulletinCrewUid : '',
-                                                                                            bulletinCrewCount : ''
-                                                                                        );
                                                                                         _firstPress = true;
                                                                                       }
                                                                                     },
@@ -2097,12 +2061,6 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                             if (_firstPress) {
                                                                               _firstPress = false;
                                                                               await _userModelController.deleteLikeUid(likeUid);
-                                                                              String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.liveTalkLikeKey];
-                                                                              await _alarmCenterController.deleteAlarm(
-                                                                                  receiverUid: chatDocs[index]['uid'],
-                                                                                  senderUid: _userModelController.uid,
-                                                                                  category: alarmCategory
-                                                                              );
                                                                               await _commentModelController.likeDelete(likeUid);
                                                                               _firstPress = true;
                                                                             }
@@ -2113,36 +2071,6 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                             if (_firstPress) {
                                                                               _firstPress = false;
                                                                               await _userModelController.updateLikeUid(likeUid);
-                                                                              String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.liveTalkLikeKey];
-                                                                              await _alarmCenterController.sendAlarm(
-                                                                                  receiverUid: chatDocs[index]['uid'],
-                                                                                  senderUid: _userModelController.uid,
-                                                                                  senderDisplayName: _userModelController.displayName,
-                                                                                  timeStamp: Timestamp.now(),
-                                                                                  category: alarmCategory,
-                                                                                  msg: '${_userModelController.displayName}님이 회원님의 라이브톡을 좋아합니다.',
-                                                                                  content: '',
-                                                                                  docName: '',
-                                                                                  liveTalk_replyUid :  chatDocs[index]['uid'],
-                                                                                  liveTalk_replyCount : chatDocs[index]['commentCount'],
-                                                                                  liveTalk_replyImage :
-                                                                                  (chatDocs[index]['profileImageUrl'] != 'anony')
-                                                                                      ? profileUrl
-                                                                                      : chatDocs[index]['profileImageUrl'],
-                                                                                  liveTalk_replyDisplayName :
-                                                                                  (chatDocs[index]['displayName'] != '익명')
-                                                                                      ? displayName
-                                                                                      : chatDocs[index]['displayName'],
-                                                                                  liveTalk_replyResortNickname : chatDocs[index]['resortNickname'],
-                                                                                  liveTalk_comment : chatDocs[index]['comment'],
-                                                                                  liveTalk_commentTime : chatDocs[index]['timeStamp'],
-                                                                                  liveTalk_kusbf: chatDocs[index]['kusbf'],
-                                                                                  liveTalk_livetalkImageUrl: chatDocs[index]['livetalkImageUrl'],
-                                                                                  bulletinRoomUid :'',
-                                                                                  bulletinRoomCount :'',
-                                                                                  bulletinCrewUid : '',
-                                                                                  bulletinCrewCount : ''
-                                                                              );
                                                                               await _commentModelController.likeUpdate(likeUid);
                                                                               _firstPress = true;
                                                                             }
