@@ -683,7 +683,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                               bulletinRoomUid :'',
                                                               bulletinRoomCount :'',
                                                               bulletinCrewUid : '',
-                                                              bulletinCrewCount : ''
+                                                              bulletinCrewCount : '',
+                                                              originContent: 'friend'
                                                           );
                                                           await _userModelController.getCurrentUser(_userModelController.uid);
                                                           Navigator.pop(context);
@@ -876,7 +877,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                                 bulletinRoomUid :'',
                                                                 bulletinRoomCount :'',
                                                                 bulletinCrewUid : '',
-                                                                bulletinCrewCount : ''
+                                                                bulletinCrewCount : '',
+                                                                originContent: 'friend'
                                                             );
                                                             await _userModelController.getCurrentUser(_userModelController.uid);
                                                             Navigator.pop(context);

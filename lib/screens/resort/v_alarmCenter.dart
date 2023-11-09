@@ -291,7 +291,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                   constraints: BoxConstraints(
                                       maxWidth: _size.width - 80),
                                   child: Text(
-                                    '원문 : ${alarmCenterDocs[index].get('content')}',
+                                    '원문 : ${alarmCenterDocs[index].get('originContent')}',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(

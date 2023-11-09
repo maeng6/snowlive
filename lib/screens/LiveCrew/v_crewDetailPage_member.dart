@@ -280,7 +280,8 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                       bulletinRoomUid :'',
                                                       bulletinRoomCount :'',
                                                       bulletinCrewUid : '',
-                                                      bulletinCrewCount : ''
+                                                      bulletinCrewCount : '',
+                                                      originContent: 'crew'
                                                   );
                                                   await _userModelController.getCurrentUser(_userModelController.uid);
                                                   Navigator.pop(context);
@@ -648,7 +649,8 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                                       bulletinRoomUid :'',
                                                                       bulletinRoomCount :'',
                                                                       bulletinCrewUid : '',
-                                                                      bulletinCrewCount : ''
+                                                                      bulletinCrewCount : '',
+                                                                      originContent: 'crew'
                                                                   );
                                                                   await _userModelController.getCurrentUser(_userModelController.uid);
                                                                   Navigator.pop(context);
@@ -907,7 +909,8 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                                   bulletinRoomUid :'',
                                                                   bulletinRoomCount :'',
                                                                   bulletinCrewUid : '',
-                                                                  bulletinCrewCount : ''
+                                                                  bulletinCrewCount : '',
+                                                                  originContent: 'crew'
                                                               );
                                                               await _userModelController.getCurrentUser(_userModelController.uid);
                                                               Navigator.pop(context);
