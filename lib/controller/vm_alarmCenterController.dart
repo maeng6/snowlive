@@ -44,6 +44,7 @@ class AlarmCenterController extends GetxController {
         'bulletinRoomCount' : bulletinRoomCount,
         'bulletinCrewUid' : bulletinCrewUid,
         'bulletinCrewCount' : bulletinCrewCount,
+        'alarmCount' : alarmCount,
       });
 
       await alarmCenterOn(receiverUid: receiverUid);

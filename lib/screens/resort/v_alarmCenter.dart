@@ -270,7 +270,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                               'receiverUid'),
                           senderUid: alarmCenterDocs[index].get('senderUid'),
                           category: alarmCenterDocs[index].get('category'),
-                          alarmCount: 'friend'
+                          alarmCount: alarmCenterDocs[index].get('alarmCount')
                       );
                     }
                   },
@@ -286,6 +286,21 @@ class _AlarmCenterState extends State<AlarmCenter> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                if(alarmCenterDocs[index].get('category') == '라이브톡' )
+                                Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: _size.width - 80),
+                                  child: Text(
+                                    '원문 : ${alarmCenterDocs[index].get('content')}',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF111111)
+                                    ),
+                                  ),
+                                ),
                                 Container(
                                   constraints: BoxConstraints(
                                       maxWidth: _size.width - 80),
