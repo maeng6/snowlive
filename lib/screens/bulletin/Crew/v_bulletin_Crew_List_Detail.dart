@@ -1507,7 +1507,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                               bulletinRoomCount :'',
                                               bulletinCrewUid : _bulletinCrewModelController.uid,
                                               bulletinCrewCount : _bulletinCrewModelController.bulletinCrewCount,
-                                              originContent: 'bulletinCrew'
+                                              originContent: _bulletinCrewModelController.title
                                           );
                                           CustomFullScreenDialog.cancelDialog();
                                           setState(() {});
