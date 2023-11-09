@@ -286,7 +286,11 @@ class _AlarmCenterState extends State<AlarmCenter> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if((alarmCenterDocs[index].get('category') == '라이브톡') || (alarmCenterDocs[index].get('category') == '라이브톡익명'))
+                                if((alarmCenterDocs[index].get('category') == '라이브톡')
+                                    || (alarmCenterDocs[index].get('category') == '라이브톡익명')
+                                    || (alarmCenterDocs[index].get('category') == '시즌방 게시글')
+                                    || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
+                                )
                                 Container(
                                   constraints: BoxConstraints(
                                       maxWidth: _size.width - 80),
