@@ -269,7 +269,8 @@ class _AlarmCenterState extends State<AlarmCenter> {
                           receiverUid: alarmCenterDocs[index].get(
                               'receiverUid'),
                           senderUid: alarmCenterDocs[index].get('senderUid'),
-                          category: alarmCenterDocs[index].get('category')
+                          category: alarmCenterDocs[index].get('category'),
+                          alarmCount: 'friend'
                       );
                     }
                   },

@@ -1040,7 +1040,8 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                                                     await _alarmCenterController.deleteAlarm(
                                                                                                         receiverUid: widget.replyUid,
                                                                                                         senderUid: _userModelController.uid,
-                                                                                                        category: alarmCategory
+                                                                                                        category: alarmCategory,
+                                                                                                        alarmCount: widget.replyCount
                                                                                                     );
                                                                                                   } catch (e) {}
                                                                                                   print('댓글 삭제 완료');

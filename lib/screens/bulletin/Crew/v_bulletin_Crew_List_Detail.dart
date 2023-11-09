@@ -1369,7 +1369,8 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                                                   await _alarmCenterController.deleteAlarm(
                                                                                                                                       receiverUid: _bulletinCrewModelController.uid,
                                                                                                                                       senderUid: _userModelController.uid ,
-                                                                                                                                      category: alarmCategory
+                                                                                                                                      category: alarmCategory,
+                                                                                                                                      alarmCount: _bulletinCrewModelController.bulletinCrewCount
                                                                                                                                   );
                                                                                                                                   await _bulletinCrewModelController.reduceBulletinCrewReplyCount(
                                                                                                                                       bullUid: _bulletinCrewModelController.uid,

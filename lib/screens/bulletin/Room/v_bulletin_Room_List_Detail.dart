@@ -1317,7 +1317,8 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                                                                                 await _alarmCenterController.deleteAlarm(
                                                                                                                                     receiverUid: _bulletinRoomModelController.uid,
                                                                                                                                     senderUid: _userModelController.uid ,
-                                                                                                                                    category: alarmCategory
+                                                                                                                                    category: alarmCategory,
+                                                                                                                                    alarmCount: _bulletinRoomModelController.bulletinRoomCount
                                                                                                                                 );
                                                                                                                                 await _bulletinRoomModelController.reduceBulletinRoomReplyCount(
                                                                                                                                     bullUid: _bulletinRoomModelController.uid,
