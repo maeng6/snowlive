@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
+import '../../controller/vm_alarmCenterController.dart';
 import '../../controller/vm_liveCrewModelController.dart';
+import '../../model/m_alarmCenterModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
 class CrewDetailPage_member extends StatefulWidget {
@@ -19,6 +21,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+  AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   //TODO: Dependency Injection**************************************************
 
 
@@ -261,6 +264,25 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                 } else{
                                                   CustomFullScreenDialog.showDialog();
                                                   await _userModelController.updateInvitation(friendUid: leaderUid);
+                                                  String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendRequestKey];
+                                                  await _alarmCenterController.sendAlarm(
+                                                      alarmCount: 'friend',
+                                                      receiverUid: leaderUid,
+                                                      senderUid: _userModelController.uid,
+                                                      senderDisplayName: _userModelController.displayName,
+                                                      timeStamp: Timestamp.now(),
+                                                      category: alarmCategory,
+                                                      msg: '${_userModelController.displayName}님으로부터 $alarmCategory이 도착했습니다.',
+                                                      content: '',
+                                                      docName: '',
+                                                      liveTalk_uid : '',
+                                                      liveTalk_commentCount : '',
+                                                      bulletinRoomUid :'',
+                                                      bulletinRoomCount :'',
+                                                      bulletinCrewUid : '',
+                                                      bulletinCrewCount : '',
+                                                      originContent: 'crew'
+                                                  );
                                                   await _userModelController.getCurrentUser(_userModelController.uid);
                                                   Navigator.pop(context);
                                                   CustomFullScreenDialog.cancelDialog();
@@ -542,6 +564,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                             )),
                                                         TextButton(
                                                             onPressed: () async {
+
                                                               try{
                                                                 await _userModelController.getCurrentUser(_userModelController.uid);
                                                                 if(_userModelController.whoIinvite!.contains(crewMemberDocs[index]['uid'])){
@@ -607,10 +630,28 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                                     ],
                                                                   ));
                                                                 } else{
-
                                                                   CustomFullScreenDialog.showDialog();
                                                                   await _userModelController.updateInvitation(friendUid: crewMemberDocs[index]['uid']);
                                                                   await _userModelController.updateInvitationAlarm(friendUid:crewMemberDocs[index]['uid']);
+                                                                  String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendRequestKey];
+                                                                  await _alarmCenterController.sendAlarm(
+                                                                      alarmCount: 'friend',
+                                                                      receiverUid: crewMemberDocs[index]['uid'],
+                                                                      senderUid: _userModelController.uid,
+                                                                      senderDisplayName: _userModelController.displayName,
+                                                                      timeStamp: Timestamp.now(),
+                                                                      category: alarmCategory,
+                                                                      msg: '${_userModelController.displayName}님으로부터 $alarmCategory이 도착했습니다.',
+                                                                      content: '',
+                                                                      docName: '',
+                                                                      liveTalk_uid : '',
+                                                                      liveTalk_commentCount : '',
+                                                                      bulletinRoomUid :'',
+                                                                      bulletinRoomCount :'',
+                                                                      bulletinCrewUid : '',
+                                                                      bulletinCrewCount : '',
+                                                                      originContent: 'crew'
+                                                                  );
                                                                   await _userModelController.getCurrentUser(_userModelController.uid);
                                                                   Navigator.pop(context);
                                                                   CustomFullScreenDialog.cancelDialog();
@@ -852,6 +893,25 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                             } else{
                                                               CustomFullScreenDialog.showDialog();
                                                               await _userModelController.updateInvitation(friendUid: crewMemberDocs[index]['uid']);
+                                                              String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendRequestKey];
+                                                              await _alarmCenterController.sendAlarm(
+                                                                  alarmCount: 'friend',
+                                                                  receiverUid: crewMemberDocs[index]['uid'],
+                                                                  senderUid: _userModelController.uid,
+                                                                  senderDisplayName: _userModelController.displayName,
+                                                                  timeStamp: Timestamp.now(),
+                                                                  category: alarmCategory,
+                                                                  msg: '${_userModelController.displayName}님으로부터 $alarmCategory이 도착했습니다.',
+                                                                  content: '',
+                                                                  docName: '',
+                                                                  liveTalk_uid : '',
+                                                                  liveTalk_commentCount : '',
+                                                                  bulletinRoomUid :'',
+                                                                  bulletinRoomCount :'',
+                                                                  bulletinCrewUid : '',
+                                                                  bulletinCrewCount : '',
+                                                                  originContent: 'crew'
+                                                              );
                                                               await _userModelController.getCurrentUser(_userModelController.uid);
                                                               Navigator.pop(context);
                                                               CustomFullScreenDialog.cancelDialog();

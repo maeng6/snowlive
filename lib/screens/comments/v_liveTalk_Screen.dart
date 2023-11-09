@@ -19,9 +19,11 @@ import 'package:com.snowlive/screens/comments/v_noUserScreen.dart';
 import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
 import 'package:com.snowlive/screens/comments/v_reply_Screen.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
+import '../../controller/vm_alarmCenterController.dart';
 import '../../controller/vm_allUserDocsController.dart';
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_userModelController.dart';
+import '../../model/m_alarmCenterModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/controller/vm_imageController.dart';
 
@@ -68,6 +70,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
+  AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -314,7 +317,6 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                           print('전체톡으로 전환');
                           setState(() {
                             _isTabKusbf = false;
-                            _stream = newStream();
                             isTap[0] = true;
                             isTap[1] = false;
                             isTap[2] = false;
@@ -325,6 +327,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             _selectedValue3 = '전체';
                             _isVisible = false;
                           });
+                          _stream = newStream();
                         },
                         child: Text(
                           '라이브톡',
@@ -346,7 +349,6 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                             print('KUSBF톡으로 전환');
                             setState(() {
                               _isTabKusbf = true;
-                              _stream = newStream();
                               isTap[0] = true;
                               isTap[1] = false;
                               isTap[2] = false;
@@ -357,15 +359,27 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                               _selectedValue3 = '전체';
                               _isVisible = false;
                             });
+                            _stream = newStream();
                           },
                           child: Opacity(
                             opacity: (_isTabKusbf ==true)?1.0:0.2,
-                            child: ExtendedImage.asset(
-                              'assets/imgs/icons/icon_kusbf.png',
-                              enableMemoryCache: true,
-                              shape: BoxShape.rectangle,
-                              width: 56,
-                              fit: BoxFit.cover,
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 6),
+                              child: ExtendedImage.network(
+                                '${KusbfAssetUrlList[0].mainLogo}',
+                                enableMemoryCache: true,
+                                shape: BoxShape.rectangle,
+                                width: 66,
+                                fit: BoxFit.cover,
+                                loadStateChanged: (ExtendedImageState state) {
+                                  switch (state.extendedImageLoadState) {
+                                    case LoadState.loading:
+                                      return SizedBox.shrink();
+                                    default:
+                                      return null;
+                                  }
+                                },
+                              ),
                             ),
                           ),
                         ),
@@ -678,11 +692,19 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.only(right: 4),
-                                        child:  ExtendedImage.asset(
-                                          'assets/imgs/icons/icon_livetalk_filter.png',
+                                        child:  ExtendedImage.network(
+                                          '${IconAssetUrlList[0].filter}',
                                           enableMemoryCache: true,
                                           shape: BoxShape.rectangle,
                                           width: 12,
+                                          loadStateChanged: (ExtendedImageState state) {
+                                            switch (state.extendedImageLoadState) {
+                                              case LoadState.loading:
+                                                return SizedBox.shrink();
+                                              default:
+                                                return null;
+                                            }
+                                          },
                                         ),
                                       ),
                                       Text('필터',
@@ -725,11 +747,19 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.only(right: 4),
-                                        child:  ExtendedImage.asset(
-                                          'assets/imgs/icons/icon_livetalk_filter.png',
+                                        child:  ExtendedImage.network(
+                                          '${IconAssetUrlList[0].filter}',
                                           enableMemoryCache: true,
                                           shape: BoxShape.rectangle,
                                           width: 12,
+                                          loadStateChanged: (ExtendedImageState state) {
+                                            switch (state.extendedImageLoadState) {
+                                              case LoadState.loading:
+                                                return SizedBox.shrink();
+                                              default:
+                                                return null;
+                                            }
+                                          },
                                         ),
                                       ),
                                       Text('필터',
@@ -2032,8 +2062,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               _firstPress = false;
                                                                               await _userModelController.deleteLikeUid(likeUid);
                                                                               await _commentModelController.likeDelete(likeUid);
-                                                                              _firstPress =
-                                                                              true;
+                                                                              _firstPress = true;
                                                                             }
                                                                           } else{
                                                                             var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
@@ -2069,6 +2098,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                 replyResortNickname: chatDocs[index]['resortNickname'],
                                                                                 comment: chatDocs[index]['comment'],
                                                                                 commentTime: chatDocs[index]['timeStamp'],
+                                                                                kusbf: _isTabKusbf == true ? true : false,
+                                                                                replyLiveTalkImageUrl: chatDocs[index]['livetalkImageUrl'],
                                                                               ));
                                                                         },
                                                                         child: Container(
@@ -2105,6 +2136,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                             replyResortNickname: chatDocs[index]['resortNickname'],
                                                                                             comment: chatDocs[index]['comment'],
                                                                                             commentTime: chatDocs[index]['timeStamp'],
+                                                                                            kusbf: _isTabKusbf == true ? true : false,
+                                                                                            replyLiveTalkImageUrl: chatDocs[index]['livetalkImageUrl'],
                                                                                           ));
                                                                                     },
                                                                                     icon: Icon(
@@ -2534,8 +2567,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                     comment: _newComment,
                                                     commentCount: _userModelController.commentCount,
                                                     resortNickname: _userModelController.resortNickname,
-                                                    likeCount: _commentModelController.likeCount,
-                                                    replyCount: _commentModelController.replyCount,
+                                                    likeCount: 0,
+                                                    replyCount: 0,
                                                     livetalkImageUrl: livetalkImageUrl,
                                                     kusbf: _userModelController.kusbf == true && _isTabKusbf == true ? true : false,
                                                     liveCrew: _userModelController.liveCrew,

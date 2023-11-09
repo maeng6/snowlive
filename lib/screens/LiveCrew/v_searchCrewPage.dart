@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,7 +10,9 @@ import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_searchUserController.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../../model/m_userModel.dart';
+import '../../controller/vm_alarmCenterController.dart';
 import '../../controller/vm_liveCrewModelController.dart';
+import '../../model/m_alarmCenterModel.dart';
 import '../../model/m_crewLogoModel.dart';
 import '../../model/m_liveCrewModel.dart';
 
@@ -45,6 +48,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
     UserModelController _userModelController = Get.find<UserModelController>();
     SearchCrewController _searchCrewController = Get.find<SearchCrewController>();
     LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+    AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
     //TODO: Dependency Injection**************************************************
 
     return GestureDetector(
@@ -647,32 +651,34 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                                                               ],
                                                                             ));
                                                                       } else {
-                                                                        CustomFullScreenDialog
-                                                                            .showDialog();
-                                                                        print(
-                                                                            _liveCrewModelController
-                                                                                .leaderUid);
-                                                                        await _liveCrewModelController
-                                                                            .updateInvitation_crew(
-                                                                            crewID: foundCrewID);
-                                                                        await _liveCrewModelController
-                                                                            .updateInvitationAlarm_crew(
-                                                                            leaderUid: foundCrewModel!
-                                                                                .leaderUid);
-                                                                        await _userModelController
-                                                                            .getCurrentUser(
-                                                                            _userModelController
-                                                                                .uid);
-                                                                        CustomFullScreenDialog
-                                                                            .cancelDialog();
-                                                                        Navigator
-                                                                            .pop(
-                                                                            context);
-                                                                        Navigator
-                                                                            .pop(
-                                                                            context);
-                                                                        Get
-                                                                            .snackbar(
+                                                                        CustomFullScreenDialog.showDialog();
+                                                                        print(_liveCrewModelController.leaderUid);
+                                                                        await _liveCrewModelController.updateInvitation_crew(crewID: foundCrewID);
+                                                                        await _liveCrewModelController.updateInvitationAlarm_crew(leaderUid: foundCrewModel!.leaderUid);
+                                                                        String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.crewApplyKey];
+                                                                        await _alarmCenterController.sendAlarm(
+                                                                            alarmCount: 'crew',
+                                                                            receiverUid: foundCrewModel!.leaderUid,
+                                                                            senderUid: _userModelController.uid,
+                                                                            senderDisplayName: _userModelController.displayName,
+                                                                            timeStamp: Timestamp.now(),
+                                                                            category: alarmCategory,
+                                                                            msg: '${_userModelController.displayName}님으로부터 $alarmCategory이 도착했습니다.',
+                                                                            content: '',
+                                                                            docName: '',
+                                                                            liveTalk_uid : '',
+                                                                            liveTalk_commentCount : '',
+                                                                            bulletinRoomUid :'',
+                                                                            bulletinRoomCount :'',
+                                                                            bulletinCrewUid : '',
+                                                                            bulletinCrewCount : '',
+                                                                            originContent: 'crew'
+                                                                        );
+                                                                        await _userModelController.getCurrentUser(_userModelController.uid);
+                                                                        CustomFullScreenDialog.cancelDialog();
+                                                                        Navigator.pop(context);
+                                                                        Navigator.pop(context);
+                                                                        Get.snackbar(
                                                                           '가입신청 완료',
                                                                           '신청 목록은 라이브크루 페이지에서 확인하실 수 있습니다.',
                                                                           margin: EdgeInsets

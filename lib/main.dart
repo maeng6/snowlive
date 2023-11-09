@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:com.snowlive/controller/vm_alarmCenterController.dart';
 import 'package:com.snowlive/controller/vm_loginController.dart';
 import 'package:com.snowlive/controller/vm_splashController.dart';
 import 'package:extended_image/extended_image.dart';
@@ -12,6 +13,8 @@ import 'package:com.snowlive/screens/v_splashScreen.dart';
 
 import 'controller/vm_allUserDocsController.dart';
 import 'controller/vm_bottomTabBarController.dart';
+import 'controller/vm_bulletinCrewController.dart';
+import 'controller/vm_bulletinRoomController.dart';
 import 'controller/vm_friendsCommentController.dart';
 import 'controller/vm_getDateTimeController.dart';
 import 'controller/vm_liveCrewModelController.dart';
@@ -52,6 +55,10 @@ void main() async {
   Get.put(RefreshController(),permanent: true);
   Get.put(AllUserDocsController(),permanent: true);
   Get.put(LoginController(),permanent: true);
+  Get.put(AlarmCenterController(),permanent: true);
+  Get.put(BulletinRoomModelController(), permanent: true);
+  Get.put(BulletinCrewModelController(), permanent: true);
+  //Get.put(FleaChatModelController(), permanent: true);
 
   runApp(MyApp());
 

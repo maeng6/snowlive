@@ -14,10 +14,12 @@ import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_timeStampController.dart';
 import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
 import 'package:com.snowlive/screens/v_MainHome.dart';
+import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_allUserDocsController.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
+import '../../../model/m_alarmCenterModel.dart';
 import '../../../model/m_crewLogoModel.dart';
 import '../../../model/m_rankingTierModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
@@ -151,6 +153,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
+  AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -558,426 +561,245 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                               fontWeight: FontWeight.normal),
                                                         ),
                                                       ),
-                                                      (_initStateMsg.isNotEmpty)
-                                                          ? Padding(
-                                                        padding: const EdgeInsets.only(top: 6),
-                                                        child: Container(
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                                            children: [
-                                                              (edit ==true)
-                                                                  ? Container(
-                                                                child: Text(_initStateMsg, style: TextStyle(
-                                                                    fontSize: 14,
-                                                                    color: Color(0xFF111111)),
-                                                                  maxLines: 2,
-                                                                  overflow: TextOverflow.ellipsis,
-                                                                ),
-                                                                width: _size.width*0.5,
-                                                              )
-                                                                  : Container(
-                                                                  child: Text('${friendDocs[0]['stateMsg']}', style: TextStyle(
+
+                                                      if( _userModelController.uid == friendDocs[0]['uid'])
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 6),
+                                                          child: Container(
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                              children: [
+                                                                (edit ==true)
+                                                                    ? Container(
+                                                                  child: Text(_initStateMsg, style: TextStyle(
                                                                       fontSize: 14,
                                                                       color: Color(0xFF111111)),
                                                                     maxLines: 2,
                                                                     overflow: TextOverflow.ellipsis,
                                                                   ),
-                                                                  width: _size.width*0.5
-                                                              ),
-                                                              if(edit == true)
-                                                                GestureDetector(
-                                                                    onTap: () {
-                                                                      _stateMsgController.clear();
-                                                                      showModalBottomSheet(
-                                                                        context: context,
-                                                                        isScrollControlled: true,
-                                                                        builder: (BuildContext context) {
-                                                                          final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-                                                                          return SafeArea(
-                                                                            child: Container(
-                                                                              height: 224 + keyboardHeight, // 키보드 높이만큼 추가 높이 적용
-                                                                              child: Padding(
-                                                                                padding: EdgeInsets.only(
-                                                                                  left: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom,),
-                                                                                child: Column(
-                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                                                  children: [
-                                                                                    SizedBox(
-                                                                                      height: 24,
-                                                                                    ),
-                                                                                    Text(
-                                                                                      '상태메세지를 입력해 주세요',
-                                                                                      style: TextStyle(
-                                                                                          fontSize: 16,
-                                                                                          fontWeight: FontWeight.bold,
-                                                                                          color: Color(
-                                                                                              0xFF111111)),
-                                                                                    ),
-                                                                                    SizedBox(
-                                                                                      height: 18,
-                                                                                    ),
-                                                                                    Container(
-                                                                                      height: 100,
-                                                                                      child: Column(
-                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                  width: _size.width*0.5,
+                                                                )
+                                                                    :
+                                                                (_initStateMsg.isNotEmpty)
+                                                                ?Container(
+                                                                    child: Text('${friendDocs[0]['stateMsg']}', style: TextStyle(
+                                                                        fontSize: 14,
+                                                                        color: Color(0xFF111111)),
+                                                                      maxLines: 2,
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                    ),
+                                                                    width: _size.width*0.5
+                                                                )
+                                                                :SizedBox.shrink(),
+                                                                if(edit == true)
+                                                                  GestureDetector(
+                                                                      onTap: () {
+                                                                        _stateMsgController.clear();
+                                                                        showModalBottomSheet(
+                                                                          context: context,
+                                                                          isScrollControlled: true,
+                                                                          builder: (BuildContext context) {
+                                                                            final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+                                                                            return SafeArea(
+                                                                              child: Container(
+                                                                                height: 224 + keyboardHeight, // 키보드 높이만큼 추가 높이 적용
+                                                                                child: Padding(
+                                                                                  padding: EdgeInsets.only(
+                                                                                    left: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom,),
+                                                                                  child: Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                                                    children: [
+                                                                                      SizedBox(
+                                                                                        height: 24,
+                                                                                      ),
+                                                                                      Text(
+                                                                                        '상태메세지를 입력해 주세요',
+                                                                                        style: TextStyle(
+                                                                                            fontSize: 16,
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                            color: Color(
+                                                                                                0xFF111111)),
+                                                                                      ),
+                                                                                      SizedBox(
+                                                                                        height: 18,
+                                                                                      ),
+                                                                                      Container(
+                                                                                        height: 100,
+                                                                                        child: Column(
+                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                                                          children: [
+                                                                                            Form(
+                                                                                              key: _formKeyProfile2,
+                                                                                              child:
+                                                                                              TextFormField(
+                                                                                                onTap: (){
+                                                                                                  _stateMsgController.selection =
+                                                                                                      TextSelection.fromPosition(
+                                                                                                          TextPosition(offset: _stateMsgController.text.length));
+                                                                                                },
+                                                                                                cursorColor: Color(0xff377EEA),
+                                                                                                cursorHeight: 16,
+                                                                                                cursorWidth: 2,
+                                                                                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                                                                controller: _stateMsgController..text = _initStateMsg,
+                                                                                                strutStyle:
+                                                                                                StrutStyle(leading: 0.3),
+                                                                                                decoration: InputDecoration(
+                                                                                                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                                                                                                    errorStyle: TextStyle(fontSize: 12,),
+                                                                                                    labelStyle: TextStyle(color: Color(0xff666666), fontSize: 15),
+                                                                                                    hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
+                                                                                                    hintText: '상태메세지 입력',
+                                                                                                    labelText: '상태메세지',
+                                                                                                    contentPadding: EdgeInsets.only(
+                                                                                                        top: 14, bottom: 8, left: 16, right: 16),
+                                                                                                    fillColor: Color(0xFFEFEFEF),
+                                                                                                    hoverColor: Colors.transparent,
+                                                                                                    filled: true,
+                                                                                                    focusColor: Colors.transparent,
+                                                                                                    border: OutlineInputBorder(
+                                                                                                      borderSide: BorderSide(color: Color(0xFFEFEFEF)),
+                                                                                                      borderRadius: BorderRadius.circular(6),
+                                                                                                    ),
+                                                                                                    errorBorder:  OutlineInputBorder(
+                                                                                                      borderSide: BorderSide(color: Colors.transparent),
+                                                                                                    ),
+                                                                                                    focusedBorder:  OutlineInputBorder(
+                                                                                                      borderSide: BorderSide(color: Colors.transparent),
+                                                                                                    ),
+                                                                                                    enabledBorder: OutlineInputBorder(
+                                                                                                      borderSide: BorderSide(color: Colors.transparent),
+                                                                                                      borderRadius: BorderRadius.circular(6),
+                                                                                                    )),
+                                                                                                validator: (val) {
+                                                                                                  if (val!.length <= 20 && val.length >= 0) {
+                                                                                                    return null;
+                                                                                                  } else if (val.length == 0) {
+                                                                                                    return '상태메세지를 입력해주세요.';
+                                                                                                  } else {
+                                                                                                    return '최대 글자 수를 초과했습니다.';
+                                                                                                  }
+                                                                                                },
+                                                                                              ),
+                                                                                            ),
+                                                                                            Padding(
+                                                                                              padding: const EdgeInsets.only(top: 8),
+                                                                                              child: Text(
+                                                                                                '최대 20글자까지 입력 가능합니다.',
+                                                                                                style: TextStyle(
+                                                                                                    color: Color(0xff949494),
+                                                                                                    fontSize: 12),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                      Row(
                                                                                         children: [
-                                                                                          Form(
-                                                                                            key: _formKeyProfile2,
-                                                                                            child:
-                                                                                            TextFormField(
-                                                                                              onTap: (){
-                                                                                                _stateMsgController.selection =
-                                                                                                    TextSelection.fromPosition(
-                                                                                                        TextPosition(offset: _stateMsgController.text.length));
-                                                                                              },
-                                                                                              cursorColor: Color(0xff377EEA),
-                                                                                              cursorHeight: 16,
-                                                                                              cursorWidth: 2,
-                                                                                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                                                              controller: _stateMsgController..text = _initStateMsg,
-                                                                                              strutStyle:
-                                                                                              StrutStyle(leading: 0.3),
-                                                                                              decoration: InputDecoration(
-                                                                                                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                                                                                                  errorStyle: TextStyle(fontSize: 12,),
-                                                                                                  labelStyle: TextStyle(color: Color(0xff666666), fontSize: 15),
-                                                                                                  hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
-                                                                                                  hintText: '상태메세지 입력',
-                                                                                                  labelText: '상태메세지',
-                                                                                                  contentPadding: EdgeInsets.only(
-                                                                                                      top: 14, bottom: 8, left: 16, right: 16),
-                                                                                                  fillColor: Color(0xFFEFEFEF),
-                                                                                                  hoverColor: Colors.transparent,
-                                                                                                  filled: true,
-                                                                                                  focusColor: Colors.transparent,
-                                                                                                  border: OutlineInputBorder(
-                                                                                                    borderSide: BorderSide(color: Color(0xFFEFEFEF)),
-                                                                                                    borderRadius: BorderRadius.circular(6),
-                                                                                                  ),
-                                                                                                  errorBorder:  OutlineInputBorder(
-                                                                                                    borderSide: BorderSide(color: Colors.transparent),
-                                                                                                  ),
-                                                                                                  focusedBorder:  OutlineInputBorder(
-                                                                                                    borderSide: BorderSide(color: Colors.transparent),
-                                                                                                  ),
-                                                                                                  enabledBorder: OutlineInputBorder(
-                                                                                                    borderSide: BorderSide(color: Colors.transparent),
-                                                                                                    borderRadius: BorderRadius.circular(6),
-                                                                                                  )),
-                                                                                              validator: (val) {
-                                                                                                if (val!.length <= 20 && val.length >= 0) {
-                                                                                                  return null;
-                                                                                                } else if (val.length == 0) {
-                                                                                                  return '상태메세지를 입력해주세요.';
-                                                                                                } else {
-                                                                                                  return '최대 글자 수를 초과했습니다.';
-                                                                                                }
-                                                                                              },
+                                                                                          Expanded(
+                                                                                            child: InkWell(
+                                                                                              child: ElevatedButton(
+                                                                                                onPressed: () {
+                                                                                                  _stateMsgController.text =
+                                                                                                  _userModelController.stateMsg!;
+                                                                                                  Navigator.pop(context);
+                                                                                                },
+                                                                                                child: Text(
+                                                                                                  '취소',
+                                                                                                  style: TextStyle(
+                                                                                                      color: Color(0xFF3D83ED),
+                                                                                                      fontSize: 15,
+                                                                                                      fontWeight: FontWeight.bold),
+                                                                                                ),
+                                                                                                style: TextButton.styleFrom(
+                                                                                                    splashFactory: InkRipple.splashFactory,
+                                                                                                    elevation: 0,
+                                                                                                    minimumSize: Size(100, 56),
+                                                                                                    backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                              ),
                                                                                             ),
                                                                                           ),
-                                                                                          Padding(
-                                                                                            padding: const EdgeInsets.only(top: 8),
-                                                                                            child: Text(
-                                                                                              '최대 20글자까지 입력 가능합니다.',
-                                                                                              style: TextStyle(
-                                                                                                  color: Color(0xff949494),
-                                                                                                  fontSize: 12),
+                                                                                          SizedBox(
+                                                                                            width: 10,
+                                                                                          ),
+                                                                                          Expanded(
+                                                                                            child: InkWell(
+                                                                                              child:
+                                                                                              ElevatedButton(
+                                                                                                onPressed: () {
+                                                                                                  if (_formKeyProfile2.currentState!.validate()) {
+                                                                                                    setState(() {
+                                                                                                      _initStateMsg = _stateMsgController.text;
+                                                                                                    });
+                                                                                                    FocusScope.of(context).unfocus();
+                                                                                                    Navigator.pop(context);
+                                                                                                  } else {
+                                                                                                    Get.snackbar(
+                                                                                                        '입력 실패',
+                                                                                                        '올바른 상태메세지를 입력해주세요.',
+                                                                                                        snackPosition: SnackPosition.BOTTOM,
+                                                                                                        margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                                                                                        backgroundColor: Colors.black87,
+                                                                                                        colorText: Colors.white,
+                                                                                                        duration: Duration(milliseconds: 3000));
+                                                                                                  }
+                                                                                                },
+                                                                                                child: Text('변경',
+                                                                                                  style: TextStyle(
+                                                                                                      color: Colors.white,
+                                                                                                      fontSize: 15,
+                                                                                                      fontWeight: FontWeight.bold),
+                                                                                                ),
+                                                                                                style: TextButton
+                                                                                                    .styleFrom(
+                                                                                                    splashFactory:
+                                                                                                    InkRipple.splashFactory,
+                                                                                                    elevation: 0,
+                                                                                                    minimumSize: Size(100, 56),
+                                                                                                    backgroundColor: Color(0xFF3D83ED),
+                                                                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                              ),
                                                                                             ),
                                                                                           ),
                                                                                         ],
-                                                                                      ),
-                                                                                    ),
-                                                                                    Row(
-                                                                                      children: [
-                                                                                        Expanded(
-                                                                                          child: InkWell(
-                                                                                            child: ElevatedButton(
-                                                                                              onPressed: () {
-                                                                                                _stateMsgController.text =
-                                                                                                _userModelController.stateMsg!;
-                                                                                                Navigator.pop(context);
-                                                                                              },
-                                                                                              child: Text(
-                                                                                                '취소',
-                                                                                                style: TextStyle(
-                                                                                                    color: Color(0xFF3D83ED),
-                                                                                                    fontSize: 15,
-                                                                                                    fontWeight: FontWeight.bold),
-                                                                                              ),
-                                                                                              style: TextButton.styleFrom(
-                                                                                                  splashFactory: InkRipple.splashFactory,
-                                                                                                  elevation: 0,
-                                                                                                  minimumSize: Size(100, 56),
-                                                                                                  backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
-                                                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                            ),
-                                                                                          ),
-                                                                                        ),
-                                                                                        SizedBox(
-                                                                                          width: 10,
-                                                                                        ),
-                                                                                        Expanded(
-                                                                                          child: InkWell(
-                                                                                            child:
-                                                                                            ElevatedButton(
-                                                                                              onPressed: () {
-                                                                                                if (_formKeyProfile2.currentState!.validate()) {
-                                                                                                  setState(() {
-                                                                                                    _initStateMsg = _stateMsgController.text;
-                                                                                                  });
-                                                                                                  FocusScope.of(context).unfocus();
-                                                                                                  Navigator.pop(context);
-                                                                                                } else {
-                                                                                                  Get.snackbar(
-                                                                                                      '입력 실패',
-                                                                                                      '올바른 상태메세지를 입력해주세요.',
-                                                                                                      snackPosition: SnackPosition.BOTTOM,
-                                                                                                      margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                                                                                      backgroundColor: Colors.black87,
-                                                                                                      colorText: Colors.white,
-                                                                                                      duration: Duration(milliseconds: 3000));
-                                                                                                }
-                                                                                              },
-                                                                                              child: Text('변경',
-                                                                                                style: TextStyle(
-                                                                                                    color: Colors.white,
-                                                                                                    fontSize: 15,
-                                                                                                    fontWeight: FontWeight.bold),
-                                                                                              ),
-                                                                                              style: TextButton
-                                                                                                  .styleFrom(
-                                                                                                  splashFactory:
-                                                                                                  InkRipple.splashFactory,
-                                                                                                  elevation: 0,
-                                                                                                  minimumSize: Size(100, 56),
-                                                                                                  backgroundColor: Color(0xFF3D83ED),
-                                                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                            ),
-                                                                                          ),
-                                                                                        ),
-                                                                                      ],
-                                                                                    )
-                                                                                  ],
+                                                                                      )
+                                                                                    ],
+                                                                                  ),
                                                                                 ),
                                                                               ),
-                                                                            ),
-                                                                          );
-                                                                        },
-                                                                      );
-                                                                    },
-                                                                    child: Padding(
-                                                                      padding: const EdgeInsets.only(
-                                                                          left: 4),
-                                                                      child: Image.asset(
-                                                                        'assets/imgs/icons/icon_edit_pencil.png',
-                                                                        height: 20,
-                                                                        width: 20,
-                                                                      ),
-                                                                    )),
-                                                            ],
+                                                                            );
+                                                                          },
+                                                                        );
+                                                                      },
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets.only(
+                                                                            left: 4),
+                                                                        child: Image.asset(
+                                                                          'assets/imgs/icons/icon_edit_pencil.png',
+                                                                          height: 20,
+                                                                          width: 20,
+                                                                        ),
+                                                                      )),
+                                                              ],
+                                                            ),
                                                           ),
                                                         ),
-                                                      )
-                                                          : (edit == true)
-                                                          ? Padding(
-                                                        padding: const EdgeInsets.only(top: 2),
-                                                        child: GestureDetector(
-                                                            onTap: () {
-                                                              _stateMsgController.clear();
-                                                              showModalBottomSheet(
-                                                                context: context,
-                                                                isScrollControlled: true,
-                                                                builder: (BuildContext context) {
-                                                                  final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-                                                                  return SafeArea(
-                                                                    child: Container(
-                                                                      height: 224 + keyboardHeight, // 키보드 높이만큼 추가 높이 적용
-                                                                      child: Padding(
-                                                                        padding: EdgeInsets.only(left: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom,),
-                                                                        child: Column(
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                                          children: [
-                                                                            SizedBox(
-                                                                              height: 24,
-                                                                            ),
-                                                                            Text(
-                                                                              '상태메세지를 입력해 주세요',
-                                                                              style: TextStyle(
-                                                                                  fontSize: 16,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  color: Color(
-                                                                                      0xFF111111)),
-                                                                            ),
-                                                                            SizedBox(
-                                                                              height: 18,
-                                                                            ),
-                                                                            Container(
-                                                                              height: 100,
-                                                                              child: Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                                                children: [
-                                                                                  Form(
-                                                                                    key: _formKeyProfile2,
-                                                                                    child:
-                                                                                    TextFormField(
-                                                                                      cursorColor: Color(0xff377EEA),
-                                                                                      cursorHeight: 16,
-                                                                                      cursorWidth: 2,
-                                                                                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                                                      controller: _stateMsgController..text = _initStateMsg,
-                                                                                      strutStyle:
-                                                                                      StrutStyle(leading: 0.3),
-                                                                                      decoration: InputDecoration(
-                                                                                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                                                                                          errorStyle: TextStyle(fontSize: 12,),
-                                                                                          labelStyle: TextStyle(color: Color(0xff666666), fontSize: 15),
-                                                                                          hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
-                                                                                          hintText: '상태메세지 입력',
-                                                                                          labelText: '상태메세지',
-                                                                                          contentPadding: EdgeInsets.only(
-                                                                                              top: 14, bottom: 8, left: 16, right: 16),
-                                                                                          fillColor: Color(0xFFEFEFEF),
-                                                                                          hoverColor: Colors.transparent,
-                                                                                          filled: true,
-                                                                                          focusColor: Colors.transparent,
-                                                                                          border: OutlineInputBorder(
-                                                                                            borderSide: BorderSide(color: Color(0xFFEFEFEF)),
-                                                                                            borderRadius: BorderRadius.circular(6),
-                                                                                          ),
-                                                                                          errorBorder:  OutlineInputBorder(
-                                                                                            borderSide: BorderSide(color: Colors.transparent),
-                                                                                          ),
-                                                                                          focusedBorder:  OutlineInputBorder(
-                                                                                            borderSide: BorderSide(color: Colors.transparent),
-                                                                                          ),
-                                                                                          enabledBorder: OutlineInputBorder(
-                                                                                            borderSide: BorderSide(color: Colors.transparent),
-                                                                                            borderRadius: BorderRadius.circular(6),
-                                                                                          )),
-                                                                                      validator: (val) {
-                                                                                        if (val!.length <= 20 && val.length >= 0) {
-                                                                                          return null;
-                                                                                        } else if (val.length == 0) {
-                                                                                          return '상태메세지를 입력해주세요.';
-                                                                                        } else {
-                                                                                          return '최대 글자 수를 초과했습니다.';
-                                                                                        }
-                                                                                      },
-                                                                                    ),
-                                                                                  ),
-                                                                                  Padding(
-                                                                                    padding: const EdgeInsets.only(top: 8),
-                                                                                    child: Text(
-                                                                                      '최대 20글자까지 입력 가능합니다.',
-                                                                                      style: TextStyle(
-                                                                                          color: Color(0xff949494),
-                                                                                          fontSize: 12),
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                            Row(
-                                                                              children: [
-                                                                                Expanded(
-                                                                                  child: InkWell(
-                                                                                    child: ElevatedButton(
-                                                                                      onPressed: () {
-                                                                                        _stateMsgController.text =
-                                                                                        _userModelController.stateMsg!;
-                                                                                        Navigator.pop(context);
-                                                                                      },
-                                                                                      child: Text(
-                                                                                        '취소',
-                                                                                        style: TextStyle(
-                                                                                            color: Color(0xFF3D83ED),
-                                                                                            fontSize: 15,
-                                                                                            fontWeight: FontWeight.bold),
-                                                                                      ),
-                                                                                      style: TextButton.styleFrom(
-                                                                                          splashFactory: InkRipple.splashFactory,
-                                                                                          elevation: 0,
-                                                                                          minimumSize: Size(100, 56),
-                                                                                          backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
-                                                                                          padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  width: 10,
-                                                                                ),
-                                                                                Expanded(
-                                                                                  child: InkWell(
-                                                                                    child:
-                                                                                    ElevatedButton(
-                                                                                      onPressed: () {
-                                                                                        if (_formKeyProfile2.currentState!.validate()) {
-                                                                                          setState(() {
-                                                                                            _initStateMsg = _stateMsgController.text;
-                                                                                          });
-                                                                                          FocusScope.of(context).unfocus();
-                                                                                          Navigator.pop(context);
-                                                                                        } else {
-                                                                                          Get.snackbar(
-                                                                                              '입력 실패',
-                                                                                              '올바른 상태메세지를 입력해주세요.',
-                                                                                              snackPosition: SnackPosition.BOTTOM,
-                                                                                              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                                                                              backgroundColor: Colors.black87,
-                                                                                              colorText: Colors.white,
-                                                                                              duration: Duration(milliseconds: 3000));
-                                                                                        }
-                                                                                      },
-                                                                                      child: Text('변경',
-                                                                                        style: TextStyle(
-                                                                                            color: Colors.white,
-                                                                                            fontSize: 15,
-                                                                                            fontWeight: FontWeight.bold),
-                                                                                      ),
-                                                                                      style: TextButton
-                                                                                          .styleFrom(
-                                                                                          splashFactory:
-                                                                                          InkRipple.splashFactory,
-                                                                                          elevation: 0,
-                                                                                          minimumSize: Size(100, 56),
-                                                                                          backgroundColor: Color(0xFF3D83ED),
-                                                                                          padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              );
-                                                            },
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.only(
-                                                                  top: 6),
-                                                              child: Row(
-                                                                children: [
-                                                                  Text('상태메세지를 입력해 주세요.', style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      color: Color(0xFF111111))),
-                                                                  Image.asset(
-                                                                    'assets/imgs/icons/icon_edit_pencil.png',
-                                                                    height: 20,
-                                                                    width: 20,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            )),
-                                                      )
-                                                          : Container(),
+                                                      if(_userModelController.uid != friendDocs[0]['uid'])
+                                                        (friendDocs[0]['stateMsg'] != '')
+                                                            ?Container(
+                                                            child: Text('${friendDocs[0]['stateMsg']}', style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Color(0xFF111111)),
+                                                              maxLines: 2,
+                                                              overflow: TextOverflow.ellipsis,
+                                                            ),
+                                                            width: _size.width*0.5
+                                                        )
+                                                            : SizedBox.shrink(),
                                                       SizedBox(
                                                         height: 6,
                                                       ),
@@ -1150,9 +972,26 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                       CustomFullScreenDialog.showDialog();
                                                                                       await _userModelController.updateInvitation(friendUid: widget.uid);
                                                                                       await _userModelController.updateInvitationAlarm(friendUid: widget.uid);
+                                                                                      String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendRequestKey];
+                                                                                      await _alarmCenterController.sendAlarm(
+                                                                                          alarmCount: 'friend',
+                                                                                          receiverUid: widget.uid,
+                                                                                          senderUid: _userModelController.uid,
+                                                                                          senderDisplayName: _userModelController.displayName,
+                                                                                          timeStamp: Timestamp.now(),
+                                                                                          category: alarmCategory,
+                                                                                          msg: '${_userModelController.displayName}님으로부터 $alarmCategory이 도착했습니다.',
+                                                                                          content: '',
+                                                                                          docName: '',
+                                                                                          liveTalk_uid : '',
+                                                                                          liveTalk_commentCount : '',
+                                                                                          bulletinRoomUid :'',
+                                                                                          bulletinRoomCount :'',
+                                                                                          bulletinCrewUid : '',
+                                                                                          bulletinCrewCount : '',
+                                                                                          originContent: 'friend'
+                                                                                      );
                                                                                       await _userModelController.getCurrentUser(_userModelController.uid);
-                                                                                      //await _userModelController.updateFriendUid(widget.uid);
-                                                                                      //await _userModelController.updateWhoResistMe(friendUid: widget.uid!);
                                                                                       Navigator.pop(context);
                                                                                       CustomFullScreenDialog.cancelDialog();
                                                                                     }
@@ -2040,6 +1879,13 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                                                                                     .collection('friendsComment')
                                                                                                                                                                     .doc(commentDocs[index]['myUid'])
                                                                                                                                                                     .delete();
+                                                                                                                                                                String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
+                                                                                                                                                                await _alarmCenterController.deleteAlarm(
+                                                                                                                                                                    receiverUid: _userModelController.uid,
+                                                                                                                                                                    senderUid: commentDocs[index]['myUid'],
+                                                                                                                                                                    category: alarmCategory,
+                                                                                                                                                                    alarmCount: 'friend'
+                                                                                                                                                                );
                                                                                                                                                               } catch (e) {}
                                                                                                                                                               print('삭제 완료');
                                                                                                                                                               Navigator.pop(context);
@@ -2322,6 +2168,13 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                                                                                   .collection('friendsComment')
                                                                                                                                                                   .doc('${_userModelController.uid}')
                                                                                                                                                                   .delete();
+                                                                                                                                                              String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
+                                                                                                                                                              await _alarmCenterController.deleteAlarm(
+                                                                                                                                                                  receiverUid: widget.uid,
+                                                                                                                                                                  senderUid: _userModelController.uid,
+                                                                                                                                                                  category: alarmCategory,
+                                                                                                                                                                  alarmCount: 'friend'
+                                                                                                                                                              );
                                                                                                                                                             } catch (e) {}
                                                                                                                                                             print('친구톡 삭제 완료');
                                                                                                                                                             Navigator.pop(context);
@@ -2910,6 +2763,25 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                   myUid: _userModelController.uid,
                                                                   friendsUid: widget.uid,
                                                                 );
+                                                                String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
+                                                                await _alarmCenterController.sendAlarm(
+                                                                    alarmCount: 'friend',
+                                                                    receiverUid: widget.uid,
+                                                                    senderUid: _userModelController.uid,
+                                                                    senderDisplayName: _userModelController.displayName,
+                                                                    timeStamp: Timestamp.now(),
+                                                                    category: alarmCategory,
+                                                                    msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
+                                                                    content: _newComment,
+                                                                    docName: '',
+                                                                    liveTalk_uid : '',
+                                                                    liveTalk_commentCount : '',
+                                                                    bulletinRoomUid :'',
+                                                                    bulletinRoomCount :'',
+                                                                    bulletinCrewUid : '',
+                                                                    bulletinCrewCount : '',
+                                                                    originContent: 'friend'
+                                                                );
                                                                 await _userModelController.getCurrentUser(
                                                                     _userModelController.uid);
                                                                 _friendTalkController.clear();
@@ -2918,32 +2790,39 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                 CustomFullScreenDialog.cancelDialog();
                                                               }
                                                                   : () async {
-                                                                CustomFullScreenDialog
-                                                                    .showDialog();
-                                                                await _friendsCommentModelController
-                                                                    .sendMessage(
-                                                                  displayName: _userModelController
-                                                                      .displayName,
-                                                                  profileImageUrl: _userModelController
-                                                                      .profileImageUrl,
+                                                                CustomFullScreenDialog.showDialog();
+                                                                await _friendsCommentModelController.sendMessage(
+                                                                  displayName: _userModelController.displayName,
+                                                                  profileImageUrl: _userModelController.profileImageUrl,
                                                                   comment: _newComment,
-                                                                  commentCount: _userModelController
-                                                                      .commentCount,
-                                                                  resortNickname: _userModelController
-                                                                      .resortNickname,
-                                                                  myUid: _userModelController
-                                                                      .uid,
-                                                                  friendsUid: widget
-                                                                      .uid,
+                                                                  commentCount: _userModelController.commentCount,
+                                                                  resortNickname: _userModelController.resortNickname,
+                                                                  myUid: _userModelController.uid,
+                                                                  friendsUid: widget.uid,
                                                                 );
-                                                                _friendTalkController
-                                                                    .clear();
-                                                                Navigator.pop(
-                                                                    context);
-                                                                FocusScope.of(context)
-                                                                    .unfocus();
-                                                                CustomFullScreenDialog
-                                                                    .cancelDialog();
+                                                                String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
+                                                                await _alarmCenterController.sendAlarm(
+                                                                    alarmCount: 'friend',
+                                                                    receiverUid: widget.uid,
+                                                                    senderUid: _userModelController.uid,
+                                                                    senderDisplayName: _userModelController.displayName,
+                                                                    timeStamp: Timestamp.now(),
+                                                                    category: alarmCategory,
+                                                                    msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
+                                                                    content: _newComment,
+                                                                    docName: '',
+                                                                    liveTalk_uid : '',
+                                                                    liveTalk_commentCount : '',
+                                                                    bulletinRoomUid :'',
+                                                                    bulletinRoomCount :'',
+                                                                    bulletinCrewUid : '',
+                                                                    bulletinCrewCount : '',
+                                                                    originContent: 'friend'
+                                                                );
+                                                                _friendTalkController.clear();
+                                                                Navigator.pop(context);
+                                                                FocusScope.of(context).unfocus();
+                                                                CustomFullScreenDialog.cancelDialog();
                                                               },
                                                             ),
                                                           ),
@@ -2972,6 +2851,25 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             await _userModelController
                                                 .updateMyFriendCommentUidList(
                                                 friendUid: widget.uid);
+                                            String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
+                                            await _alarmCenterController.sendAlarm(
+                                                alarmCount: 'friend',
+                                                receiverUid: widget.uid,
+                                                senderUid: _userModelController.uid,
+                                                senderDisplayName: _userModelController.displayName,
+                                                timeStamp: Timestamp.now(),
+                                                category: alarmCategory,
+                                                msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
+                                                content: _newComment,
+                                                docName: '',
+                                                liveTalk_uid : '',
+                                                liveTalk_commentCount : '',
+                                                bulletinRoomUid :'',
+                                                bulletinRoomCount :'',
+                                                bulletinCrewUid : '',
+                                                bulletinCrewCount : '',
+                                                originContent: 'friend'
+                                            );
                                             FocusScope.of(context).unfocus();
                                             _friendTalkController.clear();
                                           }

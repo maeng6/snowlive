@@ -32,6 +32,932 @@ Map<String, List<LocationModel>> slopeLocationMap = {
   // ... 필요한 만큼 이름과 위치 리스트를 추가로 매핑합니다.
 };
 
+List<LocationModel> welli = [
+  LocationModel(
+    name: '알파',
+    coordinates: [
+      LatLng(37.490130, 128.250120),
+      LatLng(37.490096, 128.250166),
+    ],
+    type: 'slope',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '뉴알파',
+    coordinates: [
+      LatLng(37.489916, 128.250191),
+      LatLng(37.489888, 128.250225),
+    ],
+    type: 'slope',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '뉴브',
+    coordinates: [
+      LatLng(37.488712, 128.250181),
+      LatLng(37.488673, 128.250169),
+    ],
+    type: 'slope',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '델타',
+    coordinates: [
+      LatLng(37.490038, 128.249121),
+      LatLng(37.489996, 128.249101),
+    ],
+    type: 'slope',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '곤돌라',
+    coordinates: [
+      LatLng(37.490630, 128.248932),
+      LatLng(37.490612, 128.249009),
+      LatLng(37.490575, 128.249100),
+      LatLng(37.490554, 128.248929),
+      LatLng(37.490515, 128.249035),
+      LatLng(37.490720, 128.248990),
+      LatLng(37.490695, 128.249070),
+      LatLng(37.490670, 128.249145),
+    ],
+    type: 'slope',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '패밀리',
+    coordinates: [
+      LatLng(37.490825, 128.248507),
+      LatLng(37.490788, 128.248483),
+    ],
+    type: 'slope',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '챌린지',
+    coordinates: [
+      LatLng(37.485622, 128.248713),
+      LatLng(37.485584, 128.248689),
+    ],
+    type: 'slope',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '에코',
+    coordinates: [
+      LatLng(37.485401, 128.241075),
+      LatLng(37.485364, 128.241090),
+    ],
+    type: 'slope',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '파이프',
+    coordinates: [
+      LatLng(37.487715, 128.248340),
+      LatLng(37.487700, 128.248400),
+      LatLng(37.487685, 128.248455),
+      LatLng(37.487670, 128.248505),
+      LatLng(37.487660, 128.248563),
+      LatLng(37.487635, 128.248290),
+      LatLng(37.487620, 128.248345),
+      LatLng(37.487605, 128.248395),
+      LatLng(37.487590, 128.248455),
+      LatLng(37.487575, 128.248515),
+    ],
+    type: 'slope',
+    resort: 9,
+  ),
+  //여기까지가 리프트승차장
+
+
+  LocationModel(
+    name: '알파하차장',
+    coordinates: [
+      LatLng(37.487035, 128.253795),
+      LatLng(37.487000, 128.253837),
+      LatLng(37.486960, 128.253875)
+    ],
+    type: 'respawn',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '뉴알파하차장',
+    coordinates: [
+      LatLng(37.486965, 128.253680),
+      LatLng(37.486935, 128.253723),
+      LatLng(37.486895, 128.253763)
+    ],
+    type: 'respawn',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '뉴브라보하차장',
+    coordinates: [
+      LatLng(37.481235, 128.249210),
+      LatLng(37.481180, 128.249200),
+      LatLng(37.481132, 128.249199)
+    ],
+    type: 'respawn',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '델타하차장',
+    coordinates: [
+      LatLng(37.485280, 128.246985),
+      LatLng(37.485215, 128.246959),
+      LatLng(37.485155, 128.246930)
+    ],
+    type: 'respawn',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '파이프하단',
+    coordinates: [
+      LatLng(37.488835, 128.248863),
+      LatLng(37.488818, 128.248918),
+      LatLng(37.488805, 128.248975),
+      LatLng(37.488790, 128.249030),
+      LatLng(37.488775, 128.249088),
+      LatLng(37.488725, 128.248813),
+      LatLng(37.488710, 128.248865),
+      LatLng(37.488695, 128.248925),
+      LatLng(37.488678, 128.248982),
+      LatLng(37.488660, 128.249040),
+    ],
+    type: 'respawn',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '챌린지하차장',
+    coordinates: [
+      LatLng(37.480250, 128.244333),
+      LatLng(37.480209, 128.244298),
+      LatLng(37.480170, 128.244260)
+    ],
+    type: 'respawn',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '곤돌라하차장',
+    coordinates: [
+      LatLng(37.480575, 128.243735),
+      LatLng(37.480550, 128.243815),
+      LatLng(37.480525, 128.243885),
+      LatLng(37.480520, 128.243715),
+      LatLng(37.480495, 128.243785),
+      LatLng(37.480470, 128.243855),
+      LatLng(37.480265, 128.243570),
+      LatLng(37.480240, 128.243650),
+      LatLng(37.480220, 128.243720),
+
+
+    ],
+    type: 'respawn',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '에코하차장',
+    coordinates: [
+      LatLng(37.480378, 128.243326),
+      LatLng(37.480315, 128.243348),
+      LatLng(37.480250, 128.243375)
+    ],
+    type: 'respawn',
+    resort: 9,
+  ),
+  LocationModel(
+    name: '패밀리하차장',
+    coordinates: [
+      LatLng(37.485570, 128.243608),
+      LatLng(37.485525, 128.243570),
+      LatLng(37.485485, 128.243530)
+    ],
+    type: 'respawn',
+    resort: 9,
+  ),
+];
+
+List<LocationModel> alpensia = [
+  LocationModel(
+    name: '리프트1',
+    coordinates: [
+      LatLng(37.656490, 128.672209),
+      LatLng(37.656447, 128.672181),
+      LatLng(37.656407, 128.672149),
+    ],
+    type: 'slope',
+    resort: 3,
+  ),
+  LocationModel(
+    name: '리프트2',
+    coordinates: [
+      LatLng(37.656178, 128.673159),
+      LatLng(37.656130, 128.673159),
+      LatLng(37.656082, 128.673160),
+
+    ],
+    type: 'slope',
+    resort: 3,
+  ),
+  LocationModel(
+    name: '리프트3',
+    coordinates: [
+      LatLng(37.656224, 128.674666),
+      LatLng(37.656179, 128.674658),
+      LatLng(37.656130, 128.674650),
+    ],
+    type: 'slope',
+    resort: 3,
+  ),
+  //여기까지가 슬로프
+
+  LocationModel(
+    name: '리프트1하차장',
+    coordinates: [
+      LatLng(37.651842, 128.668980),
+      LatLng(37.651795, 128.668955),
+      LatLng(37.651755, 128.668920),
+    ],
+    type: 'respawn',
+    resort: 3,
+  ),
+  LocationModel(
+    name: '리프트2하차장',
+    coordinates: [
+      LatLng(37.650110, 128.673032),
+      LatLng(37.650155, 128.673035),
+      LatLng(37.650210, 128.673032),
+    ],
+    type: 'respawn',
+    resort: 3,
+  ),
+  LocationModel(
+    name: '리프트3하차장',
+    coordinates: [
+      LatLng(37.650225, 128.673585),
+      LatLng(37.650173, 128.673582),
+      LatLng(37.650120, 128.673570),
+    ],
+    type: 'respawn',
+    resort: 3,
+  ),
+  //여기까지가 슬로프 리스폰
+];
+
+List<LocationModel> eden = [
+  LocationModel(
+    name: '아담',
+    coordinates: [
+      LatLng(35.428193, 128.984103),
+      LatLng(35.428240, 128.984112),
+      LatLng(35.428287, 128.984120),
+    ],
+    type: 'slope',
+    resort: 4,
+  ),
+  LocationModel(
+    name: '밸리',
+    coordinates: [
+      LatLng(35.428290, 128.984862),
+      LatLng(35.428335, 128.984836),
+      LatLng(35.428380, 128.984808),
+    ],
+    type: 'slope',
+    resort: 4,
+  ),
+  LocationModel(
+    name: '에덴',
+    coordinates: [
+      LatLng(35.428450, 128.985036),
+      LatLng(35.428405, 128.985061),
+      LatLng(35.428361, 128.985087),
+    ],
+    type: 'slope',
+    resort: 4,
+  ),
+  //여기까지가 슬로프
+
+  LocationModel(
+    name: '아담하차장',
+    coordinates: [
+      LatLng(35.419550, 128.982816),
+      LatLng(35.419595, 128.982825),
+      LatLng(35.419640, 128.982831),
+    ],
+    type: 'respawn',
+    resort: 4,
+  ),
+  LocationModel(
+    name: '밸리하차장',
+    coordinates: [
+      LatLng(35.421632, 128.988640),
+      LatLng(35.421675, 128.988615),
+      LatLng(35.421720, 128.988589),
+    ],
+    type: 'respawn',
+    resort: 4,
+  ),
+  LocationModel(
+    name: '에덴하차장',
+    coordinates: [
+      LatLng(35.424013, 128.987456),
+      LatLng(35.424055, 128.987435),
+      LatLng(35.424100, 128.987412),
+    ],
+    type: 'respawn',
+    resort: 4,
+  ),
+  //여기까지가 슬로프 리스폰
+];
+
+List<LocationModel> oak = [
+  LocationModel(
+    name: '버드',
+    coordinates: [
+      LatLng(37.406586, 127.809365),
+      LatLng(37.406541, 127.809393),
+      LatLng(37.406500, 127.809421),
+    ],
+    type: 'slope',
+    resort: 6,
+  ),
+  LocationModel(
+    name: '마운틴',
+    coordinates: [
+      LatLng(37.406620, 127.809814),
+      LatLng(37.406649, 127.809753),
+      LatLng(37.406672, 127.809699),
+    ],
+    type: 'slope',
+    resort: 6,
+  ),
+  LocationModel(
+    name: '플라워',
+    coordinates: [
+      LatLng(37.407460, 127.809405),
+      LatLng(37.407467, 127.809468),
+      LatLng(37.407475, 127.809530),
+    ],
+    type: 'slope',
+    resort: 6,
+  ),
+  //여기까지가 슬로프
+
+  LocationModel(
+    name: '버드하차장',
+    coordinates: [
+      LatLng(37.402692, 127.811902),
+      LatLng(37.402649, 127.811930),
+      LatLng(37.402606, 127.811958),
+    ],
+    type: 'respawn',
+    resort: 6,
+  ),
+  LocationModel(
+    name: '마운틴하차장',
+    coordinates: [
+      LatLng(37.402415, 127.818596),
+      LatLng(37.402388, 127.818652),
+      LatLng(37.402359, 127.818705),
+    ],
+    type: 'respawn',
+    resort: 6,
+  ),
+  LocationModel(
+    name: '플라워하차장',
+    coordinates: [
+      LatLng(37.408150, 127.814560),
+      LatLng(37.408159, 127.814623),
+      LatLng(37.408167, 127.814682),
+    ],
+    type: 'respawn',
+    resort: 6,
+  ),
+  //여기까지가 슬로프 리스폰
+];
+
+List<LocationModel> jisan = [
+  LocationModel(
+    name: '실버',
+    coordinates: [
+      LatLng(37.217570, 127.343691),
+      LatLng(37.217533, 127.343653),
+      LatLng(37.217495, 127.343615),
+    ],
+    type: 'slope',
+    resort: 10,
+  ),
+  LocationModel(
+    name: '블루',
+    coordinates: [
+      LatLng(37.217202, 127.344140),
+      LatLng(37.217163, 127.344107),
+      LatLng(37.217122, 127.344072),
+    ],
+    type: 'slope',
+    resort: 10,
+  ),
+  LocationModel(
+    name: '뉴오렌',
+    coordinates: [
+      LatLng(37.215937, 127.345540),
+      LatLng(37.215890, 127.345525),
+      LatLng(37.215843, 127.345510),
+    ],
+    type: 'slope',
+    resort: 10,
+  ),
+  LocationModel(
+    name: '오렌지',
+    coordinates: [
+      LatLng(37.215620, 127.346574),
+      LatLng(37.215575, 127.346555),
+      LatLng(37.215528, 127.346538),
+    ],
+    type: 'slope',
+    resort: 10,
+  ),
+  LocationModel(
+    name: '레몬',
+    coordinates: [
+      LatLng(37.215458, 127.347143),
+      LatLng(37.215412, 127.347126),
+      LatLng(37.215365, 127.347107),
+    ],
+    type: 'slope',
+    resort: 10,
+  ),
+  //여기까지가 슬로프
+
+  LocationModel(
+    name: '실버하차장',
+    coordinates: [
+      LatLng(37.213202, 127.339352),
+      LatLng(37.213165, 127.339314),
+      LatLng(37.213125, 127.339277),
+    ],
+    type: 'respawn',
+    resort: 10,
+  ),
+  LocationModel(
+    name: '블루하차장',
+    coordinates: [
+      LatLng(37.211689, 127.339859),
+      LatLng(37.211647, 127.339829),
+      LatLng(37.211601, 127.339794),
+    ],
+    type: 'respawn',
+    resort: 10,
+  ),
+  LocationModel(
+    name: '뉴오렌지하차장',
+    coordinates: [
+      LatLng(37.209700, 127.343643),
+      LatLng(37.209652, 127.343629),
+      LatLng(37.209602, 127.343610),
+    ],
+    type: 'respawn',
+    resort: 10,
+  ),
+  LocationModel(
+    name: '오렌지하차장',
+    coordinates: [
+      LatLng(37.211180, 127.344903),
+      LatLng(37.211136, 127.344886),
+      LatLng(37.211091, 127.344868),
+    ],
+    type: 'respawn',
+    resort: 10,
+  ),
+  LocationModel(
+    name: '레몬하차장',
+    coordinates: [
+      LatLng(37.213090, 127.346388),
+      LatLng(37.213039, 127.346371),
+      LatLng(37.212990, 127.346359),
+    ],
+    type: 'respawn',
+    resort: 10,
+  ),
+  //여기까지가 슬로프 리스폰
+];
+
+List<LocationModel> o2 = [
+  LocationModel(
+    name: '토마토',
+    coordinates: [
+      LatLng(37.179691, 128.939590),
+      LatLng(37.179670, 128.939535),
+      LatLng(37.179652, 128.939479),
+    ],
+    type: 'slope',
+    resort: 7,
+  ),
+  LocationModel(
+    name: '키위',
+    coordinates: [
+      LatLng(37.179285, 128.940243),
+      LatLng(37.179248, 128.940202),
+      LatLng(37.179213, 128.940153),
+    ],
+    type: 'slope',
+    resort: 7,
+  ),
+  LocationModel(
+    name: '오렌지',
+    coordinates: [
+      LatLng(37.178293, 128.946208),
+      LatLng(37.178305, 128.946148),
+      LatLng(37.178323, 128.946084),
+    ],
+    type: 'slope',
+    resort: 7,
+  ),
+  LocationModel(
+    name: '곤돌라',
+    coordinates: [
+      LatLng(37.178025, 128.946879),
+      LatLng(37.177986, 128.946910),
+      LatLng(37.177940, 128.946950),
+      LatLng(37.177900, 128.946983),
+      LatLng(37.177862, 128.947019),
+      LatLng(37.177903, 128.947109),
+      LatLng(37.177940, 128.947075),
+      LatLng(37.177981, 128.947040),
+      LatLng(37.178029, 128.946996),
+      LatLng(37.178070, 128.946962),
+    ],
+    type: 'slope',
+    resort: 7,
+  ),
+  LocationModel(
+    name: '체리',
+    coordinates: [
+      LatLng(37.177290, 128.946478),
+      LatLng(37.177255, 128.946435),
+      LatLng(37.177225, 128.946389),
+    ],
+    type: 'slope',
+    resort: 7,
+  ),
+  LocationModel(
+    name: '애플',
+    coordinates: [
+      LatLng(37.176423, 128.948234),
+      LatLng(37.176375, 128.948224),
+      LatLng(37.176323, 128.948212),
+    ],
+    type: 'slope',
+    resort: 7,
+  ),
+  //여기까지가 슬로프
+
+  LocationModel(
+    name: '토마토하차장',
+    coordinates: [
+      LatLng(37.176400, 128.931050),
+      LatLng(37.176378, 128.930990),
+      LatLng(37.176355, 128.930938),
+    ],
+    type: 'respawn',
+    resort: 7,
+  ),
+  LocationModel(
+    name: '키위하차장',
+    coordinates: [
+      LatLng(37.168078, 128.927450),
+      LatLng(37.168040, 128.927405),
+      LatLng(37.168003, 128.927361),
+    ],
+    type: 'respawn',
+    resort: 7,
+  ),
+  LocationModel(
+    name: '오렌지하차장',
+    coordinates: [
+      LatLng(37.179564, 128.940740),
+      LatLng(37.179577, 128.940680),
+      LatLng(37.179590, 128.940620),
+    ],
+    type: 'respawn',
+    resort: 7,
+  ),
+  LocationModel(
+    name: '곤돌라하차장',
+    coordinates: [
+      LatLng(37.167905, 128.927400),
+      LatLng(37.167863, 128.927435),
+      LatLng(37.167823, 128.927467),
+
+      LatLng(37.167856, 128.927536),
+      LatLng(37.167900, 128.927504),
+      LatLng(37.167940, 128.927480),
+    ],
+    type: 'respawn',
+    resort: 7,
+  ),
+  LocationModel(
+    name: '체리하차장',
+    coordinates: [
+      LatLng(37.171410, 128.939060),
+      LatLng(37.171410, 128.939060),
+      LatLng(37.171410, 128.939060),
+    ],
+    type: 'respawn',
+    resort: 7,
+  ),
+  LocationModel(
+    name: '애플하차장',
+    coordinates: [
+      LatLng(37.171265, 128.947340),
+      LatLng(37.171217, 128.947331),
+      LatLng(37.171168, 128.947325),
+    ],
+    type: 'respawn',
+    resort: 7,
+  ),
+  //여기까지가 슬로프 리스폰
+];
+
+List<LocationModel> gangchon = [
+  LocationModel(
+    name: 'E',
+    coordinates: [
+      LatLng(37.820866, 127.589272),
+      LatLng(37.820839, 127.589222),
+      LatLng(37.820814, 127.589172),
+    ],
+    type: 'slope',
+    resort: 5,
+  ),
+  LocationModel(
+    name: 'D',
+    coordinates: [
+      LatLng(37.820612, 127.589090),
+      LatLng(37.820575, 127.589042),
+      LatLng(37.820536, 127.588995),
+    ],
+    type: 'slope',
+    resort: 5,
+  ),
+  LocationModel(
+    name: 'C',
+    coordinates: [
+      LatLng(37.820253, 127.589300),
+      LatLng(37.820215, 127.589255),
+      LatLng(37.820177, 127.589211),
+    ],
+    type: 'slope',
+    resort: 5,
+  ),
+  LocationModel(
+    name: 'A1',
+    coordinates: [
+      LatLng(37.817789, 127.589880),
+      LatLng(37.817750, 127.589910),
+      LatLng(37.817706, 127.589944),
+    ],
+    type: 'slope',
+    resort: 5,
+  ),
+  LocationModel(
+    name: 'B',
+    coordinates: [
+      LatLng(37.815413, 127.591440),
+      LatLng(37.815410, 127.591376),
+      LatLng(37.815405, 127.591311),
+    ],
+    type: 'slope',
+    resort: 5,
+  ),
+  LocationModel(
+    name: 'A',
+    coordinates: [
+      LatLng(37.815236, 127.591468),
+      LatLng(37.815220, 127.591408),
+      LatLng(37.815204, 127.591346),
+    ],
+    type: 'slope',
+    resort: 5,
+  ),
+  //여기까지가 슬로프
+
+  LocationModel(
+    name: 'E하차장',
+    coordinates: [
+      LatLng(37.818094, 127.584645),
+      LatLng(37.818125, 127.584696),
+      LatLng(37.818150, 127.584745),
+    ],
+    type: 'respawn',
+    resort: 5,
+  ),
+  LocationModel(
+    name: 'D하차장',
+    coordinates: [
+      LatLng(37.815620, 127.582760),
+      LatLng(37.815588, 127.582713),
+      LatLng(37.815551, 127.582667),
+    ],
+    type: 'respawn',
+    resort: 5,
+  ),
+  LocationModel(
+    name: 'C하차장',
+    coordinates: [
+      LatLng(37.815088, 127.583048),
+      LatLng(37.815051, 127.583004),
+      LatLng(37.815014, 127.582958),
+    ],
+    type: 'respawn',
+    resort: 5,
+  ),
+  LocationModel(
+    name: 'A1하차장',
+    coordinates: [
+      LatLng(37.816225, 127.591160),
+      LatLng(37.816180, 127.591195),
+      LatLng(37.816135, 127.591227),
+    ],
+    type: 'respawn',
+    resort: 5,
+  ),
+  LocationModel(
+    name: 'B하차장',
+    coordinates: [
+      LatLng(37.814883, 127.583113),
+      LatLng(37.814883, 127.583050),
+      LatLng(37.814882, 127.582985),
+    ],
+    type: 'respawn',
+    resort: 5,
+  ),
+  LocationModel(
+    name: 'A하차장',
+    coordinates: [
+      LatLng(37.814295, 127.587698),
+      LatLng(37.814281, 127.587638),
+      LatLng(37.814265, 127.587578),
+    ],
+    type: 'respawn',
+    resort: 5,
+  ),
+  //여기까지가 슬로프 리스폰
+];
+
+List<LocationModel> high1 = [
+  LocationModel(
+    name: 'M허브',
+    coordinates: [
+      LatLng(37.207987, 128.825614),
+      LatLng(37.207997, 128.825557),
+    ],
+    type: 'slope',
+    resort: 11,
+  ),
+  LocationModel(
+    name: '아테나',
+    coordinates: [
+      LatLng(37.207280, 128.825622),
+      LatLng(37.207367, 128.825658),
+    ],
+    type: 'slope',
+    resort: 11,
+  ),
+  LocationModel(
+    name: 'H1탑',
+    coordinates: [
+      LatLng(37.194163, 128.819808),
+      LatLng(37.194252, 128.819845),
+    ],
+    type: 'slope',
+    resort: 11,
+  ),
+  LocationModel(
+    name: '제우스',
+    coordinates: [
+      LatLng(37.203965, 128.839086),
+      LatLng(37.203885, 128.839018),
+    ],
+    type: 'slope',
+    resort: 11,
+  ),
+  LocationModel(
+    name: '주피터',
+    coordinates: [
+      LatLng(37.203962, 128.838770),
+      LatLng(37.204040, 128.838837),
+    ],
+    type: 'slope',
+    resort: 11,
+  ),
+  LocationModel(
+    name: '아폴로',
+    coordinates: [
+      LatLng(37.197646, 128.831682),
+      LatLng(37.197610, 128.831570),
+    ],
+    type: 'slope',
+    resort: 11,
+  ),
+  LocationModel(
+    name: '헤라',
+    coordinates: [
+      LatLng(37.190132, 128.827203),
+      LatLng(37.190065, 128.827110),
+    ],
+    type: 'slope',
+    resort: 11,
+  ),
+  LocationModel(
+    name: '빅토리',
+    coordinates: [
+      LatLng(37.189380, 128.828356),
+      LatLng(37.189285, 128.828375),
+    ],
+    type: 'slope',
+    resort: 11,
+  ),
+  //여기까지가 리프트승차장
+
+
+  LocationModel(
+    name: '마운틴허브하차장',
+    coordinates: [
+      LatLng(37.194562, 128.819976),
+      LatLng(37.194650, 128.820013),
+
+    ],
+    type: 'respawn',
+    resort: 11,
+  ),
+  LocationModel(
+    name: '아테나하차',
+    coordinates: [
+      LatLng(37.194257, 128.820485),
+      LatLng(37.194167, 128.820450)
+    ],
+    type: 'respawn',
+    resort: 11,
+  ),
+  LocationModel(
+    name: '아폴로하차장',
+    coordinates: [
+      LatLng(37.193810, 128.820322),
+      LatLng(37.193769, 128.820210)
+    ],
+    type: 'respawn',
+    resort: 11,
+  ),
+  LocationModel(
+    name: '하이원탑하차장',
+    coordinates: [
+      LatLng(37.183530, 128.816870),
+      LatLng(37.183436, 128.816844),
+    ],
+    type: 'respawn',
+    resort: 11,
+  ),
+  LocationModel(
+    name: '헤라하차장',
+    coordinates: [
+      LatLng(37.183082, 128.817635),
+      LatLng(37.183025, 128.817546),
+    ],
+    type: 'respawn',
+    resort: 11,
+  ),
+  LocationModel(
+    name: '주피터하차장',
+    coordinates: [
+      LatLng(37.196830, 128.832770),
+      LatLng(37.196750, 128.832700),
+    ],
+    type: 'respawn',
+    resort: 11,
+  ),
+  LocationModel(
+    name: '제우스하차장',
+    coordinates: [
+      LatLng(37.189805, 128.827214),
+      LatLng(37.189723, 128.827150),
+    ],
+    type: 'respawn',
+    resort: 11,
+  ),
+  LocationModel(
+    name: '빅토리아하차장',
+    coordinates: [
+      LatLng(37.179165, 128.830065),
+      LatLng(37.179075, 128.830080),
+    ],
+    type: 'respawn',
+    resort: 11,
+  ),
+];
+
+
 List<LocationModel> phoenix = [
   LocationModel(
     name: '스패',
@@ -582,170 +1508,6 @@ List<LocationModel> vivaldi = [
   ),
 ];
 
-List<LocationModel> welli = [
-  LocationModel(
-    name: '알파',
-    coordinates: [
-      LatLng(37.490130, 128.250120),
-    ],
-    type: 'slope',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '뉴알파',
-    coordinates: [
-      LatLng(37.489916, 128.250191),
-    ],
-    type: 'slope',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '뉴브',
-    coordinates: [
-      LatLng(37.488712, 128.250181),
-    ],
-    type: 'slope',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '델타',
-    coordinates: [
-      LatLng(37.490038, 128.249121),
-    ],
-    type: 'slope',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '곤돌라',
-    coordinates: [
-      LatLng(37.490565, 128.248938),
-      LatLng(37.490536, 128.249033),
-    ],
-    type: 'slope',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '패밀리',
-    coordinates: [
-      LatLng(37.490825, 128.248507),
-    ],
-    type: 'slope',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '챌린지',
-    coordinates: [
-      LatLng(37.485622, 128.248713),
-    ],
-    type: 'slope',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '에코',
-    coordinates: [
-      LatLng(37.485401, 128.241075),
-    ],
-    type: 'slope',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '파이프',
-    coordinates: [
-      LatLng(37.488033, 128.248500),
-      LatLng(37.488027, 128.248602),
-      LatLng(37.488015, 128.248697),
-    ],
-    type: 'slope',
-    resort: 9,
-  ),
-  //여기까지가 리프트승차장
-
-  // LocationModel(
-  //   name: '몽블랑',
-  //   coordinates: [
-  //     LatLng(37.574301, 128.310102),
-  //   ],
-  //   type: 'slopeReset',
-  //   resort: 9,
-  // ),
-  //여기까지가 슬로프 리셋
-
-  LocationModel(
-    name: '알파하차장',
-    coordinates: [
-      LatLng(37.486983, 128.253839)
-    ],
-    type: 'respawn',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '뉴알파하차장',
-    coordinates: [
-      LatLng(37.4868900, 128.253751)
-    ],
-    type: 'respawn',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '뉴브라보하차장',
-    coordinates: [
-      LatLng(37.481186, 128.249219)
-    ],
-    type: 'respawn',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '델타하차장',
-    coordinates: [
-      LatLng(37.485218, 128.246968)
-    ],
-    type: 'respawn',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '파이프하단',
-    coordinates: [
-      LatLng(37.488814, 128.248867),
-      LatLng(37.488794, 128.248961),
-      LatLng(37.488784, 128.249056),
-    ],
-    type: 'respawn',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '챌린지하차장',
-    coordinates: [
-      LatLng(37.480209, 128.244324)
-    ],
-    type: 'respawn',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '곤돌라하차장',
-    coordinates: [
-      LatLng(37.480511, 128.243767),
-      LatLng(37.480505, 128.243842),
-    ],
-    type: 'respawn',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '에코하차장',
-    coordinates: [
-      LatLng(37.480306, 128.243368)
-    ],
-    type: 'respawn',
-    resort: 9,
-  ),
-  LocationModel(
-    name: '패밀리하차장',
-    coordinates: [
-      LatLng(37.485519, 128.243595)
-    ],
-    type: 'respawn',
-    resort: 9,
-  ),
-];
 
 List<LocationModel> yongpyong = [
   LocationModel(
@@ -854,15 +1616,6 @@ List<LocationModel> yongpyong = [
   ),
   //여기까지가 리프트승차장
 
-  // LocationModel(
-  //   name: '몽블랑',
-  //   coordinates: [
-  //     LatLng(37.574301, 128.310102),
-  //   ],
-  //   type: 'slopeReset',
-  //   resort: 9,
-  // ),
-  //여기까지가 슬로프 리셋
 
   LocationModel(
     name: '레드하차장',
@@ -979,149 +1732,6 @@ List<LocationModel> yongpyong = [
 ];
 
 
-List<LocationModel> high1 = [
-  LocationModel(
-    name: 'M허브',
-    coordinates: [
-      LatLng(37.207943, 128.825580),
-    ],
-    type: 'slope',
-    resort: 11,
-  ),
-  LocationModel(
-    name: '아테나',
-    coordinates: [
-      LatLng(37.207217, 128.825625),
-    ],
-    type: 'slope',
-    resort: 11,
-  ),
-  LocationModel(
-    name: 'H1탑',
-    coordinates: [
-      LatLng(37.194165, 128.819854),
-    ],
-    type: 'slope',
-    resort: 11,
-  ),
-  LocationModel(
-    name: '제우스',
-    coordinates: [
-      LatLng(37.204031, 128.839065),
-    ],
-    type: 'slope',
-    resort: 11,
-  ),
-  LocationModel(
-    name: '주피터',
-    coordinates: [
-      LatLng(37.203974, 128.838783),
-    ],
-    type: 'slope',
-    resort: 11,
-  ),
-  LocationModel(
-    name: '아폴로',
-    coordinates: [
-      LatLng(37.197645, 128.831793),
-    ],
-    type: 'slope',
-    resort: 11,
-  ),
-  LocationModel(
-    name: '헤라',
-    coordinates: [
-      LatLng(37.190190, 128.827309),
-    ],
-    type: 'slope',
-    resort: 11,
-  ),
-  LocationModel(
-    name: '빅토리',
-    coordinates: [
-      LatLng(37.189464, 128.828342),
-    ],
-    type: 'slope',
-    resort: 11,
-  ),
-  //여기까지가 리프트승차장
-
-  // LocationModel(
-  //   name: '몽블랑',
-  //   coordinates: [
-  //     LatLng(37.574301, 128.310102),
-  //   ],
-  //   type: 'slopeReset',
-  //   resort: 9,
-  // ),
-  //여기까지가 슬로프 리셋
-
-  LocationModel(
-    name: '마운틴허브하차장',
-    coordinates: [
-      LatLng(37.194551, 128.8200187)
-    ],
-    type: 'respawn',
-    resort: 11,
-  ),
-  LocationModel(
-    name: '아테나하차',
-    coordinates: [
-      LatLng(37.194323, 128.820544)
-    ],
-    type: 'respawn',
-    resort: 11,
-  ),
-  LocationModel(
-    name: '하이원탑하차장',
-    coordinates: [
-      LatLng(37.183559, 128.816910)
-    ],
-    type: 'respawn',
-    resort: 11,
-  ),
-  LocationModel(
-    name: '주피터하차장',
-    coordinates: [
-      LatLng(37.196871, 128.832831)
-    ],
-    type: 'respawn',
-    resort: 11,
-  ),
-  LocationModel(
-    name: '제우스하차장',
-    coordinates: [
-      LatLng(37.189884, 128.827249)
-    ],
-    type: 'respawn',
-    resort: 11,
-  ),
-  LocationModel(
-    name: '아폴로하차장',
-    coordinates: [
-      LatLng(37.193825, 128.820421)
-    ],
-    type: 'respawn',
-    resort: 11,
-  ),
-  LocationModel(
-    name: '헤라하차장',
-    coordinates: [
-      LatLng(37.183158, 128.817601)
-    ],
-    type: 'respawn',
-    resort: 11,
-  ),
-  LocationModel(
-    name: '빅토리아하차장',
-    coordinates: [
-      LatLng(37.197194, 128.830041)
-    ],
-    type: 'respawn',
-    resort: 11,
-  ),
-];
-
 List<LocationModel> konjiam = [
   LocationModel(
     name: 'CNP1',
@@ -1234,353 +1844,6 @@ List<LocationModel> konjiam = [
   //여기까지가 슬로프 리스폰
 ];
 
-List<LocationModel> gangchon = [
-  LocationModel(
-    name: 'E',
-    coordinates: [
-      LatLng(37.820846, 127.589319),
-    ],
-    type: 'slope',
-    resort: 5,
-  ),
-  LocationModel(
-    name: 'D',
-    coordinates: [
-      LatLng(37.820615, 127.589146),
-    ],
-    type: 'slope',
-    resort: 5,
-  ),
-  LocationModel(
-    name: 'C',
-    coordinates: [
-      LatLng(37.820247, 127.589392),
-    ],
-    type: 'slope',
-    resort: 5,
-  ),
-  LocationModel(
-    name: 'A1',
-    coordinates: [
-      LatLng(37.817737, 127.589908),
-    ],
-    type: 'slope',
-    resort: 5,
-  ),
-  LocationModel(
-    name: 'B',
-    coordinates: [
-      LatLng(37.815380, 127.591497),
-    ],
-    type: 'slope',
-    resort: 5,
-  ),
-  LocationModel(
-    name: 'A',
-    coordinates: [
-      LatLng(37.815228, 127.591499),
-    ],
-    type: 'slope',
-    resort: 5,
-  ),
-  //여기까지가 슬로프
-
-  LocationModel(
-    name: 'E하차장',
-    coordinates: [
-      LatLng(37.818051, 127.584697),
-    ],
-    type: 'respawn',
-    resort: 5,
-  ),
-  LocationModel(
-    name: 'D하차장',
-    coordinates: [
-      LatLng(37.815595, 127.582821),
-    ],
-    type: 'respawn',
-    resort: 5,
-  ),
-  LocationModel(
-    name: 'C하차장',
-    coordinates: [
-      LatLng(37.815060, 127.583120),
-    ],
-    type: 'respawn',
-    resort: 5,
-  ),
-  LocationModel(
-    name: 'A1하차장',
-    coordinates: [
-      LatLng(37.816202, 127.591155),
-    ],
-    type: 'respawn',
-    resort: 5,
-  ),
-  LocationModel(
-    name: 'B하차장',
-    coordinates: [
-      LatLng(37.814820, 127.583190),
-    ],
-    type: 'respawn',
-    resort: 5,
-  ),
-  LocationModel(
-    name: 'A하차장',
-    coordinates: [
-      LatLng(37.814251, 127.587756),
-    ],
-    type: 'respawn',
-    resort: 5,
-  ),
-  //여기까지가 슬로프 리스폰
-];
-List<LocationModel> jisan = [
-  LocationModel(
-    name: '실버',
-    coordinates: [
-      LatLng(37.217588, 127.343748),
-    ],
-    type: 'slope',
-    resort: 10,
-  ),
-  LocationModel(
-    name: '블루',
-    coordinates: [
-      LatLng(37.217204, 127.344169),
-    ],
-    type: 'slope',
-    resort: 10,
-  ),
-  LocationModel(
-    name: '뉴오렌',
-    coordinates: [
-      LatLng(37.215968, 127.345562),
-    ],
-    type: 'slope',
-    resort: 10,
-  ),
-  LocationModel(
-    name: '오렌지',
-    coordinates: [
-      LatLng(37.215627, 127.346589),
-    ],
-    type: 'slope',
-    resort: 10,
-  ),
-  LocationModel(
-    name: '레몬',
-    coordinates: [
-      LatLng(37.215443, 127.347131),
-    ],
-    type: 'slope',
-    resort: 10,
-  ),
-  //여기까지가 슬로프
-
-  LocationModel(
-    name: '실버하차장',
-    coordinates: [
-      LatLng(37.213239, 127.339353),
-    ],
-    type: 'respawn',
-    resort: 10,
-  ),
-  LocationModel(
-    name: '블루하차장',
-    coordinates: [
-      LatLng(37.211657, 127.339888),
-    ],
-    type: 'respawn',
-    resort: 10,
-  ),
-  LocationModel(
-    name: '뉴오렌지하차장',
-    coordinates: [
-      LatLng(37.209744, 127.343664),
-    ],
-    type: 'respawn',
-    resort: 10,
-  ),
-  LocationModel(
-    name: '오렌지하차장',
-    coordinates: [
-      LatLng(37.211192, 127.344927),
-    ],
-    type: 'respawn',
-    resort: 10,
-  ),
-  LocationModel(
-    name: '레몬하차장',
-    coordinates: [
-      LatLng(37.213012, 127.346390),
-    ],
-    type: 'respawn',
-    resort: 10,
-  ),
-  //여기까지가 슬로프 리스폰
-];
-List<LocationModel> alpensia = [
-  LocationModel(
-    name: '리프트1',
-    coordinates: [
-      LatLng(37.656550, 128.672236),
-    ],
-    type: 'slope',
-    resort: 3,
-  ),
-  LocationModel(
-    name: '리프트2',
-    coordinates: [
-      LatLng(37.656239, 128.673151),
-    ],
-    type: 'slope',
-    resort: 3,
-  ),
-  LocationModel(
-    name: '리프트3',
-    coordinates: [
-      LatLng(37.656235, 128.674675),
-    ],
-    type: 'slope',
-    resort: 3,
-  ),
-  //여기까지가 슬로프
-
-  LocationModel(
-    name: '리프트1하차장',
-    coordinates: [
-      LatLng(37.651863, 128.668973),
-    ],
-    type: 'respawn',
-    resort: 3,
-  ),
-  LocationModel(
-    name: '리프트2하차장',
-    coordinates: [
-      LatLng(37.650160, 128.673046),
-    ],
-    type: 'respawn',
-    resort: 3,
-  ),
-  LocationModel(
-    name: '리프트3하차장',
-    coordinates: [
-      LatLng(37.650174, 128.673584),
-    ],
-    type: 'respawn',
-    resort: 3,
-  ),
-  //여기까지가 슬로프 리스폰
-];
-
-List<LocationModel> eden = [
-  LocationModel(
-    name: '아담',
-    coordinates: [
-      LatLng(35.428437, 128.984085),
-    ],
-    type: 'slope',
-    resort: 4,
-  ),
-  LocationModel(
-    name: '밸리',
-    coordinates: [
-      LatLng(35.428451, 128.984733),
-    ],
-    type: 'slope',
-    resort: 4,
-  ),
-  LocationModel(
-    name: '에덴',
-    coordinates: [
-      LatLng(35.428519, 128.984959),
-    ],
-    type: 'slope',
-    resort: 4,
-  ),
-  //여기까지가 슬로프
-
-  LocationModel(
-    name: '아담하차장',
-    coordinates: [
-      LatLng(35.419692, 128.982763),
-    ],
-    type: 'respawn',
-    resort: 4,
-  ),
-  LocationModel(
-    name: '밸리하차장',
-    coordinates: [
-      LatLng(35.421745, 128.988465),
-    ],
-    type: 'respawn',
-    resort: 4,
-  ),
-  LocationModel(
-    name: '에덴하차장',
-    coordinates: [
-      LatLng(35.424148, 128.987328),
-    ],
-    type: 'respawn',
-    resort: 4,
-  ),
-  //여기까지가 슬로프 리스폰
-];
-
-List<LocationModel> oak = [
-  LocationModel(
-    name: '버드',
-    coordinates: [
-      LatLng(37.406586, 127.809320),
-    ],
-    type: 'slope',
-    resort: 6,
-  ),
-  LocationModel(
-    name: '마운틴',
-    coordinates: [
-      LatLng(37.406682, 127.809582),
-    ],
-    type: 'slope',
-    resort: 6,
-  ),
-  LocationModel(
-    name: '플라워',
-    coordinates: [
-      LatLng(37.407479, 127.809351),
-    ],
-    type: 'slope',
-    resort: 6,
-  ),
-  //여기까지가 슬로프
-
-  LocationModel(
-    name: '버드하차장',
-    coordinates: [
-      LatLng(37.402692, 127.811821),
-    ],
-    type: 'respawn',
-    resort: 6,
-  ),
-  LocationModel(
-    name: '마운틴하차장',
-    coordinates: [
-      LatLng(37.402412, 127.818439),
-    ],
-    type: 'respawn',
-    resort: 6,
-  ),
-  LocationModel(
-    name: '플라워하차장',
-    coordinates: [
-      LatLng(37.408085, 127.814495),
-    ],
-    type: 'respawn',
-    resort: 6,
-  ),
-  //여기까지가 슬로프 리스폰
-];
 
 List<LocationModel> muju = [
   LocationModel(
@@ -1819,109 +2082,3 @@ List<LocationModel> muju = [
 
 ];
 
-List<LocationModel> o2 = [
-  LocationModel(
-    name: '토마토',
-    coordinates: [
-      LatLng(37.179681, 128.939630),
-    ],
-    type: 'slope',
-    resort: 7,
-  ),
-  LocationModel(
-    name: '키위',
-    coordinates: [
-      LatLng(37.179294, 128.940281),
-    ],
-    type: 'slope',
-    resort: 7,
-  ),
-  LocationModel(
-    name: '오렌지',
-    coordinates: [
-      LatLng(37.178288, 128.946270),
-    ],
-    type: 'slope',
-    resort: 7,
-  ),
-  LocationModel(
-    name: '곤돌라',
-    coordinates: [
-      LatLng(37.177976, 128.946820),
-      LatLng(37.177903, 128.946879),
-      LatLng(37.177856, 128.946933),
-    ],
-    type: 'slope',
-    resort: 7,
-  ),
-  LocationModel(
-    name: '체리',
-    coordinates: [
-      LatLng(37.177335, 128.946598),
-    ],
-    type: 'slope',
-    resort: 7,
-  ),
-  LocationModel(
-    name: '애플',
-    coordinates: [
-      LatLng(37.176494, 128.948280),
-    ],
-    type: 'slope',
-    resort: 7,
-  ),
-  //여기까지가 슬로프
-
-  LocationModel(
-    name: '토마토하차장',
-    coordinates: [
-      LatLng(37.176416, 128.931141),
-      LatLng(37.176409, 128.931074),
-    ],
-    type: 'respawn',
-    resort: 7,
-  ),
-  LocationModel(
-    name: '키위하차장',
-    coordinates: [
-      LatLng(37.168097, 128.927432),
-      LatLng(37.167988, 128.927309),
-    ],
-    type: 'respawn',
-    resort: 7,
-  ),
-  LocationModel(
-    name: '오렌지하차장',
-    coordinates: [
-      LatLng(37.179465, 128.940719),
-    ],
-    type: 'respawn',
-    resort: 7,
-  ),
-  LocationModel(
-    name: '곤돌라하차장',
-    coordinates: [
-      LatLng(37.168003, 128.927626),
-      LatLng(37.167936, 128.927594),
-    ],
-    type: 'respawn',
-    resort: 7,
-  ),
-  LocationModel(
-    name: '체리하차장',
-    coordinates: [
-      LatLng(37.171391, 128.939033),
-    ],
-    type: 'respawn',
-    resort: 7,
-  ),
-  LocationModel(
-    name: '애플하차장',
-    coordinates: [
-      LatLng(37.171335, 128.947355),
-    ],
-    type: 'respawn',
-    resort: 7,
-  ),
-  //여기까지가 슬로프 리스폰
-];

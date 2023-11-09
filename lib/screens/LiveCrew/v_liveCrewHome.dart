@@ -12,7 +12,9 @@ import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import '../../controller/vm_alarmCenterController.dart';
 import '../../controller/vm_liveCrewModelController.dart';
+import '../../model/m_alarmCenterModel.dart';
 import '../../model/m_crewLogoModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 import 'CreateOnboarding/v_setCrewName.dart';
@@ -30,6 +32,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+  AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   //TODO: Dependency Injection**************************************************
 
   var assetMyCrew;
@@ -408,6 +411,13 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                                                               Navigator.pop(context);
                                                                                               CustomFullScreenDialog.showDialog();
                                                                                               await _liveCrewModelController.deleteInvitation_crew(crewID: _userModelController.liveCrew, applyUid: applyDocs[index]['uid']);
+                                                                                              String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.crewApplyKey];
+                                                                                              await _alarmCenterController.deleteAlarm(
+                                                                                                  receiverUid: _userModelController.uid,
+                                                                                                  senderUid:  applyDocs[index]['uid'],
+                                                                                                  category: alarmCategory,
+                                                                                                  alarmCount: 'crew'
+                                                                                              );
                                                                                               await _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
                                                                                               CustomFullScreenDialog.cancelDialog();
                                                                                             }catch(e){

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_refreshController.dart';
+import 'package:com.snowlive/screens/resort/v_alarmCenter.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
   int lengthOfLivefriends = 0;
   bool isSnackbarShown = false;
   List<bool?> _isSelected = List<bool?>.filled(13, false);
+  var _alarmStream;
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
@@ -69,11 +71,19 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
     );
   }
 
+  Stream<QuerySnapshot> alarmStream() {
+    return FirebaseFirestore.instance
+        .collection('newAlarm')
+        .where('uid', isEqualTo: _userModelController.uid!)
+        .snapshots();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _userModelController.updateIsOnLiveOff();
+    _alarmStream = alarmStream();
   }
 
   @override
@@ -186,9 +196,9 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                     title: Padding(
                                                       padding: const EdgeInsets.only(bottom: 4),
                                                       child: Text('라이브중인 친구가 없습니다.', style: TextStyle(
-                                                        fontSize: 15,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Color(0xFF111111)
+                                                          fontSize: 15,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Color(0xFF111111)
                                                       ),),
                                                     ),
                                                     subtitle: Text('즐겨찾는 친구를 등록하고\n친구의 라이브 상태를 확인하세요.',
@@ -269,52 +279,52 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                 onTap: (){
                                                                   Get.to(()=>FriendDetailPage(uid: liveFriendDocs[index]['uid'], favoriteResort: liveFriendDocs[index]['favoriteResort'],));
                                                                 },
-                                                                    child: ExtendedImage.network(
-                                                                liveFriendDocs[index]
-                                                                ['profileImageUrl'],
-                                                                enableMemoryCache: true,
-                                                                shape: BoxShape.circle,
-                                                                borderRadius:
-                                                                BorderRadius.circular(8),
-                                                                width: 36,
-                                                                height: 36,
-                                                                fit: BoxFit.cover,
-                                                                      loadStateChanged: (ExtendedImageState state) {
-                                                                        switch (state.extendedImageLoadState) {
-                                                                          case LoadState.loading:
-                                                                            return SizedBox.shrink();
-                                                                          case LoadState.completed:
-                                                                            return state.completedWidget;
-                                                                          case LoadState.failed:
-                                                                            return ExtendedImage.asset(
-                                                                              'assets/imgs/profile/img_profile_default_circle.png',
-                                                                              shape: BoxShape.circle,
-                                                                              borderRadius: BorderRadius.circular(8),
-                                                                              width: 36,
-                                                                              height: 36,
-                                                                              fit: BoxFit.cover,
-                                                                            ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                          default:
-                                                                            return null;
-                                                                        }
-                                                                      },
-                                                              ),
-                                                                  )
+                                                                child: ExtendedImage.network(
+                                                                  liveFriendDocs[index]
+                                                                  ['profileImageUrl'],
+                                                                  enableMemoryCache: true,
+                                                                  shape: BoxShape.circle,
+                                                                  borderRadius:
+                                                                  BorderRadius.circular(8),
+                                                                  width: 36,
+                                                                  height: 36,
+                                                                  fit: BoxFit.cover,
+                                                                  loadStateChanged: (ExtendedImageState state) {
+                                                                    switch (state.extendedImageLoadState) {
+                                                                      case LoadState.loading:
+                                                                        return SizedBox.shrink();
+                                                                      case LoadState.completed:
+                                                                        return state.completedWidget;
+                                                                      case LoadState.failed:
+                                                                        return ExtendedImage.asset(
+                                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                                          shape: BoxShape.circle,
+                                                                          borderRadius: BorderRadius.circular(8),
+                                                                          width: 36,
+                                                                          height: 36,
+                                                                          fit: BoxFit.cover,
+                                                                        ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                      default:
+                                                                        return null;
+                                                                    }
+                                                                  },
+                                                                ),
+                                                              )
                                                                   : GestureDetector(
                                                                 onTap: (){
                                                                   Get.to(()=>FriendDetailPage(uid: liveFriendDocs[index]['uid'], favoriteResort: liveFriendDocs[index]['favoriteResort'],));
                                                                 },
-                                                                    child: ExtendedImage.asset(
-                                                                'assets/imgs/profile/img_profile_default_circle.png',
-                                                                enableMemoryCache: true,
-                                                                shape: BoxShape.circle,
-                                                                borderRadius:
-                                                                BorderRadius.circular(8),
-                                                                width: 36,
-                                                                height: 36,
-                                                                fit: BoxFit.cover,
+                                                                child: ExtendedImage.asset(
+                                                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                                                  enableMemoryCache: true,
+                                                                  shape: BoxShape.circle,
+                                                                  borderRadius:
+                                                                  BorderRadius.circular(8),
+                                                                  width: 36,
+                                                                  height: 36,
+                                                                  fit: BoxFit.cover,
+                                                                ),
                                                               ),
-                                                                  ),
                                                               SizedBox(width: 10),
                                                               Column(
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -329,8 +339,8 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                     height: 1,
                                                                   ),
                                                                   (liveFriendDocs[index]['stateMsg'] == '')
-                                                                  ? SizedBox.shrink()
-                                                                  : Container(
+                                                                      ? SizedBox.shrink()
+                                                                      : Container(
                                                                     width: 150,
                                                                     child: Text(
                                                                       '${liveFriendDocs[index]['stateMsg']}',
@@ -340,7 +350,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                         fontSize: 12,
                                                                         fontWeight: FontWeight.normal,
                                                                         color: Color(0xFF949494),
-                                                                    ),),
+                                                                      ),),
                                                                   ),
                                                                 ],
                                                               ),
@@ -397,228 +407,228 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                   }
                                 } else {
                                   if(!isSnackbarShown) {
-                                  HapticFeedback.lightImpact();
-                                  Get.dialog(
-                                    WillPopScope(
-                                      onWillPop: () async => false, // Prevents dialog from closing on Android back button press
-                                      child: GestureDetector(
-                                        behavior: HitTestBehavior.translucent,
-                                        onTap: () async {
-                                          _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                          await _liveMapController.stopForegroundLocationService();
-                                          await _liveMapController.stopBackgroundLocationService();
-                                          Get.back();
-                                          CustomFullScreenDialog.cancelDialog();
-                                          print('라이브 OFF');
-                                        },
+                                    HapticFeedback.lightImpact();
+                                    Get.dialog(
+                                      WillPopScope(
+                                        onWillPop: () async => false, // Prevents dialog from closing on Android back button press
                                         child: GestureDetector(
-                                          onTap: () {},
-                                          child: AlertDialog(
-                                            contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                            elevation: 0,
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                            content: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text("스노우라이브 랭킹전에 참여해 보세요",
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Color(0xFF111111)
+                                          behavior: HitTestBehavior.translucent,
+                                          onTap: () async {
+                                            _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                            await _liveMapController.stopForegroundLocationService();
+                                            await _liveMapController.stopBackgroundLocationService();
+                                            Get.back();
+                                            CustomFullScreenDialog.cancelDialog();
+                                            print('라이브 OFF');
+                                          },
+                                          child: GestureDetector(
+                                            onTap: () {},
+                                            child: AlertDialog(
+                                              contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                              content: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text("스노우라이브 랭킹전에 참여해 보세요",
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Color(0xFF111111)
+                                                    ),
                                                   ),
-                                                ),
-                                                SizedBox(
-                                                  height: 8,
-                                                ),
-                                                Text("위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요.",
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight: FontWeight.normal,
-                                                      color: Color(0xFF666666)
+                                                  SizedBox(
+                                                    height: 8,
                                                   ),
-                                                ),
-                                                SizedBox(
-                                                  height: 16,
-                                                ),
-                                                Text("랭킹전 유의사항",
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      height: 1.4,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Color(0xFF3D83ED)
+                                                  Text("위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요.",
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        fontWeight: FontWeight.normal,
+                                                        color: Color(0xFF666666)
+                                                    ),
                                                   ),
-                                                ),
-                                                SizedBox(
-                                                  height: 4,
-                                                ),
-                                                Text("1. 와이파이 끄고 데이터 사용\n2. 위치 추적 항상 허용으로 설정",
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      height: 1.4,
-                                                      fontWeight: FontWeight.normal,
-                                                      color: Color(0xFF111111)
+                                                  SizedBox(
+                                                    height: 16,
                                                   ),
-                                                ),
-                                                SizedBox(height: 24),
-                                                Obx(() => GestureDetector(
-                                                  onTap: () {
-                                                    _dialogController.isChecked.value = !_dialogController.isChecked.value;
-                                                  },
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: [
-                                                      Image.asset(
-                                                        _dialogController.isChecked.value
-                                                            ? 'assets/imgs/icons/icon_check_filled.png'
-                                                            : 'assets/imgs/icons/icon_check_unfilled.png',
-                                                        width: 24,
-                                                        height: 24,
-                                                      ),
-                                                      SizedBox(width: 8),
-                                                      Text(
-                                                        '위치정보 사용 및 이용약관 동의',
+                                                  Text("랭킹전 유의사항",
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        height: 1.4,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Color(0xFF3D83ED)
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 4,
+                                                  ),
+                                                  Text("1. 와이파이 끄고 데이터 사용\n2. 위치 추적 항상 허용으로 설정",
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        height: 1.4,
+                                                        fontWeight: FontWeight.normal,
+                                                        color: Color(0xFF111111)
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 24),
+                                                  Obx(() => GestureDetector(
+                                                    onTap: () {
+                                                      _dialogController.isChecked.value = !_dialogController.isChecked.value;
+                                                    },
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Image.asset(
+                                                          _dialogController.isChecked.value
+                                                              ? 'assets/imgs/icons/icon_check_filled.png'
+                                                              : 'assets/imgs/icons/icon_check_unfilled.png',
+                                                          width: 24,
+                                                          height: 24,
+                                                        ),
+                                                        SizedBox(width: 8),
+                                                        Text(
+                                                          '위치정보 사용 및 이용약관 동의',
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )),
+
+                                                  SizedBox(height: 24),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
+                                                    },
+                                                    child: Center(
+                                                      child: Text('약관보기',
                                                         style: TextStyle(
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )),
-
-                                                SizedBox(height: 24),
-                                                GestureDetector(
-                                                  onTap: (){
-                                                    Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
-                                                  },
-                                                  child: Center(
-                                                    child: Text('약관보기',
-                                                      style: TextStyle(
-                                                          decoration: TextDecoration.underline,
-                                                          fontSize: 14,
-                                                          color: Color(0xFF949494)
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 28,
-                                                ),
-                                              ],
-                                            ),
-                                            actions: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: ElevatedButton(onPressed: () async {
-                                                        _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
-                                                        await _liveMapController.stopForegroundLocationService();
-                                                        await _liveMapController.stopBackgroundLocationService();
-                                                        Get.back();
-                                                        CustomFullScreenDialog.cancelDialog();
-                                                        print('라이브 OFF');
-                                                      },
-                                                        child: Text(
-                                                          '취소',
-                                                          style: TextStyle(
-                                                              color: Color(0xff3D83ED),
-                                                              fontSize: 15,
-                                                              fontWeight: FontWeight.bold),
-                                                        ),
-                                                        style: TextButton.styleFrom(
-                                                          splashFactory: InkRipple.splashFactory,
-                                                          elevation: 0,
-                                                          minimumSize: Size(100, 48),
-                                                          backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                            decoration: TextDecoration.underline,
+                                                            fontSize: 14,
+                                                            color: Color(0xFF949494)
                                                         ),
                                                       ),
                                                     ),
-                                                    SizedBox(width: 8,),
-                                                    Obx(() => Expanded(
-                                                      child: ElevatedButton(
-                                                        onPressed: _dialogController.isChecked.value ? () async {
-                                                          Navigator.pop(context);
-                                                          print('이 프린트 지우면안됨');
-                                                          CustomFullScreenDialog.showDialog();
-                                                            await _liveMapController.startForegroundLocationService();
-                                                            await _liveMapController.startBackgroundLocationService();
-                                                          await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
-                                                          _dialogController.isChecked.value = false;
+                                                  ),
+                                                  SizedBox(
+                                                    height: 28,
+                                                  ),
+                                                ],
+                                              ),
+                                              actions: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: ElevatedButton(onPressed: () async {
+                                                          _dialogController.isChecked.value = false; // Reset checkbox when dialog is closed
+                                                          await _liveMapController.stopForegroundLocationService();
+                                                          await _liveMapController.stopBackgroundLocationService();
+                                                          Get.back();
                                                           CustomFullScreenDialog.cancelDialog();
-                                                          if (_userModelController.withinBoundary == true) {
-                                                            await _userModelController.updateIsOnLiveOn();
-                                                            try{
-                                                              await FirebaseAnalytics.instance.logEvent(
-                                                                name: 'live_on_button_pressed_Success',
-                                                                parameters: <String, dynamic>{
-                                                                  'user_id': _userModelController.uid,
-                                                                  'user_name': _userModelController.displayName,
-                                                                  'user_resort': _userModelController.favoriteResort
-                                                                },
-                                                              );
-                                                            }catch(e, stackTrace){
-                                                              print('GA 업데이트 오류: $e');
-                                                              print('Stack trace: $stackTrace');
-                                                            }
-                                                            await _userModelController.getCurrentUser(_userModelController.uid);
-                                                            print('라이브 ON');
-                                                          }
-                                                          else {
-                                                            if(!isSnackbarShown){
-                                                              isSnackbarShown = true;
-                                                              Get.snackbar(
-                                                                '라이브 불가 지역입니다',
-                                                                '자주가는 스키장에서만 라이브가 활성화됩니다.',
-                                                                margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                                                snackPosition: SnackPosition.BOTTOM,
-                                                                backgroundColor: Colors.black87,
-                                                                colorText: Colors.white,
-                                                                duration: Duration(milliseconds: 3000),
-                                                              );
-                                                              Future.delayed(Duration(milliseconds: 4500), () {
-                                                                isSnackbarShown = false;
-                                                              });
-                                                              print('라이브 불가 지역');
-                                                            }
-                                                            await _liveMapController.stopForegroundLocationService();
-                                                            await _liveMapController.stopBackgroundLocationService();
-                                                          }
-                                                          setState(() {});
-
-                                                        }
-                                                            : null,
-                                                        child: Text(
-                                                          '동의',
-                                                          style: TextStyle(
-                                                              color: Color(0xffffffff),
-                                                              fontSize: 15,
-                                                              fontWeight: FontWeight.bold),
-                                                        ),
-                                                        style: TextButton.styleFrom(
+                                                          print('라이브 OFF');
+                                                        },
+                                                          child: Text(
+                                                            '취소',
+                                                            style: TextStyle(
+                                                                color: Color(0xff3D83ED),
+                                                                fontSize: 15,
+                                                                fontWeight: FontWeight.bold),
+                                                          ),
+                                                          style: TextButton.styleFrom(
                                                             splashFactory: InkRipple.splashFactory,
                                                             elevation: 0,
                                                             minimumSize: Size(100, 48),
-                                                            backgroundColor: _dialogController.isChecked.value
-                                                                ? Color(0xFF3D83ED)
-                                                                : Color(0xFFDEDEDE)
+                                                            backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),),
-                                                  ],
-                                                ),
-                                              ),
+                                                      SizedBox(width: 8,),
+                                                      Obx(() => Expanded(
+                                                        child: ElevatedButton(
+                                                          onPressed: _dialogController.isChecked.value ? () async {
+                                                            Navigator.pop(context);
+                                                            print('이 프린트 지우면안됨');
+                                                            CustomFullScreenDialog.showDialog();
+                                                            await _liveMapController.startForegroundLocationService();
+                                                            await _liveMapController.startBackgroundLocationService();
+                                                            await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
+                                                            _dialogController.isChecked.value = false;
+                                                            CustomFullScreenDialog.cancelDialog();
+                                                            if (_userModelController.withinBoundary == true) {
+                                                              await _userModelController.updateIsOnLiveOn();
+                                                              try{
+                                                                await FirebaseAnalytics.instance.logEvent(
+                                                                  name: 'live_on_button_pressed_Success',
+                                                                  parameters: <String, dynamic>{
+                                                                    'user_id': _userModelController.uid,
+                                                                    'user_name': _userModelController.displayName,
+                                                                    'user_resort': _userModelController.favoriteResort
+                                                                  },
+                                                                );
+                                                              }catch(e, stackTrace){
+                                                                print('GA 업데이트 오류: $e');
+                                                                print('Stack trace: $stackTrace');
+                                                              }
+                                                              await _userModelController.getCurrentUser(_userModelController.uid);
+                                                              print('라이브 ON');
+                                                            }
+                                                            else {
+                                                              if(!isSnackbarShown){
+                                                                isSnackbarShown = true;
+                                                                Get.snackbar(
+                                                                  '라이브 불가 지역입니다',
+                                                                  '자주가는 스키장에서만 라이브가 활성화됩니다.',
+                                                                  margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                                                  snackPosition: SnackPosition.BOTTOM,
+                                                                  backgroundColor: Colors.black87,
+                                                                  colorText: Colors.white,
+                                                                  duration: Duration(milliseconds: 3000),
+                                                                );
+                                                                Future.delayed(Duration(milliseconds: 4500), () {
+                                                                  isSnackbarShown = false;
+                                                                });
+                                                                print('라이브 불가 지역');
+                                                              }
+                                                              await _liveMapController.stopForegroundLocationService();
+                                                              await _liveMapController.stopBackgroundLocationService();
+                                                            }
+                                                            setState(() {});
 
-                                            ],
+                                                          }
+                                                              : null,
+                                                          child: Text(
+                                                            '동의',
+                                                            style: TextStyle(
+                                                                color: Color(0xffffffff),
+                                                                fontSize: 15,
+                                                                fontWeight: FontWeight.bold),
+                                                          ),
+                                                          style: TextButton.styleFrom(
+                                                              splashFactory: InkRipple.splashFactory,
+                                                              elevation: 0,
+                                                              minimumSize: Size(100, 48),
+                                                              backgroundColor: _dialogController.isChecked.value
+                                                                  ? Color(0xFF3D83ED)
+                                                                  : Color(0xFFDEDEDE)
+                                                          ),
+                                                        ),
+                                                      ),),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    barrierDismissible: true,
-                                  );
-                                 // await Future.delayed(Duration(seconds: 2)); // Wait for 1 second
+                                      barrierDismissible: true,
+                                    );
+                                    // await Future.delayed(Duration(seconds: 2)); // Wait for 1 second
                                   }
                                 }
 
@@ -672,6 +682,166 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                           children: [
                             AppBar(
                               actions: [
+                                StreamBuilder(
+                                  stream: _alarmStream,
+                                  builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                    if (!snapshot.hasData || snapshot.data == null) {
+                                      return  Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: Stack(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () async{
+                                                CustomFullScreenDialog.showDialog();
+                                                try {
+                                                  await _userModelController.deleteInvitationAlarm_friend(uid: _userModelController.uid);
+                                                  await _userModelController.deleteAlarmCenterNoti(uid: _userModelController.uid);
+                                                }catch(e){}
+
+                                                CustomFullScreenDialog.cancelDialog();
+                                                Get.to(()=>AlarmCenter());
+                                              },
+                                              icon: Image.asset(
+                                                'assets/imgs/icons/icon_noti_off.png',
+                                                scale: 4,
+                                                width: 26,
+                                                height: 26,
+                                              ),
+                                            ),
+                                            Positioned(  // draw a red marble
+                                              top: 10,
+                                              left: 32,
+                                              child: new Icon(Icons.brightness_1, size: 6.0,
+                                                  color:Colors.white),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                    else if (snapshot.data!.docs.isNotEmpty) {
+                                      final alarmDocs = snapshot.data!.docs;
+                                      bool alarmIsActive;
+                                      try {
+                                        alarmIsActive = (alarmDocs[0]['alarmCenter'] ?? false) == true;
+                                      }catch(e){
+                                        alarmIsActive = false;
+                                      }
+                                      return  Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: Stack(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () async{
+                                                CustomFullScreenDialog.showDialog();
+                                                try {
+                                                  await _userModelController.deleteInvitationAlarm_friend(uid: _userModelController.uid);
+                                                  await _userModelController.deleteAlarmCenterNoti(uid: _userModelController.uid);
+                                                }catch(e){}
+                                                CustomFullScreenDialog.cancelDialog();
+                                                Get.to(()=>AlarmCenter());
+                                              },
+                                              icon: Image.asset(
+                                                'assets/imgs/icons/icon_noti_off.png',
+                                                scale: 4,
+                                                width: 26,
+                                                height: 26,
+                                              ),
+                                            ),
+                                            Positioned(  // draw a red marble
+                                                top: 6,
+                                                right: 0,
+                                                child:
+                                                (alarmIsActive)
+                                                    ? Container(
+                                                  padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xFFD6382B),
+                                                    borderRadius: BorderRadius.circular(6),
+                                                  ),
+                                                  child: Text('NEW',
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Color(0xFFFFFFFF)
+                                                    ),
+
+                                                  ),
+                                                )
+                                                    :
+                                                Container()
+                                              // new Icon(Icons.brightness_1, size: 6.0,
+                                              //     color:
+                                              //     (alarmDocs[0]['newInvited_friend'] == true)
+                                              //         ?Color(0xFFD32F2F):Colors.white),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                    else if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return  Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: Stack(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () async{
+                                                CustomFullScreenDialog.showDialog();
+                                                try {
+                                                  await _userModelController.deleteInvitationAlarm_friend(uid: _userModelController.uid);
+                                                  await _userModelController.deleteAlarmCenterNoti(uid: _userModelController.uid);
+                                                }catch(e){}
+                                                CustomFullScreenDialog.cancelDialog();
+                                                Get.to(()=>AlarmCenter());
+                                              },
+                                              icon: Image.asset(
+                                                'assets/imgs/icons/icon_noti_off.png',
+                                                scale: 4,
+                                                width: 26,
+                                                height: 26,
+                                              ),
+                                            ),
+                                            Positioned(  // draw a red marble
+                                              top: 10,
+                                              left: 32,
+                                              child: new Icon(Icons.brightness_1, size: 6.0,
+                                                  color:Colors.white),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                    return  Padding(
+                                      padding: const EdgeInsets.only(top: 4),
+                                      child: Stack(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () async{
+                                              CustomFullScreenDialog.showDialog();
+                                              try {
+                                                await _userModelController.deleteInvitationAlarm_friend(uid: _userModelController.uid);
+                                                await _userModelController.deleteAlarmCenterNoti(uid: _userModelController.uid);
+                                              }catch(e){}
+                                              CustomFullScreenDialog.cancelDialog();
+                                              Get.to(()=>AlarmCenter());
+                                            },
+                                            icon: Image.asset(
+                                              'assets/imgs/icons/icon_noti_off.png',
+                                              scale: 4,
+                                              width: 26,
+                                              height: 26,
+                                            ),
+                                          ),
+                                          Positioned(  // draw a red marble
+                                            top: 10,
+                                            left: 32,
+                                            child: new Icon(Icons.brightness_1, size: 6.0,
+                                                color:Colors.white),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
                                 Padding(
                                   padding: const EdgeInsets.only(right: 14),
                                   child: Builder(
@@ -683,17 +853,17 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                               ? OverflowBox(
                                             maxHeight: 40,
                                             maxWidth: 38,
-                                                child: Image.asset(
-                                            'assets/imgs/logos/icon_liveFriend_dot.png',
-                                          ),
-                                              )
+                                            child: Image.asset(
+                                              'assets/imgs/logos/icon_liveFriend_dot.png',
+                                            ),
+                                          )
                                               : OverflowBox(
                                             maxHeight: 40,
                                             maxWidth: 38,
-                                                child: Image.asset(
-                                                'assets/imgs/logos/icon_liveFriend.png',
-                                          ),
-                                              ), // 여기서 아이콘 변경
+                                            child: Image.asset(
+                                              'assets/imgs/logos/icon_liveFriend.png',
+                                            ),
+                                          ), // 여기서 아이콘 변경
                                           onPressed: () {
                                             Scaffold.of(context).openEndDrawer();
                                           },
@@ -1194,10 +1364,10 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                     GestureDetector(
                                                       onTap: () {
                                                         if (_resortModelController.webcamUrl != '') {
-                                                        _urlLauncherController.otherShare(contents: '${_resortModelController.webcamUrl}');
-                                                      } else {
-                                                        null;
-                                                      }
+                                                          _urlLauncherController.otherShare(contents: '${_resortModelController.webcamUrl}');
+                                                        } else {
+                                                          null;
+                                                        }
                                                       },
                                                       child: Column(
                                                         children: [
@@ -1288,43 +1458,43 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                               height: 12,
                                             ),
                                             GestureDetector(
-                                              onTap: (){
-                                                Get.to(()=>Discover_Calendar_Detail_Screen());
-                                              },
+                                                onTap: (){
+                                                  Get.to(()=>Discover_Calendar_Detail_Screen());
+                                                },
                                                 child: DiscoverScreen_Calendar()),
                                             SizedBox(
                                               height: 12,
                                             ),
-                                            GestureDetector(
-                                              onTap: (){
-                                                _bottomTabBarController..changePage(3)..onItemTapped(3);
-                                              },
-                                              child: Container(
-                                                  padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 22),
-                                                  width: double.infinity,
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius: BorderRadius.circular(14)),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                    crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        '라이브톡',
-                                                        style: TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight: FontWeight.bold,
-                                                            color: Color(0xFFC8C8C8)),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      CommentTile_resortHome(),
-                                                    ],
-                                                  )),
-                                            ),
+                                            // GestureDetector(
+                                            //   onTap: (){
+                                            //     _bottomTabBarController..changePage(3)..onItemTapped(3);
+                                            //   },
+                                            //   child: Container(
+                                            //       padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 22),
+                                            //       width: double.infinity,
+                                            //       decoration: BoxDecoration(
+                                            //           color: Colors.white,
+                                            //           borderRadius: BorderRadius.circular(14)),
+                                            //       child: Column(
+                                            //         mainAxisAlignment:
+                                            //         MainAxisAlignment.start,
+                                            //         crossAxisAlignment:
+                                            //         CrossAxisAlignment.start,
+                                            //         children: [
+                                            //           Text(
+                                            //             '라이브톡',
+                                            //             style: TextStyle(
+                                            //                 fontSize: 16,
+                                            //                 fontWeight: FontWeight.bold,
+                                            //                 color: Color(0xFFC8C8C8)),
+                                            //           ),
+                                            //           SizedBox(
+                                            //             height: 20,
+                                            //           ),
+                                            //           CommentTile_resortHome(),
+                                            //         ],
+                                            //       )),
+                                            // ),
                                             SizedBox(
                                               height: 12,
                                             ),
@@ -1950,7 +2120,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                               ? Color(0xFF3D6FED)
                               : Color(0xFFFFFFFF)),
 
-                  ),
+                    ),
                     floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
                     backgroundColor: Color(0xFFF1F1F3),
                     extendBodyBehindAppBar: true,
@@ -2659,44 +2829,44 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                           SizedBox(
                                             height: 12,
                                           ),
-                                          GestureDetector(
-                                            onTap: (){
-                                              _bottomTabBarController..changePage(3)..onItemTapped(3);
-                                            },
-                                            child: Container(
-                                                padding: EdgeInsets.only(
-                                                    left: 20,
-                                                    right: 20,
-                                                    top: 20,
-                                                    bottom: 22),
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        14)),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      '라이브톡',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                          FontWeight.bold,
-                                                          color:
-                                                          Color(0xFFC8C8C8)),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    CommentTile_resortHome(),
-                                                  ],
-                                                )),
-                                          ),
+                                          // GestureDetector(
+                                          //   onTap: (){
+                                          //     _bottomTabBarController..changePage(3)..onItemTapped(3);
+                                          //   },
+                                          //   child: Container(
+                                          //       padding: EdgeInsets.only(
+                                          //           left: 20,
+                                          //           right: 20,
+                                          //           top: 20,
+                                          //           bottom: 22),
+                                          //       width: double.infinity,
+                                          //       decoration: BoxDecoration(
+                                          //           color: Colors.white,
+                                          //           borderRadius:
+                                          //           BorderRadius.circular(
+                                          //               14)),
+                                          //       child: Column(
+                                          //         mainAxisAlignment:
+                                          //         MainAxisAlignment.start,
+                                          //         crossAxisAlignment:
+                                          //         CrossAxisAlignment.start,
+                                          //         children: [
+                                          //           Text(
+                                          //             '라이브톡',
+                                          //             style: TextStyle(
+                                          //                 fontSize: 16,
+                                          //                 fontWeight:
+                                          //                 FontWeight.bold,
+                                          //                 color:
+                                          //                 Color(0xFFC8C8C8)),
+                                          //           ),
+                                          //           SizedBox(
+                                          //             height: 20,
+                                          //           ),
+                                          //           CommentTile_resortHome(),
+                                          //         ],
+                                          //       )),
+                                          // ),
                                           SizedBox(
                                             height: 12,
                                           ),

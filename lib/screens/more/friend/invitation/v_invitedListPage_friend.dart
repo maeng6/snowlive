@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_imageController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import '../../../../controller/vm_alarmCenterController.dart';
 import '../../../../controller/vm_loginController.dart';
 import '../../../../controller/vm_userModelController.dart';
+import '../../../../model/m_alarmCenterModel.dart';
 import '../v_friendDetailPage.dart';
 
 class InvitedListPage_friend extends StatefulWidget {
@@ -19,6 +21,7 @@ class _InvitedListPage_friendState extends State<InvitedListPage_friend> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
+  AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -343,6 +346,13 @@ class _InvitedListPage_friendState extends State<InvitedListPage_friend> {
                                                                 CustomFullScreenDialog.showDialog();
                                                                 await _userModelController.deleteInvitation(friendUid:inviDocs[index]['uid']);
                                                                 await _userModelController.deleteInvitationAlarm_friend(uid:_userModelController.uid);
+                                                                String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendRequestKey];
+                                                                await _alarmCenterController.deleteAlarm(
+                                                                    receiverUid: _userModelController.uid,
+                                                                    senderUid: inviDocs[index]['uid'],
+                                                                    category: alarmCategory,
+                                                                    alarmCount: 'friend'
+                                                                );
                                                                 await _userModelController.getCurrentUser(_userModelController.uid);
                                                                 CustomFullScreenDialog.cancelDialog();
                                                               }catch(e){

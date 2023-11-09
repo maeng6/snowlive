@@ -33,13 +33,11 @@ class BulletinRoomReplyModel {
 
   BulletinRoomReplyModel.fromJson(dynamic json, this.reference) {
     reply = json['reply'];
-    replyLocationUidCount = json['replyLocationUidCount'];
     displayName = json['displayName'];
     profileImageUrl = json['profileImageUrl'];
     timeStamp = json['timeStamp'];
     uid = json['uid'];
     commentCount = json['commentCount'];
-    replyLocationUid = json['replyLocationUid'];
     replyResortNickname = json['replyResortNickname'];
   }
 
@@ -49,9 +47,9 @@ class BulletinRoomReplyModel {
   Future<BulletinRoomReplyModel> getReplyModel(String uid, String replyLocationUid, commentCount, replyLocationUidCount, replyResortNickname) async {
     DocumentReference<Map<String, dynamic>> documentReference = ref
         .collection('bulletinRoom')
-        .doc('$replyLocationUid#$replyLocationUidCount')
+        .doc('$replyLocationUid#$commentCount')
         .collection('reply')
-        .doc('$uid$commentCount');
+        .doc('$uid$replyLocationUidCount');
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
     await documentReference.get();
 
