@@ -1208,6 +1208,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                   commentCount: _userModelController.commentCount);
                                               String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.liveTalkReplyKey];
                                               await _alarmCenterController.sendAlarm(
+                                                  alarmCount: widget.replyCount,
                                                   receiverUid: widget.replyUid,
                                                   senderUid: _userModelController.uid,
                                                   senderDisplayName: _userModelController.displayName,
@@ -1227,7 +1228,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                   bulletinRoomUid :'',
                                                   bulletinRoomCount :'',
                                                   bulletinCrewUid : '',
-                                                  bulletinCrewCount : ''
+                                                  bulletinCrewCount : '',
                                               );
                                               setState(() {
                                               });}catch(e){}

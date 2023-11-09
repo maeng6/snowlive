@@ -1438,6 +1438,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                 commentCount: _userModelController.commentCount);
                                             String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_room];
                                           await _alarmCenterController.sendAlarm(
+                                              alarmCount: _bulletinRoomModelController.bulletinRoomCount,
                                               receiverUid: _bulletinRoomModelController.uid,
                                               senderUid: _userModelController.uid,
                                               senderDisplayName: _userModelController.displayName,

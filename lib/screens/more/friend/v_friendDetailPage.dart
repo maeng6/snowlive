@@ -974,6 +974,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                       await _userModelController.updateInvitationAlarm(friendUid: widget.uid);
                                                                                       String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendRequestKey];
                                                                                       await _alarmCenterController.sendAlarm(
+                                                                                          alarmCount: 'friend',
                                                                                           receiverUid: widget.uid,
                                                                                           senderUid: _userModelController.uid,
                                                                                           senderDisplayName: _userModelController.displayName,
@@ -2761,6 +2762,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                 );
                                                                 String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
                                                                 await _alarmCenterController.sendAlarm(
+                                                                    alarmCount: 'friend',
                                                                     receiverUid: widget.uid,
                                                                     senderUid: _userModelController.uid,
                                                                     senderDisplayName: _userModelController.displayName,
@@ -2796,6 +2798,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                 );
                                                                 String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
                                                                 await _alarmCenterController.sendAlarm(
+                                                                    alarmCount: 'friend',
                                                                     receiverUid: widget.uid,
                                                                     senderUid: _userModelController.uid,
                                                                     senderDisplayName: _userModelController.displayName,
@@ -2845,6 +2848,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                 friendUid: widget.uid);
                                             String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
                                             await _alarmCenterController.sendAlarm(
+                                                alarmCount: 'friend',
                                                 receiverUid: widget.uid,
                                                 senderUid: _userModelController.uid,
                                                 senderDisplayName: _userModelController.displayName,
