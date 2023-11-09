@@ -181,7 +181,7 @@ class SnowliveDetailPage extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: (){
-                          _liveCrewModelController.otherShare(contents: 'http://pf.kakao.com/_LxnDdG/chat');
+                          _urlLauncherController.otherShare(contents: 'http://pf.kakao.com/_LxnDdG/chat');
                         },
                         child: Column(
                           children: [
