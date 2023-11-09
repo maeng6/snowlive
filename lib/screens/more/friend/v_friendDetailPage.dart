@@ -1882,7 +1882,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                                                                                 await _alarmCenterController.deleteAlarm(
                                                                                                                                                                     receiverUid: _userModelController.uid,
                                                                                                                                                                     senderUid: commentDocs[index]['myUid'],
-                                                                                                                                                                    category: alarmCategory
+                                                                                                                                                                    category: alarmCategory,
+                                                                                                                                                                    alarmCount: 'friend'
                                                                                                                                                                 );
                                                                                                                                                               } catch (e) {}
                                                                                                                                                               print('삭제 완료');
@@ -2170,7 +2171,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                                                                               await _alarmCenterController.deleteAlarm(
                                                                                                                                                                   receiverUid: widget.uid,
                                                                                                                                                                   senderUid: _userModelController.uid,
-                                                                                                                                                                  category: alarmCategory
+                                                                                                                                                                  category: alarmCategory,
+                                                                                                                                                                  alarmCount: 'friend'
                                                                                                                                                               );
                                                                                                                                                             } catch (e) {}
                                                                                                                                                             print('친구톡 삭제 완료');

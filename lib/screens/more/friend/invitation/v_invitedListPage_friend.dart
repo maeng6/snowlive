@@ -350,7 +350,8 @@ class _InvitedListPage_friendState extends State<InvitedListPage_friend> {
                                                                 await _alarmCenterController.deleteAlarm(
                                                                     receiverUid: _userModelController.uid,
                                                                     senderUid: inviDocs[index]['uid'],
-                                                                    category: alarmCategory
+                                                                    category: alarmCategory,
+                                                                    alarmCount: 'friend'
                                                                 );
                                                                 await _userModelController.getCurrentUser(_userModelController.uid);
                                                                 CustomFullScreenDialog.cancelDialog();

@@ -53,14 +53,15 @@ class AlarmCenterController extends GetxController {
   Future<void> deleteAlarm({
     required receiverUid,
     required senderUid,
-    required category
+    required category,
+    required alarmCount,
   })
   async {
 
     await ref.collection('alarmCenter')
         .doc('$receiverUid')
         .collection('alarmCenter')
-        .doc('$senderUid$category')
+        .doc('${senderUid}#${category}#${alarmCount}')
         .delete();
 
     await alarmCenterOff(receiverUid: receiverUid);

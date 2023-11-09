@@ -415,7 +415,8 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                                                               await _alarmCenterController.deleteAlarm(
                                                                                                   receiverUid: _userModelController.uid,
                                                                                                   senderUid:  applyDocs[index]['uid'],
-                                                                                                  category: alarmCategory
+                                                                                                  category: alarmCategory,
+                                                                                                  alarmCount: 'crew'
                                                                                               );
                                                                                               await _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
                                                                                               CustomFullScreenDialog.cancelDialog();
