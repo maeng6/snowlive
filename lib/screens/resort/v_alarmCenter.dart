@@ -434,6 +434,11 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
                                       )
                                       Container(
+                                        constraints: BoxConstraints(
+                                            maxWidth:
+                                            (edit == false)
+                                                ? _size.width - 68
+                                                : _size.width - 98),
                                         child: Text(
                                           '"${alarmCenterDocs[index].get('originContent')}"',
                                           maxLines: 1,
@@ -449,6 +454,11 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                         height: 8,
                                       ),
                                         Container(
+                                          constraints: BoxConstraints(
+                                              maxWidth:
+                                              (edit == false)
+                                                  ? _size.width - 68
+                                                  : _size.width - 98),
                                           child: Text(
                                             '${alarmCenterDocs[index].get('content')}',
                                             maxLines: 1,
