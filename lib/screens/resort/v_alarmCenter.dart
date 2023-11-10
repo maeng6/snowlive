@@ -450,6 +450,11 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           ),
                                         ),
                                       ),
+                                      if((alarmCenterDocs[index].get('category') == '라이브톡')
+                                          || (alarmCenterDocs[index].get('category') == '라이브톡익명')
+                                          || (alarmCenterDocs[index].get('category') == '시즌방 게시글')
+                                          || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
+                                      )
                                       SizedBox(
                                         height: 8,
                                       ),
@@ -475,8 +480,16 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                             ),
                                           ),
                                         ),
+                                      if((alarmCenterDocs[index].get('category') == '라이브톡')
+                                          || (alarmCenterDocs[index].get('category') == '라이브톡익명')
+                                          || (alarmCenterDocs[index].get('category') == '시즌방 게시글')
+                                          || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
+                                      )
                                       SizedBox(
-                                        height: 8,
+                                        height: 4,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
                                       ),
                                       Text(_timeStampController.getAgoTime(
                                           alarmCenterDocs[index].get('timeStamp')),
