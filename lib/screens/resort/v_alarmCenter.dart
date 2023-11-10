@@ -411,7 +411,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           constraints: BoxConstraints(
                                               maxWidth:
                                               (edit == false)
-                                                  ? _size.width - 40
+                                                  ? _size.width - 68
                                                   : _size.width - 98),
                                           child: Text(
                                             alarmCenterDocs[index].get('msg'),
@@ -419,7 +419,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                                 fontSize: 15,
-                                                fontWeight: FontWeight.bold,
+                                                fontWeight: FontWeight.normal,
                                                 color: Color(0xFF111111)
                                             ),
                                           ),
@@ -433,20 +433,35 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           || (alarmCenterDocs[index].get('category') == '시즌방 게시글')
                                           || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
                                       )
+                                      Container(
+                                        child: Text(
+                                          '"${alarmCenterDocs[index].get('originContent')}"',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.normal,
+                                              color: Color(0xFF949494)
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
                                         Container(
                                           child: Text(
-                                            '${alarmCenterDocs[index].get('originContent')}',
+                                            '${alarmCenterDocs[index].get('content')}',
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                                 fontSize: 15,
-                                                fontWeight: FontWeight.normal,
+                                                fontWeight: FontWeight.bold,
                                                 color: Color(0xFF111111)
                                             ),
                                           ),
                                         ),
                                       SizedBox(
-                                        height: 6,
+                                        height: 8,
                                       ),
                                       Text(_timeStampController.getAgoTime(
                                           alarmCenterDocs[index].get('timeStamp')),
@@ -460,7 +475,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                 ],
                               ),
                               SizedBox(
-                                width: 10,
+                                width: 4,
                               ),
                               (edit == false)
                                   ? SizedBox.shrink()
