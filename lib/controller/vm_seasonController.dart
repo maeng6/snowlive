@@ -1,11 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:com.snowlive/model/m_userModel.dart';
-import 'package:com.snowlive/screens/login/v_loginpage.dart';
-import '../model/m_resortModel.dart';
 
 class SeasonController extends GetxController{
 
@@ -20,6 +15,8 @@ class SeasonController extends GetxController{
   RxInt? _bulletinCrewLimit = 0.obs;
   RxInt? _bulletinCrewReplyLimit = 0.obs;
   RxInt? _bulletinRoomReplyLimit = 0.obs;
+  RxBool? _open = false.obs;
+  RxList? _open_uidList = [].obs;
 
   String? get currentSeason => _currentSeason!.value;
   int? get liveTalkLimit => _liveTalkLimit!.value;
@@ -29,6 +26,8 @@ class SeasonController extends GetxController{
   int? get bulletinCrewLimit => _bulletinCrewLimit!.value;
   int? get bulletinCrewReplyLimit => _bulletinCrewReplyLimit!.value;
   int? get bulletinRoomReplyLimit => _bulletinRoomReplyLimit!.value;
+  bool? get open => _open!.value;
+  List? get open_uidList => _open_uidList!.value;
 
 
   @override
@@ -41,6 +40,7 @@ class SeasonController extends GetxController{
     await getBulletinCrewLimit();
     await getBulletinCrewReplyLimit();
     await getBulletinRoomReplyLimit();
+    kusbfListener();
     // TODO: implement onInit
     super.onInit();
   }
@@ -116,6 +116,34 @@ class SeasonController extends GetxController{
     await documentReference.get();
     int bulletinRoomReplyLimit = documentSnapshot.get('limit');
     this._bulletinRoomReplyLimit!.value = bulletinRoomReplyLimit;
+  }
+
+  Future<void> getSeasonOpen() async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('Ranking_openControl').doc('${_currentSeason}');
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    bool open = documentSnapshot.get('open');
+    List open_uidList = documentSnapshot.get('open_uidList');
+    this._open!.value = open;
+    this._open_uidList!.value = open_uidList;
+  }
+
+  void kusbfListener() {
+    final DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('Ranking_openControl').doc('${_currentSeason}');
+
+    documentReference.snapshots().listen((DocumentSnapshot<Map<String, dynamic>> snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data();
+        bool open = data!['open'];
+        List open_uidList = data['open_uidList'];
+        this._open!.value = open;
+        this._open_uidList!.value = open_uidList;
+      } else {
+        print('Document does not exist on the database');
+      }
+    }, onError: (error) => print('Listen failed: $error'));
   }
 
 
