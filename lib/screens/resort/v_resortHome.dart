@@ -1466,9 +1466,6 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                   Get.to(()=>Discover_Calendar_Detail_Screen());
                                                 },
                                                 child: DiscoverScreen_Calendar()),
-                                            SizedBox(
-                                              height: 12,
-                                            ),
                                             // GestureDetector(
                                             //   onTap: (){
                                             //     _bottomTabBarController..changePage(3)..onItemTapped(3);
