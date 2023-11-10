@@ -143,7 +143,7 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(2.0),
-                                child: ExtendedImage.asset(
+                                child: ExtendedImage.network(
                                   assetBases,
                                   enableMemoryCache: true,
                                   cacheHeight: 100,

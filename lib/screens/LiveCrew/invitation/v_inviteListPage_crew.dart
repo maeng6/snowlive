@@ -120,7 +120,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
                                     ),
                                     child: Padding(
                                       padding: const EdgeInsets.all(2),
-                                      child: ExtendedImage.asset(
+                                      child: ExtendedImage.network(
                                         assetBases,
                                         enableMemoryCache: true,
                                         shape: BoxShape.rectangle,

@@ -873,7 +873,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                   ),
                                                   width: 90,
                                                   height: 90,
-                                                  child: ExtendedImage.asset(
+                                                  child: ExtendedImage.network(
                                                     assetMyCrew,
                                                     enableMemoryCache: true,
                                                     shape: BoxShape.rectangle,
@@ -1454,7 +1454,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                                       ),
                                                       child: Padding(
                                                         padding: const EdgeInsets.all(2.0),
-                                                        child: ExtendedImage.asset(
+                                                        child: ExtendedImage.network(
                                                           assetBases,
                                                           enableMemoryCache: true,
                                                           shape: BoxShape.rectangle,

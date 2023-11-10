@@ -1361,7 +1361,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                     case LoadState.completed:
                                                                                                       return state.completedWidget;
                                                                                                     case LoadState.failed:
-                                                                                                      return ExtendedImage.asset(
+                                                                                                      return ExtendedImage.network(
                                                                                                         myCrewAsset,
                                                                                                         enableMemoryCache: true,
                                                                                                         shape: BoxShape.rectangle,
@@ -1376,7 +1376,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                               : Container(
                                                                                             width: 42,
                                                                                             height: 42,
-                                                                                            child: ExtendedImage.asset(
+                                                                                            child: ExtendedImage.network(
                                                                                               myCrewAsset,
                                                                                               enableMemoryCache: true,
                                                                                               shape: BoxShape.rectangle,

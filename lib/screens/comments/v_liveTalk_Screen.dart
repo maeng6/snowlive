@@ -1921,6 +1921,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                       child: ExtendedImage.network(
                                                                         chatDocs[index]['livetalkImageUrl'],
                                                                         cache: true,
+                                                                        //cacheHeight: 1600,
                                                                         width: _size.width - 24,
                                                                         height: _size.width - 24,
                                                                         fit: BoxFit.cover,

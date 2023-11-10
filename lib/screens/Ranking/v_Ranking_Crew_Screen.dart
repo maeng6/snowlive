@@ -294,7 +294,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                         case LoadState.completed:
                                                           return state.completedWidget;
                                                         case LoadState.failed:
-                                                          return ExtendedImage.asset(
+                                                          return ExtendedImage.network(
                                                             assetTop1,
                                                             shape: BoxShape.circle,
                                                             borderRadius: BorderRadius.circular(20),
@@ -322,7 +322,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                     ],
                                                   ),
                                                   child: ExtendedImage
-                                                      .asset(
+                                                      .network(
                                                     assetTop1,
                                                     enableMemoryCache: true,
                                                     shape: BoxShape
@@ -422,7 +422,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                         case LoadState.completed:
                                                           return state.completedWidget;
                                                         case LoadState.failed:
-                                                          return ExtendedImage.asset(
+                                                          return ExtendedImage.network(
                                                             assetTop2,
                                                             shape: BoxShape.circle,
                                                             borderRadius: BorderRadius.circular(20),
@@ -450,7 +450,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                     ],
                                                   ),
                                                   child: ExtendedImage
-                                                      .asset(
+                                                      .network(
                                                     assetTop2,
                                                     enableMemoryCache: true,
                                                     shape: BoxShape
@@ -550,7 +550,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                         case LoadState.completed:
                                                           return state.completedWidget;
                                                         case LoadState.failed:
-                                                          return ExtendedImage.asset(
+                                                          return ExtendedImage.network(
                                                             assetTop3,
                                                             shape: BoxShape.circle,
                                                             borderRadius: BorderRadius.circular(20),
@@ -578,7 +578,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                     ],
                                                   ),
                                                   child: ExtendedImage
-                                                      .asset(
+                                                      .network(
                                                     assetTop3,
                                                     enableMemoryCache: true,
                                                     shape: BoxShape
@@ -732,7 +732,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                                       padding: const EdgeInsets
                                                                           .all(2.0),
                                                                       child: ExtendedImage
-                                                                          .asset(
+                                                                          .network(
                                                                         crewLogo.crewLogoAsset,
                                                                         enableMemoryCache: true,
                                                                         shape: BoxShape
@@ -761,7 +761,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                           padding: const EdgeInsets
                                                               .all(2.0),
                                                           child: ExtendedImage
-                                                              .asset(
+                                                              .network(
                                                             crewLogo.crewLogoAsset,
                                                             enableMemoryCache: true,
                                                             shape: BoxShape

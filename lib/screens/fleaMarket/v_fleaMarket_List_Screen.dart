@@ -790,23 +790,14 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                               EdgeInsets.only(
                                                                   top: 8,
                                                                   bottom: 8),
-                                                          child: ExtendedImage
-                                                              .network(
-                                                            chatDocs[index][
-                                                                'itemImagesUrls'][0],
+                                                          child: ExtendedImage.network(chatDocs[index]['itemImagesUrls'][0],
                                                             cache: true,
-                                                            shape: BoxShape
-                                                                .rectangle,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        8),
-                                                            border: Border.all(
-                                                                width: 0.5,
-                                                                color: Color(
-                                                                    0xFFdedede)),
+                                                            shape: BoxShape.rectangle,
+                                                            borderRadius: BorderRadius.circular(8),
+                                                            border: Border.all(width: 0.5, color: Color(0xFFdedede)),
                                                             width: 100,
                                                             height: 100,
+                                                            cacheHeight: 250,
                                                             fit: BoxFit.cover,
                                                           ),
                                                         ),
