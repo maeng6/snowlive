@@ -757,47 +757,38 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                           thickness: 0.5,
                           color: Color(0xFFDEDEDE),
                         ),
-                      Container(
-                        height: 70,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                maxLines: 10,
-                                textAlignVertical: TextAlignVertical.center,
-                                cursorColor: Color(0xff3D6FED),
-                                cursorHeight: 16,
-                                cursorWidth: 2,
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                controller: _kakaoUrlTextEditingController,
-                                strutStyle: StrutStyle(leading: 0.3),
-                                decoration: InputDecoration(
-                                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                                  errorStyle: TextStyle(
-                                    fontSize: 12,
-                                  ),
-                                  labelStyle: TextStyle(
-                                      color: Color(0xff949494)
-                                  ),
-                                  hintStyle:
-                                  TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                  hintText: 'URL을 입력해주세요.',
-                                  labelText: '카카오 오픈채팅 URL',
-                                  border: InputBorder.none,
-                                ),
-                                validator: (val) {
-                                  if (val!.length <= 1000 && val.length >= 0) {
-                                    return null;
-                                  } else {
-                                    return '최대 입력 가능한 글자 수를 초과했습니다.';
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
+                      TextFormField(
+                        maxLines: null,
+                        textInputAction: TextInputAction.newline,
+                        textAlignVertical: TextAlignVertical.center,
+                        keyboardType: TextInputType.multiline,
+                        cursorColor: Color(0xff3D6FED),
+                        cursorHeight: 16,
+                        cursorWidth: 2,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        controller: _kakaoUrlTextEditingController,
+                        strutStyle: StrutStyle(leading: 0.3),
+                        decoration: InputDecoration(
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          errorStyle: TextStyle(
+                            fontSize: 12,
+                          ),
+                          labelStyle: TextStyle(
+                              color: Color(0xff949494)
+                          ),
+                          hintStyle:
+                          TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                          hintText: 'URL을 입력해주세요.',
+                          labelText: '카카오 오픈채팅 URL',
+                          border: InputBorder.none,
                         ),
+                        validator: (val) {
+                          if (val!.length <= 1000 && val.length >= 0) {
+                            return null;
+                          } else {
+                            return '최대 입력 가능한 글자 수를 초과했습니다.';
+                          }
+                        },
                       ),
                       Container(
                         height: _size.height-500,
