@@ -11,42 +11,42 @@ class CrewLogoModel {
 List<CrewLogoModel> crewLogoList = [
   CrewLogoModel(
     crewColor: 4294944821,
-    crewLogoAsset : 'assets/imgs/profile/img_crew_profile_1.png'
+    crewLogoAsset : 'https://i.esdrop.com/d/f/yytYSNBROy/G017nvg1rV.png'
   ),
   CrewLogoModel(
       crewColor: 4281251583,
-      crewLogoAsset : 'assets/imgs/profile/img_crew_profile_2.png'
+      crewLogoAsset : 'https://i.esdrop.com/d/f/yytYSNBROy/MhoKgYVdel.png'
   ),
   CrewLogoModel(
       crewColor: 4294923424,
-      crewLogoAsset : 'assets/imgs/profile/img_crew_profile_3.png'
+      crewLogoAsset : 'https://i.esdrop.com/d/f/yytYSNBROy/ecIhTcQfBC.png'
   ),
   CrewLogoModel(
       crewColor: 4279286664,
-      crewLogoAsset : 'assets/imgs/profile/img_crew_profile_4.png'
+      crewLogoAsset : 'https://i.esdrop.com/d/f/yytYSNBROy/3Z334m5Bf3.png'
   ),
   CrewLogoModel(
       crewColor: 4289819647,
-      crewLogoAsset : 'assets/imgs/profile/img_crew_profile_5.png'
+      crewLogoAsset : 'https://i.esdrop.com/d/f/yytYSNBROy/AEc8rqvTTO.png'
   ),
   CrewLogoModel(
       crewColor: 4294926104,
-      crewLogoAsset : 'assets/imgs/profile/img_crew_profile_6.png'
+      crewLogoAsset : 'https://i.esdrop.com/d/f/yytYSNBROy/R3kA6TprLZ.png'
   ),
   CrewLogoModel(
       crewColor: 4281495286,
-      crewLogoAsset : 'assets/imgs/profile/img_crew_profile_7.png'
+      crewLogoAsset : 'https://i.esdrop.com/d/f/yytYSNBROy/pXOiCC6n3G.png'
   ),
   CrewLogoModel(
       crewColor: 4293853289,
-      crewLogoAsset : 'assets/imgs/profile/img_crew_profile_8.png'
+      crewLogoAsset : 'https://i.esdrop.com/d/f/yytYSNBROy/lBsRF5aLqb.png'
   ),
   CrewLogoModel(
       crewColor: 4278295928,
-      crewLogoAsset : 'assets/imgs/profile/img_crew_profile_9.png'
+      crewLogoAsset : 'https://i.esdrop.com/d/f/yytYSNBROy/zvA5hiKedr.png'
   ),
   CrewLogoModel(
       crewColor: 4286000851,
-      crewLogoAsset : 'assets/imgs/profile/img_crew_profile_10.png'
+      crewLogoAsset : 'https://i.esdrop.com/d/f/yytYSNBROy/XJyCNPi4nS.png'
   ),
 ];

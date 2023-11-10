@@ -49,7 +49,12 @@ class AlarmCenterController extends GetxController {
         'alarmCount' : alarmCount,
       });
 
-      await alarmCenterOn(receiverUid: receiverUid);
+      if(auth.currentUser!.uid != receiverUid){
+        await alarmCenterOn(receiverUid: receiverUid);
+      }
+
+
+
 
   }
 

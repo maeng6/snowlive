@@ -38,7 +38,7 @@ class NoPageScreen extends StatelessWidget {
                   SizedBox(height: 16),
                   Center(
                     child: Text(
-                      '게시물이 존재하지않습니다.',
+                      '게시물이 존재하지 않습니다.',
                       style: TextStyle(
                           fontSize: 14,
                           color: Color(0xFF666666)),

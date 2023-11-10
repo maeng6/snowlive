@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_bottomTabBarController.dart';
 import 'package:com.snowlive/controller/vm_loginController.dart';
+import 'package:com.snowlive/screens/Ranking/v_ranking_commingSoon_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_liveMapController.dart';
@@ -9,6 +10,7 @@ import 'package:com.snowlive/screens/comments/v_liveTalk_Screen.dart';
 import 'package:com.snowlive/screens/resort/v_resortHome.dart';
 import '../controller/vm_noticeController.dart';
 import '../controller/vm_rankingTierModelController.dart';
+import '../controller/vm_seasonController.dart';
 import '../controller/vm_userModelController.dart';
 import 'fleaMarket/v_fleaMarket_Screen.dart';
 import 'more/v_moreTab.dart';
@@ -52,6 +54,7 @@ class _MainHomeState extends State<MainHome> {
     BottomTabBarController _bottomTabBarController = Get.find<BottomTabBarController>();
     PageControllerManager _pageControllerManager = Get.find<PageControllerManager>();
     LoginController _loginController = Get.find<LoginController>();
+    SeasonController _seasonController = Get.find<SeasonController>();
     //TODO: Dependency Injection************************************************
 
 
@@ -235,10 +238,13 @@ class _MainHomeState extends State<MainHome> {
           children: [
             ResortHome(),
             FleaMarketScreen(),
-            RankingHome(),
+            (_seasonController.open ==true || _seasonController.open_uidList!.contains(_userModelController.uid))
+            ? RankingHome()
+            : Ranking_CommingSoon_Screen(),
             LiveTalkScreen(),
             MoreTab(),
           ],
-        )));
+        )
+    ));
   }
 }

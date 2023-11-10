@@ -163,7 +163,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                   ),
                                                   width: 80,
                                                   height: 80,
-                                                  child: ExtendedImage.asset(
+                                                  child: ExtendedImage.network(
                                                     assetCrew,
                                                     enableMemoryCache: true,
                                                     shape: BoxShape.rectangle,

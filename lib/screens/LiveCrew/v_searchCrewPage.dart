@@ -356,7 +356,7 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                         borderRadius: BorderRadius.circular(8),
                                         fit: BoxFit.cover,
                                       )
-                                          : ExtendedImage.asset(
+                                          : ExtendedImage.network(
                                         assetFoundCrew,
                                         enableMemoryCache: true,
                                         borderRadius: BorderRadius.circular(8),

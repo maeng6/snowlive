@@ -324,7 +324,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                               ),
                                               child: Padding(
                                                 padding: const EdgeInsets.all(2.0),
-                                                child: ExtendedImage.asset(
+                                                child: ExtendedImage.network(
                                                   assetBases,
                                                   enableMemoryCache: true,
                                                   shape: BoxShape.rectangle,
@@ -348,7 +348,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                     ),
                                     child: Padding(
                                       padding: const EdgeInsets.all(2.0),
-                                      child: ExtendedImage.asset(
+                                      child: ExtendedImage.network(
                                         assetBases,
                                         enableMemoryCache: true,
                                         shape: BoxShape.rectangle,
