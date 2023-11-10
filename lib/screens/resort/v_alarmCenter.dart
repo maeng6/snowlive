@@ -73,7 +73,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 14),
+            padding: const EdgeInsets.only(right: 16),
             child:
             (edit == false)
             ? GestureDetector(
@@ -82,10 +82,12 @@ class _AlarmCenterState extends State<AlarmCenter> {
                     edit = true;
                   });
                 },
-                child: Text('편집',
-                  style: TextStyle(
-                    color: Colors.black
-                  ),
+                child: Row(
+                  children: [
+                    Text('편집',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF3D83ED)),
+                    ),
+                  ],
                 )
             )
             :Row(
@@ -138,12 +140,10 @@ class _AlarmCenterState extends State<AlarmCenter> {
                     ));
                   },
                   child: Text('모두 지우기',
-                    style: TextStyle(
-                        color: Colors.black
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF3D83ED)),
                   ),
                 ),
-                SizedBox(width: 20,),
+                SizedBox(width: 14,),
                 GestureDetector(
                   onTap: (){
                     setState(() {
@@ -151,9 +151,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                     });
                   },
                   child: Text('닫기',
-                    style: TextStyle(
-                        color: Colors.black
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF111111)),
                   ),
                 ),
               ],
@@ -171,7 +169,10 @@ class _AlarmCenterState extends State<AlarmCenter> {
         builder: (context,
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
 
-          if (snapshot.connectionState == ConnectionState.waiting) {return Center(
+          Size _size = MediaQuery.of(context).size;
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
             child: CircularProgressIndicator(),
           );}
           if (snapshot.hasError) {
@@ -181,178 +182,309 @@ class _AlarmCenterState extends State<AlarmCenter> {
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty ) {
             return Container(
-              child: Text(
-                "데이터가 없습니다",
-                style: TextStyle(
-                  color: Color(0xFF949494),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ExtendedImage.asset(
+                      'assets/imgs/icons/icon_alarm_nodata.png',
+                      enableMemoryCache: true,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(7),
+                      width: 80,
+                      fit: BoxFit.cover,
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Text(
+                      "새로운 알림이 없어요",
+                      style: TextStyle(
+                        color: Color(0xFF949494),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              color: Colors.red,
             );
           }
           final alarmCenterDocs = snapshot.data!.docs;
-          Size _size = MediaQuery.of(context).size;
-            return ListView.builder(
-              itemCount: alarmCenterDocs.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () async {
-                    if (edit == false) {
-                      if (alarmCenterDocs[index].get('category') == '친구요청') {
-                        Get.to(() => InvitationScreen_friend());
-                      }
-                      if ( alarmCenterDocs[index].get('category') == '라이브톡'
-                          || alarmCenterDocs[index].get('category') == '라이브톡익명') {
+            return Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: ListView.builder(
+                itemCount: alarmCenterDocs.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () async {
+                      if (edit == false) {
+                        if (alarmCenterDocs[index].get('category') == '친구요청') {
+                          Get.to(() => InvitationScreen_friend());
+                        }
+                        if ( alarmCenterDocs[index].get('category') == '라이브톡'
+                            || alarmCenterDocs[index].get('category') == '라이브톡익명') {
 
-                        try {
-                          CustomFullScreenDialog.showDialog();
-                          await _commentModelController.getCurrentLiveTalk(
-                              uid: alarmCenterDocs[index].get('liveTalk_uid'),
-                              commentCount: alarmCenterDocs[index].get('liveTalk_commentCount'));
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.to(() =>
-                              ReplyScreen(
-                                replyUid: _commentModelController.uid,
-                                replyCount: _commentModelController.commentCount,
-                                replyImage: _commentModelController.profileImageUrl,
-                                replyDisplayName: _commentModelController.displayName,
-                                replyResortNickname: _commentModelController.resortNickname,
-                                comment: _commentModelController.comment,
-                                commentTime: _commentModelController.timeStamp,
-                                kusbf: _commentModelController.kusbf,
-                                replyLiveTalkImageUrl: _commentModelController.livetalkImageUrl,
-                              ));
-                        }catch(e){
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.to(() => NoPageScreen());
+                          try {
+                            CustomFullScreenDialog.showDialog();
+                            await _commentModelController.getCurrentLiveTalk(
+                                uid: alarmCenterDocs[index].get('liveTalk_uid'),
+                                commentCount: alarmCenterDocs[index].get('liveTalk_commentCount'));
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.to(() =>
+                                ReplyScreen(
+                                  replyUid: _commentModelController.uid,
+                                  replyCount: _commentModelController.commentCount,
+                                  replyImage: _commentModelController.profileImageUrl,
+                                  replyDisplayName: _commentModelController.displayName,
+                                  replyResortNickname: _commentModelController.resortNickname,
+                                  comment: _commentModelController.comment,
+                                  commentTime: _commentModelController.timeStamp,
+                                  kusbf: _commentModelController.kusbf,
+                                  replyLiveTalkImageUrl: _commentModelController.livetalkImageUrl,
+                                ));
+                          }catch(e){
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.to(() => NoPageScreen());
+                          }
                         }
-                      }
-                      if (alarmCenterDocs[index].get('category') == '크루 가입신청') {
-                        Get.to(() => LiveCrewHome());
-                      }
-                      if (alarmCenterDocs[index].get('category') == '시즌방 게시글') {
-                        try {
-                          CustomFullScreenDialog.showDialog();
-                          await _bulletinRoomModelController.getCurrentBulletinRoom(
-                              uid: alarmCenterDocs[index].get('bulletinRoomUid'),
-                              bulletinRoomCount: alarmCenterDocs[index].get('bulletinRoomCount')
-                          );
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.to(() => Bulletin_Room_List_Detail());
-                        }catch(e){
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.to(() => NoPageScreen());
+                        if (alarmCenterDocs[index].get('category') == '크루 가입신청') {
+                          Get.to(() => LiveCrewHome());
                         }
-                      }
-                      if (alarmCenterDocs[index].get('category') == '단톡방·동호회 글') {
-                        try {
-                          CustomFullScreenDialog.showDialog();
-                          await _bulletinCrewModelController.getCurrentBulletinCrew(
-                              uid: alarmCenterDocs[index].get('bulletinCrewUid'),
-                              bulletinCrewCount: alarmCenterDocs[index].get('bulletinCrewCount')
-                          );
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.to(() => Bulletin_Crew_List_Detail());
-                        }catch(e){
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.to(() => NoPageScreen());
+                        if (alarmCenterDocs[index].get('category') == '시즌방 게시글') {
+                          try {
+                            CustomFullScreenDialog.showDialog();
+                            await _bulletinRoomModelController.getCurrentBulletinRoom(
+                                uid: alarmCenterDocs[index].get('bulletinRoomUid'),
+                                bulletinRoomCount: alarmCenterDocs[index].get('bulletinRoomCount')
+                            );
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.to(() => Bulletin_Room_List_Detail());
+                          }catch(e){
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.to(() => NoPageScreen());
+                          }
                         }
+                        if (alarmCenterDocs[index].get('category') == '단톡방·동호회 글') {
+                          try {
+                            CustomFullScreenDialog.showDialog();
+                            await _bulletinCrewModelController.getCurrentBulletinCrew(
+                                uid: alarmCenterDocs[index].get('bulletinCrewUid'),
+                                bulletinCrewCount: alarmCenterDocs[index].get('bulletinCrewCount')
+                            );
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.to(() => Bulletin_Crew_List_Detail());
+                          }catch(e){
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.to(() => NoPageScreen());
+                          }
+                        }
+                        if (alarmCenterDocs[index].get('category') == '친구톡') {
+                          try {
+                            Get.to(() =>
+                                FriendDetailPage(
+                                    uid: _userModelController.uid,
+                                    favoriteResort: _userModelController
+                                        .favoriteResort
+                                ));
+                          }catch(e){
+                            Get.to(() => NoUserScreen());
+                          }
+                        }
+                      } else {
+                        await _alarmCenterController.deleteAlarm(
+                            receiverUid: alarmCenterDocs[index].get('receiverUid'),
+                            senderUid: alarmCenterDocs[index].get('senderUid'),
+                            category: alarmCenterDocs[index].get('category'),
+                            alarmCount: alarmCenterDocs[index].get('alarmCount')
+                        );
                       }
-                      if (alarmCenterDocs[index].get('category') == '친구톡') {
-                        Get.to(() => FriendDetailPage(
-                                uid: _userModelController.uid,
-                                favoriteResort: _userModelController.favoriteResort
-                            ));
-                      }
-                    } else {
-                      await _alarmCenterController.deleteAlarm(
-                          receiverUid: alarmCenterDocs[index].get(
-                              'receiverUid'),
-                          senderUid: alarmCenterDocs[index].get('senderUid'),
-                          category: alarmCenterDocs[index].get('category'),
-                          alarmCount: alarmCenterDocs[index].get('alarmCount')
-                      );
-                    }
-                  },
-                  child: Container(
-                    padding: EdgeInsets.only(left: 16, right: 16),
-                    color: Colors.transparent,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if((alarmCenterDocs[index].get('category') == '라이브톡')
-                                    || (alarmCenterDocs[index].get('category') == '라이브톡익명')
-                                    || (alarmCenterDocs[index].get('category') == '시즌방 게시글')
-                                    || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
-                                )
-                                Container(
-                                  constraints: BoxConstraints(
-                                      maxWidth: _size.width - 80),
-                                  child: Text(
-                                    '원문 : ${alarmCenterDocs[index].get('originContent')}',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF111111)
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(left: 16, right: 16),
+                      color: Colors.transparent,
+                      child: Column(
+                        children: [
+                          if(_userModelController.uid != alarmCenterDocs[index].get('senderUid'))
+                            Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if((alarmCenterDocs[index].get('category') == '라이브톡'))
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: ExtendedImage.asset(
+                                        'assets/imgs/icons/icon_alarm_livetalk.png',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(7),
+                                        width: 24,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                Container(
-                                  constraints: BoxConstraints(
-                                      maxWidth: _size.width - 80),
-                                  child: Text(
-                                    alarmCenterDocs[index].get('msg'),
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF111111)
+
+                                  if((alarmCenterDocs[index].get('category') == '라이브톡익명'))
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: ExtendedImage.asset(
+                                        'assets/imgs/icons/icon_alarm_livetalk.png',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(7),
+                                        width: 24,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
+
+                                  if((alarmCenterDocs[index].get('category') == '시즌방 게시글'))
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: ExtendedImage.asset(
+                                        'assets/imgs/icons/icon_alarm_community.png',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(7),
+                                        width: 24,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+
+                                  if((alarmCenterDocs[index].get('category') == '단톡방·동호회 글'))
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: ExtendedImage.asset(
+                                        'assets/imgs/icons/icon_alarm_community.png',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(7),
+                                        width: 24,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+
+                                  if((alarmCenterDocs[index].get('category') == '친구요청'))
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: ExtendedImage.asset(
+                                        'assets/imgs/icons/icon_alarm_friend.png',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(7),
+                                        width: 24,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+
+                                  if((alarmCenterDocs[index].get('category') == '크루 가입신청'))
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: ExtendedImage.asset(
+                                        'assets/imgs/icons/icon_alarm_crew.png',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(7),
+                                        width: 24,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+
+                                  if((alarmCenterDocs[index].get('category') == '친구톡'))
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: ExtendedImage.asset(
+                                        'assets/imgs/icons/icon_alarm_friend.png',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(7),
+                                        width: 24,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 2),
+                                        child: Container(
+                                          constraints: BoxConstraints(
+                                              maxWidth:
+                                              (edit == false)
+                                                  ? _size.width - 40
+                                                  : _size.width - 98),
+                                          child: Text(
+                                            alarmCenterDocs[index].get('msg'),
+                                            maxLines: 3,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF111111)
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      if((alarmCenterDocs[index].get('category') == '라이브톡')
+                                          || (alarmCenterDocs[index].get('category') == '라이브톡익명')
+                                          || (alarmCenterDocs[index].get('category') == '시즌방 게시글')
+                                          || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
+                                      )
+                                        Container(
+                                          child: Text(
+                                            '${alarmCenterDocs[index].get('originContent')}',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.normal,
+                                                color: Color(0xFF111111)
+                                            ),
+                                          ),
+                                        ),
+                                      SizedBox(
+                                        height: 6,
+                                      ),
+                                      Text(_timeStampController.getAgoTime(
+                                          alarmCenterDocs[index].get('timeStamp')),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            color: Color(0xFF949494),
+                                            fontSize: 13
+                                        ),),
+                                    ],
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 6,
-                                ),
-                                Text(_timeStampController.getAgoTime(
-                                    alarmCenterDocs[index].get('timeStamp')),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                      color: Color(0xFF949494),
-                                      fontSize: 14
-                                  ),),
-                              ],
-                            ),
-                            SizedBox(
-                              width: 12,
-                            ),
-                            (edit == false)
-                                ? Image.asset(
-                              'assets/imgs/icons/icon_arrow_g.png',
-                              height: 24,
-                              width: 24,
-                            )
-                                : Icon(Icons.cancel_outlined)
-                          ],
-                        ),
-                        if (alarmCenterDocs.length != index + 1)
-                          Divider(
-                            height: 50,
-                            thickness: 0.5,
+                                ],
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              (edit == false)
+                                  ? SizedBox.shrink()
+                                  : Padding(
+                                    padding: const EdgeInsets.only(top: 1),
+                                    child: ExtendedImage.asset(
+                                    'assets/imgs/icons/icon_profile_delete.png',
+                                    scale: 5,
+                              width: 20),
+                                  ),
+                            ],
                           ),
-                      ],
+                          if (alarmCenterDocs.length != index + 1)
+                            Divider(
+                              height: 40,
+                              color: Color(0xFFffffff),
+                              thickness: 0.5,
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             );
         },
       ),

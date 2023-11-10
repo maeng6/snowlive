@@ -701,11 +701,12 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 CustomFullScreenDialog.cancelDialog();
                                                 Get.to(()=>AlarmCenter());
                                               },
-                                              icon: Image.asset(
-                                                'assets/imgs/icons/icon_noti_off.png',
-                                                scale: 4,
-                                                width: 26,
-                                                height: 26,
+                                              icon: OverflowBox(
+                                                maxHeight: 42,
+                                                maxWidth: 42,
+                                                child: Image.asset(
+                                                  'assets/imgs/icons/icon_alarm.png',
+                                                  ),
                                               ),
                                             ),
                                             Positioned(  // draw a red marble
@@ -727,7 +728,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                         alarmIsActive = false;
                                       }
                                       return  Padding(
-                                        padding: const EdgeInsets.only(top: 4),
+                                        padding: const EdgeInsets.only(top: 6),
                                         child: Stack(
                                           children: [
                                             IconButton(
@@ -740,15 +741,16 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 CustomFullScreenDialog.cancelDialog();
                                                 Get.to(()=>AlarmCenter());
                                               },
-                                              icon: Image.asset(
-                                                'assets/imgs/icons/icon_noti_off.png',
-                                                scale: 4,
-                                                width: 26,
-                                                height: 26,
+                                              icon: OverflowBox(
+                                                maxHeight: 42,
+                                                maxWidth: 42,
+                                                child: Image.asset(
+                                                  'assets/imgs/icons/icon_alarm.png',
+                                                ),
                                               ),
                                             ),
                                             Positioned(  // draw a red marble
-                                                top: 6,
+                                                top: 2,
                                                 right: 0,
                                                 child:
                                                 (alarmIsActive)
@@ -780,7 +782,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                     }
                                     else if (snapshot.connectionState == ConnectionState.waiting) {
                                       return  Padding(
-                                        padding: const EdgeInsets.only(top: 4),
+                                        padding: const EdgeInsets.only(top: 6),
                                         child: Stack(
                                           children: [
                                             IconButton(
@@ -793,16 +795,17 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 CustomFullScreenDialog.cancelDialog();
                                                 Get.to(()=>AlarmCenter());
                                               },
-                                              icon: Image.asset(
-                                                'assets/imgs/icons/icon_noti_off.png',
-                                                scale: 4,
-                                                width: 26,
-                                                height: 26,
+                                              icon: OverflowBox(
+                                                maxHeight: 42,
+                                                maxWidth: 42,
+                                                child: Image.asset(
+                                                  'assets/imgs/icons/icon_alarm.png',
+                                                ),
                                               ),
                                             ),
                                             Positioned(  // draw a red marble
-                                              top: 10,
-                                              left: 32,
+                                              top: 2,
+                                              left: 0,
                                               child: new Icon(Icons.brightness_1, size: 6.0,
                                                   color:Colors.white),
                                             )
@@ -811,7 +814,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                       );
                                     }
                                     return  Padding(
-                                      padding: const EdgeInsets.only(top: 4),
+                                      padding: const EdgeInsets.only(top: 6),
                                       child: Stack(
                                         children: [
                                           IconButton(
@@ -824,15 +827,16 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                               CustomFullScreenDialog.cancelDialog();
                                               Get.to(()=>AlarmCenter());
                                             },
-                                            icon: Image.asset(
-                                              'assets/imgs/icons/icon_noti_off.png',
-                                              scale: 4,
-                                              width: 26,
-                                              height: 26,
+                                            icon: OverflowBox(
+                                              maxHeight: 40,
+                                              maxWidth: 40,
+                                              child: Image.asset(
+                                                'assets/imgs/icons/icon_alarm.png',
+                                              ),
                                             ),
                                           ),
                                           Positioned(  // draw a red marble
-                                            top: 10,
+                                            top: 0,
                                             left: 32,
                                             child: new Icon(Icons.brightness_1, size: 6.0,
                                                 color:Colors.white),
@@ -843,7 +847,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                   },
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 14),
+                                  padding: const EdgeInsets.only(left: 6, right: 14),
                                   child: Builder(
                                     builder: (BuildContext context) {
                                       return Padding(
