@@ -94,18 +94,18 @@ class _EventPageState extends State<EventPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFCBE0FF),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text('${eventDocs[index]['category']}',
-                                  style: TextStyle(
+                              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Color(0xFFCBE0FF),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text('${eventDocs[index]['category']}',
+                                style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
                                     color: Color(0xFF3D83ED)
-                                  ),
-                                ),),
+                                ),
+                              ),),
                             SizedBox(
                               height: 16,
                             ),
@@ -129,7 +129,7 @@ class _EventPageState extends State<EventPage> {
                             SizedBox(
                               height: 20,
                             ),
-                            Text('${eventDocs[index]['description']}',
+                            SelectableText('${eventDocs[index]['description']}',
                               style: TextStyle(
                                   fontWeight: FontWeight.normal,
                                   fontSize: 15,
@@ -177,11 +177,11 @@ class _EventPageState extends State<EventPage> {
                                     )
                                 ),
                               ),
-                        if (eventDocs.length != index+1)
-                        Divider(
-                        height: 100,
-                        thickness: 0.5,
-                        ),
+                            if (eventDocs.length != index+1)
+                              Divider(
+                                height: 100,
+                                thickness: 0.5,
+                              ),
                           ],
                         );
                       }

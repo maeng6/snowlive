@@ -1215,14 +1215,15 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                   ),
                                                                                 SizedBox(
                                                                                     width: 8),
-                                                                                Text(_isTabKusbf == true
-                                                                                    ? '${_userModelController.kusbfNameMap[chatDocs[index].get('liveCrew')]}'
-                                                                                    : chatDocs[index].get('resortNickname'),
-                                                                                  style: TextStyle(
-                                                                                      fontWeight: FontWeight.w300,
-                                                                                      fontSize: 12,
-                                                                                      color: Color(0xFF949494)),
-                                                                                ),
+                                                                                if(chatDocs[index]['displayName'] != 'SNOWLIVE')
+                                                                                  Text(_isTabKusbf == true
+                                                                                      ? '${_userModelController.kusbfNameMap[chatDocs[index].get('liveCrew')]}'
+                                                                                      : chatDocs[index].get('resortNickname'),
+                                                                                    style: TextStyle(
+                                                                                        fontWeight: FontWeight.w300,
+                                                                                        fontSize: 12,
+                                                                                        color: Color(0xFF949494)),
+                                                                                  ),
 
                                                                               ],
                                                                             )
@@ -1949,10 +1950,8 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                       Container(
                                                                         constraints: BoxConstraints(
                                                                             maxWidth: _size.width - 56),
-                                                                        child: Text(
+                                                                        child: SelectableText(
                                                                           chatDocs[index].get('comment'),
-                                                                          maxLines: 1000,
-                                                                          overflow: TextOverflow.ellipsis,
                                                                           style: TextStyle(
                                                                               color: Color(0xFF111111),
                                                                               fontWeight: FontWeight.normal,
