@@ -13,8 +13,10 @@ class SeasonController extends GetxController{
   RxInt? _fleaMarketLimit = 0.obs;
   RxInt? _bulletinRoomLimit = 0.obs;
   RxInt? _bulletinCrewLimit = 0.obs;
+  RxInt? _bulletinFreeLimit = 0.obs;
   RxInt? _bulletinCrewReplyLimit = 0.obs;
   RxInt? _bulletinRoomReplyLimit = 0.obs;
+  RxInt? _bulletinFreeReplyLimit = 0.obs;
   RxBool? _open = false.obs;
   RxList? _open_uidList = [].obs;
 
@@ -24,8 +26,10 @@ class SeasonController extends GetxController{
   int? get fleaMarketLimit => _fleaMarketLimit!.value;
   int? get bulletinRoomLimit => _bulletinRoomLimit!.value;
   int? get bulletinCrewLimit => _bulletinCrewLimit!.value;
+  int? get bulletinFreeLimit => _bulletinFreeLimit!.value;
   int? get bulletinCrewReplyLimit => _bulletinCrewReplyLimit!.value;
   int? get bulletinRoomReplyLimit => _bulletinRoomReplyLimit!.value;
+  int? get bulletinFreeReplyLimit => _bulletinFreeReplyLimit!.value;
   bool? get open => _open!.value;
   List? get open_uidList => _open_uidList!.value;
 
@@ -38,8 +42,10 @@ class SeasonController extends GetxController{
     await getFleaMarketLimit();
     await getBulletinRoomLimit();
     await getBulletinCrewLimit();
+    await getBulletinFreeLimit();
     await getBulletinCrewReplyLimit();
     await getBulletinRoomReplyLimit();
+    await getBulletinFreeReplyLimit();
     kusbfListener();
     // TODO: implement onInit
     super.onInit();
@@ -100,6 +106,15 @@ class SeasonController extends GetxController{
     this._bulletinCrewLimit!.value = bulletinCrewLimit;
   }
 
+  Future<void> getBulletinFreeLimit() async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('bulletinFreeLimit').doc('1');
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    int bulletinFreeLimit = documentSnapshot.get('limit');
+    this._bulletinFreeLimit!.value = bulletinFreeLimit;
+  }
+
   Future<void> getBulletinCrewReplyLimit() async {
     DocumentReference<Map<String, dynamic>> documentReference =
     ref.collection('bulletinCrewReplyLimit').doc('1');
@@ -116,6 +131,15 @@ class SeasonController extends GetxController{
     await documentReference.get();
     int bulletinRoomReplyLimit = documentSnapshot.get('limit');
     this._bulletinRoomReplyLimit!.value = bulletinRoomReplyLimit;
+  }
+
+  Future<void> getBulletinFreeReplyLimit() async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('bulletinFreeReplyLimit').doc('1');
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    int bulletinFreeReplyLimit = documentSnapshot.get('limit');
+    this._bulletinFreeReplyLimit!.value = bulletinFreeReplyLimit;
   }
 
   Future<void> getSeasonOpen() async {

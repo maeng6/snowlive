@@ -1448,6 +1448,8 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                               bulletinRoomCount : _bulletinRoomModelController.bulletinRoomCount,
                                               bulletinCrewUid : '',
                                               bulletinCrewCount : '',
+                                              bulletinFreeUid : '',
+                                              bulletinFreeCount : '',
                                               originContent: _bulletinRoomModelController.title
 
                                           );

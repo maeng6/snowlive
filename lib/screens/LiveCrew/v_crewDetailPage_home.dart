@@ -66,7 +66,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
               return SizedBox.shrink();
             }
             else if(snapshot.connectionState == ConnectionState.waiting){
-              return CircularProgressIndicator();
+              return SizedBox.shrink();
             }
             else if (snapshot.data!.docs.isNotEmpty) {
               final crewDocs = snapshot.data!.docs;
@@ -1587,6 +1587,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                         bulletinRoomCount :'',
                                                                         bulletinCrewUid : '',
                                                                         bulletinCrewCount : '',
+                                                                        bulletinFreeUid : '',
+                                                                        bulletinFreeCount : '',
                                                                         originContent: 'crew'
                                                                     );
                                                                     await _userModelController.getCurrentUser(_userModelController.uid);

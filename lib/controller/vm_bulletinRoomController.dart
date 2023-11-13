@@ -81,7 +81,7 @@ class BulletinRoomModelController extends GetxController {
     print('$uid#$bulletinRoomCount');
     for (int i = imageCount-1; i > -1; i--) {
       print('#$i.jpg');
-    await FirebaseStorage.instance.ref().child('images/bulletinRoom/$uid#$bulletinRoomCount/#$i.jpg').delete();
+      await FirebaseStorage.instance.ref().child('images/bulletinRoom/$uid#$bulletinRoomCount/#$i.jpg').delete();
     }
   }
 
@@ -228,5 +228,3 @@ class BulletinRoomModelController extends GetxController {
 
 
 }
-
-
