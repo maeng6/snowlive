@@ -11,6 +11,7 @@ import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_bulletinCrewController.dart';
 import '../../../controller/vm_bulletinCrewReplyController.dart';
+import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_alarmCenterModel.dart';
 import '../../comments/v_profileImageScreen.dart';
 import '../../more/friend/v_friendDetailPage.dart';
@@ -697,8 +698,8 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                     case LoadState.completed:
                                                                       return state.completedWidget;
                                                                     case LoadState.failed:
-                                                                      return ExtendedImage.asset(
-                                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                                      return ExtendedImage.network(
+                                                                        '${profileImgUrlList[0].default_round}',
                                                                         shape: BoxShape.circle,
                                                                         borderRadius: BorderRadius.circular(20),
                                                                         width: 20,
@@ -717,8 +718,8 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                             onTap: (){
                                                               Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
                                                             },
-                                                            child: ExtendedImage.asset(
-                                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                                            child: ExtendedImage.network(
+                                                              '${profileImgUrlList[0].default_round}',
                                                               shape: BoxShape.circle,
                                                               borderRadius:
                                                               BorderRadius.circular(20),
@@ -979,8 +980,8 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                             case LoadState.completed:
                                                                                                               return state.completedWidget;
                                                                                                             case LoadState.failed:
-                                                                                                              return ExtendedImage.asset(
-                                                                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                              return ExtendedImage.network(
+                                                                                                                '${profileImgUrlList[0].default_round}',
                                                                                                                 shape: BoxShape.circle,
                                                                                                                 borderRadius: BorderRadius.circular(20),
                                                                                                                 width: 26,
@@ -1002,8 +1003,8 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                   },
                                                                                                   child: Padding(
                                                                                                     padding: const EdgeInsets.only(bottom: 8),
-                                                                                                    child: ExtendedImage.asset(
-                                                                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                    child: ExtendedImage.network(
+                                                                                                      '${profileImgUrlList[0].default_round}',
                                                                                                       shape: BoxShape.circle,
                                                                                                       borderRadius:
                                                                                                       BorderRadius.circular(20),
@@ -1512,7 +1513,6 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                             .jumpTo(
                                             (_replyReverse == true) ? _scrollController.position.maxScrollExtent
                                                 : 0);
-                                        CustomFullScreenDialog.cancelDialog();
                                       },
                                       icon: (_controller.text.trim().isEmpty)
                                           ? Image.asset(

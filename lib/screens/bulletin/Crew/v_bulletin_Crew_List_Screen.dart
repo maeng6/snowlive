@@ -38,6 +38,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
   var _selectedValue = '카테고리';
   var _selectedValue2 = '지역';
   var _allCategories;
+  bool _isVisible = false;
 
   var f = NumberFormat('###,###,###,###');
 
@@ -50,6 +51,20 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
     super.initState();
     _seasonController.getBulletinCrewLimit();
     _stream = newStream();
+
+    _scrollController.addListener(() {
+      setState(() {
+        if (_scrollController.position.userScrollDirection ==
+            ScrollDirection.reverse) {
+          _isVisible = true;
+        } else if (_scrollController.position.userScrollDirection ==
+            ScrollDirection.forward ||
+            _scrollController.position.pixels <=
+                _scrollController.position.maxScrollExtent) {
+          _isVisible = false;
+        }
+      });
+    });
 
     // Add a listener to the ScrollController
     _scrollController.addListener(() {
@@ -64,8 +79,8 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
     return FirebaseFirestore.instance
         .collection('bulletinCrew')
         .where('category',
-            isEqualTo:
-                (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
+        isEqualTo:
+        (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
         .where('location', isEqualTo: (_selectedValue2 == '지역') ? _allCategories : '$_selectedValue2')
         .orderBy('timeStamp', descending: true)
         .limit(_seasonController.bulletinCrewLimit!)
@@ -89,6 +104,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         onPressed: () {
                           setState(() {
                             _selectedValue = '카테고리';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -100,6 +116,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue = '단톡방';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -109,6 +126,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue = '동호회(크루)';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -118,6 +136,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue = '기타';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -133,22 +152,22 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                   ),
                 )
 
-                // CupertinoPicker(
-                //   magnification: 1.1,
-                //   backgroundColor: Colors.white,
-                //   itemExtent: 40,
-                //   children: [
-                //     ..._categories.map((e) => Text(e))
-                //   ],
-                //   onSelectedItemChanged: (i) {
-                //     setState(() {
-                //       _selectedValue = _categories[i];
-                //     });
-                //   },
-                //   scrollController: _scrollWheelController,
-                // ),
+              // CupertinoPicker(
+              //   magnification: 1.1,
+              //   backgroundColor: Colors.white,
+              //   itemExtent: 40,
+              //   children: [
+              //     ..._categories.map((e) => Text(e))
+              //   ],
+              //   onSelectedItemChanged: (i) {
+              //     setState(() {
+              //       _selectedValue = _categories[i];
+              //     });
+              //   },
+              //   scrollController: _scrollWheelController,
+              // ),
 
-                ),
+            ),
           );
         });
     setState(() {
@@ -173,6 +192,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '지역';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -184,6 +204,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '전국';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -195,6 +216,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '곤지암리조트';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -204,6 +226,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '무주덕유산리조트';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -213,6 +236,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '비발디파크';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -222,6 +246,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '알펜시아';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -231,6 +256,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '에덴밸리리조트';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -240,6 +266,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '엘리시안강촌';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -249,6 +276,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '오크밸리리조트';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -258,6 +286,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '오투리조트';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -267,6 +296,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '용평리조트';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -276,6 +306,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '웰리힐리파크';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -285,6 +316,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '지산리조트';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -294,6 +326,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '하이원리조트';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -303,6 +336,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '휘닉스평창';
+                            _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
@@ -337,41 +371,92 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
       child: Container(
         color: Colors.white,
         child: Scaffold(
-          floatingActionButton: Transform.translate(
-            offset: Offset(18, 0),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: AnimatedContainer(
-                width: _showAddButton ? 104 : 52,
-                height: 52,
-                duration: Duration(milliseconds: 200),
-                child: FloatingActionButton.extended(
-                  elevation: 4,
-                  onPressed: () async {
-                    await _userModelController
-                        .getCurrentUser(_userModelController.uid);
-                    Get.to(() => Bulletin_Crew_Upload());
-                  },
-                  icon: Transform.translate(
-                      offset: Offset(6,0),
-                      child: Center(child: Icon(Icons.add))),
-                  label: _showAddButton
-                      ? Padding(
-                    padding: const EdgeInsets.only(right: 6),
-                    child: Text('글쓰기',
-                      style: TextStyle(
-                          letterSpacing: 0.5,
-                          fontSize: 15,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          overflow: TextOverflow.ellipsis),
+          floatingActionButton: Stack(
+            children:[
+              Positioned(
+                bottom: 18, // Adjust the position as needed
+                right: 110, // Adjust the position as needed
+                child: Visibility(
+                  visible: _isVisible,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 32),
+                    child: Container(
+                      width: 106,
+                      child: FloatingActionButton(
+                        heroTag: 'liveTalkScreen',
+                        mini: true,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(40)
+                        ),
+                        backgroundColor: Color(0xFF000000).withOpacity(0.8),
+                        foregroundColor: Colors.white,
+                        onPressed: () {
+                          _scrollController.jumpTo(0);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.arrow_upward_rounded,
+                                color: Color(0xFFffffff),
+                                size: 16),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 2, right: 3),
+                              child: Text('최신글 보기',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFffffff).withOpacity(0.8),
+                                    letterSpacing: 0
+                                ),),
+                            )
+                          ],
+                        ),
+                      ),
                     ),
-                  )
-                      : SizedBox.shrink(), // Hide the text when _showAddButton is false
-                  backgroundColor: Color(0xFF3D6FED),
+                  ),
                 ),
               ),
-            ),
+              Positioned(
+                child:Transform.translate(
+                  offset: Offset(18, 0),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: AnimatedContainer(
+                      width: _showAddButton ? 104 : 52,
+                      height: 52,
+                      duration: Duration(milliseconds: 200),
+                      child: FloatingActionButton.extended(
+                        elevation: 4,
+                        onPressed: () async {
+                          await _userModelController
+                              .getCurrentUser(_userModelController.uid);
+                          Get.to(() => Bulletin_Crew_Upload());
+                        },
+                        icon: Transform.translate(
+                            offset: Offset(6,0),
+                            child: Center(child: Icon(Icons.add))),
+                        label: _showAddButton
+                            ? Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: Text('글쓰기',
+                            style: TextStyle(
+                                letterSpacing: 0.5,
+                                fontSize: 15,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                overflow: TextOverflow.ellipsis),
+                          ),
+                        )
+                            : SizedBox.shrink(), // Hide the text when _showAddButton is false
+                        backgroundColor: Color(0xFF3D6FED),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           backgroundColor: Colors.white,
           body: Column(
@@ -507,7 +592,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                     }
                     final chatDocs = snapshot.data!.docs;
                     return (chatDocs.length == 0)
-                    ? Transform.translate(
+                        ? Transform.translate(
                       offset: Offset(0, -40),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -531,7 +616,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         ],
                       ),
                     )
-                    : ListView.builder(
+                        : ListView.builder(
                       controller: _scrollController, // ScrollController 연결
                       itemCount: chatDocs.length,
                       itemBuilder: (context, index) {
@@ -742,257 +827,257 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                         ),
                                       )
                                           : Row(
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(vertical: 6),
-                                                child: Container(
-                                                  width: _size.width-32,
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(vertical: 6),
+                                            child: Container(
+                                              width: _size.width-32,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    chatDocs[index].get('category'),
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.normal,
+                                                        fontSize: 13,
+                                                        color: Color(0xFF111111)),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 2,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
-                                                      Text(
-                                                        chatDocs[index].get('category'),
-                                                        style: TextStyle(
-                                                            fontWeight: FontWeight.normal,
-                                                            fontSize: 13,
-                                                            color: Color(0xFF111111)),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 2,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          Expanded(
-                                                            child: Row(
-                                                              children: [
-                                                                Expanded(
-                                                                  child: Container(
-                                                                    constraints: BoxConstraints(
-                                                                        maxWidth: _size.width - 168),
-                                                                    child: Row(
-                                                                      children: [
-                                                                        Container(
-                                                                          width: _size.width - 100,
-                                                                          child: Text(
-                                                                            chatDocs[index].get('title'),
-                                                                            maxLines: 2,
-                                                                            overflow: TextOverflow.ellipsis,
-                                                                            style: TextStyle(
-                                                                                fontWeight: FontWeight.bold,
-                                                                                fontSize: 15,
-                                                                                color: Color(0xFF111111)),
-                                                                          ),
-                                                                        ),
-                                                                        if(_userModelController.displayName == 'SNOWLIVE')
-                                                                          GestureDetector(
-                                                                            onTap: () =>
-                                                                                showModalBottomSheet(
-                                                                                    enableDrag: false,
-                                                                                    context: context,
-                                                                                    builder: (context) {
-                                                                                      return Container(
-                                                                                        height: 100,
-                                                                                        child:Padding(
-                                                                                          padding: const EdgeInsets
-                                                                                              .symmetric(
-                                                                                              horizontal: 20.0,
-                                                                                              vertical: 14),
-                                                                                          child: Column(
-                                                                                            children: [
-                                                                                              GestureDetector(
-                                                                                                child: ListTile(
-                                                                                                  contentPadding: EdgeInsets.zero,
-                                                                                                  title: Center(
-                                                                                                    child: Text(
-                                                                                                      (isLocked == false)
-                                                                                                          ? '게시글 잠금' : '게시글 잠금 해제',
-                                                                                                      style: TextStyle(
-                                                                                                          fontSize: 15,
-                                                                                                          fontWeight: FontWeight.bold,
-                                                                                                          color: Color(0xFFD63636)
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                  //selected: _isSelected[index]!,
-                                                                                                  onTap: () async {
-                                                                                                    Navigator.pop(context);
-                                                                                                    showModalBottomSheet(
-                                                                                                        context: context,
-                                                                                                        builder: (context) {
-                                                                                                          return Container(
-                                                                                                            color: Colors.white,
-                                                                                                            height: 180,
-                                                                                                            child: Padding(
-                                                                                                              padding: const EdgeInsets.symmetric(
-                                                                                                                  horizontal: 20.0),
-                                                                                                              child: Column(
-                                                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                                                                                children: [
-                                                                                                                  SizedBox(
-                                                                                                                    height: 30,
-                                                                                                                  ),
-                                                                                                                  Text(
-                                                                                                                    (isLocked == false)
-                                                                                                                        ? '이 게시글을 잠그시겠습니까?' : '이 게시글의 잠금을 해제하시겠습니까?',
-                                                                                                                    style: TextStyle(
-                                                                                                                        fontSize: 20,
-                                                                                                                        fontWeight: FontWeight.bold,
-                                                                                                                        color: Color(0xFF111111)),
-                                                                                                                  ),
-                                                                                                                  SizedBox(
-                                                                                                                    height: 30,
-                                                                                                                  ),
-                                                                                                                  Row(
-                                                                                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                                                                    children: [
-                                                                                                                      Expanded(
-                                                                                                                        child: ElevatedButton(
-                                                                                                                          onPressed: () {
-                                                                                                                            Navigator.pop(context);
-                                                                                                                          },
-                                                                                                                          child: Text(
-                                                                                                                            '취소',
-                                                                                                                            style: TextStyle(
-                                                                                                                                color: Colors.white,
-                                                                                                                                fontSize: 15,
-                                                                                                                                fontWeight: FontWeight.bold),
-                                                                                                                          ),
-                                                                                                                          style: TextButton.styleFrom(
-                                                                                                                              splashFactory: InkRipple.splashFactory,
-                                                                                                                              elevation: 0,
-                                                                                                                              minimumSize: Size(100, 56),
-                                                                                                                              backgroundColor: Color(0xff555555),
-                                                                                                                              padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                                                        ),
-                                                                                                                      ),
-                                                                                                                      SizedBox(
-                                                                                                                        width: 10,
-                                                                                                                      ),
-                                                                                                                      Expanded(
-                                                                                                                        child: ElevatedButton(
-                                                                                                                          onPressed: () async {
-                                                                                                                            if (data?.containsKey('lock') == false) {
-                                                                                                                              await chatDocs[index].reference.update({'lock': false});
-                                                                                                                            }
-                                                                                                                            CustomFullScreenDialog.showDialog();
-                                                                                                                            await _bulletinCrewModelController.lock('${chatDocs[index]['uid']}#${chatDocs[index]['bulletinCrewCount']}');
-                                                                                                                            Navigator.pop(context);
-                                                                                                                            CustomFullScreenDialog.cancelDialog();
-                                                                                                                          },
-                                                                                                                          child: Text('확인',
-                                                                                                                            style: TextStyle(
-                                                                                                                                color: Colors.white,
-                                                                                                                                fontSize: 15,
-                                                                                                                                fontWeight: FontWeight.bold),
-                                                                                                                          ),
-                                                                                                                          style: TextButton.styleFrom(
-                                                                                                                              splashFactory: InkRipple.splashFactory,
-                                                                                                                              elevation: 0,
-                                                                                                                              minimumSize: Size(100, 56),
-                                                                                                                              backgroundColor: Color(0xff2C97FB),
-                                                                                                                              padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                                                        ),
-                                                                                                                      ),
-                                                                                                                    ],
-                                                                                                                  )
-                                                                                                                ],
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          );
-                                                                                                        });
-                                                                                                  },
-                                                                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                                                                                ),
-                                                                                              ),
-                                                                                            ],
-                                                                                          ),
-                                                                                        ),
-                                                                                      );
-                                                                                    }),
-                                                                            child: Icon(Icons.more_horiz,
-                                                                              color: Color(0xFFEF0069),
-                                                                              size: 20,
-                                                                            ),
-                                                                          ),
-
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding: EdgeInsets.only(left: 16),
-                                                                  child: Container(
-                                                                    decoration: BoxDecoration(
-                                                                      borderRadius: BorderRadius.circular(50),
-                                                                      color: Color(0xFFE1EDFF),
-                                                                    ),
-                                                                    child: Padding(
-                                                                      padding: const EdgeInsets.only(top: 2, bottom: 4, left: 8, right: 8),
+                                                      Expanded(
+                                                        child: Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Container(
+                                                                constraints: BoxConstraints(
+                                                                    maxWidth: _size.width - 168),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Container(
+                                                                      width: _size.width - 100,
                                                                       child: Text(
-                                                                        chatDocs[index].get('bulletinCrewReplyCount').toString(),
-                                                                        maxLines: 1,
-                                                                        overflow:  TextOverflow.ellipsis,
+                                                                        chatDocs[index].get('title'),
+                                                                        maxLines: 2,
+                                                                        overflow: TextOverflow.ellipsis,
                                                                         style: TextStyle(
-                                                                            fontWeight: FontWeight.normal,
-                                                                            fontSize: 11,
-                                                                            color: Color(0xFF3D83ED)),
+                                                                            fontWeight: FontWeight.bold,
+                                                                            fontSize: 15,
+                                                                            color: Color(0xFF111111)),
                                                                       ),
                                                                     ),
+                                                                    if(_userModelController.displayName == 'SNOWLIVE')
+                                                                      GestureDetector(
+                                                                        onTap: () =>
+                                                                            showModalBottomSheet(
+                                                                                enableDrag: false,
+                                                                                context: context,
+                                                                                builder: (context) {
+                                                                                  return Container(
+                                                                                    height: 100,
+                                                                                    child:Padding(
+                                                                                      padding: const EdgeInsets
+                                                                                          .symmetric(
+                                                                                          horizontal: 20.0,
+                                                                                          vertical: 14),
+                                                                                      child: Column(
+                                                                                        children: [
+                                                                                          GestureDetector(
+                                                                                            child: ListTile(
+                                                                                              contentPadding: EdgeInsets.zero,
+                                                                                              title: Center(
+                                                                                                child: Text(
+                                                                                                  (isLocked == false)
+                                                                                                      ? '게시글 잠금' : '게시글 잠금 해제',
+                                                                                                  style: TextStyle(
+                                                                                                      fontSize: 15,
+                                                                                                      fontWeight: FontWeight.bold,
+                                                                                                      color: Color(0xFFD63636)
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                              //selected: _isSelected[index]!,
+                                                                                              onTap: () async {
+                                                                                                Navigator.pop(context);
+                                                                                                showModalBottomSheet(
+                                                                                                    context: context,
+                                                                                                    builder: (context) {
+                                                                                                      return Container(
+                                                                                                        color: Colors.white,
+                                                                                                        height: 180,
+                                                                                                        child: Padding(
+                                                                                                          padding: const EdgeInsets.symmetric(
+                                                                                                              horizontal: 20.0),
+                                                                                                          child: Column(
+                                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                                                            children: [
+                                                                                                              SizedBox(
+                                                                                                                height: 30,
+                                                                                                              ),
+                                                                                                              Text(
+                                                                                                                (isLocked == false)
+                                                                                                                    ? '이 게시글을 잠그시겠습니까?' : '이 게시글의 잠금을 해제하시겠습니까?',
+                                                                                                                style: TextStyle(
+                                                                                                                    fontSize: 20,
+                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                    color: Color(0xFF111111)),
+                                                                                                              ),
+                                                                                                              SizedBox(
+                                                                                                                height: 30,
+                                                                                                              ),
+                                                                                                              Row(
+                                                                                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                                                children: [
+                                                                                                                  Expanded(
+                                                                                                                    child: ElevatedButton(
+                                                                                                                      onPressed: () {
+                                                                                                                        Navigator.pop(context);
+                                                                                                                      },
+                                                                                                                      child: Text(
+                                                                                                                        '취소',
+                                                                                                                        style: TextStyle(
+                                                                                                                            color: Colors.white,
+                                                                                                                            fontSize: 15,
+                                                                                                                            fontWeight: FontWeight.bold),
+                                                                                                                      ),
+                                                                                                                      style: TextButton.styleFrom(
+                                                                                                                          splashFactory: InkRipple.splashFactory,
+                                                                                                                          elevation: 0,
+                                                                                                                          minimumSize: Size(100, 56),
+                                                                                                                          backgroundColor: Color(0xff555555),
+                                                                                                                          padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                                    ),
+                                                                                                                  ),
+                                                                                                                  SizedBox(
+                                                                                                                    width: 10,
+                                                                                                                  ),
+                                                                                                                  Expanded(
+                                                                                                                    child: ElevatedButton(
+                                                                                                                      onPressed: () async {
+                                                                                                                        if (data?.containsKey('lock') == false) {
+                                                                                                                          await chatDocs[index].reference.update({'lock': false});
+                                                                                                                        }
+                                                                                                                        CustomFullScreenDialog.showDialog();
+                                                                                                                        await _bulletinCrewModelController.lock('${chatDocs[index]['uid']}#${chatDocs[index]['bulletinCrewCount']}');
+                                                                                                                        Navigator.pop(context);
+                                                                                                                        CustomFullScreenDialog.cancelDialog();
+                                                                                                                      },
+                                                                                                                      child: Text('확인',
+                                                                                                                        style: TextStyle(
+                                                                                                                            color: Colors.white,
+                                                                                                                            fontSize: 15,
+                                                                                                                            fontWeight: FontWeight.bold),
+                                                                                                                      ),
+                                                                                                                      style: TextButton.styleFrom(
+                                                                                                                          splashFactory: InkRipple.splashFactory,
+                                                                                                                          elevation: 0,
+                                                                                                                          minimumSize: Size(100, 56),
+                                                                                                                          backgroundColor: Color(0xff2C97FB),
+                                                                                                                          padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                                    ),
+                                                                                                                  ),
+                                                                                                                ],
+                                                                                                              )
+                                                                                                            ],
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                      );
+                                                                                                    });
+                                                                                              },
+                                                                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                  );
+                                                                                }),
+                                                                        child: Icon(Icons.more_horiz,
+                                                                          color: Color(0xFFEF0069),
+                                                                          size: 20,
+                                                                        ),
+                                                                      ),
+
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding: EdgeInsets.only(left: 16),
+                                                              child: Container(
+                                                                decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(50),
+                                                                  color: Color(0xFFE1EDFF),
+                                                                ),
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.only(top: 2, bottom: 4, left: 8, right: 8),
+                                                                  child: Text(
+                                                                    chatDocs[index].get('bulletinCrewReplyCount').toString(),
+                                                                    maxLines: 1,
+                                                                    overflow:  TextOverflow.ellipsis,
+                                                                    style: TextStyle(
+                                                                        fontWeight: FontWeight.normal,
+                                                                        fontSize: 11,
+                                                                        color: Color(0xFF3D83ED)),
                                                                   ),
                                                                 ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      SizedBox(
-                                                        height: 8,
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Text(
-                                                            chatDocs[index].get('location'),
-                                                            style: TextStyle(
-                                                                fontSize: 13,
-                                                                color: Color(0xFF949494),
-                                                                fontWeight: FontWeight.normal),
-                                                          ),
-                                                          Text('   $_time',
-                                                            style: TextStyle(
-                                                                fontSize: 13,
-                                                                color: Color(0xFF949494),
-                                                                fontWeight: FontWeight.normal),
-                                                          ),
-                                                          SizedBox(width: 10,),
-                                                          Row(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            children: [
-                                                              Icon(
-                                                                Icons.remove_red_eye_rounded,
-                                                                color: Color(0xFFc8c8c8),
-                                                                size: 15,
                                                               ),
-                                                              SizedBox(width: 4,),
-                                                              Text(
-                                                                  '${viewerUid.length.toString()}',
-                                                                  style: TextStyle(
-                                                                      fontSize: 13,
-                                                                      color: Color(0xFF949494),
-                                                                      fontWeight: FontWeight.normal)
-                                                              )
-                                                            ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 8,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        chatDocs[index].get('location'),
+                                                        style: TextStyle(
+                                                            fontSize: 13,
+                                                            color: Color(0xFF949494),
+                                                            fontWeight: FontWeight.normal),
+                                                      ),
+                                                      Text('   $_time',
+                                                        style: TextStyle(
+                                                            fontSize: 13,
+                                                            color: Color(0xFF949494),
+                                                            fontWeight: FontWeight.normal),
+                                                      ),
+                                                      SizedBox(width: 10,),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Icon(
+                                                            Icons.remove_red_eye_rounded,
+                                                            color: Color(0xFFc8c8c8),
+                                                            size: 15,
                                                           ),
+                                                          SizedBox(width: 4,),
+                                                          Text(
+                                                              '${viewerUid.length.toString()}',
+                                                              style: TextStyle(
+                                                                  fontSize: 13,
+                                                                  color: Color(0xFF949494),
+                                                                  fontWeight: FontWeight.normal)
+                                                          )
                                                         ],
                                                       ),
                                                     ],
                                                   ),
-                                                ),
+                                                ],
                                               ),
-                                            ],
+                                            ),
                                           ),
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 ),

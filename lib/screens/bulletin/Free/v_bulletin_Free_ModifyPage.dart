@@ -179,16 +179,31 @@ class _Bulletin_Free_ModifyPageState extends State<Bulletin_Free_ModifyPage> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            CustomFullScreenDialog.showDialog();
-                            try {
-                              _imageFiles = await _imageController
-                                  .getMultiImage(ImageSource.gallery);
-                              CustomFullScreenDialog.cancelDialog();
-                              bulletinFreeImageSelected = true;
-                              imageLength = _imageFiles.length;
-                              setState(() {});
-                            } catch (e) {
-                              CustomFullScreenDialog.cancelDialog();
+                            if (imageLength >= 5) {
+                              Get.dialog(
+                                AlertDialog(
+                                  title: Text('사진 개수 초과'),
+                                ),
+                              );
+                            } else {
+                              CustomFullScreenDialog.showDialog();
+                              try {
+                                _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
+                                CustomFullScreenDialog.cancelDialog();
+                                if (_imageFiles.length <= 5) {
+                                  bulletinFreeImageSelected = true;
+                                  imageLength = _imageFiles.length;
+                                  setState(() {});
+                                } else {
+                                  Get.dialog(
+                                    AlertDialog(
+                                      title: Text('사진 개수 초과'),
+                                    ),
+                                  );
+                                }
+                              } catch (e) {
+                                CustomFullScreenDialog.cancelDialog();
+                              }
                             }
                           },
                           child: Container(
@@ -199,55 +214,52 @@ class _Bulletin_Free_ModifyPageState extends State<Bulletin_Free_ModifyPage> {
                               children: [
                                 IconButton(
                                   onPressed: () async {
-                                    CustomFullScreenDialog.showDialog();
-                                    try {
-                                      _imageFiles = await _imageController
-                                          .getMultiImage(ImageSource.gallery);
-                                      if(_imageFiles.length <= 5){
+                                    if (imageLength >= 5) {
+                                      Get.dialog(
+                                        AlertDialog(
+                                          title: Text('사진 개수 초과'),
+                                        ),
+                                      );
+                                    } else {
+                                      CustomFullScreenDialog.showDialog();
+                                      try {
+                                        _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
                                         CustomFullScreenDialog.cancelDialog();
-                                        bulletinFreeImageSelected = true;
-                                        isModifiedImageSelected = true;
-                                        imageLength = _imageFiles.length;
-                                        setState(() {});
-                                      }else{
-                                        CustomFullScreenDialog.cancelDialog();
-                                        Get.dialog(
+                                        if (_imageFiles.length <= 5) {
+                                          bulletinFreeImageSelected = true;
+                                          imageLength = _imageFiles.length;
+                                          setState(() {});
+                                        } else {
+                                          Get.dialog(
                                             AlertDialog(
                                               title: Text('사진 개수 초과'),
-                                            )
-                                        );
+                                            ),
+                                          );
+                                        }
+                                      } catch (e) {
+                                        CustomFullScreenDialog.cancelDialog();
                                       }
-                                    } catch (e) {
-                                      CustomFullScreenDialog.cancelDialog();
                                     }
                                   },
-                                  icon: Icon(
-                                      Icons.camera_alt_rounded),
-                                  color: Color(0xFF949494),),
-                                (isModifiedImageSelected==true)
-                                    ?Transform.translate(
+                                  icon: Icon(Icons.camera_alt_rounded),
+                                  color: Color(0xFF949494),
+                                ),
+                                Transform.translate(
                                   offset: Offset(0, -10),
-                                  child: Text('$imageLength / 5',
+                                  child: Text(
+                                    '$imageLength / 5',
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        color: Color(0xFF949494)
-                                    ),),
-                                )
-                                    :Transform.translate(
-                                  offset: Offset(0, -10),
-                                  child: Text('${_imageUrls!.value.length}/5',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        color: Color(0xFF949494)
-                                    ),),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Color(0xFF949494),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
                             decoration: BoxDecoration(
                               border: Border.all(
-                                  color: Colors.transparent
+                                color: Colors.transparent,
                               ),
                               borderRadius: BorderRadius.circular(8),
                               color: Color(0xFFececec),

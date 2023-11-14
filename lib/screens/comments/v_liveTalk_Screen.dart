@@ -866,7 +866,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                 fontSize: 13,
                                                                 color: Color(0xff949494)),
                                                           ),
-                                                          if(_userModelController.displayName == 'SNOWLIVE')
+                                                          if(_userModelController.displayName == '올두맹')
                                                             GestureDetector(
                                                               onTap: () =>
                                                                   showModalBottomSheet(
@@ -1058,7 +1058,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                                       children: [
-                                                                        if (profileUrl != "" && chatDocs[index]['profileImageUrl']  != "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
+                                                                        if (profileUrl != "" && chatDocs[index]['profileImageUrl']  != "anony" && chatDocs[index]['displayName'] != '올두맹')
                                                                           GestureDetector(
                                                                             onTap: () async {
                                                                               QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
@@ -1115,7 +1115,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                             ),
 
                                                                           ),
-                                                                        if (profileUrl == "" && chatDocs[index]['profileImageUrl'] != "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
+                                                                        if (profileUrl == "" && chatDocs[index]['profileImageUrl'] != "anony" && chatDocs[index]['displayName'] != '올두맹')
                                                                           GestureDetector(
                                                                             onTap: () async {
                                                                               QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
@@ -1143,7 +1143,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               fit: BoxFit.cover,
                                                                             ),
                                                                           ),
-                                                                        if (chatDocs[index]['profileImageUrl'] == "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
+                                                                        if (chatDocs[index]['profileImageUrl'] == "anony" && chatDocs[index]['displayName'] != '올두맹')
                                                                           GestureDetector(
                                                                             onTap: () async {},
                                                                             child: ExtendedImage.network(
@@ -1155,7 +1155,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               fit: BoxFit.cover,
                                                                             ),
                                                                           ),
-                                                                        if (chatDocs[index]['profileImageUrl']!= '' && chatDocs[index]['profileImageUrl']  != "anony" && chatDocs[index]['displayName'] == 'SNOWLIVE')
+                                                                        if (chatDocs[index]['profileImageUrl']!= '' && chatDocs[index]['profileImageUrl']  != "anony" && chatDocs[index]['displayName'] == '올두맹')
                                                                           GestureDetector(
                                                                             onTap: () async {
                                                                               Get.to(()=>SnowliveDetailPage());
@@ -1215,7 +1215,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                   ),
                                                                                 SizedBox(
                                                                                     width: 8),
-                                                                                if(chatDocs[index]['displayName'] != 'SNOWLIVE')
+                                                                                if(chatDocs[index]['displayName'] != '올두맹')
                                                                                   Text(_isTabKusbf == true
                                                                                       ? '${_userModelController.kusbfNameMap[chatDocs[index].get('liveCrew')]}'
                                                                                       : chatDocs[index].get('resortNickname'),
@@ -1240,7 +1240,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                 return SafeArea(
                                                                                   child: Container(
                                                                                     height:
-                                                                                    (_userModelController.displayName == 'SNOWLIVE')
+                                                                                    (_userModelController.displayName == '올두맹')
                                                                                         ? 260
                                                                                         : 140,
                                                                                     child: Padding(
@@ -1470,7 +1470,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                     borderRadius: BorderRadius.circular(10)),
                                                                                               ),
                                                                                             ),
-                                                                                          if(_userModelController.displayName == 'SNOWLIVE')
+                                                                                          if(_userModelController.displayName == '올두맹')
                                                                                             Column(
                                                                                               children: [
                                                                                                 GestureDetector(
@@ -1635,7 +1635,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                               builder: (
                                                                                   context) {
                                                                                 return Container(
-                                                                                  height: (_userModelController.displayName == 'SNOWLIVE')
+                                                                                  height: (_userModelController.displayName == '올두맹')
                                                                                       ? 260
                                                                                       : 100,
                                                                                   child:
@@ -1646,7 +1646,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                         vertical: 14),
                                                                                     child: Column(
                                                                                       children: [
-                                                                                        if(_userModelController.displayName == 'SNOWLIVE')
+                                                                                        if(_userModelController.displayName == '올두맹')
                                                                                           Column(
                                                                                             children: [
                                                                                               GestureDetector(

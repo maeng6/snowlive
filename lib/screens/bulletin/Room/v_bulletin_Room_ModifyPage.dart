@@ -123,40 +123,40 @@ class _Bulletin_Room_ModifyPageState extends State<Bulletin_Room_ModifyPage> {
                     onPressed: () async{
                       final isValid = _formKey.currentState!.validate();
 
-                        if(isValid){
-                          CustomFullScreenDialog.showDialog();
-                          await _imageController.setNewMultiImage_bulletinRoom(_imageFiles, _bulletinRoomModelController.bulletinRoomCount);
-                          (isModifiedImageSelected==true)
-                          ? await _bulletinRoomModelController.updateBulletinRoom(
-                              displayName: _userModelController.displayName,
-                              uid: _userModelController.uid,
-                              profileImageUrl: _userModelController.profileImageUrl,
-                              itemImagesUrls: _imageController.imagesUrlList,
-                              title: _titleTextEditingController.text,
-                              category: SelectedCategory!.value,
-                              location: SelectedLocation!.value,
-                              description: _itemDescribTextEditingController.text,
-                              bulletinRoomCount: _bulletinRoomModelController.bulletinRoomCount,
-                              resortNickname: _userModelController.resortNickname
-                          )
-                          : await _bulletinRoomModelController.updateBulletinRoom(
-                              displayName: _userModelController.displayName,
-                              uid: _userModelController.uid,
-                              profileImageUrl: _userModelController.profileImageUrl,
-                              itemImagesUrls: _imageUrls,
-                              title: _titleTextEditingController.text,
-                              category: SelectedCategory!.value,
-                              location: SelectedLocation!.value,
-                              description: _itemDescribTextEditingController.text,
-                              bulletinRoomCount: _bulletinRoomModelController.bulletinRoomCount,
-                              resortNickname: _userModelController.resortNickname
-                          );
-                          CustomFullScreenDialog.cancelDialog();
-                          for(int i=0; i<2; i++){
-                            Get.back();
-                          }
+                      if(isValid){
+                        CustomFullScreenDialog.showDialog();
+                        await _imageController.setNewMultiImage_bulletinRoom(_imageFiles, _bulletinRoomModelController.bulletinRoomCount);
+                        (isModifiedImageSelected==true)
+                            ? await _bulletinRoomModelController.updateBulletinRoom(
+                            displayName: _userModelController.displayName,
+                            uid: _userModelController.uid,
+                            profileImageUrl: _userModelController.profileImageUrl,
+                            itemImagesUrls: _imageController.imagesUrlList,
+                            title: _titleTextEditingController.text,
+                            category: SelectedCategory!.value,
+                            location: SelectedLocation!.value,
+                            description: _itemDescribTextEditingController.text,
+                            bulletinRoomCount: _bulletinRoomModelController.bulletinRoomCount,
+                            resortNickname: _userModelController.resortNickname
+                        )
+                            : await _bulletinRoomModelController.updateBulletinRoom(
+                            displayName: _userModelController.displayName,
+                            uid: _userModelController.uid,
+                            profileImageUrl: _userModelController.profileImageUrl,
+                            itemImagesUrls: _imageUrls,
+                            title: _titleTextEditingController.text,
+                            category: SelectedCategory!.value,
+                            location: SelectedLocation!.value,
+                            description: _itemDescribTextEditingController.text,
+                            bulletinRoomCount: _bulletinRoomModelController.bulletinRoomCount,
+                            resortNickname: _userModelController.resortNickname
+                        );
+                        CustomFullScreenDialog.cancelDialog();
+                        for(int i=0; i<2; i++){
+                          Get.back();
                         }
-                        _imageController.imagesUrlList.clear();
+                      }
+                      _imageController.imagesUrlList.clear();
 
                     },
                     child: Padding(
@@ -189,16 +189,31 @@ class _Bulletin_Room_ModifyPageState extends State<Bulletin_Room_ModifyPage> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            CustomFullScreenDialog.showDialog();
-                            try {
-                              _imageFiles = await _imageController
-                                  .getMultiImage(ImageSource.gallery);
-                              CustomFullScreenDialog.cancelDialog();
-                              bulletinRoomImageSelected = true;
-                              imageLength = _imageFiles.length;
-                              setState(() {});
-                            } catch (e) {
-                              CustomFullScreenDialog.cancelDialog();
+                            if (imageLength >= 5) {
+                              Get.dialog(
+                                AlertDialog(
+                                  title: Text('사진 개수 초과'),
+                                ),
+                              );
+                            } else {
+                              CustomFullScreenDialog.showDialog();
+                              try {
+                                _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
+                                CustomFullScreenDialog.cancelDialog();
+                                if (_imageFiles.length <= 5) {
+                                  bulletinRoomImageSelected = true;
+                                  imageLength = _imageFiles.length;
+                                  setState(() {});
+                                } else {
+                                  Get.dialog(
+                                    AlertDialog(
+                                      title: Text('사진 개수 초과'),
+                                    ),
+                                  );
+                                }
+                              } catch (e) {
+                                CustomFullScreenDialog.cancelDialog();
+                              }
                             }
                           },
                           child: Container(
@@ -209,55 +224,52 @@ class _Bulletin_Room_ModifyPageState extends State<Bulletin_Room_ModifyPage> {
                               children: [
                                 IconButton(
                                   onPressed: () async {
-                                    CustomFullScreenDialog.showDialog();
-                                    try {
-                                      _imageFiles = await _imageController
-                                          .getMultiImage(ImageSource.gallery);
-                                      if(_imageFiles.length <= 5){
+                                    if (imageLength >= 5) {
+                                      Get.dialog(
+                                        AlertDialog(
+                                          title: Text('사진 개수 초과'),
+                                        ),
+                                      );
+                                    } else {
+                                      CustomFullScreenDialog.showDialog();
+                                      try {
+                                        _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
                                         CustomFullScreenDialog.cancelDialog();
-                                        bulletinRoomImageSelected = true;
-                                        isModifiedImageSelected = true;
-                                        imageLength = _imageFiles.length;
-                                        setState(() {});
-                                      }else{
-                                        CustomFullScreenDialog.cancelDialog();
-                                        Get.dialog(
+                                        if (_imageFiles.length <= 5) {
+                                          bulletinRoomImageSelected = true;
+                                          imageLength = _imageFiles.length;
+                                          setState(() {});
+                                        } else {
+                                          Get.dialog(
                                             AlertDialog(
                                               title: Text('사진 개수 초과'),
-                                            )
-                                        );
+                                            ),
+                                          );
+                                        }
+                                      } catch (e) {
+                                        CustomFullScreenDialog.cancelDialog();
                                       }
-                                    } catch (e) {
-                                      CustomFullScreenDialog.cancelDialog();
                                     }
                                   },
-                                  icon: Icon(
-                                      Icons.camera_alt_rounded),
-                                  color: Color(0xFF949494),),
-                                (isModifiedImageSelected==true)
-                                    ?Transform.translate(
+                                  icon: Icon(Icons.camera_alt_rounded),
+                                  color: Color(0xFF949494),
+                                ),
+                                Transform.translate(
                                   offset: Offset(0, -10),
-                                  child: Text('$imageLength / 5',
+                                  child: Text(
+                                    '$imageLength / 5',
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        color: Color(0xFF949494)
-                                    ),),
-                                )
-                                    :Transform.translate(
-                                  offset: Offset(0, -10),
-                                  child: Text('${_imageUrls!.value.length}/5',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        color: Color(0xFF949494)
-                                    ),),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Color(0xFF949494),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
                             decoration: BoxDecoration(
                               border: Border.all(
-                                  color: Colors.transparent
+                                color: Colors.transparent,
                               ),
                               borderRadius: BorderRadius.circular(8),
                               color: Color(0xFFececec),
@@ -512,9 +524,9 @@ class _Bulletin_Room_ModifyPageState extends State<Bulletin_Room_ModifyPage> {
                                           },
                                           child: Text('${SelectedCategory!.value}',
                                             style: TextStyle(
-                                              fontSize: 16,
+                                                fontSize: 16,
                                                 color: Color(0xFF111111)
-                                          ),)),
+                                            ),)),
                                     ],
                                   ),
                                 ),
@@ -592,7 +604,7 @@ class _Bulletin_Room_ModifyPageState extends State<Bulletin_Room_ModifyPage> {
                                         padding: EdgeInsets.only(right: 10, left: 10, top: 4, bottom: 6),
                                         child: Text('${SelectedLocation!.value}',
                                           style: TextStyle(
-                                            fontSize: 14,
+                                              fontSize: 14,
                                               fontWeight: FontWeight.bold,
                                               color: Color(0xFF17AD4A)),
                                         ),

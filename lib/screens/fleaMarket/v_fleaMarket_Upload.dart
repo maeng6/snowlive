@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -171,8 +172,11 @@ class _FleaMarket_UploadState extends State<FleaMarket_Upload> {
                               resortNickname: _userModelController.resortNickname,
                               kakaoUrl: _kakaoUrlTextEditingController.text
                           );
-                          Navigator.pop(context);
+                          await _fleaModelController.getCurrentFleaItem(
+                            uid: _userModelController.uid,
+                            fleaCount: _userModelController.fleaCount,);
                           CustomFullScreenDialog.cancelDialog();
+                          Get.off(() => FleaMarket_List_Detail());
                         }
                         _imageController.imagesUrlList.clear();
                       }
