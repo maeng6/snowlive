@@ -38,6 +38,7 @@ class UserModel {
     this.deviceToken,
     this.liveTalkHideList,
     this.deviceID,
+    this.bulletinFreeCount
   });
 
   final auth = FirebaseAuth.instance;
@@ -79,6 +80,7 @@ class UserModel {
   List? liveTalkHideList;
   String? deviceID;
   bool? kusbf;
+  int? bulletinFreeCount;
 
   UserModel.fromJson(dynamic json, this.reference) {
       uid = json['uid'];
@@ -117,6 +119,7 @@ class UserModel {
       liveTalkHideList = json['liveTalkHideList'];
       deviceID = json['deviceID'];
       kusbf = json['kusbf'];
+      bulletinFreeCount = json['bulletinFreeCount'];
 
 
   }

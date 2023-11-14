@@ -1,8 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/screens/bulletin/Free/v_bulletinFreeImageScreen.dart';
+import 'package:com.snowlive/screens/bulletin/Free/v_bulletin_Free_ModifyPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/bulletin/Crew/v_bulletinCrewImageScreen.dart';
@@ -11,22 +14,24 @@ import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_bulletinCrewController.dart';
 import '../../../controller/vm_bulletinCrewReplyController.dart';
+import '../../../controller/vm_bulletinFreeController.dart';
+import '../../../controller/vm_bulletinFreeReplyController.dart';
 import '../../../model/m_alarmCenterModel.dart';
 import '../../comments/v_profileImageScreen.dart';
 import '../../more/friend/v_friendDetailPage.dart';
 
-class Bulletin_Crew_List_Detail extends StatefulWidget {
-  Bulletin_Crew_List_Detail({Key? key}) : super(key: key);
+class Bulletin_Free_List_Detail extends StatefulWidget {
+  Bulletin_Free_List_Detail({Key? key}) : super(key: key);
 
   @override
-  State<Bulletin_Crew_List_Detail> createState() =>
-      _Bulletin_Crew_List_DetailState();
+  State<Bulletin_Free_List_Detail> createState() =>
+      _Bulletin_Free_List_DetailState();
 }
 
-class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
+class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
-  BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
+  BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   //TODO: Dependency Injection**************************************************
@@ -35,9 +40,8 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
   var _newReply = '';
   final _formKey = GlobalKey<FormState>();
   bool _replyReverse = true;
-
+  var _firstPress = true;
   var _replyStream;
-  bool _myReply = false;
 
   ScrollController _scrollController = ScrollController();
 
@@ -50,7 +54,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
     _updateMethod();
     // TODO: implement initState
     super.initState();
-    _seasonController.getBulletinCrewReplyLimit();
+    _seasonController.getBulletinFreeReplyLimit();
     _replyStream = replyNewStream();
   }
 
@@ -60,11 +64,11 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
 
   Stream<QuerySnapshot> replyNewStream() {
     return FirebaseFirestore.instance
-        .collection('bulletinCrew')
-        .doc('${_bulletinCrewModelController.uid}#${_bulletinCrewModelController.bulletinCrewCount}')
+        .collection('bulletinFree')
+        .doc('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}')
         .collection('reply')
         .orderBy('timeStamp', descending: true)
-        .limit(_seasonController.bulletinCrewReplyLimit!)
+        .limit(_seasonController.bulletinFreeReplyLimit!)
         .snapshots();
   }
 
@@ -74,14 +78,14 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
   Widget build(BuildContext context) {
 
     //TODO : ****************************************************************
-    Get.put(BulletinCrewReplyModelController(), permanent: true);
-    BulletinCrewReplyModelController _bulletinCrewReplyModelController = Get.find<BulletinCrewReplyModelController>();
+    Get.put(BulletinFreeReplyModelController(), permanent: true);
+    BulletinFreeReplyModelController _bulletinFreeReplyModelController = Get.find<BulletinFreeReplyModelController>();
     //TODO : ****************************************************************
 
-    _seasonController.getBulletinCrewReplyLimit();
+    _seasonController.getBulletinFreeReplyLimit();
 
     String _time =
-    _bulletinCrewModelController.getAgoTime(_bulletinCrewModelController.timeStamp);
+    _bulletinFreeModelController.getAgoTime(_bulletinFreeModelController.timeStamp);
     Size _size = MediaQuery.of(context).size;
     return Container(
       color: Colors.white,
@@ -105,7 +109,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                 },
               ),
               actions: [
-                (_bulletinCrewModelController.uid != _userModelController.uid)
+                (_bulletinFreeModelController.uid != _userModelController.uid)
                     ? GestureDetector(
                   onTap: () => showModalBottomSheet(
                       enableDrag: false,
@@ -167,7 +171,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                 TextButton(
                                                     onPressed: () async {
                                                       var repoUid =
-                                                          _bulletinCrewModelController
+                                                          _bulletinFreeModelController
                                                               .uid;
                                                       await _userModelController
                                                           .repoUpdate(
@@ -257,8 +261,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                               children: [
                                                 TextButton(
                                                     onPressed: () {
-                                                      Navigator.pop(
-                                                          context);
+                                                      Navigator.pop(context);
                                                     },
                                                     child: Text(
                                                       '취소',
@@ -272,18 +275,11 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                     )),
                                                 TextButton(
                                                     onPressed: () {
-                                                      var repoUid =
-                                                          _bulletinCrewModelController
-                                                              .uid;
-                                                      _userModelController
-                                                          .updateRepoUid(
-                                                          repoUid);
-                                                      Navigator.pop(
-                                                          context);
-                                                      Navigator.pop(
-                                                          context);
-                                                      Navigator.pop(
-                                                          context);
+                                                      var repoUid = _bulletinFreeModelController.uid;
+                                                      _userModelController.updateRepoUid(repoUid);
+                                                      Navigator.pop(context);
+                                                      Navigator.pop(context);
+                                                      Navigator.pop(context);
                                                     },
                                                     child: Text(
                                                       '확인',
@@ -335,7 +331,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                   horizontal: 20.0, vertical: 14),
                               child: Column(
                                 children: [
-                                  (_bulletinCrewModelController.uid == _userModelController.uid)?
+                                  (_bulletinFreeModelController.uid == _userModelController.uid)?
                                   GestureDetector(
                                     child: ListTile(
                                       contentPadding: EdgeInsets.zero,
@@ -356,7 +352,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                             .getCurrentUser(_userModelController.uid);
                                         CustomFullScreenDialog.cancelDialog();
                                         Get.to(
-                                                () => Bulletin_Crew_ModifyPage());
+                                                () => Bulletin_Free_ModifyPage());
                                       },
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
@@ -469,16 +465,16 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                   await FirebaseFirestore
                                                                       .instance
                                                                       .collection(
-                                                                      'bulletinCrew')
+                                                                      'bulletinFree')
                                                                       .doc(
-                                                                      '${_userModelController.uid}#${_bulletinCrewModelController.bulletinCrewCount}')
+                                                                      '${_userModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}')
                                                                       .delete();
                                                                   try {
-                                                                    await _bulletinCrewModelController.deleteBulletinCrewImage(
+                                                                    await _bulletinFreeModelController.deleteBulletinFreeImage(
                                                                         uid:
                                                                         _userModelController.uid,
-                                                                        bulletinCrewCount: _bulletinCrewModelController.bulletinCrewCount,
-                                                                        imageCount: _bulletinCrewModelController.itemImagesUrls!.length);
+                                                                        bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount,
+                                                                        imageCount: _bulletinFreeModelController.itemImagesUrls!.length);
                                                                   } catch (e) {
                                                                     print(
                                                                         '이미지 삭제 에러');
@@ -570,11 +566,11 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                         controller: _scrollController,
                         child: Column(
                           children: [
-                            if (_bulletinCrewModelController.itemImagesUrls!.isEmpty)
+                            if (_bulletinFreeModelController.itemImagesUrls!.isEmpty)
                               SizedBox(
                                 height: 6,
                               ),
-                            if (_bulletinCrewModelController.itemImagesUrls!.isNotEmpty)
+                            if (_bulletinFreeModelController.itemImagesUrls!.isNotEmpty)
                               CarouselSlider.builder(
                                 options: CarouselOptions(
                                   height: 280,
@@ -582,7 +578,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                   enableInfiniteScroll: false,
                                 ),
                                 itemCount:
-                                _bulletinCrewModelController.itemImagesUrls!.length,
+                                _bulletinFreeModelController.itemImagesUrls!.length,
                                 itemBuilder: (context, index, pageViewIndex) {
                                   return Container(
                                     padding: EdgeInsets.only(bottom: 16),
@@ -594,10 +590,10 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
-                                                  Get.to(() => BulletinCrewImageScreen());
+                                                  Get.to(() => BulletinFreeImageScreen());
                                                 },
                                                 child: ExtendedImage.network(
-                                                  _bulletinCrewModelController
+                                                  _bulletinFreeModelController
                                                       .itemImagesUrls![index],
                                                   fit: BoxFit.cover,
                                                   width: _size.width,
@@ -617,7 +613,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    '${_bulletinCrewModelController.category}',
+                                    '${_bulletinFreeModelController.category}',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -631,9 +627,9 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                   Container(
                                     width: _size.width - 32,
                                     child: Text(
-                                      (_bulletinCrewModelController.soldOut == true)
+                                      (_bulletinFreeModelController.soldOut == true)
                                           ? '거래완료'
-                                          : '${_bulletinCrewModelController.title}',
+                                          : '${_bulletinFreeModelController.title}',
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -654,7 +650,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                               StreamBuilder(
                                                   stream:  FirebaseFirestore.instance
                                                       .collection('user')
-                                                      .where('uid', isEqualTo: _bulletinCrewModelController.uid)
+                                                      .where('uid', isEqualTo: _bulletinFreeModelController.uid)
                                                       .snapshots(),
                                                   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                                                     if (!snapshot.hasData || snapshot.data == null) {
@@ -731,15 +727,8 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                     );
                                                   }),
                                               SizedBox(width: 5,),
-                                              Text('${_bulletinCrewModelController.displayName}',
+                                              Text('${_bulletinFreeModelController.displayName}',
                                                 //chatDocs[index].get('displayName'),
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.normal,
-                                                    fontSize: 14,
-                                                    color: Color(0xFF949494)),
-                                              ),
-                                              Text(
-                                                '·${_bulletinCrewModelController.location}',
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.normal,
                                                     fontSize: 14,
@@ -795,15 +784,133 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                             Container(
                                               width: _size.width,
                                               child: SelectableText(
-                                                '${_bulletinCrewModelController.description}',
+                                                '${_bulletinFreeModelController.description}',
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.normal),
                                               ),
                                             ),
+
                                           ],
                                         ),
                                       ]),
+                                ),
+                                SizedBox(height: 20,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Center(
+                                      child: GestureDetector(
+                                        child: Container(
+                                          height: 24,
+                                          decoration: BoxDecoration(
+                                              color:  Colors.transparent,
+                                              borderRadius: BorderRadius.circular(4)
+                                          ),
+                                          child: Padding(
+                                            padding: EdgeInsets.only(right: 8),
+                                            child: Row(
+                                              children: [
+                                                (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}'))
+                                                    ? Padding(
+                                                  padding: const EdgeInsets.only(top: 2),
+                                                  child:
+                                                  IconButton(
+                                                    onPressed: () async {
+                                                      var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                                      HapticFeedback.lightImpact();
+                                                      if (_firstPress) {
+                                                        _firstPress = false;
+                                                        await _userModelController.deleteLikeUid(docName);
+                                                        await _bulletinFreeModelController.likeDelete(docName);
+                                                        await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                                        setState(() {_firstPress = true;});
+                                                      }
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.thumb_up,
+                                                      size: 14,
+                                                      color: Color(0xFFD63636),
+                                                    ),
+                                                    padding: EdgeInsets.zero,
+                                                    constraints: BoxConstraints(),
+                                                  ),
+                                                )
+                                                    : Padding(
+                                                  padding: const EdgeInsets.only(top: 2),
+                                                  child:
+                                                  IconButton(
+                                                    onPressed: () async {
+                                                      var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                                      HapticFeedback.lightImpact();
+                                                      if (_firstPress) {
+                                                        _firstPress = false;
+                                                        await _userModelController.updateLikeUid(docName);
+                                                        await _bulletinFreeModelController.likeUpdate(docName);
+                                                        await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                                        setState(() {
+                                                          _firstPress = true;
+                                                        });
+                                                      }
+                                                    },
+                                                    icon: Icon(Icons.thumb_up_alt_outlined,
+                                                      size: 14,
+                                                      color: Color(0xFFC8C8C8),
+                                                    ),
+                                                    padding: EdgeInsets.zero,
+                                                    constraints: BoxConstraints(),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(bottom: 1),
+                                                  child: Text(
+                                                    '${_bulletinFreeModelController.likeCount}',
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 11,
+                                                        color:
+                                                        (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}'))
+                                                            ? Color(0xFF111111)
+                                                            : Color(0xFF666666)),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        onTap: () async{
+                                          if (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}')){
+                                            var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                            print(docName);
+                                            HapticFeedback.lightImpact();
+                                            if (_firstPress) {
+                                              _firstPress = false;
+                                              await _userModelController.deleteLikeUid(docName);
+                                              await _bulletinFreeModelController.likeDelete(docName);
+                                              await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                              setState(() {
+                                                _firstPress = true;
+                                              });
+                                            }
+                                          } else{
+                                            var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                            print(docName);
+                                            HapticFeedback.lightImpact();
+                                            if (_firstPress) {
+                                              _firstPress = false;
+                                              await _userModelController.updateLikeUid(docName);
+                                              await _bulletinFreeModelController.likeUpdate(docName);
+                                              await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                              setState(() {
+                                                _firstPress = true;
+                                              });
+                                            }
+                                          }
+
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -898,7 +1005,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                               reverse: _replyReverse,
                                                               itemCount: replyDocs.length,
                                                               itemBuilder: (context, index) {
-                                                                String _time = _bulletinCrewReplyModelController.getAgoTime(replyDocs[index].get('timeStamp'));
+                                                                String _time = _bulletinFreeReplyModelController.getAgoTime(replyDocs[index].get('timeStamp'));
                                                                 return Padding(
                                                                   padding: const EdgeInsets.only(top: 16),
                                                                   child: Obx(() => Container(
@@ -1052,7 +1159,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                           decoration: BoxDecoration(
                                                                                                             borderRadius: BorderRadius.circular(30),
                                                                                                             color:
-                                                                                                            (replyDocs[index].get('uid')==_bulletinCrewModelController.uid)
+                                                                                                            (replyDocs[index].get('uid')==_bulletinFreeModelController.uid)
                                                                                                                 ? Color(0xFFE1EDFF)
                                                                                                                 : Colors.white,
                                                                                                           ),
@@ -1062,7 +1169,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                               '글쓴이',
                                                                                                               style: TextStyle(fontSize: 11, fontWeight: FontWeight.normal,
                                                                                                                   color:
-                                                                                                                  (replyDocs[index].get('uid')==_bulletinCrewModelController.uid)
+                                                                                                                  (replyDocs[index].get('uid')==_bulletinFreeModelController.uid)
                                                                                                                       ? Color(0xFF3D83ED)
                                                                                                                       : Colors.white),
                                                                                                             ),
@@ -1354,21 +1461,21 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                                             CustomFullScreenDialog.showDialog();
                                                                                                                             try {
                                                                                                                               await FirebaseFirestore.instance
-                                                                                                                                  .collection('bulletinCrew')
-                                                                                                                                  .doc('${_bulletinCrewModelController.uid}#${_bulletinCrewModelController.bulletinCrewCount}')
+                                                                                                                                  .collection('bulletinFree')
+                                                                                                                                  .doc('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}')
                                                                                                                                   .collection('reply')
                                                                                                                                   .doc('${_userModelController.uid}${replyDocs[index]['commentCount']}')
                                                                                                                                   .delete();
-                                                                                                                              String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_crew];
+                                                                                                                              String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_free];
                                                                                                                               await _alarmCenterController.deleteAlarm(
-                                                                                                                                  receiverUid: _bulletinCrewModelController.uid,
+                                                                                                                                  receiverUid: _bulletinFreeModelController.uid,
                                                                                                                                   senderUid: _userModelController.uid ,
                                                                                                                                   category: alarmCategory,
-                                                                                                                                  alarmCount: _bulletinCrewModelController.bulletinCrewCount
+                                                                                                                                  alarmCount: _bulletinFreeModelController.bulletinFreeCount
                                                                                                                               );
-                                                                                                                              await _bulletinCrewModelController.reduceBulletinCrewReplyCount(
-                                                                                                                                  bullUid: _bulletinCrewModelController.uid,
-                                                                                                                                  bullCount: _bulletinCrewModelController.bulletinCrewCount);
+                                                                                                                              await _bulletinFreeModelController.reduceBulletinFreeReplyCount(
+                                                                                                                                  bullUid: _bulletinFreeModelController.uid,
+                                                                                                                                  bullCount: _bulletinFreeModelController.bulletinFreeCount);
                                                                                                                               print('댓글 삭제 완료');
                                                                                                                             } catch (e) {}
                                                                                                                             Navigator.pop(context);
@@ -1472,38 +1579,38 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                         CustomFullScreenDialog.showDialog();
                                         // try{
                                         await _userModelController.updateCommentCount(_userModelController.commentCount);
-                                        await _bulletinCrewModelController.updateBulletinCrewReplyCount(
-                                            bullUid: _bulletinCrewModelController.uid,
-                                            bullCount: _bulletinCrewModelController.bulletinCrewCount);
-                                        await _bulletinCrewReplyModelController.sendReply(
+                                        await _bulletinFreeModelController.updateBulletinFreeReplyCount(
+                                            bullUid: _bulletinFreeModelController.uid,
+                                            bullCount: _bulletinFreeModelController.bulletinFreeCount);
+                                        await _bulletinFreeReplyModelController.sendReply(
                                             replyResortNickname: _userModelController.resortNickname,
                                             displayName: _userModelController.displayName,
                                             uid: _userModelController.uid,
-                                            replyLocationUid: _bulletinCrewModelController.uid,
+                                            replyLocationUid: _bulletinFreeModelController.uid,
                                             profileImageUrl: _userModelController.profileImageUrl,
                                             reply: _newReply,
-                                            replyLocationUidCount: _bulletinCrewModelController.bulletinCrewCount,
+                                            replyLocationUidCount: _bulletinFreeModelController.bulletinFreeCount,
                                             commentCount: _userModelController.commentCount);
-                                        String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_crew];
+                                        String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_free];
                                         await _alarmCenterController.sendAlarm(
-                                            alarmCount: _bulletinCrewModelController.bulletinCrewCount,
-                                            receiverUid: _bulletinCrewModelController.uid,
+                                            alarmCount: _bulletinFreeModelController.bulletinFreeCount,
+                                            receiverUid: _bulletinFreeModelController.uid,
                                             senderUid: _userModelController.uid,
                                             senderDisplayName: _userModelController.displayName,
                                             timeStamp: Timestamp.now(),
                                             category: alarmCategory,
                                             msg: '${_userModelController.displayName}님이 $alarmCategory에 댓글을 남겼습니다.',
                                             content: _newReply,
-                                            docName: '${_bulletinCrewModelController.uid}#${_bulletinCrewModelController.bulletinCrewCount}',
+                                            docName: '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}',
                                             liveTalk_uid : '',
                                             liveTalk_commentCount : '',
                                             bulletinRoomUid :'',
                                             bulletinRoomCount :'',
-                                            bulletinCrewUid : _bulletinCrewModelController.uid,
-                                            bulletinCrewCount : _bulletinCrewModelController.bulletinCrewCount,
-                                            bulletinFreeUid : '',
-                                            bulletinFreeCount : '',
-                                            originContent: _bulletinCrewModelController.title
+                                            bulletinCrewUid : '',
+                                            bulletinCrewCount : '',
+                                            bulletinFreeUid : _bulletinFreeModelController.uid,
+                                            bulletinFreeCount : _bulletinFreeModelController.bulletinFreeCount,
+                                            originContent: _bulletinFreeModelController.title
                                         );
                                         CustomFullScreenDialog.cancelDialog();
                                         setState(() {});

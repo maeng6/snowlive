@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_bottomTabBarController.dart';
 import 'package:com.snowlive/controller/vm_loginController.dart';
-import 'package:com.snowlive/screens/Ranking/v_ranking_commingSoon_Screen.dart';
+import 'package:com.snowlive/screens/Ranking/v_ranking_comingSoon_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_liveMapController.dart';
