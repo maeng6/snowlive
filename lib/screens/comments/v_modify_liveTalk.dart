@@ -89,7 +89,7 @@ class _Modify_liveTalkState extends State<Modify_liveTalk> {
 
                         await _commentModelController.updateLiveTalk(
                             comment: _liveTalkTextEditingController.text,
-                            uid: _commentModelController.uid,qq
+                            uid: _commentModelController.uid,
                             commentCount: _commentModelController.commentCount,
                             livetalkImageUrl: livetalkImageUrl);
                         await _commentModelController.getCurrentLiveTalk(uid: _commentModelController.uid, commentCount: _commentModelController.commentCount);
