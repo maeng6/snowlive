@@ -148,7 +148,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                         CustomFullScreenDialog.showDialog();
                         await _imageController.setNewMultiImage(_imageFiles, _userModelController.fleaCount);
                         (isModifiedImageSelected==true)
-                        ? await _fleaModelController.updateFleaItem(
+                            ? await _fleaModelController.updateFleaItem(
                             displayName: _userModelController.displayName,
                             uid: _userModelController.uid,
                             profileImageUrl: _userModelController.profileImageUrl,
@@ -164,7 +164,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                             resortNickname: _userModelController.resortNickname,
                             kakaoUrl: _kakaoUrlTextEditingController.text
                         )
-                        : await _fleaModelController.updateFleaItem(
+                            : await _fleaModelController.updateFleaItem(
                             displayName: _userModelController.displayName,
                             uid: _userModelController.uid,
                             profileImageUrl: _userModelController.profileImageUrl,
@@ -220,13 +220,20 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                           onTap: () async {
                             CustomFullScreenDialog.showDialog();
                             try {
-                              _imageFiles = await _imageController
-                                  .getMultiImage(ImageSource.gallery);
+                              _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
                               CustomFullScreenDialog.cancelDialog();
-                              fleaImageSelected = true;
-                              imageLength = _imageFiles.length;
-                              print(_imageFiles);
-                              setState(() {});
+                              if (_imageFiles.length <= 5) {
+                                fleaImageSelected = true;
+                                imageLength = _imageFiles.length;
+                                setState(() {});
+                                print(_imageFiles);
+                              } else {
+                                Get.dialog(
+                                  AlertDialog(
+                                    title: Text('사진 개수 초과'),
+                                  ),
+                                );
+                              }
                             } catch (e) {
                               CustomFullScreenDialog.cancelDialog();
                             }
@@ -238,58 +245,50 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 IconButton(
-                                    onPressed: () async {
-                                      CustomFullScreenDialog.showDialog();
-                                      try {
-                                        _imageFiles = await _imageController
-                                            .getMultiImage(ImageSource.gallery);
-                                        if(_imageFiles.length <= 5){
-                                          CustomFullScreenDialog.cancelDialog();
-                                          fleaImageSelected = true;
-                                          isModifiedImageSelected = true;
-                                          imageLength = _imageFiles.length;
-                                          setState(() {});
-                                        }else{
-                                          CustomFullScreenDialog.cancelDialog();
-                                          Get.dialog(
-                                              AlertDialog(
-                                                title: Text('사진 개수 초과'),
-                                          )
-                                          );
-                                        }
-
-                                      } catch (e) {
-                                        CustomFullScreenDialog.cancelDialog();
+                                  onPressed: () async {
+                                    CustomFullScreenDialog.showDialog();
+                                    try {
+                                      _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
+                                      CustomFullScreenDialog.cancelDialog();
+                                      if (_imageFiles.length <= 5) {
+                                        fleaImageSelected = true;
+                                        imageLength = _imageFiles.length;
+                                        setState(() {});
+                                        print(_imageFiles);
+                                      } else {
+                                        Get.dialog(
+                                          AlertDialog(
+                                            title: Text('사진 개수 초과'),
+                                          ),
+                                        );
                                       }
-                                    },
-                                    icon: Icon(Icons.camera_alt_rounded),
-                                  color: Color(0xFF949494),),
-                                (isModifiedImageSelected==true)
-                                ?Transform.translate(
+                                    } catch (e) {
+                                      CustomFullScreenDialog.cancelDialog();
+                                    }
+                                  },
+                                  icon: Icon(Icons.camera_alt_rounded),
+                                  color: Color(0xFF949494),
+                                ),
+                                Transform.translate(
                                   offset: Offset(0, -10),
-                                  child: Text('$imageLength / 5',
+                                  child: Text(
+                                    '$imageLength / 5',
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        color: Color(0xFF949494)
-                                    ),),
-                                )
-                                :Transform.translate(
-                                  offset: Offset(0, -10),
-                                  child: Text('${_imageUrls!.value.length}/5',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        color: Color(0xFF949494)
-                                    ),),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Color(0xFF949494),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                            decoration: BoxDecoration(border: Border.all(
-                                color: Colors.transparent
-                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.transparent,
+                              ),
                               borderRadius: BorderRadius.circular(8),
-                              color: Color(0xFFececec),),
+                              color: Color(0xFFececec),
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -304,7 +303,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                           ),
 
                         (isModifiedImageSelected==true)
-                        ?Expanded(
+                            ?Expanded(
                           child: SizedBox(
                             height: 100,
                             child: ListView.builder(
@@ -317,7 +316,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                     Stack(children: [
                                       Container(
                                         decoration: BoxDecoration(
-                                            border: Border.all(color: Color(0xFFECECEC)),
+                                          border: Border.all(color: Color(0xFFECECEC)),
                                           borderRadius: BorderRadius.circular(8),
                                         ),
                                         height: 90,
@@ -334,11 +333,11 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                         top: -8,
                                         right: -8,
                                         child: IconButton(
-                                            onPressed: () {
-                                              _imageFiles.removeAt(index);
-                                              imageLength = _imageFiles.length;
-                                              setState(() {});
-                                            },
+                                          onPressed: () {
+                                            _imageFiles.removeAt(index);
+                                            imageLength = _imageFiles.length;
+                                            setState(() {});
+                                          },
                                           icon: Icon(Icons.cancel), color: Color(0xFF111111),),
                                       ),
                                       if(index==0)
@@ -411,11 +410,11 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                         top: -8,
                                         right: -8,
                                         child: IconButton(
-                                            onPressed: () {
-                                              _imageUrls!.removeAt(index);
-                                              setState(() {
-                                              });
-                                            },
+                                          onPressed: () {
+                                            _imageUrls!.removeAt(index);
+                                            setState(() {
+                                            });
+                                          },
                                           icon: Icon(Icons.cancel), color: Color(0xFF111111),),
                                       ),
                                       if(index==0)
@@ -463,474 +462,474 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                       height: 30,
                     ),
                     Form(
-                      key: _formKey,
+                        key: _formKey,
                         child:
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                      TextFormField(
-                        textAlignVertical: TextAlignVertical.center,
-                        cursorColor: Color(0xff377EEA),
-                        cursorHeight: 16,
-                        cursorWidth: 2,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        controller: _titleTextEditingController..text = '$_initTitle',
-                        onChanged: (title){
-                          _initTitle = title;
-                        },
-                        strutStyle: StrutStyle(leading: 0.3),
-                        decoration: InputDecoration(
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          errorStyle: TextStyle(
-                            fontSize: 12,
-                          ),
-                          labelStyle: TextStyle(
-                              color: Color(0xff949494)
-                          ),
-                          hintStyle:
-                          TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                          hintText: '글 제목을 입력해 주세요. (최대 50자)',
-                          labelText: '글 제목',
-                          contentPadding: EdgeInsets.symmetric(vertical: 2),
-                          border: InputBorder.none,
-                        ),
-                        validator: (val) {
-                          if (val!.length <= 50 && val.length >= 1) {
-                            return null;
-                          } else if (val.length == 0) {
-                            return '글 제목을 입력해주세요.';
-                          } else {
-                            return '최대 입력 가능한 글자 수를 초과했습니다.';
-                          }
-                        },
-                      ),
-                        Divider(
-                          height: 32,
-                          thickness: 0.5,
-                          color: Color(0xFFDEDEDE),
-                        ),
-                        TextFormField(
-                          textAlignVertical: TextAlignVertical.center,
-                          cursorColor: Color(0xff3D6FED),
-                          cursorHeight: 16,
-                          cursorWidth: 2,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          controller: _itemNameTextEditingController..text='$_initItemName',
-                          onChanged: (itemName){
-                            _initItemName = itemName;
-                          },
-                          strutStyle: StrutStyle(leading: 0.3),
-                          decoration: InputDecoration(
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            errorStyle: TextStyle(
-                              fontSize: 12,
-                            ),
-                            labelStyle: TextStyle(
-                                color: Color(0xff949494)
-                            ),
-                            hintStyle:
-                            TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                            hintText: '물품명을 입력해 주세요. (최대 20자)',
-                            labelText: '물품명',
-                            contentPadding: EdgeInsets.symmetric(vertical: 2),
-                            border: InputBorder.none,
-                          ),
-                          validator: (val) {
-                            if (val!.length <= 20 && val.length >= 1) {
-                              return null;
-                            } else if (val.length == 0) {
-                              return '물품명을 입력해주세요.';
-                            } else {
-                              return '최대 입력 가능한 글자 수를 초과했습니다.';
-                            }
-                          },
-                        ),
-                        Divider(
-                          height: 32,
-                          thickness: 0.5,
-                          color: Color(0xFFDEDEDE),
-                        ),
-                        Row(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
-                              width: _size.width / 2 - 16,
-                              child: TextFormField(
-                                textAlignVertical: TextAlignVertical.center,
-                                cursorColor: Color(0xff377EEA),
-                                cursorHeight: 16,
-                                cursorWidth: 2,
-                                controller: _itemPriceTextEditingController..text='$_initPrice',
-                                inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
-                                onChanged: (price){
-                                  _initPrice = int.parse(price);
-                                },
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.only(bottom: 14),
-                                  border: InputBorder.none,
-                                  hintText: '판매가격',
-                                  prefixIcon: Image.asset('assets/imgs/icons/icon_won.png',
-                                    color: Color(0xFF949494),
-                                  ),
-                                  prefixIconConstraints: BoxConstraints(maxWidth: 20),
+                            TextFormField(
+                              textAlignVertical: TextAlignVertical.center,
+                              cursorColor: Color(0xff377EEA),
+                              cursorHeight: 16,
+                              cursorWidth: 2,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              controller: _titleTextEditingController..text = '$_initTitle',
+                              onChanged: (title){
+                                _initTitle = title;
+                              },
+                              strutStyle: StrutStyle(leading: 0.3),
+                              decoration: InputDecoration(
+                                floatingLabelBehavior: FloatingLabelBehavior.always,
+                                errorStyle: TextStyle(
+                                  fontSize: 12,
                                 ),
-                                validator: (val) {
-                                  if (val!.length <= 8 && val.length >= 1) {
-                                    return null;
-                                  } else if (val.length == 0) {
-                                    return '가격을 입력해주세요.';
-                                  } else {
-                                    return '최대 입력 가능한 글자 수를 초과했습니다.';
-                                  }
-                                },
+                                labelStyle: TextStyle(
+                                    color: Color(0xff949494)
+                                ),
+                                hintStyle:
+                                TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                                hintText: '글 제목을 입력해 주세요. (최대 50자)',
+                                labelText: '글 제목',
+                                contentPadding: EdgeInsets.symmetric(vertical: 2),
+                                border: InputBorder.none,
                               ),
+                              validator: (val) {
+                                if (val!.length <= 50 && val.length >= 1) {
+                                  return null;
+                                } else if (val.length == 0) {
+                                  return '글 제목을 입력해주세요.';
+                                } else {
+                                  return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                }
+                              },
                             ),
-                            SizedBox(width: 10),
+                            Divider(
+                              height: 32,
+                              thickness: 0.5,
+                              color: Color(0xFFDEDEDE),
+                            ),
+                            TextFormField(
+                              textAlignVertical: TextAlignVertical.center,
+                              cursorColor: Color(0xff3D6FED),
+                              cursorHeight: 16,
+                              cursorWidth: 2,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              controller: _itemNameTextEditingController..text='$_initItemName',
+                              onChanged: (itemName){
+                                _initItemName = itemName;
+                              },
+                              strutStyle: StrutStyle(leading: 0.3),
+                              decoration: InputDecoration(
+                                floatingLabelBehavior: FloatingLabelBehavior.always,
+                                errorStyle: TextStyle(
+                                  fontSize: 12,
+                                ),
+                                labelStyle: TextStyle(
+                                    color: Color(0xff949494)
+                                ),
+                                hintStyle:
+                                TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                                hintText: '물품명을 입력해 주세요. (최대 20자)',
+                                labelText: '물품명',
+                                contentPadding: EdgeInsets.symmetric(vertical: 2),
+                                border: InputBorder.none,
+                              ),
+                              validator: (val) {
+                                if (val!.length <= 20 && val.length >= 1) {
+                                  return null;
+                                } else if (val.length == 0) {
+                                  return '물품명을 입력해주세요.';
+                                } else {
+                                  return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                }
+                              },
+                            ),
+                            Divider(
+                              height: 32,
+                              thickness: 0.5,
+                              color: Color(0xFFDEDEDE),
+                            ),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: _size.width / 2 - 16,
+                                  child: TextFormField(
+                                    textAlignVertical: TextAlignVertical.center,
+                                    cursorColor: Color(0xff377EEA),
+                                    cursorHeight: 16,
+                                    cursorWidth: 2,
+                                    controller: _itemPriceTextEditingController..text='$_initPrice',
+                                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
+                                    onChanged: (price){
+                                      _initPrice = int.parse(price);
+                                    },
+                                    decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.only(bottom: 14),
+                                      border: InputBorder.none,
+                                      hintText: '판매가격',
+                                      prefixIcon: Image.asset('assets/imgs/icons/icon_won.png',
+                                        color: Color(0xFF949494),
+                                      ),
+                                      prefixIconConstraints: BoxConstraints(maxWidth: 20),
+                                    ),
+                                    validator: (val) {
+                                      if (val!.length <= 8 && val.length >= 1) {
+                                        return null;
+                                      } else if (val.length == 0) {
+                                        return '가격을 입력해주세요.';
+                                      } else {
+                                        return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                      }
+                                    },
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Container(
+                                  width: _size.width / 2 - 26,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '거래방식',
+                                        style:
+                                        TextStyle(color: Color(0xff949494), fontSize: 12),
+                                      ),
+                                      Obx(() => TextButton(
+                                          style: TextButton.styleFrom(
+                                            minimumSize: Size.zero,
+                                            padding: EdgeInsets.symmetric(vertical: 6),
+                                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          ),
+                                          onPressed: () {
+                                            showModalBottomSheet(
+                                                enableDrag: false,
+                                                context: context,
+                                                builder: (context) {
+                                                  return Container(
+                                                    color: Colors.white,
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 20,
+                                                        vertical: 30),
+                                                    height: _size.height * 0.45,
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          '거래방식을 선택해주세요.',
+                                                          style: TextStyle(
+                                                              fontSize: 20,
+                                                              fontWeight: FontWeight.bold),
+                                                        ),
+                                                        Container(
+                                                          color: Colors.white,
+                                                          height: 30,
+                                                        ),
+                                                        Expanded(
+                                                          child: ListView.builder(
+                                                              padding: EdgeInsets.zero,
+                                                              itemCount: 3,
+                                                              itemBuilder: (context, index) {
+                                                                return Builder(builder: (context) {
+                                                                  return Column(
+                                                                    children: [
+                                                                      buildMethodListTile(index),
+                                                                      Divider(
+                                                                        height: 20,
+                                                                        thickness: 0.5,
+                                                                      ),
+                                                                    ],
+                                                                  );
+                                                                });
+                                                              }),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                });
+                                          },
+                                          child: Text('${SelectedMethod!.value}',
+                                            style: TextStyle(
+                                                fontSize: 16, color: Color(0xFF111111)
+                                            ),))),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Divider(
+                              height: 32,
+                              thickness: 0.5,
+                              color: Color(0xFFDEDEDE),
+                            ),
+
+
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '카테고리',
+                                  style:
+                                  TextStyle(color: Color(0xff949494), fontSize: 12),
+                                ),
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                Obx(() => TextButton(
+                                    style: TextButton.styleFrom(
+                                      minimumSize: Size.zero,
+                                      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                          enableDrag: false,
+                                          context: context,
+                                          builder: (context) {
+                                            return Container(
+                                              color: Colors.white,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 20,
+                                                  vertical: 30),
+                                              height: _size.height * 0.8,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '카테고리를 선택해주세요.',
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight: FontWeight.bold),
+                                                  ),
+                                                  Container(
+                                                    color: Colors.white,
+                                                    height: 30,
+                                                  ),
+                                                  Expanded(
+                                                    child: ListView.builder(
+                                                        padding: EdgeInsets.zero,
+                                                        itemCount: fleaCategoryList.length,
+                                                        itemBuilder: (context, index) {
+                                                          return Builder(
+                                                              builder: (context) {
+                                                                return Column(
+                                                                  children: [
+                                                                    buildCategoryListTile(
+                                                                        index),
+                                                                    Divider(
+                                                                      height: 20,
+                                                                      thickness: 0.5,
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              });
+                                                        }),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4),
+                                        color: Color(0xFFD7F4FF),
+                                      ),
+                                      padding: EdgeInsets.only(right: 10, left: 10, top: 4, bottom: 6),
+                                      child: Text('${SelectedCategory!.value}', style: TextStyle(
+                                          fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF458BF5)
+                                      ),),
+                                    ))),
+                              ],
+                            ),
+                            Divider(
+                              height: 32,
+                              thickness: 0.5,
+                              color: Color(0xFFDEDEDE),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '거래장소',
+                                  style:
+                                  TextStyle(color: Color(0xff949494), fontSize: 12),
+                                ),
+
+                                SizedBox(
+                                  height: 4,
+                                ),
+
+                                Obx(() => TextButton(
+                                    style: TextButton.styleFrom(
+                                      minimumSize: Size.zero,
+                                      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                          enableDrag: false,
+                                          context: context,
+                                          builder: (context) {
+                                            return Container(
+                                              color: Colors.white,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 20,
+                                                  vertical: 30),
+                                              height: _size.height * 0.5,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '거래희망 장소를 선택해주세요.',
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight: FontWeight.bold),
+                                                  ),
+                                                  Container(
+                                                    color: Colors.white,
+                                                    height: 30,
+                                                  ),
+                                                  Expanded(
+                                                    child: ListView.builder(
+                                                        padding: EdgeInsets.zero,
+                                                        itemCount: 14,
+                                                        itemBuilder: (context, index) {
+                                                          return Builder(builder: (context) {
+                                                            return Column(
+                                                              children: [
+                                                                buildResortListTile(index),
+                                                                Divider(
+                                                                  height: 20,
+                                                                  thickness: 0.5,
+                                                                ),
+                                                              ],
+                                                            );
+                                                          });
+                                                        }),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          });
+                                    },
+                                    child:  Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4),
+                                        color: Color(0xFFD5F7E0),
+                                      ),
+                                      padding: EdgeInsets.only(right: 10, left: 10, top: 4, bottom: 6),
+                                      child: Text('${SelectedLocation!.value}', style: TextStyle(
+                                          fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF17AD4A)
+                                      ),),
+                                    )
+                                )),
+                              ],
+                            ),
+                            Divider(
+                              height: 32,
+                              thickness: 0.5,
+                              color: Color(0xFFDEDEDE),
+                            ),
                             Container(
-                              width: _size.width / 2 - 26,
+                              height: 70,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                    Text(
-                                      '거래방식',
-                                      style:
-                                      TextStyle(color: Color(0xff949494), fontSize: 12),
-                                    ),
-                                  Obx(() => TextButton(
-                                    style: TextButton.styleFrom(
-                                      minimumSize: Size.zero,
-                                      padding: EdgeInsets.symmetric(vertical: 6),
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    ),
-                                      onPressed: () {
-                                        showModalBottomSheet(
-                                            enableDrag: false,
-                                            context: context,
-                                            builder: (context) {
-                                              return Container(
-                                                color: Colors.white,
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 20,
-                                                    vertical: 30),
-                                                height: _size.height * 0.45,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      '거래방식을 선택해주세요.',
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight: FontWeight.bold),
-                                                    ),
-                                                    Container(
-                                                      color: Colors.white,
-                                                      height: 30,
-                                                    ),
-                                                    Expanded(
-                                                      child: ListView.builder(
-                                                          padding: EdgeInsets.zero,
-                                                          itemCount: 3,
-                                                          itemBuilder: (context, index) {
-                                                            return Builder(builder: (context) {
-                                                              return Column(
-                                                                children: [
-                                                                  buildMethodListTile(index),
-                                                                  Divider(
-                                                                    height: 20,
-                                                                    thickness: 0.5,
-                                                                  ),
-                                                                ],
-                                                              );
-                                                            });
-                                                          }),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            });
+                                  Expanded(
+                                    child: TextFormField(
+                                      maxLines: 10,
+                                      textAlignVertical: TextAlignVertical.center,
+                                      cursorColor: Color(0xff377EEA),
+                                      cursorHeight: 16,
+                                      cursorWidth: 2,
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      controller: _kakaoUrlTextEditingController..text = '$_initKakaoUrl',
+                                      onChanged: (kakaoUrl){
+                                        _initKakaoUrl = kakaoUrl;
+                                        print(_initKakaoUrl);
                                       },
-                                      child: Text('${SelectedMethod!.value}',
-                                        style: TextStyle(
-                                            fontSize: 16, color: Color(0xFF111111)
-                                        ),))),
+                                      strutStyle: StrutStyle(leading: 0.3),
+                                      decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                        labelStyle: TextStyle(
+                                            color: Color(0xff949494)
+                                        ),
+                                        hintStyle:
+                                        TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                                        hintText: 'URL을 입력해주세요.',
+                                        labelText: '카카오 오픈채팅 URL',
+                                        border: InputBorder.none,
+                                      ),
+                                      validator: (val) {
+                                        if (val!.length <= 1000 && val.length >= 1) {
+                                          return null;
+                                        } else {
+                                          return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: _size.height-500,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      maxLines: null,
+                                      textAlignVertical: TextAlignVertical.center,
+                                      cursorColor: Color(0xff377EEA),
+                                      cursorHeight: 16,
+                                      cursorWidth: 2,
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      controller: _itemDescribTextEditingController..text = '$_initdescrip',
+                                      onChanged: (descrip){
+                                        _initdescrip = descrip;
+                                        print(_initdescrip);
+                                      },
+                                      strutStyle: StrutStyle(leading: 0.3),
+                                      decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                        labelStyle: TextStyle(
+                                            color: Color(0xff949494)
+                                        ),
+                                        hintStyle:
+                                        TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                                        hintText: '게시글 내용을 작성해 주세요. (최대 1,000자)',
+                                        labelText: '상세설명',
+                                        border: InputBorder.none,
+                                      ),
+                                      validator: (val) {
+                                        if (val!.length <= 1000 && val.length >= 1) {
+                                          return null;
+                                        } else if (val.length == 0) {
+                                          return '상세설명을 입력해주세요.';
+                                        } else {
+                                          return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                           ],
-                        ),
-                        Divider(
-                          height: 32,
-                          thickness: 0.5,
-                          color: Color(0xFFDEDEDE),
-                        ),
-
-
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                            Text(
-                              '카테고리',
-                              style:
-                              TextStyle(color: Color(0xff949494), fontSize: 12),
-                            ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          Obx(() => TextButton(
-                              style: TextButton.styleFrom(
-                                minimumSize: Size.zero,
-                                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 0),
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              ),
-                              onPressed: () {
-                                showModalBottomSheet(
-                                    enableDrag: false,
-                                    context: context,
-                                    builder: (context) {
-                                      return Container(
-                                        color: Colors.white,
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 30),
-                                        height: _size.height * 0.8,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              '카테고리를 선택해주세요.',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Container(
-                                              color: Colors.white,
-                                              height: 30,
-                                            ),
-                                            Expanded(
-                                              child: ListView.builder(
-                                                  padding: EdgeInsets.zero,
-                                                  itemCount: fleaCategoryList.length,
-                                                  itemBuilder: (context, index) {
-                                                    return Builder(
-                                                        builder: (context) {
-                                                          return Column(
-                                                            children: [
-                                                              buildCategoryListTile(
-                                                                  index),
-                                                              Divider(
-                                                                height: 20,
-                                                                thickness: 0.5,
-                                                              ),
-                                                            ],
-                                                          );
-                                                        });
-                                                  }),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    });
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4),
-                                  color: Color(0xFFD7F4FF),
-                                ),
-                                padding: EdgeInsets.only(right: 10, left: 10, top: 4, bottom: 6),
-                                child: Text('${SelectedCategory!.value}', style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF458BF5)
-                                ),),
-                              ))),
-                            ],
-                      ),
-                        Divider(
-                          height: 32,
-                          thickness: 0.5,
-                          color: Color(0xFFDEDEDE),
-                        ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                            Text(
-                              '거래장소',
-                              style:
-                              TextStyle(color: Color(0xff949494), fontSize: 12),
-                            ),
-
-                          SizedBox(
-                            height: 4,
-                          ),
-
-                          Obx(() => TextButton(
-                              style: TextButton.styleFrom(
-                                minimumSize: Size.zero,
-                                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 0),
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              ),
-                              onPressed: () {
-                                showModalBottomSheet(
-                                    enableDrag: false,
-                                    context: context,
-                                    builder: (context) {
-                                      return Container(
-                                        color: Colors.white,
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 30),
-                                        height: _size.height * 0.5,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              '거래희망 장소를 선택해주세요.',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Container(
-                                              color: Colors.white,
-                                              height: 30,
-                                            ),
-                                            Expanded(
-                                              child: ListView.builder(
-                                                  padding: EdgeInsets.zero,
-                                                  itemCount: 14,
-                                                  itemBuilder: (context, index) {
-                                                    return Builder(builder: (context) {
-                                                      return Column(
-                                                        children: [
-                                                          buildResortListTile(index),
-                                                          Divider(
-                                                            height: 20,
-                                                            thickness: 0.5,
-                                                          ),
-                                                        ],
-                                                      );
-                                                    });
-                                                  }),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    });
-                              },
-                              child:  Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4),
-                                  color: Color(0xFFD5F7E0),
-                                ),
-                                padding: EdgeInsets.only(right: 10, left: 10, top: 4, bottom: 6),
-                                child: Text('${SelectedLocation!.value}', style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF17AD4A)
-                                ),),
-                              )
-                          )),
-                        ],
-                      ),
-                        Divider(
-                          height: 32,
-                          thickness: 0.5,
-                          color: Color(0xFFDEDEDE),
-                        ),
-                      Container(
-                        height: 70,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                maxLines: 10,
-                                textAlignVertical: TextAlignVertical.center,
-                                cursorColor: Color(0xff377EEA),
-                                cursorHeight: 16,
-                                cursorWidth: 2,
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                controller: _kakaoUrlTextEditingController..text = '$_initKakaoUrl',
-                                onChanged: (kakaoUrl){
-                                  _initKakaoUrl = kakaoUrl;
-                                  print(_initKakaoUrl);
-                                },
-                                strutStyle: StrutStyle(leading: 0.3),
-                                decoration: InputDecoration(
-                                  errorStyle: TextStyle(
-                                    fontSize: 12,
-                                  ),
-                                  labelStyle: TextStyle(
-                                      color: Color(0xff949494)
-                                  ),
-                                  hintStyle:
-                                  TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                  hintText: 'URL을 입력해주세요.',
-                                  labelText: '카카오 오픈채팅 URL',
-                                  border: InputBorder.none,
-                                ),
-                                validator: (val) {
-                                  if (val!.length <= 1000 && val.length >= 1) {
-                                    return null;
-                                  } else {
-                                    return '최대 입력 가능한 글자 수를 초과했습니다.';
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        height: _size.height-500,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                maxLines: null,
-                                textAlignVertical: TextAlignVertical.center,
-                                cursorColor: Color(0xff377EEA),
-                                cursorHeight: 16,
-                                cursorWidth: 2,
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                controller: _itemDescribTextEditingController..text = '$_initdescrip',
-                                onChanged: (descrip){
-                                  _initdescrip = descrip;
-                                  print(_initdescrip);
-                                },
-                                strutStyle: StrutStyle(leading: 0.3),
-                                decoration: InputDecoration(
-                                  errorStyle: TextStyle(
-                                    fontSize: 12,
-                                  ),
-                                  labelStyle: TextStyle(
-                                      color: Color(0xff949494)
-                                  ),
-                                  hintStyle:
-                                  TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                  hintText: '게시글 내용을 작성해 주세요. (최대 1,000자)',
-                                  labelText: '상세설명',
-                                  border: InputBorder.none,
-                                ),
-                                validator: (val) {
-                                  if (val!.length <= 1000 && val.length >= 1) {
-                                    return null;
-                                  } else if (val.length == 0) {
-                                    return '상세설명을 입력해주세요.';
-                                  } else {
-                                    return '최대 입력 가능한 글자 수를 초과했습니다.';
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                    )
+                        )
                     ),
                     SizedBox(
                       height: 20,

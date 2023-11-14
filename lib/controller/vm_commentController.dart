@@ -134,12 +134,13 @@ class CommentModelController extends GetxController {
     this._liveCrew!.value = commentModel.liveCrew!;
   }
 
-  Future<void> updateLiveTalk({required uid, required commentCount,required comment}) async {
+  Future<void> updateLiveTalk({required uid, required commentCount,required comment, required livetalkImageUrl}) async {
     try {
       final User? user = auth.currentUser;
       final uid = user!.uid;
       await ref.collection('liveTalk').doc('$uid$commentCount').update({
         'comment': comment,
+        'livetalkImageUrl' : livetalkImageUrl
       });
     }catch(e){
 

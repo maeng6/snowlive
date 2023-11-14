@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_List_Detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -137,8 +138,12 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                               bulletinCrewCount: _userModelController.bulletinCrewCount,
                               resortNickname: _userModelController.resortNickname
                           );
-                          Navigator.pop(context);
+                          await _bulletinCrewModelController.getCurrentBulletinCrew(
+                              uid: _userModelController.uid,
+                              bulletinCrewCount: _userModelController.bulletinCrewCount);
+
                           CustomFullScreenDialog.cancelDialog();
+                          Get.off(() => Bulletin_Crew_List_Detail());
                         }
                         _imageController.imagesUrlList.clear();
                       }
@@ -174,16 +179,31 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            CustomFullScreenDialog.showDialog();
-                            try {
-                              _imageFiles = await _imageController
-                                  .getMultiImage(ImageSource.gallery);
-                              CustomFullScreenDialog.cancelDialog();
-                              bulletinCrewImageSelected = true;
-                              imageLength = _imageFiles.length;
-                              setState(() {});
-                            } catch (e) {
-                              CustomFullScreenDialog.cancelDialog();
+                            if (imageLength >= 5) {
+                              Get.dialog(
+                                AlertDialog(
+                                  title: Text('사진 개수 초과'),
+                                ),
+                              );
+                            } else {
+                              CustomFullScreenDialog.showDialog();
+                              try {
+                                _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
+                                CustomFullScreenDialog.cancelDialog();
+                                if (_imageFiles.length <= 5) {
+                                  bulletinCrewImageSelected = true;
+                                  imageLength = _imageFiles.length;
+                                  setState(() {});
+                                } else {
+                                  Get.dialog(
+                                    AlertDialog(
+                                      title: Text('사진 개수 초과'),
+                                    ),
+                                  );
+                                }
+                              } catch (e) {
+                                CustomFullScreenDialog.cancelDialog();
+                              }
                             }
                           },
                           child: Container(
@@ -194,50 +214,59 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                               children: [
                                 IconButton(
                                   onPressed: () async {
-                                    CustomFullScreenDialog.showDialog();
-                                    try {
-                                      _imageFiles = await _imageController
-                                          .getMultiImage(ImageSource.gallery);
-                                      if(_imageFiles.length <= 5){
+                                    if (imageLength >= 5) {
+                                      Get.dialog(
+                                        AlertDialog(
+                                          title: Text('사진 개수 초과'),
+                                        ),
+                                      );
+                                    } else {
+                                      CustomFullScreenDialog.showDialog();
+                                      try {
+                                        _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
                                         CustomFullScreenDialog.cancelDialog();
-                                        bulletinCrewImageSelected = true;
-                                        imageLength = _imageFiles.length;
-                                        setState(() {});
-                                      }else{
-                                        CustomFullScreenDialog.cancelDialog();
-                                        Get.dialog(
+                                        if (_imageFiles.length <= 5) {
+                                          bulletinCrewImageSelected = true;
+                                          imageLength = _imageFiles.length;
+                                          setState(() {});
+                                        } else {
+                                          Get.dialog(
                                             AlertDialog(
                                               title: Text('사진 개수 초과'),
-                                            )
-                                        );
+                                            ),
+                                          );
+                                        }
+                                      } catch (e) {
+                                        CustomFullScreenDialog.cancelDialog();
                                       }
-                                    } catch (e) {
-                                      CustomFullScreenDialog.cancelDialog();
                                     }
                                   },
-                                  icon: Icon(
-                                      Icons.camera_alt_rounded),
-                                  color: Color(0xFF949494),),
+                                  icon: Icon(Icons.camera_alt_rounded),
+                                  color: Color(0xFF949494),
+                                ),
                                 Transform.translate(
                                   offset: Offset(0, -10),
-                                  child: Text('$imageLength / 5',
+                                  child: Text(
+                                    '$imageLength / 5',
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        color: Color(0xFF949494)
-                                    ),),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Color(0xFF949494),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
                             decoration: BoxDecoration(
                               border: Border.all(
-                                  color: Colors.transparent
+                                color: Colors.transparent,
                               ),
                               borderRadius: BorderRadius.circular(8),
                               color: Color(0xFFececec),
                             ),
                           ),
                         ),
+
                         SizedBox(
                           width: 8,
                         ),

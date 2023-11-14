@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:com.snowlive/screens/bulletin/Room/v_bulletin_Room_List_Detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -18,7 +19,7 @@ class Bulletin_Room_Upload extends StatefulWidget {
 
 class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
   List<XFile> _imageFiles = [];
-   Map<String, String?> _tileSelected = {
+  Map<String, String?> _tileSelected = {
     "구분": '',
     "스키장": ''
   };
@@ -123,35 +124,39 @@ class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
                       }
                       else{
 
-                      if(isValid){
-                        CustomFullScreenDialog.showDialog();
-                        await _userModelController.bulletinRoomCountUpdate(_userModelController.uid);
-                        await _imageController.setNewMultiImage_bulletinRoom(_imageFiles, _userModelController.bulletinRoomCount);
-                        await _bulletinRoomModelController.uploadBulletinRoom(
-                            displayName: _userModelController.displayName,
-                            uid: _userModelController.uid,
-                            profileImageUrl: _userModelController.profileImageUrl,
-                            itemImagesUrls: _imageController.imagesUrlList,
-                            title: _titleTextEditingController.text,
-                            category: SelectedCategory,
-                            location: SelectedLocation,
-                            description: _itemDescribTextEditingController.text,
-                            bulletinRoomCount: _userModelController.bulletinRoomCount,
-                            resortNickname: _userModelController.resortNickname
-                        );
-                        Navigator.pop(context);
-                        CustomFullScreenDialog.cancelDialog();
-                      }
-                      _imageController.imagesUrlList.clear();
+                        if(isValid){
+                          CustomFullScreenDialog.showDialog();
+                          await _userModelController.bulletinRoomCountUpdate(_userModelController.uid);
+                          await _imageController.setNewMultiImage_bulletinRoom(_imageFiles, _userModelController.bulletinRoomCount);
+                          await _bulletinRoomModelController.uploadBulletinRoom(
+                              displayName: _userModelController.displayName,
+                              uid: _userModelController.uid,
+                              profileImageUrl: _userModelController.profileImageUrl,
+                              itemImagesUrls: _imageController.imagesUrlList,
+                              title: _titleTextEditingController.text,
+                              category: SelectedCategory,
+                              location: SelectedLocation,
+                              description: _itemDescribTextEditingController.text,
+                              bulletinRoomCount: _userModelController.bulletinRoomCount,
+                              resortNickname: _userModelController.resortNickname
+                          );
+                          await _bulletinRoomModelController.getCurrentBulletinRoom(
+                              uid: _userModelController.uid,
+                              bulletinRoomCount: _userModelController.bulletinRoomCount);
+
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.off(() => Bulletin_Room_List_Detail());
+                        }
+                        _imageController.imagesUrlList.clear();
                       }
 
                     },
                     child: Padding(
                       padding: EdgeInsets.only(right: 10),
                       child: Text('올리기', style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF3D83ED)
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF3D83ED)
                       ),),
                     ))
               ],
@@ -176,16 +181,31 @@ class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            CustomFullScreenDialog.showDialog();
-                            try {
-                              _imageFiles = await _imageController
-                                  .getMultiImage(ImageSource.gallery);
-                              CustomFullScreenDialog.cancelDialog();
-                              bulletinRoomImageSelected = true;
-                              imageLength = _imageFiles.length;
-                              setState(() {});
-                            } catch (e) {
-                              CustomFullScreenDialog.cancelDialog();
+                            if (imageLength >= 5) {
+                              Get.dialog(
+                                AlertDialog(
+                                  title: Text('사진 개수 초과'),
+                                ),
+                              );
+                            } else {
+                              CustomFullScreenDialog.showDialog();
+                              try {
+                                _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
+                                CustomFullScreenDialog.cancelDialog();
+                                if (_imageFiles.length <= 5) {
+                                  bulletinRoomImageSelected = true;
+                                  imageLength = _imageFiles.length;
+                                  setState(() {});
+                                } else {
+                                  Get.dialog(
+                                    AlertDialog(
+                                      title: Text('사진 개수 초과'),
+                                    ),
+                                  );
+                                }
+                              } catch (e) {
+                                CustomFullScreenDialog.cancelDialog();
+                              }
                             }
                           },
                           child: Container(
@@ -195,45 +215,53 @@ class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 IconButton(
-                                    onPressed: () async {
+                                  onPressed: () async {
+                                    if (imageLength >= 5) {
+                                      Get.dialog(
+                                        AlertDialog(
+                                          title: Text('사진 개수 초과'),
+                                        ),
+                                      );
+                                    } else {
                                       CustomFullScreenDialog.showDialog();
                                       try {
-                                        _imageFiles = await _imageController
-                                            .getMultiImage(ImageSource.gallery);
-                                        if(_imageFiles.length <= 5){
-                                          CustomFullScreenDialog.cancelDialog();
+                                        _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
+                                        CustomFullScreenDialog.cancelDialog();
+                                        if (_imageFiles.length <= 5) {
                                           bulletinRoomImageSelected = true;
                                           imageLength = _imageFiles.length;
                                           setState(() {});
-                                        }else{
-                                          CustomFullScreenDialog.cancelDialog();
+                                        } else {
                                           Get.dialog(
-                                              AlertDialog(
-                                                title: Text('사진 개수 초과'),
-                                          )
+                                            AlertDialog(
+                                              title: Text('사진 개수 초과'),
+                                            ),
                                           );
                                         }
                                       } catch (e) {
                                         CustomFullScreenDialog.cancelDialog();
                                       }
-                                    },
-                                    icon: Icon(
-                                        Icons.camera_alt_rounded),
-                                  color: Color(0xFF949494),),
+                                    }
+                                  },
+                                  icon: Icon(Icons.camera_alt_rounded),
+                                  color: Color(0xFF949494),
+                                ),
                                 Transform.translate(
                                   offset: Offset(0, -10),
-                                  child: Text('$imageLength / 5',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                    color: Color(0xFF949494)
-                                  ),),
+                                  child: Text(
+                                    '$imageLength / 5',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Color(0xFF949494),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: Colors.transparent
+                                color: Colors.transparent,
                               ),
                               borderRadius: BorderRadius.circular(8),
                               color: Color(0xFFececec),
@@ -246,7 +274,7 @@ class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
                         if(_imageFiles.length == 0)
                           SizedBox(width: 8,),
                         if(_imageFiles.length == 0)
-                        Text('사진은 게시글에 첨부됩니다.',
+                          Text('사진은 게시글에 첨부됩니다.',
                             style: TextStyle(
                                 color: Color(0xff949494),
                                 fontSize: 12
@@ -267,8 +295,8 @@ class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
                                       Container(
                                         decoration: BoxDecoration(
                                             border: Border.all(color: Color(0xFFECECEC)),
-                                          borderRadius: BorderRadius.circular(8),
-                                          color: Colors.white
+                                            borderRadius: BorderRadius.circular(8),
+                                            color: Colors.white
                                         ),
                                         height: 90,
                                         width: 90,
@@ -284,12 +312,12 @@ class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
                                         top: -8,
                                         right: -8,
                                         child: IconButton(
-                                            onPressed: () {
-                                              _imageFiles.removeAt(index);
-                                              imageLength = _imageFiles.length;
-                                              setState(() {});
-                                            },
-                                            icon: Icon(Icons.cancel), color: Color(0xFF111111),),
+                                          onPressed: () {
+                                            _imageFiles.removeAt(index);
+                                            imageLength = _imageFiles.length;
+                                            setState(() {});
+                                          },
+                                          icon: Icon(Icons.cancel), color: Color(0xFF111111),),
                                       ),
                                       if(index==0)
                                         Positioned(
@@ -299,13 +327,13 @@ class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 border: Border.all(
-                                                  color: Colors.transparent
+                                                    color: Colors.transparent
                                                 ),
-                                                  borderRadius: BorderRadius.only(
+                                                borderRadius: BorderRadius.only(
                                                     bottomRight: Radius.circular(8),
                                                     bottomLeft: Radius.circular(8)
-                                                  ),
-                                                  color: Colors.black87,
+                                                ),
+                                                color: Colors.black87,
                                               ),
                                               height: 22,
                                               width: 90,
@@ -313,7 +341,7 @@ class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
                                                 borderRadius: BorderRadius.circular(7),
                                                 child: Text('대표사진',
                                                   style: TextStyle(color: Colors.white,
-                                                  fontSize: 12),
+                                                      fontSize: 12),
                                                   textAlign: TextAlign.center,
                                                 ),
                                               ),
@@ -337,31 +365,107 @@ class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
                       width: 100,
                     ),
                     Form(
-                      key: _formKey,
+                        key: _formKey,
                         child:
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              width: _size.width / 2 - 26,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (isCategorySelected == true)
-                                    Text(
-                                      '구분',
-                                      style:
-                                      TextStyle(color: Color(0xff949494), fontSize: 12),
+                            Row(
+                              children: [
+                                Container(
+                                  width: _size.width / 2 - 26,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      if (isCategorySelected == true)
+                                        Text(
+                                          '구분',
+                                          style:
+                                          TextStyle(color: Color(0xff949494), fontSize: 12),
+                                        ),
+                                      TextButton(
+                                          style: TextButton.styleFrom(
+                                            minimumSize: Size.zero,
+                                            padding: EdgeInsets.symmetric(vertical: 6),
+                                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          ),
+                                          onPressed: () {
+                                            showModalBottomSheet(
+                                                enableDrag: false,
+                                                context: context,
+                                                builder: (context) {
+                                                  return Container(
+                                                    color: Colors.white,
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 20,
+                                                        vertical: 30),
+                                                    height: _size.height * 0.45,
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          '구분을 선택해주세요.',
+                                                          style: TextStyle(
+                                                              fontSize: 20,
+                                                              fontWeight: FontWeight.bold),
+                                                        ),
+                                                        Container(
+                                                          color: Colors.white,
+                                                          height: 30,
+                                                        ),
+                                                        Expanded(
+                                                          child: ListView.builder(
+                                                              padding: EdgeInsets.zero,
+                                                              itemCount: 3,
+                                                              itemBuilder: (context, index) {
+                                                                return Builder(builder: (context) {
+                                                                  return Column(
+                                                                    children: [
+                                                                      buildCategoryListTile(index),
+                                                                      Divider(
+                                                                        height: 20,
+                                                                        thickness: 0.5,
+                                                                      ),
+                                                                    ],
+                                                                  );
+                                                                });
+                                                              }),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                });
+                                          },
+                                          child: (isCategorySelected!)
+                                              ? Text('$SelectedCategory', style: TextStyle(
+                                              fontSize: 16, color: Color(0xFF111111)
+                                          ),)
+                                              : Text('구분', style: TextStyle(
+                                              fontSize: 16, color: Color(0xFF949494)
+                                          ),)),
+                                    ],
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (isLocationSelected==true)
+                                      Text(
+                                        '스키장',
+                                        style:
+                                        TextStyle(color: Color(0xff949494), fontSize: 12),
+                                      ),
+                                    SizedBox(
+                                      height: 4,
                                     ),
-                                  TextButton(
-                                    style: TextButton.styleFrom(
-                                      minimumSize: Size.zero,
-                                      padding: EdgeInsets.symmetric(vertical: 6),
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    ),
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        minimumSize: Size.zero,
+                                        padding: EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      ),
                                       onPressed: () {
                                         showModalBottomSheet(
                                             enableDrag: false,
@@ -372,13 +476,13 @@ class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
                                                 padding: EdgeInsets.symmetric(
                                                     horizontal: 20,
                                                     vertical: 30),
-                                                height: _size.height * 0.45,
+                                                height: _size.height * 0.8,
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      '구분을 선택해주세요.',
+                                                      '스키장을 선택해주세요.',
                                                       style: TextStyle(
                                                           fontSize: 20,
                                                           fontWeight: FontWeight.bold),
@@ -390,12 +494,12 @@ class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
                                                     Expanded(
                                                       child: ListView.builder(
                                                           padding: EdgeInsets.zero,
-                                                          itemCount: 3,
+                                                          itemCount: 13,
                                                           itemBuilder: (context, index) {
                                                             return Builder(builder: (context) {
                                                               return Column(
                                                                 children: [
-                                                                  buildCategoryListTile(index),
+                                                                  buildResortListTile(index),
                                                                   Divider(
                                                                     height: 20,
                                                                     thickness: 0.5,
@@ -410,199 +514,123 @@ class _Bulletin_Room_UploadState extends State<Bulletin_Room_Upload> {
                                               );
                                             });
                                       },
-                                      child: (isCategorySelected!)
-                                          ? Text('$SelectedCategory', style: TextStyle(
-                                      fontSize: 16, color: Color(0xFF111111)
-                                  ),)
-                                          : Text('구분', style: TextStyle(
-                                        fontSize: 16, color: Color(0xFF949494)
-                                      ),)),
-                                ],
-                              ),
+                                      child: (isLocationSelected!)
+                                          ? Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(4),
+                                          color: Color(0xFFD5F7E0),
+                                        ),
+                                        padding: EdgeInsets.only(right: 10, left: 10, top: 4, bottom: 6),
+                                        child: Text('$SelectedLocation', style: TextStyle(
+                                            fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF17AD4A)
+                                        ),),
+                                      )
+                                          : Padding(
+                                        padding: EdgeInsets.only(bottom: 6),
+                                        child: Text('스키장', style: TextStyle(
+                                            fontSize: 16, color: Color(0xFF949494)
+                                        ),),
+                                      ),),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Divider(
+                              height: 32,
+                              thickness: 0.5,
+                              color: Color(0xFFECECEC),
                             ),
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (isLocationSelected==true)
-                                  Text(
-                                    '스키장',
-                                    style:
-                                    TextStyle(color: Color(0xff949494), fontSize: 12),
-                                  ),
                                 SizedBox(
                                   height: 4,
                                 ),
-                                TextButton(
-                                  style: TextButton.styleFrom(
-                                    minimumSize: Size.zero,
-                                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 0),
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  ),
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                        enableDrag: false,
-                                        context: context,
-                                        builder: (context) {
-                                          return Container(
-                                            color: Colors.white,
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 20,
-                                                vertical: 30),
-                                            height: _size.height * 0.8,
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '스키장을 선택해주세요.',
-                                                  style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight: FontWeight.bold),
-                                                ),
-                                                Container(
-                                                  color: Colors.white,
-                                                  height: 30,
-                                                ),
-                                                Expanded(
-                                                  child: ListView.builder(
-                                                      padding: EdgeInsets.zero,
-                                                      itemCount: 13,
-                                                      itemBuilder: (context, index) {
-                                                        return Builder(builder: (context) {
-                                                          return Column(
-                                                            children: [
-                                                              buildResortListTile(index),
-                                                              Divider(
-                                                                height: 20,
-                                                                thickness: 0.5,
-                                                              ),
-                                                            ],
-                                                          );
-                                                        });
-                                                      }),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        });
-                                  },
-                                  child: (isLocationSelected!)
-                                      ? Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(4),
-                                      color: Color(0xFFD5F7E0),
+                                TextFormField(
+                                  textAlignVertical: TextAlignVertical.center,
+                                  cursorColor: Color(0xff3D6FED),
+                                  cursorHeight: 16,
+                                  cursorWidth: 2,
+                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  controller: _titleTextEditingController,
+                                  strutStyle: StrutStyle(leading: 0.3),
+                                  decoration: InputDecoration(
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    errorStyle: TextStyle(
+                                      fontSize: 12,
                                     ),
-                                    padding: EdgeInsets.only(right: 10, left: 10, top: 4, bottom: 6),
-                                    child: Text('$SelectedLocation', style: TextStyle(
-                                        fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF17AD4A)
-                                    ),),
-                                  )
-                                      : Padding(
-                                    padding: EdgeInsets.only(bottom: 6),
-                                    child: Text('스키장', style: TextStyle(
-                                        fontSize: 16, color: Color(0xFF949494)
-                                    ),),
-                                  ),),
+                                    labelStyle: TextStyle(
+                                        color: Color(0xff949494)
+                                    ),
+                                    hintStyle:
+                                    TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                                    hintText: '글 제목을 입력해 주세요. (최대 50자)',
+                                    labelText: '글 제목',
+                                    contentPadding: EdgeInsets.symmetric(vertical: 2),
+                                    border: InputBorder.none,
+                                  ),
+                                  validator: (val) {
+                                    if (val!.length <= 50 && val.length >= 1) {
+                                      return null;
+                                    } else if (val.length == 0) {
+                                      return '글 제목을 입력해주세요.';
+                                    } else {
+                                      return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                    }
+                                  },
+                                ),
                               ],
                             ),
-                          ],
-                        ),
-                        Divider(
-                          height: 32,
-                          thickness: 0.5,
-                          color: Color(0xFFECECEC),
-                        ),
-                        Column(
-                          children: [
-                            SizedBox(
-                              height: 4,
+                            Divider(
+                              height: 32,
+                              thickness: 0.5,
+                              color: Color(0xFFECECEC),
                             ),
-                            TextFormField(
-                              textAlignVertical: TextAlignVertical.center,
-                              cursorColor: Color(0xff3D6FED),
-                              cursorHeight: 16,
-                              cursorWidth: 2,
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                              controller: _titleTextEditingController,
-                              strutStyle: StrutStyle(leading: 0.3),
-                              decoration: InputDecoration(
-                                floatingLabelBehavior: FloatingLabelBehavior.always,
-                                errorStyle: TextStyle(
-                                  fontSize: 12,
-                                ),
-                                labelStyle: TextStyle(
-                                    color: Color(0xff949494)
-                                ),
-                                hintStyle:
-                                TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                hintText: '글 제목을 입력해 주세요. (최대 50자)',
-                                labelText: '글 제목',
-                                contentPadding: EdgeInsets.symmetric(vertical: 2),
-                                border: InputBorder.none,
-                              ),
-                              validator: (val) {
-                                if (val!.length <= 50 && val.length >= 1) {
-                                  return null;
-                                } else if (val.length == 0) {
-                                  return '글 제목을 입력해주세요.';
-                                } else {
-                                  return '최대 입력 가능한 글자 수를 초과했습니다.';
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                        Divider(
-                          height: 32,
-                          thickness: 0.5,
-                          color: Color(0xFFECECEC),
-                        ),
-                      Container(
-                        height: _size.height-500,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                maxLines: null,
-                                textAlignVertical: TextAlignVertical.center,
-                                cursorColor: Color(0xff3D6FED),
-                                cursorHeight: 16,
-                                cursorWidth: 2,
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                controller: _itemDescribTextEditingController,
-                                strutStyle: StrutStyle(leading: 0.3),
-                                decoration: InputDecoration(
-                                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                                  errorStyle: TextStyle(
-                                    fontSize: 12,
+                            Container(
+                              height: _size.height-500,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      maxLines: null,
+                                      textAlignVertical: TextAlignVertical.center,
+                                      cursorColor: Color(0xff3D6FED),
+                                      cursorHeight: 16,
+                                      cursorWidth: 2,
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      controller: _itemDescribTextEditingController,
+                                      strutStyle: StrutStyle(leading: 0.3),
+                                      decoration: InputDecoration(
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                        errorStyle: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                        labelStyle: TextStyle(
+                                            color: Color(0xff949494)
+                                        ),
+                                        hintStyle:
+                                        TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                                        hintText: '게시글 내용을 작성해 주세요. (최대 1,000자)',
+                                        labelText: '내용',
+                                        border: InputBorder.none,
+                                      ),
+                                      validator: (val) {
+                                        if (val!.length <= 1000 && val.length >= 1) {
+                                          return null;
+                                        } else if (val.length == 0) {
+                                          return '내용을 입력해주세요.';
+                                        } else {
+                                          return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                        }
+                                      },
+                                    ),
                                   ),
-                                  labelStyle: TextStyle(
-                                      color: Color(0xff949494)
-                                  ),
-                                  hintStyle:
-                                  TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                  hintText: '게시글 내용을 작성해 주세요. (최대 1,000자)',
-                                  labelText: '내용',
-                                  border: InputBorder.none,
-                                ),
-                                validator: (val) {
-                                  if (val!.length <= 1000 && val.length >= 1) {
-                                    return null;
-                                  } else if (val.length == 0) {
-                                    return '내용을 입력해주세요.';
-                                  } else {
-                                    return '최대 입력 가능한 글자 수를 초과했습니다.';
-                                  }
-                                },
+                                ],
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                    ],
-                    )
+                        )
                     ),
                     SizedBox(
                       height: 20,
