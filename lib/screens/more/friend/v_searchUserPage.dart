@@ -684,6 +684,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                               bulletinRoomCount :'',
                                                               bulletinCrewUid : '',
                                                               bulletinCrewCount : '',
+                                                              bulletinFreeUid : '',
+                                                              bulletinFreeCount : '',
                                                               originContent: 'friend'
                                                           );
                                                           await _userModelController.getCurrentUser(_userModelController.uid);
@@ -878,6 +880,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                                 bulletinRoomCount :'',
                                                                 bulletinCrewUid : '',
                                                                 bulletinCrewCount : '',
+                                                                bulletinFreeUid : '',
+                                                                bulletinFreeCount : '',
                                                                 originContent: 'friend'
                                                             );
                                                             await _userModelController.getCurrentUser(_userModelController.uid);

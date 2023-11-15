@@ -34,6 +34,8 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
 
   var _userStream;
   var f = NumberFormat('###,###,###,###');
+  int _currentIndex = 0;
+
 
   @override
   void initState() {
@@ -477,40 +479,68 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                   ),
                                 ),
                               if (_fleaModelController.itemImagesUrls!.isNotEmpty)
-                                CarouselSlider.builder(
-                                  options: CarouselOptions(
-                                    height: 280,
-                                    viewportFraction: 1,
-                                    enableInfiniteScroll: false,
-                                  ),
-                                  itemCount:
-                                  _fleaModelController.itemImagesUrls!.length,
-                                  itemBuilder: (context, index, pageViewIndex) {
-                                    return Container(
-                                      child: StreamBuilder<Object>(
-                                          stream: null,
-                                          builder: (context, snapshot) {
-                                            return Row(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    Get.to(() => FleaMarketImageScreen());
-                                                  },
-                                                  child: ExtendedImage.network(
-                                                    _fleaModelController
-                                                        .itemImagesUrls![index],
-                                                    fit: BoxFit.cover,
-                                                    width: _size.width,
-                                                    height: 280,
+                                Stack(
+                                  children: [
+                                    CarouselSlider.builder(
+                                      options: CarouselOptions(
+                                        height: 280,
+                                        viewportFraction: 1,
+                                        enableInfiniteScroll: false,
+                                        onPageChanged: (index, reason) {
+                                          setState(() {
+                                            _currentIndex = index;
+                                          });
+                                        },
+                                      ),
+                                      itemCount: _fleaModelController.itemImagesUrls!.length,
+                                      itemBuilder: (context, index, pageViewIndex) {
+                                        return Container(
+                                          child: StreamBuilder<Object>(
+                                            stream: null,
+                                            builder: (context, snapshot) {
+                                              return Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Get.to(() => FleaMarketImageScreen());
+                                                    },
+                                                    child: ExtendedImage.network(
+                                                      _fleaModelController.itemImagesUrls![index],
+                                                      fit: BoxFit.cover,
+                                                      width: _size.width,
+                                                      height: 280,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    Positioned(
+                                      right: 170,
+                                      bottom: 10,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: List.generate(
+                                          _fleaModelController.itemImagesUrls!.length,
+                                              (index) {
+                                            return Container(
+                                              width: 8.0,
+                                              height: 8.0,
+                                              margin: EdgeInsets.symmetric(horizontal: 4.0),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: _currentIndex == index ? Colors.blue : Colors.grey,
+                                              ),
                                             );
-                                          }),
-                                    );
-                                  },
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               SizedBox(
                                 height: 16,

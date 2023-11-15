@@ -98,16 +98,18 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
                   }
                 }
 
-                return GestureDetector(
-                  onTap: () async {
-                    CustomFullScreenDialog.showDialog();
-                    await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                    await _liveCrewModelController.getCurrrentCrew(doc['crewID']);
-                    CustomFullScreenDialog.cancelDialog();
-                    Get.to(() => CrewDetailPage_screen());
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 5),
+                return Padding(
+                  padding: EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 5),
+                  child: InkWell(
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: ()async{
+                      CustomFullScreenDialog.showDialog();
+                      await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                      await _liveCrewModelController.getCurrrentCrew(doc['crewID']);
+                      CustomFullScreenDialog.cancelDialog();
+                      Get.to(() => CrewDetailPage_screen());
+                    },
                     child: Container(
                       width: _size.width,
                       child: Padding(
@@ -206,9 +208,9 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
                 ),
                 SizedBox(height: 6,),
                 Text('해당 스키장에 개설된 크루가 없습니다.',
-                style: TextStyle(
-                  color: Color(0xFF949494)
-                ),
+                  style: TextStyle(
+                      color: Color(0xFF949494)
+                  ),
                 ),
               ],
             ),

@@ -1029,28 +1029,51 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
 
 
                         return  Row(
-                          children: [
-                            if(crewDocs.length > 0)
-                              GestureDetector(
-                                onTap:() async{
-                                  CustomFullScreenDialog.showDialog();
-                                  await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                  await _liveCrewModelController.getCurrrentCrew(crewDocs[0]['crewID']);
-                                  CustomFullScreenDialog.cancelDialog();
-                                  Get.to(()=>CrewDetailPage_screen());
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Color(crewDocs[0]['crewColor']),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  height: 154,
-                                  width: (_size.width - 48) / 3,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      (crewDocs[0]['profileImageUrl'].isNotEmpty)
-                                          ? Container(
+                            children: [
+                              if(crewDocs.length > 0)
+                                GestureDetector(
+                                  onTap:() async{
+                                    CustomFullScreenDialog.showDialog();
+                                    await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                                    await _liveCrewModelController.getCurrrentCrew(crewDocs[0]['crewID']);
+                                    CustomFullScreenDialog.cancelDialog();
+                                    Get.to(()=>CrewDetailPage_screen());
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(crewDocs[0]['crewColor']),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    height: 154,
+                                    width: (_size.width - 48) / 3,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        (crewDocs[0]['profileImageUrl'].isNotEmpty)
+                                            ? Container(
+                                            decoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black12,
+                                                  spreadRadius: 0,
+                                                  blurRadius: 8,
+                                                  offset: Offset(0, 4), // changes position of shadow
+                                                ),
+                                              ],
+                                            ),
+                                            width: 58,
+                                            height: 58,
+                                            child: ExtendedImage.network(
+                                              crewDocs[0]['profileImageUrl'],
+                                              enableMemoryCache: true,
+                                              cacheHeight: 200,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(7),
+                                              width: 100,
+                                              height: 100,
+                                              fit: BoxFit.cover,
+                                            ))
+                                            : Container(
                                           decoration: BoxDecoration(
                                             boxShadow: [
                                               BoxShadow(
@@ -1061,85 +1084,84 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                               ),
                                             ],
                                           ),
-                                          width: 58,
-                                          height: 58,
                                           child: ExtendedImage.network(
-                                            crewDocs[0]['profileImageUrl'],
+                                            assetTop1,
                                             enableMemoryCache: true,
-                                            cacheHeight: 200,
                                             shape: BoxShape.rectangle,
                                             borderRadius: BorderRadius.circular(7),
-                                            width: 100,
-                                            height: 100,
+                                            width: 58,
+                                            height: 58,
                                             fit: BoxFit.cover,
-                                          ))
-                                          : Container(
-                                        decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black12,
-                                              spreadRadius: 0,
-                                              blurRadius: 8,
-                                              offset: Offset(0, 4), // changes position of shadow
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                        child: ExtendedImage.asset(
-                                          assetTop1,
+                                        SizedBox(height: 14),
+                                        ExtendedImage.asset(
+                                          'assets/imgs/icons/icon_crown_1.png',
                                           enableMemoryCache: true,
-                                          shape: BoxShape.rectangle,
-                                          borderRadius: BorderRadius.circular(7),
-                                          width: 58,
-                                          height: 58,
+                                          width: 28,
+                                          height: 28,
                                           fit: BoxFit.cover,
                                         ),
-                                      ),
-                                      SizedBox(height: 14),
-                                      ExtendedImage.asset(
-                                        'assets/imgs/icons/icon_crown_1.png',
-                                        enableMemoryCache: true,
-                                        width: 28,
-                                        height: 28,
-                                        fit: BoxFit.cover,
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 10),
-                                        child: Text(crewDocs[0]['crewName'],
-                                          style: TextStyle(
-                                              color: Color(0xFFFFFFFF),
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 13
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 10),
+                                          child: Text(crewDocs[0]['crewName'],
+                                            style: TextStyle(
+                                                color: Color(0xFFFFFFFF),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
                                           ),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            SizedBox(width: 8),
-                            if(crewDocs.length > 1)
-                              GestureDetector(
-                                onTap:() async{
-                                  CustomFullScreenDialog.showDialog();
-                                  await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                  await _liveCrewModelController.getCurrrentCrew(crewDocs[1]['crewID']);
-                                  CustomFullScreenDialog.cancelDialog();
-                                  Get.to(()=>CrewDetailPage_screen());
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Color(crewDocs[1]['crewColor']),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  height: 154,
-                                  width: (_size.width - 48) / 3,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      (crewDocs[1]['profileImageUrl'].isNotEmpty)
-                                          ? Container(
+                              SizedBox(width: 8),
+                              if(crewDocs.length > 1)
+                                GestureDetector(
+                                  onTap:() async{
+                                    CustomFullScreenDialog.showDialog();
+                                    await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                                    await _liveCrewModelController.getCurrrentCrew(crewDocs[1]['crewID']);
+                                    CustomFullScreenDialog.cancelDialog();
+                                    Get.to(()=>CrewDetailPage_screen());
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(crewDocs[1]['crewColor']),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    height: 154,
+                                    width: (_size.width - 48) / 3,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        (crewDocs[1]['profileImageUrl'].isNotEmpty)
+                                            ? Container(
+                                            decoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black12,
+                                                  spreadRadius: 0,
+                                                  blurRadius: 8,
+                                                  offset: Offset(0, 4), // changes position of shadow
+                                                ),
+                                              ],
+                                            ),
+                                            width: 58,
+                                            height: 58,
+                                            child: ExtendedImage.network(
+                                              crewDocs[1]['profileImageUrl'],
+                                              enableMemoryCache: true,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(7),
+                                              width: 100,
+                                              height: 100,
+                                              fit: BoxFit.cover,
+                                            ))
+                                            : Container(
                                           decoration: BoxDecoration(
                                             boxShadow: [
                                               BoxShadow(
@@ -1150,84 +1172,84 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                               ),
                                             ],
                                           ),
-                                          width: 58,
-                                          height: 58,
                                           child: ExtendedImage.network(
-                                            crewDocs[1]['profileImageUrl'],
+                                            assetTop2,
                                             enableMemoryCache: true,
                                             shape: BoxShape.rectangle,
                                             borderRadius: BorderRadius.circular(7),
-                                            width: 100,
-                                            height: 100,
+                                            width: 58,
+                                            height: 58,
                                             fit: BoxFit.cover,
-                                          ))
-                                          : Container(
-                                        decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black12,
-                                              spreadRadius: 0,
-                                              blurRadius: 8,
-                                              offset: Offset(0, 4), // changes position of shadow
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                        child: ExtendedImage.asset(
-                                          assetTop2,
+                                        SizedBox(height: 14),
+                                        ExtendedImage.asset(
+                                          'assets/imgs/icons/icon_crown_2.png',
                                           enableMemoryCache: true,
-                                          shape: BoxShape.rectangle,
-                                          borderRadius: BorderRadius.circular(7),
-                                          width: 58,
-                                          height: 58,
+                                          width: 28,
+                                          height: 28,
                                           fit: BoxFit.cover,
                                         ),
-                                      ),
-                                      SizedBox(height: 14),
-                                      ExtendedImage.asset(
-                                        'assets/imgs/icons/icon_crown_2.png',
-                                        enableMemoryCache: true,
-                                        width: 28,
-                                        height: 28,
-                                        fit: BoxFit.cover,
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 12),
-                                        child: Text(crewDocs[1]['crewName'],
-                                          style: TextStyle(
-                                              color: Color(0xFFFFFFFF),
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 13
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 12),
+                                          child: Text(crewDocs[1]['crewName'],
+                                            style: TextStyle(
+                                                color: Color(0xFFFFFFFF),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
                                           ),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            SizedBox(width: 8),
-                            if(crewDocs.length > 2)
-                              GestureDetector(
-                                onTap:() async{
-                                  CustomFullScreenDialog.showDialog();
-                                  await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                  await _liveCrewModelController.getCurrrentCrew(crewDocs[2]['crewID']);
-                                  CustomFullScreenDialog.cancelDialog();
-                                  Get.to(()=>CrewDetailPage_screen());
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Color(crewDocs[2]['crewColor']),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  height: 154,
-                                  width: (_size.width - 48) / 3,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      (crewDocs[2]['profileImageUrl'].isNotEmpty)
-                                          ? Container(
+                              SizedBox(width: 8),
+                              if(crewDocs.length > 2)
+                                GestureDetector(
+                                  onTap:() async{
+                                    CustomFullScreenDialog.showDialog();
+                                    await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                                    await _liveCrewModelController.getCurrrentCrew(crewDocs[2]['crewID']);
+                                    CustomFullScreenDialog.cancelDialog();
+                                    Get.to(()=>CrewDetailPage_screen());
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(crewDocs[2]['crewColor']),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    height: 154,
+                                    width: (_size.width - 48) / 3,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        (crewDocs[2]['profileImageUrl'].isNotEmpty)
+                                            ? Container(
+                                            decoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black12,
+                                                  spreadRadius: 0,
+                                                  blurRadius: 8,
+                                                  offset: Offset(0, 4), // changes position of shadow
+                                                ),
+                                              ],
+                                            ),
+                                            width: 58,
+                                            height: 58,
+                                            child: ExtendedImage.network(
+                                              crewDocs[2]['profileImageUrl'],
+                                              enableMemoryCache: true,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(7),
+                                              width: 100,
+                                              height: 100,
+                                              fit: BoxFit.cover,
+                                            ))
+                                            : Container(
                                           decoration: BoxDecoration(
                                             boxShadow: [
                                               BoxShadow(
@@ -1238,63 +1260,41 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                               ),
                                             ],
                                           ),
-                                          width: 58,
-                                          height: 58,
                                           child: ExtendedImage.network(
-                                            crewDocs[2]['profileImageUrl'],
+                                            assetTop3,
                                             enableMemoryCache: true,
                                             shape: BoxShape.rectangle,
                                             borderRadius: BorderRadius.circular(7),
-                                            width: 100,
-                                            height: 100,
+                                            width: 58,
+                                            height: 58,
                                             fit: BoxFit.cover,
-                                          ))
-                                          : Container(
-                                        decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black12,
-                                              spreadRadius: 0,
-                                              blurRadius: 8,
-                                              offset: Offset(0, 4), // changes position of shadow
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                        child: ExtendedImage.asset(
-                                          assetTop3,
+                                        SizedBox(height: 14),
+                                        ExtendedImage.asset(
+                                          'assets/imgs/icons/icon_crown_3.png',
                                           enableMemoryCache: true,
-                                          shape: BoxShape.rectangle,
-                                          borderRadius: BorderRadius.circular(7),
-                                          width: 58,
-                                          height: 58,
+                                          width: 28,
+                                          height: 28,
                                           fit: BoxFit.cover,
                                         ),
-                                      ),
-                                      SizedBox(height: 14),
-                                      ExtendedImage.asset(
-                                        'assets/imgs/icons/icon_crown_3.png',
-                                        enableMemoryCache: true,
-                                        width: 28,
-                                        height: 28,
-                                        fit: BoxFit.cover,
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 12),
-                                        child: Text(crewDocs[2]['crewName'],
-                                          style: TextStyle(
-                                              color: Color(0xFFFFFFFF),
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 13
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 12),
+                                          child: Text(crewDocs[2]['crewName'],
+                                            style: TextStyle(
+                                                color: Color(0xFFFFFFFF),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
                                           ),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                          ],
+                            ]
                         );
                       }
                       else if (snapshot.connectionState == ConnectionState.waiting) {
@@ -1413,19 +1413,21 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                             }
                                           }
 
-                                          return GestureDetector(
-                                            onTap: () async {
-                                              CustomFullScreenDialog.showDialog();
-                                              await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                              await _liveCrewModelController.getCurrrentCrew(doc['crewID']);
-                                              CustomFullScreenDialog.cancelDialog();
-                                              Get.to(() => CrewDetailPage_screen());
-                                            },
-                                            child: Padding(
-                                              padding: EdgeInsets.only(right: 10),
-                                              child: Container(
-                                                height: 64,
-                                                width: MediaQuery.of(context).size.width,
+                                          return Padding(
+                                            padding: EdgeInsets.only(right: 10),
+                                            child: Container(
+                                              height: 64,
+                                              width: MediaQuery.of(context).size.width,
+                                              child: InkWell(
+                                                highlightColor: Colors.transparent,
+                                                splashColor: Colors.transparent,
+                                                onTap: ()async{
+                                                  CustomFullScreenDialog.showDialog();
+                                                  await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                                                  await _liveCrewModelController.getCurrrentCrew(doc['crewID']);
+                                                  CustomFullScreenDialog.cancelDialog();
+                                                  Get.to(() => CrewDetailPage_screen());
+                                                },
                                                 child: Row(
                                                   children: [
                                                     (doc['profileImageUrl'].isNotEmpty)
@@ -1504,7 +1506,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                             }
                             else if (snapshot.connectionState == ConnectionState.waiting) {
                               return Center(
-                                child: CircularProgressIndicator(),
+                                child: SizedBox.shrink(),
                               );
                             }
                             return Padding(

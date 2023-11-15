@@ -962,8 +962,9 @@ List<LocationModel> phoenix = [
   LocationModel(
     name: '스패',
     coordinates: [
-      LatLng(37.582852, 128.316915),
-      LatLng(37.582767, 128.316971)
+      LatLng(37.582792, 128.316935),
+      LatLng(37.582500, 128.317010),
+      LatLng(37.582650, 128.317010)
     ],
     type: 'slope',
     resort: 12,
@@ -972,7 +973,7 @@ List<LocationModel> phoenix = [
     name: '챔피온',
     coordinates: [
       LatLng(37.577447, 128.312582),
-      LatLng(37.577547, 128.312465)
+      LatLng(37.577507, 128.312765)
     ],
     type: 'slope',
     resort: 12,
@@ -988,8 +989,8 @@ List<LocationModel> phoenix = [
   LocationModel(
     name: '환타지',
     coordinates: [
-      LatLng(37.578524, 128.315549),
-      LatLng(37.578326, 128.315585)
+      LatLng(37.578424, 128.315549),
+      LatLng(37.578304, 128.315549)
     ],
     type: 'slope',
     resort: 12,
@@ -998,7 +999,7 @@ List<LocationModel> phoenix = [
     name: '디지',
     coordinates: [
       LatLng(37.577249, 128.315976),
-      LatLng(37.576967, 128.315704)
+      LatLng(37.577049, 128.316176)
     ],
     type: 'slope',
     resort: 12,
@@ -1007,7 +1008,7 @@ List<LocationModel> phoenix = [
     name: '호크1',
     coordinates: [
       LatLng(37.582952, 128.322142),
-      LatLng(37.582693, 128.322023)
+      LatLng(37.582892, 128.322142)
     ],
     type: 'slope',
     resort: 12,
@@ -1026,7 +1027,7 @@ List<LocationModel> phoenix = [
     coordinates: [
       LatLng(37.580841, 128.322048),
       LatLng(37.580744, 128.322353),
-      LatLng(37.580431, 128.322327)
+      LatLng(37.580531, 128.322327)
     ],
     type: 'slope',
     resort: 12,
@@ -1035,7 +1036,7 @@ List<LocationModel> phoenix = [
     name: '밸리',
     coordinates: [
       LatLng(37.575795, 128.316310),
-      LatLng(37.575775, 128.316679)
+      LatLng(37.575795, 128.316410)
     ],
     type: 'slope',
     resort: 12,
@@ -1044,7 +1045,7 @@ List<LocationModel> phoenix = [
     name: '마스터',
     coordinates: [
       LatLng(37.578714, 128.321666),
-      LatLng(37.578595, 128.321876)
+      LatLng(37.578895, 128.321876)
     ],
     type: 'slope',
     resort: 12,
@@ -1053,7 +1054,7 @@ List<LocationModel> phoenix = [
     name: '모글',
     coordinates: [
       LatLng(37.577898, 128.322576),
-      LatLng(37.577822, 128.322836)
+      LatLng(37.577822, 128.322636)
     ],
     type: 'slope',
     resort: 12,
@@ -1081,6 +1082,7 @@ List<LocationModel> phoenix = [
     name: '슬스',
     coordinates: [
       LatLng(37.577446, 128.324452),
+      LatLng(37.577446, 128.324282),
     ],
     type: 'slope',
     resort: 12,
@@ -1089,7 +1091,8 @@ List<LocationModel> phoenix = [
     name: '도브',
     coordinates: [
       LatLng(37.577617, 128.325377),
-      LatLng(37.577636, 128.325822)
+      LatLng(37.577636, 128.325822),
+      LatLng(37.577636, 128.325722)
     ],
     type: 'slope',
     resort: 12,
@@ -1097,10 +1100,11 @@ List<LocationModel> phoenix = [
   LocationModel(
     name: '듀크',
     coordinates: [
-      LatLng(37.575125, 128.324335),
+      LatLng(37.575225, 128.324335),
       LatLng(37.575228, 128.324750),
       LatLng(37.574958, 128.325055),
-      LatLng(37.574843, 128.325315)
+      LatLng(37.574958, 128.324605),
+      LatLng(37.574998, 128.324805)
     ],
     type: 'slope',
     resort: 12,
@@ -1171,7 +1175,8 @@ List<LocationModel> phoenix = [
   LocationModel(
     name: '곤돌라',
     coordinates: [
-      LatLng(37.582573, 128.323371)
+      LatLng(37.582573, 128.323371),
+      LatLng(37.583573, 128.324871)
     ],
     type: 'respawn',
     resort: 12,

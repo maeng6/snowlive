@@ -57,6 +57,7 @@ class UserModelController extends GetxController{
   RxList? _liveTalkHideList=[].obs;
   RxString? _deviceID =''.obs;
   RxBool? _kusbf = false.obs;
+  RxInt? _bulletinFreeCount = 0.obs;
 
   List<dynamic> kusbfArray = [];
   Map<String, dynamic> kusbfNameMap = {};
@@ -101,6 +102,7 @@ class UserModelController extends GetxController{
   List? get liveTalkHideList =>_liveTalkHideList;
   String? get deviceID => _deviceID!.value;
   bool? get kusbf => _kusbf!.value;
+  int? get bulletinFreeCount  => _bulletinFreeCount!.value;
 
   @override
   void onInit()  async{
@@ -108,12 +110,15 @@ class UserModelController extends GetxController{
     String? loginUid = await FlutterSecureStorage().read(key: 'uid');
     if(loginUid != null) {
       getCurrentUser(loginUid).catchError((e) {
-        setNewField3(token: _notificationController.deviceToken, deviceID: _notificationController.deviceID);
-        getCurrentUser(loginUid).catchError((e) {
-          setNewField2();
+        setNewField4();
+        getCurrentUser(loginUid).catchError((e){
+          setNewField3(token: _notificationController.deviceToken, deviceID: _notificationController.deviceID);
           getCurrentUser(loginUid).catchError((e) {
-            setNewField();
-            getCurrentUser(loginUid);
+            setNewField2();
+            getCurrentUser(loginUid).catchError((e) {
+              setNewField();
+              getCurrentUser(loginUid);
+            });
           });
         });
       });
@@ -173,6 +178,7 @@ class UserModelController extends GetxController{
           this._liveTalkHideList!.value = userModel.liveTalkHideList!;
           this._deviceID!.value = userModel.deviceID!;
           this._kusbf!.value = userModel.kusbf!;
+          this._bulletinFreeCount!.value= userModel.bulletinFreeCount!;
           try {
             this._fleaChatUidList!.value = userModel.fleaChatUidList!;
           }catch(e){};
@@ -324,6 +330,15 @@ class UserModelController extends GetxController{
       'deviceID': deviceID,
       'liveTalkHideList':[],
       'kusbf':false,
+    });
+    await getCurrentUser(auth.currentUser!.uid);
+  }
+
+  Future<void> setNewField4() async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'bulletinFreeCount': 0,
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -547,6 +562,38 @@ class UserModelController extends GetxController{
       int bulletinCrewCount = documentSnapshot.get('bulletinCrewCount');
 
       this._bulletinCrewCount!.value = bulletinCrewCount;
+    }
+  }
+
+  Future<void> bulletinFreeCountUpdate(uid) async {
+
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int bulletinFreeCount = documentSnapshot.get('bulletinFreeCount');
+      int bulletinFreeCountPlus = bulletinFreeCount + 1;
+
+      await ref.collection('user').doc(uid).update({
+        'bulletinFreeCount': bulletinFreeCountPlus,
+      });
+      this._bulletinFreeCount!.value = bulletinFreeCountPlus;
+    }catch(e){
+      await ref.collection('user').doc(uid).update({
+        'bulletinFreeCount': 1,
+      });
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int bulletinFreeCount = documentSnapshot.get('bulletinFreeCount');
+
+      this._bulletinFreeCount!.value = bulletinFreeCount;
     }
   }
 

@@ -1613,7 +1613,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                   ),
                                                                                                 ),
                                                                                               ],
-                                                                                            )
+                                                                                            ),
                                                                                         ],
                                                                                       ),
                                                                                     ),
@@ -1637,7 +1637,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                 return Container(
                                                                                   height: (_userModelController.displayName == 'SNOWLIVE')
                                                                                       ? 260
-                                                                                      : 100,
+                                                                                      : 140,
                                                                                   child:
                                                                                   Padding(
                                                                                     padding: const EdgeInsets
@@ -1788,6 +1788,73 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                               ),
                                                                                             ],
                                                                                           ),
+                                                                                        GestureDetector(
+                                                                                          child: ListTile(
+                                                                                            contentPadding: EdgeInsets.zero,
+                                                                                            title: Center(
+                                                                                              child: Text(
+                                                                                                '게시글 수정',
+                                                                                                style: TextStyle(
+                                                                                                  fontSize: 15,
+                                                                                                  fontWeight: FontWeight
+                                                                                                      .bold,
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                            //selected: _isSelected[index]!,
+                                                                                            onTap: () async {
+                                                                                              Get.dialog(
+                                                                                                  AlertDialog(
+                                                                                                    contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                    elevation: 0,
+                                                                                                    shape: RoundedRectangleBorder(
+                                                                                                        borderRadius: BorderRadius.circular(10.0)),
+                                                                                                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                    content: Text(
+                                                                                                      '이 게시글을 수정하시겠습니까?',
+                                                                                                      style: TextStyle(
+                                                                                                          fontWeight: FontWeight.w600,
+                                                                                                          fontSize: 15),
+                                                                                                    ),
+                                                                                                    actions: [
+                                                                                                      Row(
+                                                                                                        children: [
+                                                                                                          TextButton(
+                                                                                                              onPressed: () {
+                                                                                                                Navigator.pop(context);
+                                                                                                              },
+                                                                                                              child: Text(
+                                                                                                                '취소',
+                                                                                                                style: TextStyle(
+                                                                                                                  fontSize: 15,
+                                                                                                                  color: Color(0xFF949494),
+                                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                                ),
+                                                                                                              )),
+                                                                                                          TextButton(
+                                                                                                              onPressed: () async{
+                                                                                                                Navigator.pop(context);
+                                                                                                                Navigator.pop(context);
+                                                                                                                await _commentModelController.getCurrentLiveTalk(uid: chatDocs[index]['uid'],commentCount: chatDocs[index]['commentCount'],);
+                                                                                                                Get.to(()=>Modify_liveTalk());
+                                                                                                              },
+                                                                                                              child: Text('확인',
+                                                                                                                style: TextStyle(
+                                                                                                                  fontSize: 15,
+                                                                                                                  color: Color(0xFF3D83ED),
+                                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                                ),
+                                                                                                              ))
+                                                                                                        ],
+                                                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                      )
+                                                                                                    ],
+                                                                                                  ));
+                                                                                            },
+                                                                                            shape: RoundedRectangleBorder(
+                                                                                                borderRadius: BorderRadius.circular(10)),
+                                                                                          ),
+                                                                                        ),
                                                                                         GestureDetector(
                                                                                           child: ListTile(
                                                                                             contentPadding: EdgeInsets.zero,

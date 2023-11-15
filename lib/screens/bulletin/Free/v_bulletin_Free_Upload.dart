@@ -1,63 +1,45 @@
 import 'dart:io';
-import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_List_Detail.dart';
+import 'package:com.snowlive/screens/bulletin/Free/v_bulletin_Free_List_Detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../controller/vm_bulletinCrewController.dart';
+import '../../../controller/vm_bulletinFreeController.dart';
 import '../../../controller/vm_imageController.dart';
 import '../../../controller/vm_userModelController.dart';
-import '../../../model/m_bulletinCrewModel.dart';
+import '../../../model/m_bulletinFreeModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
-class Bulletin_Crew_Upload extends StatefulWidget {
-  const Bulletin_Crew_Upload({Key? key}) : super(key: key);
+class Bulletin_Free_Upload extends StatefulWidget {
+  const Bulletin_Free_Upload({Key? key}) : super(key: key);
 
   @override
-  State<Bulletin_Crew_Upload> createState() => _Bulletin_Crew_UploadState();
+  State<Bulletin_Free_Upload> createState() => _Bulletin_Free_UploadState();
 }
 
-class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
+class _Bulletin_Free_UploadState extends State<Bulletin_Free_Upload> {
   List<XFile> _imageFiles = [];
   Map<String, String?> _tileSelected = {
     "구분": '',
-    "스키장": ''
   };
-  bool? bulletinCrewImageSelected = false;
+  bool? bulletinFreeImageSelected = false;
   int i = 0;
   int imageLength = 0;
   TextEditingController _titleTextEditingController = TextEditingController();
   TextEditingController _itemDescribTextEditingController = TextEditingController();
   bool? isCategorySelected = false;
-  bool? isLocationSelected = false;
   String? SelectedCategory = '';
   String? SelectedLocation = '';
   String? title = '';
   final _formKey = GlobalKey<FormState>();
 
-  ListTile buildResortListTile(int index) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text('${bulletinCrewResortList[index]}'),
-      onTap: () async {
-        isLocationSelected = true;
-        SelectedLocation = bulletinCrewResortList[index];
-        _tileSelected['스키장'] = SelectedLocation;
-        print(_tileSelected);
-        Navigator.pop(context);
-        setState(() {});
-      },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    );
-  }
-
   ListTile buildCategoryListTile(int index) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text('${bulletinCrewCategoryList[index]}'),
+      title: Text('${bulletinFreeCategoryList[index]}'),
       onTap: () async {
         isCategorySelected = true;
-        SelectedCategory = bulletinCrewCategoryList[index];
+        SelectedCategory = bulletinFreeCategoryList[index];
         _tileSelected['구분'] = SelectedCategory;
         print(_tileSelected);
         Navigator.pop(context);
@@ -72,7 +54,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
     //TODO : ****************************************************************
     Get.put(ImageController(), permanent: true);
     UserModelController _userModelController = Get.find<UserModelController>();
-    BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
+    BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
     ImageController _imageController = Get.find<ImageController>();
     //TODO : ****************************************************************
 
@@ -87,7 +69,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(58),
             child: AppBar(
-              title: Text('단톡방/동호회'),
+              title: Text('자유게시판'),
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
@@ -112,38 +94,30 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                             colorText: Colors.white,
                             duration: Duration(milliseconds: 3000));
                       }
-                      else if(_tileSelected["스키장"]!.isEmpty){
-                        Get.snackbar('선택되지않은 항목', '스키장을 선택해주세요.',
-                            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                            snackPosition: SnackPosition.BOTTOM,
-                            backgroundColor: Colors.black87,
-                            colorText: Colors.white,
-                            duration: Duration(milliseconds: 3000));
-                      }
                       else{
 
                         if(isValid){
                           CustomFullScreenDialog.showDialog();
-                          await _userModelController.bulletinCrewCountUpdate(_userModelController.uid);
-                          await _imageController.setNewMultiImage_bulletinCrew(_imageFiles, _userModelController.bulletinCrewCount);
-                          await _bulletinCrewModelController.uploadBulletinCrew(
+                          await _userModelController.bulletinFreeCountUpdate(_userModelController.uid);
+                          await _imageController.setNewMultiImage_bulletinFree(_imageFiles, _userModelController.bulletinFreeCount);
+                          await _bulletinFreeModelController.uploadBulletinFree(
                               displayName: _userModelController.displayName,
                               uid: _userModelController.uid,
                               profileImageUrl: _userModelController.profileImageUrl,
                               itemImagesUrls: _imageController.imagesUrlList,
                               title: _titleTextEditingController.text,
                               category: SelectedCategory,
-                              location: SelectedLocation,
                               description: _itemDescribTextEditingController.text,
-                              bulletinCrewCount: _userModelController.bulletinCrewCount,
+                              bulletinFreeCount: _userModelController.bulletinFreeCount,
                               resortNickname: _userModelController.resortNickname
                           );
-                          await _bulletinCrewModelController.getCurrentBulletinCrew(
+
+                          await _bulletinFreeModelController.getCurrentBulletinFree(
                               uid: _userModelController.uid,
-                              bulletinCrewCount: _userModelController.bulletinCrewCount);
+                              bulletinFreeCount: _userModelController.bulletinFreeCount);
 
                           CustomFullScreenDialog.cancelDialog();
-                          Get.off(() => Bulletin_Crew_List_Detail());
+                          Get.off(() => Bulletin_Free_List_Detail());
                         }
                         _imageController.imagesUrlList.clear();
                       }
@@ -191,7 +165,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                 _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
                                 CustomFullScreenDialog.cancelDialog();
                                 if (_imageFiles.length <= 5) {
-                                  bulletinCrewImageSelected = true;
+                                  bulletinFreeImageSelected = true;
                                   imageLength = _imageFiles.length;
                                   setState(() {});
                                 } else {
@@ -226,7 +200,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                         _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
                                         CustomFullScreenDialog.cancelDialog();
                                         if (_imageFiles.length <= 5) {
-                                          bulletinCrewImageSelected = true;
+                                          bulletinFreeImageSelected = true;
                                           imageLength = _imageFiles.length;
                                           setState(() {});
                                         } else {
@@ -266,7 +240,6 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                             ),
                           ),
                         ),
-
                         SizedBox(
                           width: 8,
                         ),
@@ -417,7 +390,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                                         Expanded(
                                                           child: ListView.builder(
                                                               padding: EdgeInsets.zero,
-                                                              itemCount: 3,
+                                                              itemCount: 4,
                                                               itemBuilder: (context, index) {
                                                                 return Builder(builder: (context) {
                                                                   return Column(
@@ -446,91 +419,6 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                           ),)),
                                     ],
                                   ),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (isLocationSelected==true)
-                                      Text(
-                                        '스키장',
-                                        style:
-                                        TextStyle(color: Color(0xff949494), fontSize: 12),
-                                      ),
-                                    SizedBox(
-                                      height: 4,
-                                    ),
-                                    TextButton(
-                                      style: TextButton.styleFrom(
-                                        minimumSize: Size.zero,
-                                        padding: EdgeInsets.symmetric(vertical: 6, horizontal: 0),
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                      onPressed: () {
-                                        showModalBottomSheet(
-                                            enableDrag: false,
-                                            context: context,
-                                            builder: (context) {
-                                              return Container(
-                                                color: Colors.white,
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 20,
-                                                    vertical: 30),
-                                                height: _size.height * 0.8,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      '스키장을 선택해주세요.',
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight: FontWeight.bold),
-                                                    ),
-                                                    Container(
-                                                      color: Colors.white,
-                                                      height: 30,
-                                                    ),
-                                                    Expanded(
-                                                      child: ListView.builder(
-                                                          padding: EdgeInsets.zero,
-                                                          itemCount: 14,
-                                                          itemBuilder: (context, index) {
-                                                            return Builder(builder: (context) {
-                                                              return Column(
-                                                                children: [
-                                                                  buildResortListTile(index),
-                                                                  Divider(
-                                                                    height: 20,
-                                                                    thickness: 0.5,
-                                                                  ),
-                                                                ],
-                                                              );
-                                                            });
-                                                          }),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            });
-                                      },
-                                      child: (isLocationSelected!)
-                                          ? Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(4),
-                                          color: Color(0xFFD5F7E0),
-                                        ),
-                                        padding: EdgeInsets.only(right: 10, left: 10, top: 4, bottom: 6),
-                                        child: Text('$SelectedLocation', style: TextStyle(
-                                            fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF17AD4A)
-                                        ),),
-                                      )
-                                          : Padding(
-                                        padding: EdgeInsets.only(bottom: 6),
-                                        child: Text('스키장', style: TextStyle(
-                                            fontSize: 16, color: Color(0xFF949494)
-                                        ),),
-                                      ),),
-                                  ],
                                 ),
                               ],
                             ),

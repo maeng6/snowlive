@@ -20,8 +20,11 @@ import 'package:com.snowlive/screens/v_webPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../controller/vm_liveCrewModelController.dart';
 import '../../controller/vm_noticeController.dart';
+import '../../controller/vm_seasonController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
+import '../Ranking/v_Ranking_Home.dart';
+import '../Ranking/v_ranking_comingSoon_Screen.dart';
 import '../bulletin/v_bulletin_Screen.dart';
 import '../fleaMarket/v_fleaMarket_Screen.dart';
 
@@ -42,6 +45,7 @@ class _MoreTabState extends State<MoreTab> {
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
+  SeasonController _seasonController = Get.find<SeasonController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -703,13 +707,15 @@ class _MoreTabState extends State<MoreTab> {
                       children: [
                         GestureDetector(
                           onTap: (){
-                            Get.to(()=>BulletinScreen());
+                            (_seasonController.open ==true || _seasonController.open_uidList!.contains(_userModelController.uid))
+                                ? Get.to(()=>RankingHome())
+                                : Get.to(()=>Ranking_CommingSoon_Screen());
                           },
                           child: Column(
                             children: [
                               Image.asset('assets/imgs/icons/icon_moretab_room.png', width: 40),
                               SizedBox(height: 6),
-                              Text('커뮤니티', style: TextStyle(
+                              Text('랭킹', style: TextStyle(
                                   fontSize: 14,
                                   color: Color(0xFF555555)
                               ),)

@@ -273,25 +273,27 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                         return Padding(
                           key: itemKey,
                           padding: const EdgeInsets.only(top: 6, bottom: 10),
-                          child: Row(
-                            children: [
-                              Text(
-                                '${crewRankingMap!['${document['crewID']}']}',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                    color: Color(0xFF111111)),
-                              ),
-                              SizedBox(width: 14),
-                              GestureDetector(
-                                onTap: () async {
-                                  CustomFullScreenDialog.showDialog();
-                                  await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                  await _liveCrewModelController.getCurrrentCrew(document['crewID']);
-                                  CustomFullScreenDialog.cancelDialog();
-                                  Get.to(() => CrewDetailPage_screen());
-                                },
-                                child: Container(
+                          child: InkWell(
+                            highlightColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                            onTap: ()async{
+                              CustomFullScreenDialog.showDialog();
+                              await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                              await _liveCrewModelController.getCurrrentCrew(document['crewID']);
+                              CustomFullScreenDialog.cancelDialog();
+                              Get.to(() => CrewDetailPage_screen());
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  '${crewRankingMap!['${document['crewID']}']}',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Color(0xFF111111)),
+                                ),
+                                SizedBox(width: 14),
+                                Container(
                                   width: 48,
                                   height: 48,
                                   decoration: BoxDecoration(
@@ -358,43 +360,44 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                     ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(width: 14),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 3),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      document['crewName'],
-                                      style: TextStyle(
-                                          fontSize: 15, color: Color(0xFF111111)),
-                                    ),
-                                    if (document['description'].isNotEmpty)
-                                      SizedBox(
-                                        width: 200,
-                                        child: Text(
-                                          document['description'],
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              fontSize: 12, color: Color(0xFF949494)),
-                                        ),
+                                SizedBox(width: 14),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 3),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        document['crewName'],
+                                        style: TextStyle(
+                                            fontSize: 15, color: Color(0xFF111111)),
                                       ),
-                                  ],
+                                      if (document['description'].isNotEmpty)
+                                        SizedBox(
+                                          width: 200,
+                                          child: Text(
+                                            document['description'],
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                fontSize: 12, color: Color(0xFF949494)),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Expanded(child: SizedBox()),
-                              Text(
-                                '${document.get('totalScore').toString()}점',
-                                style: TextStyle(
-                                  color: Color(0xFF111111),
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 18,
+                                Expanded(child: SizedBox()),
+                                Text(
+                                  '${document.get('totalScore').toString()}점',
+                                  style: TextStyle(
+                                    color: Color(0xFF111111),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 18,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
+
                         );
                       }).toList(),
                     ),
