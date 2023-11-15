@@ -93,14 +93,11 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
   }
 
   Stream<QuerySnapshot> hotStream() {
-    DateTime oneDayAgo = DateTime.now().subtract(Duration(days: 1));
 
     return FirebaseFirestore.instance
         .collection('bulletinFree')
-        .where('timeStamp', isGreaterThanOrEqualTo: oneDayAgo)
-        .orderBy('timeStamp', descending: true) // 먼저 timeStamp로 정렬
-        .orderBy('score', descending: true) // 그 다음 score로 정렬
-        .limit(1)
+        .where('likeCount', isGreaterThan: 9)
+        .limit(_seasonController.bulletinFreeLimit!)
         .snapshots();
   }
 
@@ -494,7 +491,24 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                         child: CircularProgressIndicator(),
                       );
                     }
+                    else if (snapshot.data!.docs.isEmpty) {
+                      return SizedBox.shrink();
+                    }
                     final chatDocs = snapshot.data!.docs;
+                    DateTime now = DateTime.now();
+                    DateTime oneDayAgo = now.subtract(Duration(days: 1));
+
+                    chatDocs.retainWhere((doc) {
+                      DateTime docTimeStamp = doc['timeStamp'].toDate();
+                      return docTimeStamp.isAfter(oneDayAgo);
+                    });
+
+                    // 오늘 안의 문서를 소팅한 후, 스코어를 기준으로 내림차순으로 다시 소팅합니다.
+                    chatDocs.sort((a, b) => b['score'].compareTo(a['score']));
+
+                    if (chatDocs.isEmpty) {
+                      return SizedBox.shrink();
+                    }
                     Map<String, dynamic>? data = chatDocs[0].data() as Map<String, dynamic>?;
                     // 필드가 없을 경우 기본값 설정
                     bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
