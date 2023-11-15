@@ -19,7 +19,9 @@ import 'package:com.snowlive/screens/more/v_noticeDetailPage.dart';
 
 import '../../controller/vm_alarmCenterController.dart';
 import '../../controller/vm_bulletinCrewController.dart';
+import '../../controller/vm_bulletinFreeController.dart';
 import '../../controller/vm_userModelController.dart';
+import '../bulletin/Free/v_bulletin_Free_List_Detail.dart';
 import '../more/friend/invitation/v_invitation_Screen_friend.dart';
 
 
@@ -41,6 +43,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
   BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   CommentModelController _commentModelController = Get.find<CommentModelController>();
+  BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -277,6 +280,20 @@ class _AlarmCenterState extends State<AlarmCenter> {
                             Get.to(() => NoPageScreen());
                           }
                         }
+                        if (alarmCenterDocs[index].get('category') == '자유게시판 글') {
+                          try {
+                            CustomFullScreenDialog.showDialog();
+                            await _bulletinFreeModelController.getCurrentBulletinFree(
+                                uid: alarmCenterDocs[index].get('bulletinFreeUid'),
+                                bulletinFreeCount: alarmCenterDocs[index].get('bulletinFreeCount')
+                            );
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.to(() => Bulletin_Free_List_Detail());
+                          }catch(e){
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.to(() => NoPageScreen());
+                          }
+                        }
                         if (alarmCenterDocs[index].get('category') == '친구톡') {
                           try {
                             Get.to(() =>
@@ -363,6 +380,19 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                       ),
                                     ),
 
+                                  if((alarmCenterDocs[index].get('category') == '자유게시판 글'))
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: ExtendedImage.asset(
+                                        'assets/imgs/icons/icon_alarm_community.png',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(7),
+                                        width: 24,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+
                                   if((alarmCenterDocs[index].get('category') == '친구요청'))
                                     Padding(
                                       padding: const EdgeInsets.only(right: 8),
@@ -432,6 +462,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           || (alarmCenterDocs[index].get('category') == '라이브톡익명')
                                           || (alarmCenterDocs[index].get('category') == '시즌방 게시글')
                                           || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
+                                          || (alarmCenterDocs[index].get('category') == '자유게시판 글')
                                       )
                                       Container(
                                         constraints: BoxConstraints(
@@ -454,6 +485,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           || (alarmCenterDocs[index].get('category') == '라이브톡익명')
                                           || (alarmCenterDocs[index].get('category') == '시즌방 게시글')
                                           || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
+                                          || (alarmCenterDocs[index].get('category') == '자유게시판 글')
                                       )
                                       SizedBox(
                                         height: 8,
@@ -462,6 +494,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           || (alarmCenterDocs[index].get('category') == '라이브톡익명')
                                           || (alarmCenterDocs[index].get('category') == '시즌방 게시글')
                                           || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
+                                          || (alarmCenterDocs[index].get('category') == '자유게시판 글')
                                       )
                                         Container(
                                           constraints: BoxConstraints(
@@ -484,6 +517,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           || (alarmCenterDocs[index].get('category') == '라이브톡익명')
                                           || (alarmCenterDocs[index].get('category') == '시즌방 게시글')
                                           || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
+                                          || (alarmCenterDocs[index].get('category') == '자유게시판 글')
                                       )
                                       SizedBox(
                                         height: 4,

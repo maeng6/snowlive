@@ -428,6 +428,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                       height: 52,
                       duration: Duration(milliseconds: 200),
                       child: FloatingActionButton.extended(
+                        heroTag: 'bulletin_crew',
                         elevation: 4,
                         onPressed: () async {
                           await _userModelController

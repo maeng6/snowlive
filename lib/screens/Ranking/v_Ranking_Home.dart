@@ -42,10 +42,21 @@ class _RankingHomeState extends State<RankingHome> {
         backgroundColor: Colors.white,
         extendBodyBehindAppBar: true,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(0),
+          preferredSize: Size.fromHeight(58),
           child: AppBar(
             backgroundColor: Colors.white,
             elevation: 0.0,
+            leading: GestureDetector(
+              child: Image.asset(
+                'assets/imgs/icons/icon_snowLive_back.png',
+                scale: 4,
+                width: 26,
+                height: 26,
+              ),
+              onTap: () {
+                Get.back();
+              },
+            ),
             centerTitle: false,
             titleSpacing: 0,
             title: Padding(

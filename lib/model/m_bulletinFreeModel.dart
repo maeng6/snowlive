@@ -16,7 +16,11 @@ class BulletinFreeModel {
         this.bulletinFreeCount,
         this.resortNickname,
         this.likeCount,
-        this.timeStamp});
+        this.timeStamp,
+        this.score,
+        this.hot,
+        this.viewerUid
+      });
 
   String? displayName;
   String? uid;
@@ -32,6 +36,9 @@ class BulletinFreeModel {
   int? likeCount;
   bool? soldOut;
   DocumentReference? reference;
+  double? score;
+  bool? hot;
+  List? viewerUid;
 
   BulletinFreeModel.fromJson(dynamic json, this.reference) {
     displayName = json['displayName'];
@@ -47,6 +54,9 @@ class BulletinFreeModel {
     resortNickname = json['resortNickname'];
     soldOut = json['soldOut'];
     likeCount = json['likeCount'];
+    score =  json['score']?.toDouble() ?? 0.0;
+    hot = json['hot'];
+    viewerUid = json['viewerUid'];
   }
 
   BulletinFreeModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -104,7 +114,11 @@ class BulletinFreeModel {
         required likeCount,
         timeStamp,
         required bulletinFreeCount,
-        required resortNickname}) async {
+        required resortNickname,
+        required score,
+        required hot,
+        required viewerUid,
+      }) async {
     await ref.collection('bulletinFree').doc('$uid#$bulletinFreeCount').update({
       'displayName': displayName,
       'uid': uid,
@@ -117,7 +131,10 @@ class BulletinFreeModel {
       'timeStamp': Timestamp.now(),
       'resortNickname': resortNickname,
       'soldOut': false,
-      'likeCount':likeCount
+      'likeCount':likeCount,
+      'score':score,
+      'hot':hot,
+      'viewerUid':viewerUid,
     });
   }
 

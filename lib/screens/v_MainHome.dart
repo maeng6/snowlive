@@ -12,6 +12,7 @@ import '../controller/vm_noticeController.dart';
 import '../controller/vm_rankingTierModelController.dart';
 import '../controller/vm_seasonController.dart';
 import '../controller/vm_userModelController.dart';
+import 'bulletin/v_bulletin_Screen.dart';
 import 'fleaMarket/v_fleaMarket_Screen.dart';
 import 'more/v_moreTab.dart';
 
@@ -117,7 +118,7 @@ class _MainHomeState extends State<MainHome> {
                 size: 40,
                 color: Color(0xFF444444),
               ),
-              label: '랭킹',
+              label: '커뮤니티',
             ),
             BottomNavigationBarItem(
               icon: ImageIcon(
@@ -238,9 +239,7 @@ class _MainHomeState extends State<MainHome> {
           children: [
             ResortHome(),
             FleaMarketScreen(),
-            (_seasonController.open ==true || _seasonController.open_uidList!.contains(_userModelController.uid))
-            ? RankingHome()
-            : Ranking_CommingSoon_Screen(),
+            BulletinScreen(),
             LiveTalkScreen(),
             MoreTab(),
           ],

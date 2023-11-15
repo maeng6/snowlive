@@ -22,6 +22,9 @@ class BulletinFreeModelController extends GetxController {
   RxBool? _soldOut = false.obs;
   Timestamp? _timeStamp;
   RxInt? _likeCount = 0.obs;
+  RxDouble? _score = 0.0.obs;
+  RxBool? _hot=false.obs;
+  RxList? _viewerUid = [].obs;
 
   String? get displayName => _displayName!.value;
 
@@ -49,6 +52,12 @@ class BulletinFreeModelController extends GetxController {
 
   int? get likeCount => _likeCount!.value;
 
+  double? get score => _score!.value;
+
+  bool? get hot => _hot!.value;
+
+  List? get viewerUid => _viewerUid!;
+
   Future<void> getCurrentBulletinFree({required uid, required bulletinFreeCount}) async {
     BulletinFreeModel bulletinFreeModel = await BulletinFreeModel().getBulletinFreeModel(uid,bulletinFreeCount);
     this._displayName!.value = bulletinFreeModel.displayName!;
@@ -64,6 +73,9 @@ class BulletinFreeModelController extends GetxController {
     this._soldOut!.value = bulletinFreeModel.soldOut!;
     this._timeStamp = bulletinFreeModel.timeStamp!;
     this._likeCount!.value = bulletinFreeModel.likeCount!;
+    this._score!.value = bulletinFreeModel.score!;
+    this._hot!.value = bulletinFreeModel.hot!;
+    this._viewerUid!.value = bulletinFreeModel.viewerUid!;
   }
 
   Future<void> updateItemImageUrls(imageUrls) async {
@@ -139,7 +151,7 @@ class BulletinFreeModelController extends GetxController {
         required category,
         required description,
         required bulletinFreeCount,
-        required resortNickname
+        required resortNickname,
       }) async {
     await BulletinFreeModel().uploadBulletinFree(
         displayName: displayName,
@@ -150,7 +162,8 @@ class BulletinFreeModelController extends GetxController {
         category: category,
         description: description,
         bulletinFreeCount: bulletinFreeCount,
-        resortNickname: resortNickname);
+        resortNickname: resortNickname,
+    );
   }
 
   Future<void> updateBulletinFree(
@@ -164,7 +177,10 @@ class BulletinFreeModelController extends GetxController {
         required description,
         required bulletinFreeCount,
         required resortNickname,
-        required likeCount
+        required likeCount,
+        required hot,
+        required score,
+        required viewerUid
 
       }) async {
     await BulletinFreeModel().updateBulletinFree(
@@ -177,7 +193,10 @@ class BulletinFreeModelController extends GetxController {
         description: description,
         bulletinFreeCount: bulletinFreeCount,
         resortNickname: resortNickname,
-        likeCount:likeCount
+        likeCount:likeCount,
+        hot: hot,
+        score: score,
+      viewerUid: viewerUid,
     );
   }
 
@@ -259,6 +278,289 @@ class BulletinFreeModelController extends GetxController {
     }
   }
 
+  Future<void> scoreUpdate_like({required bullUid, required docName, required timeStamp, required score}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    print('111');
+    if(uid != bullUid) {
+      try {
+        DocumentReference<Map<String, dynamic>> documentReference =
+        ref.collection('bulletinFree').doc(docName);
+
+        final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await documentReference.get();
+
+        Timestamp timeStamp_now = Timestamp.now();
+
+        // Timestamp를 DateTime으로 변환
+        DateTime dateTime_doc = timeStamp.toDate();
+        DateTime dateTime_now = timeStamp_now.toDate();
+
+        // 날짜 차이 계산
+        Duration difference = dateTime_now.difference(dateTime_doc);
+        int daysDifference = difference.inDays;
+
+        // 차이를 일 단위로 올림 처리
+        if (difference - Duration(days: daysDifference) > Duration.zero) {
+          daysDifference++;
+        }
+
+        double plusScore = 0;
+
+        if (daysDifference >= 5) {
+          plusScore = likeScoring[5]!;
+        }
+        else if (daysDifference == 4) {
+          plusScore = likeScoring[4]!;
+        }
+        else if (daysDifference == 3) {
+          plusScore = likeScoring[3]!;
+        }
+        else if (daysDifference == 2) {
+          plusScore = likeScoring[2]!;
+        }
+        else if (daysDifference == 1) {
+          plusScore = likeScoring[1]!;
+        }
+
+        double score_updated = score + plusScore;
+
+        await ref.collection('bulletinFree').doc(docName).update({
+          'score': score_updated,
+        });
+      } catch (e) {
+        print('탈퇴한 회원');
+      }
+    }else{}
+  }
+
+  Future<void> scoreDelete_like({required bullUid, required docName, required timeStamp, required score}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    print('111');
+    if(uid != bullUid) {
+      try {
+        DocumentReference<Map<String, dynamic>> documentReference =
+        ref.collection('bulletinFree').doc(docName);
+
+        final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await documentReference.get();
+
+        Timestamp timeStamp_now = Timestamp.now();
+
+        // Timestamp를 DateTime으로 변환
+        DateTime dateTime_doc = timeStamp.toDate();
+        DateTime dateTime_now = timeStamp_now.toDate();
+
+        // 날짜 차이 계산
+        Duration difference = dateTime_now.difference(dateTime_doc);
+        int daysDifference = difference.inDays;
+
+        // 차이를 일 단위로 올림 처리
+        if (difference - Duration(days: daysDifference) > Duration.zero) {
+          daysDifference++;
+        }
+
+        double plusScore = 0;
+
+        if (daysDifference >= 5) {
+          plusScore = likeScoring[5]!;
+        }
+        else if (daysDifference == 4) {
+          plusScore = likeScoring[4]!;
+        }
+        else if (daysDifference == 3) {
+          plusScore = likeScoring[3]!;
+        }
+        else if (daysDifference == 2) {
+          plusScore = likeScoring[2]!;
+        }
+        else if (daysDifference == 1) {
+          plusScore = likeScoring[1]!;
+        }
+
+        double score_updated = score - plusScore;
+
+        await ref.collection('bulletinFree').doc(docName).update({
+          'score': score_updated,
+        });
+      } catch (e) {
+        print('탈퇴한 회원');
+      }
+    }else{}
+  }
+
+  Future<void> scoreUpdate_reply({required bullUid, required docName, required timeStamp, required score}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    print('111');
+    if(uid != bullUid) {
+      try {
+        DocumentReference<Map<String, dynamic>> documentReference =
+        ref.collection('bulletinFree').doc(docName);
+
+        final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await documentReference.get();
+        print('1111');
+
+        Timestamp timeStamp_now = Timestamp.now();
+
+        // Timestamp를 DateTime으로 변환
+        DateTime dateTime_doc = timeStamp.toDate();
+        DateTime dateTime_now = timeStamp_now.toDate();
+
+        // 날짜 차이 계산
+        Duration difference = dateTime_now.difference(dateTime_doc);
+        int daysDifference = difference.inDays;
+
+        // 차이를 일 단위로 올림 처리
+        if (difference - Duration(days: daysDifference) > Duration.zero) {
+          daysDifference++;
+        }
+
+        double plusScore = 0;
+
+        if (daysDifference >= 5) {
+          plusScore = replyScoring[5]!;
+        }
+        else if (daysDifference == 4) {
+          plusScore = replyScoring[4]!;
+        }
+        else if (daysDifference == 3) {
+          plusScore = replyScoring[3]!;
+        }
+        else if (daysDifference == 2) {
+          plusScore = replyScoring[2]!;
+        }
+        else if (daysDifference == 1) {
+          plusScore = replyScoring[1]!;
+        }
+
+        double score_updated = score + plusScore;
+
+        await ref.collection('bulletinFree').doc(docName).update({
+          'score': score_updated,
+        });
+      } catch (e) {
+        print('탈퇴한 회원');
+      }
+    }else {}
+  }
+
+  Future<void> scoreDelete_reply({required bullUid, required docName, required timeStamp, required score}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    print('111');
+    if(uid != bullUid) {
+      try {
+        DocumentReference<Map<String, dynamic>> documentReference =
+        ref.collection('bulletinFree').doc(docName);
+
+        final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await documentReference.get();
+
+        Timestamp timeStamp_now = Timestamp.now();
+
+        // Timestamp를 DateTime으로 변환
+        DateTime dateTime_doc = timeStamp.toDate();
+        DateTime dateTime_now = timeStamp_now.toDate();
+
+        // 날짜 차이 계산
+        Duration difference = dateTime_now.difference(dateTime_doc);
+        int daysDifference = difference.inDays;
+
+        // 차이를 일 단위로 올림 처리
+        if (difference - Duration(days: daysDifference) > Duration.zero) {
+          daysDifference++;
+        }
+
+        double plusScore = 0;
+
+        if (daysDifference >= 5) {
+          plusScore = replyScoring[5]!;
+        }
+        else if (daysDifference == 4) {
+          plusScore = replyScoring[4]!;
+        }
+        else if (daysDifference == 3) {
+          plusScore = replyScoring[3]!;
+        }
+        else if (daysDifference == 2) {
+          plusScore = replyScoring[2]!;
+        }
+        else if (daysDifference == 1) {
+          plusScore = replyScoring[1]!;
+        }
+
+        double score_updated = score - plusScore;
+
+        await ref.collection('bulletinFree').doc(docName).update({
+          'score': score_updated,
+        });
+      } catch (e) {
+        print('탈퇴한 회원');
+      }
+    }else {}
+  }
+
+  Future<void> scoreUpdate_read({required bullUid, required docName, required timeStamp, required score,required viewerUid}) async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    List viewerUidList = viewerUid;
+    print('111');
+
+    if(!viewerUidList.contains(uid)) {
+      try {
+        DocumentReference<Map<String, dynamic>> documentReference =
+        ref.collection('bulletinFree').doc(docName);
+
+        final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await documentReference.get();
+
+        Timestamp timeStamp_now = Timestamp.now();
+
+        // Timestamp를 DateTime으로 변환
+        DateTime dateTime_doc = timeStamp.toDate();
+        DateTime dateTime_now = timeStamp_now.toDate();
+
+        // 날짜 차이 계산
+        Duration difference = dateTime_now.difference(dateTime_doc);
+        int daysDifference = difference.inDays;
+
+        // 차이를 일 단위로 올림 처리
+        if (difference - Duration(days: daysDifference) > Duration.zero) {
+          daysDifference++;
+        }
+
+        double plusScore = 0;
+
+        if (daysDifference >= 5) {
+          plusScore = readScoring[5]!;
+        }
+        else if (daysDifference == 4) {
+          plusScore = readScoring[4]!;
+        }
+        else if (daysDifference == 3) {
+          plusScore = readScoring[3]!;
+        }
+        else if (daysDifference == 2) {
+          plusScore = readScoring[2]!;
+        }
+        else if (daysDifference == 1) {
+          plusScore = readScoring[1]!;
+        }
+
+        double score_updated = score + plusScore;
+
+        await ref.collection('bulletinFree').doc(docName).update({
+          'score': score_updated,
+        });
+      } catch (e) {
+        print('탈퇴한 회원');
+      }
+    }else{}
+  }
+
   String getAgoTime(timestamp) {
     String time = CommentModel().getAgo(timestamp);
     return time;
@@ -268,4 +570,27 @@ class BulletinFreeModelController extends GetxController {
 
 }
 
+Map<int, double> likeScoring = {
+  5: 1,
+  4: 2,
+  3: 3,
+  2: 4,
+  1: 5
+};
+
+Map<int, double> replyScoring = {
+  5: 1,
+  4: 1,
+  3: 1,
+  2: 1,
+  1: 1
+};
+
+Map<int, double> readScoring = {
+  5: 0.001,
+  4: 0.001,
+  3: 0.001,
+  2: 0.001,
+  1: 0.002
+};
 

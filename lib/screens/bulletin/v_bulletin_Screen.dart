@@ -48,26 +48,18 @@ class _BulletinScreenState extends State<BulletinScreen> {
             children: [
               AppBar(
                 iconTheme: IconThemeData(size: 26, color: Colors.black87),
-                leading: GestureDetector(
-                  child: Image.asset(
-                    'assets/imgs/icons/icon_snowLive_back.png',
-                    scale: 4,
-                    width: 26,
-                    height: 26,
-                  ),
-                  onTap: () {
-                    Get.back();
-                  },
-                ),
                 elevation: 0.0,
                 titleSpacing: 0,
-                centerTitle: true,
-                title: Text(
-                  '커뮤니티',
-                  style: TextStyle(
-                      color: Color(0xFF111111),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18),
+                centerTitle: false,
+                title: Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Text(
+                    '커뮤니티',
+                    style: TextStyle(
+                        color: Color(0xFF111111),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
+                  ),
                 ),
                 backgroundColor: Colors.white,
               )

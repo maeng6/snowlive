@@ -399,6 +399,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                       height: 52,
                       duration: Duration(milliseconds: 200),
                       child: FloatingActionButton.extended(
+                        heroTag: 'bulletin_room',
                         elevation: 4,
                         onPressed: () async {
                           await _userModelController.getCurrentUser(_userModelController.uid);
