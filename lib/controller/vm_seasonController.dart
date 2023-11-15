@@ -14,6 +14,7 @@ class SeasonController extends GetxController{
   RxInt? _bulletinRoomLimit = 0.obs;
   RxInt? _bulletinCrewLimit = 0.obs;
   RxInt? _bulletinFreeLimit = 0.obs;
+  RxBool? _bulletinFreeHot = false.obs;
   RxInt? _bulletinCrewReplyLimit = 0.obs;
   RxInt? _bulletinRoomReplyLimit = 0.obs;
   RxInt? _bulletinFreeReplyLimit = 0.obs;
@@ -27,11 +28,12 @@ class SeasonController extends GetxController{
   int? get bulletinRoomLimit => _bulletinRoomLimit!.value;
   int? get bulletinCrewLimit => _bulletinCrewLimit!.value;
   int? get bulletinFreeLimit => _bulletinFreeLimit!.value;
+  bool? get bulletinFreeHot => _bulletinFreeHot!.value;
   int? get bulletinCrewReplyLimit => _bulletinCrewReplyLimit!.value;
   int? get bulletinRoomReplyLimit => _bulletinRoomReplyLimit!.value;
   int? get bulletinFreeReplyLimit => _bulletinFreeReplyLimit!.value;
   bool? get open => _open!.value;
-  List? get open_uidList => _open_uidList!.value;
+  List? get open_uidList => _open_uidList!;
 
 
   @override
@@ -46,7 +48,9 @@ class SeasonController extends GetxController{
     await getBulletinCrewReplyLimit();
     await getBulletinRoomReplyLimit();
     await getBulletinFreeReplyLimit();
+    await getBulletinFreeHot();
     kusbfListener();
+    freeLimitListener();
     // TODO: implement onInit
     super.onInit();
   }
@@ -115,6 +119,15 @@ class SeasonController extends GetxController{
     this._bulletinFreeLimit!.value = bulletinFreeLimit;
   }
 
+  Future<void> getBulletinFreeHot() async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('bulletinFreeLimit').doc('1');
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    bool bulletinFreeHot = documentSnapshot.get('hot');
+    this._bulletinFreeHot!.value = bulletinFreeHot!;
+  }
+
   Future<void> getBulletinCrewReplyLimit() async {
     DocumentReference<Map<String, dynamic>> documentReference =
     ref.collection('bulletinCrewReplyLimit').doc('1');
@@ -164,6 +177,24 @@ class SeasonController extends GetxController{
         List open_uidList = data['open_uidList'];
         this._open!.value = open;
         this._open_uidList!.value = open_uidList;
+      } else {
+        print('Document does not exist on the database');
+      }
+    }, onError: (error) => print('Listen failed: $error'));
+  }
+
+  void freeLimitListener() {
+    final DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('bulletinFreeLimit').doc('1');
+
+    documentReference.snapshots().listen((DocumentSnapshot<Map<String, dynamic>> snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data();
+        int limit = data!['limit'];
+        bool hot = data['hot'];
+        this._bulletinFreeLimit!.value = limit;
+        this._bulletinFreeHot!.value = hot;
+        print(hot);
       } else {
         print('Document does not exist on the database');
       }

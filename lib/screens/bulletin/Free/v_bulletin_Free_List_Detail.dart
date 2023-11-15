@@ -826,6 +826,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                         await _bulletinFreeModelController.likeDelete(docName);
                                                         await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
                                                         setState(() {_firstPress = true;});
+                                                        await _bulletinFreeModelController.scoreDelete_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
                                                       }
                                                     },
                                                     icon: Icon(
@@ -849,9 +850,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                         await _userModelController.updateLikeUid(docName);
                                                         await _bulletinFreeModelController.likeUpdate(docName);
                                                         await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
-                                                        setState(() {
-                                                          _firstPress = true;
-                                                        });
+                                                        setState(() {_firstPress = true;});
+                                                        await _bulletinFreeModelController.scoreUpdate_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
                                                       }
                                                     },
                                                     icon: Icon(Icons.thumb_up_alt_outlined,
@@ -889,9 +889,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                               await _userModelController.deleteLikeUid(docName);
                                               await _bulletinFreeModelController.likeDelete(docName);
                                               await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
-                                              setState(() {
-                                                _firstPress = true;
-                                              });
+                                              setState(() {_firstPress = true;});
+                                              await _bulletinFreeModelController.scoreDelete_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
                                             }
                                           } else{
                                             var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
@@ -902,9 +901,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                               await _userModelController.updateLikeUid(docName);
                                               await _bulletinFreeModelController.likeUpdate(docName);
                                               await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
-                                              setState(() {
-                                                _firstPress = true;
-                                              });
+                                              setState(() {_firstPress = true;});
+                                              await _bulletinFreeModelController.scoreUpdate_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
                                             }
                                           }
 
@@ -974,7 +972,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                     return Container(
                                                       color: Colors.white,
                                                     );
-                                                  } else if (snapshot2.connectionState == ConnectionState.waiting) {
+                                                  }
+                                                  else if (snapshot2.connectionState == ConnectionState.waiting) {
                                                     return Center(
                                                       child: CircularProgressIndicator(),
                                                     );
@@ -1460,6 +1459,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                                                         child: ElevatedButton(
                                                                                                                           onPressed: () async {
                                                                                                                             CustomFullScreenDialog.showDialog();
+                                                                                                                            var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
                                                                                                                             try {
                                                                                                                               await FirebaseFirestore.instance
                                                                                                                                   .collection('bulletinFree')
@@ -1477,6 +1477,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                                                               await _bulletinFreeModelController.reduceBulletinFreeReplyCount(
                                                                                                                                   bullUid: _bulletinFreeModelController.uid,
                                                                                                                                   bullCount: _bulletinFreeModelController.bulletinFreeCount);
+                                                                                                                              await _bulletinFreeModelController.scoreDelete_reply(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
+                                                                                                                              await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
                                                                                                                               print('댓글 삭제 완료');
                                                                                                                             } catch (e) {}
                                                                                                                             Navigator.pop(context);
@@ -1579,6 +1581,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                         _controller.clear();
                                         CustomFullScreenDialog.showDialog();
                                         // try{
+                                        var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
                                         await _userModelController.updateCommentCount(_userModelController.commentCount);
                                         await _bulletinFreeModelController.updateBulletinFreeReplyCount(
                                             bullUid: _bulletinFreeModelController.uid,
@@ -1613,6 +1616,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                             bulletinFreeCount : _bulletinFreeModelController.bulletinFreeCount,
                                             originContent: _bulletinFreeModelController.title
                                         );
+                                        await _bulletinFreeModelController.scoreUpdate_reply(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
+                                        await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
                                         CustomFullScreenDialog.cancelDialog();
                                         setState(() {});
                                         //   }catch(e){}

@@ -126,7 +126,10 @@ class _Bulletin_Free_ModifyPageState extends State<Bulletin_Free_ModifyPage> {
                             description: _itemDescribTextEditingController.text,
                             bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount,
                             resortNickname: _userModelController.resortNickname,
-                            likeCount: _bulletinFreeModelController.likeCount
+                            likeCount: _bulletinFreeModelController.likeCount,
+                            hot: _bulletinFreeModelController.hot,
+                            score: _bulletinFreeModelController.score,
+                            viewerUid: _bulletinFreeModelController.viewerUid
                         )
                             : await _bulletinFreeModelController.updateBulletinFree(
                             displayName: _userModelController.displayName,
@@ -139,7 +142,10 @@ class _Bulletin_Free_ModifyPageState extends State<Bulletin_Free_ModifyPage> {
                             description: _itemDescribTextEditingController.text,
                             bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount,
                             resortNickname: _userModelController.resortNickname,
-                            likeCount: _bulletinFreeModelController.likeCount
+                            likeCount: _bulletinFreeModelController.likeCount,
+                            hot: _bulletinFreeModelController.hot,
+                            score: _bulletinFreeModelController.score,
+                            viewerUid: _bulletinFreeModelController.viewerUid
                         );
                         CustomFullScreenDialog.cancelDialog();
                         for(int i=0; i<2; i++){
