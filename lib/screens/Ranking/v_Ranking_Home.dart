@@ -167,7 +167,7 @@ class _RankingHomeState extends State<RankingHome> {
                   Row(
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(top: 8, left: 16, right: 12),
+                        padding: EdgeInsets.only(left: 16, right: 12),
                         child: Column(
                           children: [
                             Padding(
@@ -211,7 +211,7 @@ class _RankingHomeState extends State<RankingHome> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 8, right: 12),
+                        padding: EdgeInsets.only(right: 12),
                         child: Column(
                           children: [
                             Padding(
@@ -258,7 +258,7 @@ class _RankingHomeState extends State<RankingHome> {
                   ),
                   (_userModelController.favoriteResort == 12)
                       ? Padding(
-                        padding: const EdgeInsets.only(right: 10),
+                        padding: const EdgeInsets.only(right: 10, bottom: 5),
                         child: Column(
                     children: [
                         Container(
@@ -305,10 +305,13 @@ class _RankingHomeState extends State<RankingHome> {
                       :SizedBox.shrink()
                 ],
               ),
+              SizedBox(
+                height: 10,
+              ),
               if (isTap[0] == true)
                 Expanded(child: RankingCrewScreen(isKusbf: _isKusbf,)),
               if (isTap[1] == true)
-                Expanded(child: RankingIndiScreen()),
+                Expanded(child: RankingIndiScreen(isKusbf: _isKusbf)),
               // if (isTap[2] == true)
               //   Expanded(child: FleaMarket_Chatroom_List()),
             ],
