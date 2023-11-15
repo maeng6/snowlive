@@ -374,7 +374,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
           floatingActionButton: Stack(
             children:[
               Positioned(
-                bottom: 18, // Adjust the position as needed
+                bottom: 0, // Adjust the position as needed
                 right: 110, // Adjust the position as needed
                 child: Visibility(
                   visible: _isVisible,
@@ -480,7 +480,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                     },
                                     style: ElevatedButton.styleFrom(
                                         padding: EdgeInsets.only(
-                                            right: 30, left: 14, top: 8, bottom: 8),
+                                            right: 28, left: 12, top: 6, bottom: 6),
                                         side: const BorderSide(
                                           width: 1,
                                           color: Color(0xFFF5F5F5),
@@ -492,12 +492,12 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                     child: (_selectedValue == null)
                                         ? Text('카테고리',
                                         style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 13,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xFF555555)))
                                         : Text('$_selectedValue',
                                         style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 13,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xFF555555)))),
                                 Positioned(
@@ -534,7 +534,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                     },
                                     style: ElevatedButton.styleFrom(
                                         padding: EdgeInsets.only(
-                                            right: 30, left: 14, top: 8, bottom: 8),
+                                            right: 28, left: 12, top: 6, bottom: 6),
                                         side: const BorderSide(
                                           width: 1,
                                           color: Color(0xFFF5F5F5),
@@ -546,12 +546,12 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                     child: (_selectedValue2 == null)
                                         ? Text('지역',
                                         style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 13,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xFF555555)))
                                         : Text('$_selectedValue2',
                                         style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 13,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xFF555555)))),
                                 Positioned(
@@ -1035,7 +1035,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                     ],
                                                   ),
                                                   SizedBox(
-                                                    height: 8,
+                                                    height: 5,
                                                   ),
                                                   Row(
                                                     children: [
@@ -1085,7 +1085,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                               ),
                               Divider(
                                 color: Color(0xFFECECEC),
-                                height: 24,
+                                height: 14,
                                 thickness: 0.5,
                               ),
                             ],

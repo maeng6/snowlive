@@ -69,6 +69,87 @@ class _RankingHomeState extends State<RankingHome> {
                     fontSize: 23),
               ),
             ),
+            actions: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 14, right: 8),
+                    child: GestureDetector(
+                      onTap: (){
+                        Get.to(()=>RankingTutorialPage());
+                      },
+                      child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: Container(
+                                padding: EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10), // 텍스트와 테두리 간의 패딩
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFCBE0FF),
+                                  borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
+                                ),
+                                child: Text(
+                                  '튜토리얼',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF3D83ED)
+                                  ),
+                                ),
+                              ),
+                            )
+                          ]
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 14, right: 16),
+                    child: GestureDetector(
+                      onTap: (){
+                        Get.to(()=>MyRankingDetailPage());
+                      },
+                      child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: Container(
+                                padding: EdgeInsets.only(top: 6, bottom: 6, left: 8, right: 10), // 텍스트와 테두리 간의 패딩
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF3D83ED),
+                                  borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
+                                ),
+                                child: Row(
+                                  children: [
+                                    ExtendedImage.asset(
+                                      'assets/imgs/icons/icon_crown_circle.png',
+                                      enableMemoryCache: true,
+                                      shape: BoxShape.circle,
+                                      borderRadius: BorderRadius.circular(8),
+                                      width: 12,
+                                      height: 12,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    SizedBox(width: 3 ,),
+                                    Text(
+                                      '내 점수',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFFFFFFFF)
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ]
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
         body: SafeArea(
@@ -164,86 +245,6 @@ class _RankingHomeState extends State<RankingHome> {
                       ],
                     ),
                   ),
-                  Expanded(child: SizedBox()),
-                  Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 5, right: 8),
-                        child: GestureDetector(
-                          onTap: (){
-                            Get.to(()=>RankingTutorialPage());
-                          },
-                          child: Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(bottom: 2),
-                                  child: Container(
-                                    padding: EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10), // 텍스트와 테두리 간의 패딩
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFFCBE0FF),
-                                      borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
-                                    ),
-                                    child: Text(
-                                      '튜토리얼',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFF3D83ED)
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ]
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 5, right: 16),
-                        child: GestureDetector(
-                          onTap: (){
-                            Get.to(()=>MyRankingDetailPage());
-                          },
-                          child: Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(bottom: 2),
-                                  child: Container(
-                                    padding: EdgeInsets.only(top: 6, bottom: 6, left: 8, right: 10), // 텍스트와 테두리 간의 패딩
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFF3D83ED),
-                                      borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        ExtendedImage.asset(
-                                          'assets/imgs/icons/icon_crown_circle.png',
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          width: 12,
-                                          height: 12,
-                                          fit: BoxFit.cover,
-                                        ),
-                                        SizedBox(width: 3 ,),
-                                        Text(
-                                          '내 점수',
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xFFFFFFFF)
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ]
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
                 ],
               ),
               if (isTap[0] == true)

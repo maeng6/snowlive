@@ -713,7 +713,7 @@ class _MoreTabState extends State<MoreTab> {
                           },
                           child: Column(
                             children: [
-                              Image.asset('assets/imgs/icons/icon_moretab_room.png', width: 40),
+                              Image.asset('assets/imgs/icons/icon_moretab_ranking.png', width: 40),
                               SizedBox(height: 6),
                               Text('랭킹', style: TextStyle(
                                   fontSize: 14,

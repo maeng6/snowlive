@@ -97,30 +97,6 @@ class _MainHomeState extends State<MainHome> {
               label: '스노우마켓',
             ), //브랜드
             BottomNavigationBarItem(
-              icon: Stack(
-                children: [
-                  Positioned(
-                    top: 3,
-                    right: 3,
-                    child: Icon(Icons.brightness_1,
-                        size: 6.0,
-                        color: Colors.white),
-                  ),
-                  ImageIcon(
-                    AssetImage('assets/imgs/icons/icon_discover_off.png'),
-                    size: 40,
-                    color: Color(0xFF444444),
-                  ),
-                ],
-              ),
-              activeIcon: ImageIcon(
-                AssetImage('assets/imgs/icons/icon_discover_on.png'),
-                size: 40,
-                color: Color(0xFF444444),
-              ),
-              label: '커뮤니티',
-            ),
-            BottomNavigationBarItem(
               icon: ImageIcon(
                 AssetImage('assets/imgs/icons/icon_livetalk_off.png'),
                 size: 40,
@@ -133,6 +109,30 @@ class _MainHomeState extends State<MainHome> {
               ),
               label: '라이브톡',
             ), //라톡
+            BottomNavigationBarItem(
+              icon: Stack(
+                children: [
+                  Positioned(
+                    top: 3,
+                    right: 3,
+                    child: Icon(Icons.brightness_1,
+                        size: 6.0,
+                        color: Colors.white),
+                  ),
+                  ImageIcon(
+                    AssetImage('assets/imgs/icons/icon_community_off.png'),
+                    size: 40,
+                    color: Color(0xFF444444),
+                  ),
+                ],
+              ),
+              activeIcon: ImageIcon(
+                AssetImage('assets/imgs/icons/icon_community_on.png'),
+                size: 40,
+                color: Color(0xFF444444),
+              ),
+              label: '커뮤니티',
+            ),
             BottomNavigationBarItem(
               icon: Stack(
                 children: [
@@ -239,8 +239,8 @@ class _MainHomeState extends State<MainHome> {
           children: [
             ResortHome(),
             FleaMarketScreen(),
-            BulletinScreen(),
             LiveTalkScreen(),
+            BulletinScreen(),
             MoreTab(),
           ],
         )

@@ -1631,7 +1631,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                       child: Column(
                                                                         children: [
                                                                           SizedBox(
-                                                                            height: _size.height / 12,
+                                                                            height: _size.height / 18,
                                                                           ),
                                                                           Image.asset(
                                                                             'assets/imgs/icons/icon_nodata.png',
@@ -2275,7 +2275,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                       child: Column(
                                                                         children: [
                                                                           SizedBox(
-                                                                            height: _size.height / 12,
+                                                                            height: _size.height / 18,
                                                                           ),
                                                                           Image.asset(
                                                                             'assets/imgs/icons/icon_nodata.png',
@@ -2587,7 +2587,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                   height: _size.height / 5,
                                                                 ),
                                                                 Container(
-                                                                  width: 56,
+                                                                  width: 48,
                                                                   child: ExtendedImage.asset(
                                                                     'assets/imgs/ranking/icon_ranking_nodata_2.png',
                                                                     enableMemoryCache: true,
@@ -2598,7 +2598,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                   height: 16,
                                                                 ),
                                                                 Center(
-                                                                  child: Text('아직 랭킹 정보가 없어요!',
+                                                                  child: Text('라이딩 기록이 없어요',
                                                                     style: TextStyle(
                                                                         color: Color(0xFF666666),
                                                                         fontSize: 15,

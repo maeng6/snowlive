@@ -126,7 +126,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                 ),
                               ),
                               Container(
-                                width: 56,
+                                width: 78,
                                 height: 3,
                                 color:
                                 (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
@@ -176,7 +176,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                 ),
                               ),
                               Container(
-                                width: 56,
+                                width: 52,
                                 height: 3,
                                 color:
                                 (isTap[1]) ? Color(0xFF111111) : Colors.transparent,
@@ -227,7 +227,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                 ),
                               ),
                               Container(
-                                width: 106,
+                                width: 102,
                                 height: 3,
                                 color:
                                 (isTap[2]) ? Color(0xFF111111) : Colors.transparent,
