@@ -514,9 +514,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                     bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
                     List viewerUid = data?.containsKey('viewerUid') == true ? data!['viewerUid'] : [];
                     String _time = _timeStampController.yyyymmddFormat(chatDocs[0].get('timeStamp'));
-                    return ((chatDocs.length == 0) || (chatDocs[0]['likeCount'] <=9))
-                        ? SizedBox.shrink()
-                        : GestureDetector(
+                    return GestureDetector(
                       onTap: () async {
                         var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
                         if(isLocked == false) {
