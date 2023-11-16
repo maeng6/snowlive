@@ -820,8 +820,17 @@ class LiveMapController extends GetxController {
       _resortModelController.longitude,
     );
 
-    return distanceInMeters <= 5000;
+    if (_resortModelController.index == 12) {
+      return distanceInMeters <= 2000;
+    }
+    else if (_resortModelController.index == 0) {
+      return distanceInMeters <= 2000;
+    }
+    else {
+      return distanceInMeters <= 5000;
+    }
   }
+
 
   Future<Map<String, int>> calculateRank(int myScore) async {
     int totalUsers = 0;

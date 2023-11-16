@@ -496,7 +496,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                     }
                     final chatDocs = snapshot.data!.docs;
                     DateTime now = DateTime.now();
-                    DateTime oneDayAgo = now.subtract(Duration(days: 1));
+                    DateTime oneDayAgo = now.subtract(Duration(days: 3));
 
                     chatDocs.retainWhere((doc) {
                       DateTime docTimeStamp = doc['timeStamp'].toDate();
