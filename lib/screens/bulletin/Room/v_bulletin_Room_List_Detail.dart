@@ -13,6 +13,7 @@ import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_bulletinRoomReplyController.dart';
 import '../../../controller/vm_bulletinRoomController.dart';
+import '../../../controller/vm_timeStampController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_alarmCenterModel.dart';
 import '../../comments/v_profileImageScreen.dart';
@@ -32,6 +33,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
   BulletinRoomModelController _bulletinRoomModelController = Get.find<BulletinRoomModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
+  TimeStampController _timeStampController = Get.find<TimeStampController>();
   //TODO: Dependency Injection**************************************************
 
   final _controller = TextEditingController();
@@ -85,7 +87,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
 
 
     String _time =
-    _bulletinRoomModelController.getAgoTime(_bulletinRoomModelController.timeStamp);
+    _timeStampController.yyyymmddFormat(_bulletinRoomModelController.timeStamp);
     Size _size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: (){
@@ -843,9 +845,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                             reverse: _replyReverse,
                                                             itemCount: replyDocs.length,
                                                             itemBuilder: (context, index) {
-                                                              String _time = _bulletinRoomReplyModelController
-                                                                  .getAgoTime(replyDocs[index]
-                                                                  .get('timeStamp'));
+                                                              String _time = _bulletinRoomReplyModelController.getAgoTime(replyDocs[index].get('timeStamp'));
                                                               return Padding(
                                                                 padding: const EdgeInsets.only(top: 16),
                                                                 child: Obx(() => Container(
