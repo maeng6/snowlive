@@ -38,6 +38,7 @@ List<LocationModel> welli = [
     coordinates: [
       LatLng(37.490130, 128.250120),
       LatLng(37.490096, 128.250166),
+      LatLng(37.488379, 128.252212),
     ],
     type: 'slope',
     resort: 9,
@@ -47,6 +48,7 @@ List<LocationModel> welli = [
     coordinates: [
       LatLng(37.489916, 128.250191),
       LatLng(37.489888, 128.250225),
+      LatLng(37.488564, 128.251780),
     ],
     type: 'slope',
     resort: 9,
@@ -56,6 +58,7 @@ List<LocationModel> welli = [
     coordinates: [
       LatLng(37.488712, 128.250181),
       LatLng(37.488673, 128.250169),
+      LatLng(37.484850, 128.249675),
     ],
     type: 'slope',
     resort: 9,
@@ -72,14 +75,12 @@ List<LocationModel> welli = [
   LocationModel(
     name: '곤돌라',
     coordinates: [
-      LatLng(37.490630, 128.248932),
-      LatLng(37.490612, 128.249009),
-      LatLng(37.490575, 128.249100),
-      LatLng(37.490554, 128.248929),
-      LatLng(37.490515, 128.249035),
-      LatLng(37.490720, 128.248990),
-      LatLng(37.490695, 128.249070),
-      LatLng(37.490670, 128.249145),
+      LatLng(37.485051, 128.246137),
+      LatLng(37.484750, 128.245984),
+      LatLng(37.484030, 128.245615),
+      LatLng(37.482835, 128.245010),
+      LatLng(37.482340, 128.244745),
+
     ],
     type: 'slope',
     resort: 9,
@@ -89,6 +90,9 @@ List<LocationModel> welli = [
     coordinates: [
       LatLng(37.490825, 128.248507),
       LatLng(37.490788, 128.248483),
+      LatLng(37.487674, 128.245553),
+      LatLng(37.487059, 128.244978),
+      LatLng(37.486610, 128.244563),
     ],
     type: 'slope',
     resort: 9,
@@ -98,6 +102,8 @@ List<LocationModel> welli = [
     coordinates: [
       LatLng(37.485622, 128.248713),
       LatLng(37.485584, 128.248689),
+      LatLng(37.483165, 128.246675),
+      LatLng(37.482495, 128.246125),
     ],
     type: 'slope',
     resort: 9,
@@ -107,6 +113,8 @@ List<LocationModel> welli = [
     coordinates: [
       LatLng(37.485401, 128.241075),
       LatLng(37.485364, 128.241090),
+      LatLng(37.482065, 128.242546),
+      LatLng(37.482506, 128.242340),
     ],
     type: 'slope',
     resort: 9,
@@ -245,6 +253,8 @@ List<LocationModel> alpensia = [
       LatLng(37.656490, 128.672209),
       LatLng(37.656447, 128.672181),
       LatLng(37.656407, 128.672149),
+      LatLng(37.655627, 128.671579),
+      LatLng(37.655045, 128.671168),
     ],
     type: 'slope',
     resort: 3,
@@ -255,6 +265,8 @@ List<LocationModel> alpensia = [
       LatLng(37.656178, 128.673159),
       LatLng(37.656130, 128.673159),
       LatLng(37.656082, 128.673160),
+      LatLng(37.653750, 128.673055),
+      LatLng(37.653145, 128.673057),
 
     ],
     type: 'slope',
@@ -266,6 +278,8 @@ List<LocationModel> alpensia = [
       LatLng(37.656224, 128.674666),
       LatLng(37.656179, 128.674658),
       LatLng(37.656130, 128.674650),
+      LatLng(37.652960, 128.674040),
+      LatLng(37.652675, 128.673990),
     ],
     type: 'slope',
     resort: 3,
@@ -312,6 +326,9 @@ List<LocationModel> eden = [
       LatLng(35.428193, 128.984103),
       LatLng(35.428240, 128.984112),
       LatLng(35.428287, 128.984120),
+      LatLng(35.426215, 128.983776),
+      LatLng(35.425288, 128.983636),
+      LatLng(35.424015, 128.983447),
     ],
     type: 'slope',
     resort: 4,
@@ -322,6 +339,8 @@ List<LocationModel> eden = [
       LatLng(35.428290, 128.984862),
       LatLng(35.428335, 128.984836),
       LatLng(35.428380, 128.984808),
+      LatLng(35.426015, 128.986129),
+      LatLng(35.424553, 128.986959),
     ],
     type: 'slope',
     resort: 4,
@@ -332,6 +351,8 @@ List<LocationModel> eden = [
       LatLng(35.428450, 128.985036),
       LatLng(35.428405, 128.985061),
       LatLng(35.428361, 128.985087),
+      LatLng(35.426300, 128.986185),
+      LatLng(35.425252, 128.986759),
     ],
     type: 'slope',
     resort: 4,
@@ -378,6 +399,8 @@ List<LocationModel> oak = [
       LatLng(37.406586, 127.809365),
       LatLng(37.406541, 127.809393),
       LatLng(37.406500, 127.809421),
+      LatLng(37.404547, 127.810646),
+      LatLng(37.403580, 127.811287),
     ],
     type: 'slope',
     resort: 6,
@@ -388,6 +411,8 @@ List<LocationModel> oak = [
       LatLng(37.406620, 127.809814),
       LatLng(37.406649, 127.809753),
       LatLng(37.406672, 127.809699),
+      LatLng(37.403625, 127.815955),
+      LatLng(37.403250, 127.816750),
     ],
     type: 'slope',
     resort: 6,
@@ -398,6 +423,8 @@ List<LocationModel> oak = [
       LatLng(37.407460, 127.809405),
       LatLng(37.407467, 127.809468),
       LatLng(37.407475, 127.809530),
+      LatLng(37.407630, 127.810555),
+      LatLng(37.407905, 127.812825),
     ],
     type: 'slope',
     resort: 6,
@@ -444,6 +471,8 @@ List<LocationModel> jisan = [
       LatLng(37.217570, 127.343691),
       LatLng(37.217533, 127.343653),
       LatLng(37.217495, 127.343615),
+      LatLng(37.215470, 127.341622),
+      LatLng(37.214585, 127.340740),
     ],
     type: 'slope',
     resort: 10,
@@ -454,6 +483,8 @@ List<LocationModel> jisan = [
       LatLng(37.217202, 127.344140),
       LatLng(37.217163, 127.344107),
       LatLng(37.217122, 127.344072),
+      LatLng(37.214400, 127.341938),
+      LatLng(37.213590, 127.341312),
     ],
     type: 'slope',
     resort: 10,
@@ -464,6 +495,8 @@ List<LocationModel> jisan = [
       LatLng(37.215937, 127.345540),
       LatLng(37.215890, 127.345525),
       LatLng(37.215843, 127.345510),
+      LatLng(37.214735, 127.345138),
+      LatLng(37.213575, 127.344786),
     ],
     type: 'slope',
     resort: 10,
@@ -484,6 +517,8 @@ List<LocationModel> jisan = [
       LatLng(37.215458, 127.347143),
       LatLng(37.215412, 127.347126),
       LatLng(37.215365, 127.347107),
+      LatLng(37.214760, 127.346895),
+      LatLng(37.214010, 127.346660),
     ],
     type: 'slope',
     resort: 10,
@@ -550,6 +585,8 @@ List<LocationModel> o2 = [
       LatLng(37.179691, 128.939590),
       LatLng(37.179670, 128.939535),
       LatLng(37.179652, 128.939479),
+      LatLng(37.177715, 128.934337),
+      LatLng(37.177217, 128.933085),
     ],
     type: 'slope',
     resort: 7,
@@ -560,6 +597,9 @@ List<LocationModel> o2 = [
       LatLng(37.179285, 128.940243),
       LatLng(37.179248, 128.940202),
       LatLng(37.179213, 128.940153),
+      LatLng(37.177458, 128.938095),
+      LatLng(37.174198, 128.934370),
+      LatLng(37.172175, 128.932075),
     ],
     type: 'slope',
     resort: 7,
@@ -570,6 +610,9 @@ List<LocationModel> o2 = [
       LatLng(37.178293, 128.946208),
       LatLng(37.178305, 128.946148),
       LatLng(37.178323, 128.946084),
+      LatLng(37.178835, 128.944188),
+      LatLng(37.178790, 128.944175),
+      LatLng(37.178740, 128.944160),
     ],
     type: 'slope',
     resort: 7,
@@ -577,16 +620,18 @@ List<LocationModel> o2 = [
   LocationModel(
     name: '곤돌라',
     coordinates: [
-      LatLng(37.178025, 128.946879),
-      LatLng(37.177986, 128.946910),
-      LatLng(37.177940, 128.946950),
-      LatLng(37.177900, 128.946983),
-      LatLng(37.177862, 128.947019),
-      LatLng(37.177903, 128.947109),
-      LatLng(37.177940, 128.947075),
-      LatLng(37.177981, 128.947040),
-      LatLng(37.178029, 128.946996),
-      LatLng(37.178070, 128.946962),
+      LatLng(37.175650, 128.942475),
+      LatLng(37.175688, 128.942447),
+      LatLng(37.174390, 128.940030),
+      LatLng(37.174430, 128.940000),
+      LatLng(37.174355, 128.940065),
+      LatLng(37.173340, 128.937985),
+      LatLng(37.173385, 128.937955),
+      LatLng(37.173295, 128.938010),
+      LatLng(37.171340, 128.934115),
+      LatLng(37.173295, 128.938010),
+      LatLng(37.171295, 128.934140),
+
     ],
     type: 'slope',
     resort: 7,
@@ -607,6 +652,8 @@ List<LocationModel> o2 = [
       LatLng(37.176423, 128.948234),
       LatLng(37.176375, 128.948224),
       LatLng(37.176323, 128.948212),
+      LatLng(37.173323, 128.947705),
+      LatLng(37.172293, 128.947523),
     ],
     type: 'slope',
     resort: 7,
@@ -687,6 +734,8 @@ List<LocationModel> gangchon = [
       LatLng(37.820866, 127.589272),
       LatLng(37.820839, 127.589222),
       LatLng(37.820814, 127.589172),
+      LatLng(37.819094, 127.586286),
+      LatLng(37.819134, 127.586260),
     ],
     type: 'slope',
     resort: 5,
@@ -697,6 +746,8 @@ List<LocationModel> gangchon = [
       LatLng(37.820612, 127.589090),
       LatLng(37.820575, 127.589042),
       LatLng(37.820536, 127.588995),
+      LatLng(37.818633, 127.586560),
+      LatLng(37.818670, 127.586526),
     ],
     type: 'slope',
     resort: 5,
@@ -707,6 +758,8 @@ List<LocationModel> gangchon = [
       LatLng(37.820253, 127.589300),
       LatLng(37.820215, 127.589255),
       LatLng(37.820177, 127.589211),
+      LatLng(37.816883, 127.585190),
+      LatLng(37.816915, 127.585158),
     ],
     type: 'slope',
     resort: 5,
@@ -727,6 +780,9 @@ List<LocationModel> gangchon = [
       LatLng(37.815413, 127.591440),
       LatLng(37.815410, 127.591376),
       LatLng(37.815405, 127.591311),
+      LatLng(37.815155, 127.588088),
+      LatLng(37.815200, 127.588084),
+      LatLng(37.815247, 127.588078),
     ],
     type: 'slope',
     resort: 5,
@@ -964,129 +1020,201 @@ List<LocationModel> phoenix = [
     coordinates: [
       LatLng(37.582792, 128.316935),
       LatLng(37.582500, 128.317010),
-      LatLng(37.582650, 128.317010)
+      LatLng(37.582650, 128.317010),
+      //보강1
+      LatLng(37.582199, 128.315484),
+      LatLng(37.582289, 128.315384),
+      //보강2
+      LatLng(37.583006, 128.317706),
+      LatLng(37.582856, 128.317806),
+
+
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//스패_보강
   LocationModel(
     name: '챔피온',
     coordinates: [
       LatLng(37.577447, 128.312582),
-      LatLng(37.577507, 128.312765)
+      LatLng(37.577507, 128.312765),
+      //보강1
+      LatLng(37.580739, 128.313688),
+      LatLng(37.580739, 128.313788),
+      //보강2
+      LatLng(37.579743, 128.313346),
+      LatLng(37.579743, 128.313456),
+
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//챔피언_보강
   LocationModel(
     name: '파노',
     coordinates: [
-      LatLng(37.576205, 128.307921)
+      LatLng(37.576205, 128.307921),
+      //보강1
+      LatLng(37.577496, 128.306663),
+      //보강2
+      LatLng(37.579989, 128.309350),
+      LatLng(37.579789, 128.309470),
+      LatLng(37.579589, 128.309470),
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//파노_보강
   LocationModel(
     name: '환타지',
     coordinates: [
       LatLng(37.578424, 128.315549),
-      LatLng(37.578304, 128.315549)
+      LatLng(37.578304, 128.315549),
+      //보강1
+      LatLng(37.578587, 128.314548),
+      LatLng(37.578407, 128.314608),
+      //보강2
+      LatLng(37.578740, 128.317112),
+      LatLng(37.578540, 128.317112),
+      LatLng(37.578440, 128.317212),
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//환타지_보강
   LocationModel(
     name: '디지',
     coordinates: [
       LatLng(37.577249, 128.315976),
-      LatLng(37.577049, 128.316176)
+      LatLng(37.577049, 128.315876),
+      //보강1
+      LatLng(37.576554, 128.313192),
+      LatLng(37.576204, 128.313192),
+      LatLng(37.576304, 128.313292),
+      //보강2
+      LatLng(37.577779, 128.316945),
+      LatLng(37.577709, 128.316945),
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//디지_보강
   LocationModel(
     name: '호크1',
     coordinates: [
       LatLng(37.582952, 128.322142),
-      LatLng(37.582892, 128.322142)
+      LatLng(37.582892, 128.322142),
+      LatLng(37.583360, 128.322664),
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//호크1_보강
   LocationModel(
     name: '호크2',
     coordinates: [
       LatLng(37.581191, 128.318740),
-      LatLng(37.581309, 128.318394)
+      LatLng(37.581309, 128.318394),
+      //보강1
+      LatLng(37.582067, 128.318844),
+      LatLng(37.582067, 128.318544),
+      LatLng(37.582067, 128.318344)
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//호크2_보강
   LocationModel(
     name: '펭귄',
     coordinates: [
       LatLng(37.580841, 128.322048),
       LatLng(37.580744, 128.322353),
-      LatLng(37.580531, 128.322327)
+      LatLng(37.580531, 128.322327),
+      //보강1
+      LatLng(37.579932, 128.320682),
+      LatLng(37.579732, 128.320882),
+      LatLng(37.579632, 128.320982),
+      //보강2
+      LatLng(37.581200, 128.323203),
+      LatLng(37.581000, 128.323403),
+      LatLng(37.580950, 128.323553),
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//펭귄_보강
   LocationModel(
     name: '밸리',
     coordinates: [
       LatLng(37.575795, 128.316310),
-      LatLng(37.575795, 128.316410)
+      LatLng(37.575795, 128.316410),
+      //보강1
+      LatLng(37.573588, 128.311583),
+      //보강2
+      LatLng(37.574454, 128.315200),
+      LatLng(37.574354, 128.315400),
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//밸리_보강
   LocationModel(
     name: '마스터',
     coordinates: [
       LatLng(37.578714, 128.321666),
-      LatLng(37.578895, 128.321876)
+      LatLng(37.578895, 128.321876),
+      //보강1
+      LatLng(37.578194, 128.321133),
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//마스터_보강
   LocationModel(
     name: '모글',
     coordinates: [
       LatLng(37.577898, 128.322576),
-      LatLng(37.577822, 128.322636)
+      LatLng(37.577822, 128.322636),
+      //보강1
+      LatLng(37.578222, 128.323036),
+      //보강2
+      LatLng(37.578822, 128.323356),
+      LatLng(37.578622, 128.323556),
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//모글_보강
   LocationModel(
     name: '키위',
     coordinates: [
       LatLng(37.575211, 128.322084),
-      LatLng(37.575200, 128.322262)
+      LatLng(37.575200, 128.322262),
+      //보강1
+      LatLng(37.576375, 128.322114),
+      LatLng(37.576475, 128.322314),
+      //보강2
+      LatLng(37.577463, 128.321444),
+      LatLng(37.577363, 128.321244),
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//키위_보강
   LocationModel(
     name: '도도',
     coordinates: [
-      LatLng(37.578992, 128.326238),
+      LatLng(37.579435, 128.325868),
       LatLng(37.579035, 128.325828)
     ],
     type: 'slope',
     resort: 12,
 
-  ),
+  ),//도도_보강안함
   LocationModel(
     name: '슬스',
     coordinates: [
       LatLng(37.577446, 128.324452),
       LatLng(37.577446, 128.324282),
+      //보강1
+      LatLng(37.576420, 128.323870),
+      LatLng(37.576420, 128.323750),
+      //보강2
+      LatLng(37.578344, 128.324669),
+      LatLng(37.578244, 128.324869),
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//슬스_보강
   LocationModel(
     name: '도브',
     coordinates: [
@@ -1096,7 +1224,7 @@ List<LocationModel> phoenix = [
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//도브_보강안함
   LocationModel(
     name: '듀크',
     coordinates: [
@@ -1108,32 +1236,41 @@ List<LocationModel> phoenix = [
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//듀크_보강안함
   LocationModel(
     name: '파라',
     coordinates: [
       LatLng(37.578302, 128.311030),
-      LatLng(37.578425, 128.310755)
+      LatLng(37.578425, 128.310755),
+      //보강1
+      LatLng(37.579322, 128.311258),
+      LatLng(37.579322, 128.311558),
+      //보강2
+      LatLng(37.577242, 128.310490),
+      LatLng(37.577242, 128.310750),
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//파라_보강
   LocationModel(
     name: '파크',
     coordinates: [
-      LatLng(37.583163, 128.320304)
+      LatLng(37.583163, 128.320304),
+      //보강1
+      LatLng(37.583363, 128.320904),
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//파크_보강
   LocationModel(
     name: '파이프',
     coordinates: [
-      LatLng(37.582486, 128.320835)
+      LatLng(37.582486, 128.320835),
+      LatLng(37.582786, 128.321235),
     ],
     type: 'slope',
     resort: 12,
-  ),
+  ),//파이프_보강
   //여기까지가 슬로프
 
   LocationModel(
@@ -1141,37 +1278,76 @@ List<LocationModel> phoenix = [
     coordinates: [
       LatLng(37.574301, 128.310102),
       LatLng(37.574178, 128.310700),
-      LatLng(37.573979, 128.310786)
+      LatLng(37.573979, 128.310786),
+      //보강1
+      LatLng(37.574178, 128.310400),
     ],
     type: 'slopeReset',
     resort: 12,
-  ),
+  ),//몽블랑_보강
+  LocationModel(
+    name: '곤돌라',
+    coordinates: [
+      LatLng(37.574722, 128.311445),
+      LatLng(37.575722, 128.312945),
+    ],
+    type: 'slopeReset',
+    resort: 12,
+  ),//곤돌라_신설
+  LocationModel(
+    name: '이글리프트',
+    coordinates: [
+      LatLng(37.574322, 128.311445),
+      LatLng(37.575122, 128.312945),
+    ],
+    type: 'slopeReset',
+    resort: 12,
+  ),//이글리프트_신설
   LocationModel(
     name: '불새',
     coordinates: [
-      LatLng(37.573933, 128.322244),
+      LatLng(37.573933, 128.322204),
+      //보강1
+      LatLng(37.5737833, 128.322154),
     ],
     type: 'slopeReset',
     resort: 12,
-  ),
+  ),//불새_보강
+  LocationModel(
+    name: '스패하차장',
+    coordinates: [
+      LatLng(37.581705, 128.312576),
+      //보강1
+      LatLng(37.581805, 128.312606),
+    ],
+    type: 'slopeReset',
+    resort: 12,
+  ),//스패하차장_보강
   //여기까지가 슬로프 리셋
 
   LocationModel(
     name: '스패로우리프트',
     coordinates: [
-      LatLng(37.584573, 128.322432)
+      LatLng(37.584573, 128.322432),
+      //보강
+      LatLng(37.584283, 128.322532),
+      LatLng(37.584573, 128.322432),
+      LatLng(37.583983, 128.322732),
     ],
     type: 'respawn',
     resort: 12,
-  ),
+  ),//스패로우리프트_보강
   LocationModel(
     name: '호크리프트',
     coordinates: [
-      LatLng(37.583700, 128.323646)
+      LatLng(37.583800, 128.323746),
+      //보강
+      LatLng(37.583783, 128.323162),
+      LatLng(37.584050, 128.323946),
     ],
     type: 'respawn',
     resort: 12,
-  ),
+  ),//호크리프트_보강
   LocationModel(
     name: '곤돌라',
     coordinates: [
@@ -1180,23 +1356,29 @@ List<LocationModel> phoenix = [
     ],
     type: 'respawn',
     resort: 12,
-  ),
+  ),//곤돌라_보강안함
   LocationModel(
     name: '펭귄리프트',
     coordinates: [
-      LatLng(37.581936, 128.325669)
+      LatLng(37.581936, 128.325669),
+      //보강
+      LatLng(37.582236, 128.325069),
+      LatLng(37.582036, 128.325369),
     ],
     type: 'respawn',
     resort: 12,
-  ),
+  ),//펭귄리프트_보강
   LocationModel(
     name: '팔콘리프트',
     coordinates: [
-      LatLng(37.581653, 128.325976)
+      LatLng(37.581653, 128.325976),
+      //보강
+      LatLng(37.581653, 128.326206),
+      LatLng(37.581753, 128.325976),
     ],
     type: 'respawn',
     resort: 12,
-  ),
+  ),//팔콘리프트_보강
   LocationModel(
     name: '도도리프트',
     coordinates: [
@@ -1204,23 +1386,27 @@ List<LocationModel> phoenix = [
     ],
     type: 'respawn',
     resort: 12,
-  ),
+  ),//도도리프트_보강안함
   LocationModel(
     name: '콘돌리프트',
     coordinates: [
-      LatLng(37.581361, 128.313497)
+      LatLng(37.581361, 128.313497),
+      //보강
+      LatLng(37.580134, 128.312883),
     ],
     type: 'respawn',
     resort: 12,
-  ),
+  ),//콘돌리프트_보강
   LocationModel(
     name: '이글리프트',
     coordinates: [
-      LatLng(37.578830, 128.319583)
+      LatLng(37.578830, 128.319583),
+      //보강
+      LatLng(37.577838, 128.317849),
     ],
     type: 'respawn',
     resort: 12,
-  ),
+  ),//이글리프트_보강
   LocationModel(
     name: '슬스리프트',
     coordinates: [
@@ -1228,7 +1414,18 @@ List<LocationModel> phoenix = [
     ],
     type: 'respawn',
     resort: 12,
-  ),
+  ),//슬스리프트_보강안함
+  LocationModel(
+    name: '스키하우스',
+    coordinates: [
+      LatLng(37.583200, 128.325424),
+      LatLng(37.584373, 128.324173),
+      LatLng(37.584373, 128.324173),
+      LatLng(37.584373, 128.324173),
+    ],
+    type: 'respawn',
+    resort: 12,
+  ),//스키하우스_신설
 ];
 
 
