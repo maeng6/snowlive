@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/controller/vm_timeStampController.dart';
 import 'package:com.snowlive/screens/bulletin/Free/v_bulletinFreeImageScreen.dart';
 import 'package:com.snowlive/screens/bulletin/Free/v_bulletin_Free_ModifyPage.dart';
 import 'package:extended_image/extended_image.dart';
@@ -35,6 +36,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
   BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
+  TimeStampController _timeStampController = Get.find<TimeStampController>();
   //TODO: Dependency Injection**************************************************
 
   final _controller = TextEditingController();
@@ -86,7 +88,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
     _seasonController.getBulletinFreeReplyLimit();
 
     String _time =
-    _bulletinFreeModelController.getAgoTime(_bulletinFreeModelController.timeStamp);
+    _timeStampController.yyyymmddFormat(_bulletinFreeModelController.timeStamp);
     Size _size = MediaQuery.of(context).size;
     return Container(
       color: Colors.white,

@@ -11,6 +11,7 @@ import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_bulletinCrewController.dart';
 import '../../../controller/vm_bulletinCrewReplyController.dart';
+import '../../../controller/vm_timeStampController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_alarmCenterModel.dart';
 import '../../comments/v_profileImageScreen.dart';
@@ -30,6 +31,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
   BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
+  TimeStampController _timeStampController = Get.find<TimeStampController>();
   //TODO: Dependency Injection**************************************************
 
   final _controller = TextEditingController();
@@ -82,7 +84,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
     _seasonController.getBulletinCrewReplyLimit();
 
     String _time =
-    _bulletinCrewModelController.getAgoTime(_bulletinCrewModelController.timeStamp);
+    _timeStampController.yyyymmddFormat(_bulletinCrewModelController.timeStamp);
     Size _size = MediaQuery.of(context).size;
     return Container(
       color: Colors.white,
