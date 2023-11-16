@@ -100,7 +100,6 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
         .where('timeStamp', isGreaterThanOrEqualTo: oneDayAgo)
         .orderBy('timeStamp', descending: true) // 먼저 timeStamp로 정렬
         .orderBy('score', descending: true) // 그 다음 score로 정렬
-        .limit(1)
         .snapshots();
   }
 
