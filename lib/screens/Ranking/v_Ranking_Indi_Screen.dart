@@ -19,7 +19,9 @@ import '../../model/m_rankingTierModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
 class RankingIndiScreen extends StatefulWidget {
-  const RankingIndiScreen({Key? key}) : super(key: key);
+  RankingIndiScreen({Key? key, required this.isKusbf}) : super(key: key);
+
+  bool isKusbf = false;
 
   @override
   State<RankingIndiScreen> createState() => _RankingIndiScreenState();
@@ -38,8 +40,6 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   RefreshController _refreshController = Get.find<RefreshController>();
   //TODO: Dependency Injection**************************************************
 
-
-  bool _isKusbf = false;
 
 
   @override
@@ -168,7 +168,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
               }).toList();
               print(filteredDocuments.length);
 
-              final documents = _isKusbf == true ? filteredDocuments : document;
+              final documents = widget.isKusbf == true ? filteredDocuments : document;
 
               documents.sort((a, b) {
                 final aTotalScore = a['totalScore'] as int;
@@ -200,57 +200,12 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Column(
                             children: [
-                              (_userModelController.favoriteResort == 12)
-                                  ?Column(
-                                children: [
-                                  Container(
-                                    width: _size.width,
-                                    height: 60,
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        ExtendedImage.network(
-                                          '${KusbfAssetUrlList[0].mainLogo}',
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.rectangle,
-                                          width: 56,
-                                          fit: BoxFit.cover,
-                                          loadStateChanged: (ExtendedImageState state) {
-                                            switch (state.extendedImageLoadState) {
-                                              case LoadState.loading:
-                                                return SizedBox.shrink();
-                                              default:
-                                                return null;
-                                            }
-                                          },
-                                        ),
-                                        Transform.scale(
-                                          scale: 0.8,
-                                          child: CupertinoSwitch(
-                                            value: _isKusbf,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _isKusbf = value;
-                                                // 여기에서 토글 상태 변경에 따른 추가 작업을 수행할 수 있습니다.
-                                              });
-                                            },
-                                            activeColor: Color(0xFF3D83ED),
-                                            trackColor: Color(0xFFD8E7FD),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              )
-                                  :SizedBox(height: 20,),
                               Container(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      (_isKusbf == false)
+                                      (widget.isKusbf == false)
                                           ?'${_userModelController.resortNickname} 상위 TOP 3 유저' : 'KUSBF 상위 TOP 3 유저',
                                       style: TextStyle(
                                           color: Color(0xFF949494),
@@ -581,7 +536,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        if(_isKusbf == true)
+                                        if(widget.isKusbf == true)
                                           Text('KUSBF 개인 랭킹 TOP 100',
                                             style: TextStyle(
                                                 color: Color(0xFF111111),
@@ -589,7 +544,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 fontWeight: FontWeight.bold
                                             ),
                                           ),
-                                        if(_isKusbf == false)
+                                        if(widget.isKusbf == false)
                                           Text('${_userModelController.resortNickname} 개인 랭킹 TOP 100',
                                             style: TextStyle(
                                                 color: Color(0xFF111111),
@@ -599,7 +554,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           ),
                                         GestureDetector(
                                           onTap: () async{
-                                            Get.to(()=> RankingIndiAllScreen(isKusbf: _isKusbf,));
+                                            Get.to(()=> RankingIndiAllScreen(isKusbf: widget.isKusbf,));
                                           },
                                           child: Text('전체 보기',
                                             style: TextStyle(

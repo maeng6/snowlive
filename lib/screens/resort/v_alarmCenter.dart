@@ -552,7 +552,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                           ),
                           if (alarmCenterDocs.length != index + 1)
                             Divider(
-                              height: 40,
+                              height: 30,
                               color: Color(0xFFffffff),
                               thickness: 0.5,
                             ),

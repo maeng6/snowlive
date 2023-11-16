@@ -1309,8 +1309,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                     ));
                                                                                               },
                                                                                               shape: RoundedRectangleBorder(
-                                                                                                  borderRadius: BorderRadius
-                                                                                                      .circular(
+                                                                                                  borderRadius: BorderRadius.circular(
                                                                                                       10)),
                                                                                             ),
                                                                                           ),
@@ -1637,13 +1636,11 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                 return Container(
                                                                                   height: (_userModelController.displayName == 'SNOWLIVE')
                                                                                       ? 260
-                                                                                      : 140,
+                                                                                      : 160,
                                                                                   child:
                                                                                   Padding(
-                                                                                    padding: const EdgeInsets
-                                                                                        .symmetric(
-                                                                                        horizontal: 20.0,
-                                                                                        vertical: 14),
+                                                                                    padding: const EdgeInsets.symmetric(
+                                                                                        horizontal: 20.0, vertical: 14),
                                                                                     child: Column(
                                                                                       children: [
                                                                                         if(_userModelController.displayName == 'SNOWLIVE')
@@ -1658,15 +1655,13 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                           ? '게시글 잠금' : '게시글 잠금 해제',
                                                                                                       style: TextStyle(
                                                                                                         fontSize: 15,
-                                                                                                        fontWeight: FontWeight
-                                                                                                            .bold,
+                                                                                                        fontWeight: FontWeight.bold,
                                                                                                       ),
                                                                                                     ),
                                                                                                   ),
                                                                                                   //selected: _isSelected[index]!,
                                                                                                   onTap: () async {
-                                                                                                    Get
-                                                                                                        .dialog(
+                                                                                                    Get.dialog(
                                                                                                         AlertDialog(
                                                                                                           contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
                                                                                                           elevation: 0,

@@ -15,7 +15,9 @@ import '../../widget/w_fullScreenDialog.dart';
 import '../LiveCrew/v_crewDetailPage_screen.dart';
 
 class RankingCrewScreen extends StatefulWidget {
-  const RankingCrewScreen({Key? key}) : super(key: key);
+  RankingCrewScreen({Key? key, required this.isKusbf}) : super(key: key);
+
+  bool isKusbf = false;
 
   @override
   State<RankingCrewScreen> createState() => _RankingCrewScreenState();
@@ -44,7 +46,6 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
   var assetTop2;
   var assetTop3;
 
-  bool _isKusbf = false;
   var _allCrew;
 
 
@@ -57,7 +58,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('liveCrew')
-            .where('kusbf', isEqualTo: (_isKusbf == true) ? true : _allCrew)
+            .where('kusbf', isEqualTo: (widget.isKusbf == true) ? true : _allCrew)
             .where('baseResort', isEqualTo: _userModelController.favoriteResort)
             .orderBy('totalScore', descending: true)
             .snapshots(),
@@ -176,57 +177,12 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Column(
                           children: [
-                            (_userModelController.favoriteResort == 12)
-                                ?Column(
-                              children: [
-                                Container(
-                                  width: _size.width,
-                                  height: 60,
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      ExtendedImage.network(
-                                        '${KusbfAssetUrlList[0].mainLogo}',
-                                        enableMemoryCache: true,
-                                        shape: BoxShape.rectangle,
-                                        width: 56,
-                                        fit: BoxFit.cover,
-                                        loadStateChanged: (ExtendedImageState state) {
-                                          switch (state.extendedImageLoadState) {
-                                            case LoadState.loading:
-                                              return SizedBox.shrink();
-                                            default:
-                                              return null;
-                                          }
-                                        },
-                                      ),
-                                      Transform.scale(
-                                        scale: 0.8,
-                                        child: CupertinoSwitch(
-                                          value: _isKusbf,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _isKusbf = value;
-                                              // 여기에서 토글 상태 변경에 따른 추가 작업을 수행할 수 있습니다.
-                                            });
-                                          },
-                                          activeColor: Color(0xFF3D83ED),
-                                          trackColor: Color(0xFFD8E7FD),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )
-                                :SizedBox(height: 20,),
                             Container(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    (_isKusbf == false)
+                                    (widget.isKusbf == false)
                                         ? '${_userModelController.resortNickname} 상위 TOP 3 크루' :'KUSBF 상위 TOP 3 크루',
                                     style: TextStyle(
                                         color: Color(0xFF949494),
@@ -625,7 +581,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      if(_isKusbf == true)
+                                      if(widget.isKusbf == true)
                                         Text('KUSBF 크루 랭킹 TOP 20',
                                           style: TextStyle(
                                               color: Color(0xFF111111),
@@ -633,7 +589,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                               fontWeight: FontWeight.bold
                                           ),
                                         ),
-                                      if(_isKusbf == false)
+                                      if(widget.isKusbf == false)
                                         Text('${_userModelController.resortNickname} 크루 랭킹 TOP 20',
                                           style: TextStyle(
                                               color: Color(0xFF111111),
@@ -644,7 +600,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                       GestureDetector(
                                         onTap: () {
                                           Get.to(() =>
-                                              RankingCrewAllScreen(isKusbf: _isKusbf,));
+                                              RankingCrewAllScreen(isKusbf: widget.isKusbf,));
                                         },
                                         child: Text('전체 보기',
                                           style: TextStyle(

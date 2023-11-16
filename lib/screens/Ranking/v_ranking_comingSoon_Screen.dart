@@ -21,7 +21,7 @@ class Ranking_CommingSoon_Screen extends StatelessWidget {
                 child: Column(
                   children: [
                     Center(
-                      child: Image.asset('assets/imgs/imgs/img_ranking_commingsoon.png',
+                      child: Image.network('https://i.esdrop.com/d/f/yytYSNBROy/kjkIX3Eg96.png',
                         width: _size.width - 40,
                       ),
                     ),

@@ -798,115 +798,131 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                 ),
                                 SizedBox(height: 20,),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Center(
-                                      child: GestureDetector(
-                                        child: Container(
-                                          height: 24,
-                                          decoration: BoxDecoration(
-                                              color:  Colors.transparent,
-                                              borderRadius: BorderRadius.circular(4)
-                                          ),
-                                          child: Padding(
-                                            padding: EdgeInsets.only(right: 8),
-                                            child: Row(
-                                              children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 16),
+                                      child: Center(
+                                        child: GestureDetector(
+                                          child: Container(
+                                            height: 24,
+                                            decoration: BoxDecoration(
+                                                color:
                                                 (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}'))
-                                                    ? Padding(
-                                                  padding: const EdgeInsets.only(top: 2),
-                                                  child:
-                                                  IconButton(
-                                                    onPressed: () async {
-                                                      var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
-                                                      HapticFeedback.lightImpact();
-                                                      if (_firstPress) {
-                                                        _firstPress = false;
-                                                        await _userModelController.deleteLikeUid(docName);
-                                                        await _bulletinFreeModelController.likeDelete(docName);
-                                                        await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
-                                                        setState(() {_firstPress = true;});
-                                                        await _bulletinFreeModelController.scoreDelete_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
-                                                      }
-                                                    },
-                                                    icon: Icon(
-                                                      Icons.thumb_up,
-                                                      size: 14,
-                                                      color: Color(0xFFD63636),
+                                                    ? Color(0xFFCBE0FF)
+                                                    : Color(0xFFECECEC),
+                                                borderRadius: BorderRadius.circular(4)
+                                            ),
+                                            child: Padding(
+                                              padding: EdgeInsets.only(right: 5, top: 2, bottom: 4, left: 3),
+                                              child:
+                                              (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}'))
+                                              ? Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 2),
+                                                    child: IconButton(
+                                                      onPressed: () async {
+                                                        var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                                        HapticFeedback.lightImpact();
+                                                        if (_firstPress) {
+                                                          _firstPress = false;
+                                                          await _userModelController.deleteLikeUid(docName);
+                                                          await _bulletinFreeModelController.likeDelete(docName);
+                                                          await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                                          setState(() {_firstPress = true;});
+                                                          await _bulletinFreeModelController.scoreDelete_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
+                                                        }
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.thumb_up_alt,
+                                                        size: 16,
+                                                        color: Color(0xFF3D83ED),
+                                                      ),
+                                                      padding: EdgeInsets.zero,
+                                                      constraints: BoxConstraints(),
                                                     ),
-                                                    padding: EdgeInsets.zero,
-                                                    constraints: BoxConstraints(),
                                                   ),
-                                                )
-                                                    : Padding(
-                                                  padding: const EdgeInsets.only(top: 2),
-                                                  child:
-                                                  IconButton(
-                                                    onPressed: () async {
-                                                      var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
-                                                      HapticFeedback.lightImpact();
-                                                      if (_firstPress) {
-                                                        _firstPress = false;
-                                                        await _userModelController.updateLikeUid(docName);
-                                                        await _bulletinFreeModelController.likeUpdate(docName);
-                                                        await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
-                                                        setState(() {_firstPress = true;});
-                                                        await _bulletinFreeModelController.scoreUpdate_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
-                                                      }
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 2),
+                                                    child: Text(
+                                                      '${_bulletinFreeModelController.likeCount}',
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 11,
+                                                          color: Color(0xFF111111),
+                                                    ),),
+                                                  ),
+                                                ],
+                                              )
+                                              : Row(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 2),
+                                                child:
+                                                IconButton(
+                                                  onPressed: () async {
+                                                    var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                                    HapticFeedback.lightImpact();
+                                                    if (_firstPress) {
+                                                      _firstPress = false;
+                                                      await _userModelController.updateLikeUid(docName);
+                                                      await _bulletinFreeModelController.likeUpdate(docName);
+                                                      await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                                      setState(() {_firstPress = true;});
+                                                      await _bulletinFreeModelController.scoreUpdate_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
+                                                    }
                                                     },
-                                                    icon: Icon(Icons.thumb_up_alt_outlined,
-                                                      size: 14,
-                                                      color: Color(0xFFC8C8C8),
-                                                    ),
-                                                    padding: EdgeInsets.zero,
-                                                    constraints: BoxConstraints(),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.only(bottom: 1),
-                                                  child: Text(
-                                                    '${_bulletinFreeModelController.likeCount}',
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 11,
-                                                        color:
-                                                        (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}'))
-                                                            ? Color(0xFF111111)
-                                                            : Color(0xFF666666)),
-                                                  ),
-                                                ),
-                                              ],
+                                                  icon: Icon(Icons.thumb_up_alt,
+                                                    size: 16,
+                                                    color: Color(0xFFC8C8C8),
+                                          ),
+                                          padding: EdgeInsets.zero,
+                                          constraints: BoxConstraints(),
+                                        ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 2),
+                                          child: Text('${_bulletinFreeModelController.likeCount}',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 11,
+                                                color: Color(0xFF666666)),
+                                ),
+                                        ),
+                                        ],
+                                      ),
                                             ),
                                           ),
-                                        ),
-                                        onTap: () async{
-                                          if (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}')){
-                                            var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
-                                            print(docName);
-                                            HapticFeedback.lightImpact();
-                                            if (_firstPress) {
-                                              _firstPress = false;
-                                              await _userModelController.deleteLikeUid(docName);
-                                              await _bulletinFreeModelController.likeDelete(docName);
-                                              await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
-                                              setState(() {_firstPress = true;});
-                                              await _bulletinFreeModelController.scoreDelete_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
+                                          onTap: () async{
+                                            if (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}')){
+                                              var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                              print(docName);
+                                              HapticFeedback.lightImpact();
+                                              if (_firstPress) {
+                                                _firstPress = false;
+                                                await _userModelController.deleteLikeUid(docName);
+                                                await _bulletinFreeModelController.likeDelete(docName);
+                                                await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                                setState(() {_firstPress = true;});
+                                                await _bulletinFreeModelController.scoreDelete_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
+                                              }
+                                            } else{
+                                              var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                              print(docName);
+                                              HapticFeedback.lightImpact();
+                                              if (_firstPress) {
+                                                _firstPress = false;
+                                                await _userModelController.updateLikeUid(docName);
+                                                await _bulletinFreeModelController.likeUpdate(docName);
+                                                await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                                setState(() {_firstPress = true;});
+                                                await _bulletinFreeModelController.scoreUpdate_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
+                                              }
                                             }
-                                          } else{
-                                            var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
-                                            print(docName);
-                                            HapticFeedback.lightImpact();
-                                            if (_firstPress) {
-                                              _firstPress = false;
-                                              await _userModelController.updateLikeUid(docName);
-                                              await _bulletinFreeModelController.likeUpdate(docName);
-                                              await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
-                                              setState(() {_firstPress = true;});
-                                              await _bulletinFreeModelController.scoreUpdate_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
-                                            }
-                                          }
 
-                                        },
+                                          },
+                                        ),
                                       ),
                                     ),
                                   ],
