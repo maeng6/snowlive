@@ -137,45 +137,31 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                       children: [
                                                         TextButton(
                                                             onPressed: () {
-                                                              Navigator.pop(
-                                                                  context);
+                                                              Navigator.pop(context);
                                                             },
-                                                            child: Text(
-                                                              '취소',
+                                                            child: Text('취소',
                                                               style: TextStyle(
                                                                 fontSize: 15,
-                                                                color: Color(
-                                                                    0xFF949494),
-                                                                fontWeight:
-                                                                FontWeight.bold,
+                                                                color: Color(0xFF949494),
+                                                                fontWeight: FontWeight.bold,
                                                               ),
                                                             )),
                                                         TextButton(
                                                             onPressed: () async {
-                                                              var repoUid =
-                                                                  _fleaModelController
-                                                                      .uid;
-                                                              await _userModelController
-                                                                  .repoUpdate(
-                                                                  repoUid);
-                                                              Navigator.pop(
-                                                                  context);
-                                                              Navigator.pop(
-                                                                  context);
+                                                              var repoUid = _fleaModelController.uid;
+                                                              await _userModelController.repoUpdate(repoUid);
+                                                              Navigator.pop(context);
+                                                              Navigator.pop(context);
                                                             },
-                                                            child: Text(
-                                                              '신고',
+                                                            child: Text('신고',
                                                               style: TextStyle(
                                                                 fontSize: 15,
-                                                                color: Color(
-                                                                    0xFF3D83ED),
-                                                                fontWeight:
-                                                                FontWeight.bold,
+                                                                color: Color(0xFF3D83ED),
+                                                                fontWeight: FontWeight.bold,
                                                               ),
                                                             ))
                                                       ],
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment.end,
+                                                      mainAxisAlignment: MainAxisAlignment.end,
                                                     )
                                                   ],
                                                 ));
@@ -200,16 +186,10 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                               //selected: _isSelected[index]!,
                                               onTap: () async {
                                                 Get.dialog(AlertDialog(
-                                                  contentPadding: EdgeInsets.only(
-                                                      bottom: 0,
-                                                      left: 20,
-                                                      right: 20,
-                                                      top: 30),
+                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
                                                   elevation: 0,
                                                   shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0)),
+                                                      borderRadius: BorderRadius.circular(10.0)),
                                                   buttonPadding:
                                                   EdgeInsets.symmetric(
                                                       horizontal: 20,
@@ -250,47 +230,34 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                               '취소',
                                                               style: TextStyle(
                                                                 fontSize: 15,
-                                                                color: Color(
-                                                                    0xFF949494),
-                                                                fontWeight:
-                                                                FontWeight.bold,
+                                                                color: Color(0xFF949494),
+                                                                fontWeight: FontWeight.bold,
                                                               ),
                                                             )),
                                                         TextButton(
                                                             onPressed: () {
-                                                              var repoUid =
-                                                                  _fleaModelController
-                                                                      .uid;
-                                                              _userModelController
-                                                                  .updateRepoUid(
-                                                                  repoUid);
-                                                              Navigator.pop(
-                                                                  context);
-                                                              Navigator.pop(
-                                                                  context);
-                                                              Navigator.pop(
-                                                                  context);
+                                                              var repoUid = _fleaModelController
+                                                                  .uid;
+                                                              _userModelController.updateRepoUid(repoUid);
+                                                              Navigator.pop(context);
+                                                              Navigator.pop(context);
+                                                              Navigator.pop(context);
                                                             },
-                                                            child: Text(
-                                                              '확인',
+                                                            child: Text('확인',
                                                               style: TextStyle(
                                                                 fontSize: 15,
-                                                                color: Color(
-                                                                    0xFF3D83ED),
-                                                                fontWeight:
-                                                                FontWeight.bold,
+                                                                color: Color(0xFF3D83ED),
+                                                                fontWeight: FontWeight.bold,
                                                               ),
                                                             ))
                                                       ],
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment.end,
+                                                      mainAxisAlignment: MainAxisAlignment.end,
                                                     )
                                                   ],
                                                 ));
                                               },
                                               shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                  BorderRadius.circular(10)),
+                                                  borderRadius: BorderRadius.circular(10)),
                                             ),
                                           )
                                         ],
@@ -520,24 +487,25 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                         );
                                       },
                                     ),
-                                    Positioned(
-                                      right: 170,
-                                      bottom: 10,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: List.generate(
-                                          _fleaModelController.itemImagesUrls!.length,
-                                              (index) {
-                                            return Container(
-                                              width: 8.0,
-                                              height: 8.0,
-                                              margin: EdgeInsets.symmetric(horizontal: 4.0),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: _currentIndex == index ? Colors.blue : Colors.grey,
-                                              ),
-                                            );
-                                          },
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 260),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: List.generate(
+                                            _fleaModelController.itemImagesUrls!.length,
+                                                (index) {
+                                              return Container(
+                                                width: 8,
+                                                height: 8,
+                                                margin: EdgeInsets.symmetric(horizontal: 4),
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: _currentIndex == index ? Color(0xFFFFFFFF) : Color(0xFF111111).withOpacity(0.5),
+                                                ),
+                                              );
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ),

@@ -424,7 +424,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                         child: Column(
                                           children: [
                                             ExtendedImage.asset(
-                                              'assets/imgs/imgs/img_app_update.png',
+                                              'assets/imgs/imgs/img_app_season.png',
                                               scale: 4,
                                               fit: BoxFit.fitHeight,
                                               width: MediaQuery.of(Get.context!).size.width,
@@ -480,12 +480,12 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                               '확인',
                                               style: TextStyle(
                                                 fontSize: 15,
-                                                color: Colors.white,
+                                                color: Color(0xFF111111),
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: Color(0xFF3D83ED),
+                                              backgroundColor: Color(0xFFFFFFFF),
                                               elevation: 0,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(8),
