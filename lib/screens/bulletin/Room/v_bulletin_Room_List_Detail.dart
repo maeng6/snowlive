@@ -544,16 +544,22 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('${_bulletinRoomModelController.category}',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.normal,
-                                              color: Color(0xFF111111)),
-                                        ),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFECECEC),
+                                            borderRadius: BorderRadius.circular(4),
+                                          ),
+                                          child: Text('${_bulletinRoomModelController.category}',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF444444)),
+                                        ),),
                                         SizedBox(
-                                          height: 4,
+                                          height: 8,
                                         ),
                                         Container(
                                           width: _size.width-32,
@@ -754,13 +760,10 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                           ),
                                         ]),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                                    child: Divider(
-                                      color: Color(0xFFECECEC),
-                                      height: 42,
-                                      thickness: 0.5,
-                                    ),
+                                  Divider(
+                                    color: Color(0xFFF5F5F5),
+                                    height: 50,
+                                    thickness: 8,
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 16),

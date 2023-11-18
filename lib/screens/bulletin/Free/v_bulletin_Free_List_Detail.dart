@@ -221,22 +221,14 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                       //selected: _isSelected[index]!,
                                       onTap: () async {
                                         Get.dialog(AlertDialog(
-                                          contentPadding: EdgeInsets.only(
-                                              bottom: 0,
-                                              left: 20,
-                                              right: 20,
-                                              top: 30),
+                                          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
                                           elevation: 0,
                                           shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  10.0)),
+                                              borderRadius: BorderRadius.circular(10.0)),
                                           buttonPadding:
-                                          EdgeInsets.symmetric(
-                                              horizontal: 20,
-                                              vertical: 0),
+                                          EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                                           content:  Container(
-                                            height: _size.width*0.17,
+                                            height: _size.width * 0.17,
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
@@ -362,7 +354,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                           BorderRadius.circular(10)),
                                     ),
                                   )
-                                      :SizedBox(),
+                                      : SizedBox(),
                                   GestureDetector(
                                     child: ListTile(
                                       contentPadding: EdgeInsets.zero,
@@ -386,16 +378,10 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                 color: Colors.white,
                                                 height: 180,
                                                 child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 20.0),
+                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
                                                   child: Column(
-                                                    crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start,
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.start,
                                                     children: [
                                                       SizedBox(
                                                         height: 30,
@@ -404,27 +390,20 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                         '삭제하시겠습니까?',
                                                         style: TextStyle(
                                                             fontSize: 20,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .bold,
-                                                            color: Color(
-                                                                0xFF111111)),
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Color(0xFF111111)),
                                                       ),
                                                       SizedBox(
                                                         height: 30,
                                                       ),
                                                       Row(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
+                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                         children: [
                                                           Expanded(
-                                                            child:
-                                                            ElevatedButton(
+                                                            child: ElevatedButton(
                                                               onPressed:
                                                                   () {
-                                                                Navigator.pop(
-                                                                    context);
+                                                                Navigator.pop(context);
                                                               },
                                                               child: Text(
                                                                 '취소',
@@ -437,21 +416,12 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                     FontWeight.bold),
                                                               ),
                                                               style: TextButton.styleFrom(
-                                                                  splashFactory:
-                                                                  InkRipple
-                                                                      .splashFactory,
-                                                                  elevation:
-                                                                  0,
-                                                                  minimumSize:
-                                                                  Size(
-                                                                      100,
-                                                                      56),
+                                                                  splashFactory: InkRipple.splashFactory,
+                                                                  elevation: 0,
+                                                                  minimumSize: Size(100, 56),
                                                                   backgroundColor:
-                                                                  Color(
-                                                                      0xff555555),
-                                                                  padding: EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                      0)),
+                                                                  Color(0xff555555),
+                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
                                                             ),
                                                           ),
                                                           SizedBox(
@@ -462,15 +432,11 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                             ElevatedButton(
                                                               onPressed:
                                                                   () async {
-                                                                CustomFullScreenDialog
-                                                                    .showDialog();
+                                                                CustomFullScreenDialog.showDialog();
                                                                 try {
-                                                                  await FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                      'bulletinFree')
-                                                                      .doc(
-                                                                      '${_userModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}')
+                                                                  await FirebaseFirestore.instance
+                                                                      .collection('bulletinFree')
+                                                                      .doc('${_userModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}')
                                                                       .delete();
                                                                   try {
                                                                     await _bulletinFreeModelController.deleteBulletinFreeImage(
@@ -479,46 +445,26 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                         bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount,
                                                                         imageCount: _bulletinFreeModelController.itemImagesUrls!.length);
                                                                   } catch (e) {
-                                                                    print(
-                                                                        '이미지 삭제 에러');
-                                                                  }
-                                                                  ;
-                                                                  Navigator.pop(
-                                                                      context);
+                                                                    print('이미지 삭제 에러');
+                                                                  };
+                                                                  Navigator.pop(context);
                                                                 } catch (e) {}
-                                                                print(
-                                                                    '시즌방게시글 삭제 완료');
-                                                                Navigator.pop(
-                                                                    context);
-                                                                CustomFullScreenDialog
-                                                                    .cancelDialog();
+                                                                print('시즌방게시글 삭제 완료');
+                                                                Navigator.pop(context);
+                                                                CustomFullScreenDialog.cancelDialog();
                                                               },
-                                                              child: Text(
-                                                                '확인',
+                                                              child: Text('확인',
                                                                 style: TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                    15,
-                                                                    fontWeight:
-                                                                    FontWeight.bold),
+                                                                    color: Colors.white,
+                                                                    fontSize: 15,
+                                                                    fontWeight: FontWeight.bold),
                                                               ),
                                                               style: TextButton.styleFrom(
-                                                                  splashFactory:
-                                                                  InkRipple
-                                                                      .splashFactory,
-                                                                  elevation:
-                                                                  0,
-                                                                  minimumSize:
-                                                                  Size(
-                                                                      100,
-                                                                      56),
-                                                                  backgroundColor:
-                                                                  Color(
-                                                                      0xff2C97FB),
-                                                                  padding: EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                      0)),
+                                                                  splashFactory: InkRipple.splashFactory,
+                                                                  elevation: 0,
+                                                                  minimumSize: Size(100, 56),
+                                                                  backgroundColor: Color(0xff2C97FB),
+                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
                                                             ),
                                                           ),
                                                         ],
@@ -530,8 +476,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                             });
                                       },
                                       shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10)),
+                                          borderRadius: BorderRadius.circular(10)),
                                     ),
                                   ),
                                 ],
@@ -615,17 +560,24 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    '${_bulletinFreeModelController.category}',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal,
-                                        color: Color(0xFF111111)),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFECECEC),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      '${_bulletinFreeModelController.category}',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF444444)),
+                                    ),
                                   ),
                                   SizedBox(
-                                    height: 4,
+                                    height: 8,
                                   ),
                                   Container(
                                     width: _size.width - 32,
@@ -751,7 +703,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                     ],
                                   ),
                                   Divider(
-                                    color: Color(0xFFECECEC),
+                                    color: Color(0xFFdedede),
                                     height: 32,
                                     thickness: 0.5,
                                   )
@@ -771,9 +723,6 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            SizedBox(
-                                              height: 4,
-                                            ),
                                             Text(
                                               '내용',
                                               style: TextStyle(
@@ -798,7 +747,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                         ),
                                       ]),
                                 ),
-                                SizedBox(height: 20,),
+                                SizedBox(height: 16),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
@@ -929,13 +878,10 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                     ),
                                   ],
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  child: Divider(
-                                    color: Color(0xFFECECEC),
-                                    height: 42,
-                                    thickness: 0.5,
-                                  ),
+                                Divider(
+                                  color: Color(0xFFf5f5f5),
+                                  height: 50,
+                                  thickness: 8,
                                 ),
                                 Column(
                                   children: [
@@ -1574,7 +1520,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                       color: Colors.white,
                     ),
                     padding:
-                    EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
+                    EdgeInsets.only(top: 16, left: 16, right: 16),
                     child: Column(
                       children: [
                         Row(
