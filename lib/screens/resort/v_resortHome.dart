@@ -27,6 +27,7 @@ import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../controller/vm_bottomTabBarController.dart';
 import '../../controller/vm_commentController.dart';
+import '../../controller/vm_seasonController.dart';
 import '../../controller/vm_urlLauncherController.dart';
 import '../fleaMarket/v_fleaMarket_List_Screen_home.dart';
 import 'package:lottie/lottie.dart';
@@ -51,6 +52,8 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   RefreshController _refreshController = Get.find<RefreshController>();
+  SeasonController _seasonController = Get.find<SeasonController>();
+
   //TODO: Dependency Injection**************************************************
 
   ListTile buildResortListTile(int index) {
@@ -84,6 +87,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
     super.initState();
     _userModelController.updateIsOnLiveOff();
     _alarmStream = alarmStream();
+    _seasonController.getSeasonOpen();
   }
 
   @override
@@ -405,7 +409,95 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                     CustomFullScreenDialog.cancelDialog();
                                     print('라이브 OFF');
                                   }
-                                } else {
+                                }
+                                else if(_userModelController.isOnLive == false && _seasonController.open == false){
+                                  Get.dialog(
+                                    AlertDialog(
+                                      contentPadding: EdgeInsets.zero,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      actionsPadding: EdgeInsets.only(top: 0, right: 20, left: 20, bottom: 20),
+                                      content: Container(
+                                        height: 330,
+                                        child: Column(
+                                          children: [
+                                            ExtendedImage.asset(
+                                              'assets/imgs/imgs/img_app_update.png',
+                                              scale: 4,
+                                              fit: BoxFit.fitHeight,
+                                              width: MediaQuery.of(Get.context!).size.width,
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 20,
+                                                right: 20,
+                                                left: 20,
+                                                bottom: 24,
+                                              ),
+                                              child: Column(
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        '랭킹전 기간이 아닙니다',
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Color(0xFF111111),
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 6,
+                                                      ),
+                                                      Text(
+                                                        '조금만 더 기다려주세요!',
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.normal,
+                                                          color: Color(0xFF949494),
+                                                          fontSize: 15,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: [
+                                        Container(
+                                          width: MediaQuery.of(Get.context!).size.width,
+                                          height: 48,
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              '확인',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Color(0xFF3D83ED),
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(8),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                                else {
                                   if(!isSnackbarShown) {
                                     HapticFeedback.lightImpact();
                                     Get.dialog(
@@ -706,7 +798,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 maxWidth: 42,
                                                 child: Image.asset(
                                                   'assets/imgs/icons/icon_alarm.png',
-                                                  ),
+                                                ),
                                               ),
                                             ),
                                             Positioned(  // draw a red marble
@@ -1855,7 +1947,95 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                 CustomFullScreenDialog.cancelDialog();
                                 print('라이브 OFF');
                               }
-                            } else {
+                            }
+                            else if(_userModelController.isOnLive == false && _seasonController.open == false){
+                              Get.dialog(
+                                AlertDialog(
+                                  contentPadding: EdgeInsets.zero,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  actionsPadding: EdgeInsets.only(top: 0, right: 20, left: 20, bottom: 20),
+                                  content: Container(
+                                    height: 330,
+                                    child: Column(
+                                      children: [
+                                        ExtendedImage.asset(
+                                          'assets/imgs/imgs/img_app_update.png',
+                                          scale: 4,
+                                          fit: BoxFit.fitHeight,
+                                          width: MediaQuery.of(Get.context!).size.width,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 20,
+                                            right: 20,
+                                            left: 20,
+                                            bottom: 24,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '랭킹전 기간이 아닙니다',
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Color(0xFF111111),
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 6,
+                                                  ),
+                                                  Text(
+                                                    '조금만 더 기다려주세요!',
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.normal,
+                                                      color: Color(0xFF949494),
+                                                      fontSize: 15,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: [
+                                    Container(
+                                      width: MediaQuery.of(Get.context!).size.width,
+                                      height: 48,
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text(
+                                          '확인',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Color(0xFF3D83ED),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                            else {
                               if(!isSnackbarShown) {
                                 HapticFeedback.lightImpact();
                                 Get.dialog(

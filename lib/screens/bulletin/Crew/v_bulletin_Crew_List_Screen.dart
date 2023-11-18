@@ -1040,6 +1040,14 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                   Row(
                                                     children: [
                                                       Text(
+                                                        chatDocs[index].get('displayName'),
+                                                        style: TextStyle(
+                                                            fontSize: 13,
+                                                            color: Color(0xFF949494),
+                                                            fontWeight: FontWeight.normal),
+                                                      ),
+                                                      SizedBox(width: 10,),
+                                                      Text(
                                                         chatDocs[index].get('location'),
                                                         style: TextStyle(
                                                             fontSize: 13,

@@ -510,6 +510,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                       fit: BoxFit.cover,
                                                       width: _size.width,
                                                       height: 280,
+                                                      cacheHeight: 1080,
                                                     ),
                                                   ),
                                                 ],

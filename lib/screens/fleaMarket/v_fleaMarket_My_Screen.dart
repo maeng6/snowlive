@@ -85,14 +85,14 @@ class _FleaMarket_My_ScreenState
                   elevation: 4,
                   heroTag: 'fleaMyScreen',
                   onPressed: () async {
-                            await _userModelController.getCurrentUser(_userModelController.uid);
-                            if(_userModelController.phoneAuth == true){
-                              Get.to(() => FleaMarket_Upload());
-                            }else if(_userModelController.phoneAuth == false){
-                              Get.to(()=>PhoneAuthScreen());
-                            }else{
+                    await _userModelController.getCurrentUser(_userModelController.uid);
+                    if(_userModelController.phoneAuth == true){
+                      Get.to(() => FleaMarket_Upload());
+                    }else if(_userModelController.phoneAuth == false){
+                      Get.to(()=>PhoneAuthScreen());
+                    }else{
 
-                            }
+                    }
                   },
                   icon: Transform.translate(
                       offset: Offset(6,0),
@@ -167,13 +167,13 @@ class _FleaMarket_My_ScreenState
                           : Scrollbar(
                         controller: _scrollController,
                         child: ListView.builder(
-                        controller: _scrollController, // ScrollController 연결
-                        itemCount: chatDocs.length,
-                        itemBuilder: (context, index) {
-                          Map<String, dynamic>? data = chatDocs[index].data() as Map<String, dynamic>?;
+                          controller: _scrollController, // ScrollController 연결
+                          itemCount: chatDocs.length,
+                          itemBuilder: (context, index) {
+                            Map<String, dynamic>? data = chatDocs[index].data() as Map<String, dynamic>?;
 
-                          // 필드가 없을 경우 기본값 설정
-                          bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
+                            // 필드가 없을 경우 기본값 설정
+                            bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
                             String _time = _fleaModelController
                                 .getAgoTime(chatDocs[index].get('timeStamp'));
                             return GestureDetector(
@@ -441,7 +441,9 @@ class _FleaMarket_My_ScreenState
                                                         constraints: BoxConstraints(
                                                             maxWidth:
                                                             _size.width - 106),
-                                                        child: Text(
+                                                        child:
+                                                        (chatDocs[index].get('soldOut') == false)
+                                                            ?Text(
                                                           f.format(chatDocs[index].get('price')) + ' 원',
                                                           maxLines: 1,
                                                           overflow: TextOverflow.ellipsis,
@@ -449,6 +451,17 @@ class _FleaMarket_My_ScreenState
                                                               color: Color(0xFF111111),
                                                               fontWeight:
                                                               FontWeight.bold,
+                                                              fontSize: 16),
+                                                        )
+                                                            : Text(
+                                                          '거래완료',
+                                                          maxLines:
+                                                          1,
+                                                          overflow:
+                                                          TextOverflow.ellipsis,
+                                                          style: TextStyle(
+                                                              color: Color(0xFF111111),
+                                                              fontWeight: FontWeight.bold,
                                                               fontSize: 16),
                                                         ),
                                                       ),
@@ -509,9 +522,9 @@ class _FleaMarket_My_ScreenState
                                 ],
                               ),
                             );
-                        },
-                      ),
-                          );
+                          },
+                        ),
+                      );
                     },
                   ),
                 ),
