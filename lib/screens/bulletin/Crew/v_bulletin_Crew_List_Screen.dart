@@ -868,11 +868,11 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                               Expanded(
                                                                 child: Container(
                                                                   constraints: BoxConstraints(
-                                                                      maxWidth: _size.width - 168),
+                                                                      maxWidth: _size.width - 173),
                                                                   child: Row(
                                                                     children: [
                                                                       Container(
-                                                                        width: _size.width - 100,
+                                                                        width: _size.width - 105,
                                                                         child: Text(
                                                                           chatDocs[index].get('title'),
                                                                           maxLines: 2,
