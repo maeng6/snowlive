@@ -2049,6 +2049,159 @@ List<LocationModel> yongpyong = [
 ];
 
 
+List<LocationModel> konjiam = [
+  LocationModel(
+    name: 'CNP1',
+    coordinates: [
+      LatLng(37.329249, 127.285050),
+      LatLng(37.329015, 127.283365),
+      LatLng(37.329240, 127.284123),
+    ],
+    type: 'slope',
+    resort: 0,
+  ),
+  LocationModel(
+    name: 'CNP2',
+    coordinates: [
+      LatLng(37.333535, 127.289413),
+      LatLng(37.334314, 127.289978),
+    ],
+    type: 'slope',
+    resort: 0,
+  ),
+  LocationModel(
+    name: '씽큐B',
+    coordinates: [
+      LatLng(37.332714, 127.287793),
+      LatLng(37.332530, 127.287125),
+    ],
+    type: 'slope',
+    resort: 0,
+  ),
+  LocationModel(
+    name: '씽큐1',
+    coordinates: [
+      LatLng(37.333198, 127.286640),
+      LatLng(37.333750, 127.287075),
+      LatLng(37.334100, 127.287804),
+    ],
+    type: 'slope',
+    resort: 0,
+  ),
+  LocationModel(
+    name: '씽큐2',
+    coordinates: [
+      LatLng(37.332220, 127.283939),
+      LatLng(37.332485, 127.284015),
+    ],
+    type: 'slope',
+    resort: 0,
+  ),
+  LocationModel(
+    name: '그램1',
+    coordinates: [
+      LatLng(37.331335, 127.282518),
+      LatLng(37.332008, 127.282668),
+      LatLng(37.332690, 127.283147),
+    ],
+    type: 'slope',
+    resort: 0,
+  ),
+  LocationModel(
+    name: '그램2',
+    coordinates: [
+      LatLng(37.330630, 127.280440),
+      LatLng(37.331710, 127.280618),
+      LatLng(37.332635, 127.281108),
+      LatLng(37.333389, 127.281985),
+    ],
+    type: 'slope',
+    resort: 0,
+  ),
+  LocationModel(
+    name: '휘센',
+    coordinates: [
+      LatLng(37.339032, 127.289568),
+      LatLng(37.338711, 127.289750),
+      LatLng(37.338879, 127.289899),
+    ],
+    type: 'slope',
+    resort: 0,
+  ),
+  LocationModel(
+    name: '와이낫',
+    coordinates: [
+      LatLng(37.336030, 127.287985),
+      LatLng(37.335710, 127.288070),
+      LatLng(37.335350, 127.288164),
+      LatLng(37.335245, 127.287130),
+      LatLng(37.335495, 127.287007),
+      LatLng(37.335765, 127.286910),
+    ],
+    type: 'slope',
+    resort: 0,
+  ),
+  //여기까지가 슬로프
+
+  LocationModel(
+    name: '그램리프트',
+    coordinates: [
+      LatLng(37.334605, 127.287186),
+    ],
+    type: 'respawn',
+    resort: 0,
+  ),
+  LocationModel(
+    name: '휘센리프트',
+    coordinates: [
+      LatLng(37.338290, 127.292089),
+    ],
+    type: 'respawn',
+    resort: 0,
+  ),
+  LocationModel(
+    name: '하단1',
+    coordinates: [
+      LatLng(37.337865, 127.291780),
+    ],
+    type: 'respawn',
+    resort: 0,
+  ),
+  LocationModel(
+    name: '와이낫리프트',
+    coordinates: [
+      LatLng(37.337420, 127.291590),
+    ],
+    type: 'respawn',
+    resort: 0,
+  ),
+  LocationModel(
+    name: '하단2',
+    coordinates: [
+      LatLng(37.336995, 127.291850),
+    ],
+    type: 'respawn',
+    resort: 0,
+  ),
+  LocationModel(
+    name: '씽큐CNP리프트',
+    coordinates: [
+      LatLng(37.336632, 127.292249),
+    ],
+    type: 'respawn',
+    resort: 0,
+  ),
+  LocationModel(
+    name: '하단3',
+    coordinates: [
+      LatLng(37.336195, 127.292489),
+    ],
+    type: 'respawn',
+    resort: 0,
+  ),
+  //여기까지가 슬로프 리스폰
+];
+
 List<LocationModel> muju = [
   LocationModel(
     name: '카누',
