@@ -78,173 +78,170 @@ class _BulletinScreenState extends State<BulletinScreen> {
                   color: Color(0xFFECECEC),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(right: 16),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 2),
-                                child: Container(
-                                  height: 40,
-                                  child: ElevatedButton(
-                                    child: Text(
-                                      '자유게시판',
-                                      style: TextStyle(
-                                          color: (isTap[0])
-                                              ? Color(0xFF111111)
-                                              : Color(0xFFc8c8c8),
-                                          fontWeight: (isTap[0])
-                                              ? FontWeight.bold
-                                              : FontWeight.normal,
-                                          fontSize: 16),
-                                    ),
-                                    onPressed: () {
-                                      HapticFeedback.lightImpact();
-                                      print('자유게시판으로 전환');
-                                      setState(() {
-                                        isTap[0] = true;
-                                        isTap[1] = false;
-                                        isTap[2] = false;
-                                      });
-                                      print(isTap);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      padding: EdgeInsets.only(top: 0),
-                                      minimumSize: Size(40, 10),
-                                      backgroundColor: Color(0xFFFFFFFF),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8)),
-                                      elevation: 0,
-                                    ),
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 16, right: 16),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: Container(
+                                height: 40,
+                                child: ElevatedButton(
+                                  child: Text(
+                                    '자유게시판',
+                                    style: TextStyle(
+                                        color: (isTap[0])
+                                            ? Color(0xFF111111)
+                                            : Color(0xFFc8c8c8),
+                                        fontWeight: (isTap[0])
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        fontSize: 16),
+                                  ),
+                                  onPressed: () {
+                                    HapticFeedback.lightImpact();
+                                    print('자유게시판으로 전환');
+                                    setState(() {
+                                      isTap[0] = true;
+                                      isTap[1] = false;
+                                      isTap[2] = false;
+                                    });
+                                    print(isTap);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.only(top: 0),
+                                    minimumSize: Size(40, 10),
+                                    backgroundColor: Color(0xFFFFFFFF),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    elevation: 0,
                                   ),
                                 ),
                               ),
-                              Container(
-                                width: 78,
-                                height: 3,
-                                color:
-                                (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
-                              )
-                            ],
-                          ),
+                            ),
+                            Container(
+                              width: 78,
+                              height: 3,
+                              color:
+                              (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
+                            )
+                          ],
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 16),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 2),
-                                child: Container(
-                                  height: 40,
-                                  child: ElevatedButton(
-                                    child: Text(
-                                      '시즌방',
-                                      style: TextStyle(
-                                          color: (isTap[1])
-                                              ? Color(0xFF111111)
-                                              : Color(0xFFc8c8c8),
-                                          fontWeight: (isTap[1])
-                                              ? FontWeight.bold
-                                              : FontWeight.normal,
-                                          fontSize: 16),
-                                    ),
-                                    onPressed: () {
-                                      HapticFeedback.lightImpact();
-                                      print('시즌방페이지로 전환');
-                                      setState(() {
-                                        isTap[0] = false;
-                                        isTap[1] = true;
-                                        isTap[2] = false;
-                                      });
-                                      print(isTap);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      padding: EdgeInsets.only(top: 0),
-                                      minimumSize: Size(40, 10),
-                                      backgroundColor: Color(0xFFFFFFFF),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8)),
-                                      elevation: 0,
-                                    ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: 16),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: Container(
+                                height: 40,
+                                child: ElevatedButton(
+                                  child: Text(
+                                    '시즌방',
+                                    style: TextStyle(
+                                        color: (isTap[1])
+                                            ? Color(0xFF111111)
+                                            : Color(0xFFc8c8c8),
+                                        fontWeight: (isTap[1])
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        fontSize: 16),
+                                  ),
+                                  onPressed: () {
+                                    HapticFeedback.lightImpact();
+                                    print('시즌방페이지로 전환');
+                                    setState(() {
+                                      isTap[0] = false;
+                                      isTap[1] = true;
+                                      isTap[2] = false;
+                                    });
+                                    print(isTap);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.only(top: 0),
+                                    minimumSize: Size(40, 10),
+                                    backgroundColor: Color(0xFFFFFFFF),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    elevation: 0,
                                   ),
                                 ),
                               ),
-                              Container(
-                                width: 52,
-                                height: 3,
-                                color:
-                                (isTap[1]) ? Color(0xFF111111) : Colors.transparent,
-                              )
-                            ],
-                          ),
+                            ),
+                            Container(
+                              width: 52,
+                              height: 3,
+                              color:
+                              (isTap[1]) ? Color(0xFF111111) : Colors.transparent,
+                            )
+                          ],
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 12),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 2),
-                                child: Container(
-                                  height: 40,
-                                  child: ElevatedButton(
-                                    child: Text(
-                                      '단톡방/동호회',
-                                      style: TextStyle(
-                                          color: (isTap[2])
-                                              ? Color(0xFF111111)
-                                              : Color(0xFFc8c8c8),
-                                          fontWeight:
-                                          (isTap[2])
-                                              ? FontWeight.bold
-                                              : FontWeight.normal,
-                                          fontSize: 16),
-                                    ),
-                                    onPressed: () {
-                                      HapticFeedback.lightImpact();
-                                      print('동호회 페이지로 전환');
-                                      setState(() {
-                                        isTap[0] = false;
-                                        isTap[1] = false;
-                                        isTap[2] = true;
-                                      });
-                                      print(isTap);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      padding: EdgeInsets.only(top: 0),
-                                      minimumSize: Size(40, 10),
-                                      backgroundColor: Color(0xFFFFFFFF),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8)),
-                                      elevation: 0,
-                                    ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: 12),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: Container(
+                                height: 40,
+                                child: ElevatedButton(
+                                  child: Text(
+                                    '단톡방/동호회',
+                                    style: TextStyle(
+                                        color: (isTap[2])
+                                            ? Color(0xFF111111)
+                                            : Color(0xFFc8c8c8),
+                                        fontWeight:
+                                        (isTap[2])
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        fontSize: 16),
+                                  ),
+                                  onPressed: () {
+                                    HapticFeedback.lightImpact();
+                                    print('동호회 페이지로 전환');
+                                    setState(() {
+                                      isTap[0] = false;
+                                      isTap[1] = false;
+                                      isTap[2] = true;
+                                    });
+                                    print(isTap);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.only(top: 0),
+                                    minimumSize: Size(40, 10),
+                                    backgroundColor: Color(0xFFFFFFFF),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    elevation: 0,
                                   ),
                                 ),
                               ),
-                              Container(
-                                width: 102,
-                                height: 3,
-                                color:
-                                (isTap[2]) ? Color(0xFF111111) : Colors.transparent,
-                              )
-                            ],
-                          ),
+                            ),
+                            Container(
+                              width: 102,
+                              height: 3,
+                              color:
+                              (isTap[2]) ? Color(0xFF111111) : Colors.transparent,
+                            )
+                          ],
                         ),
-                      ],
-                    ),
-                    if(isTap[0]==true)
-                      Expanded(child: Bulletin_Free_List_Screen()),
-                    if(isTap[1]==true)
-                      Expanded(child: Bulletin_Room_List_Screen()),
-                    if(isTap[2]==true)
-                      Expanded(child: Bulletin_Crew_List_Screen()),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                  if(isTap[0]==true)
+                    Expanded(child: Bulletin_Free_List_Screen()),
+                  if(isTap[1]==true)
+                    Expanded(child: Bulletin_Room_List_Screen()),
+                  if(isTap[2]==true)
+                    Expanded(child: Bulletin_Crew_List_Screen()),
+                ],
               ),
             ],
           ),

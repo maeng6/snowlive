@@ -85,14 +85,14 @@ class _FleaMarket_My_ScreenState
                   elevation: 4,
                   heroTag: 'fleaMyScreen',
                   onPressed: () async {
-                            await _userModelController.getCurrentUser(_userModelController.uid);
-                            if(_userModelController.phoneAuth == true){
-                              Get.to(() => FleaMarket_Upload());
-                            }else if(_userModelController.phoneAuth == false){
-                              Get.to(()=>PhoneAuthScreen());
-                            }else{
+                    await _userModelController.getCurrentUser(_userModelController.uid);
+                    if(_userModelController.phoneAuth == true){
+                      Get.to(() => FleaMarket_Upload());
+                    }else if(_userModelController.phoneAuth == false){
+                      Get.to(()=>PhoneAuthScreen());
+                    }else{
 
-                            }
+                    }
                   },
                   icon: Transform.translate(
                       offset: Offset(6,0),
@@ -167,13 +167,13 @@ class _FleaMarket_My_ScreenState
                           : Scrollbar(
                         controller: _scrollController,
                         child: ListView.builder(
-                        controller: _scrollController, // ScrollController 연결
-                        itemCount: chatDocs.length,
-                        itemBuilder: (context, index) {
-                          Map<String, dynamic>? data = chatDocs[index].data() as Map<String, dynamic>?;
+                          controller: _scrollController, // ScrollController 연결
+                          itemCount: chatDocs.length,
+                          itemBuilder: (context, index) {
+                            Map<String, dynamic>? data = chatDocs[index].data() as Map<String, dynamic>?;
 
-                          // 필드가 없을 경우 기본값 설정
-                          bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
+                            // 필드가 없을 경우 기본값 설정
+                            bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
                             String _time = _fleaModelController
                                 .getAgoTime(chatDocs[index].get('timeStamp'));
                             return GestureDetector(
@@ -346,34 +346,65 @@ class _FleaMarket_My_ScreenState
                                             : Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            if(List.from(chatDocs[index]['itemImagesUrls']).isNotEmpty)
-                                              Padding(
-                                                padding: EdgeInsets.only(top: 8, bottom: 8),
-                                                child: ExtendedImage.network(
-                                                  chatDocs[index]['itemImagesUrls'][0],
-                                                  cache: true,
-                                                  shape:
-                                                  BoxShape.rectangle,
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  border: Border.all(width: 0.5, color: Color(0xFFdedede)),
-                                                  width: 100,
-                                                  height: 100,
-                                                  fit: BoxFit.cover,
+                                            Stack(
+                                              children: [
+                                                if (List.from(chatDocs[index]['itemImagesUrls']).isNotEmpty)
+                                                  Padding(
+                                                    padding: EdgeInsets.only(top: 8, bottom: 8),
+                                                    child: ExtendedImage.network(chatDocs[index]['itemImagesUrls'][0],
+                                                      cache: true,
+                                                      shape: BoxShape.rectangle,
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      border: Border.all(width: 0.5, color: Color(0xFFdedede)),
+                                                      width: 100,
+                                                      height: 100,
+                                                      cacheHeight: 250,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                if (List.from(chatDocs[index]['itemImagesUrls']).isEmpty)
+                                                  Padding(
+                                                    padding: EdgeInsets.only(top: 8, bottom: 8),
+                                                    child: ExtendedImage
+                                                        .asset(
+                                                      'assets/imgs/profile/img_profile_default_.png',
+                                                      shape: BoxShape.rectangle,
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      width: 100,
+                                                      height: 100,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+
+                                                (chatDocs[index].get('soldOut') == false)
+                                                    ? Container()
+                                                    : Positioned(
+                                                  top: 8,
+                                                  child: Stack(
+                                                    children: [
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(8),
+                                                          color: Color(0xFF000000).withOpacity(0.6),
+                                                        ),
+                                                        width: 100,
+                                                        height: 100,
+                                                      ),
+                                                      Positioned(
+                                                        top: 40,
+                                                        left: 20,
+                                                        child: Text('거래 완료',
+                                                          style: TextStyle(
+                                                              color: Color(0xFFFFFFFF),
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 16
+                                                          ),),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            if(List.from(chatDocs[index]['itemImagesUrls']).isEmpty)
-                                              Padding(
-                                                padding: EdgeInsets.only(top: 8, bottom: 8),
-                                                child: ExtendedImage.asset(
-                                                  'assets/imgs/profile/img_profile_default_.png',
-                                                  shape:
-                                                  BoxShape.rectangle,
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  width: 100,
-                                                  height: 100,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
+                                              ],
+                                            ),
                                             SizedBox(width: 16),
                                             Padding(
                                               padding: const EdgeInsets.symmetric(vertical: 6),
@@ -450,9 +481,8 @@ class _FleaMarket_My_ScreenState
                                                               fontWeight:
                                                               FontWeight.bold,
                                                               fontSize: 16),
-                                                        ),
+                                                        )
                                                       ),
-                                                      SizedBox(width: 10,),
                                                     ],
                                                   ),
                                                   SizedBox(
@@ -483,8 +513,7 @@ class _FleaMarket_My_ScreenState
                                                       ),
                                                         padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
                                                         child: Text(
-                                                          chatDocs[index].get(
-                                                              'location'),
+                                                          chatDocs[index].get('location'),
                                                           style: TextStyle(
                                                               fontWeight: FontWeight.bold,
                                                               fontSize: 12,
@@ -503,15 +532,15 @@ class _FleaMarket_My_ScreenState
                                   ),
                                   Divider(
                                     color: Color(0xFFDEDEDE),
-                                    height: 32,
+                                    height: 20,
                                     thickness: 0.5,
                                   ),
                                 ],
                               ),
                             );
-                        },
-                      ),
-                          );
+                          },
+                        ),
+                      );
                     },
                   ),
                 ),

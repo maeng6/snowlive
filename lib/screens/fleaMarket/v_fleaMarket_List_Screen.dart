@@ -777,75 +777,82 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                     ),
                                                   )
                                                 : Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
-                                                      if (List.from(chatDocs[
-                                                                  index][
-                                                              'itemImagesUrls'])
-                                                          .isNotEmpty)
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  top: 8,
-                                                                  bottom: 8),
-                                                          child: ExtendedImage.network(chatDocs[index]['itemImagesUrls'][0],
-                                                            cache: true,
-                                                            shape: BoxShape.rectangle,
-                                                            borderRadius: BorderRadius.circular(8),
-                                                            border: Border.all(width: 0.5, color: Color(0xFFdedede)),
-                                                            width: 100,
-                                                            height: 100,
-                                                            cacheHeight: 250,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                      if (List.from(chatDocs[
-                                                                  index][
-                                                              'itemImagesUrls'])
-                                                          .isEmpty)
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  top: 8,
-                                                                  bottom: 8),
-                                                          child: ExtendedImage
-                                                              .asset(
-                                                            'assets/imgs/profile/img_profile_default_.png',
-                                                            shape: BoxShape
-                                                                .rectangle,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        8),
-                                                            width: 100,
-                                                            height: 100,
-                                                            fit: BoxFit.cover,
-                                                          ),
+                                                        Stack(
+                                                          children: [
+                                                            if (List.from(chatDocs[index]['itemImagesUrls']).isNotEmpty)
+                                                            Padding(
+                                                              padding: EdgeInsets.only(top: 8, bottom: 8),
+                                                              child: ExtendedImage.network(chatDocs[index]['itemImagesUrls'][0],
+                                                                cache: true,
+                                                                shape: BoxShape.rectangle,
+                                                                borderRadius: BorderRadius.circular(8),
+                                                                border: Border.all(width: 0.5, color: Color(0xFFdedede)),
+                                                                width: 100,
+                                                                height: 100,
+                                                                cacheHeight: 250,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            ),
+                                                            if (List.from(chatDocs[index]['itemImagesUrls']).isEmpty)
+                                                              Padding(
+                                                                padding: EdgeInsets.only(top: 8, bottom: 8),
+                                                                child: ExtendedImage
+                                                                    .asset(
+                                                                  'assets/imgs/profile/img_profile_default_.png',
+                                                                  shape: BoxShape.rectangle,
+                                                                  borderRadius: BorderRadius.circular(8),
+                                                                  width: 100,
+                                                                  height: 100,
+                                                                  fit: BoxFit.cover,
+                                                                ),
+                                                              ),
+
+                                                            (chatDocs[index].get('soldOut') == false)
+                                                                ? Container()
+                                                                : Positioned(
+                                                              top: 8,
+                                                              child: Stack(
+                                                                children: [
+                                                                  Container(
+                                                                    decoration: BoxDecoration(
+                                                                      borderRadius: BorderRadius.circular(8),
+                                                                      color: Color(0xFF000000).withOpacity(0.6),
+                                                                    ),
+                                                                    width: 100,
+                                                                    height: 100,
+                                                                  ),
+                                                                  Positioned(
+                                                                    top: 40,
+                                                                    left: 20,
+                                                                    child: Text('거래 완료',
+                                                                          style: TextStyle(
+                                                                            color: Color(0xFFFFFFFF),
+                                                                            fontWeight: FontWeight.bold,
+                                                                            fontSize: 16
+                                                                          ),),
+                                                                  ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                          ],
                                                         ),
                                                       SizedBox(width: 16),
-                                                      Padding(
+                                                      (chatDocs[index].get('soldOut') == false)
+                                                          ? Padding(
                                                         padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                vertical: 6),
+                                                            const EdgeInsets.symmetric(vertical: 6),
                                                         child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
                                                             Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               children: [
                                                                 Container(
                                                                   constraints: BoxConstraints(
-                                                                      maxWidth:
-                                                                          _size.width -
-                                                                              170),
+                                                                      maxWidth: _size.width - 170),
                                                                   child: Text(
                                                                     chatDocs[index].get('title'),
                                                                     maxLines: 2,
@@ -866,10 +873,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                                             return Container(
                                                                               height: 100,
                                                                               child:Padding(
-                                                                                padding: const EdgeInsets
-                                                                                    .symmetric(
-                                                                                    horizontal: 20.0,
-                                                                                    vertical: 14),
+                                                                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                                                                                 child: Column(
                                                                                   children: [
                                                                                     GestureDetector(
@@ -1034,16 +1038,9 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                             Row(
                                                               children: [
                                                                 Container(
-                                                                  constraints: BoxConstraints(
-                                                                      maxWidth:
-                                                                          _size.width -
-                                                                              106),
-                                                                  child: (chatDocs[index]
-                                                                              .get('soldOut') ==
-                                                                          false)
-                                                                      ? Text(
-                                                                          f.format(chatDocs[index].get('price')) +
-                                                                              ' 원',
+                                                                  constraints: BoxConstraints(maxWidth: _size.width - 106),
+                                                                  child: Text(
+                                                                          f.format(chatDocs[index].get('price')) + ' 원',
                                                                           maxLines:
                                                                               1,
                                                                           overflow:
@@ -1053,18 +1050,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                                               fontWeight: FontWeight.bold,
                                                                               fontSize: 16),
                                                                         )
-                                                                      : Text(
-                                                                          '거래완료',
-                                                                          maxLines:
-                                                                              1,
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                          style: TextStyle(
-                                                                              color: Color(0xFF111111),
-                                                                              fontWeight: FontWeight.bold,
-                                                                              fontSize: 16),
-                                                                        ),
-                                                                ),
+                                                                      ),
                                                               ],
                                                             ),
                                                             SizedBox(
@@ -1114,7 +1100,273 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                                             ),
                                                           ],
                                                         ),
+                                                      )
+                                                          : Opacity(
+                                                        opacity: 0.35,
+                                                            child: Padding(
+                                                        padding: const EdgeInsets.symmetric(vertical: 6),
+                                                        child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  Container(
+                                                                    constraints: BoxConstraints(
+                                                                        maxWidth: _size.width - 170),
+                                                                    child: Text(
+                                                                      chatDocs[index].get('title'),
+                                                                      maxLines: 2,
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                      style: TextStyle(
+                                                                          fontWeight: FontWeight.normal,
+                                                                          fontSize: 15,
+                                                                          color: Color(0xFF555555)),
+                                                                    ),
+                                                                  ),
+                                                                  if(_userModelController.displayName == 'SNOWLIVE')
+                                                                    GestureDetector(
+                                                                      onTap: () =>
+                                                                          showModalBottomSheet(
+                                                                              enableDrag: false,
+                                                                              context: context,
+                                                                              builder: (context) {
+                                                                                return Container(
+                                                                                  height: 100,
+                                                                                  child:Padding(
+                                                                                    padding: const EdgeInsets
+                                                                                        .symmetric(
+                                                                                        horizontal: 20.0,
+                                                                                        vertical: 14),
+                                                                                    child: Column(
+                                                                                      children: [
+                                                                                        GestureDetector(
+                                                                                          child: ListTile(
+                                                                                            contentPadding: EdgeInsets.zero,
+                                                                                            title: Center(
+                                                                                              child: Text(
+                                                                                                (isLocked== false)
+                                                                                                    ? '게시글 잠금' : '게시글 잠금 해제',
+                                                                                                style: TextStyle(
+                                                                                                    fontSize: 15,
+                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                    color: Color(0xFFD63636)
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                            //selected: _isSelected[index]!,
+                                                                                            onTap: () async {
+                                                                                              Navigator.pop(context);
+                                                                                              showModalBottomSheet(
+                                                                                                  context: context,
+                                                                                                  builder: (context) {
+                                                                                                    return Container(
+                                                                                                      color: Colors.white,
+                                                                                                      height: 180,
+                                                                                                      child: Padding(
+                                                                                                        padding: const EdgeInsets.symmetric(
+                                                                                                            horizontal: 20.0),
+                                                                                                        child: Column(
+                                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                                                                          children: [
+                                                                                                            SizedBox(
+                                                                                                              height: 30,
+                                                                                                            ),
+                                                                                                            Text(
+                                                                                                              (isLocked== false)
+                                                                                                                  ? '이 게시글을 잠그시겠습니까?' : '이 게시글의 잠금을 해제하시겠습니까?',
+                                                                                                              style: TextStyle(
+                                                                                                                  fontSize: 20,
+                                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                                  color: Color(0xFF111111)),
+                                                                                                            ),
+                                                                                                            SizedBox(
+                                                                                                              height: 30,
+                                                                                                            ),
+                                                                                                            Row(
+                                                                                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                                              children: [
+                                                                                                                Expanded(
+                                                                                                                  child: ElevatedButton(
+                                                                                                                    onPressed: () {
+                                                                                                                      Navigator.pop(context);
+                                                                                                                    },
+                                                                                                                    child: Text(
+                                                                                                                      '취소',
+                                                                                                                      style: TextStyle(
+                                                                                                                          color: Colors.white,
+                                                                                                                          fontSize: 15,
+                                                                                                                          fontWeight: FontWeight.bold),
+                                                                                                                    ),
+                                                                                                                    style: TextButton.styleFrom(
+                                                                                                                        splashFactory: InkRipple.splashFactory,
+                                                                                                                        elevation: 0,
+                                                                                                                        minimumSize: Size(100, 56),
+                                                                                                                        backgroundColor: Color(0xff555555),
+                                                                                                                        padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                                SizedBox(
+                                                                                                                  width: 10,
+                                                                                                                ),
+                                                                                                                Expanded(
+                                                                                                                  child: ElevatedButton(
+                                                                                                                    onPressed: () async {
+                                                                                                                      if (data?.containsKey('lock') == false) {
+                                                                                                                        await chatDocs[index].reference.update({'lock': false});
+                                                                                                                      }
+                                                                                                                      CustomFullScreenDialog.showDialog();
+                                                                                                                      await _fleaModelController.lock('${chatDocs[index]['uid']}#${chatDocs[index]['fleaCount']}');
+                                                                                                                      Navigator.pop(context);
+                                                                                                                      CustomFullScreenDialog.cancelDialog();
+                                                                                                                    },
+                                                                                                                    child: Text('확인',
+                                                                                                                      style: TextStyle(
+                                                                                                                          color: Colors.white,
+                                                                                                                          fontSize: 15,
+                                                                                                                          fontWeight: FontWeight.bold),
+                                                                                                                    ),
+                                                                                                                    style: TextButton.styleFrom(
+                                                                                                                        splashFactory: InkRipple.splashFactory,
+                                                                                                                        elevation: 0,
+                                                                                                                        minimumSize: Size(100, 56),
+                                                                                                                        backgroundColor: Color(0xff2C97FB),
+                                                                                                                        padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                              ],
+                                                                                                            )
+                                                                                                          ],
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                    );
+                                                                                                  });
+                                                                                            },
+                                                                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                );
+                                                                              }),
+                                                                      child: Icon(Icons.more_horiz,
+                                                                        color: Color(0xFFEF0069),
+                                                                        size: 20,
+                                                                      ),
+                                                                    ),
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                children: [
+                                                                  Text(
+                                                                    '$_time',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                        14,
+                                                                        color: Color(
+                                                                            0xFF949494),
+                                                                        fontWeight:
+                                                                        FontWeight
+                                                                            .normal),
+                                                                  ),
+                                                                  SizedBox(width: 10,),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.only(bottom: 2),
+                                                                    child: Row(
+                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons.remove_red_eye_rounded,
+                                                                          color: Color(0xFFc8c8c8),
+                                                                          size: 15,
+                                                                        ),
+                                                                        SizedBox(width: 4,),
+                                                                        Text(
+                                                                            '${viewerUid.length.toString()}',
+                                                                            style: TextStyle(
+                                                                                fontSize: 13,
+                                                                                color: Color(0xFF949494),
+                                                                                fontWeight: FontWeight.normal)
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              SizedBox(
+                                                                height: 2,
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  Container(
+                                                                    constraints: BoxConstraints(maxWidth: _size.width - 106),
+                                                                    child: Text(
+                                                                      f.format(chatDocs[index].get('price')) + ' 원',
+                                                                      maxLines:
+                                                                      1,
+                                                                      overflow:
+                                                                      TextOverflow.ellipsis,
+                                                                      style: TextStyle(
+                                                                          color: Color(0xFF111111),
+                                                                          fontWeight: FontWeight.bold,
+                                                                          fontSize: 16),
+                                                                    )
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  Container(
+                                                                    decoration:
+                                                                    BoxDecoration(
+                                                                      borderRadius:
+                                                                      BorderRadius.circular(3),
+                                                                      color: Color(0xFFD7F4FF),
+                                                                    ),
+                                                                    padding: EdgeInsets.only(
+                                                                        right: 6,
+                                                                        left: 6,
+                                                                        top: 2,
+                                                                        bottom: 3),
+                                                                    child: Text(
+                                                                      chatDocs[index].get('category'),
+                                                                      style: TextStyle(
+                                                                          fontWeight:
+                                                                          FontWeight.bold,
+                                                                          fontSize: 12,
+                                                                          color: Color(0xFF458BF5)),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 6,
+                                                                  ),
+                                                                  Container(
+                                                                    decoration: BoxDecoration(
+                                                                      borderRadius: BorderRadius.circular(3),
+                                                                      color: Color(0xFFD5F7E0),
+                                                                    ),
+                                                                    padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
+                                                                    child: Text(
+                                                                      chatDocs[index].get('location'),
+                                                                      style: TextStyle(
+                                                                          fontWeight: FontWeight.bold,
+                                                                          fontSize: 12,
+                                                                          color: Color(0xFF17AD4A)),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                        ),
                                                       ),
+                                                          ),
                                                     ],
                                                   ),
                                           ],
@@ -1122,7 +1374,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                       ),
                                       Divider(
                                         color: Color(0xFFDEDEDE),
-                                        height: 24,
+                                        height: 16,
                                         thickness: 0.5,
                                       ),
                                     ],

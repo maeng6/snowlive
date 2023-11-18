@@ -12,6 +12,22 @@ class Ranking_CommingSoon_Screen extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: Color(0xFF1A2634),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          leading: GestureDetector(
+            child: Image.asset(
+              'assets/imgs/icons/icon_snowLive_back.png',
+              scale: 4,
+              width: 26,
+              height: 26,
+              color: Color(0xFFFFFFFF),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          elevation: 0.0,
+        ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

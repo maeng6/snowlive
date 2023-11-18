@@ -31,20 +31,18 @@ class _FleaMarketImageScreenState extends State<FleaMarketImageScreen> {
             onTap: () => Navigator.pop(context),
           ),
           elevation: 0.0,
+          title: Text(
+            '${_currentPage + 1} / ${_fleaModelController.itemImagesUrls!.length}',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
         ),
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              '${_currentPage + 1}/${_fleaModelController.itemImagesUrls!.length}',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-              ),
-            ),
-          ),
           Expanded(
             child: PageView.builder(
               controller: _pageController,
