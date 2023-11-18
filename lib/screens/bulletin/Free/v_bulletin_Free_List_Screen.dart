@@ -795,7 +795,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                                       style: TextStyle(
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: 12,
-                                                          color: Color(0xFF444444)),
+                                                          color: Color(0xFF666666)),
                                                     ),
                                                   ),
                                                 ],
