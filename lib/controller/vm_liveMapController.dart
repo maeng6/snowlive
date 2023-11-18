@@ -820,11 +820,45 @@ class LiveMapController extends GetxController {
       _resortModelController.longitude,
     );
 
-    if (_resortModelController.index == 12) {
-      return distanceInMeters <= 2000;
+
+    if (_resortModelController.index == 0) {
+      return distanceInMeters <= 1000;
     }
-    else if (_resortModelController.index == 0) {
-      return distanceInMeters <= 2000;
+    else if (_resortModelController.index == 1) {
+      return distanceInMeters <= 2300;
+    }
+    else if (_resortModelController.index == 2) {
+      return distanceInMeters <= 900;
+    }
+    else if (_resortModelController.index == 3) {
+      return distanceInMeters <= 600;
+    }
+    else if (_resortModelController.index == 4) {
+      return distanceInMeters <= 800;
+    }
+    else if (_resortModelController.index == 5) {
+      return distanceInMeters <= 700;
+    }
+    else if (_resortModelController.index == 6) {
+      return distanceInMeters <= 700;
+    }
+    else if (_resortModelController.index == 7) {
+      return distanceInMeters <= 1500;
+    }
+    else if (_resortModelController.index == 8) {
+      return distanceInMeters <= 2650;
+    }
+    else if (_resortModelController.index == 9) {
+      return distanceInMeters <= 1000;
+    }
+    else if (_resortModelController.index == 10) {
+      return distanceInMeters <= 650;
+    }
+    else if (_resortModelController.index == 11) {
+      return distanceInMeters <= 2200;
+    }
+    else if (_resortModelController.index == 12) {
+      return distanceInMeters <= 1300;
     }
     else {
       return distanceInMeters <= 5000;

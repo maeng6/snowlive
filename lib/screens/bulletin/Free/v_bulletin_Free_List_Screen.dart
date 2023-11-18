@@ -287,6 +287,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
           ),
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
+            controller: _scrollController,
             child: Column(
               children: [
                 Padding(
@@ -757,7 +758,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                         child: Container(
                                           padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                                           decoration: BoxDecoration(
-                                              border: Border.all(color: Color(0xFFDEDEDE),),
+                                            border: Border.all(color: Color(0xFFDEDEDE),),
                                             borderRadius: BorderRadius.circular(8),
                                           ),
                                           width: _size.width - 26,
@@ -1173,39 +1174,38 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
 
                         return (chatDocs.length == 0)
                             ? Padding(
-                              padding: const EdgeInsets.only(top: 120),
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'assets/imgs/icons/icon_nodata.png',
-                                      scale: 4,
-                                      width: 73,
-                                      height: 73,
-                                    ),
-                                    SizedBox(
-                                      height: 6,
-                                    ),
-                                    Text('게시판에 글이 없습니다.',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal,
-                                          color: Color(0xFF949494)
-                                      ),
-                                    ),
-                                  ],
+                          padding: const EdgeInsets.only(top: 120),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/imgs/icons/icon_nodata.png',
+                                  scale: 4,
+                                  width: 73,
+                                  height: 73,
                                 ),
-                              ),
-                            )
+                                SizedBox(
+                                  height: 6,
+                                ),
+                                Text('게시판에 글이 없습니다.',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                      color: Color(0xFF949494)
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
                             : Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              child: ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          controller: _scrollController, // ScrollController 연결
-                          itemCount: chatDocs.length,
-                          itemBuilder: (context, index) {
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: chatDocs.length,
+                            itemBuilder: (context, index) {
                               Map<String, dynamic>? data = chatDocs[index].data() as Map<String, dynamic>?;
                               // 필드가 없을 경우 기본값 설정
                               bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
@@ -1727,9 +1727,9 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                   ],
                                 )),
                               );
-                          },
-                        ),
-                            );
+                            },
+                          ),
+                        );
                       },
                     ),
                   ],

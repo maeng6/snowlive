@@ -2273,7 +2273,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                           context: context,
                                           builder: (context) =>
                                               Container(
-                                                height: 162,
+                                                height: 179,
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -2327,7 +2327,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                               child: Text(
                                                                 '사진 촬영',
                                                                 style: TextStyle(
-                                                                    color: Colors.white,
+                                                                    color: Color(0xFF3D83ED),
                                                                     fontSize: 15,
                                                                     fontWeight: FontWeight.bold),
                                                               ),
@@ -2335,10 +2335,9 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                   splashFactory:
                                                                   InkRipple.splashFactory,
                                                                   elevation: 0,
-                                                                  minimumSize: Size(
-                                                                      100, 56),
+                                                                  minimumSize: Size(100, 56),
                                                                   backgroundColor:
-                                                                  Color(0xff555555),
+                                                                  Color(0xffCBE0FF),
                                                                   padding: EdgeInsets
                                                                       .symmetric(
                                                                       horizontal: 0)),
@@ -2367,17 +2366,15 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                 style: TextStyle(
                                                                     color: Colors.white,
                                                                     fontSize: 15,
-                                                                    fontWeight: FontWeight
-                                                                        .bold),
+                                                                    fontWeight: FontWeight.bold),
                                                               ),
                                                               style: TextButton.styleFrom(
                                                                   splashFactory:
                                                                   InkRipple.splashFactory,
                                                                   elevation: 0,
-                                                                  minimumSize: Size(
-                                                                      100, 56),
+                                                                  minimumSize: Size(100, 56),
                                                                   backgroundColor:
-                                                                  Color(0xff2C97FB),
+                                                                  Color(0xff3D83ED),
                                                                   padding: EdgeInsets
                                                                       .symmetric(
                                                                       horizontal: 0)),
@@ -2388,7 +2385,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                       ),
                                                     ),
                                                     SizedBox(
-                                                      height: 20,
+                                                      height: 40,
                                                     )
                                                   ],
                                                 ),
@@ -2406,7 +2403,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                           context: context,
                                           builder: (context) =>
                                               Container(
-                                                height: 162,
+                                                height: 179,
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -2459,7 +2456,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                               child: Text(
                                                                 '사진 촬영',
                                                                 style: TextStyle(
-                                                                    color: Colors.white,
+                                                                    color: Color(0xFF3D83ED),
                                                                     fontSize: 15,
                                                                     fontWeight: FontWeight.bold),
                                                               ),
@@ -2469,7 +2466,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                   elevation: 0,
                                                                   minimumSize: Size(100, 56),
                                                                   backgroundColor:
-                                                                  Color(0xff555555),
+                                                                  Color(0xffCBE0FF),
                                                                   padding: EdgeInsets.symmetric(horizontal: 0)),
                                                             ),
                                                           ),
@@ -2503,7 +2500,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                   elevation: 0,
                                                                   minimumSize: Size(100, 56),
                                                                   backgroundColor:
-                                                                  Color(0xff2C97FB),
+                                                                  Color(0xff3D83ED),
                                                                   padding: EdgeInsets.symmetric(horizontal: 0)),
                                                             ),
                                                           ),
@@ -2511,7 +2508,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                       ),
                                                     ),
                                                     SizedBox(
-                                                      height: 20,
+                                                      height: 40,
                                                     )
                                                   ],
                                                 ),

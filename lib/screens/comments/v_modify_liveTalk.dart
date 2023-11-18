@@ -58,7 +58,7 @@ class _Modify_liveTalkState extends State<Modify_liveTalk> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(58),
             child: AppBar(
-              title: Text('스라지기 라톡 변경',
+              title: Text('라이브톡 수정',
                 style: TextStyle(
                     color: Color(0xFF111111),
                     fontWeight: FontWeight.bold,
@@ -115,156 +115,38 @@ class _Modify_liveTalkState extends State<Modify_liveTalk> {
             onTap: (){
               FocusScope.of(context).unfocus();
             },
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.photo_camera,
-                        size: 28,
-                        color: Color(0xFF444444),
-                      ),
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) =>
-                              Container(
-                                height: 162,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 24.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                          Text(
-                                            '업로드 방법을 선택해주세요.',
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFF111111)),
-                                          ),
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Expanded(
-                                            child: ElevatedButton(
-                                              onPressed: () async {
-                                                Navigator.pop(context);
-                                                CustomFullScreenDialog.showDialog();
-                                                try {
-                                                  _imageFile = await _imageController.getSingleImage(ImageSource.camera);
-                                                  CustomFullScreenDialog.cancelDialog();
-                                                  _initLiveTalkImageUrl = _imageFile!.path;
-                                                  _liveTalkImageSelected = true;
-                                                  setState(() {});
-                                                } catch (e) {
-                                                  CustomFullScreenDialog.cancelDialog();
-                                                }
-                                              },
-                                              child: Text(
-                                                '사진 촬영',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-                                              style: TextButton.styleFrom(
-                                                  splashFactory:
-                                                  InkRipple.splashFactory,
-                                                  elevation: 0,
-                                                  minimumSize: Size(100, 56),
-                                                  backgroundColor:
-                                                  Color(0xff555555),
-                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: ElevatedButton(
-                                              onPressed: () async {
-                                                Navigator.pop(context);
-                                                CustomFullScreenDialog.showDialog();
-                                                try {
-                                                  _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
-                                                  CustomFullScreenDialog.cancelDialog();
-                                                  _initLiveTalkImageUrl = _imageFile!.path;
-                                                  _liveTalkImageSelected = true;
-                                                  setState(() {});
-                                                } catch (e) {
-                                                  CustomFullScreenDialog.cancelDialog();
-                                                }
-
-                                              },
-                                              child: Text(
-                                                '앨범에서 선택',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-                                              style: TextButton.styleFrom(
-                                                  splashFactory:
-                                                  InkRipple.splashFactory,
-                                                  elevation: 0,
-                                                  minimumSize: Size(100, 56),
-                                                  backgroundColor:
-                                                  Color(0xff2C97FB),
-                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    )
-                                  ],
-                                ),
-                              ),
-                        );
-                      },
-                    ),
                     if (_initLiveTalkImageUrl != "")
                       Stack(
                         children: [
                           (_liveTalkImageSelected == false)
-                              ? ExtendedImage.network(
+                              ? ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: Container(
+                                  child: ExtendedImage.network(
                             _initLiveTalkImageUrl!,
                             cache: true,
                             //cacheHeight: 1600,
-                            width: _size.width - 24,
-                            height: _size.width - 24,
-                            fit: BoxFit.cover,
-                          )
-                              :Image.file(
-                            File(_initLiveTalkImageUrl!),
-                            width: _size.width - 24,
-                            height: _size.width - 24,
+                            width: _size.width - 32,
+                            height: _size.width - 32,
                             fit: BoxFit.cover,
                           ),
+                                ),
+                              )
+                              : ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                                child: Image.file(
+                            File(_initLiveTalkImageUrl!),
+                            width: _size.width - 32,
+                            height: _size.width - 32,
+                            fit: BoxFit.cover,
+                          ),
+                              ),
                           Positioned(
                             right: 0,
                             child: IconButton(
@@ -279,17 +161,175 @@ class _Modify_liveTalkState extends State<Modify_liveTalk> {
                             ),)
                         ],
                       ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: Color(0xFFDEDEDE))
+                        ),
+                        width: _size.width - 32,
+                        child: Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) =>
+                                    Container(
+                                      height: 179,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 24.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                Text(
+                                                  '업로드 방법을 선택해주세요.',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Color(0xFF111111)),
+                                                ),
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    onPressed: () async {
+                                                      Navigator.pop(context);
+                                                      CustomFullScreenDialog.showDialog();
+                                                      try {
+                                                        _imageFile = await _imageController.getSingleImage(ImageSource.camera);
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                        _initLiveTalkImageUrl = _imageFile!.path;
+                                                        _liveTalkImageSelected = true;
+                                                        setState(() {});
+                                                      } catch (e) {
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      }
+                                                    },
+                                                    child: Text(
+                                                      '사진 촬영',
+                                                      style: TextStyle(
+                                                          color: Color(0xFF3D83ED),
+                                                          fontSize: 15,
+                                                          fontWeight: FontWeight.bold),
+                                                    ),
+                                                    style: TextButton.styleFrom(
+                                                        splashFactory:
+                                                        InkRipple.splashFactory,
+                                                        elevation: 0,
+                                                        minimumSize: Size(100, 56),
+                                                        backgroundColor: Color(0xffCBE0FF),
+                                                        padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    onPressed: () async {
+                                                      Navigator.pop(context);
+                                                      CustomFullScreenDialog.showDialog();
+                                                      try {
+                                                        _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                        _initLiveTalkImageUrl = _imageFile!.path;
+                                                        _liveTalkImageSelected = true;
+                                                        setState(() {});
+                                                      } catch (e) {
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      }
+
+                                                    },
+                                                    child: Text(
+                                                      '앨범에서 선택',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 15,
+                                                          fontWeight: FontWeight.bold),
+                                                    ),
+                                                    style: TextButton.styleFrom(
+                                                        splashFactory:
+                                                        InkRipple.splashFactory,
+                                                        elevation: 0,
+                                                        minimumSize: Size(100, 56),
+                                                        backgroundColor:
+                                                        Color(0xff3D83ED),
+                                                        padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 40,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                              );
+                            },
+                            child: Text(
+                              '이미지 업로드',
+                              style: TextStyle(
+                                  color: Color(0xFF444444),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            style: TextButton.styleFrom(
+                                splashFactory: InkRipple.splashFactory,
+                                elevation: 0,
+                                minimumSize: Size(100, 48),
+                                backgroundColor: Color(0xffffffff),
+                                padding: EdgeInsets.symmetric(horizontal: 0)),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 36,
+                    ),
                     Form(
                         key: _formKey,
                         child:
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Text(
+                              '라이브톡 내용',
+                              style: TextStyle(
+                                  color: Color(0xFF111111),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                               decoration: BoxDecoration(
                                 color: Color(0xFFF1F3F3),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(6),
                               ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -301,7 +341,8 @@ class _Modify_liveTalkState extends State<Modify_liveTalk> {
                                           TextSelection.fromPosition(
                                               TextPosition(offset: _liveTalkTextEditingController.text.length));
                                     },
-                                    maxLines: 22,
+                                    minLines: 1,
+                                    maxLines: 50,
                                     textAlignVertical: TextAlignVertical.top,
                                     cursorColor: Color(0xff377EEA),
                                     cursorHeight: 16,
@@ -314,6 +355,7 @@ class _Modify_liveTalkState extends State<Modify_liveTalk> {
                                     },
                                     strutStyle: StrutStyle(leading: 0.3),
                                     decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                                         floatingLabelBehavior: FloatingLabelBehavior.never,
                                         errorStyle: TextStyle(
                                           fontSize: 12,
