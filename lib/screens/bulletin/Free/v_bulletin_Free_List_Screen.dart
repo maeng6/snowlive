@@ -838,8 +838,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                                                                 height: 100,
                                                                                 child:Padding(
                                                                                   padding: const EdgeInsets.symmetric(
-                                                                                      horizontal: 20.0,
-                                                                                      vertical: 14),
+                                                                                      horizontal: 20.0, vertical: 14),
                                                                                   child: Column(
                                                                                     children: [
                                                                                       GestureDetector(

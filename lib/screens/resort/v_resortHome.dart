@@ -410,7 +410,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                     print('라이브 OFF');
                                   }
                                 }
-                                else if(_userModelController.isOnLive == false && _seasonController.open == false){
+                                else if(_userModelController.isOnLive == false && _seasonController.open == false && !_seasonController.open_uidList!.contains(_userModelController.uid)){
                                   Get.dialog(
                                     AlertDialog(
                                       contentPadding: EdgeInsets.zero,
@@ -420,7 +420,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                       ),
                                       actionsPadding: EdgeInsets.only(top: 0, right: 20, left: 20, bottom: 20),
                                       content: Container(
-                                        height: 330,
+                                        height: 286,
                                         child: Column(
                                           children: [
                                             ExtendedImage.asset(
@@ -437,27 +437,37 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 bottom: 24,
                                               ),
                                               child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
-                                                      Text(
-                                                        '랭킹전 기간이 아닙니다',
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Color(0xFF111111),
-                                                          fontSize: 18,
+                                                      Container(
+                                                        width: 200,
+                                                        child: Text(
+                                                          '랭킹전 기간이 아닙니다',
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Color(0xFF111111),
+                                                            fontSize: 18,
+                                                          ),
                                                         ),
                                                       ),
                                                       SizedBox(
                                                         height: 6,
                                                       ),
-                                                      Text(
-                                                        '조금만 더 기다려주세요!',
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.normal,
-                                                          color: Color(0xFF949494),
-                                                          fontSize: 15,
+                                                      Container(
+                                                        width: 200,
+                                                        child: Text(
+                                                          '조금만 더 기다려주세요',
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontWeight: FontWeight.normal,
+                                                            color: Color(0xFF949494),
+                                                            fontSize: 15,
+                                                          ),
                                                         ),
                                                       ),
                                                     ],
@@ -471,7 +481,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                       actions: [
                                         Container(
                                           width: MediaQuery.of(Get.context!).size.width,
-                                          height: 48,
+                                          height: 36,
                                           child: ElevatedButton(
                                             onPressed: () async {
                                               Navigator.pop(context);
@@ -1948,7 +1958,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                 print('라이브 OFF');
                               }
                             }
-                            else if(_userModelController.isOnLive == false && _seasonController.open == false){
+                            else if(_userModelController.isOnLive == false && _seasonController.open == false && !_seasonController.open_uidList!.contains(_userModelController.uid)){
                               Get.dialog(
                                 AlertDialog(
                                   contentPadding: EdgeInsets.zero,
@@ -1975,30 +1985,35 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                             bottom: 24,
                                           ),
                                           child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    '랭킹전 기간이 아닙니다',
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Color(0xFF111111),
-                                                      fontSize: 18,
-                                                    ),
+                                              Container(
+                                                width: 200,
+                                                child: Text(
+                                                  '랭킹전 기간이 아닙니다',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color(0xFF111111),
+                                                    fontSize: 18,
                                                   ),
-                                                  SizedBox(
-                                                    height: 6,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 6,
+                                              ),
+                                              Container(
+                                                width: 200,
+                                                child: Text(
+                                                  '조금만 더 기다려주세요',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.normal,
+                                                    color: Color(0xFF949494),
+                                                    fontSize: 15,
                                                   ),
-                                                  Text(
-                                                    '조금만 더 기다려주세요!',
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.normal,
-                                                      color: Color(0xFF949494),
-                                                      fontSize: 15,
-                                                    ),
-                                                  ),
-                                                ],
+                                                ),
                                               ),
                                             ],
                                           ),
