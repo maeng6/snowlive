@@ -840,11 +840,11 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                                               Expanded(
                                                                 child: Container(
                                                                   constraints: BoxConstraints(
-                                                                      maxWidth: _size.width - 164),
+                                                                      maxWidth: _size.width - 169),
                                                                   child: Row(
                                                                     children: [
                                                                       Container(
-                                                                        width: _size.width - 100,
+                                                                        width: _size.width - 105,
                                                                         child: Text(
                                                                           chatDocs[index].get('title'),
                                                                           maxLines: 2,

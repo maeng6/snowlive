@@ -795,7 +795,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                                       style: TextStyle(
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: 12,
-                                                          color: Color(0xFF444444)),
+                                                          color: Color(0xFF666666)),
                                                     ),
                                                   ),
                                                 ],
@@ -812,11 +812,11 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                                         Expanded(
                                                           child: Container(
                                                             constraints: BoxConstraints(
-                                                                maxWidth: _size.width - 168),
+                                                                maxWidth: _size.width - 173),
                                                             child: Row(
                                                               children: [
                                                                 Container(
-                                                                  width: _size.width - 110,
+                                                                  width: _size.width - 115,
                                                                   child: Text(
                                                                     chatDocs[0].get('title'),
                                                                     maxLines: 2,
@@ -838,8 +838,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                                                                 height: 100,
                                                                                 child:Padding(
                                                                                   padding: const EdgeInsets.symmetric(
-                                                                                      horizontal: 20.0,
-                                                                                      vertical: 14),
+                                                                                      horizontal: 20.0, vertical: 14),
                                                                                   child: Column(
                                                                                     children: [
                                                                                       GestureDetector(
@@ -1440,11 +1439,11 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                                                   Expanded(
                                                                     child: Container(
                                                                       constraints: BoxConstraints(
-                                                                          maxWidth: _size.width - 174),
+                                                                          maxWidth: _size.width - 179),
                                                                       child: Row(
                                                                         children: [
                                                                           Container(
-                                                                            width: _size.width - 86,
+                                                                            width: _size.width - 91,
                                                                             child: Text(
                                                                               chatDocs[index].get('title'),
                                                                               maxLines: 2,

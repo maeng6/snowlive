@@ -554,9 +554,9 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
-                                                fontSize: 14,
+                                                fontSize: 13,
                                                 fontWeight: FontWeight.bold,
-                                                color: Color(0xFF444444)),
+                                                color: Color(0xFF666666)),
                                         ),),
                                         SizedBox(
                                           height: 8,
