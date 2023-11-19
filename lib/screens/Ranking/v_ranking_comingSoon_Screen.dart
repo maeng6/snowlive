@@ -33,7 +33,7 @@ class Ranking_CommingSoon_Screen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 50),
+                padding: const EdgeInsets.only(bottom: 30),
                 child: Column(
                   children: [
                     Center(

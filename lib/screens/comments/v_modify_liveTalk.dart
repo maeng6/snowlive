@@ -156,6 +156,8 @@ class _Modify_liveTalkState extends State<Modify_liveTalk> {
                               onPressed: () {
                                 setState(() {
                                   _initLiveTalkImageUrl = '';
+                                  _liveTalkImageSelected = false;
+                                  _imageFile = null;
                                 });
                               },
                             ),)
