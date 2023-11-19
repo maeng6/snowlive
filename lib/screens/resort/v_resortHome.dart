@@ -404,6 +404,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                     await _liveMapController.stopForegroundLocationService();
                                     await _liveMapController.stopBackgroundLocationService();
                                     await _liveMapController.checkAndUpdatePassCountOff();
+                                    await _liveMapController.checkAndUpdatePassCountOffDaily();
                                     await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
                                     setState(() {});
                                     CustomFullScreenDialog.cancelDialog();
@@ -1937,6 +1938,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                 await _liveMapController.stopForegroundLocationService();
                                 await _liveMapController.stopBackgroundLocationService();
                                 await _liveMapController.checkAndUpdatePassCountOff();
+                                await _liveMapController.checkAndUpdatePassCountOffDaily();
                                 await _userModelController.getCurrentUserLocationInfo(_userModelController.uid);
                                 setState(() {});
                                 CustomFullScreenDialog.cancelDialog();
