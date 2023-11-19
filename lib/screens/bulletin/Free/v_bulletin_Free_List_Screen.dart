@@ -15,7 +15,6 @@ import '../../../controller/vm_userModelController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_bulletinFreeModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
-import '../../more/friend/v_friendDetailPage.dart';
 
 class Bulletin_Free_List_Screen extends StatefulWidget {
   const Bulletin_Free_List_Screen({Key? key}) : super(key: key);
@@ -992,85 +991,43 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                               ),
                                               Row(
                                                 children: [
-                                                  StreamBuilder(
-                                                      stream:  FirebaseFirestore.instance
-                                                          .collection('user')
-                                                          .where('uid', isEqualTo: _bulletinFreeModelController.uid)
-                                                          .snapshots(),
-                                                      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                                                        if (!snapshot.hasData || snapshot.data == null) {
-                                                          return  SizedBox();
+                                                  Container(
+                                                    width: 16,
+                                                    height: 16,
+                                                    decoration: BoxDecoration(
+                                                        color: Color(0xFFDFECFF),
+                                                        borderRadius: BorderRadius.circular(50)
+                                                    ),
+                                                    child: ExtendedImage.network(
+                                                      chatDocs[0]['profileImageUrl'],
+                                                      cache: true,
+                                                      shape: BoxShape.circle,
+                                                      borderRadius:
+                                                      BorderRadius.circular(20),
+                                                      width: 16,
+                                                      height: 16,
+                                                      fit: BoxFit.cover,
+                                                      loadStateChanged: (ExtendedImageState state) {
+                                                        switch (state.extendedImageLoadState) {
+                                                          case LoadState.loading:
+                                                            return SizedBox.shrink();
+                                                          case LoadState.completed:
+                                                            return state.completedWidget;
+                                                          case LoadState.failed:
+                                                            return ExtendedImage.network(
+                                                              '${profileImgUrlList[0].default_round}',
+                                                              shape: BoxShape.circle,
+                                                              borderRadius: BorderRadius.circular(20),
+                                                              width: 16,
+                                                              height: 16,
+                                                              fit: BoxFit.cover,
+                                                            ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                          default:
+                                                            return null;
                                                         }
-                                                        final userDoc = snapshot.data!.docs;
-                                                        final userData = userDoc.isNotEmpty ? userDoc[0] : null;
-                                                        if (userData == null) {
-                                                          return SizedBox();
-                                                        }
-                                                        return Row(
-                                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: [
-                                                            if (userData['profileImageUrl'] != "")
-                                                              GestureDetector(
-                                                                onTap: (){
-                                                                  Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                                                },
-                                                                child: Container(
-                                                                  width: 16,
-                                                                  height: 16,
-                                                                  decoration: BoxDecoration(
-                                                                      color: Color(0xFFDFECFF),
-                                                                      borderRadius: BorderRadius.circular(50)
-                                                                  ),
-                                                                  child: ExtendedImage.network(
-                                                                    userData['profileImageUrl'],
-                                                                    cache: true,
-                                                                    shape: BoxShape.circle,
-                                                                    borderRadius:
-                                                                    BorderRadius.circular(20),
-                                                                    width: 16,
-                                                                    height: 16,
-                                                                    fit: BoxFit.cover,
-                                                                    loadStateChanged: (ExtendedImageState state) {
-                                                                      switch (state.extendedImageLoadState) {
-                                                                        case LoadState.loading:
-                                                                          return SizedBox.shrink();
-                                                                        case LoadState.completed:
-                                                                          return state.completedWidget;
-                                                                        case LoadState.failed:
-                                                                          return ExtendedImage.network(
-                                                                            '${profileImgUrlList[0].default_round}',
-                                                                            shape: BoxShape.circle,
-                                                                            borderRadius: BorderRadius.circular(20),
-                                                                            width: 16,
-                                                                            height: 16,
-                                                                            fit: BoxFit.cover,
-                                                                          ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                        default:
-                                                                          return null;
-                                                                      }
-                                                                    },
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            if (userData['profileImageUrl'] == "")
-                                                              GestureDetector(
-                                                                onTap: (){
-                                                                  Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                                                },
-                                                                child: ExtendedImage.network(
-                                                                  '${profileImgUrlList[0].default_round}',
-                                                                  shape: BoxShape.circle,
-                                                                  borderRadius:
-                                                                  BorderRadius.circular(20),
-                                                                  width: 18,
-                                                                  height: 18,
-                                                                  fit: BoxFit.cover,
-                                                                ),
-                                                              ),
-                                                          ],
-                                                        );
-                                                      }),
+                                                      },
+                                                    ),
+                                                  ),
                                                   SizedBox(width: 4),
                                                   Text('${chatDocs[0]['displayName']}',
                                                     style: TextStyle(
