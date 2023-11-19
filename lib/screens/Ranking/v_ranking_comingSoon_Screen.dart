@@ -33,11 +33,11 @@ class Ranking_CommingSoon_Screen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.only(bottom: 30),
+                padding: const EdgeInsets.only(bottom: 50),
                 child: Column(
                   children: [
                     Center(
-                      child: Image.network('https://i.esdrop.com/d/f/yytYSNBROy/kjkIX3Eg96.png',
+                      child: Image.asset('assets/imgs/imgs/img_ranking_comingsoon.png',
                         width: _size.width - 40,
                       ),
                     ),
