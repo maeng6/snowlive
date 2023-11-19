@@ -1139,7 +1139,8 @@ List<LocationModel> phoenix = [
       //보강1
       LatLng(37.582067, 128.318844),
       LatLng(37.582067, 128.318544),
-      LatLng(37.582067, 128.318344)
+      LatLng(37.582067, 128.318344),
+      LatLng(37.582067, 128.318144),
     ],
     type: 'slope',
     resort: 12,
@@ -1452,7 +1453,18 @@ List<LocationModel> phoenix = [
     type: 'respawn',
     resort: 12,
   ),//스키하우스_신설
+  LocationModel(
+    name: '파노하단',
+    coordinates: [
+      LatLng(37.580805, 128.312006),
+      LatLng(37.581005, 128.312006),
+      LatLng(37.580705, 128.312206),
+    ],
+    type: 'respawn',
+    resort: 12,
+  ),//파노하단_신설
 ];
+
 
 
 List<LocationModel> vivaldi = [
@@ -1591,20 +1603,18 @@ List<LocationModel> vivaldi = [
   LocationModel(
     name: '힙합하차장',
     coordinates: [
-      LatLng(37.639453, 127.684357),
-      LatLng(37.639252, 127.684464),
+      LatLng(37.639453, 127.684307),
+      LatLng(37.641082, 127.683444),
     ],
     type: 'slopeReset',
     resort: 2,
   ),
-  //여기까지가 슬로프 리셋
-
   LocationModel(
     name: '테크노하차장',
     coordinates: [
       LatLng(37.637571, 127.689622)
     ],
-    type: 'respawn',
+    type: 'slopeReset',
     resort: 2,
   ),
   LocationModel(
@@ -1612,17 +1622,21 @@ List<LocationModel> vivaldi = [
     coordinates: [
       LatLng(37.637812, 127.690087)
     ],
-    type: 'respawn',
+    type: 'slopeReset',
     resort: 2,
   ),
   LocationModel(
     name: '곤돌라하차장',
     coordinates: [
-      LatLng(37.637545, 127.690317)
+      LatLng(37.637545, 127.690317),
+      LatLng(37.637521, 127.689982),
     ],
-    type: 'respawn',
+    type: 'slopeReset',
     resort: 2,
   ),
+  //여기까지가 슬로프 리셋
+
+
   LocationModel(
     name: '락승차장',
     coordinates: [
@@ -1792,6 +1806,8 @@ List<LocationModel> yongpyong = [
       LatLng(37.640107, 128.681974),
       LatLng(37.639101, 128.682165),
       LatLng(37.637539, 128.682529),
+
+      LatLng(37.639227, 128.682124),
     ],
     type: 'slope',
     resort: 8,
@@ -1803,6 +1819,7 @@ List<LocationModel> yongpyong = [
       LatLng(37.638437, 128.686673),
       LatLng(37.636914, 128.686391),
       LatLng(37.634296, 128.685912),
+      LatLng(37.634296, 128.685872),
       LatLng(37.633110, 128.685687),
     ],
     type: 'slope',
@@ -1816,6 +1833,8 @@ List<LocationModel> yongpyong = [
       LatLng(37.638554, 128.687103),
       LatLng(37.638508, 128.687103),
       LatLng(37.634989, 128.687035),
+      LatLng(37.634989, 128.687005),
+      LatLng(37.634989, 128.686965),
       LatLng(37.633609, 128.687010),
       LatLng(37.632090, 128.686987),
     ],
@@ -1835,6 +1854,7 @@ List<LocationModel> yongpyong = [
     name: '옐로우',
     coordinates: [
       LatLng(37.644343, 128.680632),
+      LatLng(37.644303, 128.680632),
     ],
     type: 'slope',
     resort: 8,
@@ -1843,6 +1863,7 @@ List<LocationModel> yongpyong = [
     name: '뉴옐로',
     coordinates: [
       LatLng(37.643809, 128.679328),
+      LatLng(37.643769, 128.679348),
     ],
     type: 'slope',
     resort: 8,
@@ -1850,7 +1871,11 @@ List<LocationModel> yongpyong = [
   LocationModel(
     name: '곤돌라',
     coordinates: [
-      LatLng(37.643810, 128.678912),
+      LatLng(37.641830, 128.678482),
+      LatLng(37.641800, 128.678512),
+      LatLng(37.641190, 128.678312),
+      LatLng(37.641190, 128.678362),
+      LatLng(37.641190, 128.678422),
     ],
     type: 'slope',
     resort: 8,
@@ -1884,6 +1909,7 @@ List<LocationModel> yongpyong = [
       LatLng(37.639233, 128.678085),
       LatLng(37.636647, 128.676838),
       LatLng(37.634327, 128.675709),
+      LatLng(37.636597, 128.676788),
     ],
     type: 'slope',
     resort: 8,
@@ -1894,6 +1920,7 @@ List<LocationModel> yongpyong = [
       LatLng(37.640127, 128.677967),
       LatLng(37.640094, 128.678010),
       LatLng(37.638948, 128.679422),
+      LatLng(37.638908, 128.679442),
       LatLng(37.636836, 128.682057),
     ],
     type: 'slope',
@@ -1907,6 +1934,8 @@ List<LocationModel> yongpyong = [
       LatLng(37.622635, 128.663111),
       LatLng(37.618165, 128.666460),
       LatLng(37.616967, 128.667382),
+      LatLng(37.616967, 128.667332),
+      LatLng(37.616967, 128.667432),
       LatLng(37.613507, 128.669998),
     ],
     type: 'slope',
@@ -1928,7 +1957,8 @@ List<LocationModel> yongpyong = [
   LocationModel(
     name: '뉴레드하차장',
     coordinates: [
-      LatLng(37.637154, 128.682610)
+      LatLng(37.637154, 128.682610),
+      LatLng(37.637104, 128.682610),
     ],
     type: 'respawn',
     resort: 8,
@@ -1936,7 +1966,8 @@ List<LocationModel> yongpyong = [
   LocationModel(
     name: '블루하차장',
     coordinates: [
-      LatLng(37.636393, 128.682604)
+      LatLng(37.636393, 128.682604),
+      LatLng(37.636343, 128.682654),
     ],
     type: 'respawn',
     resort: 8,
