@@ -420,7 +420,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                       ),
                                       actionsPadding: EdgeInsets.only(top: 0, right: 20, left: 20, bottom: 20),
                                       content: Container(
-                                        height: 266,
+                                        height: 290,
                                         child: Column(
                                           children: [
                                             ExtendedImage.asset(
@@ -1953,7 +1953,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                   ),
                                   actionsPadding: EdgeInsets.only(top: 0, right: 20, left: 20, bottom: 20),
                                   content: Container(
-                                    height: 266,
+                                    height: 290,
                                     child: Column(
                                       children: [
                                         ExtendedImage.asset(
