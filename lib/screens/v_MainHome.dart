@@ -70,16 +70,88 @@ class _MainHomeState extends State<MainHome> {
           onTap: _bottomTabBarController.onItemTapped,
           items: [
             BottomNavigationBarItem(
-              icon: ImageIcon(
-                  AssetImage('assets/imgs/icons/icon_home_off.png'),
-                size: 40,
-                color: Color(0xFF444444),
+              icon: Stack(
+                children: [
+                  ImageIcon(
+                      AssetImage('assets/imgs/icons/icon_home_off.png'),
+                    size: 40,
+                    color: Color(0xFF444444),
+                  ),
+                  Positioned(
+                    // draw a red marble
+                      top: 2,
+                      right: 0.0,
+                      child: StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection('newAlarm')
+                            .where('uid', isEqualTo: _userModelController.uid!)
+                            .snapshots(),
+                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                          if (!snapshot.hasData || snapshot.data == null) {
+                            return  SizedBox.shrink();
+                          }
+                          else if (snapshot.data!.docs.isNotEmpty) {
+
+                            final alarmDocs = snapshot.data!.docs;
+                            if(alarmDocs[0]['alarmCenter'] == true){
+                              return new Icon(Icons.brightness_1,
+                                  size: 7.0,
+                                  color:  Color(0xFFD32F2F));
+                            }else {
+                              return SizedBox.shrink();
+                            }
+                          }
+                          else if (snapshot.connectionState == ConnectionState.waiting) {
+                            return SizedBox.shrink();
+                          }
+                          return SizedBox.shrink();
+
+                        },
+                      )
+                  )
+                ],
               ),
               activeIcon:
-              ImageIcon(
-                AssetImage( 'assets/imgs/icons/icon_home_on.png'),
-                size: 40,
-                color: Color(0xFF444444),
+              Stack(
+                children: [
+                  ImageIcon(
+                    AssetImage( 'assets/imgs/icons/icon_home_on.png'),
+                    size: 40,
+                    color: Color(0xFF444444),
+                  ),
+                  Positioned(
+                    // draw a red marble
+                      top: 2,
+                      right: 0.0,
+                      child: StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection('newAlarm')
+                            .where('uid', isEqualTo: _userModelController.uid!)
+                            .snapshots(),
+                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                          if (!snapshot.hasData || snapshot.data == null) {
+                            return  SizedBox.shrink();
+                          }
+                          else if (snapshot.data!.docs.isNotEmpty) {
+
+                            final alarmDocs = snapshot.data!.docs;
+                            if(alarmDocs[0]['alarmCenter'] == true){
+                              return new Icon(Icons.brightness_1,
+                                  size: 7.0,
+                                  color:  Color(0xFFD32F2F));
+                            }else {
+                              return SizedBox.shrink();
+                            }
+                          }
+                          else if (snapshot.connectionState == ConnectionState.waiting) {
+                            return SizedBox.shrink();
+                          }
+                          return SizedBox.shrink();
+
+                        },
+                      )
+                  )
+                ],
               ),
               label: '홈',
             ),

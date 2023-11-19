@@ -1471,9 +1471,7 @@ List<LocationModel> phoenix = [
     name: '스키하우스',
     coordinates: [
       LatLng(37.583200, 128.325424),
-      LatLng(37.584373, 128.324173),
-      LatLng(37.584373, 128.324173),
-      LatLng(37.584373, 128.324173),
+      LatLng(37.584350, 128.324176),
     ],
     type: 'respawn',
     resort: 12,
