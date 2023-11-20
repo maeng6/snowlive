@@ -1068,7 +1068,15 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                             loadStateChanged: (ExtendedImageState state) {
                                                               switch (state.extendedImageLoadState) {
                                                                 case LoadState.loading:
-                                                                  return SizedBox.shrink();
+                                                                  return ExtendedImage.network(
+                                                                    '${profileImgUrlList[0].default_round}',
+                                                                    shape: BoxShape.circle,
+                                                                    borderRadius: BorderRadius.circular(20),
+                                                                    cacheHeight: 100,
+                                                                    width: 16,
+                                                                    height: 16,
+                                                                    fit: BoxFit.cover,
+                                                                  );
                                                                 case LoadState.completed:
                                                                   return state.completedWidget;
                                                                 case LoadState.failed:
@@ -1076,10 +1084,11 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                                     '${profileImgUrlList[0].default_round}',
                                                                     shape: BoxShape.circle,
                                                                     borderRadius: BorderRadius.circular(20),
+                                                                    cacheHeight: 100,
                                                                     width: 16,
                                                                     height: 16,
                                                                     fit: BoxFit.cover,
-                                                                  ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                  );  // 예시로 에러 아이콘을 반환하고 있습니다.
                                                                 default:
                                                                   return null;
                                                               }
