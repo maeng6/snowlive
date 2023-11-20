@@ -955,6 +955,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                             return SizedBox();
                                                                                           }
                                                                                           return Row(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
                                                                                             children: [
                                                                                               if (userData['profileImageUrl'] != "")
                                                                                                 GestureDetector(
@@ -1085,7 +1086,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                     children: [
                                                                                                       Container(
                                                                                                         constraints:
-                                                                                                        BoxConstraints(maxWidth: _size.width - 140),
+                                                                                                        BoxConstraints(maxWidth: _size.width - 100),
                                                                                                         child:
                                                                                                         SelectableText(
                                                                                                           replyDocs[index].get('reply'),
@@ -1464,7 +1465,8 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                 cursorColor: Color(0xff377EEA),
                                 controller: _controller,
                                 strutStyle: StrutStyle(leading: 0.3),
-                                maxLines: 1,
+                                maxLines: null,
+                                keyboardType: TextInputType.multiline,
                                 enableSuggestions: false,
                                 autocorrect: false,
                                 textInputAction: TextInputAction.newline,

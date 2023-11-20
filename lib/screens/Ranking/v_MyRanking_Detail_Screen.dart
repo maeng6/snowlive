@@ -72,7 +72,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
               body: SingleChildScrollView(
                 child:
                 (_myRankingController.exist == false)
-                  ? Center(
+                    ? Center(
                   child: Container(
                     width: _size.width,
                     height: _size.height-200,
