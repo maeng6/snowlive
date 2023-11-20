@@ -566,6 +566,7 @@ class LoginController extends GetxController {
       'liveTalkHideList':[],
       'deviceID': deviceID,
       'kusbf': false,
+      'bulletinFreeCount': 0,
     });
     await ref.collection('newAlarm')
         .doc(uid)
@@ -573,6 +574,7 @@ class LoginController extends GetxController {
       'uid': uid,
       'newInvited_friend': false,
       'newInvited_crew': false,
+      'alarmCenter': false,
     });
 
 

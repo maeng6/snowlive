@@ -823,7 +823,6 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                               onPressed: () async{
                                                 CustomFullScreenDialog.showDialog();
                                                 try {
-                                                  await _userModelController.deleteInvitationAlarm_friend(uid: _userModelController.uid);
                                                   await _userModelController.deleteAlarmCenterNoti(uid: _userModelController.uid);
                                                 }catch(e){}
                                                 CustomFullScreenDialog.cancelDialog();
