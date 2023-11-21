@@ -31,48 +31,43 @@ class _BulletinRoomImageScreenState extends State<BulletinRoomImageScreen> {
 
     Size _size = MediaQuery.of(context).size;
 
-    return Dismissible(
-      direction: DismissDirection.down,
-      key: UniqueKey(),
-      onDismissed: (_)=>Navigator.pop(context),
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(58),
-          child: AppBar(
-            systemOverlayStyle: SystemUiOverlayStyle.dark,
-            leading: GestureDetector(
-              child: Icon(Icons.close,
-                color: Colors.white,
-              ),
-              onTap: () {
-                Navigator.pop(context);
-              },
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(58),
+        child: AppBar(
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
+          leading: GestureDetector(
+            child: Icon(Icons.close,
+              color: Colors.white,
             ),
-            elevation: 0.0,
-          ),
-        ),
-        body: Container(
-          height: _size.height,
-          width: _size.width,
-          child: PageView.builder(
-            controller: _pageController,
-            itemCount: _bulletinRoomModelController.itemImagesUrls!.length,
-            itemBuilder: (context, index) {
-              return InteractiveViewer(
-                maxScale: 7,
-                child: AspectRatio(
-                  aspectRatio: 9 / 14,
-                  child: ExtendedImage.network(
-                    _bulletinRoomModelController.itemImagesUrls![index],
-                    fit: BoxFit.contain,
-                    width: _size.width,
-                    height: _size.height,
-                  ),
-                ),
-              );
+            onTap: () {
+              Navigator.pop(context);
             },
           ),
+          elevation: 0.0,
+        ),
+      ),
+      body: Container(
+        height: _size.height,
+        width: _size.width,
+        child: PageView.builder(
+          controller: _pageController,
+          itemCount: _bulletinRoomModelController.itemImagesUrls!.length,
+          itemBuilder: (context, index) {
+            return InteractiveViewer(
+              maxScale: 7,
+              child: AspectRatio(
+                aspectRatio: 9 / 14,
+                child: ExtendedImage.network(
+                  _bulletinRoomModelController.itemImagesUrls![index],
+                  fit: BoxFit.contain,
+                  width: _size.width,
+                  height: _size.height,
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

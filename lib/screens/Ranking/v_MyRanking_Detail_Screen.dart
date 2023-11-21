@@ -141,29 +141,10 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                   ),
                                 ),
                                 Positioned(
-                                    top: 16,
+                                    top: 10,
                                     right: 28,
                                     child: Column(
                                       children: [
-                                        Container(
-                                          padding: EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFFFFFFF),
-                                            border: Border.all(color: Color(0xFFD9D9D9), width: 1),
-                                            borderRadius: BorderRadius.circular(30.0),
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                '${userRankingMap!['${_userModelController.uid}']}등',
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Color(0xFF444444),
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
                                         for(var rankingTier in rankingTierList)
                                           if(_myRankingController.tier == rankingTier.tierName)
                                             ExtendedImage.network(
@@ -177,36 +158,61 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                 Positioned.fill(
                                   child: Align(
                                     alignment: Alignment.center,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          height: 120,
-                                          child: Text(
-                                            '${_myRankingController.totalScore}',
-                                            style: GoogleFonts.bebasNeue(
-                                              fontSize: 120,
-                                              fontWeight: FontWeight.normal,
-                                              color: Color(0xFF3D83ED),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(bottom: 6),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            height: 120,
+                                            child: Text(
+                                              '${_myRankingController.totalScore}',
+                                              style: GoogleFonts.bebasNeue(
+                                                fontSize: 120,
+                                                fontWeight: FontWeight.normal,
+                                                color: Color(0xFF3D83ED),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        Text(
-                                          'POINTS',
-                                          style: GoogleFonts.bebasNeue(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.normal,
-                                            color: Color(0xFF000000),
+                                          Text(
+                                            'POINTS',
+                                            style: GoogleFonts.bebasNeue(
+                                              fontSize: 28,
+                                              fontWeight: FontWeight.normal,
+                                              color: Color(0xFF000000),
+                                            ),
                                           ),
-                                        )
-                                      ],
+                                          SizedBox(
+                                            height: 8,
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFFFFFFF),
+                                              border: Border.all(color: Color(0xFFD9D9D9), width: 1),
+                                              borderRadius: BorderRadius.circular(30.0),
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  '${userRankingMap!['${_userModelController.uid}']}등',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Color(0xFF444444),
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                                 Positioned(
                                   left: 0,
                                   right: 0,
-                                  bottom: 16,
+                                  bottom: 20,
                                   child: Align(
                                     alignment: Alignment.center,
                                     child: Text(
@@ -214,15 +220,43 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                           '${_resortModelController.getResortName(_userModelController.resortNickname!)} 포인트',
                                       style: TextStyle(
                                         fontSize: 13,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87,
+                                        fontWeight: FontWeight.normal,
+                                        color: Color(0xFF111111),
                                       ),
                                     ),
                                   ),
                                 ),
+                                Positioned(
+                                  left: 36,
+                                  top: 22,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: 130,
+                                        child: ExtendedImage.asset(
+                                          'assets/imgs/icons/icon_myranking_logo.png',
+                                          enableMemoryCache: true,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: Text(
+                                          '${_userModelController.displayName}',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.normal,
+                                            color: Color(0xFF111111),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
-                            SizedBox(height: 12),
+                            SizedBox(height: 16),
                             Container(
                               decoration: BoxDecoration(
                                 color: Color(0xFF1357BC),
