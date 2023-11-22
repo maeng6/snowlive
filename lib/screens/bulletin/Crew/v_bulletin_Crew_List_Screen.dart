@@ -1,5 +1,6 @@
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -53,6 +54,20 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
     _seasonController.getBulletinCrewLimit();
     _stream = newStream();
 
+    try{
+      FirebaseAnalytics.instance.logEvent(
+        name: 'visit_bulletinCrew',
+        parameters: <String, dynamic>{
+          'user_id': _userModelController.uid,
+          'user_name': _userModelController.displayName,
+          'user_resort': _userModelController.favoriteResort
+        },
+      );
+    }catch(e, stackTrace){
+      print('GA 업데이트 오류: $e');
+      print('Stack trace: $stackTrace');
+    }
+
     _scrollController.addListener(() {
       setState(() {
         if (_scrollController.position.userScrollDirection ==
@@ -65,6 +80,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
           _isVisible = false;
         }
       });
+
     });
 
     // Add a listener to the ScrollController
@@ -336,12 +352,12 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '휘닉스평창';
+                            _selectedValue2 = '휘닉스파크';
                             _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
-                        child: Text('휘닉스평창')),
+                        child: Text('휘닉스파크')),
                   ],
                   cancelButton: CupertinoActionSheetAction(
                     child: Text('닫기'),
@@ -622,11 +638,11 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                       ),
                     )
                         : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: ListView.builder(
-                      controller: _scrollController, // ScrollController 연결
-                      itemCount: chatDocs.length,
-                      itemBuilder: (context, index) {
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: ListView.builder(
+                        controller: _scrollController, // ScrollController 연결
+                        itemCount: chatDocs.length,
+                        itemBuilder: (context, index) {
                           Map<String, dynamic>? data = chatDocs[index].data() as Map<String, dynamic>?;
 
                           // 필드가 없을 경우 기본값 설정
@@ -850,7 +866,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                         borderRadius: BorderRadius.circular(4),
                                                       ),
                                                       child: Text(
-                                                        chatDocs[0].get('category'),
+                                                        chatDocs[index].get('category'),
                                                         style: TextStyle(
                                                             fontWeight: FontWeight.bold,
                                                             fontSize: 12,
@@ -1156,9 +1172,9 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                               ],
                             )),
                           );
-                      },
-                    ),
-                        );
+                        },
+                      ),
+                    );
                   },
                 ),
               ),

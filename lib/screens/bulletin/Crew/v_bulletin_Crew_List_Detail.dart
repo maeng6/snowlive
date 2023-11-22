@@ -42,6 +42,9 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
   var _replyStream;
   bool _myReply = false;
 
+  int _currentIndex = 0;
+
+
   ScrollController _scrollController = ScrollController();
 
   ScrollController _scrollController2 = ScrollController();
@@ -578,40 +581,71 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                 height: 6,
                               ),
                             if (_bulletinCrewModelController.itemImagesUrls!.isNotEmpty)
-                              CarouselSlider.builder(
-                                options: CarouselOptions(
-                                  height: 280,
-                                  viewportFraction: 1,
-                                  enableInfiniteScroll: false,
-                                ),
-                                itemCount:
-                                _bulletinCrewModelController.itemImagesUrls!.length,
-                                itemBuilder: (context, index, pageViewIndex) {
-                                  return Container(
-                                    padding: EdgeInsets.only(bottom: 16),
-                                    child: StreamBuilder<Object>(
-                                        stream: null,
-                                        builder: (context, snapshot) {
-                                          return Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  Get.to(() => BulletinCrewImageScreen());
-                                                },
-                                                child: ExtendedImage.network(
-                                                  _bulletinCrewModelController
-                                                      .itemImagesUrls![index],
-                                                  fit: BoxFit.cover,
-                                                  width: _size.width,
-                                                  height: 280,
-                                                ),
+                              Stack(
+                                children: [
+                                  CarouselSlider.builder(
+                                    options: CarouselOptions(
+                                      height: 280,
+                                      viewportFraction: 1,
+                                      enableInfiniteScroll: false,
+                                      onPageChanged: (index, reason) {
+                                        setState(() {
+                                          _currentIndex = index;
+                                        });
+                                      },
+                                    ),
+                                    itemCount:
+                                    _bulletinCrewModelController.itemImagesUrls!.length,
+                                    itemBuilder: (context, index, pageViewIndex) {
+                                      return Container(
+                                        padding: EdgeInsets.only(bottom: 16),
+                                        child: StreamBuilder<Object>(
+                                            stream: null,
+                                            builder: (context, snapshot) {
+                                              return Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Get.to(() => BulletinCrewImageScreen());
+                                                    },
+                                                    child: ExtendedImage.network(
+                                                      _bulletinCrewModelController
+                                                          .itemImagesUrls![index],
+                                                      fit: BoxFit.cover,
+                                                      width: _size.width,
+                                                      height: 280,
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            }),
+                                      );
+                                    },
+                                  ),
+                                  Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 245),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: List.generate(
+                                          _bulletinCrewModelController.itemImagesUrls!.length,
+                                              (index) {
+                                            return Container(
+                                              width: 8,
+                                              height: 8,
+                                              margin: EdgeInsets.symmetric(horizontal: 4),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: _currentIndex == index ? Color(0xFFFFFFFF) : Color(0xFF111111).withOpacity(0.5),
                                               ),
-                                            ],
-                                          );
-                                        }),
-                                  );
-                                },
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -675,16 +709,16 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                     if (userData == null) {
                                                       return SizedBox();
                                                     }
-                                                    return Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: [
-                                                        if (userData['profileImageUrl'] != "")
-                                                          GestureDetector(
-                                                            onTap: (){
-                                                              Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                                            },
-                                                            child: Container(
+                                                    return GestureDetector(
+                                                      onTap: (){
+                                                        Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                                                      },
+                                                      child: Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        children: [
+                                                          if (userData['profileImageUrl'] != "")
+                                                            Container(
                                                               width: 20,
                                                               height: 20,
                                                               decoration: BoxDecoration(
@@ -721,13 +755,8 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                 },
                                                               ),
                                                             ),
-                                                          ),
-                                                        if (userData['profileImageUrl'] == "")
-                                                          GestureDetector(
-                                                            onTap: (){
-                                                              Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                                            },
-                                                            child: ExtendedImage.network(
+                                                          if (userData['profileImageUrl'] == "")
+                                                            ExtendedImage.network(
                                                               '${profileImgUrlList[0].default_round}',
                                                               shape: BoxShape.circle,
                                                               borderRadius:
@@ -736,18 +765,19 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                               height: 20,
                                                               fit: BoxFit.cover,
                                                             ),
+                                                          SizedBox(width: 5,),
+                                                          Text('${_bulletinCrewModelController.displayName}',
+                                                            //chatDocs[index].get('displayName'),
+                                                            style: TextStyle(
+                                                                fontWeight: FontWeight.normal,
+                                                                fontSize: 14,
+                                                                color: Color(0xFF949494)),
                                                           ),
-                                                      ],
+                                                        ],
+                                                      ),
                                                     );
                                                   }),
-                                              SizedBox(width: 5,),
-                                              Text('${_bulletinCrewModelController.displayName}',
-                                                //chatDocs[index].get('displayName'),
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.normal,
-                                                    fontSize: 14,
-                                                    color: Color(0xFF949494)),
-                                              ),
+
                                               Text(
                                                 '·${_bulletinCrewModelController.location}',
                                                 style: TextStyle(

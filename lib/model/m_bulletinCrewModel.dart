@@ -138,7 +138,7 @@ List<dynamic> bulletinCrewResortList = [
   '웰리힐리파크',
   '지산리조트',
   '하이원리조트',
-  '휘닉스평창',
+  '휘닉스파크',
 ];
 
 List<dynamic> bulletinCrewCategoryList = [

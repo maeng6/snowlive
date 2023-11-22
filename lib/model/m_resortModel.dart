@@ -231,7 +231,7 @@ List<ResortModel> resortList = [
   ),//하이원_2.2
   ResortModel(
       index:12,
-      resortName: '휘닉스평창',
+      resortName: '휘닉스파크',
       resortAddress: '평창군 봉평면',
       resortUrl: 'https://phoenixhnr.co.kr/',
       webcamUrl: 'https://phoenixhnr.co.kr/page/pyeongchang/guide/operation/sketchMovie',

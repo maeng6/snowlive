@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -7,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:com.snowlive/screens/v_webPage.dart';
 
+import '../../controller/vm_urlLauncherController.dart';
 import '../../controller/vm_userModelController.dart';
 
 class DiscoverScreen_ResortBanner extends StatefulWidget {
@@ -45,6 +47,10 @@ class _DiscoverScreen_ResortBannerState
       yield urls;
     }
   }
+
+  //TODO: Dependency Injection**************************************************
+  UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
+  //TODO: Dependency Injection**************************************************
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +119,20 @@ class _DiscoverScreen_ResortBannerState
               if (urlSnapshot.docs.isNotEmpty) {
                 String landingUrl =
                 urlSnapshot.docs.first['landingUrl'];
-                Get.to(() => WebPage(url: landingUrl));
+                _urlLauncherController.otherShare(contents: landingUrl);
+                try{
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'tap_banner_resortHome',
+                    parameters: <String, dynamic>{
+                      'user_id': _userModelController.uid,
+                      'user_name': _userModelController.displayName,
+                      'user_resort': _userModelController.favoriteResort
+                    },
+                  );
+                }catch(e, stackTrace){
+                  print('GA 업데이트 오류: $e');
+                  print('Stack trace: $stackTrace');
+                }
               }
             },
             child: Container(

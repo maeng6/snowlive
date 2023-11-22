@@ -3,6 +3,7 @@ import 'package:com.snowlive/controller/vm_urlLauncherController.dart';
 import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:com.snowlive/screens/more/v_eventPage.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -47,6 +48,28 @@ class _MoreTabState extends State<MoreTab> {
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   //TODO: Dependency Injection**************************************************
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    try{
+      FirebaseAnalytics.instance.logEvent(
+        name: 'visit_moreTab',
+        parameters: <String, dynamic>{
+          'user_id': _userModelController.uid,
+          'user_name': _userModelController.displayName,
+          'user_resort': _userModelController.favoriteResort
+        },
+      );
+    }catch(e, stackTrace){
+      print('GA 업데이트 오류: $e');
+      print('Stack trace: $stackTrace');
+    }
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
