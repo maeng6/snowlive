@@ -347,7 +347,7 @@ class UserModelController extends GetxController{
     final User? user = auth.currentUser;
     final uid = user!.uid;
     await ref.collection('user').doc(uid).update({
-      'bulletinCrewCount': 0,
+      'lastLogin': Timestamp.now(),
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
