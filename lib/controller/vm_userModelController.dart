@@ -109,18 +109,16 @@ class UserModelController extends GetxController{
     // TODO: implement onInit
     String? loginUid = await FlutterSecureStorage().read(key: 'uid');
     if(loginUid != null) {
-      getCurrentUser(loginUid).catchError((e) {
-        setNewField4();
-        getCurrentUser(loginUid).catchError((e){
-          setNewField3(token: _notificationController.deviceToken, deviceID: _notificationController.deviceID);
-          getCurrentUser(loginUid).catchError((e) {
-            setNewField2();
-            getCurrentUser(loginUid).catchError((e) {
-              setNewField();
+      getCurrentUser(loginUid).catchError((e) {setNewField5();
+        getCurrentUser(loginUid).catchError((e){setNewField4();
+        getCurrentUser(loginUid).catchError((e) {setNewField3(token: _notificationController.deviceToken, deviceID: _notificationController.deviceID);
+          getCurrentUser(loginUid).catchError((e) {setNewField2();
+            getCurrentUser(loginUid).catchError((e) {setNewField();
               getCurrentUser(loginUid);
             });
           });
         });
+      });
       });
     }else{
     }
@@ -179,6 +177,7 @@ class UserModelController extends GetxController{
           this._deviceID!.value = userModel.deviceID!;
           this._kusbf!.value = userModel.kusbf!;
           this._bulletinFreeCount!.value= userModel.bulletinFreeCount!;
+          this._bulletinCrewCount!.value= userModel.bulletinCrewCount!;
           try {
             this._fleaChatUidList!.value = userModel.fleaChatUidList!;
           }catch(e){};
@@ -280,6 +279,8 @@ class UserModelController extends GetxController{
     List fleaChatUidList = [];
     await ref.collection('user').doc(uid).update({
       'bulletinRoomCount': 0,
+      'bulletinCrewCount': 0,
+      'commentCount':0,
       'fleaCount': 0,
       'phoneAuth' : false,
       'phoneNum' : '',
@@ -339,6 +340,14 @@ class UserModelController extends GetxController{
     final uid = user!.uid;
     await ref.collection('user').doc(uid).update({
       'bulletinFreeCount': 0,
+    });
+    await getCurrentUser(auth.currentUser!.uid);
+  }
+  Future<void> setNewField5() async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'bulletinCrewCount': 0,
     });
     await getCurrentUser(auth.currentUser!.uid);
   }

@@ -596,7 +596,7 @@ class _SetProfileImage_moreTabState extends State<SetProfileImage_moreTab> {
                   padding: const EdgeInsets.only(bottom: 4),
                   child: Text(
                     '기본 이미지로 변경',
-                    style: TextStyle(fontFamily: 'NotoSansKR', color: Color(0xff949494), fontSize: 16, fontWeight: FontWeight.w300),
+                    style: TextStyle(color: Color(0xff949494), fontSize: 16, fontWeight: FontWeight.normal),
 
                   ),
                 ),

@@ -76,7 +76,7 @@ class _CrewFavoriteResortState extends State<CrewFavoriteResort> {
       case '하이원':
         return '하이원리조트';
       case '휘닉스':
-        return '휘닉스평창';
+        return '휘닉스파크';
       case '알펜시아':
         return '알펜시아리조트';
       default:

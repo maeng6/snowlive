@@ -24,7 +24,8 @@ class _BulletinRoomImageScreenState extends State<BulletinRoomImageScreen> {
   BulletinRoomModelController _bulletinRoomModelController = Get.find<BulletinRoomModelController>();
   //TODO: Dependency Injection**************************************************
 
-  final PageController _pageController = PageController(viewportFraction: 1);
+  int _currentPage = 0;
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +38,14 @@ class _BulletinRoomImageScreenState extends State<BulletinRoomImageScreen> {
         preferredSize: Size.fromHeight(58),
         child: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
+          title: Text(
+            '${_currentPage + 1} / ${_bulletinRoomModelController.itemImagesUrls!.length}',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
           leading: GestureDetector(
             child: Icon(Icons.close,
               color: Colors.white,
@@ -48,27 +57,42 @@ class _BulletinRoomImageScreenState extends State<BulletinRoomImageScreen> {
           elevation: 0.0,
         ),
       ),
-      body: Container(
-        height: _size.height,
-        width: _size.width,
-        child: PageView.builder(
-          controller: _pageController,
-          itemCount: _bulletinRoomModelController.itemImagesUrls!.length,
-          itemBuilder: (context, index) {
-            return InteractiveViewer(
-              maxScale: 7,
-              child: AspectRatio(
-                aspectRatio: 9 / 14,
-                child: ExtendedImage.network(
-                  _bulletinRoomModelController.itemImagesUrls![index],
-                  fit: BoxFit.contain,
-                  width: _size.width,
-                  height: _size.height,
-                ),
-              ),
-            );
+      body: CarouselSlider.builder(
+        options: CarouselOptions(
+          aspectRatio: 9/16,
+          viewportFraction: 1,
+          enableInfiniteScroll: false,
+          onPageChanged: (index, reason) {
+            setState(() {
+              _currentPage = index;
+            });
           },
         ),
+        itemCount:
+        _bulletinRoomModelController.itemImagesUrls!.length,
+        itemBuilder: (context, index, pageViewIndex) {
+          return Container(
+            child: StreamBuilder<Object>(
+                stream: null,
+                builder: (context, snapshot) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      InteractiveViewer(
+                        maxScale: 7,
+                        child: ExtendedImage.network(
+                          _bulletinRoomModelController
+                              .itemImagesUrls![index],
+                          fit: BoxFit.cover,
+                          width: _size.width,
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+          );
+        },
       ),
     );
   }

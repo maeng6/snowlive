@@ -134,33 +134,17 @@ flutter:
    - family: SF-Pro-Text
      fonts:
         - asset: assets/fonts/SF-Pro-Text-Black.otf
-          weight: 700
-        - asset: assets/fonts/SF-Pro-Text-Regular.otf
-          weight: 500
-        - asset: assets/fonts/SF-Pro-Text-Black.otf
-          weight: 400
-   - family: NotoSansKR
-     fonts:
-        - asset: assets/fonts/NotoSansKR-Black.otf
           weight: 800
-        - asset: assets/fonts/NotoSansKR-Bold.otf
+        - asset: assets/fonts/SF-Pro-Text-Bold.otf
           weight: 600
-        - asset: assets/fonts/NotoSansKR-Light.otf
-          weight: 200
-        - asset: assets/fonts/NotoSansKR-Regular.otf
-          weight: 400
+        - asset: assets/fonts/SF-Pro-Text-Regular.otf
+          weight: 300
    - family: Spoqa Han Sans Neo
      fonts:
         - asset: assets/fonts/SpoqaHanSansNeo-Bold.otf
           weight: 600
-        - asset: assets/fonts/SpoqaHanSansNeo-Medium.otf
-          weight: 400
         - asset: assets/fonts/SpoqaHanSansNeo-Regular.otf
           weight: 300
-        - asset: assets/fonts/SpoqaHanSansNeo-Light.otf
-          weight: 200
-        - asset: assets/fonts/SpoqaHanSansNeo-Thin.otf
-          weight: 100
 
 
   # For details regarding fonts from package dependencies,

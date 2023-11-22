@@ -14,6 +14,7 @@ class UserModel {
     this.commentCount,
     this.fleaCount,
     this.bulletinRoomCount,
+    this.bulletinCrewCount,
     this.resortNickname,
     this.phoneAuth,
     this.phoneNum,
@@ -51,6 +52,7 @@ class UserModel {
   int? commentCount;
   int? fleaCount;
   int? bulletinRoomCount;
+  int? bulletinCrewCount;
   String? profileImageUrl;
   bool? exist;
   DocumentReference? reference;
@@ -92,6 +94,7 @@ class UserModel {
       commentCount = json['commentCount'];
       fleaCount = json['fleaCount'];
       bulletinRoomCount = json['bulletinRoomCount'];
+      bulletinCrewCount = json['bulletinCrewCount'];
       exist = json['exist'];
       resortNickname = json['resortNickname'];
       phoneAuth = json['phoneAuth'];

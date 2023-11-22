@@ -25,6 +25,8 @@ class _BulletinCrewImageScreenState extends State<BulletinCrewImageScreen> {
   BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
   //TODO: Dependency Injection**************************************************
 
+  int _currentPage = 0;
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,14 @@ class _BulletinCrewImageScreenState extends State<BulletinCrewImageScreen> {
         preferredSize: Size.fromHeight(58),
         child: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
+          title: Text(
+            '${_currentPage + 1} / ${_bulletinCrewModelController.itemImagesUrls!.length}',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
           leading: GestureDetector(
             child: Icon(Icons.close,
               color: Colors.white,
@@ -53,6 +63,11 @@ class _BulletinCrewImageScreenState extends State<BulletinCrewImageScreen> {
           aspectRatio: 9/16,
           viewportFraction: 1,
           enableInfiniteScroll: false,
+          onPageChanged: (index, reason) {
+            setState(() {
+              _currentPage = index;
+            });
+          },
         ),
         itemCount:
         _bulletinCrewModelController.itemImagesUrls!.length,
