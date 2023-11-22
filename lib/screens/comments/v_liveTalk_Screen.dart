@@ -7,6 +7,7 @@ import 'package:com.snowlive/model/m_resortModel.dart';
 import 'package:com.snowlive/screens/comments/v_modify_liveTalk.dart';
 import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -107,6 +108,21 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
     _allUserDocsController.startListening().then((result){
       setState(() {});
     });
+
+    try{
+      FirebaseAnalytics.instance.logEvent(
+        name: 'visit_liveTalk',
+        parameters: <String, dynamic>{
+          'user_id': _userModelController.uid,
+          'user_name': _userModelController.displayName,
+          'user_resort': _userModelController.favoriteResort
+        },
+      );
+    }catch(e, stackTrace){
+      print('GA 업데이트 오류: $e');
+      print('Stack trace: $stackTrace');
+    }
+
   }
 
   @override

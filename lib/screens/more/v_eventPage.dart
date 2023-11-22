@@ -163,10 +163,7 @@ class _EventPageState extends State<EventPage> {
                                       elevation: 0,
                                     ),
                                     onPressed: (){
-                                      Get.to(() => WebPage(
-                                        url:
-                                        '${eventDocs[index]['buttonUrl']}',
-                                      ));
+                                     _urlLauncherController.otherShare(contents: '${eventDocs[index]['buttonUrl']}');
                                     },
                                     child: Text('${eventDocs[index]['buttonTitle']}',
                                       style: TextStyle(

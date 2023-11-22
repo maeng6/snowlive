@@ -2,6 +2,7 @@ import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/screens/bulletin/Free/v_bulletin_Free_List_Detail.dart';
 import 'package:com.snowlive/screens/bulletin/Free/v_bulletin_Free_Upload.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -65,6 +66,21 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
     _seasonController.getBulletinFreeLimit();
     _stream = newStream();
     _stream_hot = hotStream();
+
+    try{
+      FirebaseAnalytics.instance.logEvent(
+        name: 'visit_bulletinFree',
+        parameters: <String, dynamic>{
+          'user_id': _userModelController.uid,
+          'user_name': _userModelController.displayName,
+          'user_resort': _userModelController.favoriteResort
+        },
+      );
+    }catch(e, stackTrace){
+      print('GA 업데이트 오류: $e');
+      print('Stack trace: $stackTrace');
+    }
+
     _scrollController.addListener(() {
       setState(() {
         if (_scrollController.position.userScrollDirection ==
@@ -77,6 +93,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
           _isVisible = false;
         }
       });
+
     });
 
     // Add a listener to the ScrollController
@@ -1387,7 +1404,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                                             borderRadius: BorderRadius.circular(4),
                                                           ),
                                                           child: Text(
-                                                            chatDocs[0].get('category'),
+                                                            chatDocs[index].get('category'),
                                                             style: TextStyle(
                                                                 fontWeight: FontWeight.bold,
                                                                 fontSize: 12,

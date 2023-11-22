@@ -45,6 +45,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
   bool _replyReverse = true;
   var _firstPress = true;
   var _replyStream;
+  int _currentIndex = 0;
+
 
   ScrollController _scrollController = ScrollController();
 
@@ -519,40 +521,66 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                 height: 6,
                               ),
                             if (_bulletinFreeModelController.itemImagesUrls!.isNotEmpty)
-                              CarouselSlider.builder(
-                                options: CarouselOptions(
-                                  height: 280,
-                                  viewportFraction: 1,
-                                  enableInfiniteScroll: false,
-                                ),
-                                itemCount:
-                                _bulletinFreeModelController.itemImagesUrls!.length,
-                                itemBuilder: (context, index, pageViewIndex) {
-                                  return Container(
-                                    padding: EdgeInsets.only(bottom: 16),
-                                    child: StreamBuilder<Object>(
-                                        stream: null,
-                                        builder: (context, snapshot) {
-                                          return Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  Get.to(() => BulletinFreeImageScreen());
-                                                },
-                                                child: ExtendedImage.network(
-                                                  _bulletinFreeModelController
-                                                      .itemImagesUrls![index],
-                                                  fit: BoxFit.cover,
-                                                  width: _size.width,
-                                                  height: 280,
-                                                ),
+                              Stack(
+                                children: [
+                                  CarouselSlider.builder(
+                                    options: CarouselOptions(
+                                      height: 280,
+                                      viewportFraction: 1,
+                                      enableInfiniteScroll: false,
+                                    ),
+                                    itemCount:
+                                    _bulletinFreeModelController.itemImagesUrls!.length,
+                                    itemBuilder: (context, index, pageViewIndex) {
+                                      return Container(
+                                        padding: EdgeInsets.only(bottom: 16),
+                                        child: StreamBuilder<Object>(
+                                            stream: null,
+                                            builder: (context, snapshot) {
+                                              return Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Get.to(() => BulletinFreeImageScreen());
+                                                    },
+                                                    child: ExtendedImage.network(
+                                                      _bulletinFreeModelController
+                                                          .itemImagesUrls![index],
+                                                      fit: BoxFit.cover,
+                                                      width: _size.width,
+                                                      height: 280,
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            }),
+                                      );
+                                    },
+                                  ),
+                                  Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 245),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: List.generate(
+                                          _bulletinFreeModelController.itemImagesUrls!.length,
+                                              (index) {
+                                            return Container(
+                                              width: 8,
+                                              height: 8,
+                                              margin: EdgeInsets.symmetric(horizontal: 4),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: _currentIndex == index ? Color(0xFFFFFFFF) : Color(0xFF111111).withOpacity(0.5),
                                               ),
-                                            ],
-                                          );
-                                        }),
-                                  );
-                                },
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -616,16 +644,16 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                     if (userData == null) {
                                                       return SizedBox();
                                                     }
-                                                    return Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: [
-                                                        if (userData['profileImageUrl'] != "")
-                                                          GestureDetector(
-                                                            onTap: (){
-                                                              Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                                            },
-                                                            child: Container(
+                                                    return GestureDetector(
+                                                      onTap: (){
+                                                        Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                                                      },
+                                                      child: Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        children: [
+                                                          if (userData['profileImageUrl'] != "")
+                                                            Container(
                                                               width: 20,
                                                               height: 20,
                                                               decoration: BoxDecoration(
@@ -662,13 +690,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                 },
                                                               ),
                                                             ),
-                                                          ),
-                                                        if (userData['profileImageUrl'] == "")
-                                                          GestureDetector(
-                                                            onTap: (){
-                                                              Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                                            },
-                                                            child: ExtendedImage.network(
+                                                          if (userData['profileImageUrl'] == "")
+                                                            ExtendedImage.network(
                                                               '${profileImgUrlList[0].default_round}',
                                                               shape: BoxShape.circle,
                                                               borderRadius:
@@ -677,18 +700,19 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                               height: 20,
                                                               fit: BoxFit.cover,
                                                             ),
+                                                          SizedBox(width: 5,),
+                                                          Text('${_bulletinFreeModelController.displayName}',
+                                                            //chatDocs[index].get('displayName'),
+                                                            style: TextStyle(
+                                                                fontWeight: FontWeight.normal,
+                                                                fontSize: 14,
+                                                                color: Color(0xFF949494)),
                                                           ),
-                                                      ],
+                                                        ],
+                                                      ),
                                                     );
                                                   }),
-                                              SizedBox(width: 5,),
-                                              Text('${_bulletinFreeModelController.displayName}',
-                                                //chatDocs[index].get('displayName'),
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.normal,
-                                                    fontSize: 14,
-                                                    color: Color(0xFF949494)),
-                                              ),
+
                                             ],
 
                                           ),
@@ -768,7 +792,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                               padding: EdgeInsets.only(right: 5, top: 2, bottom: 4, left: 3),
                                               child:
                                               (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}'))
-                                              ? Row(
+                                                  ? Row(
                                                 children: [
                                                   Padding(
                                                     padding: const EdgeInsets.only(top: 2),
@@ -799,50 +823,50 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                     child: Text(
                                                       '${_bulletinFreeModelController.likeCount}',
                                                       style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                          fontSize: 11,
-                                                          color: Color(0xFF111111),
-                                                    ),),
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 11,
+                                                        color: Color(0xFF111111),
+                                                      ),),
                                                   ),
                                                 ],
                                               )
-                                              : Row(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 2),
-                                                child:
-                                                IconButton(
-                                                  onPressed: () async {
-                                                    var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
-                                                    HapticFeedback.lightImpact();
-                                                    if (_firstPress) {
-                                                      _firstPress = false;
-                                                      await _userModelController.updateLikeUid(docName);
-                                                      await _bulletinFreeModelController.likeUpdate(docName);
-                                                      await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
-                                                      setState(() {_firstPress = true;});
-                                                      await _bulletinFreeModelController.scoreUpdate_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
-                                                    }
-                                                    },
-                                                  icon: Icon(Icons.thumb_up_alt,
-                                                    size: 16,
-                                                    color: Color(0xFFC8C8C8),
-                                          ),
-                                          padding: EdgeInsets.zero,
-                                          constraints: BoxConstraints(),
-                                        ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 2),
-                                          child: Text('${_bulletinFreeModelController.likeCount}',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 11,
-                                                color: Color(0xFF666666)),
-                                ),
-                                        ),
-                                        ],
-                                      ),
+                                                  : Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 2),
+                                                    child:
+                                                    IconButton(
+                                                      onPressed: () async {
+                                                        var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                                        HapticFeedback.lightImpact();
+                                                        if (_firstPress) {
+                                                          _firstPress = false;
+                                                          await _userModelController.updateLikeUid(docName);
+                                                          await _bulletinFreeModelController.likeUpdate(docName);
+                                                          await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                                          setState(() {_firstPress = true;});
+                                                          await _bulletinFreeModelController.scoreUpdate_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
+                                                        }
+                                                      },
+                                                      icon: Icon(Icons.thumb_up_alt,
+                                                        size: 16,
+                                                        color: Color(0xFFC8C8C8),
+                                                      ),
+                                                      padding: EdgeInsets.zero,
+                                                      constraints: BoxConstraints(),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 2),
+                                                    child: Text('${_bulletinFreeModelController.likeCount}',
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 11,
+                                                          color: Color(0xFF666666)),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                           onTap: () async{

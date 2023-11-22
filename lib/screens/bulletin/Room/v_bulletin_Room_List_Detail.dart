@@ -40,11 +40,10 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
   var _newReply = '';
   final _formKey = GlobalKey<FormState>();
   bool _replyReverse = true;
-
-
-
   var _replyStream;
   bool _myReply = false;
+  int _currentIndex = 0;
+
 
   ScrollController _scrollController = ScrollController();
 
@@ -502,39 +501,65 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                   height: 6,
                                 ),
                               if (_bulletinRoomModelController.itemImagesUrls!.isNotEmpty)
-                                CarouselSlider.builder(
-                                  options: CarouselOptions(
-                                    height: 280,
-                                    viewportFraction: 1,
-                                    enableInfiniteScroll: false,
-                                  ),
-                                  itemCount:
-                                  _bulletinRoomModelController.itemImagesUrls!.length,
-                                  itemBuilder: (context, index, pageViewIndex) {
-                                    return Container(
-                                      padding: EdgeInsets.only(bottom: 16),
-                                      child: StreamBuilder<Object>(
-                                          stream: null,
-                                          builder: (context, snapshot) {
-                                            return Row(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    Get.to(() => BulletinRoomImageScreen());
-                                                  },
-                                                  child: ExtendedImage.network(
-                                                    _bulletinRoomModelController.itemImagesUrls![index],
-                                                    fit: BoxFit.cover,
-                                                    width: _size.width,
-                                                    height: 280,
-                                                  ),
+                                Stack(
+                                  children: [
+                                    CarouselSlider.builder(
+                                      options: CarouselOptions(
+                                        height: 280,
+                                        viewportFraction: 1,
+                                        enableInfiniteScroll: false,
+                                      ),
+                                      itemCount:
+                                      _bulletinRoomModelController.itemImagesUrls!.length,
+                                      itemBuilder: (context, index, pageViewIndex) {
+                                        return Container(
+                                          padding: EdgeInsets.only(bottom: 16),
+                                          child: StreamBuilder<Object>(
+                                              stream: null,
+                                              builder: (context, snapshot) {
+                                                return Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Get.to(() => BulletinRoomImageScreen());
+                                                      },
+                                                      child: ExtendedImage.network(
+                                                        _bulletinRoomModelController.itemImagesUrls![index],
+                                                        fit: BoxFit.cover,
+                                                        width: _size.width,
+                                                        height: 280,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              }),
+                                        );
+                                      },
+                                    ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 245),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: List.generate(
+                                            _bulletinRoomModelController.itemImagesUrls!.length,
+                                                (index) {
+                                              return Container(
+                                                width: 8,
+                                                height: 8,
+                                                margin: EdgeInsets.symmetric(horizontal: 4),
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: _currentIndex == index ? Color(0xFFFFFFFF) : Color(0xFF111111).withOpacity(0.5),
                                                 ),
-                                              ],
-                                            );
-                                          }),
-                                    );
-                                  },
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -557,7 +582,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.bold,
                                                 color: Color(0xFF666666)),
-                                        ),),
+                                          ),),
                                         SizedBox(
                                           height: 8,
                                         ),
@@ -657,38 +682,22 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                 fit: BoxFit.cover,
                                                               ),
                                                             ),
+                                                          SizedBox(width: 5,),
+                                                          GestureDetector(
+                                                            onTap: (){
+                                                              Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                                                            },
+                                                            child: Text('${_bulletinRoomModelController.displayName}',
+                                                              //chatDocs[index].get('displayName'),
+                                                              style: TextStyle(
+                                                                  fontWeight: FontWeight.normal,
+                                                                  fontSize: 14,
+                                                                  color: Color(0xFF949494)),
+                                                            ),
+                                                          ),
                                                         ],
                                                       );
                                                     }),
-                                                SizedBox(width: 5,),
-                                                StreamBuilder(
-                                                    stream:  FirebaseFirestore.instance
-                                                        .collection('user')
-                                                        .where('uid', isEqualTo: _bulletinRoomModelController.uid)
-                                                        .snapshots(),
-                                                    builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                                                      if (!snapshot.hasData || snapshot.data == null) {
-                                                        return  SizedBox();
-                                                      }
-                                                      final userDoc = snapshot.data!.docs;
-                                                      final userData = userDoc.isNotEmpty ? userDoc[0] : null;
-                                                      if (userData == null) {
-                                                        return SizedBox();
-                                                      }
-                                                      return  GestureDetector(
-                                                        onTap: (){
-                                                          Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                                        },
-                                                        child: Text('${_bulletinRoomModelController.displayName}',
-                                                          //chatDocs[index].get('displayName'),
-                                                          style: TextStyle(
-                                                              fontWeight: FontWeight.normal,
-                                                              fontSize: 14,
-                                                              color: Color(0xFF949494)),
-                                                        ),
-                                                      );
-                                                    }
-                                                ),
                                                 Text(
                                                   '·${_bulletinRoomModelController.location}',
                                                   style: TextStyle(
