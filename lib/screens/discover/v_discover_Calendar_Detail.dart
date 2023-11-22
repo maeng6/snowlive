@@ -86,9 +86,9 @@ class _Discover_Calendar_Detail_ScreenState extends State<Discover_Calendar_Deta
             children: [
               Text(
                 '캘린더',
-                style: GoogleFonts.notoSans(
+                style: TextStyle(
                     color: Color(0xFF111111),
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.bold,
                     fontSize: 20),
               ),
             ],

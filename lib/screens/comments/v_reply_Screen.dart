@@ -140,9 +140,9 @@ class _ReplyScreenState extends State<ReplyScreen> {
                     children: [
                       Text(
                         '답글',
-                        style: GoogleFonts.notoSans(
+                        style: TextStyle(
                             color: Color(0xFF111111),
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.bold,
                             fontSize: 20),
                       ),
                     ],
