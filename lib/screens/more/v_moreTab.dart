@@ -97,9 +97,9 @@ class _MoreTabState extends State<MoreTab> {
               padding: const EdgeInsets.only(left: 16),
               child: Text(
                 '',
-                style: GoogleFonts.notoSans(
+                style: TextStyle(
                     color: Color(0xFF111111),
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.bold,
                     fontSize: 23),
               ),
             ),
