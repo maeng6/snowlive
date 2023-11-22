@@ -50,7 +50,7 @@ class _DiscoverScreen_InfoState extends State<DiscoverScreen_Info> {
                     '이모저모 소식통',
                     style: TextStyle(
                       color: Color(0xFF111111),
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
