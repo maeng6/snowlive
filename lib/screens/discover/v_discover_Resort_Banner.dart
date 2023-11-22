@@ -123,7 +123,7 @@ class _DiscoverScreen_ResortBannerState
                 options: CarouselOptions(
                   enableInfiniteScroll: false,
                   autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 3),
+                  autoPlayInterval: Duration(seconds: 5),
                   viewportFraction: 1.0,
                   aspectRatio: 16 / 4,
                   enlargeCenterPage: true,

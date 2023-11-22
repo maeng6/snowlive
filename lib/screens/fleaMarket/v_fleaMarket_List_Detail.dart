@@ -714,15 +714,18 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                         mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                            (_fleaModelController.soldOut == true)
-                                                ? '거래완료'
-                                                : '${_fleaModelController.title}',
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
+                                          Container(
+                                            width: _size.width - 32,
+                                            child: Text(
+                                              (_fleaModelController.soldOut == true)
+                                                  ? '거래완료'
+                                                  : '${_fleaModelController.title}',
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                           ),
                                         ],
                                       ),
