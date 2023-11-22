@@ -48,7 +48,7 @@
 //               '라이브맵',
 //               style: TextStyle(
 //                 color: Color(0xFF111111),
-//                 fontWeight: FontWeight.w700,
+//                 fontWeight: FontWeight.w600,
 //                 fontSize: 20,
 //               ),
 //             ),

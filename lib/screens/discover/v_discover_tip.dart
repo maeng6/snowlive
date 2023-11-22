@@ -72,7 +72,7 @@ class _DiscoverScreen_TipState extends State<DiscoverScreen_Tip> {
                     '알아두면 쓸모있는 짧은 지식',
                     style: TextStyle(
                       color: Color(0xFF111111),
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),

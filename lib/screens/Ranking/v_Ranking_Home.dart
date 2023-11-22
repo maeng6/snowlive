@@ -71,7 +71,7 @@ class _RankingHomeState extends State<RankingHome> {
                 '',
                 style: TextStyle(
                     color: Color(0xFF111111),
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.bold,
                     fontSize: 23),
               ),
             ),

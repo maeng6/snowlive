@@ -111,7 +111,7 @@ class _MyAppState extends State<MyApp> {
           centerTitle: true,
           titleTextStyle: TextStyle(
             fontFamily: 'Spoqa Han Sans Neo',
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.bold,
             color: Colors.black,
                 fontSize: 20
           ),
