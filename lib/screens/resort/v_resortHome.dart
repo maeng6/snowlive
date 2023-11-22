@@ -1459,7 +1459,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                             style: TextStyle(
                                                                 fontWeight:
                                                                 FontWeight
-                                                                    .w400,
+                                                                    .normal,
                                                                 fontSize: 12,
                                                                 color: Color(
                                                                     0xFF111111)),
@@ -1498,7 +1498,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                             style: TextStyle(
                                                                 fontWeight:
                                                                 FontWeight
-                                                                    .w400,
+                                                                    .normal,
                                                                 fontSize: 12,
                                                                 color: (_resortModelController
                                                                     .webcamUrl !=
@@ -1540,7 +1540,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                           Text(
                                                             '슬로프 현황',
                                                             style: TextStyle(
-                                                                fontWeight: FontWeight.w400,
+                                                                fontWeight: FontWeight.normal,
                                                                 fontSize: 12,
                                                                 color: (_resortModelController.slopeUrl != '')
                                                                     ? Color(0xFF111111)
@@ -2865,7 +2865,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                           style: TextStyle(
                                                               fontWeight:
                                                               FontWeight
-                                                                  .w400,
+                                                                  .normal,
                                                               fontSize: 12,
                                                               color: Color(
                                                                   0xFF111111)),
@@ -2900,7 +2900,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                         Text(
                                                           '실시간 웹캠',
                                                           style: TextStyle(
-                                                              fontWeight: FontWeight.w400,
+                                                              fontWeight: FontWeight.normal,
                                                               fontSize: 12,
                                                               color: (_resortModelController.webcamUrl != '')
                                                                   ? Color(0xFF111111)
@@ -2940,7 +2940,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                           style: TextStyle(
                                                               fontWeight:
                                                               FontWeight
-                                                                  .w400,
+                                                                  .normal,
                                                               fontSize: 12,
                                                               color: (_resortModelController
                                                                   .slopeUrl !=
