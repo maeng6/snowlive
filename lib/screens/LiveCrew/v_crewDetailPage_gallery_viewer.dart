@@ -7,6 +7,8 @@ import 'package:com.snowlive/controller/vm_imageController.dart';
 import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 class PhotoViewerPage extends StatefulWidget {
   final List<dynamic> photoList;
@@ -79,13 +81,13 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
       backgroundColor: Colors.black,
       appBar:
       _showAppBar
-      ? AppBar(
+          ? AppBar(
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 5),
             child:
             (_liveCrewModelController.leaderUid == _userModelController.uid)
-            ?IconButton(
+                ?IconButton(
               onPressed: (){
                 showModalBottomSheet(
                     context: context,
@@ -152,11 +154,11 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                                     child: ElevatedButton(
                                       onPressed: () async {
                                         CustomFullScreenDialog.showDialog();
-                                       await _imageController.deleteCrewGalleryImage(
+                                        await _imageController.deleteCrewGalleryImage(
                                             widget.photoList[_currentIndex], _liveCrewModelController.crewID!);
-                                       CustomFullScreenDialog.cancelDialog();
-                                       Navigator.pop(context);
-                                       Navigator.pop(context);
+                                        CustomFullScreenDialog.cancelDialog();
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
                                       },
                                       child: Text(
                                         '확인',
@@ -189,7 +191,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
               },
               icon: Icon(Icons.delete_forever_sharp, size: 26, color: Colors.white,),
             )
-            :SizedBox(),
+                :SizedBox(),
           )
         ],
         backgroundColor: Colors.black12,
@@ -208,48 +210,43 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
         titleSpacing: 0,
         centerTitle: true,
         title: Text(currentUploadTime,
-        style: TextStyle(
-          fontSize: 15,
-          color: Color(0xFFffffff),
-          fontWeight: FontWeight.normal
-        ),
+          style: TextStyle(
+              fontSize: 15,
+              color: Color(0xFFffffff),
+              fontWeight: FontWeight.normal
+          ),
         ),
 
       )
-      :null,
+          :null,
       body: GestureDetector(
         onTap: _toggleAppBar,
         child: Container(
           color: Colors.black,
           child: Stack(
             children: [
-              PageView.builder(
-                controller: _pageController,
+              PhotoViewGallery.builder(
                 itemCount: widget.photoList.length,
+                builder: (context, index) {
+                  return PhotoViewGalleryPageOptions(
+                    imageProvider: ExtendedNetworkImageProvider(
+                        widget.photoList[index],
+                        cache: true
+                    ),
+                    minScale: PhotoViewComputedScale.contained,
+                    maxScale: PhotoViewComputedScale.covered * 7,
+                  );
+                },
+                backgroundDecoration: BoxDecoration(
+                  color: Colors.black,
+                ),
+                pageController: PageController(
+                  initialPage: _currentIndex,
+                ),
                 onPageChanged: (index) {
                   setState(() {
                     _currentIndex = index;
-                    getUploadTime(index); // 페이지 변경 시 해당 사진의 업로드 시간 가져오기
                   });
-                },
-                itemBuilder: (context, index) {
-                  return ExtendedImage.network(
-                    widget.photoList[index],
-                    fit: BoxFit.contain,
-                    mode: ExtendedImageMode.gesture,
-                    initGestureConfigHandler: (state) {
-                      return GestureConfig(
-                        minScale: 0.9,
-                        animationMinScale: 0.7,
-                        maxScale: 3.0,
-                        animationMaxScale: 3.5,
-                        speed: 1.0,
-                        inertialSpeed: 100.0,
-                        initialScale: 1.0,
-                        inPageView: true,
-                      );
-                    },
-                  );
                 },
               ),
               Positioned(
