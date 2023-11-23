@@ -109,6 +109,7 @@ class UserModelController extends GetxController{
     // TODO: implement onInit
     String? loginUid = await FlutterSecureStorage().read(key: 'uid');
     if(loginUid != null) {
+      setNewField5();
       getCurrentUser(loginUid).catchError((e) {setNewField5();
         getCurrentUser(loginUid).catchError((e){setNewField4();
         getCurrentUser(loginUid).catchError((e) {setNewField3(token: _notificationController.deviceToken, deviceID: _notificationController.deviceID);

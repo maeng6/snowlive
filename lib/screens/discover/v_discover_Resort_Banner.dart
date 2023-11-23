@@ -20,8 +20,8 @@ class DiscoverScreen_ResortBanner extends StatefulWidget {
 class _DiscoverScreen_ResortBannerState
     extends State<DiscoverScreen_ResortBanner> {
   UserModelController _userModelController = Get.find<UserModelController>();
-  int _currentIndex = 0;
   CarouselController _carouselController = CarouselController();
+  ValueNotifier<int> _currentIndexNotifier = ValueNotifier<int>(0);
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _DiscoverScreen_ResortBannerState
         // 데이터 로드 중이라면
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
-            child: CircularProgressIndicator(),
+            child: SizedBox.shrink(),
           );
         }
         // 오류가 발생했다면
@@ -58,7 +58,7 @@ class _DiscoverScreen_ResortBannerState
         }
         // 데이터가 없다면
         else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Container(); // 빈 컨테이너 반환
+          return SizedBox.shrink();// 빈 컨테이너 반환
         }
         else if (snapshot.data!.docs.isNotEmpty) {
 
@@ -69,7 +69,7 @@ class _DiscoverScreen_ResortBannerState
                 onTap: () async {
 
                   String landingUrl =
-                  _imageUrls[_currentIndex]['landingUrl'];
+                  _imageUrls[_currentIndexNotifier.value]['landingUrl'];
                   _urlLauncherController.otherShare(contents: landingUrl);
                   try{
                     FirebaseAnalytics.instance.logEvent(
@@ -77,7 +77,8 @@ class _DiscoverScreen_ResortBannerState
                       parameters: <String, dynamic>{
                         'user_id': _userModelController.uid,
                         'user_name': _userModelController.displayName,
-                        'user_resort': _userModelController.favoriteResort
+                        'user_resort': _userModelController.favoriteResort,
+                        'banner_number': _currentIndexNotifier.value
                       },
                     );
                   }catch(e, stackTrace){
@@ -88,7 +89,7 @@ class _DiscoverScreen_ResortBannerState
                 },
                 child: Container(
                   width: _size.width,
-                  child: CarouselSlider(
+                  child: CarouselSlider.builder(
                     carouselController: _carouselController,
                     options: CarouselOptions(
                       enableInfiniteScroll: false,
@@ -99,40 +100,21 @@ class _DiscoverScreen_ResortBannerState
                       enlargeCenterPage: true,
                       initialPage: 0,
                       onPageChanged: (index, reason) {
-                          _currentIndex = index;
+                        _currentIndexNotifier.value = index;
                       },
                     ),
-                    items: _imageUrls.map((url) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return ExtendedImage.network(
-                            url['url'],
-                            cache: true,
-                            fit: BoxFit.scaleDown,
-                          );
-                        },
+                    itemCount: _imageUrls.length,
+                    itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) {
+                      var url = _imageUrls[itemIndex];
+                      return ExtendedImage.network(
+                        url['url'],
+                        cache: true,
+                        fit: BoxFit.scaleDown,
                       );
-                    }).toList(),
+                    },
                   ),
                 ),
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: _imageUrls.map((url) {
-              //     int index = _imageUrls.indexOf(url);
-              //     return Container(
-              //       width: 6,
-              //       height: 6,
-              //       margin: EdgeInsets.only(top: 12, right: 6),
-              //       decoration: BoxDecoration(
-              //         shape: BoxShape.circle,
-              //         color: _currentIndex == index
-              //             ? Color(0xFF949494)
-              //             : Color(0xFFDEDEDE),
-              //       ),
-              //     );
-              //   }).toList(),
-              // ),
             ],
           );// 배너 여러개일 경우 캐러셀 타입
 
@@ -141,7 +123,7 @@ class _DiscoverScreen_ResortBannerState
           return Text('Error: ${snapshot.error}');
         } else {
           return Center(
-            child: CircularProgressIndicator(),
+            child: SizedBox.shrink(),
           );
         }
       },

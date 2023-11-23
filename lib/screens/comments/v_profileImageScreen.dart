@@ -1,12 +1,13 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:com.snowlive/screens/comments/v_liveTalk_Screen.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 class ProfileImagePage extends StatefulWidget {
   ProfileImagePage({Key? key, required this.CommentProfileUrl}) : super(key: key);
 
-  var CommentProfileUrl;
+  final String CommentProfileUrl;
 
   @override
   State<ProfileImagePage> createState() => _ProfileImagePageState();
@@ -15,42 +16,36 @@ class ProfileImagePage extends StatefulWidget {
 class _ProfileImagePageState extends State<ProfileImagePage> {
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      direction: DismissDirection.down,
-      key: UniqueKey(),
-      onDismissed: (_)=>Navigator.pop(context),
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(58),
-          child: AppBar(
-            systemOverlayStyle: SystemUiOverlayStyle.dark,
-            leading: GestureDetector(
-              child: Icon(Icons.close,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(58),
+        child: AppBar(
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
+          leading: GestureDetector(
+            child: Icon(
+              Icons.close,
               color: Colors.white,
-              ),
-              onTap: () {
-                Navigator.pop(context);
-              },
             ),
-            elevation: 0.0,
+            onTap: () {
+              Navigator.pop(context);
+            },
           ),
+          elevation: 0.0,
         ),
-        body: InteractiveViewer(
-          maxScale: 7,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if(widget.CommentProfileUrl != '')
-              ExtendedImage.network(widget.CommentProfileUrl),
-              if(widget.CommentProfileUrl == '')
-                ExtendedImage.asset(
-                  'assets/imgs/profile/img_profile_default_.png',
-                ),
-            ],
-          ),
+      ),
+      body: PhotoView(
+        imageProvider: widget.CommentProfileUrl.isNotEmpty
+            ? ExtendedNetworkImageProvider(
+            widget.CommentProfileUrl,
+            cache: true
+        )
+            : AssetImage('assets/imgs/profile/img_profile_default_.png') as ImageProvider,
+        backgroundDecoration: BoxDecoration(
+          color: Colors.black,
         ),
+        minScale: PhotoViewComputedScale.contained,
+        maxScale: PhotoViewComputedScale.covered * 7,
       ),
     );
   }
