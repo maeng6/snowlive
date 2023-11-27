@@ -58,6 +58,7 @@ class UserModelController extends GetxController{
   RxString? _deviceID =''.obs;
   RxBool? _kusbf = false.obs;
   RxInt? _bulletinFreeCount = 0.obs;
+  RxInt? _bulletinEventCount = 0.obs;
 
   List<dynamic> kusbfArray = [];
   Map<String, dynamic> kusbfNameMap = {};
@@ -103,6 +104,7 @@ class UserModelController extends GetxController{
   String? get deviceID => _deviceID!.value;
   bool? get kusbf => _kusbf!.value;
   int? get bulletinFreeCount  => _bulletinFreeCount!.value;
+  int? get bulletinEventCount  => _bulletinEventCount!.value;
 
   @override
   void onInit()  async{
@@ -179,6 +181,7 @@ class UserModelController extends GetxController{
           this._kusbf!.value = userModel.kusbf!;
           this._bulletinFreeCount!.value= userModel.bulletinFreeCount!;
           this._bulletinCrewCount!.value= userModel.bulletinCrewCount!;
+          this._bulletinEventCount!.value= userModel.bulletinEventCount!;
           try {
             this._fleaChatUidList!.value = userModel.fleaChatUidList!;
           }catch(e){};
@@ -349,6 +352,7 @@ class UserModelController extends GetxController{
     final uid = user!.uid;
     await ref.collection('user').doc(uid).update({
       'lastLogin': Timestamp.now(),
+      'bulletinEventCount': 0,
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -604,6 +608,39 @@ class UserModelController extends GetxController{
       int bulletinFreeCount = documentSnapshot.get('bulletinFreeCount');
 
       this._bulletinFreeCount!.value = bulletinFreeCount;
+    }
+  }
+
+
+  Future<void> bulletinEventCountUpdate(uid) async {
+
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int bulletinEventCount = documentSnapshot.get('bulletinEventCount');
+      int bulletinEventCountPlus = bulletinEventCount + 1;
+
+      await ref.collection('user').doc(uid).update({
+        'bulletinEventCount': bulletinEventCountPlus,
+      });
+      this._bulletinEventCount!.value = bulletinEventCountPlus;
+    }catch(e){
+      await ref.collection('user').doc(uid).update({
+        'bulletinEventCount': 1,
+      });
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int bulletinEventCount = documentSnapshot.get('bulletinEventCount');
+
+      this._bulletinEventCount!.value = bulletinEventCount;
     }
   }
 

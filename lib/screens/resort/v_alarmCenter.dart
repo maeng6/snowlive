@@ -19,6 +19,7 @@ import 'package:com.snowlive/screens/more/v_noticeDetailPage.dart';
 
 import '../../controller/vm_alarmCenterController.dart';
 import '../../controller/vm_bulletinCrewController.dart';
+import '../../controller/vm_bulletinEventController.dart';
 import '../../controller/vm_bulletinFreeController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../bulletin/Free/v_bulletin_Free_List_Detail.dart';
@@ -44,6 +45,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   CommentModelController _commentModelController = Get.find<CommentModelController>();
   BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
+  BulletinEventModelController _bulletinEventModelController = Get.find<BulletinEventModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override

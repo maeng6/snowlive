@@ -1,30 +1,29 @@
 import 'dart:io';
-import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_List_Detail.dart';
-import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_List_Screen.dart';
+import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_List_Detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../controller/vm_bulletinCrewController.dart';
+import '../../../controller/vm_bulletinEventController.dart';
 import '../../../controller/vm_imageController.dart';
 import '../../../controller/vm_userModelController.dart';
-import '../../../model/m_bulletinCrewModel.dart';
+import '../../../model/m_bulletinEventModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
-class Bulletin_Crew_Upload extends StatefulWidget {
-  const Bulletin_Crew_Upload({Key? key}) : super(key: key);
+class Bulletin_Event_Upload extends StatefulWidget {
+  const Bulletin_Event_Upload({Key? key}) : super(key: key);
 
   @override
-  State<Bulletin_Crew_Upload> createState() => _Bulletin_Crew_UploadState();
+  State<Bulletin_Event_Upload> createState() => _Bulletin_Event_UploadState();
 }
 
-class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
+class _Bulletin_Event_UploadState extends State<Bulletin_Event_Upload> {
   List<XFile> _imageFiles = [];
   Map<String, String?> _tileSelected = {
     "구분": '',
     "스키장": ''
   };
-  bool? bulletinCrewImageSelected = false;
+  bool? bulletinEventImageSelected = false;
   int i = 0;
   int imageLength = 0;
   TextEditingController _titleTextEditingController = TextEditingController();
@@ -39,10 +38,10 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
   ListTile buildResortListTile(int index) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text('${bulletinCrewResortList[index]}'),
+      title: Text('${bulletinEventResortList[index]}'),
       onTap: () async {
         isLocationSelected = true;
-        SelectedLocation = bulletinCrewResortList[index];
+        SelectedLocation = bulletinEventResortList[index];
         _tileSelected['스키장'] = SelectedLocation;
         print(_tileSelected);
         Navigator.pop(context);
@@ -55,10 +54,10 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
   ListTile buildCategoryListTile(int index) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text('${bulletinCrewCategoryList[index]}'),
+      title: Text('${bulletinEventCategoryList[index]}'),
       onTap: () async {
         isCategorySelected = true;
-        SelectedCategory = bulletinCrewCategoryList[index];
+        SelectedCategory = bulletinEventCategoryList[index];
         _tileSelected['구분'] = SelectedCategory;
         print(_tileSelected);
         Navigator.pop(context);
@@ -73,7 +72,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
     //TODO : ****************************************************************
     Get.put(ImageController(), permanent: true);
     UserModelController _userModelController = Get.find<UserModelController>();
-    BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
+    BulletinEventModelController _bulletinEventModelController = Get.find<BulletinEventModelController>();
     ImageController _imageController = Get.find<ImageController>();
     //TODO : ****************************************************************
 
@@ -125,9 +124,9 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
 
                         if(isValid){
                           CustomFullScreenDialog.showDialog();
-                          await _userModelController.bulletinCrewCountUpdate(_userModelController.uid);
-                          await _imageController.setNewMultiImage_bulletinCrew(_imageFiles, _userModelController.bulletinCrewCount);
-                          await _bulletinCrewModelController.uploadBulletinCrew(
+                          await _userModelController.bulletinEventCountUpdate(_userModelController.uid);
+                          await _imageController.setNewMultiImage_bulletinEvent(_imageFiles, _userModelController.bulletinEventCount);
+                          await _bulletinEventModelController.uploadBulletinEvent(
                               displayName: _userModelController.displayName,
                               uid: _userModelController.uid,
                               profileImageUrl: _userModelController.profileImageUrl,
@@ -136,15 +135,15 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                               category: SelectedCategory,
                               location: SelectedLocation,
                               description: _itemDescribTextEditingController.text,
-                              bulletinCrewCount: _userModelController.bulletinCrewCount,
+                              bulletinEventCount: _userModelController.bulletinEventCount,
                               resortNickname: _userModelController.resortNickname
                           );
-                          await _bulletinCrewModelController.getCurrentBulletinCrew(
+                          await _bulletinEventModelController.getCurrentBulletinEvent(
                               uid: _userModelController.uid,
-                              bulletinCrewCount: _userModelController.bulletinCrewCount);
+                              bulletinEventCount: _userModelController.bulletinEventCount);
 
                           CustomFullScreenDialog.cancelDialog();
-                          Get.off(() => Bulletin_Crew_List_Detail());
+                          Get.off(() => Bulletin_Event_List_Detail());
                         }
                         _imageController.imagesUrlList.clear();
                       }
@@ -192,7 +191,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                 _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
                                 CustomFullScreenDialog.cancelDialog();
                                 if (_imageFiles.length <= 5) {
-                                  bulletinCrewImageSelected = true;
+                                  bulletinEventImageSelected = true;
                                   imageLength = _imageFiles.length;
                                   setState(() {});
                                 } else {
@@ -227,7 +226,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                         _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
                                         CustomFullScreenDialog.cancelDialog();
                                         if (_imageFiles.length <= 5) {
-                                          bulletinCrewImageSelected = true;
+                                          bulletinEventImageSelected = true;
                                           imageLength = _imageFiles.length;
                                           setState(() {});
                                         } else {
@@ -418,7 +417,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                                         Expanded(
                                                           child: ListView.builder(
                                                               padding: EdgeInsets.zero,
-                                                              itemCount: 3,
+                                                              itemCount: 4,
                                                               itemBuilder: (context, index) {
                                                                 return Builder(builder: (context) {
                                                                   return Column(

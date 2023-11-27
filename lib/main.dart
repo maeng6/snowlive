@@ -13,6 +13,7 @@ import 'package:com.snowlive/screens/v_splashScreen.dart';
 import 'controller/vm_allUserDocsController.dart';
 import 'controller/vm_bottomTabBarController.dart';
 import 'controller/vm_bulletinCrewController.dart';
+import 'controller/vm_bulletinEventController.dart';
 import 'controller/vm_bulletinFreeController.dart';
 import 'controller/vm_bulletinRoomController.dart';
 import 'controller/vm_friendsCommentController.dart';
@@ -59,6 +60,7 @@ void main() async {
   Get.put(BulletinRoomModelController(), permanent: true);
   Get.put(BulletinCrewModelController(), permanent: true);
   Get.put(BulletinFreeModelController(), permanent: true);
+  Get.put(BulletinEventModelController(), permanent: true);
   //Get.put(FleaChatModelController(), permanent: true);
 
   runApp(MyApp());

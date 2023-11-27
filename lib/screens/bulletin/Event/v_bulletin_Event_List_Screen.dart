@@ -1,4 +1,6 @@
 import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_List_Detail.dart';
+import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_Upload.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,29 +10,23 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:com.snowlive/controller/vm_fleaMarketController.dart';
-import 'package:com.snowlive/model/m_bulletinCrewModel.dart';
-import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_List_Detail.dart';
-import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_Upload.dart';
-import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
-import 'package:com.snowlive/screens/fleaMarket/v_phone_Auth_Screen.dart';
-import '../../../controller/vm_bulletinCrewController.dart';
+import '../../../controller/vm_bulletinEventController.dart';
 import '../../../controller/vm_timeStampController.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
-class Bulletin_Crew_List_Screen extends StatefulWidget {
-  const Bulletin_Crew_List_Screen({Key? key}) : super(key: key);
+class Bulletin_Event_List_Screen extends StatefulWidget {
+  const Bulletin_Event_List_Screen({Key? key}) : super(key: key);
 
   @override
-  State<Bulletin_Crew_List_Screen> createState() => _Bulletin_Crew_List_ScreenState();
+  State<Bulletin_Event_List_Screen> createState() => _Bulletin_Event_List_ScreenState();
 }
 
-class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
+class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
-  BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
+  BulletinEventModelController _bulletinEventModelController = Get.find<BulletinEventModelController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   SeasonController _seasonController = Get.find<SeasonController>();
 
@@ -51,12 +47,12 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _seasonController.getBulletinCrewLimit();
+    _seasonController.getBulletinEventLimit();
     _stream = newStream();
 
     try{
       FirebaseAnalytics.instance.logEvent(
-        name: 'visit_bulletinCrew',
+        name: 'visit_bulletinEvent',
         parameters: <String, dynamic>{
           'user_id': _userModelController.uid,
           'user_name': _userModelController.displayName,
@@ -94,13 +90,13 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
 
   Stream<QuerySnapshot> newStream() {
     return FirebaseFirestore.instance
-        .collection('bulletinCrew')
+        .collection('bulletinEvent')
         .where('category',
         isEqualTo:
         (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
         .where('location', isEqualTo: (_selectedValue2 == '지역') ? _allCategories : '$_selectedValue2')
         .orderBy('timeStamp', descending: true)
-        .limit(_seasonController.bulletinCrewLimit!)
+        .limit(_seasonController.bulletinEventLimit!)
         .snapshots();
   }
 
@@ -132,22 +128,32 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue = '단톡방';
+                            _selectedValue = '클리닉(무료)';
                             _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
-                        child: Text('단톡방')),
+                        child: Text('클리닉(무료)')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue = '동호회(크루)';
+                            _selectedValue = '클리닉(유료)';
                             _isVisible = false;
                           });
                           Navigator.pop(context);
                         },
-                        child: Text('동호회(크루)')),
+                        child: Text('클리닉(유료)')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue = '시승회';
+                            _isVisible = false;
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('시승회')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
@@ -379,7 +385,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
-    _seasonController.getBulletinCrewLimit();
+    _seasonController.getBulletinEventLimit();
 
     return GestureDetector(
       onTap: () {
@@ -448,12 +454,12 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                       height: 52,
                       duration: Duration(milliseconds: 200),
                       child: FloatingActionButton.extended(
-                        heroTag: 'bulletin_crew',
+                        heroTag: 'bulletin_Event',
                         elevation: 4,
                         onPressed: () async {
                           await _userModelController
                               .getCurrentUser(_userModelController.uid);
-                          Get.to(() => Bulletin_Crew_Upload());
+                          Get.to(() => Bulletin_Event_Upload());
                         },
                         icon: Transform.translate(
                             offset: Offset(6,0),
@@ -657,18 +663,18 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                   return;
                                 }
                                 CustomFullScreenDialog.showDialog();
-                                await _bulletinCrewModelController
-                                    .getCurrentBulletinCrew(
+                                await _bulletinEventModelController
+                                    .getCurrentBulletinEvent(
                                     uid: chatDocs[index].get('uid'),
-                                    bulletinCrewCount:
-                                    chatDocs[index].get('bulletinCrewCount'));
+                                    bulletinEventCount:
+                                    chatDocs[index].get('bulletinEventCount'));
                                 if (data?.containsKey('lock') == false) {
                                   await chatDocs[index].reference.update({'viewerUid': []});
                                 }
-                                await _bulletinCrewModelController
+                                await _bulletinEventModelController
                                     .updateViewerUid();
                                 CustomFullScreenDialog.cancelDialog();
-                                Get.to(() => Bulletin_Crew_List_Detail());
+                                Get.to(() => Bulletin_Event_List_Detail());
                               }else{}
                             },
                             child: Obx(() => Column(
@@ -788,7 +794,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                                                                       await chatDocs[index].reference.update({'lock': false});
                                                                                                     }
                                                                                                     CustomFullScreenDialog.showDialog();
-                                                                                                    await _bulletinCrewModelController.lock('${chatDocs[index]['uid']}#${chatDocs[index]['bulletinCrewCount']}');
+                                                                                                    await _bulletinEventModelController.lock('${chatDocs[index]['uid']}#${chatDocs[index]['bulletinEventCount']}');
                                                                                                     Navigator.pop(context);
                                                                                                     CustomFullScreenDialog.cancelDialog();
                                                                                                   },
@@ -990,7 +996,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                                                                                             await chatDocs[index].reference.update({'lock': false});
                                                                                                                           }
                                                                                                                           CustomFullScreenDialog.showDialog();
-                                                                                                                          await _bulletinCrewModelController.lock('${chatDocs[index]['uid']}#${chatDocs[index]['bulletinCrewCount']}');
+                                                                                                                          await _bulletinEventModelController.lock('${chatDocs[index]['uid']}#${chatDocs[index]['bulletinEventCount']}');
                                                                                                                           Navigator.pop(context);
                                                                                                                           CustomFullScreenDialog.cancelDialog();
                                                                                                                         },
@@ -1044,7 +1050,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                                   child: Padding(
                                                                     padding: const EdgeInsets.only(top: 2, bottom: 4, left: 8, right: 8),
                                                                     child: Text(
-                                                                      chatDocs[index].get('bulletinCrewReplyCount').toString(),
+                                                                      chatDocs[index].get('bulletinEventReplyCount').toString(),
                                                                       maxLines: 1,
                                                                       overflow:  TextOverflow.ellipsis,
                                                                       style: TextStyle(

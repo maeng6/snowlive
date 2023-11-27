@@ -172,6 +172,28 @@ class ImageController extends GetxController {
     return downloadUrl;
   }
 
+  Future<List<String>> setNewMultiImage_bulletinEvent(List<XFile> newImages,bulletinEventCount) async {
+    int i =0;
+    var downloadUrlsingle;
+    String? uid = await FlutterSecureStorage().read(key: 'uid');
+    var metaData = SettableMetadata(contentType: 'image/jpeg');
+    List<String> downloadUrl = [];
+    if (newImages != null) {
+
+      while(i<newImages.length) {
+        Reference ref = FirebaseStorage.instance.ref('images/bulletinEvent/$uid#$bulletinEventCount/#$i.jpg');
+        await ref.putFile(File(newImages[i].path), metaData);
+        downloadUrlsingle = await ref.getDownloadURL();
+        downloadUrl.add(downloadUrlsingle);
+        i++;
+      }
+    } else {
+      CustomFullScreenDialog.cancelDialog();
+    }
+    imagesUrlList.addAll(downloadUrl);
+    return downloadUrl;
+  }
+
   Future<List<String>> setNewMultiImage_bulletinFree(List<XFile> newImages,bulletinFreeCount) async {
     int i =0;
     var downloadUrlsingle;

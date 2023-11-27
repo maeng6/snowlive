@@ -991,6 +991,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                           bulletinCrewCount : '',
                                                                                           bulletinFreeUid : '',
                                                                                           bulletinFreeCount : '',
+                                                                                          bulletinEventUid : '',
+                                                                                          bulletinEventCount : '',
                                                                                           originContent: 'friend'
                                                                                       );
                                                                                       await _userModelController.getCurrentUser(_userModelController.uid);
@@ -2784,6 +2786,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                     bulletinCrewCount : '',
                                                                     bulletinFreeUid : '',
                                                                     bulletinFreeCount : '',
+                                                                    bulletinEventUid : '',
+                                                                    bulletinEventCount : '',
                                                                     originContent: 'friend'
                                                                 );
                                                                 await _userModelController.getCurrentUser(
@@ -2823,6 +2827,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                     bulletinCrewCount : '',
                                                                     bulletinFreeUid : '',
                                                                     bulletinFreeCount : '',
+                                                                    bulletinEventUid : '',
+                                                                    bulletinEventCount : '',
                                                                     originContent: 'friend'
                                                                 );
                                                                 _friendTalkController.clear();
@@ -2876,6 +2882,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                 bulletinCrewCount : '',
                                                 bulletinFreeUid : '',
                                                 bulletinFreeCount : '',
+                                                bulletinEventUid : '',
+                                                bulletinEventCount : '',
                                                 originContent: 'friend'
                                             );
                                             FocusScope.of(context).unfocus();

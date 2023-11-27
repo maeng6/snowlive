@@ -4,7 +4,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/model/m_commentModel.dart';
 import '../model/m_bulletinCrewModel.dart';
-class BulletinCrewModelController extends GetxController {
+import '../model/m_bulletinEventModel.dart';
+class BulletinEventModelController extends GetxController {
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
 
@@ -16,8 +17,8 @@ class BulletinCrewModelController extends GetxController {
   RxString? _category = ''.obs;
   RxString? _location = ''.obs;
   RxString? _description = ''.obs;
-  RxInt? _bulletinCrewCount = 0.obs;
-  RxInt? _bulletinCrewReplyCount = 0.obs;
+  RxInt? _bulletinEventCount = 0.obs;
+  RxInt? _bulletinEventReplyCount = 0.obs;
   RxString? _resortNickname = ''.obs;
   RxBool? _soldOut = false.obs;
   Timestamp? _timeStamp;
@@ -38,9 +39,9 @@ class BulletinCrewModelController extends GetxController {
 
   String? get description => _description!.value;
 
-  int? get bulletinCrewCount => _bulletinCrewCount!.value;
+  int? get bulletinEventCount => _bulletinEventCount!.value;
 
-  int? get bulletinCrewReplyCount => _bulletinCrewReplyCount!.value;
+  int? get bulletinEventReplyCount => _bulletinEventReplyCount!.value;
 
   String? get resortNickname => _resortNickname!.value;
 
@@ -48,37 +49,37 @@ class BulletinCrewModelController extends GetxController {
 
   Timestamp? get timeStamp => _timeStamp;
 
-  Future<void> getCurrentBulletinCrew({required uid, required bulletinCrewCount}) async {
-    BulletinCrewModel bulletinCrewModel = await BulletinCrewModel().getBulletinCrewModel(uid,bulletinCrewCount);
-    this._displayName!.value = bulletinCrewModel.displayName!;
-    this._uid!.value = bulletinCrewModel.uid!;
-    this._profileImageUrl!.value = bulletinCrewModel.profileImageUrl!;
-    this._itemImagesUrls!.value = bulletinCrewModel.itemImagesUrls!;
-    this._title!.value = bulletinCrewModel.title!;
-    this._category!.value = bulletinCrewModel.category!;
-    this._location!.value = bulletinCrewModel.location!;
-    this._description!.value = bulletinCrewModel.description!;
-    this._bulletinCrewCount!.value = bulletinCrewModel.bulletinCrewCount!;
-    this._bulletinCrewReplyCount!.value = bulletinCrewModel.bulletinCrewReplyCount!;
-    this._resortNickname!.value = bulletinCrewModel.resortNickname!;
-    this._soldOut!.value = bulletinCrewModel.soldOut!;
-    this._timeStamp = bulletinCrewModel.timeStamp!;
+  Future<void> getCurrentBulletinEvent({required uid, required bulletinEventCount}) async {
+    BulletinEventModel bulletinEventModel = await BulletinEventModel().getBulletinEventModel(uid,bulletinEventCount);
+    this._displayName!.value = bulletinEventModel.displayName!;
+    this._uid!.value = bulletinEventModel.uid!;
+    this._profileImageUrl!.value = bulletinEventModel.profileImageUrl!;
+    this._itemImagesUrls!.value = bulletinEventModel.itemImagesUrls!;
+    this._title!.value = bulletinEventModel.title!;
+    this._category!.value = bulletinEventModel.category!;
+    this._location!.value = bulletinEventModel.location!;
+    this._description!.value = bulletinEventModel.description!;
+    this._bulletinEventCount!.value = bulletinEventModel.bulletinEventCount!;
+    this._bulletinEventReplyCount!.value = bulletinEventModel.bulletinEventReplyCount!;
+    this._resortNickname!.value = bulletinEventModel.resortNickname!;
+    this._soldOut!.value = bulletinEventModel.soldOut!;
+    this._timeStamp = bulletinEventModel.timeStamp!;
   }
 
   Future<void> updateItemImageUrls(imageUrls) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
-    await ref.collection('bulletinCrew').doc('$uid#$bulletinCrewCount').update({
+    await ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount').update({
       'itemImagesUrls': imageUrls,
     });
-    await getCurrentBulletinCrew(uid: uid, bulletinCrewCount: bulletinCrewCount);
+    await getCurrentBulletinEvent(uid: uid, bulletinEventCount: bulletinEventCount);
   }
 
-  Future<void> deleteBulletinCrewImage({required uid, required bulletinCrewCount, required imageCount}) async{
-    print('$uid#$bulletinCrewCount');
+  Future<void> deleteBulletinEventImage({required uid, required bulletinEventCount, required imageCount}) async{
+    print('$uid#$bulletinEventCount');
     for (int i = imageCount-1; i > -1; i--) {
       print('#$i.jpg');
-      await FirebaseStorage.instance.ref().child('images/bulletinCrew/$uid#$bulletinCrewCount/#$i.jpg').delete();
+    await FirebaseStorage.instance.ref().child('images/bulletinEvent/$uid#$bulletinEventCount/#$i.jpg').delete();
     }
   }
 
@@ -86,20 +87,20 @@ class BulletinCrewModelController extends GetxController {
     final User? user = auth.currentUser;
     final uid = user!.uid;
     if(isSoldOut == false) {
-      await ref.collection('bulletinCrew').doc('$uid#$bulletinCrewCount').update({
+      await ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount').update({
         'soldOut': true,
       });
     }else{
-      await ref.collection('bulletinCrew').doc('$uid#$bulletinCrewCount').update({
+      await ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount').update({
         'soldOut': false,
       });
     }
-    await getCurrentBulletinCrew(uid: uid, bulletinCrewCount: bulletinCrewCount);
+    await getCurrentBulletinEvent(uid: uid, bulletinEventCount: bulletinEventCount);
   }
 
   Future<void> updateViewerUid() async {
     final  userMe = auth.currentUser!.uid;
-    await ref.collection('bulletinCrew').doc('$uid#$bulletinCrewCount').update({
+    await ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount').update({
       'viewerUid': FieldValue.arrayUnion([userMe])
     });
   }
@@ -108,7 +109,7 @@ class BulletinCrewModelController extends GetxController {
     try {
 
       DocumentReference<Map<String, dynamic>> documentReference =
-      ref.collection('bulletinCrew').doc(uid);
+      ref.collection('bulletinEvent').doc(uid);
 
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
       await documentReference.get();
@@ -116,11 +117,11 @@ class BulletinCrewModelController extends GetxController {
       bool isLock = documentSnapshot.get('lock');
 
       if(isLock == false) {
-        await ref.collection('bulletinCrew').doc(uid).update({
+        await ref.collection('bulletinEvent').doc(uid).update({
           'lock': true,
         });
       }else {
-        await ref.collection('bulletinCrew').doc(uid).update({
+        await ref.collection('bulletinEvent').doc(uid).update({
           'lock': false,
         });
       }
@@ -129,7 +130,7 @@ class BulletinCrewModelController extends GetxController {
     }
   }
 
-  Future<void> uploadBulletinCrew(
+  Future<void> uploadBulletinEvent(
       {required displayName,
         required uid,
         required profileImageUrl,
@@ -138,9 +139,9 @@ class BulletinCrewModelController extends GetxController {
         required category,
         required location,
         required description,
-        required bulletinCrewCount,
+        required bulletinEventCount,
         required resortNickname}) async {
-    await BulletinCrewModel().uploadBulletinCrew(
+    await BulletinEventModel().uploadBulletinEvent(
         displayName: displayName,
         uid: uid,
         profileImageUrl: profileImageUrl,
@@ -149,11 +150,11 @@ class BulletinCrewModelController extends GetxController {
         category: category,
         location: location,
         description: description,
-        bulletinCrewCount: bulletinCrewCount,
+        bulletinEventCount: bulletinEventCount,
         resortNickname: resortNickname);
   }
 
-  Future<void> updateBulletinCrew(
+  Future<void> updateBulletinEvent(
       {required displayName,
         required uid,
         required profileImageUrl,
@@ -162,9 +163,9 @@ class BulletinCrewModelController extends GetxController {
         required category,
         required location,
         required description,
-        required bulletinCrewCount,
+        required bulletinEventCount,
         required resortNickname}) async {
-    await BulletinCrewModel().updateBulletinCrew(
+    await BulletinEventModel().updateBulletinEvent(
         displayName: displayName,
         uid: uid,
         profileImageUrl: profileImageUrl,
@@ -173,46 +174,46 @@ class BulletinCrewModelController extends GetxController {
         category: category,
         location: location,
         description: description,
-        bulletinCrewCount: bulletinCrewCount,
+        bulletinEventCount: bulletinEventCount,
         resortNickname: resortNickname);
   }
 
-  Future<void> updateBulletinCrewReplyCount({required bullUid, required bullCount}) async {
+  Future<void> updateBulletinEventReplyCount({required bullUid, required bullCount}) async {
 
     try {
       DocumentReference<Map<String, dynamic>> documentReference =
-      ref.collection('bulletinCrew').doc('$bullUid#$bullCount');
+      ref.collection('bulletinEvent').doc('$bullUid#$bullCount');
 
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
       await documentReference.get();
 
-      int bulletinCrewReplyCount = documentSnapshot.get('bulletinCrewReplyCount');
-      int bulletinCrewReplyCountPlus = bulletinCrewReplyCount + 1;
+      int bulletinEventReplyCount = documentSnapshot.get('bulletinEventReplyCount');
+      int bulletinEventReplyCountPlus = bulletinEventReplyCount + 1;
 
-      await ref.collection('bulletinCrew').doc('$bullUid#$bullCount').update({
-        'bulletinCrewReplyCount': bulletinCrewReplyCountPlus,
+      await ref.collection('bulletinEvent').doc('$bullUid#$bullCount').update({
+        'bulletinEventReplyCount': bulletinEventReplyCountPlus,
       });
     }catch(e){
-      await ref.collection('bulletinCrew').doc('$bullUid#$bullCount').update({
-        'bulletinCrewReplyCount': 1,
+      await ref.collection('bulletinEvent').doc('$bullUid#$bullCount').update({
+        'bulletinEventReplyCount': 1,
       });
     }
   }
 
-  Future<void> reduceBulletinCrewReplyCount({required bullUid, required bullCount}) async {
+  Future<void> reduceBulletinEventReplyCount({required bullUid, required bullCount}) async {
 
     try {
       DocumentReference<Map<String, dynamic>> documentReference =
-      ref.collection('bulletinCrew').doc('$bullUid#$bullCount');
+      ref.collection('bulletinEvent').doc('$bullUid#$bullCount');
 
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
       await documentReference.get();
 
-      int bulletinCrewReplyCount = documentSnapshot.get('bulletinCrewReplyCount');
-      int bulletinCrewReplyCountPlus = bulletinCrewReplyCount - 1;
+      int bulletinEventReplyCount = documentSnapshot.get('bulletinEventReplyCount');
+      int bulletinEventReplyCountPlus = bulletinEventReplyCount - 1;
 
-      await ref.collection('bulletinCrew').doc('$bullUid#$bullCount').update({
-        'bulletinCrewReplyCount': bulletinCrewReplyCountPlus,
+      await ref.collection('bulletinEvent').doc('$bullUid#$bullCount').update({
+        'bulletinEventReplyCount': bulletinEventReplyCountPlus,
       });
     }catch(e){}
   }
@@ -225,3 +226,5 @@ class BulletinCrewModelController extends GetxController {
 
 
 }
+
+

@@ -88,7 +88,6 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
                   .collection('Ranking')
                   .doc('${_seasonController.currentSeason}')
                   .collection('${_liveCrewModelController.baseResort}')
-                  .where('uid', whereIn: memberList)
                   .orderBy('totalScore', descending: true)
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
@@ -102,7 +101,9 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
                   return Text('Error: ${snapshot.error}');
                 }
                 else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                  final documents = snapshot.data!.docs;
+                  final AllUserScoreDocs = snapshot.data!.docs;
+                  final documents = AllUserScoreDocs.where((doc) =>
+                      memberList.contains(doc.data()['uid'])).toList();
                   // 동점자인 경우 lastPassTime을 기준으로 최신 순으로 정렬
                   documents.sort((a, b) {
                     final aTotalScore = a['totalScore'] as int;

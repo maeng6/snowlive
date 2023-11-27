@@ -528,6 +528,11 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                       height: 280,
                                       viewportFraction: 1,
                                       enableInfiniteScroll: false,
+                                      onPageChanged: (index, reason) {
+                                        setState(() {
+                                          _currentIndex = index;
+                                        });
+                                      },
                                     ),
                                     itemCount:
                                     _bulletinFreeModelController.itemImagesUrls!.length,
@@ -1595,6 +1600,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                             bulletinRoomCount :'',
                                             bulletinCrewUid : '',
                                             bulletinCrewCount : '',
+                                            bulletinEventUid : '',
+                                            bulletinEventCount : '',
                                             bulletinFreeUid : _bulletinFreeModelController.uid,
                                             bulletinFreeCount : _bulletinFreeModelController.bulletinFreeCount,
                                             originContent: _bulletinFreeModelController.title
