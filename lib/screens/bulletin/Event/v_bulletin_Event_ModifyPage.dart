@@ -1,49 +1,53 @@
 import 'dart:io';
-import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_List_Detail.dart';
-import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_List_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../controller/vm_bulletinCrewController.dart';
+import '../../../controller/vm_bulletinEventController.dart';
 import '../../../controller/vm_imageController.dart';
 import '../../../controller/vm_userModelController.dart';
-import '../../../model/m_bulletinCrewModel.dart';
+import '../../../model/m_bulletinEventModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
-class Bulletin_Crew_Upload extends StatefulWidget {
-  const Bulletin_Crew_Upload({Key? key}) : super(key: key);
+class Bulletin_Event_ModifyPage extends StatefulWidget {
+  const Bulletin_Event_ModifyPage({Key? key}) : super(key: key);
 
   @override
-  State<Bulletin_Crew_Upload> createState() => _Bulletin_Crew_UploadState();
+  State<Bulletin_Event_ModifyPage> createState() => _Bulletin_Event_ModifyPageState();
 }
 
-class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
+class _Bulletin_Event_ModifyPageState extends State<Bulletin_Event_ModifyPage> {
   List<XFile> _imageFiles = [];
   Map<String, String?> _tileSelected = {
     "구분": '',
     "스키장": ''
   };
-  bool? bulletinCrewImageSelected = false;
+  bool? bulletinEventImageSelected = false;
   int i = 0;
   int imageLength = 0;
   TextEditingController _titleTextEditingController = TextEditingController();
   TextEditingController _itemDescribTextEditingController = TextEditingController();
   bool? isCategorySelected = false;
   bool? isLocationSelected = false;
-  String? SelectedCategory = '';
-  String? SelectedLocation = '';
+  bool? isMethodSelected = false;
+  bool? isModifiedImageSelected = false;
+  RxString? SelectedCategory = ''.obs;
+  RxString? SelectedLocation = ''.obs;
+  RxString? SelectedMethod = ''.obs;
   String? title = '';
   final _formKey = GlobalKey<FormState>();
+  RxList? _imageUrls=[].obs;
+  String? _initTitle ;
+  String? _initdescrip ;
 
   ListTile buildResortListTile(int index) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text('${bulletinCrewResortList[index]}'),
+      title: Text('${bulletinEventResortList[index]}'),
       onTap: () async {
         isLocationSelected = true;
-        SelectedLocation = bulletinCrewResortList[index];
-        _tileSelected['스키장'] = SelectedLocation;
+        SelectedLocation!.value = bulletinEventResortList[index];
+        _tileSelected['리조트'] = SelectedLocation!.value;
         print(_tileSelected);
         Navigator.pop(context);
         setState(() {});
@@ -55,11 +59,11 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
   ListTile buildCategoryListTile(int index) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text('${bulletinCrewCategoryList[index]}'),
+      title: Text('${bulletinEventCategoryList[index]}'),
       onTap: () async {
         isCategorySelected = true;
-        SelectedCategory = bulletinCrewCategoryList[index];
-        _tileSelected['구분'] = SelectedCategory;
+        SelectedCategory!.value = bulletinEventCategoryList[index];
+        _tileSelected['구분'] = SelectedCategory!.value;
         print(_tileSelected);
         Navigator.pop(context);
         setState(() {});
@@ -69,11 +73,23 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    BulletinEventModelController _bulletinEventModelController = Get.find<BulletinEventModelController>();
+    _imageUrls!.addAll(_bulletinEventModelController.itemImagesUrls!);
+    SelectedCategory = _bulletinEventModelController.category!.obs;
+    SelectedLocation = _bulletinEventModelController.location!.obs;
+    _initTitle =_bulletinEventModelController.title;
+    _initdescrip =_bulletinEventModelController.description;
+  }
+
+  @override
   Widget build(BuildContext context) {
     //TODO : ****************************************************************
     Get.put(ImageController(), permanent: true);
     UserModelController _userModelController = Get.find<UserModelController>();
-    BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
+    BulletinEventModelController _bulletinEventModelController = Get.find<BulletinEventModelController>();
     ImageController _imageController = Get.find<ImageController>();
     //TODO : ****************************************************************
 
@@ -88,7 +104,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(58),
             child: AppBar(
-              title: Text('단톡방/동호회'),
+              title: Text('시즌방'),
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
@@ -105,54 +121,45 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                     onPressed: () async{
                       final isValid = _formKey.currentState!.validate();
 
-                      if(_tileSelected["구분"]!.isEmpty){
-                        Get.snackbar('선택되지않은 항목', '구분을 선택해주세요.',
-                            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                            snackPosition: SnackPosition.BOTTOM,
-                            backgroundColor: Colors.black87,
-                            colorText: Colors.white,
-                            duration: Duration(milliseconds: 3000));
-                      }
-                      else if(_tileSelected["스키장"]!.isEmpty){
-                        Get.snackbar('선택되지않은 항목', '스키장을 선택해주세요.',
-                            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                            snackPosition: SnackPosition.BOTTOM,
-                            backgroundColor: Colors.black87,
-                            colorText: Colors.white,
-                            duration: Duration(milliseconds: 3000));
-                      }
-                      else{
-
-                        if(isValid){
-                          CustomFullScreenDialog.showDialog();
-                          await _userModelController.bulletinCrewCountUpdate(_userModelController.uid);
-                          await _imageController.setNewMultiImage_bulletinCrew(_imageFiles, _userModelController.bulletinCrewCount);
-                          await _bulletinCrewModelController.uploadBulletinCrew(
-                              displayName: _userModelController.displayName,
-                              uid: _userModelController.uid,
-                              profileImageUrl: _userModelController.profileImageUrl,
-                              itemImagesUrls: _imageController.imagesUrlList,
-                              title: _titleTextEditingController.text,
-                              category: SelectedCategory,
-                              location: SelectedLocation,
-                              description: _itemDescribTextEditingController.text,
-                              bulletinCrewCount: _userModelController.bulletinCrewCount,
-                              resortNickname: _userModelController.resortNickname
-                          );
-                          await _bulletinCrewModelController.getCurrentBulletinCrew(
-                              uid: _userModelController.uid,
-                              bulletinCrewCount: _userModelController.bulletinCrewCount);
-
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.off(() => Bulletin_Crew_List_Detail());
+                      if(isValid){
+                        CustomFullScreenDialog.showDialog();
+                        await _imageController.setNewMultiImage_bulletinEvent(_imageFiles, _bulletinEventModelController.bulletinEventCount);
+                        (isModifiedImageSelected==true)
+                            ? await _bulletinEventModelController.updateBulletinEvent(
+                            displayName: _userModelController.displayName,
+                            uid: _userModelController.uid,
+                            profileImageUrl: _userModelController.profileImageUrl,
+                            itemImagesUrls: _imageController.imagesUrlList,
+                            title: _titleTextEditingController.text,
+                            category: SelectedCategory!.value,
+                            location: SelectedLocation!.value,
+                            description: _itemDescribTextEditingController.text,
+                            bulletinEventCount: _bulletinEventModelController.bulletinEventCount,
+                            resortNickname: _userModelController.resortNickname
+                        )
+                            : await _bulletinEventModelController.updateBulletinEvent(
+                            displayName: _userModelController.displayName,
+                            uid: _userModelController.uid,
+                            profileImageUrl: _userModelController.profileImageUrl,
+                            itemImagesUrls: _imageUrls,
+                            title: _titleTextEditingController.text,
+                            category: SelectedCategory!.value,
+                            location: SelectedLocation!.value,
+                            description: _itemDescribTextEditingController.text,
+                            bulletinEventCount: _bulletinEventModelController.bulletinEventCount,
+                            resortNickname: _userModelController.resortNickname
+                        );
+                        CustomFullScreenDialog.cancelDialog();
+                        for(int i=0; i<2; i++){
+                          Get.back();
                         }
-                        _imageController.imagesUrlList.clear();
                       }
+                      _imageController.imagesUrlList.clear();
 
                     },
                     child: Padding(
                       padding: EdgeInsets.only(right: 10),
-                      child: Text('올리기', style: TextStyle(
+                      child: Text('수정완료', style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF3D83ED)
@@ -192,7 +199,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                 _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
                                 CustomFullScreenDialog.cancelDialog();
                                 if (_imageFiles.length <= 5) {
-                                  bulletinCrewImageSelected = true;
+                                  bulletinEventImageSelected = true;
                                   imageLength = _imageFiles.length;
                                   setState(() {});
                                 } else {
@@ -227,7 +234,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                         _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
                                         CustomFullScreenDialog.cancelDialog();
                                         if (_imageFiles.length <= 5) {
-                                          bulletinCrewImageSelected = true;
+                                          bulletinEventImageSelected = true;
                                           imageLength = _imageFiles.length;
                                           setState(() {});
                                         } else {
@@ -267,22 +274,22 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                             ),
                           ),
                         ),
-
                         SizedBox(
                           width: 8,
                         ),
                         if(_imageFiles.length == 0)
                           SizedBox(width: 8,),
-                        if(_imageFiles.length == 0)
+                        if(_imageUrls!.length==0 && _imageFiles.length==0)
                           Text('사진은 게시글에 첨부됩니다.',
                             style: TextStyle(
                                 color: Color(0xff949494),
                                 fontSize: 12
                             ),
                           ),
-                        Expanded(
+                        (isModifiedImageSelected==true)
+                            ?Expanded(
                           child: SizedBox(
-                            height: 120,
+                            height: 100,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
@@ -291,12 +298,10 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                 return Row(
                                   children: [
                                     Stack(children: [
-
                                       Container(
                                         decoration: BoxDecoration(
-                                            border: Border.all(color: Color(0xFFECECEC)),
-                                            borderRadius: BorderRadius.circular(8),
-                                            color: Colors.white
+                                          border: Border.all(color: Color(0xFFECECEC)),
+                                          borderRadius: BorderRadius.circular(8),
                                         ),
                                         height: 90,
                                         width: 90,
@@ -356,6 +361,83 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                 );
                               },
                             ),
+                          ),
+                        )
+                            :Expanded(
+                          child: SizedBox(
+                            height: 100,
+                            child:
+                            Obx(() => ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              itemCount: _imageUrls!.length,
+                              itemBuilder: (context, index) {
+                                return Row(
+                                  children: [
+                                    Stack(children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: Color(0xFFECECEC)),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        height: 90,
+                                        width: 90,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(7),
+                                          child: Image.network(
+                                            '${_imageUrls![index]}',
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: -8,
+                                        right: -8,
+                                        child: IconButton(
+                                          onPressed: () {
+                                            _imageUrls!.removeAt(index);
+                                            setState(() {
+                                            });
+                                          },
+                                          icon: Icon(Icons.cancel), color: Color(0xFF111111),),
+                                      ),
+                                      if(index==0)
+                                        Positioned(
+                                          top: 68,
+                                          child: Opacity(
+                                            opacity:0.8,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.transparent
+                                                ),
+                                                borderRadius: BorderRadius.only(
+                                                    bottomRight: Radius.circular(8),
+                                                    bottomLeft: Radius.circular(8)
+                                                ),
+                                                color: Colors.black87,
+                                              ),
+                                              height: 22,
+                                              width: 90,
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(7),
+                                                child: Text('대표사진',
+                                                  style: TextStyle(color: Colors.white,
+                                                      fontSize: 12),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                    ]),
+                                    SizedBox(
+                                      width: 8,
+                                    )
+                                  ],
+                                );
+                              },
+                            )),
                           ),
                         )
                       ],
@@ -438,13 +520,11 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                                   );
                                                 });
                                           },
-                                          child: (isCategorySelected!)
-                                              ? Text('$SelectedCategory', style: TextStyle(
-                                              fontSize: 16, color: Color(0xFF111111)
-                                          ),)
-                                              : Text('구분', style: TextStyle(
-                                              fontSize: 16, color: Color(0xFF949494)
-                                          ),)),
+                                          child: Text('${SelectedCategory!.value}',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Color(0xFF111111)
+                                            ),)),
                                     ],
                                   ),
                                 ),
@@ -482,7 +562,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      '스키장을 선택해주세요.',
+                                                      '리조트를 선택해주세요.',
                                                       style: TextStyle(
                                                           fontSize: 20,
                                                           fontWeight: FontWeight.bold),
@@ -494,7 +574,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                                     Expanded(
                                                       child: ListView.builder(
                                                           padding: EdgeInsets.zero,
-                                                          itemCount: 14,
+                                                          itemCount: 13,
                                                           itemBuilder: (context, index) {
                                                             return Builder(builder: (context) {
                                                               return Column(
@@ -514,23 +594,20 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                               );
                                             });
                                       },
-                                      child: (isLocationSelected!)
-                                          ? Container(
+                                      child:Container(
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(4),
                                           color: Color(0xFFD5F7E0),
                                         ),
                                         padding: EdgeInsets.only(right: 10, left: 10, top: 4, bottom: 6),
-                                        child: Text('$SelectedLocation', style: TextStyle(
-                                            fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF17AD4A)
-                                        ),),
-                                      )
-                                          : Padding(
-                                        padding: EdgeInsets.only(bottom: 6),
-                                        child: Text('스키장', style: TextStyle(
-                                            fontSize: 16, color: Color(0xFF949494)
-                                        ),),
-                                      ),),
+                                        child: Text('${SelectedLocation!.value}',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF17AD4A)),
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ],
@@ -551,7 +628,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                   cursorHeight: 16,
                                   cursorWidth: 2,
                                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                                  controller: _titleTextEditingController,
+                                  controller: _titleTextEditingController..text='$_initTitle',
                                   strutStyle: StrutStyle(leading: 0.3),
                                   decoration: InputDecoration(
                                     floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -599,7 +676,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                       cursorHeight: 16,
                                       cursorWidth: 2,
                                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                                      controller: _itemDescribTextEditingController,
+                                      controller: _itemDescribTextEditingController..text='$_initdescrip',
                                       strutStyle: StrutStyle(leading: 0.3),
                                       decoration: InputDecoration(
                                         floatingLabelBehavior: FloatingLabelBehavior.always,

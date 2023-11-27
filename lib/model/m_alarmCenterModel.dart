@@ -12,6 +12,7 @@ class AlarmCenterModel {
   static const String communityReplyKey_room = 'communityReply_room';
   static const String communityReplyKey_crew = 'communityReply_crew';
   static const String communityReplyKey_free = 'communityReply_free';
+  static const String communityReplyKey_event = 'communityReply_event';
 
   Map<String, String> alarmCategory = {
     friendRequestKey: '친구요청',
@@ -21,6 +22,7 @@ class AlarmCenterModel {
     communityReplyKey_room: '시즌방 게시글',
     communityReplyKey_crew: '단톡방·동호회 글',
     communityReplyKey_free: '자유게시판 글',
+    communityReplyKey_event: '클리닉 글',
   };
 
 

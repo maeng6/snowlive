@@ -4,21 +4,20 @@ import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:get/get.dart';
+import '../../../controller/vm_bulletinEventController.dart';
 
-import '../../../controller/vm_bulletinCrewController.dart';
-
-class BulletinCrewImageScreen extends StatefulWidget {
-  BulletinCrewImageScreen({Key? key}) : super(key: key);
+class BulletinEventImageScreen extends StatefulWidget {
+  BulletinEventImageScreen({Key? key}) : super(key: key);
 
   @override
-  State<BulletinCrewImageScreen> createState() =>
-      _BulletinCrewImageScreenState();
+  State<BulletinEventImageScreen> createState() =>
+      _BulletinEventImageScreenState();
 }
 
-class _BulletinCrewImageScreenState extends State<BulletinCrewImageScreen> {
+class _BulletinEventImageScreenState extends State<BulletinEventImageScreen> {
 
   //TODO: Dependency Injection**************************************************
-  BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
+  BulletinEventModelController _bulletinEventModelController = Get.find<BulletinEventModelController>();
   //TODO: Dependency Injection**************************************************
 
   int _currentPage = 0;
@@ -28,7 +27,7 @@ class _BulletinCrewImageScreenState extends State<BulletinCrewImageScreen> {
   void initState() {
     super.initState();
     // 이미지 URL 리스트를 컨트롤러에서 가져와 저장
-    _itemImagesUrls = _bulletinCrewModelController.itemImagesUrls?.cast<String>() ?? [];
+    _itemImagesUrls = _bulletinEventModelController.itemImagesUrls?.cast<String>() ?? [];
   }
 
   @override

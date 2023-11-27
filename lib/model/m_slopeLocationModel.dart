@@ -1122,10 +1122,6 @@ List<LocationModel> phoenix = [
       //보강1
       LatLng(37.578587, 128.314548),
       LatLng(37.578407, 128.314608),
-      //보강2
-      LatLng(37.578740, 128.317112),
-      LatLng(37.578540, 128.317112),
-      LatLng(37.578440, 128.317212),
     ],
     type: 'slope',
     resort: 12,
@@ -1206,7 +1202,7 @@ List<LocationModel> phoenix = [
     name: '마스터',
     coordinates: [
       LatLng(37.578714, 128.321666),
-      LatLng(37.578895, 128.321876),
+      LatLng(37.578755, 128.322006),
       //보강1
       LatLng(37.578194, 128.321133),
     ],

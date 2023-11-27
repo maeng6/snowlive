@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_List_Screen.dart';
 import 'package:com.snowlive/screens/bulletin/Room/v_bulletin_Room_List_Screen.dart';
+import 'Event/v_bulletin_Event_List_Screen.dart';
 import 'Free/v_bulletin_Free_List_Screen.dart';
 
 class BulletinScreen extends StatefulWidget {
@@ -17,6 +18,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
   int counter = 0;
   List<bool> isTap = [
     true,
+    false,
     false,
     false,
   ];
@@ -109,6 +111,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                       isTap[0] = true;
                                       isTap[1] = false;
                                       isTap[2] = false;
+                                      isTap[3] = false;
                                     });
                                     print(isTap);
                                   },
@@ -159,6 +162,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                       isTap[0] = false;
                                       isTap[1] = true;
                                       isTap[2] = false;
+                                      isTap[3] = false;
                                     });
                                     print(isTap);
                                   },
@@ -210,6 +214,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                       isTap[0] = false;
                                       isTap[1] = false;
                                       isTap[2] = true;
+                                      isTap[3] = false;
                                     });
                                     print(isTap);
                                   },
@@ -233,6 +238,58 @@ class _BulletinScreenState extends State<BulletinScreen> {
                           ],
                         ),
                       ),
+                      Padding(
+                        padding: EdgeInsets.only(right: 12),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: Container(
+                                height: 40,
+                                child: ElevatedButton(
+                                  child: Text(
+                                    '클리닉/행사',
+                                    style: TextStyle(
+                                        color: (isTap[3])
+                                            ? Color(0xFF111111)
+                                            : Color(0xFFc8c8c8),
+                                        fontWeight:
+                                        (isTap[3])
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        fontSize: 16),
+                                  ),
+                                  onPressed: () {
+                                    HapticFeedback.lightImpact();
+                                    print('클리닉 페이지로 전환');
+                                    setState(() {
+                                      isTap[0] = false;
+                                      isTap[1] = false;
+                                      isTap[2] = false;
+                                      isTap[3] = true;
+                                    });
+                                    print(isTap);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.only(top: 0),
+                                    minimumSize: Size(40, 10),
+                                    backgroundColor: Color(0xFFFFFFFF),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    elevation: 0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 102,
+                              height: 3,
+                              color:
+                              (isTap[3]) ? Color(0xFF111111) : Colors.transparent,
+                            )
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                   if(isTap[0]==true)
@@ -241,6 +298,8 @@ class _BulletinScreenState extends State<BulletinScreen> {
                     Expanded(child: Bulletin_Room_List_Screen()),
                   if(isTap[2]==true)
                     Expanded(child: Bulletin_Crew_List_Screen()),
+                  if(isTap[3]==true)
+                    Expanded(child: Bulletin_Event_List_Screen()),
                 ],
               ),
             ],

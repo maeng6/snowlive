@@ -372,6 +372,8 @@ class LiveMapController extends GetxController {
               Map<String, dynamic> passCountTimeData = data['passCountTimeData'] ?? {};
               Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
               int totalPassCount = data['totalPassCount'] ?? 0;
+              DateTime lastPassTime = data['lastPassTime']?.toDate();
+              DateTime now = DateTime.now();
 
               int timeSlot = getTimeSlot(now);
 
@@ -411,7 +413,7 @@ class LiveMapController extends GetxController {
                 }
 
               }
-              else if (location.type == 'respawn') {
+              else if (location.type == 'respawn' && now.difference(lastPassTime).inMinutes >= 3) {
                 try {
                   Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
 
@@ -466,7 +468,7 @@ class LiveMapController extends GetxController {
                   DateTime lastPassTime = data['lastPassTime']?.toDate();
                   DateTime now = DateTime.now();
 
-                  if (now.difference(lastPassTime).inMinutes >= 5) {
+                  if (now.difference(lastPassTime).inMinutes >= 3) {
                     data['lastPassTime'] = Timestamp.fromDate(now);
                   }
 
@@ -596,7 +598,7 @@ class LiveMapController extends GetxController {
           DateTime lastPassTime = data['lastPassTime']?.toDate();
           DateTime now = DateTime.now();
 
-          if (now.difference(lastPassTime).inMinutes >= 5) {
+          if (now.difference(lastPassTime).inMinutes >= 3) {
             data['lastPassTime'] = Timestamp.fromDate(now);
           }
 
@@ -708,6 +710,8 @@ class LiveMapController extends GetxController {
               Map<String, dynamic> passCountTimeData = data['passCountTimeData'] ?? {};
               Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
               int totalPassCount = data['totalPassCount'] ?? 0;
+              DateTime lastPassTime = data['lastPassTime']?.toDate();
+              DateTime now = DateTime.now();
 
               int timeSlot = getTimeSlot(now);
 
@@ -747,7 +751,7 @@ class LiveMapController extends GetxController {
                 }
 
               }
-              else if (location.type == 'respawn') {
+              else if (location.type == 'respawn' && now.difference(lastPassTime).inMinutes >= 3) {
                 try {
                   Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
 
@@ -788,7 +792,7 @@ class LiveMapController extends GetxController {
                   DateTime lastPassTime = data['lastPassTime']?.toDate();
                   DateTime now = DateTime.now();
 
-                  if (now.difference(lastPassTime).inMinutes >= 5) {
+                  if (now.difference(lastPassTime).inMinutes >= 3) {
                     data['lastPassTime'] = Timestamp.fromDate(now);
                   }
 
@@ -910,7 +914,7 @@ class LiveMapController extends GetxController {
           DateTime lastPassTime = data['lastPassTime']?.toDate();
           DateTime now = DateTime.now();
 
-          if (now.difference(lastPassTime).inMinutes >= 5) {
+          if (now.difference(lastPassTime).inMinutes >= 3) {
             data['lastPassTime'] = Timestamp.fromDate(now);
           }
 
@@ -1052,7 +1056,7 @@ class LiveMapController extends GetxController {
         DateTime lastPassTime = crewData['lastPassTime']?.toDate();
         DateTime now = DateTime.now();
 
-        if (now.difference(lastPassTime).inMinutes >= 5) {
+        if (now.difference(lastPassTime).inMinutes >= 3) {
           crewData['lastPassTime'] = Timestamp.fromDate(now);
         }
 

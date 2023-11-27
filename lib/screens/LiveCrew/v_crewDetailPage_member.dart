@@ -280,6 +280,8 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                           bulletinCrewCount : '',
                                                           bulletinFreeUid : '',
                                                           bulletinFreeCount : '',
+                                                          bulletinEventUid : '',
+                                                          bulletinEventCount : '',
                                                           originContent: 'crew'
                                                       );
                                                       await _userModelController.getCurrentUser(_userModelController.uid);
@@ -649,6 +651,8 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                                         bulletinCrewCount : '',
                                                                         bulletinFreeUid : '',
                                                                         bulletinFreeCount : '',
+                                                                        bulletinEventUid : '',
+                                                                        bulletinEventCount : '',
                                                                         originContent: 'crew'
                                                                     );
                                                                     await _userModelController.getCurrentUser(_userModelController.uid);
@@ -911,6 +915,8 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                                     bulletinCrewCount : '',
                                                                     bulletinFreeUid : '',
                                                                     bulletinFreeCount : '',
+                                                                    bulletinEventUid : '',
+                                                                    bulletinEventCount : '',
                                                                     originContent: 'crew'
                                                                 );
                                                                 await _userModelController.getCurrentUser(_userModelController.uid);

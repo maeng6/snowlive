@@ -647,9 +647,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                 .collection('Ranking')
                                                                 .doc('${_seasonController.currentSeason}')
                                                                 .collection('${_liveCrewModelController.baseResort}')
-                                                                .where('uid', whereIn: memberList)
                                                                 .orderBy('totalScore', descending: true)
-                                                                .limit(3)
                                                                 .snapshots(),
                                                             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                               if (!snapshot.hasData || snapshot.data == null) {
@@ -662,7 +660,35 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                 return Text('Error: ${snapshot.error}');
                                                               }
                                                               else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                                                                final memberScoreDocs = snapshot.data!.docs;
+                                                                final AllUserScoreDocs = snapshot.data!.docs;
+                                                                final memberScoreDocs = AllUserScoreDocs.where((doc) =>
+                                                                    memberList.contains(doc.data()['uid'])).toList();
+
+                                                                memberScoreDocs.sort((a, b) {
+                                                                  // totalScore에 대한 내림차순 정렬
+                                                                  var aScore = a.data()['totalScore'];
+                                                                  var bScore = b.data()['totalScore'];
+                                                                  var scoreComparison = bScore.compareTo(aScore);
+
+                                                                  // totalScore가 같다면 lastPassTime으로 내림차순 정렬
+                                                                  if (scoreComparison == 0) {
+                                                                    var aTime = a.data()['lastPassTime'];
+                                                                    var bTime = b.data()['lastPassTime'];
+
+                                                                    // Firestore의 Timestamp를 DateTime으로 변환
+                                                                    if (aTime is Timestamp) {
+                                                                      aTime = aTime.toDate();
+                                                                    }
+                                                                    if (bTime is Timestamp) {
+                                                                      bTime = bTime.toDate();
+                                                                    }
+
+                                                                    return bTime.compareTo(aTime);
+                                                                  }
+
+                                                                  return scoreComparison;
+                                                                });
+
                                                                 int? memberlength;
                                                                 if(memberScoreDocs.length<3){
                                                                   memberlength = memberScoreDocs.length;
@@ -1589,6 +1615,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                         bulletinCrewCount : '',
                                                                         bulletinFreeUid : '',
                                                                         bulletinFreeCount : '',
+                                                                        bulletinEventUid : '',
+                                                                        bulletinEventCount : '',
                                                                         originContent: 'crew'
                                                                     );
                                                                     await _userModelController.getCurrentUser(_userModelController.uid);

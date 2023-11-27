@@ -674,6 +674,8 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                                                                             bulletinCrewCount : '',
                                                                             bulletinFreeUid : '',
                                                                             bulletinFreeCount : '',
+                                                                            bulletinEventUid : '',
+                                                                            bulletinEventCount : '',
                                                                             originContent: 'crew'
                                                                         );
                                                                         await _userModelController.getCurrentUser(_userModelController.uid);

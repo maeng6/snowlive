@@ -25,6 +25,8 @@ class AlarmCenterController extends GetxController {
     required bulletinCrewCount,
     required bulletinFreeUid,
     required bulletinFreeCount,
+    required bulletinEventUid,
+    required bulletinEventCount,
   })
   async {
 
@@ -50,6 +52,8 @@ class AlarmCenterController extends GetxController {
         'bulletinCrewCount' : bulletinCrewCount,
         'bulletinFreeUid' : bulletinFreeUid,
         'bulletinFreeCount' : bulletinFreeCount,
+        'bulletinEventUid' : bulletinEventUid,
+        'bulletinEventCount' : bulletinEventCount,
         'alarmCount' : alarmCount,
       });
 
