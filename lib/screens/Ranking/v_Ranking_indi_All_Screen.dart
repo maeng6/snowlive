@@ -337,11 +337,11 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                               fit: BoxFit.cover,
                                             ),
                                           ),
-                                          SizedBox(width: 12),
+                                          SizedBox(width: 10),
                                           Padding(
                                             padding: const EdgeInsets.only(bottom: 3),
                                             child: Container(
-                                              width: _size.width - 172,
+                                              width: _size.width - 240,
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [

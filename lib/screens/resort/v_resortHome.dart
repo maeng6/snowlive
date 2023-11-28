@@ -1436,7 +1436,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                   borderRadius: BorderRadius.circular(14)),
                                               height: 107,
                                               child: Padding(
-                                                padding: const EdgeInsets.only(right: 32, left: 32, top: 22, bottom: 22),
+                                                padding: const EdgeInsets.only(right: 20, left: 16, top: 22, bottom: 22),
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
@@ -1561,12 +1561,12 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                         children: [
                                                           (_resortModelController.busUrl != '')
                                                               ? Image.asset(
-                                                            'assets/imgs/icons/icon_home_slope.png',
+                                                            'assets/imgs/icons/icon_home_bus.png',
                                                             width: 40,
                                                             height: 40,
                                                           )
                                                               : Image.asset(
-                                                            'assets/imgs/icons/icon_home_slope_off.png',
+                                                            'assets/imgs/icons/icon_home_bus_off.png',
                                                             width: 40,
                                                             height: 40,
                                                           ),

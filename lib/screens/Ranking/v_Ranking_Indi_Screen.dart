@@ -658,11 +658,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                           fit: BoxFit.cover,
                                                         ),
                                                       ),
-                                                      SizedBox(width: 14),
+                                                      SizedBox(width: 10),
                                                       Padding(
                                                         padding: const EdgeInsets.only(bottom: 3),
                                                         child: Container(
-                                                          width: _size.width*0.40,
+                                                          width: _size.width - 240,
                                                           child: Column(
                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
