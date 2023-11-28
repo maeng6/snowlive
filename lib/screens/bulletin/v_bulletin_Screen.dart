@@ -284,7 +284,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                 ),
                               ),
                               Container(
-                                width: 102,
+                                width: 86,
                                 height: 3,
                                 color:
                                 (isTap[3]) ? Color(0xFF111111) : Colors.transparent,
