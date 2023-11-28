@@ -137,7 +137,11 @@ class _Bulletin_Event_UploadState extends State<Bulletin_Event_Upload> {
                         if(isValid){
                           CustomFullScreenDialog.showDialog();
                           await _userModelController.bulletinEventCountUpdate(_userModelController.uid);
-                          bulletinEventImageUrl = await _imageController.setNewImage_bulletinEvent(_imageFile!, _userModelController.bulletinEventCount);
+
+                          if(_imageFile != null){
+                            bulletinEventImageUrl = await _imageController.setNewImage_bulletinEvent(_imageFile!, _userModelController.bulletinEventCount);
+                          }
+
                           await _bulletinEventModelController.uploadBulletinEvent(
                               displayName: _userModelController.displayName,
                               uid: _userModelController.uid,
