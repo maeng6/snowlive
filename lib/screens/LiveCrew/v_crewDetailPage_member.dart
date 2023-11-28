@@ -35,6 +35,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
             stream: FirebaseFirestore.instance
                 .collection('user')
                 .where('liveCrew', isEqualTo: _liveCrewModelController.crewID)
+                .orderBy('isOnLive', descending: true)
                 .orderBy('displayName', descending: false)
                 .snapshots(),
             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
@@ -90,53 +91,77 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                           child: Row(
                             children: [
                               (leaderProfileImage.isNotEmpty)
-                                  ? Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      color: Color(0xFFDFECFF),
-                                      borderRadius: BorderRadius.circular(50)
-                                  ),
-                                  child: ExtendedImage.network(
-                                    leaderProfileImage,
-                                    enableMemoryCache: true,
-                                    shape: BoxShape.circle,
-                                    borderRadius: BorderRadius.circular(8),
+                                  ? Stack(
+                                children: [
+                                  Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          color: Color(0xFFDFECFF),
+                                          borderRadius: BorderRadius.circular(50)
+                                      ),
+                                      child: ExtendedImage.network(
+                                        leaderProfileImage,
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.circle,
+                                        borderRadius: BorderRadius.circular(8),
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                        loadStateChanged: (ExtendedImageState state) {
+                                          switch (state.extendedImageLoadState) {
+                                            case LoadState.loading:
+                                              return SizedBox.shrink();
+                                            case LoadState.completed:
+                                              return state.completedWidget;
+                                            case LoadState.failed:
+                                              return ExtendedImage.asset(
+                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                shape: BoxShape.circle,
+                                                borderRadius: BorderRadius.circular(8),
+                                                width: 50,
+                                                height: 50,
+                                                fit: BoxFit.cover,
+                                              ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                            default:
+                                              return null;
+                                          }
+                                        },
+                                      )),
+                                  (leaderDoc.data()!['isOnLive'] == true)
+                                      ? Positioned(
+                                    child: Image.asset('assets/imgs/icons/icon_badge_live.png',
+                                      width: 32,),
+                                    right: 0,
+                                    bottom: 0,
+                                  )
+                                      : Container()
+                                ],
+                              )
+                                  : Stack(
+                                children: [
+                                  Container(
                                     width: 50,
                                     height: 50,
-                                    fit: BoxFit.cover,
-                                    loadStateChanged: (ExtendedImageState state) {
-                                      switch (state.extendedImageLoadState) {
-                                        case LoadState.loading:
-                                          return SizedBox.shrink();
-                                        case LoadState.completed:
-                                          return state.completedWidget;
-                                        case LoadState.failed:
-                                          return ExtendedImage.asset(
-                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                            shape: BoxShape.circle,
-                                            borderRadius: BorderRadius.circular(8),
-                                            width: 50,
-                                            height: 50,
-                                            fit: BoxFit.cover,
-                                          ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                        default:
-                                          return null;
-                                      }
-                                    },
-                                  ))
-                                  : Container(
-                                width: 50,
-                                height: 50,
-                                child: ExtendedImage.asset(
-                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                  enableMemoryCache: true,
-                                  shape: BoxShape.circle,
-                                  borderRadius: BorderRadius.circular(8),
-                                  width: 50,
-                                  height: 50,
-                                  fit: BoxFit.cover,
-                                ),
+                                    child: ExtendedImage.asset(
+                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                      enableMemoryCache: true,
+                                      shape: BoxShape.circle,
+                                      borderRadius: BorderRadius.circular(8),
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  (leaderDoc.data()!['isOnLive'] == true)
+                                      ? Positioned(
+                                    child: Image.asset('assets/imgs/icons/icon_badge_live.png',
+                                      width: 32,),
+                                    right: 0,
+                                    bottom: 0,
+                                  )
+                                      : Container()
+                                ],
                               ),
                               SizedBox(width: 15,),
                               Container(
@@ -359,53 +384,77 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                       child: Row(
                                         children: [
                                           (crewMemberDocs[index]['profileImageUrl'].isNotEmpty)
-                                              ? Container(
-                                              width: 50,
-                                              height: 50,
-                                              decoration: BoxDecoration(
-                                                  color: Color(0xFFDFECFF),
-                                                  borderRadius: BorderRadius.circular(50)
-                                              ),
-                                              child: ExtendedImage.network(
-                                                crewMemberDocs[index]['profileImageUrl'],
-                                                enableMemoryCache: true,
-                                                shape: BoxShape.circle,
-                                                borderRadius: BorderRadius.circular(8),
+                                              ? Stack(
+                                            children: [
+                                              Container(
+                                                  width: 50,
+                                                  height: 50,
+                                                  decoration: BoxDecoration(
+                                                      color: Color(0xFFDFECFF),
+                                                      borderRadius: BorderRadius.circular(50)
+                                                  ),
+                                                  child: ExtendedImage.network(
+                                                    crewMemberDocs[index]['profileImageUrl'],
+                                                    enableMemoryCache: true,
+                                                    shape: BoxShape.circle,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                    width: 50,
+                                                    height: 50,
+                                                    fit: BoxFit.cover,
+                                                    loadStateChanged: (ExtendedImageState state) {
+                                                      switch (state.extendedImageLoadState) {
+                                                        case LoadState.loading:
+                                                          return SizedBox.shrink();
+                                                        case LoadState.completed:
+                                                          return state.completedWidget;
+                                                        case LoadState.failed:
+                                                          return ExtendedImage.asset(
+                                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                                            shape: BoxShape.circle,
+                                                            borderRadius: BorderRadius.circular(8),
+                                                            width: 50,
+                                                            height: 50,
+                                                            fit: BoxFit.cover,
+                                                          ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                        default:
+                                                          return null;
+                                                      }
+                                                    },
+                                                  )),
+                                              (crewMemberDocs[index]['isOnLive'] == true)
+                                                  ? Positioned(
+                                                child: Image.asset('assets/imgs/icons/icon_badge_live.png',
+                                                  width: 32,),
+                                                right: 0,
+                                                bottom: 0,
+                                              )
+                                                  : Container()
+                                            ],
+                                          )
+                                              : Stack(
+                                            children: [
+                                              Container(
                                                 width: 50,
                                                 height: 50,
-                                                fit: BoxFit.cover,
-                                                loadStateChanged: (ExtendedImageState state) {
-                                                  switch (state.extendedImageLoadState) {
-                                                    case LoadState.loading:
-                                                      return SizedBox.shrink();
-                                                    case LoadState.completed:
-                                                      return state.completedWidget;
-                                                    case LoadState.failed:
-                                                      return ExtendedImage.asset(
-                                                        'assets/imgs/profile/img_profile_default_circle.png',
-                                                        shape: BoxShape.circle,
-                                                        borderRadius: BorderRadius.circular(8),
-                                                        width: 50,
-                                                        height: 50,
-                                                        fit: BoxFit.cover,
-                                                      ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                    default:
-                                                      return null;
-                                                  }
-                                                },
-                                              ))
-                                              : Container(
-                                            width: 50,
-                                            height: 50,
-                                            child: ExtendedImage.asset(
-                                              'assets/imgs/profile/img_profile_default_circle.png',
-                                              enableMemoryCache: true,
-                                              shape: BoxShape.circle,
-                                              borderRadius: BorderRadius.circular(8),
-                                              width: 50,
-                                              height: 50,
-                                              fit: BoxFit.cover,
-                                            ),
+                                                child: ExtendedImage.asset(
+                                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape.circle,
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  width: 50,
+                                                  height: 50,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              (crewMemberDocs[index]['isOnLive'] == true)
+                                                  ? Positioned(
+                                                child: Image.asset('assets/imgs/icons/icon_badge_live.png',
+                                                  width: 32,),
+                                                right: 0,
+                                                bottom: 0,
+                                              )
+                                                  : Container()
+                                            ],
                                           ),
                                           SizedBox(width: 15,),
                                           Column(

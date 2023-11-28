@@ -7,22 +7,22 @@ class BulletinEventModel {
 
   BulletinEventModel(
       {this.displayName,
-      this.uid,
-      this.profileImageUrl,
-      this.itemImagesUrls,
-      this.title,
-      this.category,
-      this.location,
-      this.description,
-      this.bulletinEventCount,
-      this.bulletinEventReplyCount,
-      this.resortNickname,
-      this.timeStamp});
+        this.uid,
+        this.profileImageUrl,
+        this.itemImagesUrl,
+        this.title,
+        this.category,
+        this.location,
+        this.description,
+        this.bulletinEventCount,
+        this.bulletinEventReplyCount,
+        this.resortNickname,
+        this.timeStamp});
 
   String? displayName;
   String? uid;
   String? profileImageUrl;
-  List? itemImagesUrls;
+  String? itemImagesUrl;
   String? title;
   String? category;
   String? location;
@@ -38,7 +38,7 @@ class BulletinEventModel {
     displayName = json['displayName'];
     uid = json['uid'];
     profileImageUrl = json['profileImageUrl'];
-    itemImagesUrls = json['itemImagesUrls'];
+    itemImagesUrl = json['itemImagesUrl'];
     title = json['title'];
     category = json['category'];
     location = json['location'];
@@ -55,30 +55,30 @@ class BulletinEventModel {
 
   Future<BulletinEventModel> getBulletinEventModel(String uid,int bulletinEventCount) async {
     DocumentReference<Map<String, dynamic>> documentReference =
-        ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount');
+    ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount');
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-        await documentReference.get();
+    await documentReference.get();
     BulletinEventModel bulletinEventModel = BulletinEventModel.fromSnapShot(documentSnapshot);
     return bulletinEventModel;
   }
 
   Future<void> uploadBulletinEvent(
       {required displayName,
-      required uid,
-      required profileImageUrl,
-      required itemImagesUrls,
-      required title,
-      required category,
-      required location,
-      required description,
-      timeStamp,
-      required bulletinEventCount,
-      required resortNickname}) async {
+        required uid,
+        required profileImageUrl,
+        required itemImagesUrl,
+        required title,
+        required category,
+        required location,
+        required description,
+        timeStamp,
+        required bulletinEventCount,
+        required resortNickname}) async {
     await ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount').set({
       'displayName': displayName,
       'uid': uid,
       'profileImageUrl': profileImageUrl,
-      'itemImagesUrls': itemImagesUrls,
+      'itemImagesUrl': itemImagesUrl,
       'title': title,
       'category': category,
       'location': location,
@@ -97,7 +97,7 @@ class BulletinEventModel {
       {required displayName,
         required uid,
         required profileImageUrl,
-        required itemImagesUrls,
+        required itemImagesUrl,
         required title,
         required category,
         required location,
@@ -109,7 +109,7 @@ class BulletinEventModel {
       'displayName': displayName,
       'uid': uid,
       'profileImageUrl': profileImageUrl,
-      'itemImagesUrls': itemImagesUrls,
+      'itemImagesUrl': itemImagesUrl,
       'title': title,
       'category': category,
       'location': location,

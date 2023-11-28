@@ -480,7 +480,7 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                                                         uid:
                                                                         _userModelController.uid,
                                                                         bulletinEventCount: _bulletinEventModelController.bulletinEventCount,
-                                                                        imageCount: _bulletinEventModelController.itemImagesUrls!.length);
+                                                                        imageCount: _bulletinEventModelController.itemImagesUrl!.length);
                                                                   } catch (e) {
                                                                     print(
                                                                         '이미지 삭제 에러');
@@ -572,77 +572,6 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                         controller: _scrollController,
                         child: Column(
                           children: [
-                            if (_bulletinEventModelController.itemImagesUrls!.isEmpty)
-                              SizedBox(
-                                height: 6,
-                              ),
-                            if (_bulletinEventModelController.itemImagesUrls!.isNotEmpty)
-                              Stack(
-                                children: [
-                                  CarouselSlider.builder(
-                                    options: CarouselOptions(
-                                      height: 280,
-                                      viewportFraction: 1,
-                                      enableInfiniteScroll: false,
-                                      onPageChanged: (index, reason) {
-                                        setState(() {
-                                          _currentIndex = index;
-                                        });
-                                      },
-                                    ),
-                                    itemCount:
-                                    _bulletinEventModelController.itemImagesUrls!.length,
-                                    itemBuilder: (context, index, pageViewIndex) {
-                                      return Container(
-                                        padding: EdgeInsets.only(bottom: 16),
-                                        child: StreamBuilder<Object>(
-                                            stream: null,
-                                            builder: (context, snapshot) {
-                                              return Row(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      Get.to(() => BulletinEventImageScreen());
-                                                    },
-                                                    child: ExtendedImage.network(
-                                                      _bulletinEventModelController
-                                                          .itemImagesUrls![index],
-                                                      fit: BoxFit.cover,
-                                                      width: _size.width,
-                                                      height: 280,
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            }),
-                                      );
-                                    },
-                                  ),
-                                  Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 245),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: List.generate(
-                                          _bulletinEventModelController.itemImagesUrls!.length,
-                                              (index) {
-                                            return Container(
-                                              width: 8,
-                                              height: 8,
-                                              margin: EdgeInsets.symmetric(horizontal: 4),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: _currentIndex == index ? Color(0xFFFFFFFF) : Color(0xFF111111).withOpacity(0.5),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16),
                               child: Column(
@@ -828,6 +757,25 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                             SizedBox(
                                               height: 6,
                                             ),
+
+                                            if (_bulletinEventModelController.itemImagesUrl!.isEmpty)
+                                              SizedBox(
+                                                height: 6,
+                                              ),
+                                            if (_bulletinEventModelController.itemImagesUrl!.isNotEmpty)
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Get.to(() => BulletinEventImageScreen());
+                                                },
+                                                child: ExtendedImage.network(
+                                                  _bulletinEventModelController
+                                                      .itemImagesUrl!,
+                                                  fit: BoxFit.cover,
+                                                  width: _size.width,
+                                                  height: 280,
+                                                ),
+                                              ),
+
                                             Container(
                                               width: _size.width,
                                               child: SelectableText(

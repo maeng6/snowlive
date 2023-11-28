@@ -12,7 +12,7 @@ class BulletinEventModelController extends GetxController {
   RxString? _displayName = ''.obs;
   RxString? _uid = ''.obs;
   RxString? _profileImageUrl = ''.obs;
-  RxList? _itemImagesUrls = [].obs;
+  RxString? _itemImagesUrl = ''.obs;
   RxString? _title = ''.obs;
   RxString? _category = ''.obs;
   RxString? _location = ''.obs;
@@ -29,7 +29,7 @@ class BulletinEventModelController extends GetxController {
 
   String? get profileImageUrl => _profileImageUrl!.value;
 
-  List? get itemImagesUrls => _itemImagesUrls!.value;
+  String? get itemImagesUrl => _itemImagesUrl!.value;
 
   String? get title => _title!.value;
 
@@ -54,7 +54,7 @@ class BulletinEventModelController extends GetxController {
     this._displayName!.value = bulletinEventModel.displayName!;
     this._uid!.value = bulletinEventModel.uid!;
     this._profileImageUrl!.value = bulletinEventModel.profileImageUrl!;
-    this._itemImagesUrls!.value = bulletinEventModel.itemImagesUrls!;
+    this._itemImagesUrl!.value = bulletinEventModel.itemImagesUrl!;
     this._title!.value = bulletinEventModel.title!;
     this._category!.value = bulletinEventModel.category!;
     this._location!.value = bulletinEventModel.location!;
@@ -66,11 +66,11 @@ class BulletinEventModelController extends GetxController {
     this._timeStamp = bulletinEventModel.timeStamp!;
   }
 
-  Future<void> updateItemImageUrls(imageUrls) async {
+  Future<void> updateItemImageUrl(imageUrl) async {
     final User? user = auth.currentUser;
     final uid = user!.uid;
     await ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount').update({
-      'itemImagesUrls': imageUrls,
+      'itemImagesUrl': imageUrl,
     });
     await getCurrentBulletinEvent(uid: uid, bulletinEventCount: bulletinEventCount);
   }
@@ -79,7 +79,7 @@ class BulletinEventModelController extends GetxController {
     print('$uid#$bulletinEventCount');
     for (int i = imageCount-1; i > -1; i--) {
       print('#$i.jpg');
-    await FirebaseStorage.instance.ref().child('images/bulletinEvent/$uid#$bulletinEventCount/#$i.jpg').delete();
+      await FirebaseStorage.instance.ref().child('images/bulletinEvent/$uid#$bulletinEventCount/#$i.jpg').delete();
     }
   }
 
@@ -134,7 +134,7 @@ class BulletinEventModelController extends GetxController {
       {required displayName,
         required uid,
         required profileImageUrl,
-        required itemImagesUrls,
+        required itemImagesUrl,
         required title,
         required category,
         required location,
@@ -145,7 +145,7 @@ class BulletinEventModelController extends GetxController {
         displayName: displayName,
         uid: uid,
         profileImageUrl: profileImageUrl,
-        itemImagesUrls: itemImagesUrls,
+        itemImagesUrl: itemImagesUrl,
         title: title,
         category: category,
         location: location,
@@ -158,7 +158,7 @@ class BulletinEventModelController extends GetxController {
       {required displayName,
         required uid,
         required profileImageUrl,
-        required itemImagesUrls,
+        required itemImagesUrl,
         required title,
         required category,
         required location,
@@ -169,7 +169,7 @@ class BulletinEventModelController extends GetxController {
         displayName: displayName,
         uid: uid,
         profileImageUrl: profileImageUrl,
-        itemImagesUrls: itemImagesUrls,
+        itemImagesUrl: itemImagesUrl,
         title: title,
         category: category,
         location: location,

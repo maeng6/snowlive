@@ -17,6 +17,8 @@ import 'package:com.snowlive/screens/fleaMarket/v_phone_Auth_Screen.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
+import '../../controller/vm_urlLauncherController.dart';
+
 class FleaMarket_List_Detail extends StatefulWidget {
   FleaMarket_List_Detail({Key? key}) : super(key: key);
 
@@ -30,6 +32,7 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
   UserModelController _userModelController = Get.find<UserModelController>();
   FleaModelController _fleaModelController = Get.find<FleaModelController>();
   FleaChatModelController _fleaChatModelController = Get.find<FleaChatModelController>();
+  UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
 //TODO: Dependency Injection**************************************************
 
   var _userStream;
@@ -619,11 +622,11 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                 ),
                                               ],
                                             ),
-                                            if(_fleaModelController.kakaoUrl != null && _fleaModelController.kakaoUrl != '')
+                                            if(_fleaModelController.kakaoUrl != null && _fleaModelController.kakaoUrl != '' && (_fleaModelController.soldOut == false))
                                               GestureDetector(
                                                 onTap: (){
                                                   if(_fleaModelController.kakaoUrl!.isNotEmpty && _fleaModelController.kakaoUrl != '' ) {
-                                                    _fleaModelController.otherShare(contents: '${_fleaModelController.kakaoUrl}');
+                                                    _urlLauncherController.otherShare(contents: '${_fleaModelController.kakaoUrl}');
                                                   }else{
                                                     Get.dialog(AlertDialog(
                                                       contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
@@ -859,10 +862,20 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                                 fontWeight: FontWeight.normal,
                                                 color: Color(0xFFB7B7B7)),
                                           ),
-                                          Container(
+                                          (_fleaModelController.soldOut == false)
+                                          ? Container(
                                             width: _size.width,
                                             child: SelectableText(
                                               '${_fleaModelController.description}',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.normal),
+                                            ),
+                                          )
+                                          : Container(
+                                            width: _size.width,
+                                            child: SelectableText(
+                                              '거래가 완료된 물품입니다.',
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.normal),
@@ -934,8 +947,8 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
                                       child: TextButton(
                                           onPressed: () async {
                                             CustomFullScreenDialog.showDialog();
-                                            await _fleaModelController
-                                                .updateState(isSoldOut);
+                                            await _fleaModelController.updateState(isSoldOut);
+                                            await _fleaModelController.getCurrentFleaItem(uid: _fleaModelController.uid, fleaCount: _fleaModelController.fleaCount);
                                             setState(() {});
                                             CustomFullScreenDialog.cancelDialog();
                                           },
