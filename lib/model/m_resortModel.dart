@@ -25,10 +25,11 @@ class ResortModel {
   int? nY;
   String? resortNickname;
   String? resortLogo;
+  String? busUrl;
 
 
   ResortModel({this.index,this.resortName, this.resortAddress, this.resortUrl, this.webcamUrl,
-    this.slopeUrl, this.naverUrl, this.latitude, this.longitude, this.nX, this.nY, this.resortNickname, this.resortLogo});
+    this.slopeUrl, this.naverUrl, this.latitude, this.longitude, this.nX, this.nY, this.resortNickname, this.resortLogo,this.busUrl});
 
   ResortModel resortModelSelection(int? num) {
     ResortModel selectedResort = resortList[num!];
@@ -51,7 +52,8 @@ List<ResortModel> resortList = [
       nX: 66,
       nY: 121,
       resortNickname: '곤지암',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_1.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_1.png',
+      busUrl: 'https://m.konjiamresort.co.kr/ski/pickupService.dev'
   ),//곤지암_1.0
   ResortModel(
       index:1,
@@ -66,7 +68,8 @@ List<ResortModel> resortList = [
       nX: 75,
       nY: 93,
       resortNickname: '무주',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_2.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_2.png',
+      busUrl: 'https://www.mdysresort.com/guide/alliance_bus_way.asp'
 
   ),//무주_2.3
   ResortModel(
@@ -82,7 +85,8 @@ List<ResortModel> resortList = [
       nX: 72,
       nY: 129,
       resortNickname: '비발디',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_3.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_3.png',
+      busUrl: 'https://www.busline.co.kr/busline_22K28/'
 
   ),//비발디_0.9
   ResortModel(
@@ -98,7 +102,8 @@ List<ResortModel> resortList = [
       nX: 89,
       nY: 130,
       resortNickname: '알펜시아',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_4.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_4.png',
+      busUrl: 'https://skibus.purplebus.co.kr/Ap/'
 
   ),//알펜_0.6
   ResortModel(
@@ -114,7 +119,8 @@ List<ResortModel> resortList = [
       nX: 95,
       nY: 80,
       resortNickname: '에덴밸리',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_5.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_5.png',
+      busUrl: ''
 
   ),//에덴_0.8
   ResortModel(
@@ -130,7 +136,8 @@ List<ResortModel> resortList = [
       nX: 71,
       nY: 132,
       resortNickname: '강촌',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_6.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_6.png',
+      busUrl: 'https://www.elysian.co.kr/gangchon/enjoyElysian/roadMap_car.asp'
 
   ),//엘리시안_0.7
   ResortModel(
@@ -146,7 +153,8 @@ List<ResortModel> resortList = [
       nX: 75,
       nY: 122,
       resortNickname: '오크밸리',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_7.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_7.png',
+      busUrl: ''
 
   ),//오크_0.7
   ResortModel(
@@ -162,7 +170,8 @@ List<ResortModel> resortList = [
       nX: 95,
       nY: 119,
       resortNickname: '오투',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_8.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_8.png',
+      busUrl: 'http://www.ketour.co.kr/shuttle/shuttle3.asp?pn=4'
 
   ),//오투_1.5
   ResortModel(
@@ -178,7 +187,8 @@ List<ResortModel> resortList = [
       nX: 89,
       nY: 130,
       resortNickname: '용평',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_9.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_9.png',
+      busUrl: 'https://skibus.purplebus.co.kr/Yp/'
 
   ),//용평_2.65
   ResortModel(
@@ -186,7 +196,7 @@ List<ResortModel> resortList = [
       resortName: '웰리힐리파크',
       resortAddress: '횡성군 둔내면',
       resortUrl: 'https://www.wellihillipark.com/',
-      webcamUrl: 'https://m.wellihillipark.com/customer/webcam',
+      webcamUrl: 'https://www.wellihillipark.com/home/customer/webcam',
       slopeUrl: 'https://m.wellihillipark.com/snowpark/schedule/open-slope',
       naverUrl: 'https://weather.naver.com/today/01730330?cpName=KMA',
       latitude: 37.4856398,
@@ -194,7 +204,8 @@ List<ResortModel> resortList = [
       nX: 81,
       nY: 126,
       resortNickname: '웰리힐리',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_10.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_10.png',
+      busUrl: 'https://skibus.purplebus.co.kr/Wh/'
 
   ),//웰리힐리_1.0
   ResortModel(
@@ -210,7 +221,8 @@ List<ResortModel> resortList = [
       nX: 66,
       nY: 120,
       resortNickname: '지산',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_11.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_11.png',
+      busUrl: 'https://www.jisanresort.co.kr/w/reservation/shuttle/reservation.asp'
 
   ),//지산_0.65
   ResortModel(
@@ -226,7 +238,8 @@ List<ResortModel> resortList = [
       nX: 92,
       nY: 120,
       resortNickname: '하이원',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_12.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_12.png',
+      busUrl: 'https://www.high1.com/www/contents.do?key=945'
 
   ),//하이원_2.2
   ResortModel(
@@ -242,7 +255,8 @@ List<ResortModel> resortList = [
       nX: 84,
       nY: 128,
       resortNickname: '휘닉스',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_13.png'
+      resortLogo: 'assets/imgs/resort/img_resort_logo_13.png',
+      busUrl: 'https://skibus.purplebus.co.kr/Pp/'
 
   ),//휘닉스_1.3
 

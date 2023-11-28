@@ -401,13 +401,28 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                             ),
                                           ),
                                           Expanded(child: SizedBox()),
-                                          Text(
-                                            '${document.get('totalScore').toString()}점',
-                                            style: TextStyle(
-                                              color: Color(0xFF111111),
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 18,
-                                            ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '${document.get('totalScore').toString()}점',
+                                                style: TextStyle(
+                                                  color: Color(0xFF111111),
+                                                  fontWeight: FontWeight.normal,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                              for(var rankingTier in rankingTierList)
+                                                if(document.get('tier') == rankingTier.tierName)
+                                                  Transform.translate(
+                                                    offset: Offset(6, 2),
+                                                    child: ExtendedImage.network(
+                                                      rankingTier.badgeAsset,
+                                                      enableMemoryCache: true,
+                                                      fit: BoxFit.cover,
+                                                      width: 40,
+                                                    ),
+                                                  )
+                                            ],
                                           ),
                                         ],
                                       ),

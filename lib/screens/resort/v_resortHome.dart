@@ -1549,6 +1549,42 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                         ],
                                                       ),
                                                     ),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        if (_resortModelController.busUrl != '') {
+                                                          _urlLauncherController.otherShare(contents: '${_resortModelController.busUrl}');
+                                                        } else {
+                                                          null;
+                                                        }
+                                                      },
+                                                      child: Column(
+                                                        children: [
+                                                          (_resortModelController.busUrl != '')
+                                                              ? Image.asset(
+                                                            'assets/imgs/icons/icon_home_slope.png',
+                                                            width: 40,
+                                                            height: 40,
+                                                          )
+                                                              : Image.asset(
+                                                            'assets/imgs/icons/icon_home_slope_off.png',
+                                                            width: 40,
+                                                            height: 40,
+                                                          ),
+                                                          SizedBox(
+                                                            height: 4,
+                                                          ),
+                                                          Text(
+                                                            '셔틀버스',
+                                                            style: TextStyle(
+                                                                fontWeight: FontWeight.normal,
+                                                                fontSize: 12,
+                                                                color: (_resortModelController.busUrl != '')
+                                                                    ? Color(0xFF111111)
+                                                                    : Color(0xFFC8C8C8)),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
                                               ),
@@ -2486,23 +2522,15 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                         0xFF666666)),
                                                               ),
                                                               Container(
-                                                                color: Colors
-                                                                    .white,
+                                                                color: Colors.white,
                                                                 height: 30,
                                                               ),
                                                               Expanded(
-                                                                child: ListView
-                                                                    .builder(
-                                                                    padding:
-                                                                    EdgeInsets
-                                                                        .zero,
-                                                                    itemCount:
-                                                                    13,
-                                                                    itemBuilder:
-                                                                        (context,
-                                                                        index) {
-                                                                      return Builder(builder:
-                                                                          (context) {
+                                                                child: ListView.builder(
+                                                                    padding: EdgeInsets.zero,
+                                                                    itemCount: 13,
+                                                                    itemBuilder: (context, index) {
+                                                                      return Builder(builder: (context) {
                                                                         return Column(
                                                                           children: [
                                                                             buildResortListTile(index),
