@@ -22,6 +22,8 @@ class BulletinEventModelController extends GetxController {
   RxString? _resortNickname = ''.obs;
   RxBool? _soldOut = false.obs;
   Timestamp? _timeStamp;
+  RxString? _snsUrl = ''.obs;
+
 
   String? get displayName => _displayName!.value;
 
@@ -49,6 +51,8 @@ class BulletinEventModelController extends GetxController {
 
   Timestamp? get timeStamp => _timeStamp;
 
+  String? get snsUrl => _snsUrl!.value;
+
   Future<void> getCurrentBulletinEvent({required uid, required bulletinEventCount}) async {
     BulletinEventModel bulletinEventModel = await BulletinEventModel().getBulletinEventModel(uid,bulletinEventCount);
     this._displayName!.value = bulletinEventModel.displayName!;
@@ -64,6 +68,7 @@ class BulletinEventModelController extends GetxController {
     this._resortNickname!.value = bulletinEventModel.resortNickname!;
     this._soldOut!.value = bulletinEventModel.soldOut!;
     this._timeStamp = bulletinEventModel.timeStamp!;
+    this._snsUrl!.value = bulletinEventModel.snsUrl!;
   }
 
   Future<void> updateItemImageUrl(imageUrl) async {
@@ -140,7 +145,9 @@ class BulletinEventModelController extends GetxController {
         required location,
         required description,
         required bulletinEventCount,
-        required resortNickname}) async {
+        required resortNickname,
+        required snsUrl,
+      }) async {
     await BulletinEventModel().uploadBulletinEvent(
         displayName: displayName,
         uid: uid,
@@ -151,7 +158,9 @@ class BulletinEventModelController extends GetxController {
         location: location,
         description: description,
         bulletinEventCount: bulletinEventCount,
-        resortNickname: resortNickname);
+        resortNickname: resortNickname,
+        snsUrl: snsUrl,
+    );
   }
 
   Future<void> updateBulletinEvent(
@@ -164,7 +173,9 @@ class BulletinEventModelController extends GetxController {
         required location,
         required description,
         required bulletinEventCount,
-        required resortNickname}) async {
+        required resortNickname,
+        required snsUrl,
+      }) async {
     await BulletinEventModel().updateBulletinEvent(
         displayName: displayName,
         uid: uid,
@@ -175,7 +186,9 @@ class BulletinEventModelController extends GetxController {
         location: location,
         description: description,
         bulletinEventCount: bulletinEventCount,
-        resortNickname: resortNickname);
+        resortNickname: resortNickname,
+        snsUrl: snsUrl,
+    );
   }
 
   Future<void> updateBulletinEventReplyCount({required bullUid, required bullCount}) async {

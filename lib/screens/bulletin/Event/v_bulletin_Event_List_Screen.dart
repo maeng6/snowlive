@@ -10,6 +10,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import '../../../controller/vm_allUserDocsController.dart';
 import '../../../controller/vm_bulletinEventController.dart';
 import '../../../controller/vm_timeStampController.dart';
 import '../../../controller/vm_userModelController.dart';
@@ -29,7 +30,7 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
   BulletinEventModelController _bulletinEventModelController = Get.find<BulletinEventModelController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   SeasonController _seasonController = Get.find<SeasonController>();
-
+  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
 //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -76,7 +77,10 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
           _isVisible = false;
         }
       });
+    });
 
+    _allUserDocsController.startListening().then((result){
+      setState(() {});
     });
 
     // Add a listener to the ScrollController
@@ -655,6 +659,9 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
                           bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
                           List viewerUid = data?.containsKey('viewerUid') == true ? data!['viewerUid'] : [];
                           String _time = _timeStampController.yyyymmddFormat(chatDocs[index].get('timeStamp'));
+                          String? profileUrl = _allUserDocsController.findProfileUrl(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
+                          String? displayName = _allUserDocsController.findDisplayName(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
+
                           return GestureDetector(
                             onTap: () async {
                               if(isLocked == false) {

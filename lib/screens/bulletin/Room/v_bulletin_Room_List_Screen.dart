@@ -13,6 +13,7 @@ import 'package:com.snowlive/screens/bulletin/Room/v_bulletin_Room_List_Detail.d
 import 'package:com.snowlive/screens/bulletin/Room/v_bulletin_Room_Upload.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_phone_Auth_Screen.dart';
+import '../../../controller/vm_allUserDocsController.dart';
 import '../../../controller/vm_bulletinRoomController.dart';
 import '../../../controller/vm_timeStampController.dart';
 import '../../../controller/vm_userModelController.dart';
@@ -32,6 +33,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
   BulletinRoomModelController _bulletinRoomModelController = Get.find<BulletinRoomModelController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   SeasonController _seasonController = Get.find<SeasonController>();
+  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
 //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -73,6 +75,10 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
         // Check if the user has scrolled down by a certain offset (e.g., 100 pixels)
         _showAddButton = _scrollController.offset <= 0;
       });
+    });
+
+    _allUserDocsController.startListening().then((result){
+      setState(() {});
     });
 
     try{
@@ -618,8 +624,10 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                           // 필드가 없을 경우 기본값 설정
                           bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
                           List viewerUid = data?.containsKey('viewerUid') == true ? data!['viewerUid'] : [];
-                          String _time = _timeStampController
-                              .yyyymmddFormat(chatDocs[index].get('timeStamp'));
+                          String _time = _timeStampController.yyyymmddFormat(chatDocs[index].get('timeStamp'));
+                          String? profileUrl = _allUserDocsController.findProfileUrl(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
+                          String? displayName = _allUserDocsController.findDisplayName(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
+
                           return GestureDetector(
                             onTap: () async {
                               if(isLocked == false) {

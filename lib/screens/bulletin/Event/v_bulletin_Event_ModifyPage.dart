@@ -28,6 +28,7 @@ class _Bulletin_Event_ModifyPageState extends State<Bulletin_Event_ModifyPage> {
   int imageLength = 0;
   TextEditingController _titleTextEditingController = TextEditingController();
   TextEditingController _itemDescribTextEditingController = TextEditingController();
+  TextEditingController _snsUrlTextEditingController = TextEditingController();
   bool? isCategorySelected = false;
   bool? isLocationSelected = false;
   bool? isMethodSelected = false;
@@ -40,6 +41,7 @@ class _Bulletin_Event_ModifyPageState extends State<Bulletin_Event_ModifyPage> {
   String? _initTitle ;
   String? _initdescrip ;
   String? _initBulletinEventImageUrl;
+  String? _initSnsUrl;
 
   XFile? _imageFile;
 
@@ -86,6 +88,7 @@ class _Bulletin_Event_ModifyPageState extends State<Bulletin_Event_ModifyPage> {
     _initTitle =_bulletinEventModelController.title;
     _initdescrip =_bulletinEventModelController.description;
     _initBulletinEventImageUrl = _bulletinEventModelController.itemImagesUrl;
+    _initSnsUrl = _bulletinEventModelController.snsUrl;
   }
 
   @override
@@ -141,7 +144,8 @@ class _Bulletin_Event_ModifyPageState extends State<Bulletin_Event_ModifyPage> {
                             location: SelectedLocation!.value,
                             description: _itemDescribTextEditingController.text,
                             bulletinEventCount: _bulletinEventModelController.bulletinEventCount,
-                            resortNickname: _userModelController.resortNickname
+                            resortNickname: _userModelController.resortNickname,
+                            snsUrl: _snsUrlTextEditingController.text
                         )
                             : await _bulletinEventModelController.updateBulletinEvent(
                             displayName: _userModelController.displayName,
@@ -153,7 +157,8 @@ class _Bulletin_Event_ModifyPageState extends State<Bulletin_Event_ModifyPage> {
                             location: SelectedLocation!.value,
                             description: _itemDescribTextEditingController.text,
                             bulletinEventCount: _bulletinEventModelController.bulletinEventCount,
-                            resortNickname: _userModelController.resortNickname
+                            resortNickname: _userModelController.resortNickname,
+                            snsUrl: _snsUrlTextEditingController.text
                         );
                         CustomFullScreenDialog.cancelDialog();
                         for(int i=0; i<2; i++){
@@ -596,6 +601,51 @@ class _Bulletin_Event_ModifyPageState extends State<Bulletin_Event_ModifyPage> {
                                             backgroundColor: Color(0xffffffff),
                                             padding: EdgeInsets.symmetric(horizontal: 0)),
                                       ),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 70,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: TextFormField(
+                                            maxLines: 10,
+                                            textAlignVertical: TextAlignVertical.center,
+                                            cursorColor: Color(0xff377EEA),
+                                            cursorHeight: 16,
+                                            cursorWidth: 2,
+                                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                                            controller: _snsUrlTextEditingController..text = '$_initSnsUrl',
+                                            onChanged: (snsUrl){
+                                              _initSnsUrl = snsUrl;
+                                              print(snsUrl);
+                                            },
+                                            strutStyle: StrutStyle(leading: 0.3),
+                                            decoration: InputDecoration(
+                                              errorStyle: TextStyle(
+                                                fontSize: 12,
+                                              ),
+                                              labelStyle: TextStyle(
+                                                  color: Color(0xff949494)
+                                              ),
+                                              hintStyle:
+                                              TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                                              hintText: 'URL을 입력해주세요.',
+                                              labelText: 'SNS URL',
+                                              border: InputBorder.none,
+                                            ),
+                                            validator: (val) {
+                                              if (val!.length <= 1000 && val.length >= 1) {
+                                                return null;
+                                              } else {
+                                                return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   Expanded(
