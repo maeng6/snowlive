@@ -29,6 +29,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
   int imageLength = 0;
   TextEditingController _titleTextEditingController = TextEditingController();
   TextEditingController _itemDescribTextEditingController = TextEditingController();
+  TextEditingController _snsUrlTextEditingController = TextEditingController();
   bool? isCategorySelected = false;
   bool? isLocationSelected = false;
   String? SelectedCategory = '';
@@ -137,7 +138,8 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                               location: SelectedLocation,
                               description: _itemDescribTextEditingController.text,
                               bulletinCrewCount: _userModelController.bulletinCrewCount,
-                              resortNickname: _userModelController.resortNickname
+                              resortNickname: _userModelController.resortNickname,
+                              snsUrl: _snsUrlTextEditingController.text
                           );
                           await _bulletinCrewModelController.getCurrentBulletinCrew(
                               uid: _userModelController.uid,
@@ -573,6 +575,39 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                       return null;
                                     } else if (val.length == 0) {
                                       return '글 제목을 입력해주세요.';
+                                    } else {
+                                      return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                    }
+                                  },
+                                ),
+                                TextFormField(
+                                  maxLines: null,
+                                  textInputAction: TextInputAction.newline,
+                                  textAlignVertical: TextAlignVertical.center,
+                                  keyboardType: TextInputType.multiline,
+                                  cursorColor: Color(0xff3D6FED),
+                                  cursorHeight: 16,
+                                  cursorWidth: 2,
+                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  controller: _snsUrlTextEditingController,
+                                  strutStyle: StrutStyle(leading: 0.3),
+                                  decoration: InputDecoration(
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    errorStyle: TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                    labelStyle: TextStyle(
+                                        color: Color(0xff949494)
+                                    ),
+                                    hintStyle:
+                                    TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                                    hintText: 'URL을 입력해주세요.',
+                                    labelText: 'SNS URL',
+                                    border: InputBorder.none,
+                                  ),
+                                  validator: (val) {
+                                    if (val!.length <= 1000 && val.length >= 0) {
+                                      return null;
                                     } else {
                                       return '최대 입력 가능한 글자 수를 초과했습니다.';
                                     }

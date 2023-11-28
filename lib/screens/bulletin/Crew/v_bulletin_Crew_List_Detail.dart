@@ -12,6 +12,7 @@ import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_bulletinCrewController.dart';
 import '../../../controller/vm_bulletinCrewReplyController.dart';
 import '../../../controller/vm_timeStampController.dart';
+import '../../../controller/vm_urlLauncherController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_alarmCenterModel.dart';
 import '../../comments/v_profileImageScreen.dart';
@@ -32,6 +33,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
   SeasonController _seasonController = Get.find<SeasonController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
+  UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   //TODO: Dependency Injection**************************************************
 
   final _controller = TextEditingController();
@@ -839,6 +841,79 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.normal),
+                                              ),
+                                            ),
+                                            if(_bulletinCrewModelController.snsUrl != null && _bulletinCrewModelController.snsUrl != '')
+                                            GestureDetector(
+                                              onTap: (){
+                                                if(_bulletinCrewModelController.snsUrl!.isNotEmpty && _bulletinCrewModelController.snsUrl != '' ) {
+                                                  _urlLauncherController.otherShare(contents: '${_bulletinCrewModelController.snsUrl}');
+                                                }else{
+                                                  Get.dialog(AlertDialog(
+                                                    contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                    elevation: 0,
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(10.0)),
+                                                    buttonPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 20,
+                                                        vertical: 0),
+                                                    content: Text(
+                                                      '연결된 SNS가 없습니다.',
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.w600,
+                                                          fontSize: 15),
+                                                    ),
+                                                    actions: [
+                                                      Row(
+                                                        children: [
+                                                          TextButton(
+                                                              onPressed: () async {
+                                                                Navigator.pop(context);
+                                                              },
+                                                              child: Text(
+                                                                '확인',
+                                                                style: TextStyle(
+                                                                  fontSize: 15,
+                                                                  color: Color(0xff377EEA),
+                                                                  fontWeight: FontWeight.bold,
+                                                                ),
+                                                              )),
+                                                        ],
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                      )
+                                                    ],
+                                                  ));
+                                                }
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                  color: Color(0xFFFEE500),
+                                                ),
+                                                padding: EdgeInsets.only(right: 8, left: 6, top: 5, bottom: 5),
+                                                child: Row(
+                                                  children: [
+                                                    ExtendedImage.asset(
+                                                      'assets/imgs/logos/kakao_logo.png',
+                                                      enableMemoryCache: true,
+                                                      shape: BoxShape.rectangle,
+                                                      borderRadius: BorderRadius.circular(7),
+                                                      width: 18,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 2,
+                                                    ),
+                                                    Text(
+                                                      '카카오 오픈채팅',
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 12,
+                                                          color: Colors.black),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ],

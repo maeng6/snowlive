@@ -413,7 +413,7 @@ class LiveMapController extends GetxController {
                 }
 
               }
-              else if (location.type == 'respawn' && now.difference(lastPassTime).inMinutes >= 3) {
+              else if (location.type == 'respawn' && now.difference(lastPassTime).inMinutes >= 1) {
                 try {
                   Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
 
@@ -468,7 +468,7 @@ class LiveMapController extends GetxController {
                   DateTime lastPassTime = data['lastPassTime']?.toDate();
                   DateTime now = DateTime.now();
 
-                  if (now.difference(lastPassTime).inMinutes >= 3) {
+                  if (now.difference(lastPassTime).inMinutes >= 1) {
                     data['lastPassTime'] = Timestamp.fromDate(now);
                   }
 
@@ -598,7 +598,7 @@ class LiveMapController extends GetxController {
           DateTime lastPassTime = data['lastPassTime']?.toDate();
           DateTime now = DateTime.now();
 
-          if (now.difference(lastPassTime).inMinutes >= 3) {
+          if (now.difference(lastPassTime).inMinutes >= 1) {
             data['lastPassTime'] = Timestamp.fromDate(now);
           }
 
@@ -751,7 +751,7 @@ class LiveMapController extends GetxController {
                 }
 
               }
-              else if (location.type == 'respawn' && now.difference(lastPassTime).inMinutes >= 3) {
+              else if (location.type == 'respawn' && now.difference(lastPassTime).inMinutes >= 1) {
                 try {
                   Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
 
@@ -792,7 +792,7 @@ class LiveMapController extends GetxController {
                   DateTime lastPassTime = data['lastPassTime']?.toDate();
                   DateTime now = DateTime.now();
 
-                  if (now.difference(lastPassTime).inMinutes >= 3) {
+                  if (now.difference(lastPassTime).inMinutes >= 1) {
                     data['lastPassTime'] = Timestamp.fromDate(now);
                   }
 
@@ -914,7 +914,7 @@ class LiveMapController extends GetxController {
           DateTime lastPassTime = data['lastPassTime']?.toDate();
           DateTime now = DateTime.now();
 
-          if (now.difference(lastPassTime).inMinutes >= 3) {
+          if (now.difference(lastPassTime).inMinutes >= 1) {
             data['lastPassTime'] = Timestamp.fromDate(now);
           }
 
@@ -1056,7 +1056,7 @@ class LiveMapController extends GetxController {
         DateTime lastPassTime = crewData['lastPassTime']?.toDate();
         DateTime now = DateTime.now();
 
-        if (now.difference(lastPassTime).inMinutes >= 3) {
+        if (now.difference(lastPassTime).inMinutes >= 1) {
           crewData['lastPassTime'] = Timestamp.fromDate(now);
         }
 

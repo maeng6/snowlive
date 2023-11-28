@@ -21,6 +21,7 @@ class BulletinCrewModelController extends GetxController {
   RxString? _resortNickname = ''.obs;
   RxBool? _soldOut = false.obs;
   Timestamp? _timeStamp;
+  RxString? _snsUrl = ''.obs;
 
   String? get displayName => _displayName!.value;
 
@@ -48,6 +49,8 @@ class BulletinCrewModelController extends GetxController {
 
   Timestamp? get timeStamp => _timeStamp;
 
+  String? get snsUrl => _snsUrl!.value;
+
   Future<void> getCurrentBulletinCrew({required uid, required bulletinCrewCount}) async {
     BulletinCrewModel bulletinCrewModel = await BulletinCrewModel().getBulletinCrewModel(uid,bulletinCrewCount);
     this._displayName!.value = bulletinCrewModel.displayName!;
@@ -63,6 +66,7 @@ class BulletinCrewModelController extends GetxController {
     this._resortNickname!.value = bulletinCrewModel.resortNickname!;
     this._soldOut!.value = bulletinCrewModel.soldOut!;
     this._timeStamp = bulletinCrewModel.timeStamp!;
+    this._snsUrl!.value = bulletinCrewModel.snsUrl!;
   }
 
   Future<void> updateItemImageUrls(imageUrls) async {
@@ -139,7 +143,9 @@ class BulletinCrewModelController extends GetxController {
         required location,
         required description,
         required bulletinCrewCount,
-        required resortNickname}) async {
+        required resortNickname,
+        required snsUrl,
+      }) async {
     await BulletinCrewModel().uploadBulletinCrew(
         displayName: displayName,
         uid: uid,
@@ -150,7 +156,9 @@ class BulletinCrewModelController extends GetxController {
         location: location,
         description: description,
         bulletinCrewCount: bulletinCrewCount,
-        resortNickname: resortNickname);
+        resortNickname: resortNickname,
+        snsUrl:snsUrl
+    );
   }
 
   Future<void> updateBulletinCrew(
@@ -163,7 +171,9 @@ class BulletinCrewModelController extends GetxController {
         required location,
         required description,
         required bulletinCrewCount,
-        required resortNickname}) async {
+        required resortNickname,
+        required snsUrl,
+      }) async {
     await BulletinCrewModel().updateBulletinCrew(
         displayName: displayName,
         uid: uid,
@@ -174,7 +184,9 @@ class BulletinCrewModelController extends GetxController {
         location: location,
         description: description,
         bulletinCrewCount: bulletinCrewCount,
-        resortNickname: resortNickname);
+        resortNickname: resortNickname,
+        snsUrl: snsUrl,
+    );
   }
 
   Future<void> updateBulletinCrewReplyCount({required bullUid, required bullCount}) async {
