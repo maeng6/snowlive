@@ -687,7 +687,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                             onTap: (){
                                                               Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
                                                             },
-                                                            child: Text('${_bulletinRoomModelController.displayName}',
+                                                            child: Text('${userData['displayName']}',
                                                               //chatDocs[index].get('displayName'),
                                                               style: TextStyle(
                                                                   fontWeight: FontWeight.normal,

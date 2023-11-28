@@ -768,7 +768,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                               fit: BoxFit.cover,
                                                             ),
                                                           SizedBox(width: 5,),
-                                                          Text('${_bulletinCrewModelController.displayName}',
+                                                          Text('${userData['displayName']}',
                                                             //chatDocs[index].get('displayName'),
                                                             style: TextStyle(
                                                                 fontWeight: FontWeight.normal,

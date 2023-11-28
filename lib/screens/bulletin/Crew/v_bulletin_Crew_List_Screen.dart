@@ -14,6 +14,7 @@ import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_List_Detail.d
 import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_Upload.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_phone_Auth_Screen.dart';
+import '../../../controller/vm_allUserDocsController.dart';
 import '../../../controller/vm_bulletinCrewController.dart';
 import '../../../controller/vm_timeStampController.dart';
 import '../../../controller/vm_userModelController.dart';
@@ -33,7 +34,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
   BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   SeasonController _seasonController = Get.find<SeasonController>();
-
+  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
 //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -81,6 +82,10 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
         }
       });
 
+    });
+
+    _allUserDocsController.startListening().then((result){
+      setState(() {});
     });
 
     // Add a listener to the ScrollController
@@ -649,6 +654,9 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                           bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
                           List viewerUid = data?.containsKey('viewerUid') == true ? data!['viewerUid'] : [];
                           String _time = _timeStampController.yyyymmddFormat(chatDocs[index].get('timeStamp'));
+                          String? profileUrl = _allUserDocsController.findProfileUrl(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
+                          String? displayName = _allUserDocsController.findDisplayName(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
+
                           return GestureDetector(
                             onTap: () async {
                               if(isLocked == false) {

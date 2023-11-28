@@ -17,7 +17,9 @@ class BulletinEventModel {
         this.bulletinEventCount,
         this.bulletinEventReplyCount,
         this.resortNickname,
-        this.timeStamp});
+        this.timeStamp,
+        this.snsUrl,
+      });
 
   String? displayName;
   String? uid;
@@ -33,6 +35,7 @@ class BulletinEventModel {
   Timestamp? timeStamp;
   bool? soldOut;
   DocumentReference? reference;
+  String? snsUrl;
 
   BulletinEventModel.fromJson(dynamic json, this.reference) {
     displayName = json['displayName'];
@@ -48,6 +51,7 @@ class BulletinEventModel {
     bulletinEventReplyCount = json['bulletinEventReplyCount'];
     resortNickname = json['resortNickname'];
     soldOut = json['soldOut'];
+    snsUrl = json['snsUrl'];
   }
 
   BulletinEventModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -73,7 +77,9 @@ class BulletinEventModel {
         required description,
         timeStamp,
         required bulletinEventCount,
-        required resortNickname}) async {
+        required resortNickname,
+        required snsUrl,
+      }) async {
     await ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount').set({
       'displayName': displayName,
       'uid': uid,
@@ -90,6 +96,7 @@ class BulletinEventModel {
       'soldOut': false,
       'viewerUid': [],
       'lock': false,
+      'snsUrl': snsUrl,
     });
   }
 
@@ -104,7 +111,9 @@ class BulletinEventModel {
         required description,
         timeStamp,
         required bulletinEventCount,
-        required resortNickname}) async {
+        required resortNickname,
+        required snsUrl,
+      }) async {
     await ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount').update({
       'displayName': displayName,
       'uid': uid,
@@ -119,6 +128,7 @@ class BulletinEventModel {
       'resortNickname': resortNickname,
       'soldOut': false,
       'viewerUid': [],
+      'snsUrl': snsUrl,
     });
   }
 
