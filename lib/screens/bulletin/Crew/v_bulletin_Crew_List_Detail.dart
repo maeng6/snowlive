@@ -672,7 +672,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 8,
+                                    height: 12,
                                   ),
                                   Container(
                                     width: _size.width - 32,

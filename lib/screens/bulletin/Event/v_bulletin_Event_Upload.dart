@@ -191,6 +191,9 @@ class _Bulletin_Event_UploadState extends State<Bulletin_Event_Upload> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(
+                              height: 16,
+                            ),
                             Row(
                               children: [
                                 Container(
@@ -401,47 +404,83 @@ class _Bulletin_Event_UploadState extends State<Bulletin_Event_Upload> {
                                 ),
                               ],
                             ),
-                            Divider(
-                              height: 32,
-                              thickness: 0.5,
-                              color: Color(0xFFECECEC),
-                            ),
-                            if(_bulletinEventImageSelected == true)
-                              Stack(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(6),
-                                    child: Image.file(
-                                      File(_bulletinEventImageUrl!),
-                                      width: _size.width -32,
-                                      height: _size.width -32,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: 0,
-                                    child: IconButton(
-                                      icon: Icon(Icons.cancel,
-                                        color: Colors.white,
-                                      ),
-                                      onPressed: (){
-                                        setState(() {
-                                          _bulletinEventImageSelected = false;
-                                          _imageFile = null;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
                             Container(
-                              height: _size.height-500,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Divider(
+                                    height: 32,
+                                    thickness: 0.5,
+                                    color: Color(0xFFECECEC),
+                                  ),
+                                  TextFormField(
+                                    maxLines: null,
+                                    textInputAction: TextInputAction.newline,
+                                    textAlignVertical: TextAlignVertical.center,
+                                    keyboardType: TextInputType.multiline,
+                                    cursorColor: Color(0xff3D6FED),
+                                    cursorHeight: 16,
+                                    cursorWidth: 2,
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                                    controller: _snsUrlTextEditingController,
+                                    strutStyle: StrutStyle(leading: 0.3),
+                                    decoration: InputDecoration(
+                                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      errorStyle: TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                      labelStyle: TextStyle(
+                                          color: Color(0xff949494)
+                                      ),
+                                      hintStyle:
+                                      TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                                      hintText: 'URL을 입력해주세요.',
+                                      labelText: 'SNS URL',
+                                      border: InputBorder.none,
+                                    ),
+                                    validator: (val) {
+                                      if (val!.length <= 1000 && val.length >= 0) {
+                                        return null;
+                                      } else {
+                                        return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                      }
+                                    },
+                                  ),
+                                  if(_bulletinEventImageSelected == true)
+                                    Stack(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 16),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(6),
+                                            child: Image.file(
+                                              File(_bulletinEventImageUrl!),
+                                              width: _size.width -32,
+                                              height: _size.width -32,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          right: 0,
+                                          top: 16,
+                                          child: IconButton(
+                                            icon: Icon(Icons.cancel,
+                                              color: Colors.white,
+                                            ),
+                                            onPressed: (){
+                                              setState(() {
+                                                _bulletinEventImageSelected = false;
+                                                _imageFile = null;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 16),
+                                    padding: const EdgeInsets.only(top: 16, bottom: 16),
                                     child: Container(
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(6),
@@ -586,14 +625,12 @@ class _Bulletin_Event_UploadState extends State<Bulletin_Event_Upload> {
                                   ),
                                   TextFormField(
                                     maxLines: null,
-                                    textInputAction: TextInputAction.newline,
                                     textAlignVertical: TextAlignVertical.center,
-                                    keyboardType: TextInputType.multiline,
                                     cursorColor: Color(0xff3D6FED),
                                     cursorHeight: 16,
                                     cursorWidth: 2,
                                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                                    controller: _snsUrlTextEditingController,
+                                    controller: _itemDescribTextEditingController,
                                     strutStyle: StrutStyle(leading: 0.3),
                                     decoration: InputDecoration(
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -605,52 +642,19 @@ class _Bulletin_Event_UploadState extends State<Bulletin_Event_Upload> {
                                       ),
                                       hintStyle:
                                       TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                      hintText: 'URL을 입력해주세요.',
-                                      labelText: 'SNS URL',
+                                      hintText: '게시글 내용을 작성해 주세요. (최대 1,000자)',
+                                      labelText: '내용',
                                       border: InputBorder.none,
                                     ),
                                     validator: (val) {
-                                      if (val!.length <= 1000 && val.length >= 0) {
+                                      if (val!.length <= 1000 && val.length >= 1) {
                                         return null;
+                                      } else if (val.length == 0) {
+                                        return '내용을 입력해주세요.';
                                       } else {
                                         return '최대 입력 가능한 글자 수를 초과했습니다.';
                                       }
                                     },
-                                  ),
-                                  Expanded(
-                                    child: TextFormField(
-                                      maxLines: null,
-                                      textAlignVertical: TextAlignVertical.center,
-                                      cursorColor: Color(0xff3D6FED),
-                                      cursorHeight: 16,
-                                      cursorWidth: 2,
-                                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                                      controller: _itemDescribTextEditingController,
-                                      strutStyle: StrutStyle(leading: 0.3),
-                                      decoration: InputDecoration(
-                                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                                        errorStyle: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                        labelStyle: TextStyle(
-                                            color: Color(0xff949494)
-                                        ),
-                                        hintStyle:
-                                        TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                        hintText: '게시글 내용을 작성해 주세요. (최대 1,000자)',
-                                        labelText: '내용',
-                                        border: InputBorder.none,
-                                      ),
-                                      validator: (val) {
-                                        if (val!.length <= 1000 && val.length >= 1) {
-                                          return null;
-                                        } else if (val.length == 0) {
-                                          return '내용을 입력해주세요.';
-                                        } else {
-                                          return '최대 입력 가능한 글자 수를 초과했습니다.';
-                                        }
-                                      },
-                                    ),
                                   ),
                                 ],
                               ),

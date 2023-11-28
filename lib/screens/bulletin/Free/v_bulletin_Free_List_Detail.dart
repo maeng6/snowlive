@@ -616,7 +616,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 8,
+                                    height: 12,
                                   ),
                                   Container(
                                     width: _size.width - 32,

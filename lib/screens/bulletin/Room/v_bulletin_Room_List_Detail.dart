@@ -584,7 +584,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                 color: Color(0xFF666666)),
                                           ),),
                                         SizedBox(
-                                          height: 8,
+                                          height: 12,
                                         ),
                                         Container(
                                           width: _size.width-32,

@@ -597,7 +597,7 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 8,
+                                    height: 12,
                                   ),
                                   Container(
                                     width: _size.width - 32,
@@ -746,9 +746,6 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            SizedBox(
-                                              height: 4,
-                                            ),
                                             Text(
                                               '내용',
                                               style: TextStyle(
@@ -770,14 +767,14 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                                   Get.to(() => BulletinEventImageScreen());
                                                 },
                                                 child: ExtendedImage.network(
-                                                  _bulletinEventModelController
-                                                      .itemImagesUrl!,
+                                                  _bulletinEventModelController.itemImagesUrl!,
                                                   fit: BoxFit.cover,
                                                   width: _size.width,
-                                                  height: 280,
                                                 ),
                                               ),
-
+                                            SizedBox(
+                                              height: 16,
+                                            ),
                                             Container(
                                               width: _size.width,
                                               child: SelectableText(
@@ -787,13 +784,17 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                                     fontWeight: FontWeight.normal),
                                               ),
                                             ),
+                                            SizedBox(
+                                              height: 16,
+                                            ),
                                             if(_bulletinEventModelController.snsUrl != null && _bulletinEventModelController.snsUrl != '')
                                               GestureDetector(
                                                 onTap: (){
                                                   if(_bulletinEventModelController.snsUrl!.isNotEmpty && _bulletinEventModelController.snsUrl != '' ) {
                                                     _urlLauncherController.otherShare(contents: '${_bulletinEventModelController.snsUrl}');
                                                   }else{
-                                                    Get.dialog(AlertDialog(
+                                                    Get.dialog(
+                                                        AlertDialog(
                                                       contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
                                                       elevation: 0,
                                                       shape: RoundedRectangleBorder(
@@ -832,30 +833,23 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                                 },
                                                 child: Container(
                                                   decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      color: Color(0xFFDEDEDE)
+                                                    ),
                                                     borderRadius: BorderRadius.circular(5),
-                                                    color: Color(0xFFFEE500),
+                                                    color: Color(0xFFFFFFFF),
                                                   ),
-                                                  padding: EdgeInsets.only(right: 8, left: 6, top: 5, bottom: 5),
+                                                  padding: EdgeInsets.only(right: 8, left: 6, top: 12, bottom: 12),
                                                   child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
-                                                      ExtendedImage.asset(
-                                                        'assets/imgs/logos/kakao_logo.png',
-                                                        enableMemoryCache: true,
-                                                        shape: BoxShape.rectangle,
-                                                        borderRadius: BorderRadius.circular(7),
-                                                        width: 18,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                      SizedBox(
-                                                        width: 2,
-                                                      ),
                                                       Text(
-                                                        '카카오 오픈채팅',
+                                                        'SNS 바로가기',
                                                         style: TextStyle(
                                                             fontWeight: FontWeight.bold,
-                                                            fontSize: 12,
-                                                            color: Colors.black),
-                                                      ),
+                                                            fontSize: 15,
+                                                            color: Color(0xFF949494),
+                                                      ),),
                                                     ],
                                                   ),
                                                 ),
